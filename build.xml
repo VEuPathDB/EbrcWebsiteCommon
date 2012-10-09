@@ -1,0 +1,99 @@
+<project name="EuPathCommonWebsite" default="Installation" basedir=".">
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+
+  
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo    Update    oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EuPathCommonWebsite-Installation" >
+    <ant target="defaultProjectInstall"/>
+  </target>  
+
+  <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
+
+
+  <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
+
+  <target name="EuPathCommonWebsite/Site-Installation">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="EuPathCommonWebsite"/>
+      <property name="component" value="Site"/>
+    </ant>
+  </target>  
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EuPathCommonWebsite-WebInstallation" >
+  </target>
+
+  <target name="EuPathCommonWebsite/Site-WebInstallation">
+ 
+    <ant target="defaultWebComponentInstall">
+      <property name="project" value="EuPathCommonWebsite"/>
+      <property name="component" value="Site"/>
+    </ant>
+
+    <available file="${targetDir}/config/log4j.xml.custom-web" property="custom.weblog4j.present"/>
+    <antcall target="installCustomWebLog4j"/>
+    <available file="${webappTargetDir}/WEB-INF/classes/log4j.xml" property="weblog4j.present"/>
+    <antcall target="setLog4j"/>
+
+  </target>
+
+  <target name="setLog4j" if="weblog4j.present">
+    <dirname  property="webappDir" file="${webappTargetDir}"/>
+    <basename property="webapp" file="${webappDir}"/>
+    <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml" token="@WEBAPP@" value="${webapp}"/>
+  </target>
+
+  <target name="installCustomWebLog4j" if="custom.weblog4j.present">
+    <echo message="Installing custom log4j.xml from"/>
+    <echo message="${targetDir}/config/log4j.xml.custom-web"/>
+    <copy overwrite="true"
+          file="${targetDir}/config/log4j.xml.custom-web" 
+          tofile="${webappTargetDir}/WEB-INF/classes/log4j.xml"/>
+  </target>
+
+
+ 
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EuPathCommonWebsite-Distributable" depends="ProjectTree">
+
+    <copy todir="${targetDir}">
+      <fileset dir="${projectsDir}" >
+        <exclude name="**/.svn/*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  ProjectTree  ooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="ProjectTree" if="${checkout}">
+    <ant target="projectCheckOut"/>
+  </target>  
+
+</project>
+
+
