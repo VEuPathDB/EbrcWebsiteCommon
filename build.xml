@@ -1,4 +1,4 @@
-<project name="EuPathCommonWebsite" default="Installation" basedir=".">
+<project name="EuPathSiteCommon" default="Installation" basedir=".">
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
@@ -29,7 +29,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
- <target name="EuPathCommonWebsite-ChildCheckout">
+ <target name="EuPathSiteCommon-ChildCheckout">
     <available file="../WDK" type="dir"  property="WDK.present" />
     <antcall target="WDK-Checkout"/>
   </target>
@@ -37,7 +37,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Update    oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
- <target name="EuPathCommonWebsite-ChildUpdate">
+ <target name="EuPathSiteCommon-ChildUpdate">
     <ant target="defaultProjectUpdate">
       <property name="project" value="WDK"/>
     </ant>
@@ -48,8 +48,8 @@
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathCommonWebsite-Installation" depends="WDK-Installation,
-                                                           EuPathCommonWebsite/Site-Installation">
+  <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
+                                                           EuPathSiteCommon/Site-Installation">
     <ant target="defaultProjectInstall"/>
   </target>  
 
@@ -58,9 +58,9 @@
 
   <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
 
-  <target name="EuPathCommonWebsite/Site-Installation">
+  <target name="EuPathSiteCommon/Site-Installation">
     <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathCommonWebsite"/>
+      <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
   </target>  
@@ -69,16 +69,16 @@
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathCommonWebsite-WebInstallation" depends="WDK-WebInstallation,
-                                                              EuPathCommonWebsite-Installation,
-                                                              EuPathCommonWebsite/Site-WebInstallation">
+  <target name="EuPathSiteCommon-WebInstallation" depends="WDK-WebInstallation,
+                                                              EuPathSiteCommon-Installation,
+                                                              EuPathSiteCommon/Site-WebInstallation">
 
   </target>
 
-  <target name="EuPathCommonWebsite/Site-WebInstallation">
+  <target name="EuPathSiteCommon/Site-WebInstallation">
  
     <ant target="defaultWebComponentInstall">
-      <property name="project" value="EuPathCommonWebsite"/>
+      <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
 
@@ -90,7 +90,7 @@
   <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathCommonWebsite-Distributable" depends="ProjectTree">
+  <target name="EuPathSiteCommon-Distributable" depends="ProjectTree">
 
     <copy todir="${targetDir}">
       <fileset dir="${projectsDir}" >
