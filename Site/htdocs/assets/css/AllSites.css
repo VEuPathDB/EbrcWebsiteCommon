@@ -364,6 +364,7 @@ div#quick-search td {
 
 .sf-menu li {
   background: transparent;
+  z-index: 500;
 }
 
 .sf-menu li li {
