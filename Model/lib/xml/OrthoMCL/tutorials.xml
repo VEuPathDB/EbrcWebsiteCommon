@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE xml [
+  <!ENTITY nbsp "&#160;"> 
+  <!ENTITY lt   "&#60;"> 
+  <!ENTITY gt   "&#62;">
+  <!ENTITY sl   "&#47;">
+]>
+
+
+<!-- PLEASE ENTER TUTORIALS SORTED ALPHABETICALLY -->
+
+
+
+<xmlAnswer>
+
+ <record>
+       <attribute name="title">Adding User Comments</attribute>
+       <attribute name="description">How to enter a user comment and/or upload a related file.</attribute>
+       <attribute name="uid">10</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Comment_form/Comment_form.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">4 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+  <record>
+       <attribute name="title">AmoebaDB Introduction</attribute>
+       <attribute name="description">Highlights of the AmoebaDB website.</attribute>
+       <attribute name="uid">20</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">AmoebaDB/amoebadb_intro_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">5 min</attribute>
+           <attribute name="size">3 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+    <record>
+       <attribute name="title">DNA motif</attribute>
+       <attribute name="description">How to assemble a list of genomic segments that match a recurring DNA pattern that you specify.</attribute>
+       <attribute name="uid">30</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=81nuXyNQP3k</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">DNA_motif/dna_motif_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">dna_motif_search.pdf</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.3 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Favorites</attribute>
+       <attribute name="description">How to use the "My Favorites" function. </attribute>
+       <attribute name="uid">40</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Favorites/favorites_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">6 min</attribute>
+           <attribute name="size">4.5 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">GBrowse Overview</attribute>
+       <attribute name="description">How to display genomic sequence and functional genomics data in The Genome Browser.</attribute>
+       <attribute name="uid">50</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=OhBdPsPQiHM</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">GBrowse overview/gbrowse_overview_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">5 min</attribute>
+           <attribute name="size">4.7 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+
+
+    <record>
+       <attribute name="title">Genomic Colocations</attribute>
+       <attribute name="description">How to combine two different searches based on the relative genomic location of search results.</attribute>
+       <attribute name="uid">60</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=AUabKV_ojFY</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">colocate/colocate_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">genomic_co_location.pdf</attribute>
+           <attribute name="duration">7 min</attribute>
+           <attribute name="size">3.6 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Identify Genes based on Gene ID</attribute>
+       <attribute name="description">How to us the search 'Identify Genes based on Gene ID', to find genes by entering a list of gene IDs.</attribute>
+       <attribute name="uid">19Sept2012_1</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=yyhqMSxkg98</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by Gene ID/identify_genes_by_gene_id_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2 min</attribute>
+           <attribute name="size">6.4 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+<record>
+       <attribute name="title">Identify Genes based on Mass Spec. Evidence</attribute>
+       <attribute name="description">How to use the search 'Identify Genes base on Mass Spec. Evidence'. Find genes that map to peptides from proteomics experiments to provide expression evidence at the protein level. </attribute>
+       <attribute name="uid">2Oct2012_1</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=Ele9dhxY0r8</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by Mass Spec Evidence/identify_genes_by_mass_spec_evidence_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">6.6 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+    <record>
+       <attribute name="title">Identigy Genes based on Reagents Availability</attribute>
+       <attribute name="description">How to use the search 'Identify Genes based on Reagents Availability' which returns a list of genes supported by the Malaria Research and Reference Resource Center.</attribute>
+       <attribute name="uid">2Oct2012_2</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">PlasmoDB</attribute>
+           <attribute name="fileName.mov">watch?v=PcT71h1YMOA</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by Reagents Availability/identify_genes_by_reagents_availability_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">1.5 min</attribute>
+           <attribute name="size">6.5 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+<record>
+       <attribute name="title">Identify Genes based on Organism</attribute>
+       <attribute name="description">How to use the search, 'Identify Genes based on Organism', to obtain a list of all genes from an organism.</attribute>
+       <attribute name="uid">19Sept2012_2</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=ceqTOPjdv_g</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by Organism/identify_genes_by_organism_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">1.5 min</attribute>
+           <attribute name="size">6.4 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Identify Genes based on Text</attribute>
+       <attribute name="description">How to use the search, 'Identify Genes based on Text', to find genes whose gene records or annotations contain the same word or phrase.</attribute>
+       <attribute name="uid">19Sept2012_3</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=GtRd8TXtJhU</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by Text/identify_genes_by_text_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2 min</attribute>
+           <attribute name="size">6.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+  
+  <record>
+       <attribute name="title">Identify Genes based on User Comments</attribute>
+       <attribute name="description">How use the search, 'Identify Genes based on User Comments', to get a list of all genes for which user comments have been entered.</attribute>
+       <attribute name="uid">19Sept2012_4</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=26iz6r8FYvM</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Identify Genes by User Comments/identify_genes_by_user_comments_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">1.5 min</attribute>
+           <attribute name="size">6.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+    
+<record>
+       <attribute name="title">Isolates by Geographic Location</attribute>
+       <attribute name="description">How to search for isolates based on the geographic location of sample collection.</attribute>
+       <attribute name="uid">70</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=S-M9-roHDig</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Isolates by Geographic Location/isolates_by_geographic_location_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">1.5 min</attribute>
+           <attribute name="size">3.5 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+
+ <record>
+       <attribute name="title">My Basket</attribute>
+       <attribute name="description">How to use the "My Basket" function.</attribute>
+       <attribute name="uid">80</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=BBMzIakyKE4</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Basket/basket_final_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">basket.pdf</attribute>
+           <attribute name="duration">6 min</attribute>
+           <attribute name="size">11 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Orthology Phylogenetic Profile</attribute>
+       <attribute name="description">How to search for genes based on your user-defined ortholog profile.</attribute>
+       <attribute name="uid">90</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=RAcAOgBJskY</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Orthology Phylogenetic Profile/orthology_phylogenetic_profile_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">3.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+ <record>
+       <attribute name="title">PlasmoDB Introduction</attribute>
+       <attribute name="description">Highlights of the PlasmoDB website.</attribute>
+       <attribute name="uid">100</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">PlasmoDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">PlasmoDB/plasmodb_intro_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">7 min</attribute>
+           <attribute name="size">5.7 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Registration</attribute>
+       <attribute name="description">How to register and change your password.</attribute>
+       <attribute name="uid">110</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=GUo_BVk-_rE</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Registration/register_final_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">Register.pdf</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.1 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Restriction Sites in GBrowse</attribute>
+       <attribute name="description">How to view restriction enzyme sites in The Genome Browser.</attribute>
+       <attribute name="uid">120</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=uRI4-LQ56O8</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Restriction Sites in GBrowse/restriction_sites_in_gbrowse_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2 min</attribute>
+           <attribute name="size">2.8 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+
+ <record>
+       <attribute name="title">Search Strategies</attribute>
+       <attribute name="description">Learn how to combine search results using the search strategy system.</attribute>
+       <attribute name="uid">130</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">New_Strat/New_Strat_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">5 min</attribute>
+           <attribute name="size">9 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record id="140">
+       <attribute name="title">Searches and IDs may change with Database releases</attribute>
+       <attribute name="description">How a new database release might affect IDs or searches that you have saved in your 'My Strategies' folder. How to revise searches with the new release.</attribute>
+       <attribute name="uid">140</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=n-rF80qX8QY</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Invalid IDs and Strategies/invalid_ids_and_strategies_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">3.1 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+<record>
+       <attribute name="title">The Sequence Retrieval Tool</attribute>
+       <attribute name="description">How to use the Sequence Retrieval Tool to download gene sequence, genomic sequence or multiple sequence alignments.</attribute>
+       <attribute name="uid">19Sept2012_5</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=R2TY9_Pocck</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Sequnce Retrieval Tool/sequnce_retrieval_tool_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">6.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+ <record>
+       <attribute name="title">Text Search</attribute>
+       <attribute name="description">How to identify genes based on any text term in the gene record.</attribute>
+       <attribute name="uid">150</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=rfgWp9IEi8s</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">TextSearch/Text_Search_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">Text_Search.pdf</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">3.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+
+
+
+ 
+
+  
+  
+
+
+ </xmlAnswer>
+
