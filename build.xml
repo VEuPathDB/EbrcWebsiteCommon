@@ -49,12 +49,12 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
-                                                           EuPathSiteCommon/Site-Installation,
-                                                           EuPathSiteCommon/Model-Installation,
-                                                           EuPathSiteCommon/View-Installation">
+                                                        EuPathSiteCommon/Site-Installation,
+                                                        EuPathSiteCommon/Model-Installation,
+                                                        EuPathSiteCommon/View-Installation">
     <ant target="defaultProjectInstall"/>
 
-<!-- remove conflicting jar file -->
+    <!-- remove conflicting jar file -->
     <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
     <delete file="${targetDir}/lib/java/jsp-api-2.0.jar" />
 
@@ -72,7 +72,6 @@
     </ant>
   </target>
 
-
   <target name="EuPathSiteCommon/Site-Installation">
     <ant target="defaultComponentInstall">
       <property name="project" value="EuPathSiteCommon"/>
@@ -80,22 +79,20 @@
     </ant>
   </target>  
 
- <target name="EuPathSiteCommon/View-Installation">
+  <target name="EuPathSiteCommon/View-Installation">
     <ant target="defaultComponentInstall">
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="View"/>
     </ant>
   </target>
 
-
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EuPathSiteCommon-WebInstallation" depends="WDK-WebInstallation,
-                                                              EuPathSiteCommon-Installation,
-                                                              EuPathSiteCommon/Site-WebInstallation">
-
+                                                           EuPathSiteCommon-Installation,
+                                                           EuPathSiteCommon/Site-WebInstallation">
   </target>
 
   <target name="EuPathSiteCommon/Site-WebInstallation">
@@ -106,8 +103,6 @@
     </ant>
 
   </target>
-
-  
  
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
@@ -131,5 +126,3 @@
   </target>  
 
 </project>
-
-
