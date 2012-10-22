@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WDK Model"/>
+	<classpathentry kind="lib" path="/WSF Plugin/lib/java/log4j-1.2.15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WSF Plugin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WDK Controller"/>
+	<classpathentry kind="lib" path="/WDK Controller/lib/java/struts-1.2.4.jar" sourcepath="C:/Develop/Java/Apache/maven-repo/struts/struts/1.2.4/struts-1.2.4-sources.jar"/>
+	<classpathentry kind="lib" path="/WSF Service/lib/java/not-deployed/servlet-api-2.4.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

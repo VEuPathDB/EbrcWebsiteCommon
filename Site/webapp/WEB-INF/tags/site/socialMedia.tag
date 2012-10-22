@@ -19,13 +19,13 @@
   <li class="socmedia-link no-divider">
     <span id="twitter-link" style="display:none">http://twitter.com/${twitter}</span>
     <a href="javascript:gotoTwitter()">
-      <img width="16" title="Follow us on Twitter!" src="${pageContext.request.contextPath}/wdkCustomization/images/twitter.gif"/>
+      <img width="16" title="Follow us on Twitter!" src="/assets/images/twitter.gif"/>
     </a>
   </li>
   <li class="socmedia-link no-divider">
     <span id="facebook-link" style="display:none">https://facebook.com/${facebook}</span>
     <a href="javascript:gotoFacebook()">
-      <img width="16" title="Follow us on Facebook!" src="${pageContext.request.contextPath}/wdkCustomization/images/facebook.png"/>
+      <img width="16" title="Follow us on Facebook!" src="/assets/images/facebook-icon.png"/>
     </a>
   </li>
 
