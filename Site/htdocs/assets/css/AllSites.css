@@ -342,6 +342,8 @@ div#quick-search td {
 
 #menu {
   z-index: 500;
+  height: 28px;
+  min-width: 900px;
 }
 
 .sf-menu {
