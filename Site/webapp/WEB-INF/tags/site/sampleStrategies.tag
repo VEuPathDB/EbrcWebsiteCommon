@@ -86,6 +86,12 @@
    </c:when>
 
 
+ <c:when test="${fn:containsIgnoreCase(site, 'OrthoMCL')}">
+      <c:set var="simple" value="f8336deab20f2975" />
+      <c:set var="expanded" value="3dc751bcbcf93330" />
+      <c:set var="ap2Motif" value="6db0178d3994b287" />
+   </c:when>
+
 </c:choose>
 
 <div class="h2center">Click to import a strategy in your workspace</div>
