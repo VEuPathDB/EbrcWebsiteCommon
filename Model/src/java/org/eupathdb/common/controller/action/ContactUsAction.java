@@ -122,8 +122,8 @@ public class ContactUsAction extends WdkAction {
     	    escapeHtml(metaInfo + "\n\n" + content));
     	  
     	// send redmine email
-    	//Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
-    	//    escapeHtml(redmineMetaInfo + "\n\n" + content));
+    	Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
+    	    escapeHtml(redmineMetaInfo + "\n\n" + content));
 	  
     	return getJsonResult(SUCCESS_AJAX_RESPONSE,
     	    "We appreciate your feedback. Your message was sent successfully.");    	
