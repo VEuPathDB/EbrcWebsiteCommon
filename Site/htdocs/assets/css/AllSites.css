@@ -9,6 +9,14 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#search-bubbles {
+	min-width: 780px;
+	margin: 0 5px 0 220px;
+	background-color: #FFFFFF;
+	background-repeat: repeat-x;
+	text-align: left;
+}
+
 #contentcolumn {
 	min-width: 780px;
 	margin: 0 5px 0 220px;
@@ -52,11 +60,11 @@ table.threecolumn td {
 .threecolumndiv {
 	width: 247px;
 }
-
+/* what for?
 .threecolumndivimg {
 	display: block;
 }
-
+*/
 #info {
    width: 209px;
    min-height: 240px;
