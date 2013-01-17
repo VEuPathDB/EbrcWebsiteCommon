@@ -1,10 +1,14 @@
 package org.eupathdb.common.controller.action;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
 import org.gusdb.wdk.controller.actionutil.ActionResult;
 import org.gusdb.wdk.controller.actionutil.ParamDef;
+import org.gusdb.wdk.controller.actionutil.ParamDef.DataType;
 import org.gusdb.wdk.controller.actionutil.ParamDef.Required;
 import org.gusdb.wdk.controller.actionutil.ParamDefMapBuilder;
 import org.gusdb.wdk.controller.actionutil.ParamGroup;
@@ -42,12 +46,24 @@ public class ContactUsAction extends WdkAction {
 	/** CC addresses */
 	private static final String PARAM_ADDCC = "addCc";
 
+	/** Attachments */
+	private static final String PARAM_ATTACHMENT_PREFIX = "attachment";
+	private static final int PARAM_ATTACHMENT_COUNT = 3;
+	private static final int PARAM_ATTACHMENT_MAX_SIZE_MB = 5;
+
 
   private static final Map<String, ParamDef> PARAM_DEFS = new ParamDefMapBuilder()
     .addParam(PARAM_REPLY, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_SUBJECT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_CONTENT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_ADDCC, new ParamDef(Required.OPTIONAL)).toMap();
+
+  static {
+    for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
+      PARAM_DEFS.put(PARAM_ATTACHMENT_PREFIX + Integer.toString(i),
+          new ParamDef(Required.OPTIONAL, DataType.FILE));
+    }
+  }
 
   @Override
   protected boolean shouldValidateParams() {
@@ -58,6 +74,12 @@ public class ContactUsAction extends WdkAction {
 	protected Map<String, ParamDef> getParamDefs() {
 	  return PARAM_DEFS;
 	}
+
+  @Override
+  protected int getMaxUploadSize() {
+    return PARAM_ATTACHMENT_MAX_SIZE_MB;
+  }
+  
 	  
 	@Override
 	protected ActionResult handleRequest(ParamGroup params) throws Exception {
@@ -71,6 +93,17 @@ public class ContactUsAction extends WdkAction {
 	  String subject = params.getValueOrEmpty(PARAM_SUBJECT);
 	  String content = params.getValueOrEmpty(PARAM_CONTENT);
     String addCc = params.getValueOrEmpty(PARAM_ADDCC);
+
+    ArrayList<File> attachmentList = new ArrayList<File>();
+    for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
+      DiskFileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
+          + Integer.toString(i));
+      if (attachment != null) {
+        attachmentList.add(attachment.getStoreLocation());
+      }
+    }
+    File[] attachments = attachmentList.toArray(new File[0]);
+
     
 	  String supportEmail = wdkModel.getModelConfig().getSupportEmail();
 	  String uid = Integer.toString(user.getUserId());
@@ -114,19 +147,21 @@ public class ContactUsAction extends WdkAction {
 	  
 	  try {
 	    // send auto-reply
-    	Utilities.sendEmail(wdkModel, reply, supportEmail, subject,
-    	    escapeHtml(metaInfo + "\n\n" + autoContent), addCc);
-    	  
-    	// send support email
-    	Utilities.sendEmail(wdkModel, supportEmail, reply, subject,
-    	    escapeHtml(metaInfo + "\n\n" + content));
-    	  
-    	// send redmine email
-    	Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
-    	    escapeHtml(redmineMetaInfo + "\n\n" + content));
-	  
-    	return getJsonResult(SUCCESS_AJAX_RESPONSE,
-    	    "We appreciate your feedback. Your message was sent successfully.");    	
+      Utilities.sendEmail(wdkModel, reply, supportEmail, subject,
+          escapeHtml(metaInfo + "\n\n" + autoContent), addCc, attachments);
+
+      // send support email
+      Utilities.sendEmail(wdkModel, supportEmail, reply, subject,
+          escapeHtml(metaInfo + "\n\n" + content), null, attachments);
+
+      // send redmine email
+      Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
+          escapeHtml(redmineMetaInfo + "\n\n" + content), null, attachments);
+
+      // not using Ajax at the moment due to file uploads
+    	// return getJsonResult(SUCCESS_AJAX_RESPONSE,
+    	//     "We appreciate your feedback. Your message was sent successfully.");    	
+      return new ActionResult().setViewName(SUCCESS);
 	  }
 	  catch (Exception ex) {
 	    logger.error("Failure while processing 'contact us' request", ex);
