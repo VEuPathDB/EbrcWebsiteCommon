@@ -38,7 +38,7 @@
 		      <td><input type="text" name="reply" size="81"/></td>
 		    </tr>
 		    <tr>
-		      <td>Cc addresses:</td>
+          <td><b>Cc addresses:</b></td>
 		      <td><input type="text" name="addCc" value="" size="81"/></td>
 		    </tr>
 		    <tr>
@@ -70,7 +70,7 @@
         </tr>
 		    <tr>
 		      <td></td>
-		      <td align="left"><input type="submit" value="Submit"/></td>
+		      <td align="left"><input type="submit" value="Submit message"/></td>
 		    </tr>
 		  </table>
 	  </form>
