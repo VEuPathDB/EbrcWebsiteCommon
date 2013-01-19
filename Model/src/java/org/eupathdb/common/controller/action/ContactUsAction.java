@@ -1,8 +1,9 @@
 package org.eupathdb.common.controller.action;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.log4j.Logger;
@@ -94,15 +95,19 @@ public class ContactUsAction extends WdkAction {
 	  String content = params.getValueOrEmpty(PARAM_CONTENT);
     String addCc = params.getValueOrEmpty(PARAM_ADDCC);
 
-    ArrayList<File> attachmentList = new ArrayList<File>();
+    ArrayList<DataHandler> attachmentList = new ArrayList<DataHandler>();
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
       DiskFileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
           + Integer.toString(i));
-      if (attachment != null) {
-        attachmentList.add(attachment.getStoreLocation());
+      if (attachment != null && attachment.getSize() > 0L) {
+        ByteArrayDataSource ads = new ByteArrayDataSource(attachment.get(),
+            attachment.getContentType());
+        ads.setName(attachment.getName());
+        DataHandler adh = new DataHandler(ads);
+        attachmentList.add(adh);
       }
     }
-    File[] attachments = attachmentList.toArray(new File[0]);
+    DataHandler[] attachments = attachmentList.toArray(new DataHandler[0]);
 
     
 	  String supportEmail = wdkModel.getModelConfig().getSupportEmail();
@@ -138,7 +143,7 @@ public class ContactUsAction extends WdkAction {
 	      " know that we have received your email and will get back to you as" +
 	      " soon as possible. Thanks so much for contacting us!\n\nThis was" +
 	      " your message:\n\n---------------------\n" + content +
-	      "\n---------------------";
+	      "\n---------------------\n\n";
 	  
 	  String redmineMetaInfo = "Project: usersupportrequests\n" +
 	      "Category: " + website + "\n" +
