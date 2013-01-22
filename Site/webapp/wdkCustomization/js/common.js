@@ -1,9 +1,8 @@
+wdk.util.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
 // functions are called using onload-function 
-var Setup = {
-
-  setUpContactUsLogic: function() {
+  var setUpContactUsLogic = function() {
     var $form = $("#contact-us");
     var $container = $("#contact-files");
 
@@ -142,22 +141,27 @@ var Setup = {
         form.submit();
 
       });
-  },
+  };
 
-  configureSidebar: function() {
+  var configureSidebar = function() {
     $("#sidebar").accordion({
      active:1,                  // not combine with navigation
      // heightStyle:"content",  //for 1.9
      autoHeight:false,
      icons:false
     });
-  },
+  };
 
-  configureMenuBar: function() {
+  var configureMenuBar = function() {
     jQuery("#menu .sf-menu").supersubs({
       minWidth: 18,
       maxWidth: 27,
       extraWidth: 1
     }).superfish();
-  }
-};
+  };
+
+  ns.setUpContactUsLogic = setUpContactUsLogic;
+  ns.configureSidebar = configureSidebar;
+  ns.configureMenuBar = configureMenuBar;
+
+});
