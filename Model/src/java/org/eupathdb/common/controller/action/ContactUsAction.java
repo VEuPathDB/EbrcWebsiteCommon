@@ -32,7 +32,6 @@ public class ContactUsAction extends WdkAction {
 
   private static final Logger logger = Logger.getLogger(ContactUsAction.class.getName());
   
-  private static final String SUCCESS_AJAX_RESPONSE = "success";
   private static final String ERROR_AJAX_RESPONSE = "error";
   
   /** the reply-to address */

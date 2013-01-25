@@ -8,5 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/WDK Controller"/>
 	<classpathentry kind="lib" path="/WDK Controller/lib/java/struts-1.2.4.jar" sourcepath="C:/Develop/Java/Apache/maven-repo/struts/struts/1.2.4/struts-1.2.4-sources.jar"/>
 	<classpathentry kind="lib" path="/WSF Service/lib/java/not-deployed/servlet-api-2.4.jar"/>
+        <classpathentry kind="var" path="GUS_HOME/lib/java/javamail-1.4.jar"/>
+        <classpathentry kind="var" path="GUS_HOME/lib/java/commons-fileupload-1.2.2.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
