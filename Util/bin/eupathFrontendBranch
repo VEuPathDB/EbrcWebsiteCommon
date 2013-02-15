@@ -1,7 +1,9 @@
 #!/usr/bin/perl
 
-use strict;
+use lib "$ENV{GUS_HOME}/lib/perl";
+
 use FgpUtil::Util::ProjectBrancher;
+use strict;
 
 my $branch = $ARGV[0];
 my $comment = $ARGV[1];
@@ -16,9 +18,9 @@ FgpUtil::Util::ProjectBrancher::branch($branch, $comment, $delete, \@projects);
 
 sub usage {
   print STDERR "
-Branch all of the EuPathDB backend and cluster software using a single branch name.  The recommended branch name is a numeral.  Operates directly in svn, not your local dirs.
+Branch all of the EuPathDB front end software using a single branch name.  Operates directly in svn, not your local dirs.
 
-usage: eupathBackendBranch branch_name comment [-delete]
+usage: eupathFrontendBranch branch_name comment [-delete]
 
 -delete deletes the branch from all projects.
 
