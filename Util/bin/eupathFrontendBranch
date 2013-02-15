@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+
+use strict;
+use FgpUtil::Util::ProjectBrancher;
+
+my $branch = $ARGV[0];
+my $comment = $ARGV[1];
+my $delete = $ARGV[2];
+
+usage() unless ($branch && $comment);
+usage() if ($delete && $delete ne '-delete');
+
+my @projects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWorkflow:apidb', 'CBIL:gus', 'DJob:gus', 'DoTS:apidb', 'EuPathDatasets:apidb', 'FgpUtil:gus', 'GGTools:apidb', 'GusAppFramework:gus', 'GusSchema:gus', 'install:gus', 'OrthoMCLData:apidb', 'OrthoMCLEngine:apidb', 'OrthoMCLShared:apidb', 'ReFlow:gus', 'WDK:gus', 'WSF:gus');
+
+FgpUtil::Util::ProjectBrancher::branch($branch, $comment, $delete, \@projects);
+
+sub usage {
+  print STDERR "
+Branch all of the EuPathDB backend and cluster software using a single branch name.  The recommended branch name is a numeral.  Operates directly in svn, not your local dirs.
+
+usage: eupathBackendBranch branch_name comment [-delete]
+
+-delete deletes the branch from all projects.
+
+";
+
+ foreach my $project (@projects) {
+    my ($name, $repository) = split(/:/, $project);
+    print STDERR "  $name\n";
+  }
+
+exit(1);
+
+}
