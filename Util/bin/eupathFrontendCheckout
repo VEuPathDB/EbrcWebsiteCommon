@@ -21,11 +21,11 @@ foreach my $project (@projects) {
 sub usage {
   print STDERR "
 
-Check out a specified branch of the EuPathDB backend software into the current dir.
+Check out a specified branch of the EuPathDB front end software into the current dir.
 
-cd to target \$PROJECT_HOME first.
+cd to target \$PROJECT_HOME first (must be empty).
 
-usage: eupathBackendCheckout trunk|branch_number
+usage: eupathFrontendCheckout trunk|branch_number
 
 Checks out the following projects:
 ";
