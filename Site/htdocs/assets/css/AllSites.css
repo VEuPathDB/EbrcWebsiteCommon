@@ -85,14 +85,16 @@ table.threecolumn td {
 	list-style-type: none;
 	margin-left: 7px;
 }
-
+#info li ul {
+  margin: 4px 0;
+}
 #info li ul li
 {
 /*	list-style-image: url(../images/cir_bullet2.png);*/
 	border-bottom:1px solid lightgrey;
 	list-style-type: none;
-	margin-left: 16px;
-	font-size: 11px;
+	margin-left: 22px;
+/*	font-size: 11px; */
 	line-height: 1.1em;
 }
 
