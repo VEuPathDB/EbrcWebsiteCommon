@@ -19,7 +19,7 @@
 
 	<li>
 		 <!--  <a class="parent category"><span>${category.displayName}</span></a> -->
-		<img src="/assets/images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
+		<img class="bubble-header" src="/assets/images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
 		<c:set var="categories" value="${category.websiteChildren}" />
 
    	<ul id="info">
