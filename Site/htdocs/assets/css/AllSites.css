@@ -67,7 +67,7 @@ table.threecolumn td {
 */
 #info {
    width: 209px;
-   min-height: 240px;
+   min-height: 295px; /* was 240px before font-size was enlarged in tools */
    height:auto;
    background-image: url(../images/bubble_backgrnd.png);
    background-repeat: repeat-y;
