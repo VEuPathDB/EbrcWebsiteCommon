@@ -1,12 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<%@ attribute name="from" description="page using this tag" %>
+
 <!-- simplified version of the tag provided by WDK -->
 
 <c:set var="model" value="${applicationScope.wdkModel}" />
 <c:set var="project" value="${model.displayName}" />
+<c:set var="urlBase" value="${pageContext.request.contextPath}"/>
 
-<c:forEach items="${model.websiteRootCategories}" var="item">
+<c:choose>
+  <c:when test="${from ne 'webservices'}">
+    <c:set var="rootCategories" value="${model.websiteRootCategories}"/>
+  </c:when>
+  <c:otherwise>
+    <c:set var="rootCategories" value="${model.webserviceRootCategories}"/>
+  </c:otherwise>
+</c:choose>
+
+<c:forEach items="${rootCategories}" var="item">
   <c:set var="category" value="${item.value}" />  
 	<c:choose>
 		<c:when test="${ fn:containsIgnoreCase(category.displayName,'groups')}"> 
@@ -19,19 +31,56 @@
 
 	<li>
 		 <!--  <a class="parent category"><span>${category.displayName}</span></a> -->
-		<img class="bubble-header" src="/assets/images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
-		<c:set var="categories" value="${category.websiteChildren}" />
+    <c:choose>
+      <c:when test="${from ne 'webservices'}">
+        <img class="bubble-header" src="/assets/images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
+      </c:when>
+      <c:otherwise>
+        <h3><a href="${urlBase}/webservices/${category.name}.wadl">${category.displayName}</a></h3>
+      </c:otherwise>
+    </c:choose>
 
-   	<ul id="info">
+    <c:choose>
+      <c:when test="${from ne 'webservices'}">
+        <c:set var="categories" value="${category.websiteChildren}"/>
+      </c:when>
+      <c:otherwise>
+        <c:set var="categories" value="${category.webserviceChildren}"/>
+      </c:otherwise>
+    </c:choose>
+
+    <c:choose>
+      <c:when test="${from ne 'webservices'}">
+        <ul id="info">
+      </c:when>
+      <c:otherwise>
+        <ul>
+      </c:otherwise>
+    </c:choose>
+
     	<c:forEach items="${categories}" var="item">
 				<li>
 					<c:set var="category" value="${item.value}" />
 		  	  <span style="font-size:120%">${category.displayName}</span>
-			  	<c:set var="questions" value="${category.websiteQuestions}" />
+          <c:choose>
+            <c:when test="${from ne 'webservices'}">
+              <c:set var="questions" value="${category.websiteQuestions}"/>
+            </c:when>
+            <c:otherwise>
+              <c:set var="questions" value="${category.webserviceQuestions}"/>
+            </c:otherwise>
+          </c:choose>
 	  			<ul>
 						<c:forEach items="${questions}" var="question">
       				<li>
-        				<c:url var="questionUrl" value="/showQuestion.do?questionFullName=${question.fullName}"/>
+                <c:choose>
+                  <c:when test="${from ne 'webservices'}">
+                    <c:url var="questionUrl" value="/showQuestion.do?questionFullName=${question.fullName}"/>
+                  </c:when>
+                  <c:otherwise>
+                    <c:url var="questionUrl" value="/webservices/${question.questionSetName}/${question.name}.wadl"/>
+                  </c:otherwise>
+                </c:choose>
           			<a href="${questionUrl}"><span>${question.displayName}</span></a>
           			<imp:questionFeature question="${question}" />
         			</li>
@@ -40,7 +89,9 @@
 				</li>
       </c:forEach>
     </ul>
-    <div id="infobottom"></div>
+    <c:if test="${from ne 'webservices'}">
+      <div id="infobottom"></div>
+    </c:if>
   </li>
 </c:forEach>
 
