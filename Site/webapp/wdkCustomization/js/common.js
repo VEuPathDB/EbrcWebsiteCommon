@@ -72,7 +72,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
 
         if (missingFields.length) {
           _.each(missingFields, function(field) {
-            $(form[field]).after("<span class='error'>This field is required</span>");
+            $(form[field]).after("<span class='wdk-error'>This field is required</span>");
           });
           return;
         }
