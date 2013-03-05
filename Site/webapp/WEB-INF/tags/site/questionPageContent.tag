@@ -23,7 +23,7 @@
 
 <c:if test="${hideTitle == false}">
   <h1>Identify ${recordName} based on ${wdkQuestion.displayName}
-    <imp:questionFeature question="${wdkQuestion}"/></h1>
+    <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/></h1>
 </c:if>
 
 
