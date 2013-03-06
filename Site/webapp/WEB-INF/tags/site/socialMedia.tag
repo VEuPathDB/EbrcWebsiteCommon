@@ -22,19 +22,19 @@
   <li class="socmedia-link no-divider">
     <span id="twitter-link" style="display:none">http://twitter.com/${twitter}</span>
     <a href="javascript:gotoTwitter()">
-      <span class="twitter" title="Follow us on Twitter!"><jsp:text/></span>
+      <span class="twitter_small" title="Follow us on Twitter!"><jsp:text/></span>
     </a>
   </li>
   <li class="socmedia-link no-divider">
     <span id="facebook-link" style="display:none">https://facebook.com/${facebook}</span>
     <a href="javascript:gotoFacebook()">
-      <span class="facebook" title="Follow us on Facebook!"><jsp:text/></span>
+      <span class="facebook_small" title="Follow us on Facebook!"><jsp:text/></span>
     </a>
   </li>
   <li class="socmedia-link no-divider">
     <span id="youtube-link" style="display:none">http://www.youtube.com/user/EuPathDB/videos?sort=dd&amp;flow=list&amp;view=1</span>
     <a href="${constants.youtubeUrl}">
-      <span class="youtube" title="Follow us on YouTube!"><jsp:text/></span>
+      <span class="youtube_small" title="Follow us on YouTube!"><jsp:text/></span>
     </a>
   </li>
 
