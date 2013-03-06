@@ -365,31 +365,8 @@ span.smallTitle {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =SMALLMENUBAR (about, help, etc.)
+	 =SOCIALMEDIA (about, help, etc.)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
-.facebook_small,
-.twitter_small,
-.youtube_small {
-  height: 14px;
-  width: 14px;
-  background: url(../images/social_sprites_14.png) no-repeat;
-  display: inline-block;
-}
-.socmedia-link .facebook_small,
-.socmedia-link .twitter_small,
-.socmedia-link .youtube_small {
-  margin-left: 2px;
-}
-.facebook_small {
-  background-position: -15px 0px ;
-}
-.twitter_small {
-  background-position: 0px 0px ;
-}
-.youtube_small {
-  background-position: -30px 0px ;
-}
-
 .twitter,
 .facebook,
 .youtube {
@@ -397,21 +374,6 @@ span.smallTitle {
   width: 22px;
   background: url(../images/social_sprites_22.png) no-repeat;
   display: inline-block;
-}
-#sidebar .twitter,
-#sidebar .facebook,
-#sidebar .youtube,
-#menu .twitter,
-#menu .facebook,
-#menu .youtube {
-  position: relative;
-  top: 3px;
-}
-#sidebar .twitter,
-#sidebar .facebook,
-#sidebar .youtube {
-  margin-left: 17px;
-  margin-right: 2px;
 }
 .twitter {
   background-position: -25px -2px;
@@ -422,6 +384,47 @@ span.smallTitle {
 .youtube {
   background-position: -48px -2px;
 }
+.facebook.small,
+.twitter.small,
+.youtube.small {
+  height: 14px;
+  width: 14px;
+  background: url(../images/social_sprites_14.png) no-repeat;
+  display: inline-block;
+}
+.facebook.small {
+  background-position: -15px 0px ;
+}
+.twitter.small {
+  background-position: 0px 0px ;
+}
+.youtube.small {
+  background-position: -30px 0px ;
+}
+.twitter + span,
+.facebook + span,
+.youtube + span {
+  margin-left: 12px;
+}
+.socmedia-link .facebook,
+.socmedia-link .twitter,
+.socmedia-link .youtube {
+  margin-left: 2px;
+}
+#sidebar .socmedia-link {
+  list-style: none;
+  padding-top: 2px;
+}
+#sidebar .twitter,
+#sidebar .facebook,
+#sidebar .youtube,
+#menu .twitter,
+#menu .facebook,
+#menu .youtube {
+  position: relative;
+  top: 2px;
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =Superfish menu stuff -- override in ${project}.css
