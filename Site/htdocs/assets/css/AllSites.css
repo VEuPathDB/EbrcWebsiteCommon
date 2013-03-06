@@ -411,7 +411,8 @@ span.smallTitle {
 .socmedia-link .youtube {
   margin-left: 2px;
 }
-#sidebar .socmedia-link {
+#sidebar .socmedia-link,
+#menu_lefttop .socmedia-link {
   list-style: none;
   padding-top: 2px;
 }
