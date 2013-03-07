@@ -848,7 +848,7 @@ a#gbView {
 }
 
 #gnCtx {
-    height: 500px;
+    max-height: 500px;
     overflow: auto;
 }
 
