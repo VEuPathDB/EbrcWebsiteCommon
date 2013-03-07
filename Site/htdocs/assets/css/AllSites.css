@@ -65,9 +65,9 @@ table.threecolumn td {
 	display: block;
 }
 */
-#info {
+#bubbles .info {
    width: 209px;
-   min-height: 295px; /* was 240px before font-size was enlarged in tools */
+   min-height: 250px; /* was 240px before font-size was enlarged in tools */
    height:auto;
    background-image: url(../images/bubble_backgrnd.png);
    background-repeat: repeat-y;
@@ -78,17 +78,20 @@ table.threecolumn td {
    padding-left: 19px;
 }
 
-#info li
+#bubbles .info ul {
+  height: 100%;
+}
+#bubbles .info li
 {
 	line-height: 1.5em;
 /*	list-style-image: url(../images/cir_bullet.png);*/
 	list-style-type: none;
 	margin-left: 7px;
 }
-#info li ul {
+#bubbles .info li ul {
   margin: 4px 0;
 }
-#info li ul li
+#bubbles .info li ul li
 {
 /*	list-style-image: url(../images/cir_bullet2.png);*/
 	border-bottom:1px solid lightgrey;
@@ -102,7 +105,7 @@ table.threecolumn td {
   margin-bottom: -4px;
 }
 
-#infobottom {
+#bubbles .infobottom {
 	width: 209px;
 	min-height: 35px;    /* trying to keep buckest same size */
 	background-image: url(../images/bubble_bottom.png);
@@ -113,7 +116,6 @@ table.threecolumn td {
 	padding-right: 19px;
 	padding-bottom: 0px; 
 	padding-left: 19px;
-  margin-top: -4px;
 }
 
 
@@ -138,7 +140,7 @@ a.heading:hover + a.detail_link, a.detail_link:hover {
 
 /* for Internet Explorer */
 /*\*/
-* html #info {
+* html #bubbles .info {
 height: 240px;
 }
 /**/

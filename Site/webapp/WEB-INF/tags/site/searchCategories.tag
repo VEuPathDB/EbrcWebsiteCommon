@@ -54,7 +54,7 @@
 
     <c:choose>
       <c:when test="${from eq 'home'}">
-        <ul id="info">
+        <ul class="info">
       </c:when>
       <c:otherwise>
         <ul>
@@ -103,7 +103,7 @@
       </c:forEach>
     </ul>
     <c:if test="${from eq 'home'}">
-      <div id="infobottom"></div>
+      <div class="infobottom"></div>
     </c:if>
   </li>
 </c:forEach>
