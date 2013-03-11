@@ -87,9 +87,7 @@
 
 
  <c:when test="${fn:containsIgnoreCase(site, 'OrthoMCL')}">
-      <c:set var="simple" value="f8336deab20f2975" />
-      <c:set var="expanded" value="3dc751bcbcf93330" />
-      <c:set var="ap2Motif" value="6db0178d3994b287" />
+      <c:set var="ortho-simple" value="9b2566564ad737e5" />
    </c:when>
 
 </c:choose>
@@ -226,6 +224,16 @@
 	<td><a   title="Click to import this strategy in your workspace" onclick="loadSampleStrat('<c:url value="/im.do?s=${rbpMotif}"/>');" href="javascript:void(0);">Genes with RBP like motif</a> </td>
 	<td>Simple strategy using DNA motifs and relative genomic locations</td>
 	<td>Find protein coding genes that have an RNA binding like motif in their 3' region (-300 to +300 of gene end).</td>
+</tr>
+</c:if>
+
+<c:if test="${ortho-simple != null}">
+<tr align = "left">
+        <td><a title="Click to import this strategy in your workspace" 
+               onclick="loadSampleStrat('<c:url value="/im.do?s=${ortho-simple}"/>');" href="javascript:void(0);"
+              >Search Ortholog groups by names</a> </td>
+        <td>Sample strategy</td>
+        <td>Find ortholog groups with a list of given ids.</td>
 </tr>
 </c:if>
 
