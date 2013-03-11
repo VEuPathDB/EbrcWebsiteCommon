@@ -87,7 +87,7 @@
 
 
  <c:when test="${fn:containsIgnoreCase(site, 'OrthoMCL')}">
-      <c:set var="ortho-simple" value="9b2566564ad737e5" />
+      <c:set var="orthoSimple" value="9b2566564ad737e5" />
    </c:when>
 
 </c:choose>
@@ -227,10 +227,10 @@
 </tr>
 </c:if>
 
-<c:if test="${ortho-simple != null}">
+<c:if test="${orthoSimple != null}">
 <tr align = "left">
         <td><a title="Click to import this strategy in your workspace" 
-               onclick="loadSampleStrat('<c:url value="/im.do?s=${ortho-simple}"/>');" href="javascript:void(0);"
+               onclick="loadSampleStrat('<c:url value="/im.do?s=${orthoSimple}"/>');" href="javascript:void(0);"
               >Search Ortholog groups by names</a> </td>
         <td>Sample strategy</td>
         <td>Find ortholog groups with a list of given ids.</td>
