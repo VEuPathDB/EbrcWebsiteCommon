@@ -35,6 +35,8 @@
         </filter>
 
     </appender>
+
+    <!-- the pattern here should agree with that in WDK/Model/config/log4j.properties, and also the slow query reporter -->
     <appender name="slow-sql-log"
         class="org.apache.log4j.RollingFileAppender">
         <param name="maxFileSize" value="10MB" />
