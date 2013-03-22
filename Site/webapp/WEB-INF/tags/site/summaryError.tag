@@ -16,7 +16,7 @@
 <hr />
 <h2>Step/Query Details</h2>
 <p>The following is the detail information about the current invalid step. If you have any questions about this step, please 
-<a href="<c:url value="/help.jsp"/>"  target="_blank" onClick="poptastic(this.href); return false;">contact us</a>,
+<a href="<c:url value="/contact.do"/>" class="open-window-contact-us">contact us</a>,
  and copy the information below in the message.</p>
 <table>
     <tr>
