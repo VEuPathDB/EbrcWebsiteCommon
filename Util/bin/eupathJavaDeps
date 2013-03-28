@@ -1,0 +1,61 @@
+#!/bin/bash
+#################################################################
+##
+##  Finds all .jar files currently checked into the lib/java
+##  directories of all our projects/components and lists
+##  them by name, specifying the repo:project:component in which
+##  they reside.  This script ignores the "retired" project.
+##
+#################################################################
+
+svnRepo=https://www.cbil.upenn.edu/svn
+repoNames="gus apidb"
+tmpFilePrefix=/tmp/eupathJavaDeps.$$
+
+tmpFileProjs=$tmpFilePrefix.projs
+tmpFileComps=$tmpFilePrefix.comps
+tmpFileDeps=$tmpFilePrefix.deps
+tmpFileAllDeps=$tmpFilePrefix.alldeps
+
+function echoerr() { echo "$@" 1>&2; }
+function cutslash() { echo ${@%/}; }
+
+function getJavaDeps {
+  for repo in $repoNames; do
+    echoerr "Processing Repo: $repo"
+    getDepsFromRepo $svnRepo/$repo/ $repo
+  done
+  echoerr
+  echoerr "Sorting dependencies..."
+  echoerr
+  sort -k 1 $tmpFileAllDeps
+  rm ${tmpFilePrefix}*
+}
+
+function getDepsFromRepo {
+  curl $1 2> /dev/null | grep "href" | sed 's/\"/ /g' | awk '{ print $3 }' > $tmpFileProjs
+  for project in $(cat $tmpFileProjs); do
+    if [ $project != "retired/" ]; then
+      echoerr "   Processing Project: $project"
+      getDepsFromProject ${1}$project ${2}:$(cutslash $project)
+    fi
+  done
+}
+
+function getDepsFromProject {
+  curl ${1}trunk/ 2> /dev/null | grep href | sed 's/\"/ /g' | awk '{ print $3 }' | grep "/" | grep -v "\.\." > $tmpFileComps
+  for component in $(cat $tmpFileComps); do
+    echoerr "      Processing Component: $component"
+    getDepsFromComponent ${1}trunk/$component ${2}:$(cutslash $component)
+  done
+}
+
+function getDepsFromComponent {
+  javaLib=${1}lib/java/
+  curl $javaLib 2> /dev/null | grep href | sed 's/\"/ /g' | awk '{ print $3 }' | grep ".jar" > $tmpFileDeps
+  for dep in $(cat $tmpFileDeps); do
+    echo "$dep $2" >> $tmpFileAllDeps
+  done
+}
+
+getJavaDeps
