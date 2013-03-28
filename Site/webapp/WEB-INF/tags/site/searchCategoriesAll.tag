@@ -66,7 +66,7 @@
           <c:when test="${from eq 'webservices' or from eq 'home'}">
             <li>
               <c:set var="category" value="${item.value}" />
-              <span style="font-size:120%">${category.displayName}</span>
+              <span data-flatten-in-menu="${category.flattenInMenu}" style="font-size:120%">${category.displayName}</span>
               <c:choose>
                 <c:when test="${from ne 'webservices'}">
                   <c:set var="questions" value="${category.websiteQuestions}"/>
