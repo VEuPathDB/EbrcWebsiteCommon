@@ -132,7 +132,7 @@ table.threecolumn td {
 	text-decoration: underline;
 }
 
-a.heading:hover + a.detail_link, a.detail_link:hover {
+li:hover a.heading + a.detail_link, a.detail_link:hover {
 	left: -2px;
 	position: relative;
 }
