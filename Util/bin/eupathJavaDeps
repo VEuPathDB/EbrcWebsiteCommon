@@ -1,12 +1,13 @@
 #!/bin/bash
-#################################################################
+#####################################################################
 ##
 ##  Finds all .jar files currently checked into the lib/java
 ##  directories of all our projects/components and lists
 ##  them by name, specifying the repo:project:component in which
-##  they reside.  This script ignores the "retired" project.
+##  they reside.  This script ignores the "retired" project, but
+##  includes jars in db_driver/ and not-deployed/ subdirectories.
 ##
-#################################################################
+#####################################################################
 
 svnRepo=https://www.cbil.upenn.edu/svn
 repoNames="gus apidb"
@@ -50,9 +51,13 @@ function getDepsFromProject {
   done
 }
 
+# TODO: Adding the db_driver and not-deployed subdirs makes the script take three times as long.
+#       Improve performance by determining which components have these dirs and only query those that do.
 function getDepsFromComponent {
   javaLib=${1}lib/java/
   curl $javaLib 2> /dev/null | grep href | sed 's/\"/ /g' | awk '{ print $3 }' | grep ".jar" > $tmpFileDeps
+  curl ${javaLib}db_driver/ 2> /dev/null | grep href | sed 's/\"/ /g' | awk '{ print $3 }' | grep ".jar" >> $tmpFileDeps
+  curl ${javaLib}not-deployed/ 2> /dev/null | grep href | sed 's/\"/ /g' | awk '{ print $3 }' | grep ".jar" >> $tmpFileDeps
   for dep in $(cat $tmpFileDeps); do
     echo "$dep $2" >> $tmpFileAllDeps
   done
