@@ -544,6 +544,7 @@ span.smallTitle {
    color: #505050;
    line-height: 1.2em;
    clear: both;
+   padding: 9px;
 }
 
 .wide-footer {
@@ -556,6 +557,42 @@ span.smallTitle {
   width:75%;
   position:relative;
   left:200px;
+}
+
+#footer .left, #footer .middle, #footer .right {
+  float: left;
+  white-space: nowrap;
+}
+
+#footer .left {
+  width: 20%;
+  text-align: left;
+}
+
+#footer .middle {
+  width: 40%;
+  text-align: center;
+}
+
+#footer .right {
+  width: 40%;
+  text-align: right;
+}
+
+#footer .build-info {
+  text-indent: 10px;
+}
+
+#footer .release {
+  margin-left: 20px;
+}
+
+#footer .copyright {
+  margin-left: 4px;
+}
+
+#footer .contact {
+  font-size: 1.4em;
 }
 
 .site-icons li { display: inline; }
