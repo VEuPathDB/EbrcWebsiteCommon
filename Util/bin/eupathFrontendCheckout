@@ -5,7 +5,7 @@ my $target = $ARGV[1];
 
 my @sharedProjects = ('EuPathSiteCommon:apidb', 'EuPathWebSvcCommon:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
 
-my @apiProjects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb' );
+my @apiProjects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb', 'GBrowse:apidb');
 
 my @orthoProjects = ('OrthoMCLShared:apidb', 'OrthoMCLWebsite:apidb', 'OrthoMCLWebService:apidb');
 
