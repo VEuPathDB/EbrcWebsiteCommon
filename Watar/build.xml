@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<project name="EuPathDB Web Application Testing" default="install"  basedir=".">
+  <description>
+          description
+  </description>
+
+
+  <property name="project" value="${proj}"/>
+  <property name="component" value="${comp}"/>
+  <property name="componentDir" value="${projectsDir}/${project}/${component}"/>
+  <property environment="env"/>
+  <path id="project_classpath">
+    <pathelement path="${targetDir}/config"/>
+    <fileset dir="${targetDir}/lib/java">
+       <include name="*.jar"/>
+    </fileset>
+  </path>
+  <available file="${targetDir}" property="targetDirExists"/>
+
+
+  <target name="run" description="run command-line">
+      <java classname="org.apidb.eupathsitecommon.watar.${test}"
+              failonerror="true">
+          <classpath refid="project_classpath"/>
+      </java>
+  </target>
+
+  <target name="install" 
+          depends="defaultComponentInstall"
+  >
+  </target>
+
+  <target name="cleaninstall">
+    <echo>Deleting ${targetDir}</echo>
+    <delete includeEmptyDirs="true" dir="${targetDir}"/>
+    <antcall target="install"/>
+  </target>
+
+  <target name="testinit">
+      <tstamp>
+          <format property="start.time" pattern="yyyy-MM-dd'T'k:mm" />
+      </tstamp>
+      
+      <!-- use Jenkins BUILD_NUMBER if available otherwise timestamp -->
+      <property name="env.BUILD_NUMBER" value="${start.time}"/>
+      <property name="buildNumber" value="${env.BUILD_NUMBER}"/>
+
+      <taskdef name="testng" classname="org.testng.TestNGAntTask" >
+          <classpath refid="project_classpath"/>
+      </taskdef>
+
+      <property name="outputdir" value="${targetDir}/results/${buildNumber}" />
+      <mkdir dir="${targetDir}/results" />
+      <mkdir dir="${targetDir}/results/${buildNumber}" />
+
+  </target>
+
+  <target name="javaclean">
+    <delete includeemptydirs="true" quiet="true">
+        <fileset dir="${componentDir}/classes" includes="**/*"/>
+    </delete>
+  </target>
+
+  <target name="cleantestresults">
+    <echo message="deleting ${targetDir}/results" />
+    <delete includeemptydirs="true" quiet="true">
+        <fileset dir="${targetDir}/results" includes="**/*"/>
+    </delete>
+  </target>
+
+  <target name="smoketest" depends="testinit">
+    <testng 
+        outputdir="${outputdir}"
+        useDefaultListeners="false"
+        listeners="org.testng.reporters.XMLReporter"
+        verbose="3"
+     >
+        <reporter classname="org.testng.reporters.XMLReporter">
+              <property name="splitClassAndPackageNames" value="true"/>
+              <property name="stackTraceOutputMethod" value="0"/>
+        </reporter>
+        <classpath refid="project_classpath"/>
+        <xmlfileset dir="${targetDir}/config" includes="smoketest_ng.xml" />
+        <sysproperty key="baseurl" value="${baseurl}"/>
+        <sysproperty key="webappname" value="${webappname}"/>
+    </testng>
+  </target>
+
+  <target name="testbynames" depends="testinit">
+    <testng 
+        testnames="${testnames}"
+        outputdir="${outputdir}"
+        useDefaultListeners="false"
+        listeners="org.testng.reporters.XMLReporter"
+        verbose="3"
+    >
+        <reporter classname="org.testng.reporters.XMLReporter">
+              <property name="splitClassAndPackageNames" value="true"/>
+              <property name="stackTraceOutputMethod" value="0"/>
+        </reporter>
+        <classpath refid="project_classpath"/>
+        <xmlfileset dir="${targetDir}/config" includes="smoketest_ng.xml" />
+        <sysproperty key="baseurl" value="${baseurl}"/>
+        <sysproperty key="webappname" value="${webappname}"/>
+    </testng>
+  </target>
+
+  <target name="defaultComponentInstall">
+    <property name="componentDir" value="${projectsDir}/${project}/${component}"/>
+    <mkdir dir="${targetDir}"/>
+    <mkdir dir="${targetDir}/results"/>
+
+    <echo message="."/>
+    <echo message="Installing ${project}/${component}"/>
+
+    <available property="componentAvail" file="${projectsDir}/${project}/${component}"/>
+    <fail unless="componentAvail">
+       Component directory ${projectsDir}/${project}/${component} not found.
+    </fail>
+    
+    <antcall target="componentPartCopy">
+      <param name="part" value="bin"/>
+      <param name="to" value="bin"/>
+      <param name="prefix" value=""/>
+    </antcall>
+
+    <chmod perm="+x">
+      <fileset dir="${targetDir}/bin"/>
+    </chmod>
+
+    <antcall target="componentPartCopy">
+      <param name="part" value="config"/>
+      <param name="to" value="config"/>
+      <param name="prefix" value=""/>
+    </antcall>
+
+    <antcall target="componentPartCopy">
+      <param name="part" value="lib/java"/>
+      <param name="to" value="lib/java"/>
+      <param name="prefix" value=""/>
+    </antcall>
+
+    <antcall target="defaultJavaCompile"/>
+
+  </target>
+
+  <target name="defaultJavaCompile" depends="javaclean" > 
+    <echo message="making directory..."/>
+    <property name="destdir" value="${componentDir}/classes"/>
+    <mkdir dir="${destdir}"/>
+    <mkdir dir="${targetDir}/lib/java"/>
+    <javac 
+        debug="true" 
+        destdir="${destdir}"
+        srcdir="${componentDir}/src/java" 
+        tempdir="${destdir}"
+    >
+      <classpath refid="project_classpath"/>
+    </javac>
+    <copy todir="${componentDir}/classes/META-INF">
+      <fileset dir="${componentDir}" >
+        <include name="META-INF/**"/>
+        <exclude name="**/CVS/*" />
+      </fileset>
+    </copy>
+    <jar basedir="${componentDir}/classes" 
+         destfile="${targetDir}/lib/java/${project}-${component}.jar"/>
+  </target>
+
+
+  <target name="componentPartCopy">
+    <available property="partAvailable" file="${componentDir}/${part}"/>
+    <antcall target="componentPartCopySub"/>
+  </target>  
+
+  <target name="componentPartCopySub" if="partAvailable">
+    <mkdir dir="${targetDir}/${to}/${prefix}"/>
+    
+    <copy todir="${targetDir}/${to}/${prefix}">
+      <fileset dir="${componentDir}/${part}" >
+        <include name="**"/>
+        <exclude name="**/CVS/*" />
+        <exclude name="${exclude}/" />
+      </fileset>
+    </copy>
+  </target>  
+
+</project>
+
+
+<!--
+export JAVA_HOME=/usr/lib/jvm/java-1.6.0-sun
+export PATH=$JAVA_HOME/bin:$PATH
+export CHOME=/var/www/ToxoDB/toxo.mheiges/test_home
+ant -f $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
+    install \
+    -Dproj=EuPathSiteCommon \
+    -Dcomp=Watar \
+    -DtargetDir=$CHOME  \
+    -DprojectsDir=$PROJECT_HOME
+
+ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml -Dcomp=Watar -Dproj=EuPathSiteCommon -DprojectsDir=$PROJECT_HOME -DtargetDir=$PROJECT_HOME/test_home smoketest
+
+-->

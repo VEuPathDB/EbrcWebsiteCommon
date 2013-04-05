@@ -1,0 +1,69 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="5" verbose="1" name="ApiCommon Smoke Tests" annotations="JDK">
+    
+    <test name="Misc Pages" junit="false" enabled="true">
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+    <test name="Integration" junit="false" enabled="true">
+        <groups>
+          <run>
+            <include name="deployment"/>
+          </run>
+        </groups>
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+    <test name="QA" junit="false" enabled="true">
+        <groups>
+          <run>
+            <include name="deployment"/>
+            <include name="xmlrecord"/>
+          </run>
+        </groups>
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+    <test name="WWW" junit="false" enabled="true">
+        <groups>
+          <run>
+            <include name="deployment"/>
+            <include name="xmlrecord"/>
+            <include name="wdkrecord"/>
+          </run>
+        </groups>
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+    <test name="PortalWWW" junit="false" enabled="true">
+        <groups>
+          <run>
+            <include name="deployment"/>
+            <include name="xmlrecord"/>
+          </run>
+        </groups>
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+    <test name="OrthoMCL" junit="false" enabled="true">
+        <groups>
+          <run>
+            <include name="deployment"/>
+          </run>
+        </groups>
+        <classes>
+            <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+        </classes>
+    </test>
+
+</suite> 
