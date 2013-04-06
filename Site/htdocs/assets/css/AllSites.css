@@ -545,6 +545,7 @@ span.smallTitle {
    line-height: 1.2em;
    clear: both;
    padding: 9px;
+   position: relative;
 }
 
 .wide-footer {
@@ -560,23 +561,32 @@ span.smallTitle {
 }
 
 #footer .left, #footer .middle, #footer .right {
-  float: left;
   white-space: nowrap;
 }
 
 #footer .left {
+  float: left;
   width: 20%;
   text-align: left;
 }
 
-#footer .middle {
+/*#footer .middle {
   width: 40%;
   text-align: center;
-}
+}*/
 
 #footer .right {
+  float: right;
   width: 40%;
   text-align: right;
+}
+
+#footer .bottom {
+  clear: both;
+  position: absolute;
+  top: 0.8em;
+  width: 82%;
+}
 }
 
 #footer .build-info {

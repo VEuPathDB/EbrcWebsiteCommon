@@ -27,7 +27,22 @@
       <div class="copyright">&amp;copy;${copyrightYear} The EuPathDB Project Team</div>
     </div>
 
-    <div class="middle">
+    <div class="right">
+      <div class="contact">
+        Please <a href="${pageContext.request.contextPath}/contact.do"
+            class="open-window-contact-us">Contact Us</a> with any questions or comments
+      </div>
+      <ul class="attributions">
+        <li>
+          <a href="http://code.google.com/p/strategies-wdk/">
+            <img border="0" src="${pageContext.request.contextPath}/wdk/images/stratWDKlogo.png" width="120"/>
+          </a>
+        </li>
+        <!-- <li>Test attribution</li> -->
+      </ul>
+    </div>
+
+    <div class="bottom">
       <a href="http://www.eupathdb.org">
         <img src="/assets/images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
       </a>
@@ -83,21 +98,6 @@
             <img src="/assets/images/OrthoMCL/footer-logo.png"/>
           </a>
         </li>
-      </ul>
-    </div>
-
-    <div class="right">
-      <div class="contact">
-        Please <a href="${pageContext.request.contextPath}/contact.do"
-            class="open-window-contact-us">Contact Us</a> with any questions or comments
-      </div>
-      <ul class="attributions">
-        <li>
-          <a href="http://code.google.com/p/strategies-wdk/">
-            <img border="0" src="${pageContext.request.contextPath}/wdk/images/stratWDKlogo.png" width="120"/>
-          </a>
-        </li>
-        <li>Test attribution</li>
       </ul>
     </div>
 
