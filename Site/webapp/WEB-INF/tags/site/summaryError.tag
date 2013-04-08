@@ -63,7 +63,7 @@ OLDOLDOLDOLDOLDOLDOLDOLDOLODLOLDOLDOLDOLDOLDOLD--%>
 
 
 
-<h3>Sorry, an error has occured.<br>
+<h3>Sorry, an error has occurred.<br>
 <br>
 If you can see the strategy panel on top of this message, it is possible that in this strategy, you have hit a step that somehow is in error.
 Or because of a new release, a step might need to be revised and run again. If that is the case, please click on the name of the first step that shows a <span style="color:red">red X</span> on top, and choose the 'revise' option.<br><br>
