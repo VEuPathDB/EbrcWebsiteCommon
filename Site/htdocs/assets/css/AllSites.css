@@ -582,11 +582,20 @@ span.smallTitle {
 }
 
 #footer .bottom {
+  display: inline-block;
   clear: both;
   position: absolute;
   top: 0.8em;
-  width: 82%;
+  /*width: 82%;*/
+  left: 20%;
 }
+
+#footer.skinny-footer .bottom {
+  left: 20%;
+}
+
+#footer.wide-footer .bottom {
+  left: 30%;
 }
 
 #footer .build-info {
