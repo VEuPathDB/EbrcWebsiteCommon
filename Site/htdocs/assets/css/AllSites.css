@@ -946,9 +946,20 @@ tr.headerrow th {
 
 
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      =Contact modal popup 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.contact-us ul {
+  list-style: disc outside none;
+  margin: 1em 0em;
+  padding-left: 1em;
+}
+
+.contact-us td {
+  vertical-align: top;
+}
+
+
 
 /* THE END */
 /* under this, commented out */
-
-
-
