@@ -5,12 +5,16 @@
     
 	<c:set var="siteName" value="${applicationScope.wdkModel.name}"/>
 	
+<h1>We appreciate your questions and feedback</h1>
+
+
 	<div class="contact-us">
 	  <p>
 	    We are available to help with <b>Questions</b>, <b>Error reports</b>,
 	    <b>Feature requests</b>, <b>Dataset proposals</b>, etc.
 	    Please include (but all are optional):
 	  </p>
+
 	  <div class="cirbulletlist">
 	    <ul>
 	      <li>Your email, so we can respond.</li>
@@ -26,6 +30,7 @@
 	      </li>
 	    </ul>
 	  </div>
+
 	  <form id="contact-us" method="post" enctype="multipart/form-data"
         action="${pageContext.request.contextPath}/contactUs.do">
 		  <table>
@@ -70,14 +75,10 @@
         </tr>
 		    <tr>
 		      <td></td>
-		      <td align="left"><input type="submit" value="Submit message"/></td>
+		      <td align="center"><input type="submit" value="Submit message"/></td>
 		    </tr>
 		  </table>
 	  </form>
-    <!--
-	  <div>
-	    <b>If you would like to attach a screenshot, please email directly to <a href="mailto:help@${siteName}.org">help@${siteName}.org</a>.</b>
-	  </div>
-    -->
+
 	</div>
 </jsp:root>
