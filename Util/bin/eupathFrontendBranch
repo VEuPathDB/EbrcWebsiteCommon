@@ -1,36 +1,11 @@
 #!/usr/bin/perl
 
 use lib "$ENV{GUS_HOME}/lib/perl";
-
 use FgpUtil::Util::ProjectBrancher;
 use strict;
 
-my $branch = $ARGV[0];
-my $comment = $ARGV[1];
-my $delete = $ARGV[2];
 
-usage() unless ($branch && $comment);
-usage() if ($delete && $delete ne '-delete');
+my @projects = ('ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'EuPathSiteCommon:apidb', 'ApiCommonWebService:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
 
-my @projects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'EuPathSiteCommon:apidb', 'ApiCommonWebService:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
+FgpUtil::Util::ProjectBrancher::branch(\@projects, "EuPath Front End");
 
-FgpUtil::Util::ProjectBrancher::branch($branch, $comment, $delete, \@projects);
-
-sub usage {
-  print STDERR "
-Branch all of the EuPathDB front end software using a single branch name.  Operates directly in svn, not your local dirs.
-
-usage: eupathFrontendBranch branch_name comment [-delete]
-
--delete deletes the branch from all projects.
-
-";
-
- foreach my $project (@projects) {
-    my ($name, $repository) = split(/:/, $project);
-    print STDERR "  $name\n";
-  }
-
-exit(1);
-
-}
