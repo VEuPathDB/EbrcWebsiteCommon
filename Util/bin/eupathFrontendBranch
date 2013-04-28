@@ -12,7 +12,7 @@ my $delete = $ARGV[2];
 usage() unless ($branch && $comment);
 usage() if ($delete && $delete ne '-delete');
 
-my @projects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'EuPathSiteCommon:apidb', 'ApiCommonWebService:apidb', 'EuPathWebSvcCommon:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
+my @projects = ('ApiCommonData:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'EuPathSiteCommon:apidb', 'ApiCommonWebService:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
 
 FgpUtil::Util::ProjectBrancher::branch($branch, $comment, $delete, \@projects);
 
