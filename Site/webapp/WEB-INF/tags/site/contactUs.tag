@@ -4,6 +4,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core">
     
 	<c:set var="siteName" value="${applicationScope.wdkModel.name}"/>
+	<c:set var="referrer" value="${header['referer']}"/>
 	
 <h1>We appreciate your questions and feedback</h1>
 
@@ -33,6 +34,7 @@
 
 	  <form id="contact-us" method="post" enctype="multipart/form-data"
         action="${pageContext.request.contextPath}/contactUs.do">
+        <input type="hidden" name="referrer" value="${referrer}"/>
 		  <table>
 		    <tr>
 		      <td><b>Subject:</b></td>
