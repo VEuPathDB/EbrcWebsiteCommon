@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/WSF Service/lib/java/not-deployed/servlet-api-2.4.jar"/>
 	<classpathentry kind="lib" path="/WSF Service/lib/java/javamail-1.4.jar"/>
 	<classpathentry kind="lib" path="/WDK Controller/lib/java/commons-fileupload-1.2.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fgputil-util"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
