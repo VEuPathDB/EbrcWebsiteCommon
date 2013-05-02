@@ -21,6 +21,14 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       $(":file", fileRow).last().trigger("click");
     });
 
+
+    // enable/disable submit button based on content
+    var $submit = $form.find("[type='submit']");
+    $submit.prop("disabled", true);
+    $form.on("keyup", "[name='content']", function() {
+      $submit.prop("disabled", this.value.length === 0);
+    });
+
     // handle file changes
     $form.on("change", ":file", function(e) {
 
@@ -61,21 +69,21 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       $("body").on("submit", "#contact-us", function(e) {
         e.preventDefault();
         var form = this,
-            requiredFields = ['subject', 'reply', 'content'],
+            // requiredFields = ['subject', 'reply', 'content'],
             emailRegex = /^\S+@\S+$/,
             ccAddrs = this.addCc.value.split(/,\s*(?=\w)/);
 
         // validate required fields
-        var missingFields = _.filter(requiredFields, function(field) {
-          return !form[field].value;
-        });
+        // var missingFields = _.filter(requiredFields, function(field) {
+        //   return !form[field].value;
+        // });
 
-        if (missingFields.length) {
-          _.each(missingFields, function(field) {
-            $(form[field]).after("<span class='wdk-error'>This field is required</span>");
-          });
-          return;
-        }
+        // if (missingFields.length) {
+        //   _.each(missingFields, function(field) {
+        //     $(form[field]).after("<span class='wdk-error'>This field is required</span>");
+        //   });
+        //   return;
+        // }
 
         // validation of email addresses
         if (ccAddrs.length > 10) {
