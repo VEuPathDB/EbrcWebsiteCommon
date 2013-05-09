@@ -87,7 +87,8 @@
 
 
  <c:when test="${fn:containsIgnoreCase(site, 'OrthoMCL')}">
-      <c:set var="orthoSimple" value="9b2566564ad737e5" />
+      <c:set var="orthoPhylo" value="bd30e4a54b7e4d6a" />
+      <c:set var="orthoPhyloER" value="71d5dbd061d2afb9" />
    </c:when>
 
 </c:choose>
@@ -227,13 +228,22 @@
 </tr>
 </c:if>
 
-<c:if test="${orthoSimple != null}">
+<c:if test="${orthoPhylo != null}">
 <tr align = "left">
         <td><a title="Click to import this strategy in your workspace" 
-               onclick="loadSampleStrat('<c:url value="/im.do?s=${orthoSimple}"/>');" href="javascript:void(0);"
-              >Search Ortholog groups by names</a> </td>
-        <td>Sample strategy</td>
-        <td>Find ortholog groups with a list of given ids.</td>
+               onclick="loadSampleStrat('<c:url value="/im.do?s=${orthoPhylo}"/>');" href="javascript:void(0);"
+              >Apicomplexa and plant genes absent in mammals</a> </td>
+        <td>A simple strategy using Phyletic Pattern search</td>
+        <td>Use the orthology phylogenetic search to find groups containing proteins that are conserved in all apicomplexa and at least one plant species, but that are absent from mammals.</td>
+</tr>
+</c:if>
+<c:if test="${orthoPhyloER != null}">
+<tr align = "left">
+        <td><a title="Click to import this strategy in your workspace" 
+               onclick="loadSampleStrat('<c:url value="/im.do?s=${orthoPhyloER}"/>');" href="javascript:void(0);"
+              >Apicomplexa and plant genes absent in mammals with ER retention signal</a> </td>
+        <td>A transform from Groups to Sequences</td>
+        <td>Find sequences from groups conserved in apicomplexa and plant species but absent from mammals, and that have an ER retention signal. First find relevant groups, then transform  these into sequences. Find the subset of these sequences containing an ER retention signal by intersecting them with a search for proteins containing a KDEL or HDEL ER retention motif.</td>
 </tr>
 </c:if>
 
