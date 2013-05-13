@@ -10,14 +10,26 @@
 
 
   <div class="contact-us">
-    <h4>
-      We are available to help with
-      <span class="underline">Questions</span>,
-      <span class="underline">Error reports</span>,
-      <span class="underline">Feature requests</span>,
-      <span class="underline">Dataset proposals</span>,
-      etc.
-    </h4>
+    <h4>We are available to help with Questions, Error reports,
+      Feature requests, Dataset proposals, etc.</h4>
+
+    <div class="wdk-toggle info">
+      <h3>Reporting a problem?</h3>
+      <div>
+        The following details will help us determine the cause more quickly:
+        <ul>
+          <li>The <b>URL</b> of the offending page</li>
+          <li>
+            <b>Exact steps</b> to recreate the problem.
+            <br/><i>(If possible, please try to recreate the problem
+              yourself so you can give us an exact recipe.)</i>
+          </li>
+          <li>The full <b>error message</b>, if any.</li>
+          <li>Any other <b>web browsers</b> have you tried.</li>
+          <li>If you <b>cleared your cache and/or cookies</b>.</li>
+        </ul>
+      </div>
+    </div>
 
     <!--
     <p>Please include (but all are optional):
@@ -61,23 +73,6 @@
           <td valign="top"><b>Message:</b></td>
           <td>
             <textarea name="content" cols="75" rows="8"><jsp:text/></textarea>
-            <div class="wdk-toggle info">
-              <h3>Useful information when reporting a problem</h3>
-              <div>
-                The following details will help us determine the cause more quickly:
-                <ul>
-                  <li>The <b>URL</b> of the offending page</li>
-                  <li>
-                    <b>Exact steps</b> to recreate the problem.
-                    <br/><i>(If possible, please try to recreate the problem
-                      yourself so you can give us an exact recipe.)</i>
-                  </li>
-                  <li>The full <b>error message</b>, if any.</li>
-                  <li>Any other <b>web browsers</b> have you tried.</li>
-                  <li>If you <b>cleared your cache and/or cookies</b>.</li>
-                </ul>
-              </div>
-            </div>
           </td>
         </tr>
         <tr>

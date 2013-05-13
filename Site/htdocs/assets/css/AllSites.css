@@ -961,6 +961,8 @@ tr.headerrow th {
 
 .contact-us .info {
   font-style: italic;
+  width: 550px;
+  margin: 0em auto;
 }
 
 .contact-us .center {
