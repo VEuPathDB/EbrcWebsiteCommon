@@ -147,7 +147,7 @@ public class ContactUsAction extends WdkAction {
 	      " know that we have received your email and will get back to you as" +
 	      " soon as possible. Thanks so much for contacting us!\n\nThis was" +
 	      " your message:\n\n---------------------\n" + content +
-	      "\n---------------------\n\n";
+	      "\n---------------------";
 	  
 	  String redmineMetaInfo = "Project: usersupportrequests\n" +
 	      "Category: " + website + "\n" +
@@ -157,15 +157,15 @@ public class ContactUsAction extends WdkAction {
 	  try {
 	    // send auto-reply
       Utilities.sendEmail(wdkModel, reply, supportEmail, subject,
-          escapeHtml(metaInfo + "\n\n" + autoContent), addCc, attachments);
+          escapeHtml(metaInfo + "\n\n" + autoContent + "\n\n"), addCc, attachments);
 
       // send support email
       Utilities.sendEmail(wdkModel, supportEmail, reply, subject,
-          escapeHtml(metaInfo + "\n\n" + content), null, attachments);
+          escapeHtml(metaInfo + "\n\n" + content + "\n\n"), null, attachments);
 
       // send redmine email
       Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
-          escapeHtml(redmineMetaInfo + "\n\n" + content), null, attachments);
+          escapeHtml(redmineMetaInfo + "\n\n" + content + "\n\n"), null, attachments);
 
       // not using Ajax at the moment due to file uploads
     	// return getJsonResult(SUCCESS_AJAX_RESPONSE,
