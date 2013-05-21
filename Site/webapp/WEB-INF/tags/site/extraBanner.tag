@@ -23,3 +23,11 @@
 			 <a class="open-window-contact-us" href='<c:url value='/contact.do'/>'>contact us</a> 
 			 with your feedback. 
 </c:if>
+
+<c:if test="${project == 'OrthoMCL'  &&
+           ( refer == 'question' && fn:containsIgnoreCase(title,'enzyme') ||
+				     refer == 'question' && fn:containsIgnoreCase(title,'compound')  ) }">
+
+Note: the Enzyme Commission (EC) numbers associated with proteins were obtained only from UniProt. In future releases we expect to include EC numbers from multiple sources including the annotation.
+
+</c:if>
