@@ -39,7 +39,7 @@
 					<html:submit property="questionSubmit" 
 												value="Get Answer" 
 												title="Click to run a search and generate the first step of a new strategy."  
-												style="font-size:110%;font-family:Arial,Helvetica,sans-serif;"/>
+												styleClass="btn btn-primary"/>
 				</div>	
 				<imp:nameStep/>
     </c:if>
