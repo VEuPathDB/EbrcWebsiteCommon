@@ -20,8 +20,8 @@
 
     <appender name="example-sql-log"
         class="org.apache.log4j.RollingFileAppender">
-        <param name="maxFileSize" value="10MB" />
-        <param name="maxBackupIndex" value="1" />
+        <param name="maxFileSize" value="5MB" />
+        <param name="maxBackupIndex" value="3" />
         <param name="File" value="${catalina.base}/logs/@WEBAPP@/exampleQueries.log4j" />
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
@@ -40,7 +40,7 @@
     <appender name="slow-sql-log"
         class="org.apache.log4j.RollingFileAppender">
         <param name="maxFileSize" value="10MB" />
-        <param name="maxBackupIndex" value="1" />
+        <param name="maxBackupIndex" value="3" />
         <param name="File" value="${catalina.base}/logs/@WEBAPP@/slowQueries.log4j" />
         <layout class="org.apache.log4j.PatternLayout">
            <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
