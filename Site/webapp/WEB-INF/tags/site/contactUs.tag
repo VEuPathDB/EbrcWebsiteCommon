@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jsp:root version="2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:imp="urn:jsptagdir:/WEB-INF/tags/imp"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
     
   <c:set var="siteName" value="${applicationScope.wdkModel.name}"/>
@@ -13,23 +14,24 @@
     <h4>We are available to help with Questions, Error reports,
       Feature requests, Dataset proposals, etc.</h4>
 
-    <div class="wdk-toggle info">
-      <h3>Reporting a problem?</h3>
-      <div>
-        The following details will help us determine the cause more quickly:
-        <ul>
-          <li>The <b>URL</b> of the offending page</li>
-          <li>
-            <b>Exact steps</b> to recreate the problem.
-            <br/><i>(If possible, please try to recreate the problem
-              yourself so you can give us an exact recipe.)</i>
-          </li>
-          <li>The full <b>error message</b>, if any.</li>
-          <li>Any other <b>web browsers</b> have you tried.</li>
-          <li>If you <b>cleared your cache and/or cookies</b>.</li>
-        </ul>
-      </div>
-    </div>
+    <imp:simpleToggle name="Reporting a problem?" show="false">
+      <jsp:attribute name="content">
+        <div>
+          The following details will help us determine the cause more quickly:
+          <ul>
+            <li>The URL of the offending page</li>
+            <li>
+              Exact steps to recreate the problem.
+              <i>(If possible, please try to recreate the problem
+                yourself so you can give us an exact recipe.)</i>
+            </li>
+            <li>The full error message, if any.</li>
+            <li>Any other web browsers have you tried.</li>
+            <li>If you cleared your cache and/or cookies.</li>
+          </ul>
+        </div>
+      </jsp:attribute>
+    </imp:simpleToggle>
 
     <!--
     <p>Please include (but all are optional):

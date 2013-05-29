@@ -1005,9 +1005,9 @@ tr.headerrow th {
   margin: 1em 0em;
 }
 
-.contact-us .info {
+.contact-us .wdk-toggle {
   font-style: italic;
-  width: 550px;
+  width: 580px;
   margin: 0em auto;
 }
 
@@ -1015,10 +1015,9 @@ tr.headerrow th {
   text-align: center;
 }
 
-.contact-us .wdk-toggle h3 {
+.contact-us .wdk-toggle-name {
   border: none;
   background: none;
-  padding-left: 1.5em;
   font-family: inherit;
 }
 
@@ -1026,7 +1025,7 @@ tr.headerrow th {
   left: 0;
 }
 
-.contact-us .wdk-toggle .ui-accordion-content {
+.contact-us .wdk-toggle-content {
   border: none;
   width: 500px;
 }
