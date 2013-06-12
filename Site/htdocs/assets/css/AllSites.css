@@ -33,7 +33,7 @@ body::-webkit-scrollbar {
 }
 ::-webkit-scrollbar-thumb {
 	background:#bbb;
-  min-height: 80px;
+  /*min-height: 80px; too large in smaller areas */
   border-top: 1px solid #eee;
 }
 ::-webkit-scrollbar-thumb:vertical {
