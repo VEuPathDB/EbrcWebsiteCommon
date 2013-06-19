@@ -85,7 +85,7 @@
     </appender>
 
     <appender name="connection-appender" class="org.apache.log4j.RollingFileAppender">
-        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log3jdbc-connection.log"/>
+        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log4jdbc-connection.log"/>
         <param name="maxFileSize" value="10MB" />
         <param name="maxBackupIndex" value="3" />
         <layout class="org.apache.log4j.PatternLayout">
