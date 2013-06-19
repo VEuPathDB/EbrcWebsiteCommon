@@ -54,6 +54,47 @@
         </filter>
     </appender>
 
+    <!-- NOTE: The following four appenders are for log4jdbc functionality; -->
+    <!--       they are turned off by default but can be enabled below.     -->
+
+    <appender name="sql-appender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log4jdbc-sql.log"/>
+        <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="3" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="-----&gt; %d{yyyy-MM-dd HH:mm:ss.SSS} &lt;%t&gt; %m%n%n"/>
+        </layout>
+     </appender>
+
+    <appender name="sql-timing-appender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log4jdbc-sqltiming.log"/>
+        <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="3" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="-----&gt; %d{yyyy-MM-dd HH:mm:ss.SSS} %m%n%n"/>
+        </layout>
+    </appender>
+
+    <appender name="jdbc-appender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log4jdbc-jdbc.log"/>
+        <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="3" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="connection-appender" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="${catalina.base}/logs/@WEBAPP@/log3jdbc-connection.log"/>
+        <param name="maxFileSize" value="10MB" />
+        <param name="maxBackupIndex" value="3" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- END log4jdbc appenders -->
+
     <appender name="logstash"
         class="org.apache.log4j.net.SocketAppender">
         <param name="port" value="9201"/>
@@ -76,9 +117,43 @@
         <level value="info"/><!-- info level required to log stdout/stderr -->
     </logger>
 
+	<!--
+	The Following 5 logs can be turned on and off while the server is running
+	LIVE in order to trace the SQL and/or all JDBC coming out of the application.
+	
+	To turn a log on, set the level value to INFO or DEBUG (to see class name and
+	line number information in the log) The DEBUG setting is much more inefficient
+	but the output is much more useful.
+	
+	To turn off JDBC logging completely, you must set all 5 logs to a level higher
+	than ERROR (FATAL is suggested.)
+	-->
+	
+	<!-- log SQL (pre-execution) plus exceptions caused by SQL -->
+	<logger name="jdbc.sqlonly" additivity="false"><level value="fatal"/><appender-ref ref="sql-appender"/></logger>
+	
+	<!-- log SQL with timing information, post execution -->
+	<logger name="jdbc.sqltiming" additivity="false"><level value="fatal"/><appender-ref ref="sql-timing-appender"/></logger>
+	
+	<!-- only use the two logs below to trace ALL JDBC information, NOTE: This can be very voluminous! -->
+	
+	<!-- log all jdbc calls except ResultSet calls -->
+	<logger name="jdbc.audit" additivity="false"><level value="fatal"/><appender-ref ref="jdbc-appender"/></logger>
+	
+	<!-- log the jdbc ResultSet calls -->
+	<logger name="jdbc.resultset" additivity="false"><level value="fatal"/><appender-ref ref="jdbc-appender"/></logger>
+	  
+	<!-- log connection open/close events and dump of all open connection numbers -->
+	<logger name="jdbc.connection" additivity="false"><level value="fatal"/><appender-ref ref="connection-appender"/></logger>
+	
+	<!-- this log is for internal debugging of log4jdbc, itself -->
+	<!-- debug logging for log4jdbc itself -->
+	<logger name="log4jdbc.debug" additivity="false"><level value="debug"/><appender-ref ref="debug-log"/></logger>
+
     <root>
         <priority value="warn"></priority>
         <appender-ref ref="debug-log" />
         <appender-ref ref="logstash" />
     </root>
+
 </log4j:configuration>
