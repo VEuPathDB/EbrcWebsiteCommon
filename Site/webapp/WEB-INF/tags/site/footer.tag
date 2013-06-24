@@ -94,7 +94,7 @@
           </a>
         </li>
         <li class="short-space" title="OrthoMCL.org">
-          <a href="http://orthocml.org">
+          <a href="http://orthomcl.org">
             <img src="/assets/images/OrthoMCL/footer-logo.png"/>
           </a>
         </li>
