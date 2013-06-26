@@ -95,17 +95,6 @@
 
     <!-- END log4jdbc appenders -->
 
-    <appender name="logstash"
-        class="org.apache.log4j.net.SocketAppender">
-        <param name="port" value="9201"/>
-        <param name="remoteHost" value="localhost"/>
-        <param name="application" value="@WEBAPP@"/>
-        <param name="locationInfo" value="true"/>
-        <filter class="org.apache.log4j.varia.LevelRangeFilter">
-            <param name="LevelMin" value="trace" />
-            <param name="LevelMax" value="fatal" />
-        </filter>
-    </appender>
 
     <logger name="org.gusdb"><level value="info"/></logger>
     <logger name="org.gusdb.wdk.model.dbms.SqlExampleLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
