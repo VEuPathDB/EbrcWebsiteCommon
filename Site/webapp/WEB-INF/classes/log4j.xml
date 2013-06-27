@@ -142,7 +142,6 @@
     <root>
         <priority value="warn"></priority>
         <appender-ref ref="debug-log" />
-        <appender-ref ref="logstash" />
     </root>
 
 </log4j:configuration>
