@@ -10,6 +10,7 @@
 <%-- get wdkQuestion; setup requestScope HashMap to collect help info for footer --%>
 <c:set var="wdkQuestion" value="${requestScope.wdkQuestion}"/>
 <jsp:useBean scope="request" id="helps" class="java.util.LinkedHashMap"/>
+<jsp:useBean scope="request" id="wdkQuestion" class="java.util.LinkedHashMap"/>
 
 <c:set var="wdkModel" value="${applicationScope.wdkModel}"/>
 <c:set var="props" value="${applicationScope.wdkModel.properties}" />
@@ -47,9 +48,8 @@
 <!--
     <div>
 -->
-        <div class="group-detail" style="display:block"> 
-
-    				<jsp:getProperty name="wdkQuestion" property="description"/>
+    <div class="group-detail" style="display:block"> 
+      ${wdkQuestion.description}
     </div>
 </div>
 
