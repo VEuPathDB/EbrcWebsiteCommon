@@ -19,12 +19,12 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.gusdb.fgputil.db.SqlUtils;
+import org.gusdb.fgputil.db.platform.DBPlatform;
 import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
-import org.gusdb.wdk.model.dbms.DBPlatform;
-import org.gusdb.wdk.model.dbms.SqlUtils;
 import org.gusdb.wdk.model.query.SqlQuery;
 import org.gusdb.wdk.model.record.FieldScope;
 import org.gusdb.wdk.model.record.RecordClass;
@@ -129,7 +129,7 @@ public class DetailTableLoader extends BaseCLI {
         String gusHome = System.getProperty(Utilities.SYSTEM_PROPERTY_GUS_HOME);
         logger.debug("loading model...");
         wdkModel = WdkModel.construct(projectId, gusHome);
-        queryDataSource = wdkModel.getQueryPlatform().getDataSource();
+        queryDataSource = wdkModel.getAppDb().getDataSource();
 
         logger.debug("loading id sql...");
         String idSql = loadIdSql(sqlFile);
@@ -200,7 +200,7 @@ public class DetailTableLoader extends BaseCLI {
         }
 
         logger.debug("getting data source...");
-        DataSource updateDataSource = wdkModel.getQueryPlatform()
+        DataSource updateDataSource = wdkModel.getAppDb()
                 .getDataSource();
         logger.debug("getting connection...");
         Connection updateConnection = updateDataSource.getConnection();
@@ -266,7 +266,7 @@ public class DetailTableLoader extends BaseCLI {
         sql.append(" AND " + COLUMN_FIELD_NAME + "= '" + fieldName + "'");
         logger.info("Removing previous rows [" + fieldName + "]");
         logger.debug("\n" + sql);
-        SqlUtils.executeUpdate(wdkModel, connection, sql.toString(),
+        SqlUtils.executeUpdate(connection, sql.toString(),
                   fieldName+"__api-report-detail-delete");
         long end = System.currentTimeMillis();
         logger.info("Deleted rows for [" + fieldName + "] in "
@@ -282,7 +282,7 @@ public class DetailTableLoader extends BaseCLI {
         String wrappedSql = getWrappedSql(table, idSql, pkColumns);
 
         logger.debug("wrapped sql:\n" + wrappedSql);
-        ResultSet resultSet = SqlUtils.executeQuery(wdkModel, queryDataSource,
+        ResultSet resultSet = SqlUtils.executeQuery(queryDataSource,
                 wrappedSql,  table.getQuery().getFullName() + "__api-report-detail-aggregate",
                 2000);
         String pk0 = "";
@@ -461,7 +461,7 @@ public class DetailTableLoader extends BaseCLI {
 
         // trim trailing newline (but not leading white space)
         String content = contentBuf.toString();
-        DBPlatform platform = wdkModel.getQueryPlatform();
+        DBPlatform platform = wdkModel.getAppDb().getPlatform();
 
         // (<primary keys>, field_name, field_title, row_count, content,
         // modification_date)
@@ -476,7 +476,7 @@ public class DetailTableLoader extends BaseCLI {
         else platform.setClobData(insertStmt, pkCount + 4, content, false);
 
         insertStmt.setTimestamp(pkCount + 5, new Timestamp(new Date().getTime()));
-        SqlUtils.executePreparedStatement(wdkModel, insertStmt, insertSql,
+        SqlUtils.executePreparedStatement(insertStmt, insertSql,
                  table.getQuery().getFullName() + "__api-report-detail-insert");
         return System.currentTimeMillis() - start;
     }

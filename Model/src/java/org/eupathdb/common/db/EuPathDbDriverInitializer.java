@@ -3,7 +3,7 @@ package org.eupathdb.common.db;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.gusdb.wdk.model.dbms.DbDriverInitializer;
+import org.gusdb.fgputil.db.pool.DbDriverInitializer;
 
 public class EuPathDbDriverInitializer implements DbDriverInitializer {
 
