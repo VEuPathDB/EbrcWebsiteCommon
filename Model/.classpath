@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/WDK Controller/lib/java/commons-fileupload-1.2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fgputil-util"/>
 	<classpathentry kind="lib" path="/WSF Plugin/lib/java/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/WSF Plugin/lib/java/org.json-chargebee-1.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
