@@ -63,10 +63,6 @@ public class DetailTableLoader extends BaseCLI {
     private static final Logger logger = Logger
             .getLogger(DetailTableLoader.class);
 
-    /**
-     * @param args
-     * @throws Exception
-     */
     public static void main(String[] args) throws Exception {
         String cmdName = System.getProperty("cmdName");
         if (cmdName == null) cmdName = DetailTableLoader.class.getName();
@@ -92,6 +88,7 @@ public class DetailTableLoader extends BaseCLI {
         super(command, description);
     }
 
+    @Override
     protected void declareOptions() {
         addSingleValueOption(ARG_PROJECT_ID, true, null, "The ProjectId, which"
                 + " should match the directory name under $GUS_HOME, where "
@@ -183,9 +180,6 @@ public class DetailTableLoader extends BaseCLI {
      * 
      * @param table
      * @param idSql
-     * @throws WdkModelException
-     * @throws SQLException
-     * @throws WdkUserException
      */
     private void dumpTable(TableField table, String idSql)
             throws WdkModelException, SQLException, WdkUserException {
@@ -242,8 +236,8 @@ public class DetailTableLoader extends BaseCLI {
                     + counts[1] + " detail) rows in "
                     + ((end - start) / 1000.0)
                     + " seconds.  Cumulative insert time was "
-                    + (int) (counts[2] / 1000) + " seconds.  Commit was "
-                    + (int) (end - startCommit) / 1000);
+                    + (counts[2] / 1000) + " seconds.  Commit was "
+                    + (end - startCommit) / 1000);
         }
         catch (SQLException ex) {
             updateConnection.rollback();
@@ -258,8 +252,7 @@ public class DetailTableLoader extends BaseCLI {
     }
 
     private void deleteRows(String idSql, String pkNames, String fieldName,
-            Connection connection) throws WdkUserException, WdkModelException,
-            SQLException {
+            Connection connection) throws SQLException {
         long start = System.currentTimeMillis();
         StringBuilder sql = new StringBuilder("DELETE FROM " + detailTable);
         sql.append(" WHERE (" + pkNames + ") IN (" + idSql + ")");
@@ -448,14 +441,11 @@ public class DetailTableLoader extends BaseCLI {
      * 
      * @param table
      * @param idSql
-     * @throws WdkModelException
-     * @throws SQLException
-     * @throws WdkUserException
      */
     private long insertDetailRow(PreparedStatement insertStmt,
             String insertSql, StringBuilder contentBuf, int rowCount,
 				 TableField table, String pk0, String pk1, String title, int pkCount)
-            throws WdkModelException, SQLException, WdkUserException {
+            throws SQLException {
 
         long start = System.currentTimeMillis();
 
