@@ -94,6 +94,7 @@
 .xor-select .ui-button.ui-state-active { z-index: 10; }
 .xor-select .ui-button span { padding: 0.1em 1em; }
 
-.group-detail.ui-widget-content {
-  background: whiteSmoke;
+/* static fold change */
+.params {
+  position: relative;
 }
