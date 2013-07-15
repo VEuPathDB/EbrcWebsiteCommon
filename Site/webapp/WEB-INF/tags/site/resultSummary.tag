@@ -20,7 +20,7 @@
 
 <wdk:resultSummary strategy="${strategy}" step="${step}" />
 
-<if test="${fn:contains(questionName, 'TextSearch')}">
+<c:if test="${fn:contains(questionName, 'TextSearch')}">
   <c:set var="message" value="${wdkAnswer.resultMessage}" />
   <c:if test="${message != null}">
     <div class="result-message ui-state-default ui-corner-all">
