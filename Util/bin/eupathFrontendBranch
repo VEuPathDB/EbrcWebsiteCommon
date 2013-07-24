@@ -4,8 +4,6 @@ use lib "$ENV{GUS_HOME}/lib/perl";
 use FgpUtil::Util::ProjectBrancher;
 use strict;
 
-
-my @projects = ('ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'EuPathSiteCommon:apidb', 'ApiCommonWebService:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
+my @projects = ('ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb', 'EuPathPresenters:apidb', 'EuPathDatasets:apidb', 'EuPathSiteCommon:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'ReFlow:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
 
 FgpUtil::Util::ProjectBrancher::branch(\@projects, "EuPath Front End");
-
