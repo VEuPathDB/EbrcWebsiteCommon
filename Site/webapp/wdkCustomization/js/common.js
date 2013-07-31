@@ -154,7 +154,8 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   var configureSidebar = function() {
     $("#sidebar").accordion({
      active:1,                  // not combine with navigation
-     // heightStyle:"content",  //for 1.9
+     animate: 200,
+     collapsible: true,
      autoHeight:false,
      icons:false
     });
