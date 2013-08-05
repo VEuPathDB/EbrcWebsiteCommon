@@ -55,7 +55,7 @@
 <hr>
 
 <%-- get the attributions of the question if not EuPathDB --%>
-<c:if test = "${project != 'EuPathDB'}">
+
   <c:set var="ds_ref_questions" value="${requestScope.ds_ref_questions}" />
   <c:choose>
     <c:when test="${fn:length(ds_ref_questions) == 0}">
@@ -117,6 +117,6 @@
 
     </c:otherwise>
   </c:choose>
-</c:if>
+
 
 
