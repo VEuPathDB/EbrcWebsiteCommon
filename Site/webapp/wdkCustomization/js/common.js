@@ -162,11 +162,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   };
 
   var configureMenuBar = function() {
-    jQuery("#menu .sf-menu").supersubs({
-      minWidth: 18,
-      maxWidth: 27,
-      extraWidth: 1
-    }).superfish();
+    jQuery("#menu .sf-menu").superfish();
   };
 
   ns.setUpContactUsLogic = setUpContactUsLogic;
