@@ -95,10 +95,9 @@
 
     <!-- END log4jdbc appenders -->
 
-
     <logger name="org.gusdb"><level value="info"/></logger>
-    <logger name="org.gusdb.fgputil.db.QueryLogger.SqlExampleLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
-    <logger name="org.gusdb.fgputil.db.SqlUtils" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
+    <logger name="org.gusdb.fgputil.db.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
+    <logger name="org.gusdb.fgputil.db.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
     <logger name="org.orthomcl"><level value="info"/></logger>
     <logger name="org.apidb"><level value="info"/></logger>
     <logger name="org.apache"><level value="warn"/></logger>
