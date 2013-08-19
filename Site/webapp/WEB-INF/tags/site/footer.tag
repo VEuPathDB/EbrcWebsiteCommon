@@ -30,7 +30,7 @@
     <div class="right">
       <div class="contact">
         Please <a href="${pageContext.request.contextPath}/contact.do"
-            class="open-window-contact-us">Contact Us</a> with any questions or comments
+            class="new-window" data-name="contact_us">Contact Us</a> with any questions or comments
       </div>
       <ul class="attributions">
         <li>

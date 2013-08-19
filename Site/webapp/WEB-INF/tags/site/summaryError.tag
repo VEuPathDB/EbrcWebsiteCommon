@@ -17,7 +17,7 @@
 <br>
 <span style="font-weight:bold">If this does not work, please:</span>
 <ul class="cirbulletlist">
-<li>Open the <a href="${pageContext.request.contextPath}/contact.do" class="open-window-contact-us">Contact Us</a> form,
+<li>Open the <a href="${pageContext.request.contextPath}/contact.do" class="new-window" data-name="contact_us">Contact Us</a> form,
 <li>'Save' the strategy in error and 'Share' it with us in the form, 
 <li>Make a screenshot and upload it in the form,
 <li>Submit the form!
