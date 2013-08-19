@@ -273,10 +273,17 @@ height: 240px;
 #menu_lefttop div ul#news,
 #menu_lefttop div ul#communityEventList {
     border: 1px lightgrey solid;
-    height: 120px;
+    height: 90px;  /* 120px; */
     list-style-position: inside;
     margin-left: 0;
     overflow-y: auto;
+}
+
+#menu_lefttop div ul#news {
+		margin-bottom:5px;
+}
+iframe.twitter-timeline {
+		margin-top:8px;
 }
 
 #menu_lefttop div ul.related-sites li,
