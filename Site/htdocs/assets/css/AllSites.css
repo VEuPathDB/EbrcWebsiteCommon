@@ -112,10 +112,10 @@ table.threecolumn td {
 	width: 247px;
 }
 /* what for?
+ * to prevent gap between img and div */
 .threecolumndivimg {
 	display: block;
 }
-*/
 #bubbles .info {
    width: 209px;
    min-height: 301px;
