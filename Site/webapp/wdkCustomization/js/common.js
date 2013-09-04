@@ -69,7 +69,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       $("body").on("submit", "#contact-us", function(e) {
         e.preventDefault();
         var form = this,
-            // requiredFields = ['subject', 'reply', 'content'],
+            requiredFields = ['content'],
             emailRegex = /^\S+@\S+$/,
             ccAddrs = this.addCc.value.split(/,\s*(?=\w)/);
 
