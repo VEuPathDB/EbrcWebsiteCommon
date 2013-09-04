@@ -892,7 +892,7 @@ th.mythStyle {
 }
 
 .vennFilter.vennDiagram ul li {
-   margin-top: 14px;
+   margin-top: 7px;   /* 14px;  */
 }
 
 .top_label {
