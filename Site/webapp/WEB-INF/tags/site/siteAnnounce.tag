@@ -35,7 +35,7 @@
       <span class="warningMessage">
       This pre-release version of ${wdkModel.name} is available for early community review. 
       Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>contact us</a> 
-      with your feedback. Some of our sites remain under active development during their Beta release which might require occasional site outages or data re-analysis.</span>
+      with your feedback. Note that any saved strategies in the beta sites will be lost once the sites are fully released. Some of our sites remain under active development during their Beta release which might require occasional site outages or data re-analysis.</span>
      </td></tr></table>
   </div>
 </c:if>
