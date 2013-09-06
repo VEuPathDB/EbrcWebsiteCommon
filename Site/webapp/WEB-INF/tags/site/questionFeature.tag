@@ -46,6 +46,11 @@
     		<img alt="Revised feature icon" title="This search has been revised. Changes might include new or changed parameters, upgrades to the underlying search logic, or new or updated data." 
          	src="<c:url value='/wdk/images/revised-small.png' />" />
   		</c:when>
+			<c:when test="${question.queryName eq 'GenesByGenericFoldChange'}">
+				<a style="float:right;font-size:80%;margin-right:1em" title="YouTube Fold Change search tutorial" href="http://www.youtube.com/watch?v=jMuVB-ZIdH0" target="_blank" onclick="poptastic(this.href); return false;">
+  				 Tutorial <img border="0"  style="vertical-align:middle;" alt="YouTube icon - Fold Change search tutorial" src="/assets/images/youtube_32x32.png"/>
+				</a>
+			</c:when>
 		</c:choose>
 	</c:otherwise>
 
