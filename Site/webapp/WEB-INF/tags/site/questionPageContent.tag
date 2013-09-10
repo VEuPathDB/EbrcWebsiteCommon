@@ -22,7 +22,7 @@
 </c:forEach>
 
 <c:if test="${hideTitle == false}">
-  <h1>Identify ${recordName} based on ${wdkQuestion.displayName}
+  <h1 class="ui-helper-clearfix">Identify ${recordName} based on ${wdkQuestion.displayName}
     <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/></h1>
 </c:if>
 
