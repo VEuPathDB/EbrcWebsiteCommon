@@ -965,6 +965,7 @@ a#gbView {
     padding-top: 5px;
     width: 140px;
     margin: 0px auto;
+		margin-top:1em;
 }
 
 #gnCtx {
