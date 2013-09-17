@@ -1,0 +1,34 @@
+# This is a SAMPLE file.  You must provide your values to correctly configure your use.
+# To fully understand this file run the generateFilesFromTemplates command with no arguments
+
+# This section provides required meta-config properties.  They are used to configure the masterConfig.yaml file.
+# The values here are subsituted into macros in masterConfig.yaml file (not directly into the template files)
+required:
+ project: PlasmoDB
+ appDb.Login:
+ appDb.Password:
+ appDb.Instance:
+ appDB.userDbLink:
+ userDb.Login: 
+ userDb.Password:
+ userDb.Instance: apicommDevN
+ commentDb.Login:
+ commentDb.Password:
+ commentDb.Instance:
+ webapp: plasmo
+ gushome: $ENV{GUS_HOME}
+
+# This section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
+# Uncomment one from -apiSite/-orthomcl and one from -qa/-prod/-dev/-alpha/-beta
+sections:
+# -apiSite
+# -orthomcl
+# -qa
+# -prod
+# -dev
+# -alpha
+# -beta
+
+# This section overrides all key/values in masterConfig.yaml.  It lets you make a non-standard configuration as needed.
+custom:
+

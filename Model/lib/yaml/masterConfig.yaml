@@ -1,4 +1,5 @@
 default: 
+ project: ${project}
  smtpServer: 127.0.0.1
  supportEmail: help@${project}.org
  defaultRole: wdk_user
@@ -7,19 +8,22 @@ default:
  blockedThreshold: 20
  queryMonitor.baseline: 0.1
  queryMonitor.slow: 5
- appDbInstance: ${appDbInstance}
- appDB.Platform: Oracle
- appDB.MaxActive: 20
- appDB.MaxIdle: 1
- appDB.MinIdle: 1
- appDB.MaxWait: 50
- appDB.ShowConnections: false
- appDB.ShowConnectionsInterval: 10
- appDB.ShowConnectionsDuration: 600
- appDB.UserSchema: userlogins4.
- appDB.WdkEngineSchema: wdkengine.
- appDB.DriverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
- userDb.Instance: ${userDb.Instance}
+ appDb.Login: ${appDb.Login}
+ appDb.Password: ${appDb.Password}
+ appDb.Instance: ${appDb.Instance}
+ appDB.userDbLink: ${appDB.userDbLink}
+ appDb.Platform: Oracle
+ appDb.MaxActive: 20
+ appDb.MaxIdle: 1
+ appDb.MinIdle: 1
+ appDb.MaxWait: 50
+ appDb.ShowConnections: false
+ appDb.ShowConnectionsInterval: 10
+ appDb.ShowConnectionsDuration: 600
+ appDb.UserSchema: userlogins4.
+ appDb.WdkEngineSchema: wdkengine.
+ appDb.maxPkColumnWidth: 150
+ appDb.DriverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
  userDb.Platform: Oracle
  userDb.MaxActive: 20
  userDb.MaxIdle: 1
@@ -28,7 +32,6 @@ default:
  userDb.ShowConnections: false
  userDb.ShowConnectionsInterval: 10
  userDb.ShowConnectionsDuration: 600
- userDb.UserSchema: userlogins4.
  userDb.WdkEngineSchema: wdkengine.
  userDb.DriverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
  cndsrc_bin: /opt/cndsrc/bin
@@ -37,7 +40,7 @@ default:
 
 
 #=======================================================================================================
-apisite: 
+apiSite: 
  modelName: apiCommonModel
  commentDb.Platform: Oracle
  commentDb.MaxActive: 20
@@ -49,7 +52,7 @@ apisite:
  commentDb.UserLoginDbLink:
  commentDb.UserFileSchema: uploads
  commentDb.UserFileUploadDir: /var/www/Common/communityFilesMirror
- commentDblink: @devn.login_comment
+ commentDblink: ${appDB.userDbLink}
 
 orthomcl:
  modelName: OrthoMCL
@@ -58,9 +61,20 @@ orthomcl:
 #=======================================================================================================
 
 qa: 
-  webServiceUrl: http://qa.${project}.org/${webappName}/services/WsfService
- 
+  webServiceUrl: http://qa.${project}.org/${webapp}/services/WsfService
+
+beta: 
+  webServiceUrl: http://beta.${project}.org/${webapp}/services/WsfService
+
+alpha: 
+  webServiceUrl: http://alpha.${project}.org/${webapp}/services/WsfService
+
+prod:
+  webServiceUrl: http://${project}.org/${webapp}/services/WsfService
+
 dev: 
+
+
 
 #=======================================================================================================
 
