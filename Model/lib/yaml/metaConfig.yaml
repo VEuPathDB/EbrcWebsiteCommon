@@ -1,0 +1,16 @@
+required:
+ webServiceUrl:
+ project:
+ appDbLogin:
+ appDbPassword:
+ appDbInstance:
+ userDbLogin: 
+ userDbPassword:
+ userDbInstance:
+ commentDbLogin:
+ commentDbPassword:
+ commentDbInstance=
+
+sections:
+
+custom:
