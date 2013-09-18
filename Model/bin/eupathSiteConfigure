@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+
+use strict;
+
+my ($project, $metaConfigFile) = @ARGV;
+
+$project = "YOUR_PROJECT" unless $project;
+my $configTemplateFiles = "$ENV{GUS_HOME}/config/$project/model-config.xml.tmpl
+$ENV{GUS_HOME}/config/$project/model.prop.tmpl
+$ENV{GUS_HOME}/config/$project/comment-config.xml.tmpl
+";
+
+usage($configTemplateFiles) unless scalar(@ARGV) == 2;
+
+my $cmd = "generateFilesFromTemplates $ENV{GUS_HOME}/lib/yaml/masterConfig.yaml $metaConfigFile < echo -e $configTemplateFiles";
+
+print STDERR "$cmd\n";
+system($cmd);
+
+sub usage {
+  my ($configTemplateFiles) = @_;
+  die "
+
+Configure a EuPathDB website by reading the provided meta config file, and subsituting values from there into three config templates:
+$configTemplateFiles.
+
+Usage: eupathSiteConfigure project meta_config_file
+
+Where:
+  project:           eg, PlasmoDB
+  meta_config_file:  see \$PROJECT_HOME/EuPathSiteCommon/Model/lib/yaml/metaConfig.yaml.sample for an example
+
+To fully understand this command get the usage for the generateFilesFromTemplates command.
+
+";
+}
