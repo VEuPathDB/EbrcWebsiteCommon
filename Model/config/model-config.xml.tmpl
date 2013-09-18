@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<modelConfig modelName="${modelName}"
+             webServiceUrl="${webServiceUrl}"
+             smtpServer="${smtpServer}"
+             supportEmail="${supportEmail}"
+             defaultRole="${defaultRole}"
+             secretKeyFile="${secretKeyFile}"
+             monitorBlockedThreads="${monitorBlockedThreads}"
+             blockedThreshold="${blockedThreshold}"
+             >
+             
+    <queryMonitor
+             baseline="${queryMonitor.baseline}"
+             slow="${queryMonitor.slow}"
+             />
+             
+    <!-- the maxPkColumnWidth the max side of the string type primary key columns. Those columns in 
+         the cache tables will be resized to the specified value. optional, default is 150 -->    
+    <appDb  login="${appDb.login}"
+            password="${appDb.password}"
+            connectionUrl="jdbc:oracle:oci:@${appDb.instance}"
+            platform="${appDb.platform}"
+            maxActive="${appDb.maxActive}"
+            maxIdle="${appDb.maxIdle}"
+            minIdle="${appDb.minIdle}"
+            maxWait="${appDb.maxWait}"
+            showConnections="${appDb.showConnections}"
+            showConnectionsInterval="${appDb.showConnectionsInterval}"
+            showConnectionsDuration="${appDb.showConnectionsDuration}"
+            userDbLink="${appDb.userDbLink}" 
+            maxPkColumnWidth="${appDb.maxPkColumnWidth}"
+            driverInitClass="${appDb.driverInitClass}"/>
+             
+    <userDb login="${userDb.login}"
+            password="${userDb.password}"
+            connectionUrl="jdbc:oracle:oci:@${userDb.instance}"
+            platform="${userDb.platform}"
+            maxActive="${userDb.maxActive}"
+            maxIdle="${userDb.maxIdle}"
+            minIdle="${userDb.minIdle}"
+            maxWait="${userDb.maxWait}"
+            showConnections="${userDb.showConnections}"
+            showConnectionsInterval="${userDb.showConnectionsInterval}"
+            showConnectionsDuration="${userDb.showConnectionsDuration}"
+            userSchema="${userDb.userSchema}"
+            wdkEngineSchema="${userDb.wdkEngineSchema}" 
+            driverInitClass="${userDb.driverInitClass}"/>
+           
+    <emailSubject>
+         <![CDATA[
+            Your ${project}/EuPathDB Password
+         ]]>
+    </emailSubject>
+    <emailContent>
+        <![CDATA[
+        <p>Thank you for registering at ${project}.org, a member site of the EuPathDB Bioinformatics Resource Center.</p>
+        <p>Your temporary password is: $$PASSWORD$$</p>
+        <p>You may now login to <a href="http://${project}.org">${project}</a> or any other EuPathDB member site.</p>
+        ]]>
+    </emailContent>
+</modelConfig>
+
