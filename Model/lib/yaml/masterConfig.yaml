@@ -4,37 +4,40 @@ default:
  supportEmail: help@${project}.org
  defaultRole: wdk_user
  secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
- monitorBlockedTreads: true
+ monitorBlockedThreads: true
  blockedThreshold: 20
  queryMonitor.baseline: 0.1
  queryMonitor.slow: 5
- appDb.Login: ${appDb.Login}
- appDb.Password: ${appDb.Password}
- appDb.Instance: ${appDb.Instance}
- appDB.userDbLink: ${appDB.userDbLink}
- appDb.Platform: Oracle
- appDb.MaxActive: 20
- appDb.MaxIdle: 1
- appDb.MinIdle: 1
- appDb.MaxWait: 50
- appDb.ShowConnections: false
- appDb.ShowConnectionsInterval: 10
- appDb.ShowConnectionsDuration: 600
- appDb.UserSchema: userlogins4.
- appDb.WdkEngineSchema: wdkengine.
+ appDb.login: ${appDb.login}
+ appDb.password: ${appDb.password}
+ appDb.instance: ${appDb.instance}
+ appDb.userDbLink: ${appDB.userDbLink}
+ appDb.platform: Oracle
+ appDb.maxActive: 20
+ appDb.maxIdle: 1
+ appDb.minIdle: 1
+ appDb.maxWait: 50
+ appDb.showConnections: false
+ appDb.showConnectionsInterval: 10
+ appDb.showConnectionsDuration: 600
+ appDb.wdkEngineSchema: wdkengine.
  appDb.maxPkColumnWidth: 150
- appDb.DriverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
- userDb.Platform: Oracle
- userDb.MaxActive: 20
- userDb.MaxIdle: 1
- userDb.MinIdle: 1
- userDb.MaxWait: 50
- userDb.ShowConnections: false
- userDb.ShowConnectionsInterval: 10
- userDb.ShowConnectionsDuration: 600
- userDb.WdkEngineSchema: wdkengine.
- userDb.DriverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
- cndsrc_bin: /opt/cndsrc/bin
+ appDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
+ userDb.login: ${userDb.login}
+ userDb.password: ${userDb.password}
+ userDb.instance: ${userDb.instance}
+ userDb.platform: Oracle
+ userDb.maxActive: 20
+ userDb.maxIdle: 1
+ userDb.minIdle: 1
+ userDb.maxWait: 50
+ userDb.userSchema: userlogins4.
+ userDb.showConnections: false
+ userDb.showConnectionsInterval: 10
+ userDb.showConnectionsDuration: 600
+ userDb.wdkEngineSchema: wdkengine.
+ userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
+ cndSrcBin: /opt/cndsrc/bin
  siteAdminEmail: sfischer@pcbi.upenn.edu, jerric@pcbi.upenn.edu, aurreco@uga.edu, mheiges@uga.edu, rdoherty@pcbi.upenn.edu, dfalke@uga.edu
  webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 
@@ -42,17 +45,20 @@ default:
 #=======================================================================================================
 apiSite: 
  modelName: apiCommonModel
- commentDb.Platform: Oracle
- commentDb.MaxActive: 20
- commentDb.MaxIdle: 1
- commentDb.MinIdle: 1
- commentDb.MaxWait: 50
- commentDb.UserSchema: comments2.
- commentDb.UserLoginSchema: userlogins4
- commentDb.UserLoginDbLink:
- commentDb.UserFileSchema: uploads
- commentDb.UserFileUploadDir: /var/www/Common/communityFilesMirror
- commentDblink: ${appDB.userDbLink}
+ commentDb.login: ${commentDb.login}
+ commentDb.password: ${commentDb.password}
+ commentDb.instance: ${commentDb.instance}
+ commentDb.platform: Oracle
+ commentDb.maxActive: 20
+ commentDb.maxIdle: 1
+ commentDb.minIdle: 1
+ commentDb.maxWait: 50
+ commentDb.commentSchema: comments2.
+ commentDb.userLoginSchema: userlogins4
+ commentDb.userLoginDbLink: dontknow
+ commentDb.userFileSchema: uploads
+ commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror
+ commentDbLink: ${appDB.userDbLink}
 
 orthomcl:
  modelName: OrthoMCL
