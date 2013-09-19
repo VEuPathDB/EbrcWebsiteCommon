@@ -11,8 +11,8 @@
 <div style="">
 <span style="font-weight:bold">To correct it:</span>
 <ul class="cirbulletlist">
-<li>If you see a <span style="color:red">red X</span> or <span style="font-weight:bold">a step showing 0</span> results, please click on its name and choose 'Revise'. Re-run the step after adjusting parameters as needed.
-<li>Otherwise, please select each step to view its results (click the count in the step box), starting with the leftmost. 'Revise' any step that fails. 
+<li>If you see a <span style="color:red">red X</span> or <span style="font-weight:bold">a step showing 0</span> results, please click on the Edit button, that appears as you mousoever each step, and choose 'Revise'. Re-run the step after adjusting parameters as needed.
+<li>Otherwise, please select each step (click on it) to view its results, starting with the leftmost. 'Revise' any step that fails. 
 </ul>
 <br>
 <span style="font-weight:bold">If this does not work, please:</span>
