@@ -15,19 +15,15 @@ required:
  commentDb.login: yoohoo
  commentDb.password: lala
  commentDb.instance: apicommDevN
- webapp: plasmo
+ webServiceUrl: http://qa.plasmodb.org/plasmo/services/WsfService
  gushome: $ENV{GUS_HOME}
 
 # This section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
-# Uncomment one from -apiSite/-orthomcl and one from -qa/-prod/-dev/-alpha/-beta
+# Uncomment one from -apiSite/-orthomcl
 sections:
  - apiSite
 # - orthomcl
- - qa
-# - prod
-# - dev
-# - alpha
-# - beta
+
 
 # This section overrides all key/values in masterConfig.yaml.  It lets you make a non-standard configuration as needed.
 custom:

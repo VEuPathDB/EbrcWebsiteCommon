@@ -1,5 +1,6 @@
 default: 
  project: ${project}
+
  smtpServer: 127.0.0.1
  supportEmail: help@${project}.org
  defaultRole: wdk_user
@@ -40,7 +41,7 @@ default:
  cndSrcBin: /opt/cndsrc/bin
  siteAdminEmail: sfischer@pcbi.upenn.edu, jerric@pcbi.upenn.edu, aurreco@uga.edu, mheiges@uga.edu, rdoherty@pcbi.upenn.edu, dfalke@uga.edu
  webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
-
+ webServiceUrl: ${webServiceUrl}
 
 #=======================================================================================================
 apiSite: 
@@ -62,25 +63,6 @@ apiSite:
 
 orthomcl:
  modelName: OrthoMCL
- webServiceUrl: http://localhost:9580/orthomcl/services/WsfService
-
-#=======================================================================================================
-
-qa: 
-  webServiceUrl: http://qa.${project}.org/${webapp}/services/WsfService
-
-beta: 
-  webServiceUrl: http://beta.${project}.org/${webapp}/services/WsfService
-
-alpha: 
-  webServiceUrl: http://alpha.${project}.org/${webapp}/services/WsfService
-
-prod:
-  webServiceUrl: http://${project}.org/${webapp}/services/WsfService
-
-dev: 
-
-
 
 #=======================================================================================================
 
