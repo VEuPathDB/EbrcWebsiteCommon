@@ -54,7 +54,7 @@ apiSite:
  commentDb.maxIdle: 1
  commentDb.minIdle: 1
  commentDb.maxWait: 50
- commentDb.commentSchema: comments2.
+ commentDb.commentSchema: comments2
  commentDb.userLoginSchema: userlogins4
  commentDb.userLoginDbLink: dontknow
  commentDb.userFileSchema: uploads
