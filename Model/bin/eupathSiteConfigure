@@ -2,13 +2,12 @@
 
 use strict;
 
-my ($project, $metaConfigFile) = @ARGV;
+my ($metaConfigFile) = @ARGV;
 
-$project = "your_project" unless $project;
 my $configTemplateFiles = 
-"\"$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/$project/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/$project/model.prop\\n$ENV{GUS_HOME}/config/comment-config.xml.tmpl\\t$ENV{GUS_HOME}/config/$project/comment-config.xml\"";
+"\"$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model.prop\\n$ENV{GUS_HOME}/config/comment-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/comment-config.xml\"";
 
-usage($configTemplateFiles) unless scalar(@ARGV) == 2;
+usage($configTemplateFiles) unless scalar(@ARGV) == 1;
 
 my $cmd = "echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{GUS_HOME}/lib/yaml/masterConfig.yaml $metaConfigFile";
 
@@ -22,10 +21,9 @@ sub usage {
 Configure a EuPathDB website by reading the provided meta config file, and subsituting values from there into three config templates:
 $configTemplateFiles.
 
-Usage: eupathSiteConfigure your_project meta_config_file
+Usage: eupathSiteConfigure meta_config_file
 
 Where:
-  your_project:      eg, PlasmoDB
   meta_config_file:  see \$PROJECT_HOME/EuPathSiteCommon/Model/lib/yaml/metaConfig.yaml.sample for an example
 
 To fully understand this command, get the usage for the generateFilesFromTemplates command.
