@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.apidb.apicommon.model.report;
+package org.eupathdb.common.model.report;
 
 import java.io.BufferedReader;
 import java.io.File;
