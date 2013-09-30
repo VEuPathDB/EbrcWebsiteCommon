@@ -47,10 +47,9 @@
   </html:form>
 </div>
 
-<hr>
-
 <%-- displays question description, can be overridden by the custom question form --%>
 <c:if test="${hideAttrDescr == false}">
+  <hr/>
   <!-- <div class="content-pane snippet" style="padding:1em 2em"> -->
     <div><imp:questionDescription /></div>
     <!-- </div> -->
