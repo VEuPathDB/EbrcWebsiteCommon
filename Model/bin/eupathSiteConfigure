@@ -5,7 +5,7 @@ use strict;
 my ($metaConfigFile) = @ARGV;
 
 my $configTemplateFiles = 
-"\"$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model.prop\\n$ENV{GUS_HOME}/config/comment-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/comment-config.xml\"";
+"'$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model.prop\\n$ENV{GUS_HOME}/config/comment-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/comment-config.xml'";
 
 usage($configTemplateFiles) unless scalar(@ARGV) == 1;
 
