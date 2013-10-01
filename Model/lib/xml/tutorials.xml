@@ -88,7 +88,7 @@
        <attribute name="uid">40</attribute>
        <table name="files">
         <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">unavailable</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
            <attribute name="fileName.flv">Favorites/favorites_viewlet_swf.html</attribute>
@@ -351,7 +351,7 @@
        <attribute name="uid">80</attribute>
        <table name="files">
         <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">watch?v=BBMzIakyKE4</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
            <attribute name="fileName.flv">Basket/basket_final_viewlet_swf.html</attribute>
@@ -378,6 +378,26 @@
          </row>
        </table>
    </record>
+   
+   <record>
+       <attribute name="title">OrthoMCL Layout and Basic Features</attribute>
+       <attribute name="description">This tutorial describes the layout and basic functions of OrthoMCL DB. 
+       How to find search pages and the location of pertinent links and functions are described.</attribute>
+       <attribute name="uid">1Oct2013</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Ortho New Layout/ortho_new_layout_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">5 min</attribute>
+           <attribute name="size">2.8 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   
 
 <record>
        <attribute name="title">Pathogen Portal's RNA Sequence Analysis Pipeline Part 1</attribute>
@@ -438,7 +458,7 @@
        <attribute name="uid">110</attribute>
        <table name="files">
         <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">watch?v=GUo_BVk-_rE</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
            <attribute name="fileName.flv">Registration/register_final_viewlet_swf.html</attribute>
@@ -473,7 +493,7 @@
        <attribute name="uid">130</attribute>
        <table name="files">
         <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">unavailable</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
            <attribute name="fileName.flv">New_Strat/New_Strat_viewlet_swf.html</attribute>
