@@ -73,7 +73,7 @@ public class ProjectMapper {
     this.wdkModel = wdkModel;
     this.projects = new HashMap<>();
     this.organisms = new HashMap<>();
-
+    this.timeout = 0;
   }
 
   protected void initialize() throws WdkModelException, SAXException,
@@ -90,8 +90,10 @@ public class ProjectMapper {
     Document document = factory.newDocumentBuilder().parse(projectsFile);
     Element root = document.getDocumentElement();
 
-    // read timeout id exists
-    timeout = Long.valueOf(root.getAttribute("timeout"));
+    // read timeout if exists
+    String strTimeout = root.getAttribute("timeout");
+    if (strTimeout != null)
+    timeout = Long.valueOf(strTimeout);
 
     // read projects
     NodeList nodes = document.getElementsByTagName("project");
@@ -155,6 +157,7 @@ public class ProjectMapper {
    */
   public String getProjectByOrganism(String organism)
       throws SQLException {
+    organism = organism.trim();
     // organism has been mapped before, return the project id.
     if (organisms.containsKey(organism))
       return organisms.get(organism);

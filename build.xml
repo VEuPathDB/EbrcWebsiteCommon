@@ -71,6 +71,8 @@
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Model"/>
     </ant>
+    <available file="${targetDir}/config/projects.xml" type="file" property="projects.xml.present" />
+    <antcall target="install-projects.xml"/>  
   </target>
 
   <target name="EuPathSiteCommon/Site-Installation">
@@ -92,6 +94,10 @@
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Util"/>
     </ant>
+  </target>
+
+  <target name="install-projects.xml" unless="projects.xml.present">
+    <copy file="${projectsDir}/EuPathSiteCommon/Model/config/projects.xml.sample" tofile="${targetDir}/config/projects.xml"/>
   </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
