@@ -93,7 +93,8 @@
 
 </c:choose>
 
-<div class="h2center">Click to import a strategy in your workspace</div>
+<div class="h2center">Sample Strategies</div>
+<div style="text-align:center;margin:5px"><em>Click to import a sample strategy in your workspace</em></div> 
 
 <table class="tableWithBorders" style="margin-left: auto; margin-right: auto;" width="90%">
 
