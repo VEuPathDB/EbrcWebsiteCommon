@@ -387,7 +387,7 @@
        <table name="files">
         <row>
            <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
-           <attribute name="fileName.mov">unavailable</attribute>
+           <attribute name="fileName.mov">watch?v=Ct7L_nF0TY8</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
            <attribute name="fileName.flv">Ortho New Layout/ortho_new_layout_viewlet_swf.html</attribute>
            <attribute name="fileName.pdf">unavailable</attribute>
@@ -396,8 +396,23 @@
          </row>
        </table>
    </record>
-   
-   
+
+ <record>
+       <attribute name="title">OrthoMCL Phyletic Pattern Search</attribute>
+       <attribute name="description">How to use the OrthoMCL Phyletic Pattern search to find ortholog groups that contain proteins from the taxonomic groups that you specify.</attribute>
+       <attribute name="uid">22Oct2013</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=Ya724SWY6Uo</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">OrthoMCL Phyletic Pattern 1/orthomcl_phyletic_pattern_1_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4.25 min</attribute>
+           <attribute name="size">6 mb</attribute>
+         </row>
+       </table>
+   </record>   
 
 <record>
        <attribute name="title">Pathogen Portal's RNA Sequence Analysis Pipeline Part 1</attribute>
