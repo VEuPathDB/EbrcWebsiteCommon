@@ -44,7 +44,7 @@ function appendchecked(form, url) {
 
 
 <%-- display description for page --%>
-<h3>Generate a tab delimited report of your search result.  Select columns to include in the report.  Optionally (see below) include a first line with column names.</h3>
+<h3>Generate a tab delimited report of your search result.<br/> <span style="color:red">The report will be sorted by ID.</span><br/>You may select additional columns to include in the report.</h3>
 <br>
 
 <%-- handle empty result set situation --%>

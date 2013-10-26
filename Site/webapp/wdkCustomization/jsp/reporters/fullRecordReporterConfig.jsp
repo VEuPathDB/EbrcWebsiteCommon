@@ -37,7 +37,8 @@ function makeSelection(state)
 <imp:reporter/>
 
 <%-- display description for page --%>
-<h3>Generate a report that contents the complete information for each record.</h3>
+<h3>Generate a report with columns in your search result plus select additional information only accessible in the record page. <br/><span style="color:red">The report will be sorted by ID.</span></h3>
+
 
 <%-- handle empty result set situation --%>
 <c:choose>
