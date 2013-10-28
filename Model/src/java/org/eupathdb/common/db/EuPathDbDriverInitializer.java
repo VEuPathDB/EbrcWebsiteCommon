@@ -17,6 +17,9 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
 	@Override
 	public String initializeDriver(String driverClassName, String connectionUrl, Properties props) throws ClassNotFoundException {
 		
+		LOG.debug("Initializing Model-Specified driver: " + driverClassName);
+		Class.forName(driverClassName);
+		
 		// NOTE!!  The order of the registration of these drivers is important.  Log4Jdbc first, then Melody
 		LOG.debug("Initializing Log4Jdbc proxy driver.");
 		Class.forName(LOG4JDBC_DRIVER);
