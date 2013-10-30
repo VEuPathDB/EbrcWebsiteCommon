@@ -17,6 +17,9 @@ required:
  commentDb.instance: apicommDevN
  webServiceUrl: http://qa.plasmodb.org/plasmo/services/WsfService
  gushome: $ENV{GUS_HOME}
+ blastPath: /opt/blast/bin/
+ tempBlastPath: /var/www/.../tmp/blast
+ motifCntxtLen: 20
 
 # This section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
 # Uncomment one from -apiSite/-orthomcl
@@ -27,4 +30,17 @@ sections:
 
 # This section overrides all key/values in masterConfig.yaml.  It lets you make a non-standard configuration as needed.
 custom:
+
+eupaURL: http://eupathdb.org/eupathdb/
+ orthURL: http://orthomcl.org/orthomcl/
+ amebURL: http://amoebadb.org/amoeba/
+ crypURL: http://cryptodb.org/cryptodb/
+ giarURL: http://giardiadb.org/giardiadb/
+ micrURL: http://microsporidiadb.org/micro/
+ piroURL: http://piroplasmadb.org/piro/
+ plasURL: http://plasmodb.org/plasmo/
+ toxoURL: http://toxodb.org/toxo/
+ tricURL: http://trichdb.org/trichdb/
+ trypURL: http://tritrypdb.org/tritrypdb/
+
 

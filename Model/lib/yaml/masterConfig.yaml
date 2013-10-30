@@ -42,6 +42,23 @@ default:
  siteAdminEmail: sfischer@pcbi.upenn.edu, jerric@pcbi.upenn.edu, aurreco@uga.edu, mheiges@uga.edu, rdoherty@pcbi.upenn.edu, dfalke@uga.edu
  webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
  webServiceUrl: ${webServiceUrl}
+ blastPath: ${blastPath}
+ tempBlastPath: ${tempBlastPath}
+ motifCntxtLen: ${motifCntxtLen}
+ eupaURL: ${eupaURL}
+ orthURL: ${orthURL} 
+ amebURL: ${amebURL}
+ crypURL: ${crypURL}
+ giarURL: ${giarURL}
+ micrURL: ${micrURL}
+ piroURL: ${piroURL}
+ plasURL: ${plasURL}
+ toxoURL: ${toxoURL}
+ tricURL: ${tricURL}
+ trypURL: ${trypURL}
+
+
+
 
 #=======================================================================================================
 apiSite: 
@@ -64,6 +81,9 @@ apiSite:
 orthomcl:
  modelName: OrthoMCL
 
-#=======================================================================================================
 
+
+#=======================================================================================================
+ fungiSite:
+	 fungiURL: http://fungidb.org/fungidb/
 
