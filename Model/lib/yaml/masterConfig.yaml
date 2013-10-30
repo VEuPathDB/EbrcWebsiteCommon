@@ -49,6 +49,7 @@ default:
  orthURL: ${orthURL} 
  amebURL: ${amebURL}
  crypURL: ${crypURL}
+ fungURL: ${fungURL}
  giarURL: ${giarURL}
  micrURL: ${micrURL}
  piroURL: ${piroURL}
@@ -85,7 +86,7 @@ OrthoMCL:
 
 #=======================================================================================================
 FungiDB:
- fungiURL: http://fungidb.org/fungidb/
+
 
 
 #=======================================================================================================
