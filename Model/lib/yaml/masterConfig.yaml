@@ -84,6 +84,6 @@ orthomcl:
 
 
 #=======================================================================================================
- fungiSite:
-	 fungiURL: http://fungidb.org/fungidb/
+fungiSite:
+ fungiURL: http://fungidb.org/fungidb/
 
