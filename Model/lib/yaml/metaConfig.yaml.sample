@@ -17,9 +17,6 @@ required:
  commentDb.instance: apicommDevN
  webServiceUrl: http://qa.plasmodb.org/plasmo/services/WsfService
  gushome: $ENV{GUS_HOME}
- blastPath: /opt/blast/bin/
- tempBlastPath: /var/www/.../tmp/blast
- motifCntxtLen: 20
 
  eupaURL: http://eupathdb.org/eupathdb/
  orthURL: http://orthomcl.org/orthomcl/
