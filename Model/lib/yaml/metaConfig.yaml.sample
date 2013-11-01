@@ -18,6 +18,8 @@ required:
  webServiceUrl: http://qa.plasmodb.org/plasmo/services/WsfService
  gushome: $ENV{GUS_HOME}
 
+
+# all needed in portal, component sites only need their own. Used in projects.xml
  eupaURL: http://eupathdb.org/eupathdb/
  orthURL: http://orthomcl.org/orthomcl/
  amebURL: http://amoebadb.org/amoeba/
@@ -29,6 +31,16 @@ required:
  toxoURL: http://toxodb.org/toxo/
  tricURL: http://trichdb.org/trichdb/
  trypURL: http://tritrypdb.org/tritrypdb/
+
+# needed in model.prop in plasmo (need to check exactly wher ein the model is used)
+# if your site is not plasmo, you do not have to provide value
+ plasmoPubsURL: whatever_url
+
+# used in ortho model.prop
+# if your site is not ortho, you do not have to provide value
+ orthoPFAM_URL= whatever_url
+
+
 
 # This section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
 # Uncomment one from -apiSite/-orthomcl
