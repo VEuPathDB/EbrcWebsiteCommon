@@ -3,12 +3,13 @@
 use strict;
 
 my ($lit1,$project,$lit2,$metaConfigFile) = @ARGV;
+my $configTemplateFiles='';
 
 if($project == "OrthoMCL") {
-		my $configTemplateFiles = 
+		$configTemplateFiles = 
 				"'$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model.prop\\n$ENV{GUS_HOME}/config/blast-config.xml.tmpl\\t$ENV{GUS_HOME}/config/blast-config.xml\\n$ENV{GUS_HOME}/config/projects.xml.tmpl\\t$ENV{GUS_HOME}/config/projects.xml'";
 } else {
-		my $configTemplateFiles = 
+		$configTemplateFiles = 
 				"'$ENV{GUS_HOME}/config/model-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model-config.xml\\n$ENV{GUS_HOME}/config/model.prop.tmpl\\t$ENV{GUS_HOME}/config/\${project}/model.prop\\n$ENV{GUS_HOME}/config/comment-config.xml.tmpl\\t$ENV{GUS_HOME}/config/\${project}/comment-config.xml\\n$ENV{GUS_HOME}/config/blast-config.xml.tmpl\\t$ENV{GUS_HOME}/config/blast-config.xml\\n$ENV{GUS_HOME}/config/motifSearch-config.xml.tmpl\\t$ENV{GUS_HOME}/config/motifSearch-config.xml\\n$ENV{GUS_HOME}/config/projects.xml.tmpl\\t$ENV{GUS_HOME}/config/projects.xml'";
 }
 
