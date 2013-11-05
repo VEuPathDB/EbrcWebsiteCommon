@@ -89,7 +89,6 @@ default:
  trypURL: ${trypURL}
 
  plasmoPubsURL: ${plasmoPubsURL}
- orthoPFAM_URL= ${orthoPFAM_URL}
 
 
 

@@ -25,6 +25,7 @@ required:
  amebURL: http://amoebadb.org/amoeba/
  crypURL: http://cryptodb.org/cryptodb/
  giarURL: http://giardiadb.org/giardiadb/
+ fungURL: http://fungidb.org/fungidb/
  micrURL: http://microsporidiadb.org/micro/
  piroURL: http://piroplasmadb.org/piro/
  plasURL: http://plasmodb.org/plasmo/
@@ -35,11 +36,6 @@ required:
 # needed in model.prop in plasmo (need to check exactly wher ein the model is used)
 # if your site is not plasmo, you do not have to provide value
  plasmoPubsURL: whatever_url
-
-# used in ortho model.prop
-# if your site is not ortho, you do not have to provide value
- orthoPFAM_URL= whatever_url
-
 
 
 # This section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
