@@ -88,7 +88,7 @@ default:
  tricURL: ${tricURL}
  trypURL: ${trypURL}
 
- plasmoPubsURL: ${plasmoPubsURL}
+ 
 
 
 
@@ -110,7 +110,10 @@ apiSite:
  commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror
  commentDbLink: ${appDB.userDbLink}
 
-OrthoMCL:
+ plasmoPubsURL: \"\"
+
+
+orthoMCL:
  modelName: OrthoMCL
 
 
