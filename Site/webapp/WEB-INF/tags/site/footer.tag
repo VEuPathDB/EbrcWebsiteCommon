@@ -35,7 +35,7 @@
       <ul class="attributions">
         <li>
           <a href="http://code.google.com/p/strategies-wdk/">
-            <img border="0" src="${pageContext.request.contextPath}/wdk/images/stratWDKlogo.png" width="120"/>
+            <imp:image border="0" src="/wdk/images/stratWDKlogo.png" width="120"/>
           </a>
         </li>
         <!-- <li>Test attribution</li> -->

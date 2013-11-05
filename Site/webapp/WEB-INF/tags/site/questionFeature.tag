@@ -15,10 +15,10 @@
 
 <c:choose>
 	<c:when test="${refer == 'questionPage'}">
-		<c:set var="beta-icon" value="<c:url value='/wdk/images/beta2-40.png'/>" />
+		<c:set var="beta-icon" value="/wdk/images/beta2-40.png" />
   </c:when>
   <c:otherwise>
-		<c:set var="beta-icon" value="<c:url value='/wdk/images/beta2-30.png'/>" />
+		<c:set var="beta-icon" value="/wdk/images/beta2-30.png" />
   </c:otherwise>
 </c:choose>
 
@@ -28,10 +28,10 @@
 	<c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions')}">
 		<c:choose>
 		<c:when test="${refer == 'questionPage'}">
- 			<img alt="Beta feature icon" title="This search is new and under revision, please provide feedback using the Contact Us link on the top header." src="<c:url value='/wdk/images/beta2-40.png'/>" />
+ 			<imp:image alt="Beta feature icon" title="This search is new and under revision, please provide feedback using the Contact Us link on the top header." src="/wdk/images/beta2-40.png" />
  		</c:when>
   	<c:otherwise>
-			<img alt="Beta feature icon" title="This search is new and under revision, please provide feedback using the Contact Us link on the top header." src="<c:url value='/wdk/images/beta2-30.png'/>" />
+      <imp:image alt="Beta feature icon" title="This search is new and under revision, please provide feedback using the Contact Us link on the top header." src="/wdk/images/beta2-30.png" />
   	</c:otherwise>
 		</c:choose>
 	</c:when>
@@ -39,12 +39,12 @@
 	<c:otherwise>
 		<c:choose>
   		<c:when test="${question.new}">
-    		<img alt="New feature icon" title="This is a new search!" 
-        	src="<c:url value='/wdk/images/new-feature.png' />" />
+    		<imp:image alt="New feature icon" title="This is a new search!" 
+        	src="/wdk/images/new-feature.png" />
   		</c:when>
   		<c:when test="${question.revised}">
-    		<img alt="Revised feature icon" title="This search has been revised. Changes might include new or changed parameters, upgrades to the underlying search logic, or new or updated data." 
-         	src="<c:url value='/wdk/images/revised-small.png' />" />
+    		<imp:image alt="Revised feature icon" title="This search has been revised. Changes might include new or changed parameters, upgrades to the underlying search logic, or new or updated data." 
+         	src="/wdk/images/revised-small.png" />
   		</c:when>
 			<c:when test="${question.queryName eq 'GenesByGenericFoldChange'}">
 				<a style="float:right;font-size:80%;margin-right:1em" title="YouTube Fold Change search tutorial" href="http://www.youtube.com/watch?v=jMuVB-ZIdH0" target="_blank" onclick="poptastic(this.href); return false;">
