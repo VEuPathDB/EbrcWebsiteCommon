@@ -89,8 +89,8 @@ default:
  trypURL: ${trypURL}
 
  plasmoPubsURL: none
-
-
+ commentDb.commentSchema: none
+ commentDbLink: none
 
 #=======================================================================================================
 apiSite: 
@@ -110,9 +110,9 @@ apiSite:
  commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror
  commentDbLink: ${appDB.userDbLink}
 
- 
-
 
 orthomcl:
  modelName: OrthoMCL
+
+
 
