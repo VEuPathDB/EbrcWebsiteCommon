@@ -132,7 +132,7 @@ piroplasmadb: {}
 
 plasmodb: {}
 
-toxodb: {}
+toxodb:
  toxocommentschema: toxocomm. 
 
 trichdb: {}
