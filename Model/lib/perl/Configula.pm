@@ -363,7 +363,7 @@ sub find_euparc  {
   my ($self) = @_;
   # ibuilder shell sets HOME to be the website and 
   # REAL_HOME to that of joeuser
-  if ( -r "$ENV{REAL_HOME}/.euparc") {
+  if ( defined $ENV{REAL_HOME} && -r "$ENV{REAL_HOME}/.euparc") {
       return "$ENV{REAL_HOME}/.euparc";
   } elsif ( -r "$ENV{HOME}/.euparc") {
       return "$ENV{HOME}/.euparc";
