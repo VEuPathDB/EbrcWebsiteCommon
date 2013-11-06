@@ -113,11 +113,28 @@ apiSite:
  commentDbLink: ${appDB.userDbLink}
 
 
+amoebadb:
+
+cryptodb:
+
+eupathdb:
+
+fungidb:
+
+giardiadb:
+
+microsporidiadb:
+
 orthomcl:
  modelName: OrthoMCL
 
+piroplasmadb:
+
 plasmodb:
- plasmoPubsURL: http://plasmodb.org
 
 toxodb:
  toxocommentschema: toxocomm. 
+
+trichdb:
+
+tritrypdb:
