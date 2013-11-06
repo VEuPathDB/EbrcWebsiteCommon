@@ -127,16 +127,9 @@ my $webapp = basename(readlink $site_symlink);
 my ($webapp_nover) = $webapp =~ m/(^[a-zA-Z_]+)/;
 my $meta_config_file = "${wdk_config_dir}/metaConfig_${this}";
 
-my %config_files = (
-    'wdk_model_xml' => {
-        'source' => "$project_home/ApiCommonShared/Model/lib/wdk/apiCommonModel.xml",
-        'dest' => "$gus_home/lib/wdk/apiCommonModel.xml"
-        },
-);
-
 # read for product version number. Use the source because it may not
 # yet be present at the dest (e.g. if --usemap is specified but no map data found)
-my $wdk_model_xml = $config_files{'wdk_model_xml'}{'source'};
+my $wdk_model_xml = "$gus_home/lib/wdk/$modelName.xml";
 
 my %site_versions = site_versions();
 my $site_version = $site_versions{$product};
