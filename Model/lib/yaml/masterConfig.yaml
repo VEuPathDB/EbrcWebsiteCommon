@@ -113,28 +113,28 @@ apiSite:
  commentDbLink: ${appDB.userDbLink}
 
 
-amoebadb:
+amoebadb: {}
 
-cryptodb:
+cryptodb: {}
 
-eupathdb:
+eupathdb: {}
 
-fungidb:
+fungidb: {}
 
-giardiadb:
+giardiadb: {}
 
-microsporidiadb:
+microsporidiadb: {}
 
 orthomcl:
  modelName: OrthoMCL
 
-piroplasmadb:
+piroplasmadb: {}
 
-plasmodb:
+plasmodb: {}
 
-toxodb:
+toxodb: {}
  toxocommentschema: toxocomm. 
 
-trichdb:
+trichdb: {}
 
-tritrypdb:
+tritrypdb: {}
