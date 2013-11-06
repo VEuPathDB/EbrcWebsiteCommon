@@ -12,6 +12,7 @@ This module is for use by the WDK team to aid internal development.
 =cut
 
 use strict;
+use warnings FATAL => qw( all );
 use File::Basename;
 use Cwd qw(realpath);
 use DBI;
@@ -71,6 +72,7 @@ sub new {
     my $userDb_login = 'uga_fed';
 
     $self->{'g_skip_db_test'} = $g_skip_db_test;
+    $self->{'target_site'} = $target_site;
     $self->{'appDb_login'} = $appDb_login;
     $self->{'userDb_login'} = $userDb_login;
     $self->{'euparc'} = $self->find_euparc();
@@ -98,11 +100,11 @@ sub new {
     $self->{'host_class'} = $self->host_class($self->{'target_site'});
     $self->{'host_class_prefix'} = $self->{'host_class'} ? $self->{'host_class'} . '.' : '';
 
-    if ($g_use_map) {
+    if ($self->{'g_use_map'}) {
         open(my $fh, $self->{'map_file'}) or die $!;
         my @hits = grep /^$self->{'target_site'}/, <$fh>;
-        ($self->{'site'}, $self->{'appDb_database'},  $self->{'userDb_database'}, $self->{'appDb_login'},  $self->{'userDb_login'}) = split(/\s+/, @hits[0]);
-        print "<$scriptname> using $self->{'appDb_login'}\@$self->{'appDb_database'},  $self->{'userDb_login'}\@$self->{'userDb_database'}\n";
+        ($self->{'site'}, $self->{'appDb_database'},  $self->{'userDb_database'}, $self->{'appDb_login'},  $self->{'userDb_login'}) = split(/\s+/, $hits[0]);
+        print "<$scriptname> using '$self->{'appDb_login'}\@$self->{'appDb_database'}',  '$self->{'userDb_login'}\@$self->{'userDb_database'}'\n";
         if ( ! ($self->{'appDb_login'} && $self->{'appDb_database'} && $self->{'userDb_database'}) ) {
             die "$self->{'map_file'} does not have sufficient data for $self->{'target_site'}. Quitting with no changes made.\n";
         }
