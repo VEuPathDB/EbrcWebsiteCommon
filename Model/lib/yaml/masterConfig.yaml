@@ -89,10 +89,12 @@ default:
  trypURL: ${trypURL}
 
  plasmoPubsURL: none
+ toxocommentschema: none
  commentDb.commentSchema: none
  commentDbLink: none
 
 #=======================================================================================================
+
 apiSite: 
  modelName: apiCommonModel
  commentDb.login: ${commentDb.login}
@@ -114,5 +116,8 @@ apiSite:
 orthomcl:
  modelName: OrthoMCL
 
+plasmodb:
+ plasmoPubsURL: http://plasmodb.org
 
-
+toxodb:
+ toxocommentschema: toxocomm. 
