@@ -123,6 +123,8 @@ fungidb: {}
 
 giardiadb: {}
 
+hostdb: {}
+
 microsporidiadb: {}
 
 orthomcl:
