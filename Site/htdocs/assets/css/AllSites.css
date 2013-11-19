@@ -1063,7 +1063,7 @@ tr.headerrow th {
       = Download tab reporter (table.center in wdk)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 table#download-galaxy,table#download-columns {
-		margin-left:10em;
+		margin-left:7em;
 }
 table#download-galaxy {
 		background-color: #FFFFCC;
@@ -1075,7 +1075,6 @@ table#download-galaxy form, table#download-galaxy span{
 		float:right;
 		position:Relative;
 		bottom:3px;
-		margin-left:6em;
 }
 table#download-galaxy td{
 		padding-bottom:1em;
@@ -1084,8 +1083,10 @@ table#download-galaxy td{
 table#download-galaxy span{
 		bottom:0;
 }
-table#download-columns input[type="submit"]{
-		margin-left: 3em;
+table#download-columns input[type="submit"],
+table#download-galaxy form, 
+table#download-galaxy span{
+		margin-left: 4em;
 }
 span.galaxy,b.galaxy {
 		border-color:#EAEAA8;
