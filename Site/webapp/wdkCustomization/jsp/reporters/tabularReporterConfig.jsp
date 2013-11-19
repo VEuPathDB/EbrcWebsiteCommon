@@ -142,7 +142,7 @@ function appendchecked(form, url) {
           <input type="radio" name="downloadType" value="text">Text File
           <input type="radio" name="downloadType" value="excel">Excel File**
           <input type="radio" name="downloadType" value="plain" checked>Show in Browser
-					<html:submit property="downloadConfigSubmit" value="Get Report in the format selected"/>
+					<html:submit property="downloadConfigSubmit" value="Get Report"/>
         </td></tr>
 </table>
 </form>
