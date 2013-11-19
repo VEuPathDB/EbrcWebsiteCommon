@@ -12,7 +12,6 @@
 <c:set var="wdkAnswer" value="${wdkStep.answerValue}" />
 <c:set var="format" value="${requestScope.wdkReportFormat}"/>
 
-
 <%-- display page header --%>
 <imp:pageFrame title="Create and download a Report in Tabular Format">
 
@@ -28,7 +27,6 @@ function appendchecked(form, url) {
            newtxt += ',' + chkbx[i].value;
        }
     }
-
     // append includeHeader value
     var includeHeader = "includeHeader=" +
       jQuery(configForm.includeHeader).filter(":checked").val();
@@ -38,14 +36,8 @@ function appendchecked(form, url) {
 </script>
 <%-- end galaxy.psu.edu users  --%>
 
-
 <%-- display the parameters of the question, and the format selection form --%>
 <imp:reporter/>
-
-
-<%-- display description for page --%>
-<h3>Generate a tab delimited report of your search result.<br/> <span style="color:red">The report will be sorted by ID.</span><br/>You may select additional columns to include in the report.</h3>
-<br>
 
 <%-- handle empty result set situation --%>
 <c:choose>
@@ -54,45 +46,48 @@ function appendchecked(form, url) {
   </c:when>
   <c:otherwise>
 
-<%-- content of current page --%>
+<h3>Generate a tab delimited report of your result. <span style="color:red">The result will be sorted by ID.</span></h3> 
+<c:if test="${!empty sessionScope.GALAXY_URL}">
+ <h4 style="font-size:120%;margin-left:1em">Below, select the type of download, including the option to  <span class="galaxy">send results to Galaxy</span>.</h4>
+</c:if>
+<br>
+
 <form name="downloadConfigForm" method="get" action="<c:url value='/getDownloadResult.do' />" >
         <c:if test="${param.signature != null}">
            <input type="hidden" name="signature" value="${param.signature}" />
         </c:if>
-<table>
+<table id="download-columns">
   <tr>
-      <td ></td>
+      <td></td>
       <td>
         <input type="hidden" name="step" value="${step_id}">
         <input type="hidden" name="wdkReportFormat" value="${format}">
-        <c:set var="numPerLine" value="2"/>
-        <table>
-          <tr>
-             <th colspan="${numPerLine}">Columns</th>
-          </tr>
-          <c:if test="${wdkAnswer.useCheckboxTree}">
 
+        <table>
+          <tr><td style="border-width:2px 0;border-color:black;border-style:solid;font-weight:bold;text-align:center">You may include additional columns in the report</td></tr>
+
+          <c:if test="${wdkAnswer.useCheckboxTree}">
             <tr>
-              <td colspan="${numPerLine}">
-                <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:none;"/>
+              <td>
+                <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:none"/>
                 <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
               </td>
             </tr>
           </c:if>
+
+<!--  HOW/WHEN DOES THIS GET USED?
+				  <c:set var="numPerLine" value="2"/>		
           <c:if test="${not wdkAnswer.useCheckboxTree}">
 			      <c:set var="attributeFields" value="${wdkAnswer.allReportMakerAttributes}"/>
 			      <c:set var="numPerColumn" value="${fn:length(attributeFields) / numPerLine}"/>
 			      <c:set var="i" value="0"/>
-
 	          <tr>
 	            <td colspan="${numPerLine}">
 	              <input type="checkbox" name="selectedFields" value="default" onclick="wdk.uncheckFields(1);" checked>
 	              Default (same as in <a href="showApplication.do">result</a>), or...
 	            </td>
 	          </tr>
-	
 	          <tr><td colspan="${numPerLine}">&nbsp;</td></tr>
-	
 	          <tr>
 	            <td nowrap>
 	              <c:forEach items="${attributeFields}" var="rmAttr">
@@ -127,56 +122,55 @@ function appendchecked(form, url) {
 	              </c:forEach>
 	            </td>
 	          </tr>
-	          
             <tr>
               <td align="center" colspan="${numPerLine}"><input type="button" value="select all" onclick="wdk.checkFields(1)">
                 <input type="button" value="clear all" selected="yes" onclick="wdk.checkFields(0)">
               </td>
             </tr>
 	        </c:if>
+-->
         </table>
       </td>
     </tr>
 
   <tr><td valign="top"><b>Column names: </b></td>
-      <td><input type="radio" name="includeHeader" value="yes" checked>include
-          <input type="radio" name="includeHeader" value="no">exclude
+      <td><input type="radio" name="includeHeader" value="no" >include
+          <input type="radio" name="excludeHeader" value="yes" checked>exclude
         </td></tr>
-
-  <tr><td valign="top"><b>Download Type: </b></td>
+  <tr><td title="Will open new tabs"><b>Download type and format: </b></td>
       <td>
           <input type="radio" name="downloadType" value="text">Text File
-          <input type="radio" name="downloadType" value="excel">Excel File
+          <input type="radio" name="downloadType" value="excel">Excel File**
           <input type="radio" name="downloadType" value="plain" checked>Show in Browser
+					<html:submit property="downloadConfigSubmit" value="Get Report in the format selected"/>
         </td></tr>
-
-  <tr><td colspan="2">
-<i>**Note: if you choose "Excel File" as Download Type, you can only download a maximum 10M (in bytes) of the results and the rest will be discarded. Opening a huge Excel file may crash your system. If you need to get the complete results, please choose "Text File" or "Show in Browser".</i>
-</td></tr>
-
-  <tr><td colspan="2" style="text-align:center"><html:submit property="downloadConfigSubmit" value="Get Report"/>
-   </td></tr>
 </table>
 </form>
 
-
-  <%-- galaxy.psu.edu users; send data to Galaxy  --%>
-  <c:if test="${!empty sessionScope.GALAXY_URL}">
-    <div style="text-align:center;background-color:#FFCCFF;border-style:double; width:300px">
-    <c:url var='downloadPath' 
+<c:if test="${!empty sessionScope.GALAXY_URL}">
+  <c:url var='downloadPath' 
            value='/getDownloadResult.do;jsessionid=${pageContext.session.id}?step=${step_id}&downloadType=plain&wdkReportFormat=tabular&selectedFields='/>
-    <c:set var='downloadUrl'>
+  <c:set var='downloadUrl'>
       ${pageContext.request.scheme}://${pageContext.request.serverName}${downloadPath}
-    </c:set>
-    <br>
-    <form action="${sessionScope.GALAXY_URL}" name="galaxy_exchange" id="galaxy_exchange" method="POST">
-      <input type="hidden" name="URL" value="${fn:escapeXml(downloadUrl)}">
-      <input type="submit" name="Send" value="Send to Galaxy" onclick="appendchecked(this.form, '${fn:escapeXml(downloadUrl)}')">
-    </form>
-    </div>
-  </c:if>
-  <%-- galaxy.psu.edu users  --%>
+  </c:set>
 
+  <table id="download-galaxy">
+  <tr><td title="Will open new tabs"><b>Alternatively</span> you may:</b>
+    <form target="public-galaxy" action="${sessionScope.GALAXY_URL}" name="galaxy_exchange" id="galaxy_exchange" method="POST">
+      <input type="hidden" name="URL" value="${fn:escapeXml(downloadUrl)}">
+      <input type="submit" name="Send" value="Send to Public Galaxy" onclick="appendchecked(this.form, '${fn:escapeXml(downloadUrl)}')">
+    </form>
+		<span>&nbsp;&nbsp;&nbsp;<b>Or: </b>&nbsp;&nbsp;&nbsp;</span>
+    <form target="eupathdb-galaxy" action="${sessionScope.EUPATHDB_GALAXY_URL}" name="eu_galaxy_exchange" id="eu_galaxy_exchange" method="POST">
+      <input type="hidden" name="URL" value="${fn:escapeXml(downloadUrl)}">
+      <input type="submit" name="Send" value="Send to EuPathDB Galaxy" onclick="appendchecked(this.form, '${fn:escapeXml(downloadUrl)}')">
+    </form>
+  </td></tr>
+</table>
+</c:if>
+
+<br><hr>
+<i>**Note: if you choose "Excel File" as Download Type, you can only download a maximum 10M (in bytes) of the results and the rest will be discarded. Opening a huge Excel file may crash your system. If you need to get the complete results, please choose "Text File" or "Show in Browser".</i>
 
   </c:otherwise>
 </c:choose>
