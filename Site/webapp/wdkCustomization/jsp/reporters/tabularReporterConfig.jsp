@@ -135,7 +135,7 @@ function appendchecked(form, url) {
 
   <tr><td valign="top"><b>Column names: </b></td>
       <td><input type="radio" name="includeHeader" value="no" >include
-          <input type="radio" name="excludeHeader" value="yes" checked>exclude
+          <input type="radio" name="includeHeader" value="yes" checked>exclude
         </td></tr>
   <tr><td title="Will open new tabs"><b>Download type and format: </b></td>
       <td>
