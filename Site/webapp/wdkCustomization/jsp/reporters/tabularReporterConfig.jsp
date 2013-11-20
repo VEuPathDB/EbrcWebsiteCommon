@@ -6,6 +6,10 @@
 <%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
 <%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
 
+ <c:set var="props" value="${applicationScope.wdkModel.properties}" />
+ <c:set var="galaxy" value="${props['GALAXY']}" />
+
+
 <%-- get wdkAnswer from requestScope --%>
 <jsp:useBean id="wdkUser" scope="session" type="org.gusdb.wdk.model.jspwrap.UserBean"/>
 <c:set value="${requestScope.wdkStep}" var="wdkStep"/>
@@ -156,15 +160,27 @@ function appendchecked(form, url) {
 
   <table id="download-galaxy">
   <tr><td title="Will open new tabs"><b>Alternatively</span> you may:</b>
+
+</td><td>
+
+<c:choose>
+<c:when test="${galaxy eq 'public'}">
     <form target="public-galaxy" action="${sessionScope.GALAXY_URL}" name="galaxy_exchange" id="galaxy_exchange" method="POST">
       <input type="hidden" name="URL" value="${fn:escapeXml(downloadUrl)}">
       <input type="submit" name="Send" value="Send to Public Galaxy" onclick="appendchecked(this.form, '${fn:escapeXml(downloadUrl)}')">
     </form>
-		<span>&nbsp;&nbsp;&nbsp;<b>Or: </b>&nbsp;&nbsp;&nbsp;</span>
+</c:when>
+<c:when test="${galaxy eq 'eupathdb'}">
     <form target="eupathdb-galaxy" action="${sessionScope.EUPATHDB_GALAXY_URL}" name="eu_galaxy_exchange" id="eu_galaxy_exchange" method="POST">
       <input type="hidden" name="URL" value="${fn:escapeXml(downloadUrl)}">
       <input type="submit" name="Send" value="Send to EuPathDB Galaxy" onclick="appendchecked(this.form, '${fn:escapeXml(downloadUrl)}')">
     </form>
+</c:when>
+<c:otherwise>
+				<div class="h3center" style="color:red">YOU ARE MISSING THE GALAXY PROPERTY IN MODEL.PROP</div>
+</c:otherwise>
+</c:choose>
+
   </td></tr>
 </table>
 </c:if>
