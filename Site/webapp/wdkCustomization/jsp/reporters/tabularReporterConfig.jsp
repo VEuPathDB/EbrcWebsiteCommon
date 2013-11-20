@@ -50,7 +50,7 @@ function appendchecked(form, url) {
   </c:when>
   <c:otherwise>
 
-<h3>Generate a tab delimited report of your result. <span style="color:red">The result will be sorted by ID.</span></h3> 
+<h3>Generate a tab delimited report of your result. <span style="color:red">The result will be sorted by ${wdkAnswer.recordClass.primaryKeyAttribute.displayName}.</span></h3> 
 <c:if test="${!empty sessionScope.GALAXY_URL}">
  <h4 style="font-size:120%;margin-left:1em">Below, select the type of download, including the option to  <span class="galaxy">send results to Galaxy</span>.</h4>
 </c:if>
@@ -68,7 +68,7 @@ function appendchecked(form, url) {
         <input type="hidden" name="wdkReportFormat" value="${format}">
 
         <table>
-          <tr><td style="border-width:2px 0;border-color:black;border-style:solid;font-weight:bold;text-align:center">You may include additional columns in the report</td></tr>
+ 					<tr><td id="column-title">You may include additional columns in the report</td></tr>
 
           <c:if test="${wdkAnswer.useCheckboxTree}">
             <tr>

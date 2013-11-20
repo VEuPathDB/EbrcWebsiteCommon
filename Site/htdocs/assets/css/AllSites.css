@@ -1083,6 +1083,13 @@ table#download-galaxy td{
 		padding-bottom:1em;
 		padding-top:1em;
 }
+table#download-columns table td#column-title{
+		border-width:2px 0;
+		border-color:black;
+		border-style:solid;
+		font-weight:bold;
+		text-align:center;
+}
 
 table#download-columns input[type="submit"]{
 			margin-left: 4em;
