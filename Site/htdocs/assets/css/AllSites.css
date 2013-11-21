@@ -1062,6 +1062,29 @@ tr.headerrow th {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = Download tab reporter (table.center in wdk)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+table#download-columns table td#column-title{
+		border-width:2px 0;
+		border-color:black;
+		border-style:solid;
+		font-weight:bold;
+		text-align:center;
+}
+table#download-columns input[type="submit"]{
+			margin-left: 4em;
+}
+table#download-columns table div#overlay{
+  width: 23px;
+  height: 30px;
+  opacity: 0;
+  position: relative;
+  bottom:3em;
+
+}
+table#download-columns table div#tree-column{
+  position: relative;
+  bottom:3em;
+}
+
 table#download-galaxy,table#download-columns {
 		margin-left:7em;
 }
@@ -1078,23 +1101,10 @@ table#download-galaxy td b{
 		position:relative;
 		bottom:1px; 
 }
-
 table#download-galaxy td{
 		padding-bottom:1em;
 		padding-top:1em;
 }
-table#download-columns table td#column-title{
-		border-width:2px 0;
-		border-color:black;
-		border-style:solid;
-		font-weight:bold;
-		text-align:center;
-}
-
-table#download-columns input[type="submit"]{
-			margin-left: 4em;
-}
-
 table#download-galaxy form{
 		margin-left: 26em;
 }
@@ -1108,6 +1118,7 @@ span.galaxy,b.galaxy{
 span.galaxy {
 		border-width:2px 0;
 }
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

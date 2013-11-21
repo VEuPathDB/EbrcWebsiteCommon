@@ -48,11 +48,12 @@ function appendchecked(form, url) {
   </c:when>
   <c:otherwise>
 
-<h3>Generate a tab delimited report of your result. <span style="color:red">The result will be sorted by ${wdkAnswer.recordClass.primaryKeyAttribute.displayName}.</span></h3> 
+<h4 style="font-size:120%;margin-left:1em">Select additional columns and the type of download
 <c:if test="${!empty sessionScope.GALAXY_URL}">
- <h4 style="font-size:120%;margin-left:1em">Below, select the type of download, including the option to  <span class="galaxy">send results to Galaxy</span>.</h4>
+, including the option to <span class="galaxy">send results to Galaxy</span>.
 </c:if>
-<br>
+<div style="color:red">The result will be sorted by ${wdkAnswer.recordClass.primaryKeyAttribute.displayName}.</div>
+</h4>
 
 <form name="downloadConfigForm" method="get" action="<c:url value='/getDownloadResult.do' />" >
         <c:if test="${param.signature != null}">
@@ -66,13 +67,17 @@ function appendchecked(form, url) {
         <input type="hidden" name="wdkReportFormat" value="${format}">
 
         <table>
- 					<tr><td id="column-title">You may include additional columns in the report</td></tr>
+ 		<!--			<tr><td id="column-title">You may include additional columns in the report</td></tr> -->
 
           <c:if test="${wdkAnswer.useCheckboxTree}">
             <tr>
               <td>
-                <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:none"/>
-                <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+                <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:block"/>
+							  <span style="position:relative;bottom:13px;left:2em;">${wdkAnswer.recordClass.primaryKeyAttribute.displayName}</span>
+							  <div id="overlay"></div>
+							  <div id="tree-column">
+                  <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+								</div>
               </td>
             </tr>
           </c:if>
