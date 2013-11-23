@@ -48,11 +48,10 @@ function appendchecked(form, url) {
   </c:when>
   <c:otherwise>
 
-<h4 style="font-size:120%;margin-left:1em">Select additional columns and the type of download
+<h4 id="tab-reporter-header">Below select type and format for download
 <c:if test="${!empty sessionScope.GALAXY_URL}">
 , including the option to <span class="galaxy">send results to Galaxy</span>.
 </c:if>
-<div style="color:red">The result will be sorted by ${wdkAnswer.recordClass.primaryKeyAttribute.displayName}.</div>
 </h4>
 
 <form name="downloadConfigForm" method="get" action="<c:url value='/getDownloadResult.do' />" >
@@ -67,16 +66,19 @@ function appendchecked(form, url) {
         <input type="hidden" name="wdkReportFormat" value="${format}">
 
         <table>
- 		<!--			<tr><td id="column-title">You may include additional columns in the report</td></tr> -->
+ 					<tr><td id="column-title">You may include additional columns in the report</td></tr> 
 
           <c:if test="${wdkAnswer.useCheckboxTree}">
             <tr>
               <td>
-                <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:block"/>
-							  <span style="position:relative;bottom:13px;left:2em;">${wdkAnswer.recordClass.primaryKeyAttribute.displayName}</span>
-							  <div id="overlay"></div>
+							  <div id="download-featureID">
+                		 <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked"/>
+							  		 <span>${wdkAnswer.recordClass.primaryKeyAttribute.displayName}</span>
+							  		 <div id="overlay"></div>
+								</div>
 							  <div id="tree-column">
-                  <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+                  <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" 
+																		checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
 								</div>
               </td>
             </tr>
