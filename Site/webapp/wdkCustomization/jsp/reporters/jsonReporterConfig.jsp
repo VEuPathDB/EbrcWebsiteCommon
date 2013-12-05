@@ -52,7 +52,7 @@ function makeSelection(state)
         <c:if test="${param.signature != null}">
            <input type="hidden" name="signature" value="${param.signature}" />
         </c:if>
-  <table width="100%">
+  <table id="download-columns">
   <tr><td  width="20%"></td>
       <td>
         <input type="hidden" name="step" value="${step_id}"/>
@@ -66,8 +66,15 @@ function makeSelection(state)
           <c:if test="${wdkAnswer.useCheckboxTree}">
             <tr>
               <td colspan="${numPerLine}">
-                <input type="checkbox" name="o-fields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:none;"/>
-                <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="o-fields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+							  <div id="download-featureID">
+                		 <input type="checkbox" name="o-fields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked"/>
+							  		 <span>${wdkAnswer.recordClass.primaryKeyAttribute.displayName}</span>
+							  		 <div id="overlay"></div>
+								</div>
+							  <div id="tree-column">
+                  <imp:checkboxTree id="o-fields" rootNode="${wdkAnswer.reportMakerAttributeTree}" 
+																		checkboxName="o-fields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+								</div>
               </td>
             </tr>
           </c:if>
