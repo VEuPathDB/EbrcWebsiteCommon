@@ -48,7 +48,7 @@ sub new {
     ) = get_cli_args();
     
     $self->{'user_has_specified_values'} = defined ($appDb_login || $appDb_database || $userDb_database);
-    $self->{'g_use_map'} = $g_use_map;
+    $self->{'g_use_map'} = $g_use_map || undef;
 
     my $web_base_dir = '/var/www';
     my $site_symlink = "$web_base_dir/$target_site";
@@ -75,6 +75,8 @@ sub new {
     $self->{'target_site'} = $target_site;
     $self->{'appDb_login'} = $appDb_login;
     $self->{'userDb_login'} = $userDb_login;
+    $self->{'appDb_database'} = $appDb_database || undef;
+    $self->{'userDb_database'} = $userDb_database || undef;
     $self->{'euparc'} = $self->find_euparc();
     $self->{'map_file'} = "$site_etc/master_configuration_set";
     $self->{'meta_config_file'} = "${site_etc}/metaConfig_${scriptname}";
