@@ -15,7 +15,6 @@ required:
  commentDb.login: yoohoo
  commentDb.password: lala
  commentDb.instance: apicommDevN
- webServiceUrl: http://qa.plasmodb.org/plasmo/services/WsfService
  gushome: $ENV{GUS_HOME}
 
 

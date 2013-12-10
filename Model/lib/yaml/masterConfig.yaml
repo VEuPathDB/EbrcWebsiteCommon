@@ -70,7 +70,7 @@ default:
  siteAdminEmail: sfischer@pcbi.upenn.edu, jerric@pcbi.upenn.edu, aurreco@uga.edu, mheiges@uga.edu, rdoherty@pcbi.upenn.edu, dfalke@uga.edu
 
  webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
- webServiceUrl: ${webServiceUrl}
+ webServiceUrl: local
  blastPath: /opt/ncbi-blast2/bin/
  tempBlastPath: /var/www/Common/tmp/blast
  motifCntxtLen: 20
