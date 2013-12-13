@@ -136,7 +136,7 @@
 	
 	<!-- this log is for internal debugging of log4jdbc, itself -->
 	<!-- debug logging for log4jdbc itself -->
-	<logger name="log4jdbc.debug" additivity="false"><level value="debug"/><appender-ref ref="debug-log"/></logger>
+	<logger name="log4jdbc.debug" additivity="false"><level value="warn"/><appender-ref ref="debug-log"/></logger>
 
     <root>
         <priority value="warn"></priority>
