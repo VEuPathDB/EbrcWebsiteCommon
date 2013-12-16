@@ -1,5 +1,8 @@
+#
+###############################################################################
 # This is a SAMPLE file.  You must provide your values to correctly configure your use.
 # To fully understand this file run the generateFilesFromTemplates command with no arguments
+###############################################################################
 
 # This section provides required meta-config properties.  They are used to configure the masterConfig.yaml file.
 # The values here are subsituted into macros in masterConfig.yaml file (not directly into the template files)
@@ -17,10 +20,7 @@ required:
  commentDb.instance: apicommDevN
  gushome: $ENV{GUS_HOME}
 
-
-# all needed in portal, component sites only need their own. Used in projects.xml
- eupaURL: http://eupathdb.org/eupathdb/
- orthURL: http://orthomcl.org/orthomcl/
+ # for a component sites, you only need one of these.  the portal needs all.  used in projects.xml
  amebURL: http://amoebadb.org/amoeba/
  crypURL: http://cryptodb.org/cryptodb/
  giarURL: http://giardiadb.org/giardiadb/
@@ -32,8 +32,7 @@ required:
  tricURL: http://trichdb.org/trichdb/
  trypURL: http://tritrypdb.org/tritrypdb/
 
-# needed in model.prop in plasmo (need to check exactly wher ein the model is used)
-# if your site is not plasmo, you do not have to provide value
+ # only needed for plasmo. (needed in model.prop)
  plasmoPubsURL: whatever_url
 
 
