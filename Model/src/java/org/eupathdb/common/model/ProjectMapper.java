@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -71,7 +72,7 @@ public class ProjectMapper {
 
   protected ProjectMapper(WdkModel wdkModel)  {
     this.wdkModel = wdkModel;
-    this.projects = new HashMap<>();
+    this.projects = new LinkedHashMap<>();
     this.organisms = new HashMap<>();
     this.timeout = 0;
   }
