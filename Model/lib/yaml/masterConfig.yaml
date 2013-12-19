@@ -74,6 +74,7 @@ default:
  blastPath: /opt/ncbi-blast2/bin/
  tempBlastPath: /var/www/Common/tmp/blast
  motifCntxtLen: 20
+ highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
 
  eupaURL: ${eupaURL}
  orthURL: ${orthURL} 
