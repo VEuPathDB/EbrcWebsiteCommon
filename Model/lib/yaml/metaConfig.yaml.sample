@@ -8,15 +8,15 @@
 # The values here are subsituted into macros in masterConfig.yaml file (not directly into the template files)
 required:
  project: PlasmoDB
- appDb.login: whatever
- appDb.password: dontknow
- appDb.instance: plas019n
- appDB.userDbLink: dontknow
- userDb.login: api_fed
- userDb.password: dontknow
+ appDb.login: your_db_login
+ appDb.password: your_db_password
+ appDb.instance: plas-inc
+ appDB.userDbLink: devn.LOGIN_COMMENT
+ userDb.login: uga_fed
+ userDb.password: uga_fed_password
  userDb.instance: apicommDevN
- commentDb.login: yoohoo
- commentDb.password: lala
+ commentDb.login: your_db_login
+ commentDb.password: your_db_login
  commentDb.instance: apicommDevN
  gushome: $ENV{GUS_HOME}
 
