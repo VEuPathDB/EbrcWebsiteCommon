@@ -1079,9 +1079,11 @@ table#download-columns input[type="submit"]{
 table#download-columns table div#overlay{
   width: 23px;
   height: 30px;
-  opacity: 0.5;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
   position: relative;
-  bottom:3em; 
+  bottom:2em; 
+  background-color: white;
 }
 table#download-columns table div#tree-column{
   position: relative;
