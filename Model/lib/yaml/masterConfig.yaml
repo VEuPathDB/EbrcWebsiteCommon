@@ -17,7 +17,7 @@ default:
  appDb.login: ${appDb.login}
  appDb.password: ${appDb.password}
  appDb.instance: ${appDb.instance}
- appDb.userDbLink: ${appDB.userDbLink}
+ appDb.userDbLink: ${appDb.userDbLink}
  appDb.platform: Oracle
 
 # we should use 10 for live sites, and 1 for all dev, integrate, and qa
@@ -108,10 +108,10 @@ apiSite:
  commentDb.maxWait: 50
  commentDb.commentSchema: comments2
  commentDb.userLoginSchema: userlogins4
- commentDb.userLoginDbLink: ${appDB.userDbLink}
+ commentDb.userLoginDbLink: ${appDb.userDbLink}
  commentDb.userFileSchema: uploads
  commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror
- commentDbLink: ${appDB.userDbLink}
+ commentDbLink: ${appDb.userDbLink}
 
 
 amoebadb: {}
