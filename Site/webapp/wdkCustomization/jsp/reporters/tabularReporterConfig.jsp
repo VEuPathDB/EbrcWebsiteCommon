@@ -9,7 +9,6 @@
 <jsp:useBean id="websiteRelease" class="org.eupathdb.common.controller.WebsiteReleaseConstants"/>
 
 <%-- get wdkAnswer from requestScope --%>
-<jsp:useBean id="wdkUser" scope="session" type="org.gusdb.wdk.model.jspwrap.UserBean"/>
 <c:set value="${requestScope.wdkStep}" var="wdkStep"/>
 <c:set var="wdkAnswer" value="${wdkStep.answerValue}" />
 <c:set var="format" value="${requestScope.wdkReportFormat}"/>

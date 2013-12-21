@@ -7,7 +7,6 @@
   <jsp:directive.page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"/>
 
   <!-- get wdkAnswer from requestScope -->
-  <jsp:useBean id="wdkUser" scope="session" type="org.gusdb.wdk.model.jspwrap.UserBean"/>
   <c:set value="${requestScope.wdkStep}" var="wdkStep"/>
   <c:set var="wdkAnswer" value="${wdkStep.answerValue}"/>
   <c:set var="format" value="${requestScope.wdkReportFormat}"/>
