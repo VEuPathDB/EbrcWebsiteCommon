@@ -4,19 +4,18 @@
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
- <target name="WDK-Installation">
-    <ant antfile="../WDK/build.xml" target="WDK-Installation">
-      <property name="project" value="WDK"/>
-      <property name="version" value="WDK_version_2-0"/>
-    </ant>
+  <import file="${projectsDir}/WDK/build.xml" />
+
+  
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EuPathSiteCommon-ChildCheckout">
+    <available file="${projectsDir}/WDK" type="dir"  property="WDK.present" />
+    <antcall target="WDK-Checkout"/>
   </target>
 
-  <target name="WDK-WebInstallation">
-    <ant antfile="../WDK/build.xml" target="WDK-WebInstallation">
-      <property name="project" value="WDK"/>
-      <property name="version" value="WDK_version_2-0"/>
-    </ant>
-  </target>
 
   <target name="WDK-Checkout" unless="WDK.present">
     <ant target="defaultProjectCheckout" inheritAll="false">
@@ -25,14 +24,7 @@
       <property name="version" value="alter-views"/>
     </ant>
   </target>
-  
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
- <target name="EuPathSiteCommon-ChildCheckout">
-    <available file="../WDK" type="dir"  property="WDK.present" />
-    <antcall target="WDK-Checkout"/>
-  </target>
+
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Update    oooooooooooooooooooooooooo -->
@@ -53,7 +45,9 @@
                                                         EuPathSiteCommon/Model-Installation,
                                                         EuPathSiteCommon/Util-Installation,
                                                         EuPathSiteCommon/View-Installation">
-    <ant target="defaultProjectInstall"/>
+    <ant target="defaultProjectInstall">
+      <property name="project" value="EuPathSiteCommon"/>
+    </ant>
 
     <!-- remove conflicting jar file -->
     <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
