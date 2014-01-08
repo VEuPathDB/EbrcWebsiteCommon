@@ -1,5 +1,12 @@
+# What constant values go in this masterConfig file, and not directly in the template file?
+#  - values that affect multiple configuration files,
+#  - also values that, while they are only used by one template, they are better updated in view of other values. 
+#  	  for example: commentDb.maxIdle
+# ---------------------------------------------------------------------
+
 default: 
  project: ${project}
+ gushome: ${gushome}
 
  smtpServer: 127.0.0.1
  supportEmail: help@${project}.org
@@ -12,7 +19,6 @@ default:
 
  queryMonitor.baseline: 0.1
  queryMonitor.slow: 5
-
 
  appDb.login: ${appDb.login}
  appDb.password: ${appDb.password}
@@ -113,6 +119,8 @@ apiSite:
  commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror
  commentDbLink: ${appDb.userDbLink}
 
+ profile.perlExec: /usr/bin/perl
+ profile.connection: dbi:Oracle:${appDb.instance}
 
 amoebadb: {}
 
