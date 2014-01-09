@@ -83,6 +83,7 @@ default:
  highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
 
  eupaURL: ${eupaURL}
+ orthURL: ${orthURL} 
  amebURL: ${amebURL}
  crypURL: ${crypURL}
  fungURL: ${fungURL}
@@ -125,10 +126,7 @@ amoebadb: {}
 
 cryptodb: {}
 
-eupathdb: {
- hostURL: {}
- orthURL: {}
-}
+eupathdb: {}
 
 fungidb: {}
 
