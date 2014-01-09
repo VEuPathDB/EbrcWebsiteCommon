@@ -15,7 +15,7 @@ if($project eq "OrthoMCL") {
 
 usage($configTemplateFiles) unless scalar(@ARGV) == 4;
 
-my $cmd = "echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{GUS_HOME}/lib/yaml/masterConfig.yaml $metaConfigFile";
+my $cmd = "echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{PROJECT_HOME}/lib/yaml/masterConfig.yaml $metaConfigFile";
 
 print STDERR "\n$cmd\n\n";
 system($cmd);
