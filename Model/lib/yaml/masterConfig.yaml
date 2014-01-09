@@ -82,7 +82,7 @@ default:
  motifCntxtLen: 20
  highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
 
- #eupaURL: ${eupaURL}
+ eupaURL: ${eupaURL}
  amebURL: ${amebURL}
  crypURL: ${crypURL}
  fungURL: ${fungURL}
@@ -93,8 +93,6 @@ default:
  toxoURL: ${toxoURL}
  tricURL: ${tricURL}
  trypURL: ${trypURL}
- hostURL: ${hostURL}
- orthURL: ${orthURL} 
 
  plasmoPubsURL: none
  toxocommentschema: none
