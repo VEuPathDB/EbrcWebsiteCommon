@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  THe file projects.xml will be added to your gus_home/config, if there is none.
+  THESE URLS are used to access:
+        - in portal: in ApiFedPlugin to access all sites
+	      - in portal: in any result: access recordpage
+        - in all sites: in the genomic blast result: access GBrowse (red links)
 
-  THESE URLS are used to access record page:
-        - in any result in the portal,
-        - in blast results
-        - in motif results
-        - (any result using a wsf plugin)
-
-  SOON (once ApiFedplugin gets updated) this file will be used by the portal to access specific component sites' WSF.
-
-  Feel free to update your project.xml to point to your own sites (same for qa and integrate).
-
+  Feel free to update your project.xml to point to your own sites or qa sites.
 -->
 <!-- the timeout, in seconds, of a remote call to a project. -->
 <projects timeout="0" xmlns="http://www.eupathdb.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
