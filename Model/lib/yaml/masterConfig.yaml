@@ -94,6 +94,8 @@ default:
  toxoURL: ${toxoURL}
  tricURL: ${tricURL}
  trypURL: ${trypURL}
+ myURL: ${myURL}
+
 
  plasmoPubsURL: none
  toxocommentschema: none

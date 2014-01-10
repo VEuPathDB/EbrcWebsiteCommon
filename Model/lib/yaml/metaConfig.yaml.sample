@@ -26,7 +26,7 @@ required:
  ###############################################################################################
 
 
- # component sites only need one of these. the portal needs all. used in projects.xml by WSF plugins to embed urls in output.
+ # these only needed in the portal 
  amebURL: http://amoebadb.org/amoeba/
  crypURL: http://cryptodb.org/cryptodb/
  giarURL: http://giardiadb.org/giardiadb/
@@ -37,6 +37,9 @@ required:
  toxoURL: http://toxodb.org/toxo/
  tricURL: http://trichdb.org/trichdb/
  trypURL: http://tritrypdb.org/tritrypdb/
+
+ # this needed in all sites BUT the portal (in the portal this value would cause a livelock)
+ myURL: http://hostdb.org/hostdb/
 
  # only needed for plasmo. (needed in model.prop)
  plasmoPubsURL: whatever_url
