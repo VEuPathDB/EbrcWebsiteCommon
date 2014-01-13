@@ -15,10 +15,11 @@
 
 <c:choose>
 
-  <c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions')}">
+  <c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions') || fn:containsIgnoreCase(question.queryName,'HtsSnpsByIsolateGroup')}">
     <c:set var="betaIconFile" value="${refer eq 'questionPage' ? 'beta2-40.png' : 'beta2-30.png'}"/>
     <imp:image alt="Beta feature icon" title="This search is new and under revision; please provide feedback using the Contact Us link on the top header." src="/wdk/images/${betaIconFile}"/>
   </c:when>
+
 
   <c:otherwise>
     <c:choose>
