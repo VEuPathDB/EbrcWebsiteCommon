@@ -151,12 +151,13 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       });
   };
 
+	// currently only used in ortho's sidebar.tag
   var configureSidebar = function() {
     $("#sidebar").accordion({
-     active:1,                  // not combine with navigation
+     active:1,                  // do not combine with navigation
      animate: 200,
-     collapsible: true,
-     autoHeight:false,
+     collapsible: false,
+		 heightStyle: "content",
      icons:false
     });
   };
