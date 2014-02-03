@@ -27,8 +27,9 @@ public class SmokeTests {
         browser = new WebClient();
         browser.getOptions().setThrowExceptionOnFailingStatusCode(false);
         browser.getOptions().setJavaScriptEnabled(false);
-//        browser.getOptions().setTimeout(30 * 1000);
-
+        if (Integer.getInteger("msTimeout") != null)
+          browser.getOptions().setTimeout(Integer.getInteger("msTimeout"));
+        System.out.println("browser timeout " + browser.getOptions().getTimeout());
     }
 
     public SmokeTests() {

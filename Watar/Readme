@@ -18,9 +18,10 @@ ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
     -DtargetDir=$PROJECT_HOME/test_home \
     -Dbaseurl='http://integrate.toxodb.org' \
     -Dwebappname='toxo.integrate' \
+    -DmsTimeout='30000' \
     install cleantestresults smoketest 
 
-
+!! msTimeout is optional. Default is per htmlunit WebClientOptions.
 
 !! run specified methods without ant
 java -cp "$PROJECT_HOME/test_home/lib/java/*"   \
@@ -41,5 +42,6 @@ ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
     -Dbaseurl='http://integrate.toxodb.org' \
     -Dwebappname='toxo.integrate' \
     -Dtestnames="Integration" \
+    -DmsTimeout='30000' \
     install cleantestresults testbynames 
 

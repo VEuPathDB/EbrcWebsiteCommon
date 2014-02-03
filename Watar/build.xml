@@ -83,6 +83,7 @@
         <xmlfileset dir="${targetDir}/config" includes="smoketest_ng.xml" />
         <sysproperty key="baseurl" value="${baseurl}"/>
         <sysproperty key="webappname" value="${webappname}"/>
+        <sysproperty key="msTimeout" value="${msTimeout}"/>
     </testng>
   </target>
 
@@ -102,6 +103,7 @@
         <xmlfileset dir="${targetDir}/config" includes="smoketest_ng.xml" />
         <sysproperty key="baseurl" value="${baseurl}"/>
         <sysproperty key="webappname" value="${webappname}"/>
+        <sysproperty key="msTimeout" value="${msTimeout}"/>
     </testng>
   </target>
 
