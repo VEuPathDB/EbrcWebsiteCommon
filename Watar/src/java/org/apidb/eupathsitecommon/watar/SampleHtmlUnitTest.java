@@ -2,6 +2,7 @@ package org.apidb.eupathsitecommon.watar;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
 import java.util.regex.Matcher;
@@ -20,7 +21,7 @@ public class SampleHtmlUnitTest {
 
     static {
         browser = new WebClient();
-        browser.setJavaScriptEnabled(false);
+        browser.getOptions().setJavaScriptEnabled(false);
     }
 
     public static void main(String[] arguments) {
@@ -52,7 +53,7 @@ public class SampleHtmlUnitTest {
 
         try {
             ((HtmlTextInput) currentPage.getElementByName("q")).setValueAttribute("qa automation");
-            currentPage = currentPage.getElementByName("btnG").click();
+            currentPage = ((HtmlElement)currentPage.getElementByName("btnG")).click();
             //System.out.println("contents: " + currentPage.asText());
             return containsPattern(currentPage.asText(), "About .* results");
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package org.apidb.eupathsitecommon.watar;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.HttpMethod;
@@ -24,8 +25,10 @@ public class SmokeTests {
         
     static {
         browser = new WebClient();
-        browser.setThrowExceptionOnFailingStatusCode(false);
-        browser.setJavaScriptEnabled(false);
+        browser.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        browser.getOptions().setJavaScriptEnabled(false);
+//        browser.getOptions().setTimeout(30 * 1000);
+
     }
 
     public SmokeTests() {
@@ -80,7 +83,7 @@ public class SmokeTests {
         String url = baseurl + "/";
         WebRequest request = new WebRequest(new URL(url), HttpMethod.GET);
         HtmlPage page = (HtmlPage) browser.getPage(request);
-        for (HtmlElement element : page.getElementsByTagName("input")) {
+        for (DomElement element : page.getElementsByTagName("input")) {
             if (element.getAttribute("name").contains("single_gene_id"))
                 return new Object[][] {{ element.getAttribute("value") }};
         }
