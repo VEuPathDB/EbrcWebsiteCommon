@@ -37,10 +37,21 @@ public class SmokeTests {
         webappname = System.getProperty("webappname");
     }
 
+    /** the home page for EuPathDB portal may depend on functionality
+        of component websites, and those may be offline for rebuild.
+        So it's an unreliable test for deployment. Use _test.jsp instead.
+    **/
     @Test(description="Assert HTTP header status is 200 OK for home page.",
-          groups = { "deployment" })
+          groups = { "_" })
     public void HomePage_HttpHeaderStatusIsOK() throws Exception {
         String url = baseurl + "/" + webappname + "/";
+        assertHeaderStatusMessageIsOK(url);
+    }
+
+    @Test(description="Assert HTTP header status is 200 OK for _test.jsp page.",
+          groups = { "deployment" })
+    public void TestJsp_HttpHeaderStatusIsOK() throws Exception {
+        String url = baseurl + "/" + webappname + "/wdk/jsp/_test.jsp";
         assertHeaderStatusMessageIsOK(url);
     }
 

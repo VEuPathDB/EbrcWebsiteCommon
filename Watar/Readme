@@ -45,3 +45,19 @@ ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
     -DmsTimeout='30000' \
     install cleantestresults testbynames 
 
+
+!! testnames (when using testbynames ant target) are
+!! defined in config/smoketest_ng.xml . For example,
+!! -Dtestname="QA" will run 'deployment' and 'xmlrecord' tests.
+!! Those names correspond to test groups in the SmokeTests class.
+        <test name="QA" junit="false" enabled="true">
+            <groups>
+              <run>
+                <include name="deployment"/>
+                <include name="xmlrecord"/>
+              </run>
+            </groups>
+            <classes>
+                <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+            </classes>
+        </test>
