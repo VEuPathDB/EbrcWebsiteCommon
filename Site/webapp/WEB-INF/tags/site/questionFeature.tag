@@ -14,30 +14,38 @@
 %>
 
 <c:choose>
-
-  <c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions') || fn:containsIgnoreCase(question.queryName,'HtsSnpsByIsolateGroup')}">
+<%-- BETA ICON --%>
+  <c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || 
+									fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions') || 
+									fn:containsIgnoreCase(question.queryName,'HtsSnpsByIsolateGroup')}">
     <c:set var="betaIconFile" value="${refer eq 'questionPage' ? 'beta2-40.png' : 'beta2-30.png'}"/>
-    <imp:image alt="Beta feature icon" title="This search is new and under revision; please provide feedback using the Contact Us link on the top header." src="/wdk/images/${betaIconFile}"/>
+    <imp:image alt="Beta feature icon" title="This search is new and under revision; please provide feedback using the Contact Us link on the top header." 
+			src="/wdk/images/${betaIconFile}"/>
   </c:when>
 
+<%-- TUTORIAL --%>
+  <c:when test="${question.queryName eq 'GenesByGenericFoldChange' and refer ne 'webservices'}">
+    <a style="float:right;font-size:80%;margin-right:1em" title="YouTube Fold Change search tutorial" 
+			href="http://www.youtube.com/watch?v=jMuVB-ZIdH0" target="_blank" onclick="poptastic(this.href); return false;">Tutorial 
+			  <img border="0"  style="vertical-align:middle;" alt="YouTube icon - Fold Change search tutorial" 
+				  src="/assets/images/youtube_32x32.png"/>
+    </a>
+  </c:when>
 
+<%-- this only works if we move the call <imp:questionFeature.../> outside the search page title, in questionPageContent.tag
+  <c:when test="${ ( fn:endsWith(question.queryName,'BySimilarity') || fn:endsWith(question.queryName,'Blast') )  && refer ne 'webservices' }">
+		<div class="h3center">As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity. 
+			Prior&nbsp;versions&nbsp;of&nbsp;the&nbsp;search&nbsp;used&nbsp;WU-BLAST.
+		</div>  
+		<div class="h3center">
+		  <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a></div>
+	</c:when>
+--%>
+
+
+<%-- Provided by WDK:  "NEW" AND "REVISED" ICONS --%>
   <c:otherwise>
-    <c:choose>
-      <c:when test="${question.new}">
-        <imp:image alt="New feature icon" title="This is a new search!" 
-          src="/wdk/images/new-feature.png" />
-      </c:when>
-      <c:when test="${question.revised}">
-        <imp:image alt="Revised feature icon" title="This search has been revised. Changes might include new or changed parameters, upgrades to the underlying search logic, or new or updated data." 
-          src="/wdk/images/revised-small.png" />
-      </c:when>
-      <c:when test="${question.queryName eq 'GenesByGenericFoldChange' and refer ne 'webservices'}">
-        <a style="float:right;font-size:80%;margin-right:1em" title="YouTube Fold Change search tutorial" href="http://www.youtube.com/watch?v=jMuVB-ZIdH0" target="_blank" onclick="poptastic(this.href); return false;">
-          Tutorial <img border="0"  style="vertical-align:middle;" alt="YouTube icon - Fold Change search tutorial" src="/assets/images/youtube_32x32.png"/>
-        </a>
-      </c:when>
-    </c:choose>
+		<wdk:questionFeature question=="${question}" />
   </c:otherwise>
-
 </c:choose>
 
