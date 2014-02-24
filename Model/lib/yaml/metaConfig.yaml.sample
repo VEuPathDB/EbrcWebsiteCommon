@@ -41,14 +41,14 @@ required:
  # this needed in all sites BUT the portal (in the portal this value would cause a livelock)
  myURL: http://hostdb.org/hostdb/
 
- # only needed for plasmo. (needed in model.prop)
- plasmoPubsURL: whatever_url
-
 
 # The 'sections:' section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
 # Uncomment one from -apiSite/-orthomcl
 sections:
  - apiSite
+
+# - cryptodb
+
 # - orthomcl
 
 
