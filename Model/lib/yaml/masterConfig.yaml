@@ -42,7 +42,7 @@ default:
  appDb.showConnections: false
  appDb.showConnectionsInterval: 10
  appDb.showConnectionsDuration: 600
- appDb.wdkEngineSchema: wdkengine.
+# NOT NEEDED in Build21  appDb.wdkEngineSchema: wdkengine.
  appDb.maxPkColumnWidth: 150
 
 # driverInitClass allows us to:
@@ -58,8 +58,8 @@ default:
  userDb.password: ${userDb.password}
  userDb.instance: ${userDb.instance}
  userDb.platform: Oracle
- userDb.userSchema: userlogins4.
- userDb.wdkEngineSchema: wdkengine.
+ userDb.userSchema: userlogins5.
+# NOT NEEDED in Build21 userDb.wdkEngineSchema: wdkengine.
 
  userDb.maxActive: 20
  userDb.maxIdle: 1
