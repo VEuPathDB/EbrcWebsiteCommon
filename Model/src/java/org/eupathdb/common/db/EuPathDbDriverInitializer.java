@@ -11,8 +11,9 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
 	
 	private static final String MELODY_DRIVER = "net.bull.javamelody.JdbcDriver";
 	
-	private static final String LOG4JDBC_DRIVER = "net.sf.log4jdbc.DriverSpy";
-	private static final String LOG4JDBC_URL_PREFIX = "jdbc:log4";
+	/* Remove setup for Log4Jdbc due to problems detailed in Redmine 14576 */
+	//private static final String LOG4JDBC_DRIVER = "net.sf.log4jdbc.DriverSpy";
+	//private static final String LOG4JDBC_URL_PREFIX = "jdbc:log4";
 	
 	@Override
 	public String initializeDriver(String driverClassName, String connectionUrl, Properties props) throws ClassNotFoundException {
@@ -21,8 +22,8 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
 		Class.forName(driverClassName);
 		
 		// NOTE!!  The order of the registration of these drivers is important.  Log4Jdbc first, then Melody
-		LOG.debug("Initializing Log4Jdbc proxy driver.");
-		Class.forName(LOG4JDBC_DRIVER);
+		//LOG.debug("Initializing Log4Jdbc proxy driver.");
+		//Class.forName(LOG4JDBC_DRIVER);
 		
 		LOG.debug("Initializing Java Melody JDBC driver.");
 		Class.forName(MELODY_DRIVER);
@@ -30,8 +31,8 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
 		LOG.debug("Specifying native JDBC driver to Melody (" + driverClassName + ").");
 		props.put("driver", driverClassName);
 		
-		LOG.debug("Prepending Log4Jdbc URL prefix onto connection URL.");
-		connectionUrl = LOG4JDBC_URL_PREFIX + connectionUrl;
+		//LOG.debug("Prepending Log4Jdbc URL prefix onto connection URL.");
+		//connectionUrl = LOG4JDBC_URL_PREFIX + connectionUrl;
 		
 		return connectionUrl;
 	}
