@@ -140,6 +140,7 @@ microsporidiadb: {}
 
 orthomcl:
  modelName: OrthoMCL
+ webServiceMirrorOrtho: /var/www/Common/apiSiteFilesMirror/webServices/OrthoMCL
 
 piroplasmadb: {}
 
