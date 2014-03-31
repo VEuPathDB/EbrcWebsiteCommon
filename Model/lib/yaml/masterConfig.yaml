@@ -78,6 +78,7 @@ default:
  webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
  webServiceUrl: local
  blastPath: /opt/ncbi-blast2/bin/
+ idBlastRegex: "<![CDATA[^>*(?:[^\|]*\|)?(\S+)]]>"
  tempBlastPath: /var/www/Common/tmp/blast
  motifCntxtLen: 20
  highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
@@ -141,6 +142,7 @@ microsporidiadb: {}
 orthomcl:
  modelName: OrthoMCL
  webServiceMirrorOrtho: /var/www/Common/apiSiteFilesMirror/webServices/OrthoMCL
+ idBlastRegex: "<![CDATA[^>*(\S+)]]>"
 
 piroplasmadb: {}
 
