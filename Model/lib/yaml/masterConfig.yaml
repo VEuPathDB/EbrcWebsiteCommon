@@ -81,6 +81,7 @@ default:
   idBlastRegex: "<![CDATA[^>*(?:[^\|]*\|)?(\S+)]]>"
   tempBlastPath: /var/www/Common/tmp/blast
   motifCntxtLen: 20
+  wdkStepAnalysisJobsDir: /var/www/Common/tmp/wdkStepAnalysisJobs
   highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
 
   eupaURL: ${eupaURL}
