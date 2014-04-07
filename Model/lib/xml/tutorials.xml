@@ -64,6 +64,25 @@
          </row>
        </table>
    </record>
+   
+    <record>
+       <attribute name="title">Decreasing Gene Page Load Times</attribute>
+       <attribute name="description">This tutorial offers suggestions on how to configure 
+       your gene pages in order to decrease page loading times.</attribute>
+       <attribute name="uid">7April2014_a</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=dKhRaYINX9M</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Decreasing Gene Page Load Ttime/decreasing_gene_page_load_ttime.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2.75 min</attribute>
+           <attribute name="size">2.5 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
 
     <record>
        <attribute name="title">DNA motif</attribute>
@@ -325,6 +344,25 @@
        </table>
    </record>
    
+    <record>
+       <attribute name="title">Inferring UTR length using RNA Sequencing data</attribute>
+       <attribute name="description">This tutorial describes how to infer UTR length from RNA sequencing data. 
+       Use the GBrowse ruler function to measure the difference between a gene's annotated start and the start 
+       of RNASeq reads.  The difference estimates UTR length.</attribute>
+       <attribute name="uid">7April2014_c</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=yKIKD8LEU-M</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">UTR evidence from RNA-Seq data/utr_evidence_from_rnaseq_data.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3.5 min</attribute>
+           <attribute name="size">3.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+
    
    
  <record>
@@ -361,6 +399,24 @@
          </row>
        </table>
    </record>
+
+    <record>
+       <attribute name="title">Orthology Information on Gene Pages</attribute>
+       <attribute name="description">This tutorial describes the orthology information that appears on EuPathDB gene pages.</attribute>
+       <attribute name="uid">7April2014_b</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=Q3wiUvqA82o</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">orthology gene page 2/orthology_gene_page_2.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2 min</attribute>
+           <attribute name="size">1 mb</attribute>
+         </row>
+       </table>
+   </record>
+
 
 <record>
        <attribute name="title">Orthology Phylogenetic Profile</attribute>
@@ -570,10 +626,44 @@
        </table>
    </record>
 
+    <record>
+       <attribute name="title">Transform by Orthology Across Taxon Groups</attribute>
+       <attribute name="description">Transfer a list of genes to EuPathDB.org and use the Transform by Orthology 
+       function to convert genes of one species into their orthlogs in another species. This is useful for finding 
+       orthologs across taxon groups.</attribute>
+       <attribute name="uid">7April2014_d</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=SzRu9XBe_VM</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Transform by Orthology Across Taxon Groups/transform_by_orthology_across_taxon_groups.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3.75 min</attribute>
+           <attribute name="size">3.2 mb</attribute>
+         </row>
+       </table>
+   </record>
 
 
-
- 
+ <record>
+       <attribute name="title">Transform by Orthology within a Taxon Group</attribute>
+       <attribute name="description">Use the Transform by Orthology function of our search strategy system to 
+       convert genes of one species into their orthologs in another specie. This is useful for inferring 
+       functional data on organisms for which functional data is scarce.</attribute>
+       <attribute name="uid">7April2014_e</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=nYGS8LbbZ1w</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Transform by Ortholgy within a Taxon Group/transform_by_ortholgy_within_a_taxon_group.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2.5 min</attribute>
+           <attribute name="size">2.2 mb</attribute>
+         </row>
+       </table>
+   </record>
 
   
   
