@@ -4,7 +4,7 @@
 
     <appender name="debug-log"
         class="org.apache.log4j.RollingFileAppender">
-        <param name="maxFileSize" value="10MB" />
+        <param name="maxFileSize" value="100MB" />
         <param name="maxBackupIndex" value="1" />
         <param name="File" value="${catalina.base}/logs/@WEBAPP@/wdk.log4j" />
         <layout class="org.apache.log4j.PatternLayout">
