@@ -32,19 +32,19 @@
   <!--   called from smallMenu, sidebar community, menubar community etc.     -->
   
   <li class="socmedia-link no-divider">
-    <a href="http://twitter.com/${twitter}">
+    <a target="_blank" href="http://twitter.com/${twitter}">
       <span class="twitter ${classx}" title="Follow us on Twitter!"><jsp:text/></span>
       <c:if test="${label}"><span>Follow us on Twitter!</span></c:if>
     </a>
   </li>
   <li class="socmedia-link no-divider">
-    <a href="http://facebook.com/${facebook}">
+    <a target="_blank" href="http://facebook.com/${facebook}">
       <span class="facebook ${classx}" title="Follow us on Facebook!"><jsp:text/></span>
       <c:if test="${label}"><span>Follow us on Facebook!</span></c:if>
     </a>
   </li>
   <li class="socmedia-link no-divider">
-    <a href="${constants.youtubeUrl}">
+    <a target="_blank" href="${constants.youtubeUrl}">
       <span class="youtube ${classx}" title="Follow us on YouTube!"><jsp:text/></span>
       <c:if test="${label}"><span>Follow us on YouTube!</span></c:if>
     </a>
