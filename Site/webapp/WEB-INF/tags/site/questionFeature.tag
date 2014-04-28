@@ -45,7 +45,7 @@
 
 <%-- Provided by WDK:  "NEW" AND "REVISED" ICONS --%>
   <c:otherwise>
-		<wdk:questionFeature question=="${question}" />
+		<wdk:questionFeature question="${question}" />
   </c:otherwise>
 </c:choose>
 
