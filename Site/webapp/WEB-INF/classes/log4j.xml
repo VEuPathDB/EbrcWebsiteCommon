@@ -99,6 +99,7 @@
     <logger name="org.gusdb.fgputil.db.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
     <logger name="org.gusdb.fgputil.db.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
     <logger name="org.orthomcl"><level value="info"/></logger>
+    <logger name="org.eupathdb"><level value="info"/></logger>
     <logger name="org.apidb"><level value="info"/></logger>
     <logger name="org.apache"><level value="warn"/></logger>
     <logger name="org.apache.catalina.core">
