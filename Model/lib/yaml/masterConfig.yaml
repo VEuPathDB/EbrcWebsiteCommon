@@ -155,3 +155,8 @@ toxodb:
 trichdb: {}
 
 tritrypdb: {}
+
+production:
+  appDb.maxIdle: 10
+  userDb.maxIdle: 10
+  commentDb.maxIdle: 10
