@@ -106,7 +106,7 @@ default:
   webServiceMirrorOrtho: none
 
   twitter: EuPathDB
-  facebook: EuPathDB
+  facebook: pages/EuPathDB/133123003429972
 #=======================================================================================================
 
 production:
@@ -142,7 +142,7 @@ eupathdb: {}
 
 fungidb: 
   twitter: FungiDB
-  facebook: FungiDB
+  facebook: pages/FungiDB
 
 giardiadb: {}
 
