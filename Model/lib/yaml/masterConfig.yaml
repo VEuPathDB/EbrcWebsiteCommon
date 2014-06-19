@@ -105,8 +105,8 @@ default:
   commentDbLink: none
   webServiceMirrorOrtho: none
 
-  twitter: none
-  facebook: none
+  twitter: EuPathDB
+  facebook: EuPathDB
 #=======================================================================================================
 
 production:
