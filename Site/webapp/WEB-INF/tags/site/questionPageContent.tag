@@ -29,6 +29,11 @@
   </h1>
 </c:if>
 
+<br><center style="position:relative;bottom:20px;font-size:120%;font-family:Verdana">
+  <a href="#query-description-section">[Description]</a> | 
+  <a href="#attributions-section">[Data Sets]</a>
+</center>
+
 <a name="query-search-form"></a>
 
 <div id="query-search-form">
