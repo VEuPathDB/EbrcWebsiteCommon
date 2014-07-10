@@ -43,13 +43,17 @@ public class ProjectMapper {
    * @return
    */
   public synchronized static ProjectMapper getMapper(WdkModel wdkModel)
-      throws WdkModelException, SAXException, IOException,
-      ParserConfigurationException {
+      throws WdkModelException {
     ProjectMapper mapper = projectMappers.get(wdkModel);
     if (mapper == null) {
       mapper = new ProjectMapper(wdkModel);
-      mapper.initialize();
-      projectMappers.put(wdkModel, mapper);
+      try {
+        mapper.initialize();
+        projectMappers.put(wdkModel, mapper);
+      }
+      catch (SAXException | IOException | ParserConfigurationException ex) {
+        throw new WdkModelException(ex);
+      }
     }
     return mapper;
   }
