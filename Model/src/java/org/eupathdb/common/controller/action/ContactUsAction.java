@@ -2,10 +2,11 @@ package org.eupathdb.common.controller.action;
 
 import java.util.ArrayList;
 import java.util.Map;
+
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.gusdb.wdk.controller.actionutil.ActionResult;
 import org.gusdb.wdk.controller.actionutil.ParamDef;
@@ -102,7 +103,7 @@ public class ContactUsAction extends WdkAction {
 
     ArrayList<DataHandler> attachmentList = new ArrayList<DataHandler>();
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
-      DiskFileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
+      FileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
           + Integer.toString(i));
       if (attachment != null && attachment.getSize() > 0L) {
         ByteArrayDataSource ads = new ByteArrayDataSource(attachment.get(),
