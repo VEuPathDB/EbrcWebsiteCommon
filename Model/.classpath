@@ -2,15 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/wdk-model"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/wsf-plugin-api"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/wdk-controller"/>
-	<classpathentry kind="lib" path="/wdk-controller/lib/java/struts-1.2.4.jar" sourcepath="C:/Develop/Java/Apache/maven-repo/struts/struts/1.2.4/struts-1.2.4-sources.jar"/>
-	<classpathentry kind="lib" path="/wsf-core/lib/java/not-deployed/servlet-api-2.5.jar"/>
-	<classpathentry kind="lib" path="/wsf-core/lib/java/javamail-1.4.jar"/>
-	<classpathentry kind="lib" path="/wdk-controller/lib/java/commons-fileupload-1.2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/fgputil-util"/>
-	<classpathentry kind="lib" path="/wsf-plugin-api/lib/java/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="/wsf-plugin-api/lib/java/org.json-chargebee-1.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WDK Controller"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WDK Model"/>
+	<classpathentry kind="var" path="M2_REPO/commons-fileupload/commons-fileupload/1.3.1/commons-fileupload-1.3.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4.7/mail-1.4.7.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/json/json/20140107/json-20140107.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
