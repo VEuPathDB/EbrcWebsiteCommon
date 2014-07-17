@@ -131,6 +131,8 @@ table.threecolumn td {
 
 #bubbles .info ul {
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
 #bubbles .info li
 {
@@ -495,6 +497,7 @@ span.smallTitle {
   z-index: 99;
   height: 28px;
   min-width: 980px;
+  line-height: 1;
 }
 
 .sf-menu {
@@ -674,6 +677,11 @@ span.smallTitle {
 
 #footer .contact {
   font-size: 1.4em;
+}
+#footer .attributions {
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 .site-icons li { display: inline; }
