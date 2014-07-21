@@ -56,7 +56,7 @@ public class SmokeTests {
     }
 
     @Test(description="Assert HTTP header status is 200 OK for WsfService url as test of Axis installation.",
-          groups = { "deployment", "webservice" })
+          groups = { "webservice" })
     public void WsfServicePage_HttpHeaderStatusIsOK() throws Exception {
         String url = baseurl + "/" + webappname + Utilities.WSF_PATH;
         assertHeaderStatusMessageIsOK(url);
