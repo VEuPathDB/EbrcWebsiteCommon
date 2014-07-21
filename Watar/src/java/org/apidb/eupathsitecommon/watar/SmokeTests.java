@@ -1,20 +1,18 @@
 package org.apidb.eupathsitecommon.watar;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import static org.testng.Assert.assertEquals;
+
+import java.net.URL;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
-
-import java.net.URL;
-
-import org.apidb.eupathsitecommon.watar.Utilities;
-
-import org.testng.annotations.*;
-import static org.testng.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 
 public class SmokeTests {
