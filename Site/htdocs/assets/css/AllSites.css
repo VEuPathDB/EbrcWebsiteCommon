@@ -118,7 +118,7 @@ table.threecolumn td {
 }
 #bubbles .info {
    width: 209px;
-   min-height: 301px;
+   min-height: 319px;
    height: 100%;
    background-image: url(../images/bubble_backgrnd.png);
    background-repeat: repeat-y;
@@ -142,7 +142,7 @@ table.threecolumn td {
 	margin-left: 7px;
 }
 #bubbles .info li ul {
-  margin: 4px 0;
+  margin: 0 0 4px 0;
 }
 #bubbles .info li ul li
 {
