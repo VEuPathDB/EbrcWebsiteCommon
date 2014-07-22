@@ -37,8 +37,10 @@ import org.gusdb.wdk.model.record.attribute.TextAttributeField;
  * @author xingao, steve fischer
  * 
  *         this command generates the data into detail table.
+ *         Do not use this one, use the one in ApiCommonShared/Model instead.
  * 
  */
+@Deprecated
 public class DetailTableLoader extends BaseCLI {
 
     private static final String ARG_PROJECT_ID = "model";
