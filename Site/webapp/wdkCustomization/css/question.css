@@ -58,6 +58,7 @@
   list-style-type: square;
 	margin-left:  2em;
 	list-style-position: outside;
+  padding: 0;
 } 
 #attributions-section .data-source { margin: 3px; padding: 2px 0px; }
 #attributions-section .data-source .title { font-weight:bold; }
