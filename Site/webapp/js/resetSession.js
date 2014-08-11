@@ -32,6 +32,10 @@
     deleteCookies('/');
     deleteCookies(wdk.webappUrl().slice(0, -1));
     deleteCookies('/cgi-bin/');
+
+    if (localStorage) {
+      localStorage.clear();
+    }
   }
 
   function isResetSession() {
