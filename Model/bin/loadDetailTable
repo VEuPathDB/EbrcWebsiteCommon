@@ -11,3 +11,4 @@ my $args = &WDK::Model::CommandHelper::getJavaArgs(@ARGV);
 my $cmd = "java $sysProps -classpath $CLASSPATH org.apidb.apicommon.model.report.DetailTableLoader $args";
 
 system($cmd);
+
