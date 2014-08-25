@@ -11,14 +11,13 @@
 %>
 <c:set var="project" value="${wdkModel.name}"/>
 
-<c:if test="${ refer == 'question' && fn:containsIgnoreCase(title,'BLAST') }">
+<c:if test="${ project ne 'OrthoMCL' && ( refer == 'question' && fn:containsIgnoreCase(title,'BLAST') ) }">
 			As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity. 
 			Prior versions of the search used WU-BLAST.
 		  <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a>
 </c:if>
 
-<c:if test="${project == 'PlasmoDB'  &&
-           ( refer == 'question' && fn:containsIgnoreCase(title,'pathway') ||
+<c:if test="${( refer == 'question' && fn:containsIgnoreCase(title,'pathway') ||
 				     refer == 'question' && fn:containsIgnoreCase(title,'compound') ||
              refer == 'recordPage' && fn:containsIgnoreCase(title,'pathway') ||
              refer == 'recordPage' && fn:containsIgnoreCase(title,'compound') ) }">
