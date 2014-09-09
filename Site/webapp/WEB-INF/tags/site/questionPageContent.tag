@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
 <%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
@@ -29,10 +28,12 @@
   </h1>
 </c:if>
 
+<c:if test="fn:containsIgnoreCase(q.questionSetName,'Internal')}">
 <br><center style="position:relative;bottom:20px;font-size:120%;font-family:Verdana">
   <a href="#query-description-section">[Description]</a> | 
-  <a href="#attributions-section">[Data Sets]</a>
+  <a href="#attributions-section">[Data Sets]</a> 
 </center>
+</c:if>
 
 <a name="query-search-form"></a>
 
