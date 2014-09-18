@@ -17,7 +17,7 @@
   <fmt:formatDate var="copyrightYear" value="${releaseDate}" pattern="yyyy"/>
   
   <c:set var="footerClass" value="${refer eq 'home' or refer eq 'home2' ? 'skinny-footer' : 'wide-footer' }"/>
-  
+
   <div id="footer" class="${footerClass} ui-helper-clearfix">
     <div class="left">
       <div class="build-info">
@@ -35,7 +35,7 @@
       <ul class="attributions">
         <li>
           <a href="http://code.google.com/p/strategies-wdk/">
-            <imp:image border="0" src="/wdk/images/stratWDKlogo.png" width="120"/>
+            <imp:image border="0" src="wdk/images/stratWDKlogo.png" width="120"/>
           </a>
         </li>
         <!-- <li>Test attribution</li> -->
