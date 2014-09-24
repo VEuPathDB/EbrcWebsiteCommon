@@ -6,7 +6,12 @@
 
   <jsp:directive.tag body-content="empty" dynamic-attributes="dynattrs"/>
 
-  <c:set var="src" value="${assetsfn:fingerprint(dynattrs['src'], pageContext.servletContext)}"/>
+  <jsp:useBean id="websiteRelease" class="org.eupathdb.common.controller.WebsiteReleaseConstants"/>
+
+  <c:set var="src" value="${dynattrs['src']}"/>
+  <c:if test="${requestScope.WEBSITE_RELEASE_STAGE gt websiteRelease.development}">
+    <c:set var="src" value="${assetsfn:fingerprint(dynattrs['src'], pageContext.servletContext)}"/>
+  </c:if>
 
   <![CDATA[<img]]>
 

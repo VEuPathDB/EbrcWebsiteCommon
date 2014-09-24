@@ -6,7 +6,12 @@
 
   <jsp:directive.tag body-content="empty" dynamic-attributes="dynattrs"/>
 
-  <c:set var="href" value="${assetsfn:fingerprint(dynattrs['href'], pageContext.servletContext)}"/>
+  <jsp:useBean id="websiteRelease" class="org.eupathdb.common.controller.WebsiteReleaseConstants"/>
+
+  <c:set var="href" value="${dynattrs['href']}"/>
+  <c:if test="${requestScope.WEBSITE_RELEASE_STAGE gt websiteRelease.development}">
+    <c:set var="href" value="${assetsfn:fingerprint(dynattrs['href'], pageContext.servletContext)}"/>
+  </c:if>
 
   <![CDATA[<link]]>
 

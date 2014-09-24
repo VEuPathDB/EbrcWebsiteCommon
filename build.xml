@@ -105,6 +105,11 @@
     </ant>
 
   </target>
+
+  <!-- Custum Web Installation related targets -->
+  <target name="EuPathSiteCommon-GenerateChecksumProp">
+    <exec executable="generateChecksumProp.sh"/>
+  </target>
  
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
