@@ -102,5 +102,10 @@
     </div>
 
   </div>
+
+  <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
+  <c:if test="${gaId ne 'none'}">
+    <imp:googleAnalytics gaId="${gaId}"/>
+  </c:if>
   
 </jsp:root>

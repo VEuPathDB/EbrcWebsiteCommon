@@ -89,6 +89,7 @@ default:
   commentDb.commentSchema: none
   commentDbLink: none
   webServiceMirrorOrtho: none
+  googleAnalyticsId: none
 
   twitter: EuPathDB
   facebook: pages/EuPathDB/133123003429972
