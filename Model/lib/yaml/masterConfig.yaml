@@ -1,7 +1,7 @@
-# What constant values go in this masterConfig file, and not directly in the template file?
+# What constant values go in this masterConfig file, and not directly in the template file (eg: model-config.xml.tmpl)?
 #  - values that affect multiple configuration files,
 #  - also values that, while they are only used by one template, they are better updated in view of other values.
-#  	  for example: commentDb.maxIdle
+#  	 for example: commentDb.maxIdle
 # ---------------------------------------------------------------------
 
 default:
@@ -38,7 +38,6 @@ default:
   # showConnections is a debug option we use to monitor connection leaks, and the
   # default is false. Unless we suspect that there's a connection leak in our site,
   # we should turn it off (or remove it) from all the sites.
-
   appDb.showConnections: false
   appDb.showConnectionsInterval: 10
   appDb.showConnectionsDuration: 600
@@ -49,11 +48,9 @@ default:
   # 1. Turn on log4jdbc by modifying log levels in log4j.xml
   # 2. View DB connection information in Melody (if we turn it on by adding a file to gus_home/config)
   # Otherwise entry can be ommitted.
-
   appDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
 
   # apicomm (user) replicated database
-
   userDb.login: ${userDb.login}
   userDb.password: ${userDb.password}
   userDb.instance: ${userDb.instance}
@@ -84,20 +81,8 @@ default:
   wdkStepAnalysisJobsDir: /var/www/Common/tmp/wdkStepAnalysisJobs
   highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
 
-  eupaURL: ${eupaURL}
-  orthURL: ${orthURL}
-  amebURL: ${amebURL}
-  crypURL: ${crypURL}
-  fungURL: ${fungURL}
-  giarURL: ${giarURL}
-  micrURL: ${micrURL}
-  piroURL: ${piroURL}
-  plasURL: ${plasURL}
-  toxoURL: ${toxoURL}
-  tricURL: ${tricURL}
-  trypURL: ${trypURL}
+  # needed in all sites but portal, to access blast gbrowse link
   myURL: ${myURL}
-
 
   plasmoPubsURL: none
   toxocommentschema: none
@@ -107,6 +92,18 @@ default:
 
   twitter: EuPathDB
   facebook: pages/EuPathDB/133123003429972
+
+  # needed only in portal to access comp sites
+  amebURL: none
+  crypURL: none 
+  giarURL: none 
+  micrURL: none 
+  piroURL: none 
+  plasURL: none 
+  toxoURL: none 
+  tricURL: none 
+  trypURL: none
+ 
 #=======================================================================================================
 
 production:
@@ -135,10 +132,20 @@ apiSite:
   profile.connection: dbi:Oracle:${appDb.instance}
 
 amoebadb: {}
-
+ 
 cryptodb: {}
 
-eupathdb: {}
+eupathdb:
+  amebURL: ${amebURL}
+  crypURL: ${crypURL}
+  giarURL: ${giarURL}
+  micrURL: ${micrURL}
+  piroURL: ${piroURL}
+  plasURL: ${plasURL}
+  toxoURL: ${toxoURL}
+  tricURL: ${tricURL}
+  trypURL: ${trypURL}
+  myURL: none
 
 fungidb: 
   twitter: FungiDB
