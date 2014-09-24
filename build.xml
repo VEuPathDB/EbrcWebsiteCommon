@@ -108,7 +108,35 @@
 
   <!-- Custum Web Installation related targets -->
   <target name="EuPathSiteCommon-GenerateChecksumProp">
+    <!--
+    <echo>Generating assets checksum properties file</echo>
     <exec executable="generateChecksumProp.sh"/>
+    -->
+    <echo>Generating assets-checksums.properties file...</echo>
+    <apply executable="md5sum" dir="${webappTargetDir}" parallel="true"
+      output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
+      <fileset dir="${webappTargetDir}" casesensitive="false">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.jpeg"/>
+        <include name="**/*.png"/>
+        <include name="**/*.gif"/>
+      </fileset>
+    </apply>
+
+    <!-- make paths relative to webapp dir -->
+    <exec executable="sed" output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
+      <arg line="s:${webappTargetDir}/:: ${webappTargetDir}/WEB-INF/assets-checksums.properties"/>
+    </exec>
+
+    <!-- swap columns and use ": " as separator to use as a properties file -->
+    <exec executable="awk" dir="${webappTargetDir}"
+      output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
+      <arg value="{OFS = &quot;=&quot;}{print $2, $1}"/>
+      <arg value="${webappTargetDir}/WEB-INF/assets-checksums.properties"/>
+    </exec>
+
   </target>
  
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
