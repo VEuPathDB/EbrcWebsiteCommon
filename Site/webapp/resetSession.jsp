@@ -42,7 +42,7 @@
     </div>
   </div>
 
-  <script src="js/resetSession.js"></script>
+  <imp:script src="js/resetSession.js"/>
 
   <script>
     (function($) {
