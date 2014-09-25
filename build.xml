@@ -114,7 +114,7 @@
     -->
     <echo>Generating assets-checksums.properties file...</echo>
     <apply executable="md5sum" dir="${webappTargetDir}" parallel="true"
-      output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
+      output="${webappTargetDir}/WEB-INF/assets.md5">
       <fileset dir="${webappTargetDir}" casesensitive="false">
         <include name="**/*.js"/>
         <include name="**/*.css"/>
@@ -126,15 +126,15 @@
     </apply>
 
     <!-- make paths relative to webapp dir -->
-    <exec executable="sed" output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
-      <arg line="s:${webappTargetDir}/:: ${webappTargetDir}/WEB-INF/assets-checksums.properties"/>
+    <exec executable="sed" output="${webappTargetDir}/WEB-INF/assets.md5.trimmed">
+      <arg line="s:${webappTargetDir}/:: ${webappTargetDir}/WEB-INF/assets.md5"/>
     </exec>
 
     <!-- swap columns and use ": " as separator to use as a properties file -->
     <exec executable="awk" dir="${webappTargetDir}"
       output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
       <arg value="{OFS = &quot;=&quot;}{print $2, $1}"/>
-      <arg value="${webappTargetDir}/WEB-INF/assets-checksums.properties"/>
+      <arg value="${webappTargetDir}/WEB-INF/assets.md5.trimmed"/>
     </exec>
 
   </target>
