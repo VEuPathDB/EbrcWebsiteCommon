@@ -110,7 +110,7 @@
   <target name="EuPathSiteCommon-GenerateChecksumProp">
     <echo>Generating assets checksum properties file</echo>
     <exec dir="${webappTargetDir}"
-          output="${webappTargetDir}/WEB-INF/assets.md5"
+          output="${webappTargetDir}/WEB-INF/assets-checksums.properties"
           executable="generateChecksumProp.sh"/>
     <!--
     <echo>Generating assets-checksums.properties file...</echo>
