@@ -25,9 +25,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * @author jerric
+ * The project mapper is used to load a mapping from project -> base URL of all
+ * projects EuPathDB may need to contact.  It also provides functionality to
+ * figure out which project an organism "belongs" to.
  * 
- *         The project mapper is used to load
+ * @author jerric
  */
 public class ProjectMapper {
 
@@ -83,9 +85,9 @@ public class ProjectMapper {
 
   protected void initialize() throws WdkModelException, SAXException,
       IOException, ParserConfigurationException {
+    
     // check if project config exists
-    File projectsFile = new File(wdkModel.getGusHome() + "/config/"
-        + PROJECTS_FILE);
+    File projectsFile = new File(wdkModel.getGusHome() + "/config/" + PROJECTS_FILE);
     if (!projectsFile.exists())
       throw new WdkModelException("The project config file doesn't exist: "
           + projectsFile.getAbsolutePath());
@@ -111,6 +113,13 @@ public class ProjectMapper {
 
       projects.put(name, site);
     }
+
+    // get this mapper's project and local URL
+    String projectId = wdkModel.getProjectId();
+    String myUrl = wdkModel.getModelConfig().getWebAppUrl();
+
+    // site URL in modelConfig for this project overrides any in projects.xml
+    projects.put(projectId, myUrl);
   }
 
   /**
