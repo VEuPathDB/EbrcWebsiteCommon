@@ -108,11 +108,12 @@
 
   <!-- Custum Web Installation related targets -->
   <target name="EuPathSiteCommon-GenerateChecksumProp">
+    <!--
     <echo>Generating assets checksum properties file</echo>
     <exec dir="${webappTargetDir}"
           output="${webappTargetDir}/WEB-INF/assets-checksums.properties"
           executable="generateChecksumProp.sh"/>
-    <!--
+    -->
     <echo>Generating assets-checksums.properties file...</echo>
     <apply dir="${webappTargetDir}"
            executable="md5sum"
@@ -130,23 +131,23 @@
         <include name="**/*.gif"/>
       </fileset>
     </apply>
-    -->
 
     <!-- make paths relative to webapp dir -->
-    <!--
-    <exec executable="sed" output="${webappTargetDir}/WEB-INF/assets.md5.trimmed">
+    <exec executable="sed"
+          dir="${webappTargetDir}"
+          logError="true"
+          output="${webappTargetDir}/WEB-INF/assets.md5.trimmed">
       <arg line="s:${webappTargetDir}/:: ${webappTargetDir}/WEB-INF/assets.md5"/>
     </exec>
-    -->
 
     <!-- swap columns and use ": " as separator to use as a properties file -->
-    <!--
-    <exec executable="awk" dir="${webappTargetDir}"
-      output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
+    <exec executable="awk"
+          dir="${webappTargetDir}"
+          logError="true"
+          output="${webappTargetDir}/WEB-INF/assets-checksums.properties">
       <arg value="{OFS = &quot;=&quot;}{print $2, $1}"/>
       <arg value="${webappTargetDir}/WEB-INF/assets.md5.trimmed"/>
     </exec>
-    -->
 
   </target>
  
