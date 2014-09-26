@@ -114,7 +114,7 @@
     -->
     <echo>Generating assets-checksums.properties file...</echo>
     <apply executable="md5sum" dir="${webappTargetDir}" parallel="true"
-      output="${webappTargetDir}/WEB-INF/assets.md5">
+      output="${webappTargetDir}/WEB-INF/assets.md5" verbose="true">
       <fileset dir="${webappTargetDir}" casesensitive="false">
         <include name="**/*.js"/>
         <include name="**/*.css"/>
