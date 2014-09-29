@@ -1,45 +1,55 @@
 package org.eupathdb.common.controller.functions;
 
-import java.io.IOException;
-import java.util.Properties;
 import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class AssetFunctions {
 
-  private static final String PROPS_FILE = "/WEB-INF/assets-checksums.properties";
+  private static final String MANIFEST_FILE = "assets-manifest.json";
   private static final Logger logger = Logger.getLogger(AssetFunctions.class);
-  private static Properties checksumProps = new Properties();
-  private static boolean didAttemptToLoadProps = false;
+  private static JSONObject manifestJSON;
+  private static boolean didAttemptToLoad = false;
 
   private static void loadChecksums(ServletContext svc) {
-    if (!didAttemptToLoadProps) {
+    if (!didAttemptToLoad) {
       try {
-        checksumProps.load(svc.getResourceAsStream(PROPS_FILE));
+        JSONTokener jt = new JSONTokener(svc.getResourceAsStream(MANIFEST_FILE));
+        manifestJSON = new JSONObject(jt);
       }
-      catch (IOException ioe) {
-        logger.error(ioe);
+      catch (JSONException je) {
+        logger.error(MANIFEST_FILE + " contains a syntax error.");
+        logger.debug(je);
       }
       catch (NullPointerException npe) {
-        logger.warn(PROPS_FILE + " not found. No URLs will be rewritten.");
-        checksumProps = null;
+        logger.warn(MANIFEST_FILE + " not found. No URLs will be rewritten.");
       }
       finally {
-        didAttemptToLoadProps = true;
+        didAttemptToLoad = true;
       }
     }
   }
 
   public static String doFingerprint(String url, ServletContext svc) {
     loadChecksums(svc);
-    if (checksumProps != null) {
-      String checksum = checksumProps.getProperty(url);
-      if (checksum != null) {
-        Integer extIndex = url.lastIndexOf('.');
-        String srcBase = url.substring(0, extIndex);
-        String srcExt = url.substring(extIndex);
-        url = srcBase + "-" + checksum + srcExt;
+    try {
+      if (manifestJSON != null) {
+        JSONObject fileInfo = manifestJSON.getJSONObject("files").getJSONObject(url);
+        String checksum = fileInfo.getString("checksum");
+        if (checksum != null) {
+          Integer extIndex = url.lastIndexOf('.');
+          String srcBase = url.substring(0, extIndex);
+          String srcExt = url.substring(extIndex);
+          url = srcBase + "-" + checksum + srcExt;
+        }
       }
+    }
+    catch (JSONException je) {
+      logger.error("Unable to get checksum for \"" + url + "\" from " +
+          MANIFEST_FILE + ". Using plain url.");
+      logger.debug(je);
     }
     return url;
   }
