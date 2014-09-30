@@ -878,7 +878,7 @@ th.mythStyle {
 }
 
 .vennDiagram {
-   background: transparent url('/assets/images/venn_filters.png') repeat scroll 2px 0;
+   background: transparent url('../images/venn_filters.png') repeat scroll 2px 0;
    height: 100px;
    width: 100px;
 }

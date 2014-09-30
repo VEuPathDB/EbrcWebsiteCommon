@@ -32,8 +32,8 @@
   <c:when test="${question.queryName eq 'GenesByGenericFoldChange' and refer ne 'webservices'}">
     <a style="float:right;font-size:80%;margin-right:1em" title="YouTube Fold Change search tutorial" 
 			href="http://www.youtube.com/watch?v=jMuVB-ZIdH0" target="_blank" onclick="poptastic(this.href); return false;">Tutorial 
-			  <img border="0"  style="vertical-align:middle;" alt="YouTube icon - Fold Change search tutorial" 
-				  src="/assets/images/youtube_32x32.png"/>
+			  <imp:image border="0"  style="vertical-align:middle;" alt="YouTube icon - Fold Change search tutorial" 
+				  src="images/youtube_32x32.png"/>
     </a>
   </c:when>
 
