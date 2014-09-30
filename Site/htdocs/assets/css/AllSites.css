@@ -302,11 +302,15 @@ iframe.twitter-timeline {
 
 
 
-/* newitems.js (highlight in yellow unread utems)*/
+/* newitems.js (highlight in yellow unread items) --  also adds warning sentence on side header, with how many items are unread*/
 p.unreadlabel {
   color:yellow;
-  font-size:.5em;
-  padding-left:3px;
+  font-size:12px;
+  padding-left:7px;
+  font-family: Verdana;
+  margin: 0;
+  position: relative;
+  bottom: 4px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
