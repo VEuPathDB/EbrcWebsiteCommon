@@ -16,9 +16,16 @@
 var fs = require('fs');
 var MD5 = require('MD5');
 
+var files = process.argv.slice(2);
+
+if (!files.length) {
+  usage();
+  process.exit();
+}
+
 var manifest = {};
 
-manifest.files = process.argv.slice(2)
+manifest.files = files
   .reduce(function(acc, file) {
     acc[file] = {
       checksum: MD5(fs.readFileSync(file)),
@@ -27,4 +34,9 @@ manifest.files = process.argv.slice(2)
     return acc;
   }, {});
 
-process.stdout.write(JSON.stringify(manifest, null, 4));
+process.stdout.write(JSON.stringify(manifest, null, 4) + '\n', 'utf-8');
+process.exit();
+
+function usage() {
+  process.stdout.write('Usage:  node generateAssetsManifest.js [file, ]\n');
+}
