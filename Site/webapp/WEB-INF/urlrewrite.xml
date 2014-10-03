@@ -4,13 +4,22 @@
 <urlrewrite>
 
   <rule>
+    <name>Dynamic cache headers</name>
+    <note>Tell clients not to cache for dyncamic content</note>
+    <from>^/(.*\.(do|jsp))?$</from>
+    <set type="response-header" name="Expires">Fri, 01 Jan 1990 00:00:00 GMT</set>
+    <set type="response-header" name="Pragma">no-cache</set>
+    <set type="response-header" name="Cache-Control">no-cache, must-revalidate</set>
+  </rule>
+
+  <rule>
     <name>Resolve assets</name>
     <note>Strip checksums from filenames and add far-future cache-related headers</note>
     <from>^(.*)-.{32}\.(js|css|jpeg|jpg|gif|png)$</from>
     <to>$1.$2</to>
     <set type="expires">1 year</set>
-    <set type="response-header" name="cache-control">public, max-age=31536000</set>
-    <set type="response-header" name="vary">Accept-Encoding</set>
+    <set type="response-header" name="Cache-Control">public, max-age=31536000</set>
+    <set type="response-header" name="Vary">Accept-Encoding</set>
   </rule>
 
 </urlrewrite>
