@@ -56,13 +56,13 @@ public class ContactUsAction extends WdkAction {
 	private static final int PARAM_ATTACHMENT_COUNT = 3;
 	private static final int PARAM_ATTACHMENT_MAX_SIZE_MB = 5;
 
-
   private static final Map<String, ParamDef> PARAM_DEFS = new ParamDefMapBuilder()
     .addParam(PARAM_REPLY, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_SUBJECT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_CONTENT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_ADDCC, new ParamDef(Required.OPTIONAL))
-    .addParam(PARAM_REFERRER, new ParamDef(Required.OPTIONAL)).toMap();
+    .addParam(PARAM_REFERRER, new ParamDef(Required.OPTIONAL))
+    .toMap();
 
   static {
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
@@ -73,6 +73,11 @@ public class ContactUsAction extends WdkAction {
 
   @Override
   protected boolean shouldValidateParams() {
+    return true;
+  }
+
+  @Override
+  protected boolean shouldCheckSpam() {
     return true;
   }
 	
@@ -189,4 +194,5 @@ public class ContactUsAction extends WdkAction {
         .setRequestAttribute("jsonData", jsMessage.toString())
         .setViewName(SUCCESS);
   }
+
 }

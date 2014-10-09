@@ -2,9 +2,9 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
 // functions are called using onload-function 
-  var setUpContactUsLogic = function() {
-    var $form = $("#contact-us");
-    var $container = $("#contact-files");
+  var setUpContactUsLogic = function($el) {
+    var $form = $el.find("#contact-us");
+    var $container = $el.find("#contact-files");
 
     var addFile = function(idx) {
       return $('<div><input type="file" name="attachment' + idx + '"/> </div>')
@@ -149,6 +149,8 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
         form.submit();
 
       });
+
+    wdk.util.addSpamTimestamp($form);
   };
 
 	// currently only used in ortho's sidebar.tag
