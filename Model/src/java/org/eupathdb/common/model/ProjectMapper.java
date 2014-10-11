@@ -2,20 +2,19 @@ package org.eupathdb.common.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.db.SqlUtils;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
@@ -41,11 +40,19 @@ public class ProjectMapper {
    * Use this method to make sure we create a singleton mapper for every given
    * model, and to cache the mapper.
    * 
-   * @param wdkModel
-   * @return
+   * @param wdkModel model for which to fetch mapper
+   * @return mapper for the passed model
+   * @throws WdkModelException if unable to create mapper for this model
    */
-  public synchronized static ProjectMapper getMapper(WdkModel wdkModel)
+  public static ProjectMapper getMapper(WdkModel wdkModel) throws WdkModelException {
+    if (projectMappers.containsKey(wdkModel))
+      return projectMappers.get(wdkModel);
+    return addMapperForModel(wdkModel);
+  }
+
+  private synchronized static ProjectMapper addMapperForModel(WdkModel wdkModel)
       throws WdkModelException {
+    // still need to check if mapper exists for this model
     ProjectMapper mapper = projectMappers.get(wdkModel);
     if (mapper == null) {
       mapper = new ProjectMapper(wdkModel);
@@ -61,10 +68,13 @@ public class ProjectMapper {
   }
 
   private final WdkModel wdkModel;
+  private final String myProjectId;
+  private final String myUrl;
+
   /**
    * a <projectId:site> map
    */
-  private final Map<String, String> projects;
+  private final Map<String, String> federatedProjects;
 
   /**
    * a lazy-loaded <organism:projectId> map
@@ -78,9 +88,11 @@ public class ProjectMapper {
 
   protected ProjectMapper(WdkModel wdkModel)  {
     this.wdkModel = wdkModel;
-    this.projects = new LinkedHashMap<>();
-    this.organisms = new HashMap<>();
-    this.timeout = 0;
+    myProjectId = wdkModel.getProjectId();
+    myUrl = wdkModel.getModelConfig().getWebAppUrl();
+    federatedProjects = new LinkedHashMap<>();
+    organisms = new HashMap<>();
+    timeout = 0;
   }
 
   protected void initialize() throws WdkModelException, SAXException,
@@ -111,15 +123,8 @@ public class ProjectMapper {
       if (!site.endsWith("/"))
         site += "/";
 
-      projects.put(name, site);
+      federatedProjects.put(name, site);
     }
-
-    // get this mapper's project and local URL
-    String projectId = wdkModel.getProjectId();
-    String myUrl = wdkModel.getModelConfig().getWebAppUrl();
-
-    // site URL in modelConfig for this project overrides any in projects.xml
-    projects.put(projectId, myUrl);
   }
 
   /**
@@ -131,11 +136,10 @@ public class ProjectMapper {
   }
 
   public String getRecordUrl(String recordClass, String projectId,
-      String sourceId) throws UnsupportedEncodingException {
+      String sourceId) {
     String site = getSite(projectId);
-
-    projectId = URLEncoder.encode(projectId, "UTF-8");
-    sourceId = URLEncoder.encode(sourceId, "UTF-8");
+    projectId = FormatUtil.getUtf8EncodedString(projectId);
+    sourceId = FormatUtil.getUtf8EncodedString(sourceId);
     return site + "showRecord.do?name=" + recordClass + "&project_id="
         + projectId + "&source_id=" + sourceId;
   }
@@ -147,8 +151,6 @@ public class ProjectMapper {
   
   public String getBaseUrl(String projectId) {
     String site = getSite(projectId);
-    //if (site.length() == 0) return "";
-
     // remove the webapp from the url
     int pos = site.substring(0, site.length() - 1).lastIndexOf("/");
     return site.substring(0, pos);
@@ -156,12 +158,13 @@ public class ProjectMapper {
 
   protected String getSite(String projectId) {
     // get the site. if site doesn't exist, use the current site
-    String site = projects.get(projectId);
-    return (site == null) ? "" : site;
+    if (projectId.equals(myProjectId)) return myUrl;
+    String site = federatedProjects.get(projectId);
+    return (site == null ? myUrl : site);
   }
-  
-  public Collection<String> getAllProjects() {
-    return projects.keySet();
+
+  public Set<String> getFederatedProjects() {
+    return federatedProjects.keySet();
   }
 
   /**
@@ -191,7 +194,8 @@ public class ProjectMapper {
       // if no project is found, put null into the mapping.
       organisms.put(organism, projectId);
       return projectId;
-    } finally {
+    }
+    finally {
       SqlUtils.closeResultSetAndStatement(resultSet);
     }
   }
