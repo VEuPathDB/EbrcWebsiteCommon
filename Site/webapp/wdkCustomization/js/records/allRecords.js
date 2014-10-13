@@ -4,16 +4,15 @@
 
 (function($) {
 
-  // label[in viewport] : Uncomment below to only load when element is in viewport
-  // var elementNearViewport = wdk.util.elementNearViewport;
-
-  // load content of ajax urls when visble
-  setInterval(function loadWdkAjaxOnVisible() {
+  // load content of ajax urls if visble
+  function loadWdkAjaxIfVisible() {
     $(document.body).find('wdk-ajax:not([triggered])')
       .filter('[manual]:visible')
-      // label[in viewport] : Uncomment below to only load when element is in viewport
-      // .filter(function(i, e) { return elementNearViewport(e); })
       .toArray().forEach(wdk.components.wdkAjax.load);
-  }, 200);
+  }
+
+  $(document)
+    .on('click', '.toggle a', loadWdkAjaxIfVisible)
+    .ready(loadWdkAjaxIfVisible);
 
 }(jQuery));
