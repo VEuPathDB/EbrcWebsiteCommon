@@ -986,8 +986,12 @@ a#gbView {
 }
 
 #gnCtx {
-    max-height: 500px;
+    height: 500px;
     overflow: auto;
+}
+
+#gnCtx #imgMapDivId_loading {
+  margin-top: 200px;
 }
 
 
