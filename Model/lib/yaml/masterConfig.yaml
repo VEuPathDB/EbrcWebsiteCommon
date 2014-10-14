@@ -74,8 +74,8 @@ default:
 
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
   webServiceUrl: local
-  blastPath: /opt/ncbi-blast2/bin/
-  idBlastRegex: "<![CDATA[^>*(?:[^\|]*\|)?(\S+)]]>"
+  blastPath: /opt/ncbi-blast+/bin/
+  idBlastRegex: "<![CDATA[^*(?:>)*(?:\s)*(?:[^\|]*\|)?(\S+)]]>"
   tempBlastPath: /var/www/Common/tmp/blast
   motifCntxtLen: 20
   wdkStepAnalysisJobsDir: /var/www/Common/tmp/wdkStepAnalysisJobs
