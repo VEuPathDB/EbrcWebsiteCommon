@@ -163,7 +163,7 @@ microsporidiadb: {}
 orthomcl:
   modelName: OrthoMCL
   webServiceMirrorOrtho: /var/www/Common/apiSiteFilesMirror/webServices/OrthoMCL
-  idBlastRegex: "<![CDATA[^>*(\S+)]]>"
+  idBlastRegex: "<![CDATA[^*(?:>)*(?:\s)*(\S+)]]>"
 
 piroplasmadb: {}
 
