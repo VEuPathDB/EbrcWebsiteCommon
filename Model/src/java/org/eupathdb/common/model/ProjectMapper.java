@@ -69,7 +69,8 @@ public class ProjectMapper {
 
   private final WdkModel wdkModel;
   private final String myProjectId;
-  private final String myUrl;
+  private final String myWebAppUrl;
+  private final String myWebSvcUrl;
 
   /**
    * a <projectId:site> map
@@ -89,7 +90,8 @@ public class ProjectMapper {
   protected ProjectMapper(WdkModel wdkModel)  {
     this.wdkModel = wdkModel;
     myProjectId = wdkModel.getProjectId();
-    myUrl = wdkModel.getModelConfig().getWebAppUrl();
+    myWebAppUrl = addSlash(wdkModel.getModelConfig().getWebAppUrl());
+    myWebSvcUrl = wdkModel.getModelConfig().getWebServiceUrl();
     federatedProjects = new LinkedHashMap<>();
     organisms = new HashMap<>();
     timeout = 0;
@@ -119,12 +121,13 @@ public class ProjectMapper {
     for (int i = 0; i < nodes.getLength(); i++) {
       Element node = (Element) nodes.item(i);
       String name = node.getAttribute("name");
-      String site = node.getAttribute("site");
-      if (!site.endsWith("/"))
-        site += "/";
-
+      String site = addSlash(node.getAttribute("site"));
       federatedProjects.put(name, site);
     }
+  }
+
+  private static String addSlash(String str) {
+    return (str.endsWith("/") ? str : str + "/");
   }
 
   /**
@@ -137,7 +140,7 @@ public class ProjectMapper {
 
   public String getRecordUrl(String recordClass, String projectId,
       String sourceId) {
-    String site = getSite(projectId);
+    String site = getWebAppUrl(projectId);
     projectId = FormatUtil.getUtf8EncodedString(projectId);
     sourceId = FormatUtil.getUtf8EncodedString(sourceId);
     return site + "showRecord.do?name=" + recordClass + "&project_id="
@@ -145,22 +148,29 @@ public class ProjectMapper {
   }
 
   public String getWebServiceUrl(String projectId) {
-    String site = getSite(projectId);
-    return site + "services/WsfService";
-  }
-  
-  public String getBaseUrl(String projectId) {
-    String site = getSite(projectId);
-    // remove the webapp from the url
-    int pos = site.substring(0, site.length() - 1).lastIndexOf("/");
-    return site.substring(0, pos);
+    if (projectId.equals(myProjectId)) return myWebSvcUrl;
+    String site = getWebAppUrl(projectId);
+    return (site == null ? myWebSvcUrl : site + "services/WsfService");
   }
 
-  protected String getSite(String projectId) {
+  public String getWebAppUrl(String projectId) {
     // get the site. if site doesn't exist, use the current site
-    if (projectId.equals(myProjectId)) return myUrl;
+    if (projectId.equals(myProjectId)) return myWebAppUrl;
     String site = federatedProjects.get(projectId);
-    return (site == null ? myUrl : site);
+    return (site == null ? myWebAppUrl : site);
+  }
+
+  public String getBaseUrl(String projectId) {
+    String site = getWebAppUrl(projectId);
+    // remove the webapp from the url
+    return site.substring(0, site.lastIndexOf("/", site.length() - 2));
+  }
+
+  public String getWebAppName(String projectId) {
+    String site = getWebAppUrl(projectId);
+    // remove the webapp from the url
+    if (site.endsWith("/")) site = site.substring(0, site.length() -1);
+    return site.substring(site.lastIndexOf("/") + 1);
   }
 
   public Set<String> getFederatedProjects() {
