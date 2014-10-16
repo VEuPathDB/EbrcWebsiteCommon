@@ -176,7 +176,9 @@ table.threecolumn td {
 	padding-left: 19px;
 }
 
-
+#bubbles .sub_list {
+  display: none;
+}
 
 .detail_link {
 /*	border: 2px solid #d8d8d8; */
