@@ -7,7 +7,7 @@ my @sharedProjects = ('EuPathSiteCommon:apidb', 'EuPathWebSvcCommon:apidb', 'CBI
 
 my @apiProjects = ('EuPathPresenters:apidb', 'EuPathDatasets:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb', 'GBrowse:apidb', 'ReFlow:gus');
 
-my @orthoProjects = ('OrthoMCLShared:apidb', 'OrthoMCLWebsite:apidb', 'OrthoMCLWebService:apidb');
+my @orthoProjects = ('OrthoMCLData:apidb', 'OrthoMCLShared:apidb', 'OrthoMCLWebsite:apidb', 'OrthoMCLWebService:apidb');
 
 usage() unless $branch && ($target eq 'api' || $target eq 'ortho' || $target eq 'both');
 
