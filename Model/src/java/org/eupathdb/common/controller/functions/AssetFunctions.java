@@ -36,6 +36,7 @@ public class AssetFunctions {
     loadChecksums(svc);
     try {
       if (manifestJSON != null) {
+				if (url != null) url = url.trim();
         JSONObject fileInfo = manifestJSON.getJSONObject("files").getJSONObject(url);
         String checksum = fileInfo.getString("checksum");
         if (checksum != null) {
