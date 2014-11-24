@@ -41,7 +41,7 @@ function makeSelection(state)
 <imp:reporter/>
 
 <%-- display description for page --%>
-<h3>Generate a report that contents the complete information for each record.</h3>
+<h3>Generate a report that contains the complete information for each record.</h3>
 
 
 <%-- handle empty result set situation --%>
