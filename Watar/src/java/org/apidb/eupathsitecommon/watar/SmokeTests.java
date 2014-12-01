@@ -114,7 +114,7 @@ public class SmokeTests {
             WebRequest request = new WebRequest(new URL(url), HttpMethod.HEAD);
             HtmlPage page = (HtmlPage) browser.getPage(request);
             WebResponse response = page.getWebResponse();
-            assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + ".");
+            assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + " .");
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
