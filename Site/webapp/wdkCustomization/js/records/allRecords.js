@@ -12,7 +12,7 @@
   }
 
   $(document)
-    .on('click', '.toggle a, .wdk-toggle-name a', loadWdkAjaxIfVisible)
+    .on('click', '.toggle a, .toggle-handle a, .wdk-toggle-name a', loadWdkAjaxIfVisible)
     .ready(loadWdkAjaxIfVisible);
 
 }(jQuery));
