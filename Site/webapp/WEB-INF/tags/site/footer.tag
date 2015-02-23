@@ -58,6 +58,11 @@
             <imp:image src="images/CryptoDB/footer-logo.png"/>
           </a>
         </li>
+        <li class="short-space" title="FungiDB.org">
+          <a href="http://fungidb.org">
+            <imp:image src="images/FungiDB/footer-logo.png"/>
+          </a>
+        </li>
         <li class="short-space" title="GiardiaDB.org">
           <a href="http://giardiadb.org">
             <imp:image src="images/GiardiaDB/footer-logo.png"/>
