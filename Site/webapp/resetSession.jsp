@@ -28,7 +28,7 @@
     <h1>Reset Session</h1>
     <div>
       Clicking the following button will remove all cookies related to
-      this webiste and redirect you to the homepage. This means the following
+      this website and redirect you to the homepage. This means the following
       things will happen:
       <ul>
         <li>If you are logged in, you will be logged out.</li>
