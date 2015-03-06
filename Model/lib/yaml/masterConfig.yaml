@@ -105,6 +105,9 @@ default:
   toxoURL: none 
   tricURL: none 
   trypURL: none
+
+  fungURL: none
+
  
 #=======================================================================================================
 
@@ -147,6 +150,10 @@ eupathdb:
   toxoURL: ${toxoURL}
   tricURL: ${tricURL}
   trypURL: ${trypURL}
+
+  fungURL: ${fungURL}
+
+
   myURL: none
 
 fungidb: 
@@ -168,6 +175,8 @@ orthomcl:
 piroplasmadb: {}
 
 plasmodb: {}
+
+schistodb: {}
 
 toxodb:
   toxocommentschema: toxocomm.
