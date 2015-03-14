@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
+<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="recordName" value="${wdkQuestion.recordClass.displayNamePlural}"/>
@@ -38,7 +38,7 @@
 <a name="query-search-form"></a>
 
 <div id="query-search-form">
-  <html:form styleId="form_question" method="post" enctype='multipart/form-data' action="/processQuestion.do">
+  <html:form method="post" enctype='multipart/form-data' action="/processQuestion.do">
     <imp:questionForm />
 
     <c:if test="${hideOperation == false}">
