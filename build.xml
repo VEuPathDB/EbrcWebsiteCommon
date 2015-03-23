@@ -42,9 +42,7 @@
 
   <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
                                                         EuPathSiteCommon/Site-Installation,
-                                                        EuPathSiteCommon/Model-Installation,
-                                                        EuPathSiteCommon/Util-Installation,
-                                                        EuPathSiteCommon/View-Installation">
+                                                        EuPathSiteCommon/Model-Installation">
     <ant target="defaultProjectInstall">
       <property name="project" value="EuPathSiteCommon"/>
     </ant>
@@ -73,20 +71,6 @@
       <property name="component" value="Site"/>
     </ant>
   </target>  
-
-  <target name="EuPathSiteCommon/View-Installation">
-    <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
-      <property name="component" value="View"/>
-    </ant>
-  </target>
-
-  <target name="EuPathSiteCommon/Util-Installation">
-    <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
-      <property name="component" value="Util"/>
-    </ant>
-  </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
