@@ -6,6 +6,6 @@ use strict;
 
 my ($branch, $comment, $delete) = @ARGV;
 
-my @projects = ('ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb', 'EuPathPresenters:apidb', 'EuPathDatasets:apidb', 'EuPathSiteCommon:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'ReFlow:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
+my @projects = ('OrthoMCLShared:apidb', 'OrthoMCLWebsite:apidb', 'OrthoMCLService:apidb', 'ApiCommonShared:apidb', 'ApiCommonWebsite:apidb', 'ApiCommonWebService:apidb', 'EuPathPresenters:apidb', 'EuPathDatasets:apidb', 'EuPathSiteCommon:apidb', 'EuPathWebSvcCommon:apidb', 'GBrowse:apidb', 'CBIL:gus', 'ReFlow:gus', 'FgpUtil:gus', 'install:gus', 'WDK:gus', 'WSF:gus');
 
 FgpUtil::Util::ProjectBrancher::branch($branch, $comment, $delete, \@projects);
