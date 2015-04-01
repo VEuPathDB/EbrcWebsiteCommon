@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/java/htmlunit-2.13.jar"/>
+	<classpathentry kind="lib" path="lib/java/testng-6.8.jar"/>
+	<classpathentry kind="lib" path="lib/java/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

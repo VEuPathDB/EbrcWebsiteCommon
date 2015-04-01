@@ -1,10 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
+<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
 <%@ taglib prefix="random" uri="http://jakarta.apache.org/taglibs/random-1.0" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
+<%@ taglib prefix="nested" uri="http://struts.apache.org/tags-nested" %>
 
 <c:set var="wdkUser" value="${sessionScope.wdkUser}"/>
 <c:set var="version" value="${wdkModel.version}"/>
@@ -16,7 +16,7 @@
 <div class="h2center">We encourage you to see the <a href="http://eupathdb.org/tutorials/New_Strat/New_Strat_viewlet_swf.html">Tutorial</a> (5 minutes) about building a basic search strategy</div>
 
 <center>
-<imp:image src="/wdk/images/strategy_help.png"/> 
+<imp:image src="wdk/images/strategy_help.png"/> 
 </center>
 
 The image above shows some of the functionality of the Run Strategies tab.  <br>

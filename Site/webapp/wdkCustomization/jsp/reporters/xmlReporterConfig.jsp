@@ -3,8 +3,8 @@
 <%@ taglib prefix="pg" uri="http://jsptags.com/tags/navigation/pager" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
-<%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
+<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
+<%@ taglib prefix="nested" uri="http://struts.apache.org/tags-nested" %>
 
 <%-- get wdkModel saved in application scope --%>
 <c:set var="wdkModel" value="${applicationScope.wdkModel}"/>
@@ -41,7 +41,7 @@ function makeSelection(state)
 <imp:reporter/>
 
 <%-- display description for page --%>
-<h3>Generate a report that contents the complete information for each record.</h3>
+<h3>Generate a report that contains the complete information for each record.</h3>
 
 
 <%-- handle empty result set situation --%>

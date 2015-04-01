@@ -7,10 +7,10 @@
   <c:set var="siteName" value="${applicationScope.wdkModel.name}"/>
   <c:set var="referrer" value="${header['referer']}"/>
   
-<h1>We appreciate your questions and feedback</h1>
+  <h1>We appreciate your questions and feedback</h1>
 
 
-  <div class="contact-us">
+  <div class="contact-us" data-controller="eupath.setup.setUpContactUsLogic">
     <h4>We are available to help with Questions, Error reports,
       Feature requests, Dataset proposals, etc.</h4>
 

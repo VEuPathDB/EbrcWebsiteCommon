@@ -92,6 +92,11 @@ div.innertube #record-toolbox {
     text-align: center;
 }
 
+div.innertube #record-toolbox ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 div.innertube #record-toolbox li {
     margin-top: 2px;
 }
@@ -118,7 +123,7 @@ table.threecolumn td {
 }
 #bubbles .info {
    width: 209px;
-   min-height: 301px;
+   min-height: 319px;
    height: 100%;
    background-image: url(../images/bubble_backgrnd.png);
    background-repeat: repeat-y;
@@ -131,6 +136,8 @@ table.threecolumn td {
 
 #bubbles .info ul {
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
 #bubbles .info li
 {
@@ -140,7 +147,7 @@ table.threecolumn td {
 	margin-left: 7px;
 }
 #bubbles .info li ul {
-  margin: 4px 0;
+  margin: 0 0 4px 0;
 }
 #bubbles .info li ul li
 {
@@ -169,7 +176,9 @@ table.threecolumn td {
 	padding-left: 19px;
 }
 
-
+#bubbles .sub_list {
+  display: none;
+}
 
 .detail_link {
 /*	border: 2px solid #d8d8d8; */
@@ -295,16 +304,23 @@ iframe.twitter-timeline {
 
 
 
-/* newitems.js (highlight in yellow unread utems)*/
+/* newitems.js (highlight in yellow unread items) --  also adds warning sentence on side header, with how many items are unread*/
 p.unreadlabel {
   color:yellow;
-  font-size:.5em;
-  padding-left:3px;
+  font-size:12px;
+  padding-left:7px;
+  font-family: Verdana;
+  margin: 0;
+  position: relative;
+  bottom: 4px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =News
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+table#news { 
+  width:100%;
+}
 table#news ul { 
     	list-style: inside disc;
 	padding-left: 2em;
@@ -495,6 +511,7 @@ span.smallTitle {
   z-index: 99;
   height: 28px;
   min-width: 980px;
+  line-height: 1;
 }
 
 .sf-menu {
@@ -675,6 +692,11 @@ span.smallTitle {
 #footer .contact {
   font-size: 1.4em;
 }
+#footer .attributions {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
 
 .site-icons li { display: inline; }
 .site-icons li.short-space { margin-left: 9px; }
@@ -841,6 +863,16 @@ th.mythStyle {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 =genes Filters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+table#geneFilters th.phylum {
+  font-size: 110%;
+  font-weight: bold;
+}
+table#geneFilters th.genus {
+ font-size: 110%;
+}
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =TOXO  advanced filters (should be moved to Toxo.css)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -861,7 +893,7 @@ th.mythStyle {
 }
 
 .vennDiagram {
-   background: transparent url('/assets/images/venn_filters.png') repeat scroll 2px 0;
+   background: transparent url('../images/venn_filters.png') repeat scroll 2px 0;
    height: 100px;
    width: 100px;
 }
@@ -969,8 +1001,12 @@ a#gbView {
 }
 
 #gnCtx {
-    max-height: 500px;
+    height: 500px;
     overflow: auto;
+}
+
+#gnCtx #imgMapDivId_loading {
+  margin-top: 200px;
 }
 
 
@@ -1132,6 +1168,13 @@ span.galaxy,b.galaxy{
 }
 span.galaxy {
 		border-width:2px 0;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = Filter param
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.filter-param-tabs {
+  margin-left: -20em;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

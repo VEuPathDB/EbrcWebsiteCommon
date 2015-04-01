@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
 
 <%@ attribute name="from" description="page using this tag" %>
 
@@ -33,7 +34,7 @@
      <!--  <a class="parent category"><span>${category.displayName}</span></a> -->
     <c:choose>
       <c:when test="${from eq 'home'}">
-        <img class="bubble-header" src="/assets/images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
+        <imp:image class="bubble-header" src="images/OrthoMCL/${bubbleTitle}" alt="${category.displayName}" />
       </c:when>
       <c:when test="${form eq 'webservices'}">
         <h3><a href="${urlBase}/webservices/${category.name}.wadl">${category.displayName}</a></h3>

@@ -557,6 +557,23 @@
        </table>
    </record>
 
+<record>
+       <attribute name="title">The Result Analyzer</attribute>
+       <attribute name="description">A general introduction to the Result Analyzer which offers tools for analyzing the results of 
+       searches and strategies that return genes.</attribute>
+       <attribute name="uid">28Aug2014</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=npgkkychkrI</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">ADB Result Analysis 3/adb_result_analysis_3_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">5 min</attribute>
+           <attribute name="size">6.2 mb</attribute>
+         </row>
+       </table>
+   </record>
 
  <record>
        <attribute name="title">Search Strategies</attribute>
@@ -664,9 +681,6 @@
          </row>
        </table>
    </record>
-
-  
-  
 
 
  </xmlAnswer>

@@ -24,7 +24,7 @@ h3 { text-indent: 10px }
 
 <table align="center" WIDTH='640' cellpadding='20' cellspacing='0'>
   <tr>
-     <td align="center" width="20"><a href='/'><img src="/assets/images/<!--#echo var="PROJECT_ID" -->/title_s.png"></a></td>
+     <td align="center" width="20"><a href='/'><img src="/a/images/<!--#echo var="PROJECT_ID" -->/title_s.png"></a></td>
   </tr>
 <br><br><br>
   <tr><td align="center">        

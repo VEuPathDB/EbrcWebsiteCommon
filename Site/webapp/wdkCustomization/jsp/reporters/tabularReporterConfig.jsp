@@ -3,8 +3,8 @@
 <%@ taglib prefix="pg" uri="http://jsptags.com/tags/navigation/pager" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="html" uri="http://jakarta.apache.org/struts/tags-html" %>
-<%@ taglib prefix="nested" uri="http://jakarta.apache.org/struts/tags-nested" %>
+<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
+<%@ taglib prefix="nested" uri="http://struts.apache.org/tags-nested" %>
 
 <jsp:useBean id="websiteRelease" class="org.eupathdb.common.controller.WebsiteReleaseConstants"/>
 
@@ -142,8 +142,8 @@ function appendchecked(form, url) {
     </tr>
 
   <tr><td valign="top"><b>Column names: </b></td>
-      <td><input type="radio" name="includeHeader" value="yes" >include
-          <input type="radio" name="includeHeader" value="no" checked>exclude
+      <td><input type="radio" name="includeHeader" value="yes" checked>include
+          <input type="radio" name="includeHeader" value="no" >exclude
         </td></tr>
   <tr><td title="Will open new tabs"><b>Download type and format: </b></td>
       <td>

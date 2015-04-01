@@ -1,20 +1,18 @@
 package org.apidb.eupathsitecommon.watar;
 
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import static org.testng.Assert.assertEquals;
+
+import java.net.URL;
+
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
 import com.gargoylesoftware.htmlunit.HttpMethod;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
-
-import java.net.URL;
-
-import org.apidb.eupathsitecommon.watar.Utilities;
-
-import org.testng.annotations.*;
-import static org.testng.Assert.assertEquals;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 
 public class SmokeTests {
@@ -56,7 +54,7 @@ public class SmokeTests {
     }
 
     @Test(description="Assert HTTP header status is 200 OK for WsfService url as test of Axis installation.",
-          groups = { "deployment", "webservice" })
+          groups = { "webservice" })
     public void WsfServicePage_HttpHeaderStatusIsOK() throws Exception {
         String url = baseurl + "/" + webappname + Utilities.WSF_PATH;
         assertHeaderStatusMessageIsOK(url);
@@ -116,7 +114,7 @@ public class SmokeTests {
             WebRequest request = new WebRequest(new URL(url), HttpMethod.HEAD);
             HtmlPage page = (HtmlPage) browser.getPage(request);
             WebResponse response = page.getWebResponse();
-            assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + ".");
+            assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + " .");
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

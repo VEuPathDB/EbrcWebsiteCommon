@@ -33,7 +33,8 @@ java -cp "$PROJECT_HOME/test_home/lib/java/*"   \
 
 
 !! example installation, remove any previous results, run 
-!! testbynames; where testnames are defined as a system property.
+!! testbynames; where testnames are defined in 
+!! config/smoketest_ng.xml.
 ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
     -Dcomp=Watar \
     -Dproj=EuPathSiteCommon \

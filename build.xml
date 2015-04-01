@@ -42,9 +42,7 @@
 
   <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
                                                         EuPathSiteCommon/Site-Installation,
-                                                        EuPathSiteCommon/Model-Installation,
-                                                        EuPathSiteCommon/Util-Installation,
-                                                        EuPathSiteCommon/View-Installation">
+                                                        EuPathSiteCommon/Model-Installation">
     <ant target="defaultProjectInstall">
       <property name="project" value="EuPathSiteCommon"/>
     </ant>
@@ -74,20 +72,6 @@
     </ant>
   </target>  
 
-  <target name="EuPathSiteCommon/View-Installation">
-    <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
-      <property name="component" value="View"/>
-    </ant>
-  </target>
-
-  <target name="EuPathSiteCommon/Util-Installation">
-    <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
-      <property name="component" value="Util"/>
-    </ant>
-  </target>
-
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
@@ -103,6 +87,34 @@
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
+
+  </target>
+
+  <!-- Custum Web Installation related targets -->
+  <!-- <target name="assets-checksums-prop" extensionOf="webinstall-posthook"> -->
+
+  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
+  <!-- Projects which depend on this one should call this after defaultWebComponentInstal -->
+  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
+  <target name="EuPathSiteCommon-post-webinstall">
+
+    <echo>Generating assets-manifest.json</echo>
+
+    <apply dir="${webappTargetDir}"
+           relative="true"
+           executable="node"
+           parallel="true"
+           output="${webappTargetDir}/assets-manifest.json">
+      <arg line="${projectsDir}/EuPathSiteCommon/Site/scripts/generateAssetsManifest.js"/>
+      <fileset dir="${webappTargetDir}" casesensitive="false">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.jpeg"/>
+        <include name="**/*.png"/>
+        <include name="**/*.gif"/>
+      </fileset>
+    </apply>
 
   </target>
  

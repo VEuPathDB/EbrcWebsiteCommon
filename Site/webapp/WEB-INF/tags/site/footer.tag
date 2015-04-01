@@ -17,7 +17,7 @@
   <fmt:formatDate var="copyrightYear" value="${releaseDate}" pattern="yyyy"/>
   
   <c:set var="footerClass" value="${refer eq 'home' or refer eq 'home2' ? 'skinny-footer' : 'wide-footer' }"/>
-  
+
   <div id="footer" class="${footerClass} ui-helper-clearfix">
     <div class="left">
       <div class="build-info">
@@ -35,7 +35,7 @@
       <ul class="attributions">
         <li>
           <a href="http://code.google.com/p/strategies-wdk/">
-            <imp:image border="0" src="/wdk/images/stratWDKlogo.png" width="120"/>
+            <imp:image border="0" src="wdk/images/stratWDKlogo.png" width="120"/>
           </a>
         </li>
         <!-- <li>Test attribution</li> -->
@@ -44,63 +44,73 @@
 
     <div class="bottom">
       <a href="http://www.eupathdb.org">
-        <img src="/assets/images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
+        <imp:image src="images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
       </a>
 
       <ul class="site-icons">
         <li title="AmoebaDB.org">
           <a href="http://amoebadb.org">
-            <img src="/assets/images/AmoebaDB/footer-logo.png"/>
+            <imp:image src="images/AmoebaDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="CryptoDB.org">
           <a href="http://cryptodb.org">
-            <img src="/assets/images/CryptoDB/footer-logo.png"/>
+            <imp:image src="images/CryptoDB/footer-logo.png"/>
+          </a>
+        </li>
+        <li class="short-space" title="FungiDB.org">
+          <a href="http://fungidb.org">
+            <imp:image src="images/FungiDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="GiardiaDB.org">
           <a href="http://giardiadb.org">
-            <img src="/assets/images/GiardiaDB/footer-logo.png"/>
+            <imp:image src="images/GiardiaDB/footer-logo.png"/>
           </a>
         </li>
         <li class="long-space" title="MicrosporidiaDB.org">
           <a href="http://microsporidiadb.org">
-            <img src="/assets/images/MicrosporidiaDB/footer-logo.png"/>
+            <imp:image src="images/MicrosporidiaDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="PiroplasmaDB.org">
           <a href="http://piroplasmadb.org">
-            <img src="/assets/images/PiroplasmaDB/footer-logo.png"/>
+            <imp:image src="images/PiroplasmaDB/footer-logo.png"/>
           </a>
         </li>
         <li class="long-space" title="PlasmoDB.org">
           <a href="http://plasmodb.org">
-            <img src="/assets/images/PlasmoDB/footer-logo.png"/>
+            <imp:image src="images/PlasmoDB/footer-logo.png"/>
           </a>
         </li>
         <li class="long-space" title="ToxoDB.org">
           <a href="http://toxodb.org">
-            <img src="/assets/images/ToxoDB/footer-logo.png"/>
+            <imp:image src="images/ToxoDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="TrichDB.org">
           <a href="http://trichdb.org">
-            <img src="/assets/images/TrichDB/footer-logo.png"/>
+            <imp:image src="images/TrichDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="TriTrypDB.org">
           <a href="http://tritrypdb.org">
-            <img src="/assets/images/TriTrypDB/footer-logo.png"/>
+            <imp:image src="images/TriTrypDB/footer-logo.png"/>
           </a>
         </li>
         <li class="short-space" title="OrthoMCL.org">
           <a href="http://orthomcl.org">
-            <img src="/assets/images/OrthoMCL/footer-logo.png"/>
+            <imp:image src="images/OrthoMCL/footer-logo.png"/>
           </a>
         </li>
       </ul>
     </div>
 
   </div>
+
+  <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
+  <c:if test="${gaId ne 'none'}">
+    <imp:googleAnalytics gaId="${gaId}"/>
+  </c:if>
   
 </jsp:root>

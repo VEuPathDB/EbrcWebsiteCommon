@@ -2,10 +2,11 @@ package org.eupathdb.common.controller.action;
 
 import java.util.ArrayList;
 import java.util.Map;
+
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.gusdb.wdk.controller.actionutil.ActionResult;
 import org.gusdb.wdk.controller.actionutil.ParamDef;
@@ -55,13 +56,13 @@ public class ContactUsAction extends WdkAction {
 	private static final int PARAM_ATTACHMENT_COUNT = 3;
 	private static final int PARAM_ATTACHMENT_MAX_SIZE_MB = 5;
 
-
   private static final Map<String, ParamDef> PARAM_DEFS = new ParamDefMapBuilder()
     .addParam(PARAM_REPLY, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_SUBJECT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_CONTENT, new ParamDef(Required.REQUIRED))
     .addParam(PARAM_ADDCC, new ParamDef(Required.OPTIONAL))
-    .addParam(PARAM_REFERRER, new ParamDef(Required.OPTIONAL)).toMap();
+    .addParam(PARAM_REFERRER, new ParamDef(Required.OPTIONAL))
+    .toMap();
 
   static {
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
@@ -72,6 +73,11 @@ public class ContactUsAction extends WdkAction {
 
   @Override
   protected boolean shouldValidateParams() {
+    return true;
+  }
+
+  @Override
+  protected boolean shouldCheckSpam() {
     return true;
   }
 	
@@ -102,7 +108,7 @@ public class ContactUsAction extends WdkAction {
 
     ArrayList<DataHandler> attachmentList = new ArrayList<DataHandler>();
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
-      DiskFileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
+      FileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
           + Integer.toString(i));
       if (attachment != null && attachment.getSize() > 0L) {
         ByteArrayDataSource ads = new ByteArrayDataSource(attachment.get(),
@@ -188,4 +194,5 @@ public class ContactUsAction extends WdkAction {
         .setRequestAttribute("jsonData", jsMessage.toString())
         .setViewName(SUCCESS);
   }
+
 }
