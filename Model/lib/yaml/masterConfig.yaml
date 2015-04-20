@@ -176,7 +176,8 @@ piroplasmadb: {}
 
 plasmodb: {}
 
-schistodb: {}
+schistodb:
+  supportEmail: help@$SchistoDB.net
 
 toxodb:
   toxocommentschema: toxocomm.
