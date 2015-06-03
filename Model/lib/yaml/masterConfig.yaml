@@ -80,6 +80,9 @@ default:
   motifCntxtLen: 20
   wdkStepAnalysisJobsDir: /var/www/Common/tmp/wdkStepAnalysisJobs
   highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
+  highSpeedSnpSearchIdPrefix: NGS_SNP.
+  highSpeedChipSnpSearchJobsDir: /var/www/Common/tmp/highSpeedChipSnpSearch
+  highSpeedChipSnpSearchIdPrefix: NULL
 
   # needed in all sites but portal, to access blast gbrowse link
   myURL: ${myURL}
