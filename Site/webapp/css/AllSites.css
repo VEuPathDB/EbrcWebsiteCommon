@@ -57,6 +57,14 @@ body::-webkit-scrollbar {
   text-decoration: underline;
 }
 
+/* useful for embedding forms and making submit button look like a link */
+input.link, button.link {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
