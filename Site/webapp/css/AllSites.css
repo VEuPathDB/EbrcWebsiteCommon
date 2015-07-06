@@ -66,6 +66,23 @@ input.link, button.link {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  =SEMANTIC: sematic-based rules, using HTML5 elements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+article h1,
+article h2,
+article h3,
+article h4,
+article h5,
+article h6 {
+  text-align: left;
+  margin-left: 0;
+}
+article section {
+  padding-left: 1em;
+  margin-top: 1em;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #search-bubbles {
@@ -330,22 +347,45 @@ table#news {
   width:100%;
 }
 table#news ul { 
-    	list-style: inside disc;
-	padding-left: 2em;
-    	text-indent: -1em;
+  list-style: inside disc;
+  padding-left: 2em;
+  text-indent: -1em;
 }
 table#news ul ul {
-    list-style-type: circle;
+  list-style-type: circle;
 }
 table#news p {
-	margin-top: 1em;
-	margin-bottom: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 table#news a[href]:link, table#news a[href]:visited {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 table#news a[href]:hover, table#news a[href]:active {
-	text-decoration: none;
+  text-decoration: none;
+}
+table#news aside {
+  font-style: italic;
+  margin: 1em 0;
+}
+table#news h1 {
+  color: black;
+  font-size: 115%;
+}
+table#news .date {
+  font-weight: normal;
+  font-size: 80%;
+}
+table#news .date:before {
+  content: '\2014  ';
+}
+table#news h2 {
+  color: black;
+  font-size: 110%;
+}
+table#news h3, table#news h4, table#news h5, table#news h6 {
+  color: black;
+  font-size: 100%;
 }
 
 
