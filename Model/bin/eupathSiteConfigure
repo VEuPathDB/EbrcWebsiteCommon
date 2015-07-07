@@ -18,7 +18,10 @@ if($project eq "OrthoMCL") {
 
 usage($configTemplateFiles) unless scalar(@ARGV) >= 4;
 
-my $cmd = "echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/yaml/masterConfig.yaml $metaConfigFile $commandLineConfigTxt";
+# hack to make compatible with Mac Homebrew coreutils (gecho) to get -e option used below
+my $echo = (`which gecho | wc -l | awk '{ print $1 }'` == '1' ? 'gecho' : 'echo');
+
+my $cmd = "$echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/yaml/masterConfig.yaml $metaConfigFile $commandLineConfigTxt";
 
 print STDERR "\n$cmd\n\n";
 system($cmd);
