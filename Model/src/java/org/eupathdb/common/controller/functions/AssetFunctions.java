@@ -36,7 +36,16 @@ public class AssetFunctions {
     loadChecksums(svc);
     try {
       if (manifestJSON != null) {
-				if (url != null) url = url.trim();
+        String qs = "";
+        if (url != null) {
+          // remove whitespace and slice off query string
+          url = url.trim();
+          Integer qIndex = url.indexOf('?');
+          if (qIndex > -1) {
+            qs = url.substring(qIndex);
+            url = url.substring(0, qIndex);
+          }
+        }
         JSONObject fileInfo = manifestJSON.getJSONObject("files").getJSONObject(url);
         String checksum = fileInfo.getString("checksum");
         if (checksum != null) {
@@ -45,6 +54,8 @@ public class AssetFunctions {
           String srcExt = url.substring(extIndex);
           url = srcBase + "-" + checksum + srcExt;
         }
+        // add back the query string
+        url += qs;
       }
     }
     catch (JSONException je) {
