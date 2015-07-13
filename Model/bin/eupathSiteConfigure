@@ -23,6 +23,9 @@ my $echo = (`which gecho | wc -l | awk '{ print $1 }'` == '1' ? 'gecho' : 'echo'
 
 my $cmd = "$echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/yaml/masterConfig.yaml $metaConfigFile $commandLineConfigTxt";
 
+# must execute in bash to ensure correct echo is used
+$cmd = "bash -c \"$cmd\"";
+
 print STDERR "\n$cmd\n\n";
 system($cmd);
 exit ($? >> 8);
