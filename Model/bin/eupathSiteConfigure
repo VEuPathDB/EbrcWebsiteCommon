@@ -21,10 +21,11 @@ usage($configTemplateFiles) unless scalar(@ARGV) >= 4;
 # hack to make compatible with Mac Homebrew coreutils (gecho) to get -e option used below
 my $echo = (`which gecho | wc -l | awk '{ print $1 }'` == '1' ? 'gecho' : 'echo');
 
+
 my $cmd = "$echo -e $configTemplateFiles | generateFilesFromTemplates $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/yaml/masterConfig.yaml $metaConfigFile $commandLineConfigTxt";
 
 # must execute in bash to ensure correct echo is used
-$cmd = "bash -c \"$cmd\"";
+#$cmd = "bash -c \"$cmd\"";
 
 print STDERR "\n$cmd\n\n";
 system($cmd);
