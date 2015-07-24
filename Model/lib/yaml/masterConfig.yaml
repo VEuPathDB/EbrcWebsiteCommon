@@ -70,7 +70,7 @@ default:
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
   cndSrcBin: /opt/cndsrc/bin
 
-  siteAdminEmail: sfischer@pcbi.upenn.edu, jerric@pcbi.upenn.edu, aurreco@uga.edu, mheiges@uga.edu, rdoherty@pcbi.upenn.edu, dfalke@uga.edu
+  siteAdminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu
 
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
   webServiceUrl: local
@@ -80,6 +80,9 @@ default:
   motifCntxtLen: 20
   wdkStepAnalysisJobsDir: /var/www/Common/tmp/wdkStepAnalysisJobs
   highSpeedSnpSearchJobsDir: /var/www/Common/tmp/highSpeedSnpSearch
+  highSpeedSnpSearchIdPrefix: NGS_SNP.
+  highSpeedChipSnpSearchJobsDir: /var/www/Common/tmp/highSpeedChipSnpSearch
+  highSpeedChipSnpSearchIdPrefix: NULL
 
   # needed in all sites but portal, to access blast gbrowse link
   myURL: ${myURL}
@@ -176,7 +179,8 @@ piroplasmadb: {}
 
 plasmodb: {}
 
-schistodb: {}
+schistodb:
+  supportEmail: help@SchistoDB.net
 
 toxodb:
   toxocommentschema: toxocomm.
