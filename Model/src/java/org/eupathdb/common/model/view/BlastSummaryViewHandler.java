@@ -18,8 +18,8 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
   public static final String MACRO_ALIGNMENT = "__WSF_BLAST_ALIGNMENT__";
 
   @Override
-  public Map<String, Object> process(Step step) throws WdkModelException,
-      WdkUserException {
+  public Map<String, Object> process(Step step, Map<String, String[]> parameters)
+      throws WdkModelException, WdkUserException {
     Map<String, Object> attributes = new HashMap<>();
 
     // split template into 3 sections, header, middle, footer
