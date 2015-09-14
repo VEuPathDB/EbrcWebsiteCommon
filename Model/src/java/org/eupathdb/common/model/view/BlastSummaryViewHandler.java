@@ -3,10 +3,12 @@ package org.eupathdb.common.model.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.SummaryViewHandler;
 import org.gusdb.wdk.model.user.Step;
+import org.gusdb.wdk.model.user.User;
 
 public class BlastSummaryViewHandler implements SummaryViewHandler {
 
@@ -18,8 +20,8 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
   public static final String MACRO_ALIGNMENT = "__WSF_BLAST_ALIGNMENT__";
 
   @Override
-  public Map<String, Object> process(Step step, Map<String, String[]> parameters)
-      throws WdkModelException, WdkUserException {
+  public Map<String, Object> process(Step step, Map<String, String[]> parameters,
+      User user, WdkModel wdkModel) throws WdkModelException, WdkUserException {
     Map<String, Object> attributes = new HashMap<>();
 
     // split template into 3 sections, header, middle, footer
@@ -33,6 +35,13 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
         attributes.put(ATTR_FOOTER, pieces[1]);
     }
     return attributes;
+  }
+
+  @Override
+  public String processUpdate(Step step, Map<String, String[]> parameters, User user, WdkModel wdkModel)
+      throws WdkModelException, WdkUserException {
+    // this summary view does not perform updates
+    return null;
   }
 
 }
