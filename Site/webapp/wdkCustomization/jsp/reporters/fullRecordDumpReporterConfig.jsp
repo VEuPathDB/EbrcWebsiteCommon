@@ -64,7 +64,7 @@ function makeSelection(state)
 	          <tr>
 	            <td colspan="${numPerLine}">
 	              <input type="checkbox" name="selectedFields" value="${wdkAnswer.recordClass.primaryKeyAttribute.name}" checked="checked" style="display:none;"/>
-	              <imp:checkboxTree id="selectedFieldsCBT" rootNode="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
+	              <imp:checkboxTree id="selectedFieldsCBT" tree="${wdkAnswer.reportMakerAttributeTree}" checkboxName="selectedFields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
 	            </td>
     	      </tr>
 	        </c:if>
