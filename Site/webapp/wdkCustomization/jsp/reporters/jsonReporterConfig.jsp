@@ -71,7 +71,7 @@ function makeSelection(state)
 							  		 <div id="overlay"></div>
 								</div>
 							  <div id="tree-column">
-                  <imp:checkboxTree id="o-fields" rootNode="${wdkAnswer.reportMakerAttributeTree}" 
+                  <imp:checkboxTree id="o-fields" tree="${wdkAnswer.reportMakerAttributeTree}" 
 																		checkboxName="o-fields" showSelectAll="false" showResetCurrent="true" useHelp="true"/>
 								</div>
               </td>
