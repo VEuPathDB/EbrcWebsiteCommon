@@ -560,6 +560,14 @@ span.smallTitle {
   height: 28px;
   min-width: 980px;
   line-height: 1;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  background: -webkit-linear-gradient(rgb(191,191,191), rgb(121,121,121));
+  background: -o-linear-gradient(rgb(191,191,191), rgb(121,121,121));
+  background: -moz-linear-gradient(rgb(191,191,191), rgb(121,121,121));
+  background: linear-gradient(rgb(191,191,191), rgb(121,121,121));
+  background-color: rgb(171,171,171);
+  margin-bottom: inherit;
+  width: auto;
 }
 
 .sf-menu {
@@ -750,6 +758,44 @@ span.smallTitle {
 .site-icons li.short-space { margin-left: 9px; }
 .site-icons li.long-space { margin-left: 15px; }
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   =Fixed Footer
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#fixed-footer {
+  position: relative;
+  clear: both;
+  height: 2em;
+  padding: 2em;
+  margin: 2em 0;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+}
+
+#fixed-footer .left {
+  position: absolute;
+  left: 10px;
+}
+
+#fixed-footer .right {
+  position: absolute;
+  right: 10px;
+}
+
+#fixed-footer .bottom {
+  text-align: center;
+}
+
+#fixed-footer .attributions,
+#fixed-footer .site-icons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#fixed-footer .site-icons img {
+  height: 20px;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =QUERY GRID
