@@ -83,8 +83,132 @@
        </table>
    </record>
    
+   <record>
+       <attribute name="title">Download sequence for genes in a search result</attribute>
+       <attribute name="description">From a search or strategy result page, you can retrieve and download genomic, protein, 
+                                     coding or transcript sequence for the list of genes in the result. Watch this tutorial and find out how.</attribute>
+       <attribute name="uid">20Oct2015_2</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=dfx7CCr1_uo</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Download sequence for genes in a search result/download_from_a_result_page_1.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">2.9 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   <record>
+       <attribute name="title">Downloading coding sequence</attribute>
+       <attribute name="description">This tutorial describes several ways to download coding sequence from the EuPathDB sites.</attribute>
+       <attribute name="uid">20Oct2015_6</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=1-onu5raD6M</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Downloading coding sequence/downloading_coding_sequence_2.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   <record>
+       <attribute name="title">Downloading protein sequence</attribute>
+       <attribute name="description">This tutorial describes several ways to download protein sequence from the EuPathDB sites.</attribute>
+       <attribute name="uid">20Oct2015_7</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=b2hgT65H4CQ</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Downloading protein sequence/downloading_protein_sequence_1.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.4 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   
+   <record>
+       <attribute name="title">Downloading sequence from a gene page</attribute>
+       <attribute name="description">It's easy to download a gene's genomic coding, RNA or protein sequence from it's gene page.  
+                                     Watch this tutorial and find out how.</attribute>
+       <attribute name="uid">20Oct2015_3</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=ByBAYywzSWU</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Downloading sequence from a gene page/download_sequence_from_a_gene_page_1.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">3.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
 
     <record>
+       <attribute name="title">Downloading untranslated regions of genes</attribute>
+       <attribute name="description">When UTR regions are annotated their sequence can be easily downloaded from EuPathDB sites. This tutorial describes several ways to download UTR regions.</attribute>
+       <attribute name="uid">20Oct2015_1</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=0fkkJJ9f2cw</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Downloading untranslated regions of genes/download_utr_sequence_1_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">dna_motif_search.pdf</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">3.4 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   
+   <record>
+       <attribute name="title">Download the Sequence (fasta) and Annotation (gff) files for a genome </attribute>
+       <attribute name="description">The genome.fasta and genome.gff files for every organism in EuPathDB are 
+                                     available in the Downloads section. This tutorial describes how to access these files.</attribute>
+       <attribute name="uid">20Oct2015_5</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=XNUgT6HEjGY</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Download the Sequence (fasta) and Annotation (gff) files for a genome/genome_fasta_gff_download_4.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2.5 min</attribute>
+           <attribute name="size">2.8 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   <record>
+       <attribute name="title">Download the sequence of all genes for an organism</attribute>
+       <attribute name="description">Learn how to create a multi-fasta formatted file containing all genes for an organism.</attribute>
+       <attribute name="uid">20Oct2015_4</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=3DtOwQM9Cts</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Download the sequence of all genes for an organism/download_genomic_sequence_of_in_fasta_format_4.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">2.7 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   <record>
        <attribute name="title">DNA motif</attribute>
        <attribute name="description">How to assemble a list of genomic segments that match a recurring DNA pattern that you specify.</attribute>
        <attribute name="uid">30</attribute>
@@ -114,6 +238,23 @@
            <attribute name="fileName.pdf">unavailable</attribute>
            <attribute name="duration">6 min</attribute>
            <attribute name="size">4.5 mb</attribute>
+         </row>
+       </table>
+   </record>
+
+<record>
+       <attribute name="title">Find genes with an enriched GO term</attribute>
+       <attribute name="description">After determining enriched GO terms for a strategy result, find the genes in your strategy result that are annotated with the enriched GO term.</attribute>
+       <attribute name="uid">20Oct2015</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,OrthoMCL,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=qGLkAEzQpqU</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Find genes with an enriched GO term/genes_with_enriched_go_term_followtut1_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">2.75 min</attribute>
+           <attribute name="size">2.65 mb</attribute>
          </row>
        </table>
    </record>
