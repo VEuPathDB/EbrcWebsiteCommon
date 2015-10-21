@@ -84,22 +84,22 @@
    </record>
    
    <record>
-       <attribute name="title">Download sequence for genes in a search result</attribute>
-       <attribute name="description">From a search or strategy result page, you can retrieve and download genomic, protein, 
-                                     coding or transcript sequence for the list of genes in the result. Watch this tutorial and find out how.</attribute>
-       <attribute name="uid">20Oct2015_2</attribute>
+       <attribute name="title">DNA motif</attribute>
+       <attribute name="description">How to assemble a list of genomic segments that match a recurring DNA pattern that you specify.</attribute>
+       <attribute name="uid">30</attribute>
        <table name="files">
         <row>
            <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
-           <attribute name="fileName.mov">watch?v=dfx7CCr1_uo</attribute>
+           <attribute name="fileName.mov">watch?v=81nuXyNQP3k</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
-           <attribute name="fileName.flv">Download sequence for genes in a search result/download_from_a_result_page_1.swf</attribute>
-           <attribute name="fileName.pdf">unavailable</attribute>
-           <attribute name="duration">3 min</attribute>
-           <attribute name="size">2.9 mb</attribute>
+           <attribute name="fileName.flv">DNA_motif/dna_motif_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">dna_motif_search.pdf</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.3 mb</attribute>
          </row>
        </table>
    </record>
+
    
    <record>
        <attribute name="title">Downloading coding sequence</attribute>
@@ -171,7 +171,24 @@
          </row>
        </table>
    </record>
-   
+
+   <record>
+       <attribute name="title">Download sequence for genes in a search result</attribute>
+       <attribute name="description">From a search or strategy result page, you can retrieve and download genomic, protein, 
+                                     coding or transcript sequence for the list of genes in the result. Watch this tutorial and find out how.</attribute>
+       <attribute name="uid">20Oct2015_2</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=dfx7CCr1_uo</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Download sequence for genes in a search result/download_from_a_result_page_1.swf</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">3 min</attribute>
+           <attribute name="size">2.9 mb</attribute>
+         </row>
+       </table>
+   </record>
    
    <record>
        <attribute name="title">Download the Sequence (fasta) and Annotation (gff) files for a genome </attribute>
@@ -208,22 +225,6 @@
        </table>
    </record>
    
-   <record>
-       <attribute name="title">DNA motif</attribute>
-       <attribute name="description">How to assemble a list of genomic segments that match a recurring DNA pattern that you specify.</attribute>
-       <attribute name="uid">30</attribute>
-       <table name="files">
-        <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
-           <attribute name="fileName.mov">watch?v=81nuXyNQP3k</attribute>
-           <attribute name="fileName.avi">unavailable</attribute>
-           <attribute name="fileName.flv">DNA_motif/dna_motif_viewlet_swf.html</attribute>
-           <attribute name="fileName.pdf">dna_motif_search.pdf</attribute>
-           <attribute name="duration">4 min</attribute>
-           <attribute name="size">4.3 mb</attribute>
-         </row>
-       </table>
-   </record>
 
 <record>
        <attribute name="title">Favorites</attribute>
