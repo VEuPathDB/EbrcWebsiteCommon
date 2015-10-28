@@ -13,6 +13,12 @@ default:
   defaultRole: wdk_user
   secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 
+  # authentication method
+  authenticationMethod: ${authenticationMethod}
+  oauthUrl: ${oauthUrl}
+  oauthClientId: ${oauthClientId}
+  oauthClientSecret: ${oauthClientSecret}
+
   #monitorBlockedThreads="true" and blockedThreshold="20" should be applied to live sites.
   monitorBlockedThreads: true
   blockedThreshold: 20
