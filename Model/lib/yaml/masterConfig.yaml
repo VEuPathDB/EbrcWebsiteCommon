@@ -14,7 +14,7 @@ default:
   secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 
   # authentication method
-  authenticationMethod: user_db
+  authenticationMethod: ${authenticationMethod}
   oauthUrl: ${oauthUrl}
   oauthClientId: ${oauthClientId}
   oauthClientSecret: ${oauthClientSecret}
