@@ -8,34 +8,32 @@ html {
   overflow-y: auto;
   background-color: transparent;
 }
-.show-scrollbar::-webkit-scrollbar {
+.show-scrollbar *::-webkit-scrollbar {
 	width: 10px;
 	height: 10px;
 }
-.show-scrollbar::-webkit-scrollbar-button {
+.show-scrollbar *::-webkit-scrollbar-button {
 	width: 10px;
 	height:7px;
 }
-.show-scrollbar::-webkit-scrollbar-track {
+.show-scrollbar *::-webkit-scrollbar-track {
 	background: white;
-	/*background: rgba(204, 204, 204, 0.1);*/
 	border: thin solid rgba(204, 204, 204, 0.2);
 }
-.show-scrollbar::-webkit-scrollbar-track:hover {
+.show-scrollbar *::-webkit-scrollbar-track:hover {
 	background: whitesmoke;
-	/*background: rgba(204, 204, 204, 0.4);*/
   border: thin solid rgba(204, 204, 204, 0.5);
 }
-.show-scrollbar::-webkit-scrollbar-thumb {
+.show-scrollbar *::-webkit-scrollbar-thumb {
 	background:#bbb;
-  /*min-height: 80px; too large in smaller areas */
   border-top: 1px solid #eee;
+  border-radius: 10px;
 }
-.show-scrollbar::-webkit-scrollbar-thumb:vertical {
+.show-scrollbar *::-webkit-scrollbar-thumb:vertical {
   border: none;
   border-left: 1px solid #eee;
 }
-.show-scrollbar::-webkit-scrollbar-thumb:hover {
+.show-scrollbar *::-webkit-scrollbar-thumb:hover {
 	background:#999;
 }
 
