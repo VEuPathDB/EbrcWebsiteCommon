@@ -119,6 +119,11 @@ div.innertube #record-toolbox li {
     margin-top: 2px;
 }
 
+/** This is needed due to .fixed-menu css **/
+.wdk-RecordSidebar {
+  margin-top: 28px;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =HOME Page:  BUBBLE Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -480,6 +485,13 @@ span.smallTitle {
 	 =MENUBAR (horizontal bar, under header)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
 
+.fixed-menu #menu .sf-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid white;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
@@ -549,23 +561,21 @@ span.smallTitle {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #menu {
-  z-index: 99;
   height: 28px;
-  min-width: 980px;
   line-height: 1;
+  margin-bottom: inherit;
+}
+
+.sf-menu {
+  z-index: 99;
+  min-width: 980px;
+  width: 100%;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   background: -webkit-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -o-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -moz-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background-color: rgb(171,171,171);
-  margin-bottom: inherit;
-  width: auto;
-}
-
-.sf-menu {
-  width: 100%;
-  background: transparent;
   margin-bottom: -0.4em;
 }
 

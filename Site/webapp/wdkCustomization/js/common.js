@@ -66,7 +66,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
     });
 
       // submit Contact us via AJAX
-      $("body").on("submit", "#contact-us", function(e) {
+      $(document.body).on("submit", "#contact-us", function(e) {
         e.preventDefault();
         var form = this,
             requiredFields = ['content'],
@@ -165,7 +165,12 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   };
 
   var configureMenuBar = function() {
-    jQuery("#menu .sf-menu").superfish();
+    var menu = document.getElementById('menu');
+    var $body = $(document.body);
+    $('.sf-menu', menu).superfish();
+    $(window).on('scroll', function() {
+      $body.toggleClass('fixed-menu', menu.getBoundingClientRect().top < 1);
+    });
   };
 
   ns.setUpContactUsLogic = setUpContactUsLogic;
