@@ -119,11 +119,6 @@ div.innertube #record-toolbox li {
     margin-top: 2px;
 }
 
-/** This is needed due to .fixed-menu css **/
-.wdk-RecordSidebar {
-  margin-top: 28px;
-}
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =HOME Page:  BUBBLE Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -492,6 +487,12 @@ span.smallTitle {
   right: 0;
   border-top: 1px solid white;
 }
+
+/** This is needed due to .fixed-menu css **/
+.wdk-RecordSidebar {
+  margin-top: 28px;
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
