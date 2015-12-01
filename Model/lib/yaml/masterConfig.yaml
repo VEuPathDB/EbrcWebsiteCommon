@@ -18,6 +18,11 @@ default:
   oauthUrl: ${oauthUrl}
   oauthClientId: ${oauthClientId}
   oauthClientSecret: ${oauthClientSecret}
+  oauthCheckCerts: false
+
+  # key store file containing acceptable certs during SSL communication
+  keyStoreFile: /etc/pki/java/cacerts
+  keyStorePassPhrase: ""
 
   #monitorBlockedThreads="true" and blockedThreshold="20" should be applied to live sites.
   monitorBlockedThreads: true

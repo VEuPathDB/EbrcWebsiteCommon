@@ -123,7 +123,7 @@ public class ContactUsAction extends WdkAction {
     
 	  String supportEmail = wdkModel.getModelConfig().getSupportEmail();
 	  String uid = Integer.toString(user.getUserId());
-	  String version = wdkModelBean.getVersion();
+	  String version = wdkModelBean.getBuild(); //getVersion() reads from releaseVersion in model.xml which is not maintained
 	  String website = wdkModelBean.getDisplayName();
 	  // TODO: need to move these to a WDK config file
 	  String reporterEmail = "websitesupportform@apidb.org";
