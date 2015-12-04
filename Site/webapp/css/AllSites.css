@@ -89,13 +89,13 @@ article section {
 #contentcolumn {
 	min-width: 780px;
 	margin: 0 5px 0 220px;
-	background-color: #FFFFFF;
+	/*background-color: #FFFFFF; */
 	background-repeat: repeat-x;
 	text-align: left;
 }
 
 #contentcolumn2 {
-	background-color: #FFFFFF;
+	/*background-color: #FFFFFF; */
 	background-position: 0 -25px;
 	background-repeat: repeat-x;
 	margin: 0 5px 0 6px;
@@ -1273,6 +1273,29 @@ span.galaxy {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .filter-param-tabs {
   margin-left: -20em;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = From PlasmoDB.css
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+a:link, a:visited, div.divlink, .link {
+	color: #069;
+}
+
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	color: #444;
+}
+
+h2 {
+  	color: #444;
+}
+
+.h2center, .h3left,.h3center, .h4left {
+  	color:  #444;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
