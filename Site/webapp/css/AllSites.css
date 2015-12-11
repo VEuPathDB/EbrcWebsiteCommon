@@ -585,6 +585,7 @@ span.smallTitle {
   border-top: none;
   padding: .65em 1em;
   text-decoration: none;
+  display: inline-block;
 }
 
 .sf-menu a:link, .sf-menu a, .sf-menu a:visited  {
@@ -624,6 +625,7 @@ span.smallTitle {
 
 .sf-menu li#favorite-menu > a {
   padding: 0.3em;
+  border-left: none;
 }
 
 .sf-menu a:hover {

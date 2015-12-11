@@ -167,10 +167,38 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   var configureMenuBar = function() {
     var menu = document.getElementById('menu');
     var $body = $(document.body);
+    var $topLink = $('<a href="#" title="Back to top of page">' +
+                     '  <i class="fa fa-2x fa-arrow-circle-up"></i>' +
+                     '</a>')
+      .css({
+        padding: '0 1em',
+        borderLeft: 'none'
+      })
+      .click(function(e) {
+        e.preventDefault();
+        e.target.blur();
+        window.scrollTo(0, 0);
+      });
+    var $topLinkMenuItem = $('<li/>').append($topLink)
+      .css({
+        float: 'right'
+      });
+    var $lastMenuItem = $('> ul > li:last-child', menu);
+
     $('.sf-menu', menu).superfish();
-    $(window).on('scroll', function() {
-      $body.toggleClass('fixed-menu', menu.getBoundingClientRect().top < 1);
-    });
+    $(window).on('scroll', updateMenuBar);
+    updateMenuBar();
+
+    function updateMenuBar() {
+      if (menu.getBoundingClientRect().top < 1) {
+        $body.addClass('fixed-menu');
+        $topLinkMenuItem.insertBefore($lastMenuItem);
+      }
+      else {
+        $body.removeClass('fixed-menu');
+        $topLinkMenuItem.detach();
+      }
+    }
   };
 
   ns.setUpContactUsLogic = setUpContactUsLogic;
