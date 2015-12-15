@@ -1300,6 +1300,62 @@ h2 {
   	color:  #444;
 }
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = Boolean and Leaf transcript Filters
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+  table#booleanFilter td#prompt{
+    font-weight:bold;
+  }
+  table#booleanFilter table img  {
+    width:80px;
+  }
+  table#booleanFilter table td {
+    padding-right:60px;
+  }
+  table#booleanFilter table td:last-child {
+    border-right:0;
+    padding-right:0;
+  }
+
+  .gene-boolean-filter {
+    text-align: center;
+    display: none;
+    margin-bottom: 4px;
+  }
+  .gene-boolean-filter-controls {
+    display: none;
+  }
+  .gene-boolean-filter table {
+    border-collapse: separate;
+    color: black;
+  }
+  .gene-boolean-filter-summary {
+    display: inline-block;
+  }
+  .gene-boolean-filter-controls button:disabled {
+ 		color:grey;
+  }
+
+  .gene-leaf-filter {
+    text-align: center;
+    display: none;
+    margin-bottom: 4px;
+  }
+  .gene-leaf-filter-controls {
+        display: none;
+  }
+  .gene-leaf-filter table {
+    border-collapse: separate;
+    color: black;
+  }
+  .gene-leaf-filter-summary {
+    display: inline-block;
+  }
+
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
