@@ -1305,19 +1305,8 @@ h2 {
       = Boolean and Leaf transcript Filters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-  table#booleanFilter td#prompt{
-    font-weight:bold;
-  }
-  table#booleanFilter table img  {
-    width:80px;
-  }
-  table#booleanFilter table td {
-    padding-right:60px;
-  }
-  table#booleanFilter table td:last-child {
-    border-right:0;
-    padding-right:0;
-  }
+ 
+/* Any layout */
 
   .gene-boolean-filter {
     text-align: center;
@@ -1337,6 +1326,10 @@ h2 {
   .gene-boolean-filter-controls button:disabled {
  		color:grey;
   }
+  .gene-boolean-filter-controls p {
+    text-align: center; 
+    margin: 1em 0 .4em;
+  }
 
   .gene-leaf-filter {
     text-align: center;
@@ -1354,6 +1347,44 @@ h2 {
     display: inline-block;
   }
 
+ table#booleanFilter td#prompt{
+    font-weight:bold;
+  }
+  table#booleanFilter table img  {
+    width:80px;
+  }
+
+/* Horizontal layout */
+/*
+  table#booleanFilter table td {
+    padding-right:60px;
+  }
+  table#booleanFilter table td:last-child {
+    border-right:0;
+    padding-right:0;
+  }
+*/
+/* Vertical layout */
+
+/*  bigger font, checkboxes and button 
+  div.gene-boolean-filter-controls button {
+    margin-top:10px;
+    transform:scale(1.2);
+  }
+  table#booleanFilter {
+    font-size:120%;
+  }
+  table#booleanFilter table input {
+    transform:scale(1.2);
+  }
+*/
+
+  table#booleanFilter table td{
+    padding:0 8px;
+  }
+  table#booleanFilter table img  {
+    vertical-align: text-bottom;
+    margin-left:10px;
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
