@@ -1306,7 +1306,7 @@ h2 {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
  
-/* Any layout */
+/* BOOLEAN, combined?  */
 
   .gene-boolean-filter {
     text-align: center;
@@ -1331,13 +1331,15 @@ h2 {
     margin: 1em 0 .4em;
   }
 
-  .gene-leaf-filter {
+/* LEAF */
+
+ .gene-leaf-filter {
     text-align: center;
     display: none;
     margin-bottom: 4px;
   }
   .gene-leaf-filter-controls {
-        display: none;
+    display: none;
   }
   .gene-leaf-filter table {
     border-collapse: separate;
@@ -1346,6 +1348,16 @@ h2 {
   .gene-leaf-filter-summary {
     display: inline-block;
   }
+  .gene-leaf-filter-controls button:disabled {
+ 		color:grey;
+  }
+  .gene-leaf-filter-controls p {
+    text-align: center; 
+    margin: 1em 0 .4em;
+  }
+
+
+/* Any layout */
 
  table#booleanFilter td#prompt{
     font-weight:bold;
@@ -1364,9 +1376,8 @@ h2 {
     padding-right:0;
   }
 */
-/* Vertical layout */
-
-/*  bigger font, checkboxes and button 
+/* Vertical layout  bigger font, checkboxes and button */
+/*
   div.gene-boolean-filter-controls button {
     margin-top:10px;
     transform:scale(1.2);
@@ -1378,6 +1389,8 @@ h2 {
     transform:scale(1.2);
   }
 */
+
+/* Vertical layout */
 
   table#booleanFilter table td{
     padding:0 8px;
