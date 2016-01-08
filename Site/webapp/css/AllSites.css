@@ -1366,6 +1366,11 @@ h2 {
     width:80px;
   }
 
+ table#leafFilter table img  {
+    width:20px; /* same size as in attribute column in site/wdkAttribute.tag */
+  }
+
+
 /* Horizontal layout */
 /*
   table#booleanFilter table td {
@@ -1398,6 +1403,11 @@ h2 {
   table#booleanFilter table img  {
     vertical-align: text-bottom;
     margin-left:10px;
+  }
+  table#leafFilter table img  {
+    vertical-align: text-bottom;
+    margin-left:10px;
+  }
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
