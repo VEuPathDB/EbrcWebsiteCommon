@@ -147,15 +147,12 @@ public class ProjectMapper {
         + projectId + "&source_id=" + sourceId;
   }
 
-
+  // special for transcript record
     public String getRecordUrl(String recordClass, String projectId,
                                String sourceId, String geneSourceId) {
         String site = getWebAppUrl(projectId);
-        projectId = FormatUtil.getUtf8EncodedString(projectId);
-        sourceId = FormatUtil.getUtf8EncodedString(sourceId);
-        sourceId = FormatUtil.getUtf8EncodedString(geneSourceId);
-        return site + "showRecord.do?name=" + recordClass + "&project_id="
-            + projectId + "&source_id=" + sourceId + "&gene_source_id=" + geneSourceId;
+        geneSourceId = FormatUtil.getUtf8EncodedString(geneSourceId);
+        return site + "app/record/gene/" + geneSourceId;
     }
 
 
