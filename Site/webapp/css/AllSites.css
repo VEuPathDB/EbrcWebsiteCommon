@@ -130,26 +130,31 @@ table.threecolumn {
 table.threecolumn td {
         vertical-align: top;
 }
-
+/*
 .threecolumndiv {
 	width: 247px;
 }
+*/
+
 /* what for?
  * to prevent gap between img and div */
 .threecolumndivimg {
 	display: block;
 }
 #bubbles .info {
-   width: 209px;
-   min-height: 319px;
+ /*   width: 209px;*/
+width: 251px;
+border: 1px solid grey;
+   border-top:0;min-height: 319px;
    height: 100%;
-   background-image: url(../images/bubble_backgrnd.png);
+ /*  background-image: url(../images/bubble_backgrnd.png);
    background-repeat: repeat-y;
+*/
    text-align: left;
    padding-top: 2px;
-   padding-right: 19px;
+   padding-right: 5px;  /* 19px; */
    padding-bottom: 0px;
-   padding-left: 19px;
+   padding-left: 5px;  /* 19px; */
 }
 
 #bubbles .info ul {
@@ -182,11 +187,11 @@ table.threecolumn td {
 }
 
 #bubbles .infobottom {
-	width: 209px;
+/* 	width: 209px; */
 	min-height: 35px;    /* trying to keep buckest same size */
-	background-image: url(../images/bubble_bottom.png);
+/* 	background-image: url(../images/bubble_bottom.png);
 	background-position: bottom;
-	background-repeat: no-repeat;
+	background-repeat: no-repeat; */
 	text-align: center;
 	padding-top: 2px;
 	padding-right: 19px;
