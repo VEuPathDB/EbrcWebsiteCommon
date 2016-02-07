@@ -138,14 +138,16 @@ table.threecolumn td {
 
 .threecolumndiv div.heading {
 	display: block;
+  border-radius: 13px 13px 0 0;
 	height: 28px;
-  width: 250px;
+  width: 247px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 17px;
 	color: #FFFFFF;
 	text-decoration: none;
 	padding-right: 10px;
 	padding-left:  7px;
+  padding-top: 12px;
 }
 
 /* what for?
