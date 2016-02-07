@@ -128,7 +128,7 @@ table.threecolumn {
 }
 
 table.threecolumn td {
-        vertical-align: top;
+  vertical-align: top;
 }
 /*
 .threecolumndiv {
@@ -136,27 +136,44 @@ table.threecolumn td {
 }
 */
 
-/* what for?
- * to prevent gap between img and div */
-.threecolumndivimg {
+.threecolumndiv div.heading {
 	display: block;
-}
-#bubbles .info {
- /*   width: 209px;*/
-width: 251px;
-border: 1px solid grey;
-   border-top:0;min-height: 319px;
-   height: 100%;
- /*  background-image: url(../images/bubble_backgrnd.png);
-   background-repeat: repeat-y;
-*/
-   text-align: left;
-   padding-top: 2px;
-   padding-right: 5px;  /* 19px; */
-   padding-bottom: 0px;
-   padding-left: 5px;  /* 19px; */
+	height: 28px;
+  width: 250px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 17px;
+	color: #FFFFFF;
+	text-decoration: none;
+	padding-right: 10px;
+	padding-left:  7px;
 }
 
+/* what for?
+ * to prevent gap between img and div */
+.threecolumndiv img#heading {
+  display: block;
+}	
+
+#bubbles .info {
+ /*   width: 209px;*/
+  width: 251px;
+  border: 1px solid grey;
+  border-top:0;
+  min-height: 319px;
+  height: 100%;
+  /*  background-image: url(../images/bubble_backgrnd.png);
+      background-repeat: repeat-y;
+  */
+  text-align: left;
+  padding-right: 5px;  /* 19px; */
+  padding-bottom: 0px;
+  padding-top: 6px;
+  padding-left: 5px;  /* 19px; */
+}
+#bubbles .info p.small {
+  margin: 0;
+  padding-bottom:1em;
+}
 #bubbles .info ul {
   height: 100%;
   padding: 0;
