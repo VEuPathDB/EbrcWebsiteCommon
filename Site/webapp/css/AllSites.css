@@ -140,9 +140,9 @@ table.threecolumn td {
 	display: block;
   border-radius: 13px 13px 0 0;
 	height: 28px;
-  width: 247px;
+  width: 227px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 	color: #FFFFFF;
 	text-decoration: none;
 	padding-right: 10px;
@@ -157,8 +157,7 @@ table.threecolumn td {
 }	
 
 #bubbles .info {
- /*   width: 209px;*/
-  width: 251px;
+  width: 230px;
   border: 1px solid grey;
   border-top:0;
   min-height: 319px;
@@ -227,6 +226,8 @@ table.threecolumn td {
 	display: inline;
 	left: -9999px;
 	position: absolute;
+	background-image: url(../wdk/images/question.png);
+	background-repeat: no-repeat;
 }
 
 .detail_link:link, .detail_link:visited{
