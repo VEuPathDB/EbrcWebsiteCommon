@@ -230,10 +230,12 @@ table.threecolumn td {
 	background-repeat: no-repeat;
 }
 
+/*
 .detail_link:link, .detail_link:visited{
-	color: blue;    /* #808080; */
-	text-decoration: underline;
+  color: blue;  
+  text-decoration: underline;; 
 }
+*/
 
 li:hover a.heading + a.detail_link, a.detail_link:hover {
 	left: -2px;
