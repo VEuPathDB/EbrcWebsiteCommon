@@ -160,7 +160,7 @@ table.threecolumn td {
   width: 230px;
   border: 1px solid grey;
   border-top:0;
-  min-height: 350px; /* it varies depending on the number of categories shown */
+  min-height: 340px; /* it varies depending on the number of categories shown */
   height: 100%;
   /*  background-image: url(../images/bubble_backgrnd.png);
       background-repeat: repeat-y;
@@ -190,16 +190,15 @@ table.threecolumn td {
 #bubbles .info li ul {
   margin: 0 0 4px 0;
 }
-#bubbles .info li ul li
-{
-/*	list-style-image: url(../images/cir_bullet2.png);*/
+#bubbles .info li ul li {
 	border-bottom:1px solid lightgrey;
 	list-style-type: none;
 	margin-left: 22px;
-/*	font-size: 11px; */
 	line-height: 1.1em;
 }
-
+#bubbles .info li a.heading {
+  padding-left: 6px;
+}
 .bubble-header {
   margin-bottom: -4px;
 }
