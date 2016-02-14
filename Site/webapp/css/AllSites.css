@@ -180,13 +180,17 @@ table.threecolumn td {
   padding: 0;
   margin: 0;
 }
-#bubbles .info li
-{
+#bubbles .info li {
 	line-height: 1.5em;
 /*	list-style-image: url(../images/cir_bullet.png);*/
 	list-style-type: none;
 	margin-left: 7px;
 }
+
+#bubbles .info li i.fa{
+  color: #aaa; /* as in add columns */
+}
+
 #bubbles .info li ul {
   margin: 0 0 4px 0;
 }
@@ -228,7 +232,9 @@ table.threecolumn td {
 	background-image: url(../wdk/images/question.png);
 	background-repeat: no-repeat;
 }
-
+.detail_link:hover {
+  text-decoration: none;
+}
 /*
 .detail_link:link, .detail_link:visited{
   color: blue;  
