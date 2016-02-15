@@ -277,6 +277,23 @@
          </row>
        </table>
    </record>
+<record>
+       <attribute name="title">Fold Change with a P-value: finding statisitically significant differentially expressed genes</attribute>
+       <attribute name="description">One way EuPathDB analyzes expression is to determine statistically significant differential gene expression using the Fisher's exact test. This tutorial describes our Fold Change w/ P-value searches that return differentially expressed genes based on the level of statistical confidence that you choose.</attribute>
+       <attribute name="uid">15Feb2016_a</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=Yk9kkaPAmAE</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">FCpV_3/fcpv_3_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4.5 min</attribute>
+           <attribute name="size">4.6 mb</attribute>
+         </row>
+       </table>
+   </record>
+
 
 <record>
        <attribute name="title">GBrowse Overview</attribute>
@@ -621,7 +638,7 @@
            <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">watch?v=PHm7SF4-12U</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
-           <attribute name="fileName.flv">"Pathogen Portal's RNA Sequence Analysis Pipeline Part 1/pathogen_portals_rna_sequence_analysis_pipeline_part_1_viewlet_swf.html"</attribute>
+           <attribute name="fileName.flv">Pathogen Portal's RNA Sequence Analysis Pipeline Part 1/pathogen_portals_rna_sequence_analysis_pipeline_part_1_viewlet_swf.html</attribute>
            <attribute name="fileName.pdf">unavailable</attribute>
            <attribute name="duration">4.75 min</attribute>
            <attribute name="size">6.8 mb</attribute>
@@ -639,15 +656,32 @@
            <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
            <attribute name="fileName.mov">watch?v=mKnp31jBWRA</attribute>
            <attribute name="fileName.avi">unavailable</attribute>
-           <attribute name="fileName.flv">"Pathogen Portal's RNA Sequence Analysis Pipeline Part 2/pathogen_portals_rna_sequence_analysis_pipeline_part_2_viewlet_swf.html"</attribute>
+           <attribute name="fileName.flv">Pathogen Portal's RNA Sequence Analysis Pipeline Part 2/pathogen_portals_rna_sequence_analysis_pipeline_part_2_viewlet_swf.html</attribute>
            <attribute name="fileName.pdf">unavailable</attribute>
            <attribute name="duration">5 min</attribute>
            <attribute name="size">6.5 mb</attribute>
          </row>
        </table>
    </record>
-
-
+   
+   <record>
+       <attribute name="title"> Percentile Ranking of Expression Data: exploring expresison distribution</attribute>
+       <attribute name="description">Percentile ranking is one way that EuPathDB analyzes expression data.  This tutorial describes our percentile ranking of expression data and the searches that we offer based on that data.</attribute>
+       <attribute name="uid">15Feb2016_b</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=z6c_FhMCdPo</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Percentile_2/percentile_2_viewlet_swf.htmlPercentile_2/percentile_2_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.2 mb</attribute>
+         </row>
+       </table>
+   </record>
+   
+   
  <record>
        <attribute name="title">PlasmoDB Introduction</attribute>
        <attribute name="description">Highlights of the PlasmoDB website.</attribute>
