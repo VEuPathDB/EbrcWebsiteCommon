@@ -189,19 +189,22 @@ table.threecolumn td {
 
 #bubbles .info li i.fa{
   color: #aaa; /* as in add columns */
+  cursor: pointer;
+  padding: 0 4px;
 }
 
 #bubbles .info li ul {
   margin: 0 0 4px 0;
 }
 #bubbles .info li ul li {
-	border-bottom:1px solid lightgrey;
+/* 	border-bottom:1px solid lightgrey; separation lines might not be needed */
 	list-style-type: none;
-	margin-left: 22px;
+	margin-left: 32px;
 	line-height: 1.1em;
+  padding:1px;
 }
 #bubbles .info li a.heading {
-  padding-left: 6px;
+  /*padding-left: 6px; */
 }
 .bubble-header {
   margin-bottom: -4px;
