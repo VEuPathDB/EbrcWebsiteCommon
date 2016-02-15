@@ -224,7 +224,24 @@
          </row>
        </table>
    </record>
-   
+
+  
+   <record>
+       <attribute name="title">Exploring expression distributions with our Percentile Ranking searches</attribute>
+       <attribute name="description">Percentile ranking is one way that EuPathDB analyzes expression data.  This tutorial describes our percentile ranking of expression data and the searches that we offer based on that data.</attribute>
+       <attribute name="uid">15Feb2016_b</attribute>
+       <table name="files">
+        <row>
+           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,SchistoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
+           <attribute name="fileName.mov">watch?v=z6c_FhMCdPo</attribute>
+           <attribute name="fileName.avi">unavailable</attribute>
+           <attribute name="fileName.flv">Percentile_2/percentile_2_viewlet_swf.htmlPercentile_2/percentile_2_viewlet_swf.html</attribute>
+           <attribute name="fileName.pdf">unavailable</attribute>
+           <attribute name="duration">4 min</attribute>
+           <attribute name="size">4.2 mb</attribute>
+         </row>
+       </table>
+   </record>   
 
 <record>
        <attribute name="title">Favorites</attribute>
@@ -663,23 +680,7 @@
          </row>
        </table>
    </record>
-   
-   <record>
-       <attribute name="title"> Percentile Ranking of Expression Data: exploring expresison distribution</attribute>
-       <attribute name="description">Percentile ranking is one way that EuPathDB analyzes expression data.  This tutorial describes our percentile ranking of expression data and the searches that we offer based on that data.</attribute>
-       <attribute name="uid">15Feb2016_b</attribute>
-       <table name="files">
-        <row>
-           <attribute name="projects">AmoebaDB,EuPathDB,CryptoDB,GiardiaDB,FungiDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,SchistoDB,ToxoDB,TrichDB,TriTrypDB</attribute>
-           <attribute name="fileName.mov">watch?v=z6c_FhMCdPo</attribute>
-           <attribute name="fileName.avi">unavailable</attribute>
-           <attribute name="fileName.flv">Percentile_2/percentile_2_viewlet_swf.htmlPercentile_2/percentile_2_viewlet_swf.html</attribute>
-           <attribute name="fileName.pdf">unavailable</attribute>
-           <attribute name="duration">4 min</attribute>
-           <attribute name="size">4.2 mb</attribute>
-         </row>
-       </table>
-   </record>
+ 
    
    
  <record>
