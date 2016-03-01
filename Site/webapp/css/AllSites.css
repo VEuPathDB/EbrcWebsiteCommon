@@ -198,8 +198,9 @@ table.threecolumn td {
 }
 #bubbles .info li ul li {
 /* 	border-bottom:1px solid lightgrey; separation lines might not be needed */
-	list-style-type: none;
-	margin-left: 32px;
+	list-style: outside none disc;
+	color: #aaa;
+  margin-left: 28px;
 	line-height: 1.1em;
   padding:1px;
 }
