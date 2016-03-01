@@ -198,7 +198,8 @@ table.threecolumn td {
 }
 #bubbles .info li ul li {
 /* 	border-bottom:1px solid lightgrey; separation lines might not be needed */
-	list-style: outside none disc;
+	list-style-position: outside;
+	list-style-type: disc;
 	color: #aaa;
   margin-left: 28px;
 	line-height: 1.1em;
