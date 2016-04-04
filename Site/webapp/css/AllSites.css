@@ -1339,20 +1339,21 @@ h2 {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      = Boolean and Leaf transcript Filters
+      = Results Table: Boolean and Leaf transcript Filters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
  
 /* BOOLEAN, combined?  */
 
   .gene-boolean-filter {
-    text-align: center;
+ /*   text-align: center; */
     display: none;
     margin-bottom: 4px;
   }
   .gene-boolean-filter-controls {
     display: none;
-  }
+  /*  text-align: center; */
+    }
   .gene-boolean-filter table {
     border-collapse: separate;
     color: black;
@@ -1363,19 +1364,23 @@ h2 {
   .gene-boolean-filter-controls button:disabled {
  		color:grey;
   }
-  .gene-boolean-filter-controls p {
+/*  .gene-boolean-filter-controls p {
     text-align: center; 
-    margin: 1em 0 .4em;
+    margin: 1em 0 .4em; */
   }
 
 /* LEAF */
 
  .gene-leaf-filter {
-    text-align: center;
     display: none;
-    margin-bottom: 4px;
+ /*  text-align: center;  */
+    margin-bottom: 4px; 
   }
-  .gene-leaf-filter-controls {
+ .gene-leaf-filter p {
+ /*   text-align: center;  */
+    margin: 1em 0 .4em;
+}
+  .gene-leaf-filter-controls { 
     display: none;
   }
   .gene-leaf-filter table {
@@ -1388,9 +1393,9 @@ h2 {
   .gene-leaf-filter-controls button:disabled {
  		color:grey;
   }
-  .gene-leaf-filter-controls p {
-    text-align: center; 
-    margin: 1em 0 .4em;
+/*  .gene-leaf-filter-controls p {
+   text-align: center; 
+    margin: 1em 0 .4em;  */
   }
 
 
@@ -1446,7 +1451,19 @@ h2 {
     margin-left:10px;
   }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = results table view filter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+  div#onlyOneTrPerGene {
+    padding: 2px;
+    text-align: center;
+    font-family: Verdana;
+  }
+
+  div#onlyOneTrPerGene span {
+    background-color: #FFFFAD;
+  }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
