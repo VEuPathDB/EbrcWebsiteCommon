@@ -1346,13 +1346,12 @@ h2 {
 /* BOOLEAN, combined?  */
 
   .gene-boolean-filter {
- /*   text-align: center; */
     display: none;
     margin-bottom: 4px;
   }
   .gene-boolean-filter-controls {
     display: none;
-  /*  text-align: center; */
+    text-align: center;
     }
   .gene-boolean-filter table {
     border-collapse: separate;
@@ -1364,24 +1363,23 @@ h2 {
   .gene-boolean-filter-controls button:disabled {
  		color:grey;
   }
-/*  .gene-boolean-filter-controls p {
+  .gene-boolean-filter-controls p {
     text-align: center; 
-    margin: 1em 0 .4em; */
+    margin: 1em 0 .4em;
   }
 
 /* LEAF */
 
  .gene-leaf-filter {
     display: none;
- /*  text-align: center;  */
     margin-bottom: 4px; 
   }
  .gene-leaf-filter p {
- /*   text-align: center;  */
     margin: 1em 0 .4em;
 }
   .gene-leaf-filter-controls { 
     display: none;
+    text-align: center;
   }
   .gene-leaf-filter table {
     border-collapse: separate;
@@ -1393,9 +1391,9 @@ h2 {
   .gene-leaf-filter-controls button:disabled {
  		color:grey;
   }
-/*  .gene-leaf-filter-controls p {
-   text-align: center; 
-    margin: 1em 0 .4em;  */
+  .gene-leaf-filter-controls p {
+    text-align: center; 
+    margin: 1em 0 .4em; 
   }
 
 
@@ -1456,13 +1454,12 @@ h2 {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   div#onlyOneTrPerGene {
-    padding: 2px;
-    text-align: center;
+    padding: 2px 2px 6px;
     font-family: Verdana;
   }
 
   div#onlyOneTrPerGene span {
-    background-color: #FFFFAD;
+    color: darkred;
   }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
