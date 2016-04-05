@@ -81,7 +81,7 @@ default:
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
   cndSrcBin: /opt/cndsrc/bin
 
-  siteAdminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu
+  siteAdminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu
 
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
   webServiceUrl: local
