@@ -1460,6 +1460,7 @@ h2 {
 
   div#onlyOneTrPerGene span {
     color: darkred;
+    font-weight: bold;
   }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
