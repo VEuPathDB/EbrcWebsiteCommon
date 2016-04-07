@@ -1345,122 +1345,69 @@ h2 {
  
 /* BOOLEAN, combined?  */
 
-  .gene-boolean-filter {
+  .gene-boolean-filter, .gene-leaf-filter  {
     display: none;
     margin-bottom: 4px;
   }
-  .gene-boolean-filter-controls {
+  .gene-boolean-filter-controls, .gene-leaf-filter-controls {
     display: none;
     text-align: center;
-    }
-  .gene-boolean-filter table {
+   }
+  .gene-boolean-filter table, .gene-leaf-filter table {
     border-collapse: separate;
     color: black;
   }
-  .gene-boolean-filter-summary {
+  .gene-boolean-filter-summary, .gene-leaf-filter-summary {
     display: inline-block;
+  }
+  .gene-boolean-filter-controls p, .gene-leaf-filter-controls p  {
+    text-align: center; 
+    margin: 1em 0 .4em;
   }
   .gene-boolean-filter-controls button:disabled {
  		color:grey;
   }
-  .gene-boolean-filter-controls p {
-    text-align: center; 
-    margin: 1em 0 .4em;
-  }
 
-/* LEAF */
+/* LEAF step */
 
- .gene-leaf-filter {
-    display: none;
-    margin-bottom: 4px; 
-  }
- .gene-leaf-filter p {
-    margin: 1em 0 .4em;
-}
-  .gene-leaf-filter-controls { 
-    display: none;
-    text-align: center;
-  }
-  .gene-leaf-filter table {
-    border-collapse: separate;
-    color: black;
-  }
-  .gene-leaf-filter-summary {
-    display: inline-block;
+  .gene-leaf-filter p {
+    margin: 0.4em 0 .4em;
   }
   .gene-leaf-filter-controls button:disabled {
  		color:grey;
   }
-  .gene-leaf-filter-controls p {
-    text-align: center; 
-    margin: 1em 0 .4em; 
-  }
+ 
 
-
-/* Any layout */
-
- table#booleanFilter td#prompt{
+  table#booleanFilter td#prompt{
     font-weight:bold;
+  }
+  table#booleanFilter table td{
+    padding:0 8px;
   }
   table#booleanFilter table img  {
     width:80px;
   }
 
- table#leafFilter table img  {
-    width:20px; /* same size as in attribute column in site/wdkAttribute.tag */
-  }
-
-
-/* Horizontal layout */
-/*
-  table#booleanFilter table td {
-    padding-right:60px;
-  }
-  table#booleanFilter table td:last-child {
-    border-right:0;
-    padding-right:0;
-  }
-*/
-/* Vertical layout  bigger font, checkboxes and button */
-/*
-  div.gene-boolean-filter-controls button {
-    margin-top:10px;
-    transform:scale(1.2);
-  }
-  table#booleanFilter {
-    font-size:120%;
-  }
-  table#booleanFilter table input {
-    transform:scale(1.2);
-  }
-*/
-
-/* Vertical layout */
-
-  table#booleanFilter table td{
-    padding:0 8px;
-  }
-  table#booleanFilter table img  {
+  table#booleanFilter table img, table#leafFilter table img  {
     vertical-align: text-bottom;
     margin-left:10px;
   }
+
   table#leafFilter table img  {
-    vertical-align: text-bottom;
-    margin-left:10px;
+    width:20px; /* same size as in attribute column in site/wdkAttribute.tag */
   }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = results table view filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-  div#onlyOneTrPerGene {
-    padding: 2px 2px 6px;
+  div#oneTr-filter {
+    padding: 2px 2px 1em;
     font-family: Verdana;
-  }
-
-  div#onlyOneTrPerGene span {
-    color: darkred;
     font-weight: bold;
+  }
+  div#oneTr-filter span#prompt,  div#oneTr-filter span span {
+    color: darkred;
   }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
