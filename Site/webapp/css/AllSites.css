@@ -1398,17 +1398,21 @@ h2 {
   }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      = results table view filter
+      = results table view filter (representative transcript)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
   div#oneTr-filter {
     padding: 2px 2px 1em;
     font-family: Verdana;
     font-weight: bold;
+    background-color: #eee; /* as in WDK result table header */
+    display: inline;
   }
   div#oneTr-filter span#prompt,  div#oneTr-filter span span {
     color: darkred;
+    padding-right: 1em;
   }
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
