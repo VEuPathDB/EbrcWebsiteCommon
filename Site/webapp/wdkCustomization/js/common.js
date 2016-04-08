@@ -167,6 +167,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   var configureMenuBar = function() {
     var menu = document.getElementById('menu');
     var $body = $(document.body);
+    var linkInMenu = false;
     var $topLink = $('<a href="#" title="Back to top of page">' +
                      '  <i class="fa fa-2x fa-arrow-circle-up"></i>' +
                      '</a>')
@@ -191,12 +192,16 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
 
     function updateMenuBar() {
       if (menu.getBoundingClientRect().top < 1) {
+        if (linkInMenu) return;
         $body.addClass('fixed-menu');
         $topLinkMenuItem.insertBefore($lastMenuItem);
+        linkInMenu = true;
       }
       else {
+        if (!linkInMenu) return;
         $body.removeClass('fixed-menu');
         $topLinkMenuItem.detach();
+        linkInMenu = false;
       }
     }
   };
