@@ -85,6 +85,18 @@
 -->
         <div class="group-title h3left" style="padding-bottom: .4em;">Data Sets used by this search</div>
 
+        <style>
+          .wdk-AnswerHeader {
+            display: none;
+          }
+        </style>
+
+        <div
+          data-controller="eupathdb.datasetsByQuestion"
+          data-question-name="${wdkQuestion.fullName}"
+        ><jsp:text/></div>
+
+      <%--
         <div class="group-detail" style="display:block">
 	    
           <ul>
@@ -113,6 +125,8 @@
           </c:forEach>
           </ul>
         </div>
+        --%>
+
       </div>
 
     </c:otherwise>

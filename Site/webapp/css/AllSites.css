@@ -810,7 +810,6 @@ span.smallTitle {
   clear: both;
   height: 2em;
   padding: 2em;
-  margin: 2em 0;
   background: #fafafa;
   border: 1px solid #f0f0f0;
 }
@@ -1174,6 +1173,11 @@ tr.headerrow th {
 /* In sites.css we have as background image an image that is narrow for some cases where the th needs to stretch to hold 5 or 6 lines of text; this size forces the image to stretch with the container
 	it does not work on IE7/8 (do not support css3) but it does not hurt either. */
 
+
+/* min width for Add Step question form */
+#query_form {
+  min-width: 825px;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     = RESULT PAGE: motif
