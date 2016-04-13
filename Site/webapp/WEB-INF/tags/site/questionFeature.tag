@@ -16,6 +16,7 @@
 
 <c:choose>
 <%-- BETA ICON --%>
+<%--
   <c:when test="${fn:containsIgnoreCase(question.questionSetName,'PathwayQuestions') || 
 									fn:containsIgnoreCase(question.questionSetName,'CompoundQuestions') || 
                   fn:containsIgnoreCase(question.name,'GenesByReactionCompounds') || 
@@ -27,6 +28,7 @@
     <imp:image alt="Beta feature icon" title="This search is new and under revision; please provide feedback using the Contact Us link on the top header." 
 			src="wdk/images/${betaIconFile}"/>
   </c:when>
+--%>
 
 <%-- TUTORIAL --%>
   <c:when test="${question.queryName eq 'GenesByGenericFoldChange' and refer ne 'webservices'}">
@@ -36,16 +38,6 @@
 				  src="images/youtube_32x32.png"/>
     </a>
   </c:when>
-
-<%-- this only works if we move the call <imp:questionFeature.../> outside the search page title, in questionPageContent.tag
-  <c:when test="${ ( fn:endsWith(question.queryName,'BySimilarity') || fn:endsWith(question.queryName,'Blast') )  && refer ne 'webservices' }">
-		<div class="h3center">As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity. 
-			Prior&nbsp;versions&nbsp;of&nbsp;the&nbsp;search&nbsp;used&nbsp;WU-BLAST.
-		</div>  
-		<div class="h3center">
-		  <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a></div>
-	</c:when>
---%>
 
 
 <%-- Provided by WDK:  "NEW" AND "REVISED" ICONS --%>

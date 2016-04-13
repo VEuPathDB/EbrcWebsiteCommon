@@ -17,6 +17,7 @@
 		  <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a>
 </c:if>
 
+<%--
 <c:if test="${( refer == 'question' && fn:containsIgnoreCase(title,'pathway') ||
 				     refer == 'question' && fn:containsIgnoreCase(title,'compound') ||
              refer == 'recordPage' && fn:containsIgnoreCase(title,'pathway') ||
@@ -28,6 +29,7 @@
 			 <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>contact us</a> 
 			 with your feedback. 
 </c:if>
+--%>
 
 <c:if test="${project == 'OrthoMCL'  &&
            ( refer == 'question' && fn:containsIgnoreCase(title,'enzyme') ||
