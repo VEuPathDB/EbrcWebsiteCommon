@@ -96,6 +96,7 @@ default:
   highSpeedChipSnpSearchIdPrefix: NULL
 
   # needed in all sites but portal, to access blast gbrowse link
+  # also needed for model xml macros: WEBAPP_URL and LEGACY_WEBAPP_URL
   myURL: ${myURL}
 
   plasmoPubsURL: none
