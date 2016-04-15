@@ -10,6 +10,7 @@ default:
 
   smtpServer: 127.0.0.1
   supportEmail: help@${project}.org
+  adminEmail: ""
   defaultRole: wdk_user
   secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 
@@ -80,9 +81,7 @@ default:
 
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
   cndSrcBin: /opt/cndsrc/bin
-
-  siteAdminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu
-
+  
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
   webServiceUrl: local
   blastPath: /opt/ncbi-blast+/bin/
@@ -130,6 +129,7 @@ production:
   appDb.maxIdle: 10
   userDb.maxIdle: 10
   commentDb.maxIdle: 10
+  adminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu
 
 apiSite:
   modelName: apiCommonModel

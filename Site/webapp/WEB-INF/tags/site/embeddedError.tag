@@ -42,7 +42,12 @@ Sample usage:
 
 <c:set var="props" value="${applicationScope.wdkModel.properties}" />
 
-<c:set var="to" value="${props['SITE_ADMIN_EMAIL']}" />
+<%--
+  Replacing SITE_ADMIN_EMAIL in model.props with ADMIN_EMAIL in model-config.xml 
+  <c:set var="to" value="${props['SITE_ADMIN_EMAIL']}" />
+--%>
+<c:set var="to" value="${wdkModel.model.modelConfig.adminEmail}"/>
+
 <%-- including remote host in subject to aid filtering in email --%>
 <c:set var="subject" value="Embedded error - ${pageContext.request.remoteHost}" />
 
@@ -84,11 +89,11 @@ Time: <fmt:formatDate type="both" pattern="dd/MMM/yyyy:H:mm:ss" value="<%=new ja
       <c:when test="${fn:containsIgnoreCase(body,'java.net.SocketTimeoutException')}"></c:when>
       <c:when test="${fn:containsIgnoreCase(body,'Problem accessing the absolute URL')}"></c:when>
       <c:otherwise>
-        <imp:email 
-            to="${to}"
-            from="${from}"
-            subject="${subject}" 
-            body="${body}"/>
+          <imp:email 
+              to="${to}"
+              from="${from}"
+              subject="${subject}" 
+              body="${body}"/>
       </c:otherwise>
     </c:choose>
   </c:otherwise>
