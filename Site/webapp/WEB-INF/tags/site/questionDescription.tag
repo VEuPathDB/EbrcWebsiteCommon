@@ -14,6 +14,7 @@
 <c:set var="wdkModel" value="${applicationScope.wdkModel}"/>
 <c:set var="props" value="${applicationScope.wdkModel.properties}" />
 <c:set var="project" value="${props['PROJECT_ID']}" />
+<c:set var="appUrl" value="${props['WEBAPP_BASE_URL']}" />
 <c:set var="recordName" value="${wdkQuestion.recordClass.displayName}"/>
 <c:set var="showParams" value="${requestScope.showParams}"/>
 
@@ -85,20 +86,7 @@
 -->
         <div class="group-title h3left" style="padding-bottom: .4em;">Data Sets used by this search</div>
 
-        <style>
-          .wdk-AnswerHeader {
-            display: none;
-          }
-        </style>
-
-        <div
-          data-controller="eupathdb.datasetsByQuestion"
-          data-question-name="${wdkQuestion.fullName}"
-        ><jsp:text/></div>
-
-      <%--
         <div class="group-detail" style="display:block">
-	    
           <ul>
           <c:forEach items="${ds_ref_questions}" var="dsRecord">
             <li class="data-source">
@@ -108,7 +96,7 @@
               <c:set var="ds_tables" value="${dsRecord.tables}" />
               <c:set var="ds_publications" value="${ds_tables['Publications']}" />
               <a class="title" 
-                 href="<c:url value='/getDataset.do?question=${wdkQuestion.fullName}&display=detail#${ds_id}'/>">${ds_display}</a>
+                href="${appUrl}/record/dataset/${ds_id}">${ds_display}</a>
               <div class="detail">
                 <div class="summary">${ds_attributes['summary']}</div>
                 <c:if test="${fn:length(ds_publications) > 0}">
@@ -125,7 +113,6 @@
           </c:forEach>
           </ul>
         </div>
-        --%>
 
       </div>
 
