@@ -51,7 +51,7 @@ html {
 }
 
 /* useful for embedding forms and making submit button look like a link */
-input.link, button.link {
+input.link, button.link, button.wdk-Link {
   border: none;
   padding: 0;
   margin: 0;
@@ -1321,11 +1321,11 @@ span.galaxy {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = From PlasmoDB.css
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-a:link, a:visited, div.divlink, .link {
+a:link, a:visited, div.divlink, .link, button.wdk-Link {
 	color: #069;
 }
 
-a:hover, a:active, a:focus, div.divlink:hover, .link:hover {
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
 	text-decoration: underline;
 }
 
