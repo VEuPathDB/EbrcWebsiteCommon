@@ -234,7 +234,7 @@ table.threecolumn td {
 	display: inline;
 	left: -9999px;
 	position: absolute;
-	background-image: url(../wdk/images/question.png);
+	background-image: url(~wdk/images/question.png);
 	background-repeat: no-repeat;
 }
 .detail_link:hover {
