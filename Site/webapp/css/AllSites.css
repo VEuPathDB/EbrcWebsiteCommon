@@ -330,31 +330,30 @@ height: 240px;
 }
 
 .menu_lefttop_drop {
-   width: 194px;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: 12px;
-   font-weight: normal;
-   padding: 6px;
-   line-height: 15px;
-   border: 1px solid grey;
-   background-color: #FFFFFF;
-   margin: -5px 0px 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  padding: 6px;
+  line-height: 15px;
+  border: 1px solid grey;
+  background-color: #FFFFFF;
+  margin: -5px 0px 5px;
 }
 
 
 
 #menu_lefttop a.heading {
-	height: 24px;
-/*	width: 191px;*/
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 17px;
-/*	voice-family: "\"}\""; */
-/*	voice-family: inherit; */
-	text-decoration: none;
-	background-repeat: no-repeat;
-	padding-right: 10px;
-	padding-left:  7px;
-	margin-bottom: 5px;
+  text-align: center;
+  height: 26px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  padding-right: 10px;
+  padding-left:  7px;
+  padding-top: 12px;
+  margin-bottom: 5px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 #menu_lefttop div ul.related-sites,
@@ -386,12 +385,10 @@ iframe.twitter-timeline {
 /* newitems.js (highlight in yellow unread items) --  also adds warning sentence on side header, with how many items are unread*/
 p.unreadlabel {
   color:yellow;
-  font-size:12px;
+  font-size:10px;
   padding-left:7px;
   font-family: Verdana;
   margin: 0;
-  position: relative;
-  bottom: 4px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
