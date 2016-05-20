@@ -128,18 +128,27 @@ div.innertube #record-toolbox li {
 	 =HOME Page:  BUBBLE Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-table.threecolumn {
-	clear: both;
+.threecolumn {
+  /* flex container -- flex items are .threecolumndiv */
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* align to top */
+  /* the following take effect when flex is not available */
+  text-align: center;
 }
 
-table.threecolumn td {
-  vertical-align: top;
-}
-/*
 .threecolumndiv {
-	width: 247px;
+  /* flex item -- flex container is .threecolumn */
+  border: 1px solid gray;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  /* need a fixed height since height of contents changes when expanded */
+  min-height: 490px;
+  /* the following take effect when flex is not available */
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 10px;
 }
-*/
 
 .threecolumndiv div.heading {
 	display: block;
@@ -163,13 +172,6 @@ table.threecolumn td {
 
 #bubbles .info {
   width: 240px;
-  border: 1px solid grey;
-  border-top:0;
-  min-height: 315px; /* it varies depending on the number of categories shown */
-  height: 100%;
-  /*  background-image: url(../images/bubble_backgrnd.png);
-      background-repeat: repeat-y;
-  */
   text-align: left;
   padding-right: 15px;  /* 19px; */
   padding-bottom: 20px;
