@@ -80,6 +80,7 @@ article section {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #contentwrapper {
   background-color: white;
+  min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
 }
 
 #search-bubbles {
@@ -748,15 +749,14 @@ span.smallTitle {
 }
 
 .wide-footer {
-	min-width: 950px;
-	width: 95%;
+  /*
+  min-width: 950px;
+  width: 95%;
+  */
 }
 
 .skinny-footer {
-  min-width: 756px;
-  width:75%;
-  position:relative;
-  left:200px;
+  margin-left: 230px;
 }
 
 #footer .left, #footer .middle, #footer .right {
@@ -838,15 +838,23 @@ span.smallTitle {
 #fixed-footer .left {
   position: absolute;
   left: 10px;
+  bottom: 10px;
 }
 
 #fixed-footer .right {
   position: absolute;
   right: 10px;
+  bottom: 10px;
 }
 
 #fixed-footer .bottom {
   text-align: center;
+  position: relative;
+  bottom: 2px;
+}
+
+#fixed-footer .attributions {
+  text-align: right;
 }
 
 #fixed-footer .attributions,
@@ -858,6 +866,10 @@ span.smallTitle {
 
 #fixed-footer .site-icons img {
   height: 20px;
+}
+
+#fixed-footer .build-info {
+  padding: 1em 0;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
