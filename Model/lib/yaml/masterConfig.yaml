@@ -20,6 +20,7 @@ default:
   oauthClientId: ${oauthClientId}
   oauthClientSecret: ${oauthClientSecret}
   oauthCheckCerts: false
+  changePasswordUrl: ${oauthUrl}/assets/changePassword.html?returnUrl={{returnUrl}}
 
   # key store file containing acceptable certs during SSL communication
   keyStoreFile: /etc/pki/java/cacerts
