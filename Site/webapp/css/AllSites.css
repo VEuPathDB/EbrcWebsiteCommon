@@ -134,7 +134,7 @@ div.innertube #record-toolbox li {
   justify-content: space-around;
   align-items: flex-start; /* align to top */
   /* the following take effect when flex is not available */
-  text-align: center;
+  /* text-align: center; */
 }
 
 .threecolumndiv {
@@ -162,38 +162,35 @@ div.innertube #record-toolbox li {
   padding-right: 10px;
   padding-left:  7px;
   padding-top: 12px;
+  text-align: center;
 }
 
-/* what for?
- * to prevent gap between img and div */
-.threecolumndiv img#heading {
-  display: block;
-}	
 
-#bubbles .info {
+#bubbles .info, #bubbles .tools {
   text-align: left;
   padding-right: 15px;  /* 19px; */
   padding-bottom: 20px;
   padding-top: 6px;
   padding-left: 15px;  /* 19px; */
 }
-#bubbles .info p.small {
-  margin: 0;
-  padding-bottom:1em;
-}
-#bubbles .info ul {
+
+#bubbles .info ul, #bubbles .tools ul  {
   height: 100%;
   padding: 0;
   margin: 0;
 }
-#bubbles .info li {
+#bubbles .tools ul {
+  margin-top: 1em;
+}
+
+#bubbles .info li, #bubbles .tools li {
   line-height: 1.5em;
   /* list-style-image: url(../images/cir_bullet.png);*/
   list-style-type: none;
   margin-left: 7px;
 }
 
-#bubbles .info li ul {
+#bubbles .info li ul, #bubbles .tools li ul  {
   margin: 0 0 4px 0;
 }
 #bubbles .info li ul li {
@@ -204,10 +201,12 @@ div.innertube #record-toolbox li {
   line-height: 1.1em;
   padding:1px;
 }
-
-#bubbles .info li a.heading {
-  /*padding-left: 6px; */
+#bubbles .tools li ul li {
+  line-height: 1.1em;
+  padding:1px;
 }
+
+
 
 #bubbles .info .wdk-CheckboxTree-expandedItem,
 #bubbles .info .wdk-CheckboxTree-collapsedItem {
@@ -237,6 +236,7 @@ div.innertube #record-toolbox li {
   margin-bottom: -4px;
 }
 
+/* Ortho only */
 #bubbles .infobottom {
 /* 	width: 209px; */
 	min-height: 35px;    /* trying to keep buckest same size */
@@ -250,40 +250,6 @@ div.innertube #record-toolbox li {
 	padding-left: 19px;
 }
 
-#bubbles .sub_list {
-  display: none;
-}
-
-.detail_link {
-/*	border: 2px solid #d8d8d8; */
-	display: inline;
-	left: -9999px;
-	position: absolute;
-	background-image: url(~wdk/images/question.png);
-	background-repeat: no-repeat;
-}
-.detail_link:hover {
-  text-decoration: none;
-}
-/*
-.detail_link:link, .detail_link:visited{
-  color: blue;  
-  text-decoration: underline;; 
-}
-*/
-
-li:hover a.heading + a.detail_link, a.detail_link:hover {
-	left: -2px;
-	position: relative;
-}
-
-
-/* for Internet Explorer */
-/*\*/
-* html #bubbles .info {
-height: 240px;
-}
-/**/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SIDEBAR
