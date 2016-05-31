@@ -596,12 +596,14 @@ span.smallTitle {
   z-index: 99;
   min-width: 980px;
   width: 100%;
+/*
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   background: -webkit-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -o-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -moz-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: linear-gradient(rgb(191,191,191), rgb(121,121,121));
-  background-color: rgb(171,171,171);
+*/
+  background-color: rgb(171,171,171); /* #ABABAB */
   margin-bottom: -0.4em;
 }
 
@@ -637,8 +639,13 @@ span.smallTitle {
 .sf-menu a:focus,
 .sf-menu a:hover,
 .sf-menu a:active {
-	background:		#C7C7C7;
+	background:		#C7C7C7; /* on hover, lighter */
 	outline:		0;
+}
+
+.sf-menu li.sfHover a.back-to-top:link, .sf-menu li.sfHover a.back-to-top:visited, .sf-menu li.sfHover a.back-to-top:hover {
+  background-color: #ABABAB;
+  color: white;
 }
 
 /*
@@ -652,7 +659,7 @@ span.smallTitle {
   padding: 0.3em;
   border-left: none;
 }
-
+/*
 .sf-menu a:hover {
   color: #7a3838;
 }
@@ -660,7 +667,7 @@ span.smallTitle {
 .sf-menu .sfHover > a {
   color: #364179;
 }
-
+*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =Search Boxes (ORTHO: commmon.css)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

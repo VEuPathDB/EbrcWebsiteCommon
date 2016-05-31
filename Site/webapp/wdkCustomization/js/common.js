@@ -168,11 +168,11 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
     var menu = document.getElementById('menu');
     var $body = $(document.body);
     var linkInMenu = false;
-    var $topLink = $('<a href="#" title="Back to top of page">' +
+    var $topLink = $('<a class="back-to-top" href="#" title="Back to top of page">' +
                      '  <i class="fa fa-2x fa-arrow-circle-up"></i>' +
                      '</a>')
       .css({
-        padding: '0 1em',
+        padding: '2px 1em',
         borderLeft: 'none'
       })
       .click(function(e) {
@@ -182,7 +182,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       });
     var $topLinkMenuItem = $('<li/>').append($topLink)
       .css({
-        float: 'right'
+        float: 'right',
       });
     var $lastMenuItem = $('> ul > li:last-child', menu);
 
