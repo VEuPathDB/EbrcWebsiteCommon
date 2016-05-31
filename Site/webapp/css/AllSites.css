@@ -1341,6 +1341,16 @@ h2 {
 }
 
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Search and Download pages: larger submit button
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.filter-button input[type="submit"], 
+.eupathdb-ReporterFormSubmit input[type="submit"] {
+  font-size: 135%;
+  border: 2px solid grey; 
+  border-radius: 6px;
+  background-color: white;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
