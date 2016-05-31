@@ -45,8 +45,7 @@
         <div title="Click to run a search and generate the first step of a new strategy." class="filter-button">
 					<html:submit property="questionSubmit" 
 												value="Get Answer" 
-												title="Click to run a search and generate the first step of a new strategy."  
-												style="font-size:110%;font-family:Arial,Helvetica,sans-serif;"/>
+												title="Click to run a search and generate the first step of a new strategy."  />
 				</div>	
 				<imp:nameStep/>
     </c:if>
