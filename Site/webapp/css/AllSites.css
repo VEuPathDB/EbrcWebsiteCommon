@@ -50,12 +50,54 @@ html {
   text-decoration: underline;
 }
 
+:focus {
+  outline-offset: -2px;
+}
+
+input[type="submit"],
+input[type="button"],
+button {
+  background: #e8e8e8;
+  border: 1px solid #afafaf;
+  padding: 4px 8px;
+}
+
+input[type="submit"]:focus,
+input[type="button"]:focus,
+button:focus,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover {
+  background: #ddd;
+}
+
+input[type="submit"]:active,
+input[type="button"]:active,
+button:active {
+  border-color: #717171;
+}
+
+input[type="submit"]:active,
+input[type="button"]:active,
+button:active {
+  border-color: #717171;
+}
+
+input[type="submit"][disabled],
+input[type="button"][disabled],
+button[disabled] {
+  color: #aaa;
+  background: #f4f4f4;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
 /* useful for embedding forms and making submit button look like a link */
 input.link, button.link, button.wdk-Link {
-  border: none;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: transparent !important;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,7 +265,7 @@ div.innertube #record-toolbox li {
 
 #bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTree-list > li.wdk-CheckboxTree-leafItem {
   list-style: disc inside;
-  margin-left: 2px;
+  margin-left: 0px;
   color: #aaa;
 }
 
@@ -596,15 +638,17 @@ span.smallTitle {
   z-index: 99;
   min-width: 980px;
   width: 100%;
-/*
+  /*
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   background: -webkit-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -o-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -moz-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: linear-gradient(rgb(191,191,191), rgb(121,121,121));
-*/
-  background-color: rgb(171,171,171); /* #ABABAB */
-  margin-bottom: -0.4em;
+  */
+  background-color: #a0a0a0;
+  border: 1px solid #a9a9a9;
+  margin-bottom: -0;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
 }
 
 .sf-menu a {
@@ -617,7 +661,7 @@ span.smallTitle {
 
 .sf-menu a:link, .sf-menu a, .sf-menu a:visited  {
   color: white;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .sf-menu li {
