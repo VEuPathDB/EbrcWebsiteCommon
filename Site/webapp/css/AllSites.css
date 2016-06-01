@@ -1354,8 +1354,6 @@ h2 {
 .filter-button input[type="submit"], 
 .eupathdb-ReporterFormSubmit input[type="submit"] {
   font-size: 135%;
-  border: 2px solid grey; 
-  border-radius: 6px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
