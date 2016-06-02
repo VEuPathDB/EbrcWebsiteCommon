@@ -110,7 +110,7 @@ input.link, button.link, button.wdk-Link {
   border: none !important;
   padding: 0 !important;
   margin: 0 !important;
-  background-color: transparent !important;
+  background: transparent !important;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
