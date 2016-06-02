@@ -58,8 +58,13 @@ input[type="submit"],
 input[type="button"],
 button {
   background: #e8e8e8;
+  background: -webkit-linear-gradient(#f4f4f4, #dddddd);
+  background: -o-linear-gradient(#f4f4f4, #dddddd);
+  background: -moz-linear-gradient(#f4f4f4, #dddddd);
+  background: linear-gradient(#f4f4f4, #dddddd);
   border: 1px solid #afafaf;
-  padding: 4px 8px;
+  border-radius: 2px;
+  padding: 2px 6px;
 }
 
 input[type="submit"]:focus,
@@ -68,19 +73,27 @@ button:focus,
 input[type="submit"]:hover,
 input[type="button"]:hover,
 button:hover {
+  background: #ededed;
+  background: -webkit-linear-gradient(#ededed, #dddddd);
+  background: -o-linear-gradient(#ededed, #dddddd);
+  background: -moz-linear-gradient(#ededed, #dddddd);
+  background: linear-gradient(#ededed, #dddddd);
+}
+
+input[type="submit"]:focus,
+input[type="button"]:focus,
+button:focus {
+  border-color: #717171;
+}
+
+input[type="submit"]:active,
+input[type="button"]:active,
+button:active {
   background: #ddd;
-}
-
-input[type="submit"]:active,
-input[type="button"]:active,
-button:active {
-  border-color: #717171;
-}
-
-input[type="submit"]:active,
-input[type="button"]:active,
-button:active {
-  border-color: #717171;
+  background: -webkit-linear-gradient(#dddddd, #ededed);
+  background: -o-linear-gradient(#dddddd, #ededed);
+  background: -moz-linear-gradient(#dddddd, #ededed);
+  background: linear-gradient(#dddddd, #ededed);
 }
 
 input[type="submit"][disabled],
@@ -1397,7 +1410,7 @@ h2 {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .filter-button input[type="submit"], 
 .eupathdb-ReporterFormSubmit input[type="submit"] {
-  font-size: 135%;
+  font-size: 120%;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
