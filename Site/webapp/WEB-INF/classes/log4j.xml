@@ -10,7 +10,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %15X{ipAddress} rid:%-9X{requestId} - %C:%L - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -26,7 +26,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %m%n" />
+               value="%-9r [%d{dd/MMM/yyyy:HH:mm:ss}] %15X{ipAddress} rid:%-9X{requestId} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -42,7 +42,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
             <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="%-9r [%d{dd/MMM/yyyy:HH:mm:ss}] %15X{ipAddress} rid:%-9X{requestId} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="info" />
@@ -61,7 +61,7 @@
         <layout class="org.apache.log4j.PatternLayout">
            <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
            <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="%-9r [%d{dd/MMM/yyyy:HH:mm:ss}] %15X{ipAddress} rid:%-9X{requestId} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="warn" />
