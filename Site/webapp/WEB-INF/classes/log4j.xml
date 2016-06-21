@@ -10,7 +10,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="[%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %C:%L - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -26,7 +26,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy:HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -42,7 +42,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
             <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy:HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="info" />
