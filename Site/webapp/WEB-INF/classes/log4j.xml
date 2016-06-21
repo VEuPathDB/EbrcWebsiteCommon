@@ -42,7 +42,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
             <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%5X{shortSessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="info" />
@@ -61,7 +61,7 @@
         <layout class="org.apache.log4j.PatternLayout">
            <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
            <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy:HH:mm:ss}] sid:%-9X{sessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
+               value="[%d{dd/MMM/yyyy:HH:mm:ss}] sid:%5X{shortSessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="warn" />
