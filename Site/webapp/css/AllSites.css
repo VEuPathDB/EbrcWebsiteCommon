@@ -90,10 +90,6 @@ input[type="submit"]:active,
 input[type="button"]:active,
 button:active {
   background: #ddd;
-  background: -webkit-linear-gradient(#dddddd, #ededed);
-  background: -o-linear-gradient(#dddddd, #ededed);
-  background: -moz-linear-gradient(#dddddd, #ededed);
-  background: linear-gradient(#dddddd, #ededed);
 }
 
 input[type="submit"][disabled],
