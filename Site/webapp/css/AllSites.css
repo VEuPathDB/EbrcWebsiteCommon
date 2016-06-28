@@ -38,7 +38,7 @@ html {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     Stylesheet for styles that are the same across all sites 
+     Stylesheet for styles that are the same across all sites
      Definitions here get overriden by entries in (project).css
      (after the order set up in header.tag)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -127,7 +127,7 @@ article section {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =MAIN structure: contentwrapper css provided by wdk 
+	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #contentwrapper {
   background-color: white;
@@ -297,7 +297,7 @@ div.innertube #record-toolbox li {
 	text-align: center;
 	padding-top: 2px;
 	padding-right: 19px;
-	padding-bottom: 0px; 
+	padding-bottom: 0px;
 	padding-left: 19px;
 }
 
@@ -320,16 +320,16 @@ div.innertube #record-toolbox li {
 	color: #FFFFFF;
 	display: block;
 }
-	
+
 #menu_lefttop a.heading:hover {
-	color: #CCCCCC; 
+	color: #CCCCCC;
 	display: block;
 }
 
 #menu_lefttop img {
         display: block;
-}	
-	
+}
+
 #menu_lefttop div {
 	height: auto;
 }
@@ -412,10 +412,10 @@ p.unreadlabel {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =News
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-table#news { 
+table#news {
   width:100%;
 }
-table#news ul { 
+table#news ul {
   list-style: inside disc;
   padding-left: 2em;
   text-indent: -1em;
@@ -460,7 +460,7 @@ table#news h3, table#news h4, table#news h5, table#news h6 {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =BULLET LISTS    classic bullet list 
+	 =BULLET LISTS    classic bullet list
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #cirbulletlist ol,#cirbulletlist ul {
 	list-style-type: disc;
@@ -483,8 +483,8 @@ ul.cirbulletlist {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =HEADER 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+	 =HEADER
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #nav-top li ul {  /* second-level lists */
   background-repeat: repeat-x;      /*was in AllSites, did not make it into WDK*/
   width:13em;
@@ -526,7 +526,7 @@ div#quick-search td {
    height: 50px;
    margin-top: 18px;
 }
- 
+
 #toplink {
 	padding-top: 1px;
 }
@@ -542,7 +542,7 @@ div#quick-search td {
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =ABOUT  menu (in sidebar and header)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 span.smallTitle {
 	color:grey;
 	font-style:italic;
@@ -554,7 +554,7 @@ span.smallTitle {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MENUBAR (horizontal bar, under header)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 .fixed-menu #menu .sf-menu {
   position: fixed;
@@ -572,7 +572,7 @@ span.smallTitle {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .twitter,
 .facebook,
 .youtube {
@@ -732,7 +732,7 @@ span.smallTitle {
    background-color: white;  /*  #eadfd9; */
    font-size: 11px;
    text-align: right;
-} 
+}
 
 .search-box input{
 	font-family: Arial, Helvetica, sans-serif;
@@ -951,7 +951,7 @@ td.lines2, #queryGrid td.lines2 {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =SUMMARY TABLES 
+	 =SUMMARY TABLES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* used by Expression graphs (fix for text alignment bug) */
 td.centered {
@@ -994,7 +994,7 @@ th.mythStyle {
 	font-weight:bold;
 	background-color:lightgrey;
 	border-bottom: 3px solid grey;
-	cursor: pointer; 
+	cursor: pointer;
 /*	if we add back the sort icons in data summary .....
 	padding:0;
 	vertical-align:bottom; */
@@ -1025,7 +1025,7 @@ th.mythStyle {
 }
 
 .announcebox.home {
-        min-width: 770px;  
+        min-width: 770px;
         margin: 4px 5px 0 230px;
 }
 
@@ -1151,8 +1151,8 @@ div.usererror {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 SEARCH page: jQuery treeParam code (also used for attribute selection) 
-	 makes organism <a href>.... so it picks up the link color 
+	 SEARCH page: jQuery treeParam code (also used for attribute selection)
+	 makes organism <a href>.... so it picks up the link color
 	 in Project.css
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -1188,7 +1188,7 @@ a#gbView {
 /*    float: left; */
     height: 24px;
     padding-left: 7px;
-    padding-right: 4px; 
+    padding-right: 4px;
     padding-top: 5px;
     width: 140px;
     margin: 0px auto;
@@ -1225,8 +1225,8 @@ a#gbView {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =RESULTS page, column names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-tr.headerrow th { 
-	background-size: 9990%;  
+tr.headerrow th {
+	background-size: 9990%;
 }
 
 /* In sites.css we have as background image an image that is narrow for some cases where the th needs to stretch to hold 5 or 6 lines of text; this size forces the image to stretch with the container
@@ -1246,7 +1246,7 @@ tr.headerrow th {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      =Contact modal popup 
+      =Contact modal popup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .contact-us h4 {
   text-align: center;
@@ -1318,7 +1318,7 @@ table#download-columns table div#overlay{
   opacity: 0.2;
   filter: alpha(opacity=20);
   position: relative;
-  bottom:2em; 
+  bottom:2em;
   background-color: white;
 }
 table#download-columns table div#tree-column{
@@ -1350,7 +1350,7 @@ table#download-galaxy form{
 }
 table#download-galaxy td b{
 		position:relative;
-		bottom:1px; 
+		bottom:1px;
 }
 table#download-galaxy td{
 		padding-bottom:1em;
@@ -1373,7 +1373,7 @@ span.galaxy {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = Filter param
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.filter-param-tabs {
+form[name="questionForm"] .filter-param-tabs {
   margin-left: -20em;
 }
 
@@ -1404,7 +1404,7 @@ h2 {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Search and Download pages: larger submit button
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.filter-button input[type="submit"], 
+.filter-button input[type="submit"],
 .eupathdb-ReporterFormSubmit input[type="submit"] {
   font-size: 120%;
 }
