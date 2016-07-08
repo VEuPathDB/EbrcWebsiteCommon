@@ -112,9 +112,16 @@ input.link, button.link, button.wdk-Link {
 /* Search boxes */
 input[type="text"], input[type="search"] {
   border: 1px solid #888;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  /* box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); */
   padding: 6px;
+  background: #fafaf9;
 }
+
+::-webkit-input-placeholder { color: #888; }
+:-ms-input-placeholder      { color: #888; }
+/* firefox seems to lighten the color, so making it darker to compensate */
+::-moz-placeholder          { color: #333; }
+:-moz-placeholder           { color: #333; }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   =SEMANTIC: sematic-based rules, using HTML5 elements
@@ -235,7 +242,7 @@ div.innertube #record-toolbox li {
 #bubbles .info ul, #bubbles .tools ul  {
   height: 100%;
   padding: 0;
-  margin: 0;
+  margin: 0.5em 0;
 }
 #bubbles .tools ul {
   margin-top: 1em;
