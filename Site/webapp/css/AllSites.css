@@ -113,7 +113,7 @@ input.link, button.link, button.wdk-Link {
 input[type="text"], input[type="search"] {
   border: 1px solid #888;
   /* box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); */
-  padding: 6px;
+  padding: 4px;
   background: #fafaf9;
 }
 
