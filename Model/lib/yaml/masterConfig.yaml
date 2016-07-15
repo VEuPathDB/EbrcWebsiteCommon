@@ -181,6 +181,8 @@ giardiadb: {}
 
 hostdb: {}
 
+microbiomedb: {}
+
 microsporidiadb: {}
 
 orthomcl:
