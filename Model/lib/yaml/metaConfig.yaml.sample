@@ -37,6 +37,7 @@ required:
  crypURL: http://cryptodb.org/cryptodb/
  giarURL: http://giardiadb.org/giardiadb/
  fungURL: http://fungidb.org/fungidb/
+ mbioURL: http://microbiomedb.org/mbio/
  micrURL: http://microsporidiadb.org/micro/
  piroURL: http://piroplasmadb.org/piro/
  plasURL: http://plasmodb.org/plasmo/
