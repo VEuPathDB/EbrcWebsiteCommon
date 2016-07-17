@@ -879,12 +879,14 @@ span.smallTitle {
   position: absolute;
   left: 10px;
   bottom: 10px;
+  z-index: 1;
 }
 
 #fixed-footer .right {
   position: absolute;
   right: 10px;
   bottom: 10px;
+  z-index: 1;
 }
 
 #fixed-footer .bottom {
