@@ -52,7 +52,7 @@
     fn:startsWith(pageContext.request.serverName, 'a1')   ||
     fn:startsWith(pageContext.request.serverName, 'a2')
     }">
-<div class="warn announcebox ${homeClass}" style="background-color:white;margin:0;border:0">
+<div>
   <div class="warn announcebox ${homeClass}">
     <table><tr><td>
       <imp:image src="images/warningSign.png" alt="warningSign" /></td>
