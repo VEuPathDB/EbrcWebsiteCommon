@@ -1,4 +1,4 @@
-wdk.util.namespace("eupath.setup", function(ns, $) {
+wdk.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
 // functions are called using onload-function 
