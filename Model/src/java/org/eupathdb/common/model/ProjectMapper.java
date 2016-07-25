@@ -201,9 +201,10 @@ public class ProjectMapper {
     // organism-project hasn't been mapped, load mapping
     String sql = "SELECT cast(apidb.project_id(?) as varchar2(20)) as project_id FROM dual";
     DataSource dataSource = wdkModel.getAppDb().getDataSource();
+    PreparedStatement ps = null;
     ResultSet resultSet = null;
     try {
-      PreparedStatement ps = SqlUtils.getPreparedStatement(dataSource, sql);
+      ps = SqlUtils.getPreparedStatement(dataSource, sql);
       ps.setString(1, organism);
       resultSet = ps.executeQuery();
       String projectId = null;
@@ -215,7 +216,7 @@ public class ProjectMapper {
       return projectId;
     }
     finally {
-      SqlUtils.closeResultSetAndStatement(resultSet);
+      SqlUtils.closeResultSetAndStatement(resultSet, ps);
     }
   }
 }
