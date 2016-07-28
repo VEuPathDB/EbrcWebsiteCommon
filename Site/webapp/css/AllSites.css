@@ -392,7 +392,7 @@ div.innertube #record-toolbox li {
 #menu_lefttop div ul#news,
 #menu_lefttop div ul#communityEventList {
     border: 1px lightgrey solid;
-    height: 90px;  /* 120px; */
+    max-height: 90px;
     list-style-position: inside;
     margin-left: 0;
     overflow-y: auto;
