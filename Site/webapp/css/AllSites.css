@@ -140,6 +140,33 @@ article section {
   margin-top: 1em;
 }
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = Used to be in PlasmoDB.css
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+a:link, a:visited, div.divlink, .link, button.wdk-Link {
+	color: #069;
+}
+
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	color: #444;
+}
+
+h2 {
+  	color: #444;
+}
+
+.h2center, .h3left,.h3center, .h4left {
+  	color:  #444;
+}
+
+a[name] {
+  text-decoration: none;
+}
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -1393,28 +1420,6 @@ form[name="questionForm"] .filter-param-tabs {
   margin-left: -20em;
 }
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      = From PlasmoDB.css
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-a:link, a:visited, div.divlink, .link, button.wdk-Link {
-	color: #069;
-}
-
-a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
-	text-decoration: underline;
-}
-
-h1 {
-	color: #444;
-}
-
-h2 {
-  	color: #444;
-}
-
-.h2center, .h3left,.h3center, .h4left {
-  	color:  #444;
-}
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
