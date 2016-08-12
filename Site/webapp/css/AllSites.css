@@ -1417,7 +1417,7 @@ span.galaxy {
       = Filter param
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 form[name="questionForm"] .filter-param-tabs {
-  margin-left: -20em;
+  /*margin-left: -20em;*/
 }
 
 
