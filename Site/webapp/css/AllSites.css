@@ -101,6 +101,11 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+input[type="submit"],
+button[type="submit"] {
+  font-size:  1.1rem;
+}
+
 /* useful for embedding forms and making submit button look like a link */
 input.link, button.link, button.wdk-Link {
   border: none !important;
@@ -1425,10 +1430,14 @@ form[name="questionForm"] .filter-param-tabs {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Search and Download pages: larger submit button
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
+  May no longer be needed.  Submit buttons should all be 1.1rem.
+  Should remove at some point.
 .filter-button input[type="submit"],
 .eupathdb-ReporterFormSubmit input[type="submit"] {
   font-size: 120%;
 }
+*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END
