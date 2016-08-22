@@ -1,3 +1,6 @@
+/**
+ * AllSites.css - CSS rules common for all EuPathDB websites
+ */
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       =Scrollbars for webkit browsers on OS x
@@ -38,7 +41,7 @@ html {
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     Stylesheet for styles that are the same across all sites 
+     Stylesheet for styles that are the same across all sites
      Definitions here get overriden by entries in (project).css
      (after the order set up in header.tag)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -50,13 +53,83 @@ html {
   text-decoration: underline;
 }
 
-/* useful for embedding forms and making submit button look like a link */
-input.link, button.link {
-  border: none;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
+:focus {
+  outline-offset: -2px;
 }
+
+input[type="submit"],
+input[type="button"],
+button {
+  background: #e8e8e8;
+  background: -webkit-linear-gradient(#f4f4f4, #dddddd);
+  background: -o-linear-gradient(#f4f4f4, #dddddd);
+  background: -moz-linear-gradient(#f4f4f4, #dddddd);
+  background: linear-gradient(#f4f4f4, #dddddd);
+  border: 1px solid #afafaf;
+  border-radius: 2px;
+  padding: 2px 6px;
+}
+
+input[type="submit"]:focus,
+input[type="button"]:focus,
+button:focus,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+button:hover {
+  background: #ededed;
+  background: -webkit-linear-gradient(#ededed, #dddddd);
+  background: -o-linear-gradient(#ededed, #dddddd);
+  background: -moz-linear-gradient(#ededed, #dddddd);
+  background: linear-gradient(#ededed, #dddddd);
+}
+
+input[type="submit"]:focus,
+input[type="button"]:focus,
+button:focus {
+  border-color: #717171;
+}
+
+input[type="submit"]:active,
+input[type="button"]:active,
+button:active {
+  background: #ddd;
+}
+
+input[type="submit"][disabled],
+input[type="button"][disabled],
+button[disabled] {
+  color: #aaa;
+  background: #f4f4f4;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+input[type="submit"],
+button[type="submit"] {
+  font-size:  0.9rem;
+}
+
+/* useful for embedding forms and making submit button look like a link */
+input.link, button.link, button.wdk-Link {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+/* Search boxes */
+input[type="text"], input[type="search"] {
+  border: 1px solid #888;
+  /* box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); */
+  padding: 4px;
+  background: #fafaf9;
+}
+
+::-webkit-input-placeholder { color: #888; }
+:-ms-input-placeholder      { color: #888; }
+/* firefox seems to lighten the color, so making it darker to compensate */
+::-moz-placeholder          { color: #333; }
+:-moz-placeholder           { color: #333; }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   =SEMANTIC: sematic-based rules, using HTML5 elements
@@ -75,9 +148,41 @@ article section {
   margin-top: 1em;
 }
 
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = Used to be in PlasmoDB.css
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+a:link, a:visited, div.divlink, .link, button.wdk-Link {
+	color: #069;
+}
+
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	color: #444;
+}
+
+h2 {
+  	color: #444;
+}
+
+.h2center, .h3left,.h3center, .h4left {
+  	color:  #444;
+}
+
+a[name] {
+  text-decoration: none;
+}
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =MAIN structure: contentwrapper css provided by wdk 
+	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+#contentwrapper {
+  background-color: white;
+  min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
+}
+
 #search-bubbles {
 	min-width: 780px;
 	margin: 0 5px 0 220px;
@@ -89,13 +194,13 @@ article section {
 #contentcolumn {
 	min-width: 780px;
 	margin: 0 5px 0 220px;
-	background-color: #FFFFFF;
+	/*background-color: #FFFFFF; */
 	background-repeat: repeat-x;
 	text-align: left;
 }
 
 #contentcolumn2 {
-	background-color: #FFFFFF;
+	/*background-color: #FFFFFF; */
 	background-position: 0 -25px;
 	background-repeat: repeat-x;
 	margin: 0 5px 0 6px;
@@ -123,105 +228,128 @@ div.innertube #record-toolbox li {
 	 =HOME Page:  BUBBLE Lists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-table.threecolumn {
-	clear: both;
-}
-
-table.threecolumn td {
-        vertical-align: top;
+.threecolumn {
+  /* flex container -- flex items are .threecolumndiv */
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* align to top */
+  /* the following take effect when flex is not available */
+  /* text-align: center; */
 }
 
 .threecolumndiv {
-	width: 247px;
-}
-/* what for?
- * to prevent gap between img and div */
-.threecolumndivimg {
-	display: block;
-}
-#bubbles .info {
-   width: 209px;
-   min-height: 319px;
-   height: 100%;
-   background-image: url(../images/bubble_backgrnd.png);
-   background-repeat: repeat-y;
-   text-align: left;
-   padding-top: 2px;
-   padding-right: 19px;
-   padding-bottom: 0px;
-   padding-left: 19px;
+  /* flex item -- flex container is .threecolumn */
+  border: 1px solid gray;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  /* need a fixed height since height of contents changes when expanded */
+  min-height: 490px;
+  width: 255px;
+  /* the following take effect when flex is not available */
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 10px;
 }
 
-#bubbles .info ul {
+.threecolumndiv div.heading {
+  display: block;
+  border-radius: 13px 13px 0 0;
+  height: 28px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #FFFFFF;
+  text-decoration: none;
+  padding-right: 10px;
+  padding-left:  7px;
+  padding-top: 12px;
+  text-align: center;
+}
+
+
+#bubbles .info, #bubbles .tools {
+  text-align: left;
+  padding-right: 15px;  /* 19px; */
+  padding-bottom: 20px;
+  padding-top: 6px;
+  padding-left: 15px;  /* 19px; */
+}
+
+#bubbles .info ul, #bubbles .tools ul  {
   height: 100%;
   padding: 0;
-  margin: 0;
+  margin: 0.5em 0;
 }
-#bubbles .info li
-{
-	line-height: 1.5em;
-/*	list-style-image: url(../images/cir_bullet.png);*/
-	list-style-type: none;
-	margin-left: 7px;
+#bubbles .tools ul {
+  margin-top: 1em;
 }
-#bubbles .info li ul {
+
+#bubbles .info li, #bubbles .tools li {
+  line-height: 1.5em;
+  /* list-style-image: url(../images/cir_bullet.png);*/
+  list-style-type: none;
+  margin-left: 7px;
+}
+
+#bubbles .info li ul, #bubbles .tools li ul  {
   margin: 0 0 4px 0;
 }
-#bubbles .info li ul li
-{
-/*	list-style-image: url(../images/cir_bullet2.png);*/
-	border-bottom:1px solid lightgrey;
-	list-style-type: none;
-	margin-left: 22px;
-/*	font-size: 11px; */
-	line-height: 1.1em;
+#bubbles .info li ul li {
+  /* border-bottom:1px solid lightgrey; separation lines might not be needed */
+  list-style-type: disc;
+  color: #aaa;
+  margin-left: 20px;
+  line-height: 1.1em;
+  padding:1px;
+}
+#bubbles .tools li ul li {
+  line-height: 1.1em;
+  padding:1px;
+}
+
+
+
+#bubbles .info .wdk-CheckboxTree-expandedItem,
+#bubbles .info .wdk-CheckboxTree-collapsedItem {
+  list-style: none;
+}
+
+#bubbles .wdk-CheckboxTree-list li label {
+  white-space: initial;
+}
+
+#bubbles .wdk-CheckboxTree-expandedItem:after {
+  display: none;
+}
+
+#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTree-list > li.wdk-CheckboxTree-leafItem {
+  list-style: disc inside;
+  margin-left: 0px;
+  color: #aaa;
+}
+
+#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTree-list > li.wdk-CheckboxTree-leafItem label {
+  position: relative;
+  left: -4px;
 }
 
 .bubble-header {
   margin-bottom: -4px;
 }
 
+/* Ortho only */
 #bubbles .infobottom {
-	width: 209px;
+/* 	width: 209px; */
 	min-height: 35px;    /* trying to keep buckest same size */
-	background-image: url(../images/bubble_bottom.png);
+/* 	background-image: url(../images/bubble_bottom.png);
 	background-position: bottom;
-	background-repeat: no-repeat;
+	background-repeat: no-repeat; */
 	text-align: center;
 	padding-top: 2px;
 	padding-right: 19px;
-	padding-bottom: 0px; 
+	padding-bottom: 0px;
 	padding-left: 19px;
 }
 
-#bubbles .sub_list {
-  display: none;
-}
-
-.detail_link {
-/*	border: 2px solid #d8d8d8; */
-	display: inline;
-	left: -9999px;
-	position: absolute;
-}
-
-.detail_link:link, .detail_link:visited{
-	color: blue;    /* #808080; */
-	text-decoration: underline;
-}
-
-li:hover a.heading + a.detail_link, a.detail_link:hover {
-	left: -2px;
-	position: relative;
-}
-
-
-/* for Internet Explorer */
-/*\*/
-* html #bubbles .info {
-height: 240px;
-}
-/**/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SIDEBAR
@@ -241,16 +369,16 @@ height: 240px;
 	color: #FFFFFF;
 	display: block;
 }
-	
+
 #menu_lefttop a.heading:hover {
-	color: #CCCCCC; 
+	color: #CCCCCC;
 	display: block;
 }
 
 #menu_lefttop img {
         display: block;
-}	
-	
+}
+
 #menu_lefttop div {
 	height: auto;
 }
@@ -269,38 +397,37 @@ height: 240px;
 }
 
 .menu_lefttop_drop {
-   width: 194px;
-   font-family: Arial, Helvetica, sans-serif;
-   font-size: 12px;
-   font-weight: normal;
-   padding: 6px;
-   line-height: 15px;
-   border: 1px solid grey;
-   background-color: #FFFFFF;
-   margin: -5px 0px 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  padding: 6px;
+  line-height: 15px;
+  border: 1px solid grey;
+  background-color: #FFFFFF;
+  margin: -5px 0px 5px;
 }
 
 
 
 #menu_lefttop a.heading {
-	height: 24px;
-/*	width: 191px;*/
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 17px;
-/*	voice-family: "\"}\""; */
-/*	voice-family: inherit; */
-	text-decoration: none;
-	background-repeat: no-repeat;
-	padding-right: 10px;
-	padding-left:  7px;
-	margin-bottom: 5px;
+  text-align: center;
+  height: 26px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  padding-right: 10px;
+  padding-left:  7px;
+  padding-top: 12px;
+  margin-bottom: 5px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 #menu_lefttop div ul.related-sites,
 #menu_lefttop div ul#news,
 #menu_lefttop div ul#communityEventList {
     border: 1px lightgrey solid;
-    height: 90px;  /* 120px; */
+    max-height: 90px;
     list-style-position: inside;
     margin-left: 0;
     overflow-y: auto;
@@ -325,21 +452,19 @@ iframe.twitter-timeline {
 /* newitems.js (highlight in yellow unread items) --  also adds warning sentence on side header, with how many items are unread*/
 p.unreadlabel {
   color:yellow;
-  font-size:12px;
+  font-size:10px;
   padding-left:7px;
   font-family: Verdana;
   margin: 0;
-  position: relative;
-  bottom: 4px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =News
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-table#news { 
+table#news {
   width:100%;
 }
-table#news ul { 
+table#news ul {
   list-style: inside disc;
   padding-left: 2em;
   text-indent: -1em;
@@ -384,7 +509,7 @@ table#news h3, table#news h4, table#news h5, table#news h6 {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =BULLET LISTS    classic bullet list 
+	 =BULLET LISTS    classic bullet list
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #cirbulletlist ol,#cirbulletlist ul {
 	list-style-type: disc;
@@ -407,8 +532,8 @@ ul.cirbulletlist {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =HEADER 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+	 =HEADER
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #nav-top li ul {  /* second-level lists */
   background-repeat: repeat-x;      /*was in AllSites, did not make it into WDK*/
   width:13em;
@@ -418,6 +543,10 @@ ul.cirbulletlist {
 
 div#quick-search td {
   white-space: nowrap;
+}
+
+#header {
+  height: 132px;
 }
 
 #header2 {
@@ -450,7 +579,7 @@ div#quick-search td {
    height: 50px;
    margin-top: 18px;
 }
- 
+
 #toplink {
 	padding-top: 1px;
 }
@@ -466,7 +595,7 @@ div#quick-search td {
 }
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =ABOUT  menu (in sidebar and header)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 span.smallTitle {
 	color:grey;
 	font-style:italic;
@@ -478,7 +607,7 @@ span.smallTitle {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MENUBAR (horizontal bar, under header)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 .fixed-menu #menu .sf-menu {
   position: fixed;
@@ -490,13 +619,13 @@ span.smallTitle {
 
 /** This is needed due to .fixed-menu css **/
 .wdk-RecordSidebar {
-  margin-top: 28px;
+  margin-top: 36px;
 }
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .twitter,
 .facebook,
 .youtube {
@@ -521,6 +650,7 @@ span.smallTitle {
   width: 14px;
   background: url(../images/social_sprites_14.png) no-repeat;
   display: inline-block;
+  vertical-align: bottom;
 }
 .facebook.small {
   background-position: -15px 0px ;
@@ -556,6 +686,121 @@ span.smallTitle {
   top: 2px;
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Menu bar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.eupathdb-Menu {
+  height: 28px;
+  line-height: 1;
+  list-type: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  z-index: 99;
+  min-width: 980px;
+  width: 100%;
+  background-color: #a0a0a0;
+  border: 1px solid #a9a9a9;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+}
+
+.eupathdb-MenuItem:hover {
+  background-color: #c7c7c7;
+}
+
+.eupathdb-Menu > .eupathdb-MenuItem {
+  display: inline-block;
+}
+
+/* Favorites icon */
+.eupathdb-Menu > .eupathdb-MenuItem:last-of-type {
+  float: right;
+}
+
+.eupathdb-Menu > .eupathdb-MenuItem:last-of-type .eupathdb-MenuItemText {
+  border: none;
+}
+
+.eupathdb-Submenu {
+  position: absolute;
+  z-index: 1000;
+  background: #a0a0a0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.eupathdb-MenuItem:hover > .eupathdb-MenuItemText__parent + .eupathdb-Submenu {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.eupathdb-Submenu {
+  display: block;
+}
+
+.eupathdb-Submenu .eupathdb-Submenu {
+  display: inline-block;
+}
+
+.eupathdb-MenuItemText {
+  color: white !important;
+  font-weight: 500;
+  border-left: 1px solid #fff;
+  border-top: none;
+  padding: .65em 1em;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.eupathdb-MenuItemText__beta,
+.eupathdb-MenuItemText__new {
+  position: relative;
+  padding-right: 40px;
+}
+
+.eupathdb-MenuItemText__beta:after,
+.eupathdb-MenuItemText__new:after {
+  position: absolute;
+  padding-left: 5px;
+}
+
+/*
+ * The '~' prefix indicates a top-level module path, which
+ * is used by the image-loader webpack plugin to inline the
+ * image data as base64 encoded string.
+ */
+
+.eupathdb-MenuItemText__beta:after {
+  content: url('~wdk/images/beta2-30.png');
+  top: 0;
+}
+
+.eupathdb-MenuItemText__new:after {
+  content: url('~wdk/images/new-feature.png');
+  top: 4px;
+}
+
+.eupathdb-MenuItemText__parent:after {
+  content: '\f0d7';
+  font-family: FontAwesome;
+  color: rgba(255,255,255,.5);
+  padding-left: 8px;
+}
+
+.eupathdb-Submenu .eupathdb-MenuItemText__parent:after {
+  content: '\f0da';
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =Superfish menu stuff -- override in ${project}.css
@@ -568,16 +813,21 @@ span.smallTitle {
 }
 
 .sf-menu {
+  box-sizing: border-box;
   z-index: 99;
   min-width: 980px;
   width: 100%;
+  /*
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   background: -webkit-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -o-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: -moz-linear-gradient(rgb(191,191,191), rgb(121,121,121));
   background: linear-gradient(rgb(191,191,191), rgb(121,121,121));
-  background-color: rgb(171,171,171);
-  margin-bottom: -0.4em;
+  */
+  background-color: #a0a0a0;
+  border: 1px solid #a9a9a9;
+  margin-bottom: -0;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
 }
 
 .sf-menu a {
@@ -590,7 +840,7 @@ span.smallTitle {
 
 .sf-menu a:link, .sf-menu a, .sf-menu a:visited  {
   color: white;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .sf-menu li {
@@ -612,8 +862,13 @@ span.smallTitle {
 .sf-menu a:focus,
 .sf-menu a:hover,
 .sf-menu a:active {
-	background:		#C7C7C7;
+	background:		#C7C7C7; /* on hover, lighter */
 	outline:		0;
+}
+
+.sf-menu li.sfHover a.back-to-top:link, .sf-menu li.sfHover a.back-to-top:visited, .sf-menu li.sfHover a.back-to-top:hover {
+  background-color: #ABABAB;
+  color: white;
 }
 
 /*
@@ -627,7 +882,7 @@ span.smallTitle {
   padding: 0.3em;
   border-left: none;
 }
-
+/*
 .sf-menu a:hover {
   color: #7a3838;
 }
@@ -635,7 +890,7 @@ span.smallTitle {
 .sf-menu .sfHover > a {
   color: #364179;
 }
-
+*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =Search Boxes (ORTHO: commmon.css)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -647,7 +902,7 @@ span.smallTitle {
    background-color: white;  /*  #eadfd9; */
    font-size: 11px;
    text-align: right;
-} 
+}
 
 .search-box input{
 	font-family: Arial, Helvetica, sans-serif;
@@ -690,15 +945,14 @@ span.smallTitle {
 }
 
 .wide-footer {
-	min-width: 950px;
-	width: 95%;
+  /*
+  min-width: 950px;
+  width: 95%;
+  */
 }
 
 .skinny-footer {
-  min-width: 756px;
-  width:75%;
-  position:relative;
-  left:200px;
+  margin-left: 230px;
 }
 
 #footer .left, #footer .middle, #footer .right {
@@ -773,7 +1027,6 @@ span.smallTitle {
   clear: both;
   height: 2em;
   padding: 2em;
-  margin: 2em 0;
   background: #fafafa;
   border: 1px solid #f0f0f0;
 }
@@ -781,15 +1034,26 @@ span.smallTitle {
 #fixed-footer .left {
   position: absolute;
   left: 10px;
+  bottom: 10px;
+  z-index: 1;
+  text-align: center;
 }
 
 #fixed-footer .right {
   position: absolute;
   right: 10px;
+  bottom: 10px;
+  z-index: 1;
 }
 
 #fixed-footer .bottom {
   text-align: center;
+  position: relative;
+  bottom: 2px;
+}
+
+#fixed-footer .attributions {
+  text-align: right;
 }
 
 #fixed-footer .attributions,
@@ -801,6 +1065,10 @@ span.smallTitle {
 
 #fixed-footer .site-icons img {
   height: 20px;
+}
+
+#fixed-footer .build-info {
+  padding: .5em 0;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -856,7 +1124,7 @@ td.lines2, #queryGrid td.lines2 {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =SUMMARY TABLES 
+	 =SUMMARY TABLES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* used by Expression graphs (fix for text alignment bug) */
 td.centered {
@@ -899,7 +1167,7 @@ th.mythStyle {
 	font-weight:bold;
 	background-color:lightgrey;
 	border-bottom: 3px solid grey;
-	cursor: pointer; 
+	cursor: pointer;
 /*	if we add back the sort icons in data summary .....
 	padding:0;
 	vertical-align:bottom; */
@@ -930,8 +1198,8 @@ th.mythStyle {
 }
 
 .announcebox.home {
-        min-width: 770px;  
-        margin: 12px 5px 0 220px;
+        min-width: 770px;
+        margin: 5px 5px 0 230px;
 }
 
 
@@ -1056,8 +1324,8 @@ div.usererror {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 SEARCH page: jQuery treeParam code (also used for attribute selection) 
-	 makes organism <a href>.... so it picks up the link color 
+	 SEARCH page: jQuery treeParam code (also used for attribute selection)
+	 makes organism <a href>.... so it picks up the link color
 	 in Project.css
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -1093,7 +1361,7 @@ a#gbView {
 /*    float: left; */
     height: 24px;
     padding-left: 7px;
-    padding-right: 4px; 
+    padding-right: 4px;
     padding-top: 5px;
     width: 140px;
     margin: 0px auto;
@@ -1130,13 +1398,18 @@ a#gbView {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =RESULTS page, column names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-tr.headerrow th { 
-	background-size: 9990%;  
+tr.headerrow th {
+	background-size: 9990%;
 }
 
 /* In sites.css we have as background image an image that is narrow for some cases where the th needs to stretch to hold 5 or 6 lines of text; this size forces the image to stretch with the container
 	it does not work on IE7/8 (do not support css3) but it does not hurt either. */
 
+
+/* min width for Add Step question form */
+#query_form {
+  min-width: 825px;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     = RESULT PAGE: motif
@@ -1146,7 +1419,7 @@ tr.headerrow th {
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      =Contact modal popup 
+      =Contact modal popup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .contact-us h4 {
   text-align: center;
@@ -1218,7 +1491,7 @@ table#download-columns table div#overlay{
   opacity: 0.2;
   filter: alpha(opacity=20);
   position: relative;
-  bottom:2em; 
+  bottom:2em;
   background-color: white;
 }
 table#download-columns table div#tree-column{
@@ -1250,7 +1523,7 @@ table#download-galaxy form{
 }
 table#download-galaxy td b{
 		position:relative;
-		bottom:1px; 
+		bottom:1px;
 }
 table#download-galaxy td{
 		padding-bottom:1em;
@@ -1273,9 +1546,23 @@ span.galaxy {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = Filter param
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.filter-param-tabs {
-  margin-left: -20em;
+form[name="questionForm"] .filter-param-tabs {
+  /*margin-left: -20em;*/
 }
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      Search and Download pages: larger submit button
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*
+  May no longer be needed.  Submit buttons should all be 1.1rem.
+  Should remove at some point.
+.filter-button input[type="submit"],
+.eupathdb-ReporterFormSubmit input[type="submit"] {
+  font-size: 120%;
+}
+*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = THE END

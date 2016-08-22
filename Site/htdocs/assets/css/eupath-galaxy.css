@@ -1,0 +1,56 @@
+.container {
+  max-width: 90%;
+  position: relative;
+}
+
+.eupath-workflows-table {
+  width: 100%;
+}
+    
+.eupath-header {
+  background-color:#eee;
+  margin-bottom: 2em;
+}
+
+.eupath-header img {
+  width: 180px;
+}
+
+.eupath-header .status-image {
+  text-align:right;
+}
+
+#eupath-title {
+  text-align:center;
+}
+
+#eupath-subtitle {
+  text-align:center;
+}
+
+#eupath-intro {
+  font-size: 120%;
+}
+
+.eupath-footer {
+  background-color:#eee;
+  padding: 1em;
+  margin-top: 2em;
+  text-align: center;
+  position: relative;
+  height: 8em;
+/*
+  position: absolute;
+  bottom:0;
+  left: 0;
+  right: 0;
+*/
+}
+
+.globus-name {
+
+}
+
+span.globus-icon img {
+  width: 30px;
+}

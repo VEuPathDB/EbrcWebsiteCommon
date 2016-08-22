@@ -1,4 +1,4 @@
-wdk.util.namespace("eupath.setup", function(ns, $) {
+wdk.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
 // functions are called using onload-function 
@@ -167,11 +167,12 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
   var configureMenuBar = function() {
     var menu = document.getElementById('menu');
     var $body = $(document.body);
-    var $topLink = $('<a href="#" title="Back to top of page">' +
+    var linkInMenu = false;
+    var $topLink = $('<a class="back-to-top" href="#" title="Back to top of page">' +
                      '  <i class="fa fa-2x fa-arrow-circle-up"></i>' +
                      '</a>')
       .css({
-        padding: '0 1em',
+        padding: '2px 1em',
         borderLeft: 'none'
       })
       .click(function(e) {
@@ -181,7 +182,7 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
       });
     var $topLinkMenuItem = $('<li/>').append($topLink)
       .css({
-        float: 'right'
+        float: 'right',
       });
     var $lastMenuItem = $('> ul > li:last-child', menu);
 
@@ -191,12 +192,16 @@ wdk.util.namespace("eupath.setup", function(ns, $) {
 
     function updateMenuBar() {
       if (menu.getBoundingClientRect().top < 1) {
+        if (linkInMenu) return;
         $body.addClass('fixed-menu');
         $topLinkMenuItem.insertBefore($lastMenuItem);
+        linkInMenu = true;
       }
       else {
+        if (!linkInMenu) return;
         $body.removeClass('fixed-menu');
         $topLinkMenuItem.detach();
+        linkInMenu = false;
       }
     }
   };

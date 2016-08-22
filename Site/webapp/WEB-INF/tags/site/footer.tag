@@ -18,7 +18,7 @@
   
   <c:set var="footerClass" value="${refer eq 'home' or refer eq 'home2' ? 'skinny-footer' : 'wide-footer' }"/>
 
-  <div id="footer" class="${footerClass} ui-helper-clearfix">
+  <div id="fixed-footer" class="${footerClass} ui-helper-clearfix">
     <div class="left">
       <div class="build-info">
         <a href="http://${fn:toLowerCase(siteName)}.org">${siteName}</a> ${version}
@@ -28,10 +28,6 @@
     </div>
 
     <div class="right">
-      <div class="contact">
-        Please <a href="${pageContext.request.contextPath}/contact.do"
-            class="new-window" data-name="contact_us">Contact Us</a> with any questions or comments
-      </div>
       <ul class="attributions">
         <li>
           <a href="http://code.google.com/p/strategies-wdk/">
@@ -40,15 +36,20 @@
         </li>
         <!-- <li>Test attribution</li> -->
       </ul>
+      <div class="contact">
+        Please <a href="${pageContext.request.contextPath}/contact.do"
+            class="new-window" data-name="contact_us">Contact Us</a> with any questions or comments
+      </div>
     </div>
 
     <div class="bottom">
-      <a href="http://www.eupathdb.org">
-        <imp:image src="images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
-      </a>
-
       <ul class="site-icons">
-        <li title="AmoebaDB.org">
+        <li title="EuPathDB.org">
+          <a href="http://www.eupathdb.org">
+            <imp:image src="images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
+          </a>
+        </li>
+        <li class="short-space" title="AmoebaDB.org">
           <a href="http://amoebadb.org">
             <imp:image src="images/AmoebaDB/footer-logo.png"/>
           </a>

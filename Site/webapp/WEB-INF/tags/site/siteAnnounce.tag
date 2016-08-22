@@ -23,11 +23,13 @@
 <!-- ================== BETA SITES ============ -->
 <%-- hardcoded warning message only for beta sites --%>
 <c:if test="${
-    param.beta eq 'true' || 
+    param.beta eq 'true' ||   
     fn:startsWith(pageContext.request.serverName, 'beta') ||
     fn:startsWith(pageContext.request.serverName, 'b1')   ||
-    fn:startsWith(pageContext.request.serverName, 'b2')
+    fn:startsWith(pageContext.request.serverName, 'b2')   
     }">
+
+<div class="warn announcebox ${homeClass}" style="background-color:white;margin:0;border:0">
   <div class="warn announcebox ${homeClass}">
     <table><tr><td>
       <imp:image src="images/warningSign.png" alt="warningSign" /></td>
@@ -38,6 +40,7 @@
       with your feedback. Note that any saved strategies in the beta sites will be lost once the sites are fully released. Some of our sites remain under active development during their Beta release which might require occasional site outages or data re-analysis.</span>
      </td></tr></table>
   </div>
+</div>
 </c:if>
 <%-- end hardcoded message only for beta sites --%>
 
@@ -49,6 +52,7 @@
     fn:startsWith(pageContext.request.serverName, 'a1')   ||
     fn:startsWith(pageContext.request.serverName, 'a2')
     }">
+<div>
   <div class="warn announcebox ${homeClass}">
     <table><tr><td>
       <imp:image src="images/warningSign.png" alt="warningSign" /></td>
@@ -62,6 +66,7 @@
       inaccurate data and occasional site outages can be expected.</span>
      </td></tr></table>
   </div>
+</div>
 </c:if>
 <%-- end hardcoded message only for alpha sites --%>
 

@@ -10,7 +10,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -26,7 +26,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
         <param name="ConversionPattern"
-               value="[%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="trace" />
@@ -42,7 +42,7 @@
         <layout class="org.apache.log4j.PatternLayout">
             <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
             <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%5X{shortSessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="info" />
@@ -61,7 +61,7 @@
         <layout class="org.apache.log4j.PatternLayout">
            <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
            <param name="ConversionPattern"
-               value="%-9r [%-5p] [%d{dd/MMM/yyyy:HH:mm:ss}] %X{ipAddress} - %C:%L - %m%n" />
+               value="[%d{dd/MMM/yyyy:HH:mm:ss}] sid:%5X{shortSessionId} rid:%-9X{requestId} %10X{requestTimer} %15X{ipAddress} - %m%n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelRangeFilter">
             <param name="LevelMin" value="warn" />
@@ -115,6 +115,7 @@
     <logger name="org.gusdb.fgputil.db.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
     <logger name="org.gusdb.fgputil.db.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
     <logger name="org.gusdb.wdk.service.filter.RequestLoggingFilter" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
+    <logger name="org.gusdb.wdk.service.provider.LoggingWriterInterceptor" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
     <logger name="org.orthomcl"><level value="info"/></logger>
     <logger name="org.eupathdb"><level value="info"/></logger>
     <logger name="org.apidb"><level value="info"/></logger>
