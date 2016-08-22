@@ -1,3 +1,6 @@
+/**
+ * AllSites.css - CSS rules common for all EuPathDB websites
+ */
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       =Scrollbars for webkit browsers on OS x
@@ -542,6 +545,10 @@ div#quick-search td {
   white-space: nowrap;
 }
 
+#header {
+  height: 132px;
+}
+
 #header2 {
 	color: #666666;
 	font-size: 10px;  /*version,date*/
@@ -643,6 +650,7 @@ span.smallTitle {
   width: 14px;
   background: url(../images/social_sprites_14.png) no-repeat;
   display: inline-block;
+  vertical-align: bottom;
 }
 .facebook.small {
   background-position: -15px 0px ;
@@ -678,6 +686,121 @@ span.smallTitle {
   top: 2px;
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Menu bar
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.eupathdb-Menu {
+  height: 28px;
+  line-height: 1;
+  list-type: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  z-index: 99;
+  min-width: 980px;
+  width: 100%;
+  background-color: #a0a0a0;
+  border: 1px solid #a9a9a9;
+  font-family: Helvetica Neue, Arial, Helvetica, sans-serif;
+}
+
+.eupathdb-MenuItem:hover {
+  background-color: #c7c7c7;
+}
+
+.eupathdb-Menu > .eupathdb-MenuItem {
+  display: inline-block;
+}
+
+/* Favorites icon */
+.eupathdb-Menu > .eupathdb-MenuItem:last-of-type {
+  float: right;
+}
+
+.eupathdb-Menu > .eupathdb-MenuItem:last-of-type .eupathdb-MenuItemText {
+  border: none;
+}
+
+.eupathdb-Submenu {
+  position: absolute;
+  z-index: 1000;
+  background: #a0a0a0;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+.eupathdb-MenuItem:hover > .eupathdb-MenuItemText__parent + .eupathdb-Submenu {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.eupathdb-Submenu {
+  display: block;
+}
+
+.eupathdb-Submenu .eupathdb-Submenu {
+  display: inline-block;
+}
+
+.eupathdb-MenuItemText {
+  color: white !important;
+  font-weight: 500;
+  border-left: 1px solid #fff;
+  border-top: none;
+  padding: .65em 1em;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.eupathdb-MenuItemText__beta,
+.eupathdb-MenuItemText__new {
+  position: relative;
+  padding-right: 40px;
+}
+
+.eupathdb-MenuItemText__beta:after,
+.eupathdb-MenuItemText__new:after {
+  position: absolute;
+  padding-left: 5px;
+}
+
+/*
+ * The '~' prefix indicates a top-level module path, which
+ * is used by the image-loader webpack plugin to inline the
+ * image data as base64 encoded string.
+ */
+
+.eupathdb-MenuItemText__beta:after {
+  content: url('~wdk/images/beta2-30.png');
+  top: 0;
+}
+
+.eupathdb-MenuItemText__new:after {
+  content: url('~wdk/images/new-feature.png');
+  top: 4px;
+}
+
+.eupathdb-MenuItemText__parent:after {
+  content: '\f0d7';
+  font-family: FontAwesome;
+  color: rgba(255,255,255,.5);
+  padding-left: 8px;
+}
+
+.eupathdb-Submenu .eupathdb-MenuItemText__parent:after {
+  content: '\f0da';
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =Superfish menu stuff -- override in ${project}.css
@@ -690,6 +813,7 @@ span.smallTitle {
 }
 
 .sf-menu {
+  box-sizing: border-box;
   z-index: 99;
   min-width: 980px;
   width: 100%;
@@ -912,6 +1036,7 @@ span.smallTitle {
   left: 10px;
   bottom: 10px;
   z-index: 1;
+  text-align: center;
 }
 
 #fixed-footer .right {
@@ -943,7 +1068,7 @@ span.smallTitle {
 }
 
 #fixed-footer .build-info {
-  padding: 1em 0;
+  padding: .5em 0;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
