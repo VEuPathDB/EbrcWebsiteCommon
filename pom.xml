@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
 
   <modules>
-	<module>Model</module>  
+    <module>Model</module>
     <module>Watar</module>
   </modules>
   
