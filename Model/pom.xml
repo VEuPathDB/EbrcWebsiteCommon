@@ -13,38 +13,23 @@
   <packaging>jar</packaging>
 
   <dependencies>
-	  
-    <dependency>
-      <groupId>org.gusdb</groupId>
-      <artifactId>wdk-controller</artifactId>
-    </dependency>
 
     <dependency>
-      <groupId>org.gusdb</groupId>
-      <artifactId>wdk-model</artifactId>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
     </dependency>
-      
-    <dependency>
-      <groupId>org.gusdb</groupId>
-      <artifactId>fgputil-util</artifactId>
-    </dependency>
-
-	<dependency>
-	  <groupId>commons-fileupload</groupId>
-	  <artifactId>commons-fileupload</artifactId>
-	</dependency>
 
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-	
+
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -55,12 +40,6 @@
       <artifactId>log4j</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    
   </dependencies>
 
 </project>
