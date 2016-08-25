@@ -26,9 +26,8 @@
       </java>
   </target>
 
-  <target name="install">
-<!--          depends="defaultComponentInstall"
-  -->
+  <target name="install"
+          depends="defaultComponentInstall">
   </target>
 
   <target name="cleaninstall">
@@ -137,6 +136,7 @@
       <param name="prefix" value=""/>
     </antcall>
 
+    <!--
     <antcall target="componentPartCopy">
       <param name="part" value="lib/java"/>
       <param name="to" value="lib/java"/>
@@ -144,6 +144,7 @@
     </antcall>
 
     <antcall target="defaultJavaCompile"/>
+    -->
 
   </target>
 
