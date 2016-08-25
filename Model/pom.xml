@@ -34,6 +34,12 @@
       <artifactId>commons-fileupload</artifactId>
     </dependency>
 
+    <!-- This filter is referred to in web.xml files in child projects -->
+    <dependency>
+      <groupId>org.tuckey</groupId>
+      <artifactId>urlrewritefilter</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
