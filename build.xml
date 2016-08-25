@@ -78,7 +78,14 @@
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
-  </target>  
+  </target>
+
+  <target name="EuPathSiteCommon/Watar-Installation">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="EuPathSiteCommon"/>
+      <property name="component" value="Watar"/>
+    </ant>
+  </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
@@ -86,7 +93,8 @@
 
   <target name="EuPathSiteCommon-WebInstallation" depends="WDK-WebInstallation,
                                                            EuPathSiteCommon-Installation,
-                                                           EuPathSiteCommon/Site-WebInstallation">
+                                                           EuPathSiteCommon/Site-WebInstallation,
+                                                           EuPathSiteCommon/Watar-Installation">
   </target>
 
   <target name="EuPathSiteCommon/Site-WebInstallation">
