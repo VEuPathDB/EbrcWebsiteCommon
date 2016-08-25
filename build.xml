@@ -41,9 +41,10 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
-  	                                                    EuPathSiteCommon-MavenInstallation,
+                                                        EuPathSiteCommon-MavenInstallation,
                                                         EuPathSiteCommon/Site-Installation,
-                                                        EuPathSiteCommon/Model-Installation">
+                                                        EuPathSiteCommon/Model-Installation,
+                                                        EuPathSiteCommon/Watar-Installation">
     <ant target="defaultProjectInstall">
       <property name="project" value="EuPathSiteCommon"/>
     </ant>
@@ -51,14 +52,14 @@
     <!-- remove conflicting jar file -->
     <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
     <delete file="${targetDir}/lib/java/jsp-api-2.0.jar" />
-  	
+    
   </target>  
-	
-	<target name="EuPathSiteCommon-MavenInstallation">
-	      <ant target="mavenBuildProject">
-	        <property name="project" value="EuPathSiteCommon"/>
-	      </ant>
-	     <property name="alreadyBuilt" value="true"/>
+
+  <target name="EuPathSiteCommon-MavenInstallation">
+        <ant target="mavenBuildProject">
+          <property name="project" value="EuPathSiteCommon"/>
+        </ant>
+       <property name="alreadyBuilt" value="true"/>
  </target>
 
   <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
@@ -93,8 +94,7 @@
 
   <target name="EuPathSiteCommon-WebInstallation" depends="WDK-WebInstallation,
                                                            EuPathSiteCommon-Installation,
-                                                           EuPathSiteCommon/Site-WebInstallation,
-                                                           EuPathSiteCommon/Watar-Installation">
+                                                           EuPathSiteCommon/Site-WebInstallation">
   </target>
 
   <target name="EuPathSiteCommon/Site-WebInstallation">
