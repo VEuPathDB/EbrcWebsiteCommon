@@ -11,7 +11,8 @@
   <property environment="env"/>
   <path id="project_classpath">
     <pathelement path="${targetDir}/config"/>
-    <fileset dir="${targetDir}/lib/java">
+    <!--<fileset dir="${targetDir}/lib/java">-->
+    <fileset dir="${projectsDir}/../gus_home/lib/java">
        <include name="*.jar"/>
     </fileset>
   </path>
@@ -25,9 +26,9 @@
       </java>
   </target>
 
-  <target name="install" 
-          depends="defaultComponentInstall"
-  >
+  <target name="install">
+<!--          depends="defaultComponentInstall"
+  -->
   </target>
 
   <target name="cleaninstall">
