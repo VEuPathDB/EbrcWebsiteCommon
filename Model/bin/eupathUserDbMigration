@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use lib "$ENV{GUS_HOME}/lib/perl";
+use Getopt::Long;
+use strict;
+
+my ($controlDir, $primaryModel, $projects, $removeGuestCutoff, $mappingFilesDir, $userDb, $stopAfterStep, $skipSteps, $log4jProp);
+
+&GetOptions('output=s' => \$output,
+            'help|h' => \$help,
+            'query=s' => \$query,
+            'id_list=s' => \$id_list,
+            'outputFormat=s' => \$outputFormat,
+           );
+
+usage() unless $controlDir;
+
+sub usage {
+
+die "
+eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [-log4jprop my_log4j] 
+
+Where:
+  controlDir: the dir in which this program will write all its log files
+  primaryModel: the model to use to find the model-config.xml
+  projects: the projects to migrate
+  removeGuestsCutoff: used by the remove guests step.  the date cutoff.
+  mappingFilesDir: a directory containing mapping files. (see below)
+  userDb: the user db to log into.  (Default: found in model-config.xml)
+  stopAfterStep: the name of the step to stop after (Default: none)
+  skipSteps: a comma delimited list of steps to skip (Default: none)
+  log4jPropFile: a log4j.properties file to use (Default: hard coded by this program)
+
+Mapping files
+The mappingFilesDir contains a set of files describing mappings for question names and parameter values.
+MORE DETAILS HERE...
+ 
+  
+";
+
+}
