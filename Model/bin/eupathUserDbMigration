@@ -17,13 +17,21 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFilesDir
 	    'listSteps!' => \$listSteps,
            );
 
-usage() unless ($controlDir);
+usage() unless ($controlDir || $listSteps);
 
 my @steps = (
-	     ['echo-1', 'sleep 10; echo hello'],
+	     ['echo-1', "sleep 10; echo $controlDir"],
 	     ['echo-2', 'sleep 10; echo goodbye'],
 	     ['ls','ls /home/pickle'],
 	    );
+
+if ($listSteps) {
+  print STDERR "\nListing steps...\n\n";
+  foreach my $step (@steps) {
+    print STDERR "$step->[0]\t$step->[1]\n\n";
+  }
+  exit 0;
+}
 
 my %steps;
 foreach my $step (@steps) {
@@ -84,7 +92,7 @@ sub log {
 sub usage {
 
 die "
-eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [-log4jPropFile my_log4j] 
+eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [--log4jPropFile my_log4j] [--listSteps]
 
 Where:
   controlDir: the dir in which this program will write all its log files
@@ -96,12 +104,12 @@ Where:
   stopAfterStep: the name of the step to stop after (Default: none)
   skipSteps: a comma delimited list of steps to skip (Default: none)
   log4jPropFile: a log4j.properties file to use (Default: hard coded by this program)
+  listSteps: don't run any steps, just list them, and their commands
 
 Mapping files
 The mappingFilesDir contains a set of files describing mappings for question names and parameter values.
 MORE DETAILS HERE...
- 
-  
+
 ";
 
 }
