@@ -20,12 +20,14 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFilesDir
 usage() unless ($controlDir);
 
 my @steps = (
-	     ['echo', 'echo hello'],
+	     ['echo-1', 'sleep 10; echo hello'],
+	     ['echo-2', 'sleep 10; echo goodbye'],
 	     ['ls','ls /home/pickle'],
 	    );
 
 my %steps;
 foreach my $step (@steps) {
+  die "Duplicate step name '$step->[0]'\n" if $steps{$step->[0]};
   $steps{$step->[0]} = $step->[1];
 }
 
@@ -35,7 +37,7 @@ if ($skipStepsString) {
   my @skipSteps = split(/,\s*/, $skipStepsString);
   foreach my $step (@skipSteps) {
     die "Trying to skip step '$step' which does not exist\n" unless $steps{$step};
-    $skipSteps{$step} = 1; 
+    $skipSteps{$step} = 1;
   }
 }
 
@@ -45,12 +47,13 @@ while (1) {
   my $stepName = $steps[$cursor]->[0];
   my $stepCmd = $steps[$cursor]->[1];
   if (-e "$stepName.failed") {
-    die "Failed step '$stepName'.  Can't proceed\n";
+    &log("Step '$stepName' failed.  Can't proceed");
+    exit 1;
   }
   if (-e "$stepName.done") {
     &log("Step '$stepName' done");
     if ($stopAfterStep eq $stepName) {
-      log("StopAfter='$stepName'.  Exiting");
+      &log("StopAfter='$stepName'.  Exiting");
       exit 0;
     }
     $cursor++;
@@ -60,21 +63,21 @@ while (1) {
     next;
   }
   if ($skipSteps{$stepName}) {
-    &log("Skipping step '$stepName'");
+    &log("Step '$stepName' skipped");
     $cursor++;
     next;
   }
-  &log("Starting step '$stepName'");
-  &log("Running command: '$stepCmd'");
+  &log("Step '$stepName' running: '$stepCmd'");
   my $cmd = "echo '$stepCmd' | eupathUserDbMigrationStepWrapper $stepName &";
   system($cmd) && die "Failed running '$cmd'";
   sleep(1);
 }
+&log("Pipeline run complete");
 
 sub log {
   my ($msg) = @_;
   my $t = localtime;
-  print STDERR "$t\t$msg\n";
+  print STDERR "$t\t$msg\n\n";
 }
 
 
