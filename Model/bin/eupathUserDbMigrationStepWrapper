@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+
+use strict;
+my ($stepName) = @ARGV;
+
+# 
+
+die "
+A wrapper to run commands, called by eupathUserDbMigration, from its control dir
+
+usage: eupathUserDbMigrationStepWrapper step_name
+
+" unless $stepName;
+
+my $cmd = <STDIN>;
+chomp $cmd;
+system("echo '$cmd' > $stepName.running");
+system("$cmd > $stepName.out 2> $stepName.err");
+my $status = $? >> 8;
+
+unlink "$stepName.running";
+system("echo '$cmd' > $stepName.done") unless $status;
+system("echo '$cmd' > $stepName.failed") if $status;
+
+
+
+
+

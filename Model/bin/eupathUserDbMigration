@@ -1,24 +1,87 @@
 #!/usr/bin/perl
 
-use lib "$ENV{GUS_HOME}/lib/perl";
 use Getopt::Long;
 use strict;
 
-my ($controlDir, $primaryModel, $projects, $removeGuestCutoff, $mappingFilesDir, $userDb, $stopAfterStep, $skipSteps, $log4jProp);
+my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFilesDir, $userDb, $stopAfterStep, $skipStepsString, $log4jProp, $listSteps);
 
-&GetOptions('output=s' => \$output,
-            'help|h' => \$help,
-            'query=s' => \$query,
-            'id_list=s' => \$id_list,
-            'outputFormat=s' => \$outputFormat,
+&GetOptions('controlDir=s' => \$controlDir,
+            'primaryModel=s' => \$primaryModel,
+            'projects=s' => \$projects,
+            'removeGuestsCutoff=s' => \$removeGuestsCutoff,
+            'mappingFilesDir=s' => \$mappingFilesDir,
+            'userDb=s' => \$userDb,
+            'stopAfterStep=s' => \$stopAfterStep,
+            'skipSteps=s' => \$skipStepsString,
+            'log4jPropFile=s' => \$log4jProp,
+	    'listSteps!' => \$listSteps,
            );
 
-usage() unless $controlDir;
+usage() unless ($controlDir);
+
+my @steps = (
+	     ['echo', 'echo hello'],
+	     ['ls','ls /home/pickle'],
+	    );
+
+my %steps;
+foreach my $step (@steps) {
+  $steps{$step->[0]} = $step->[1];
+}
+
+
+my %skipSteps;
+if ($skipStepsString) {
+  my @skipSteps = split(/,\s*/, $skipStepsString);
+  foreach my $step (@skipSteps) {
+    die "Trying to skip step '$step' which does not exist\n" unless $steps{$step};
+    $skipSteps{$step} = 1; 
+  }
+}
+
+chdir $controlDir || die "Can't 'chdir $controlDir'\n";
+my $cursor = 0;
+while (1) {
+  my $stepName = $steps[$cursor]->[0];
+  my $stepCmd = $steps[$cursor]->[1];
+  if (-e "$stepName.failed") {
+    die "Failed step '$stepName'.  Can't proceed\n";
+  }
+  if (-e "$stepName.done") {
+    &log("Step '$stepName' done");
+    if ($stopAfterStep eq $stepName) {
+      log("StopAfter='$stepName'.  Exiting");
+      exit 0;
+    }
+    $cursor++;
+    next;
+  }
+  if (-e "$stepName.running") {
+    next;
+  }
+  if ($skipSteps{$stepName}) {
+    &log("Skipping step '$stepName'");
+    $cursor++;
+    next;
+  }
+  &log("Starting step '$stepName'");
+  &log("Running command: '$stepCmd'");
+  my $cmd = "echo '$stepCmd' | eupathUserDbMigrationStepWrapper $stepName &";
+  system($cmd) && die "Failed running '$cmd'";
+  sleep(1);
+}
+
+sub log {
+  my ($msg) = @_;
+  my $t = localtime;
+  print STDERR "$t\t$msg\n";
+}
+
 
 sub usage {
 
 die "
-eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [-log4jprop my_log4j] 
+eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [-log4jPropFile my_log4j] 
 
 Where:
   controlDir: the dir in which this program will write all its log files
