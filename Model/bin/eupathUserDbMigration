@@ -3,54 +3,60 @@
 use Getopt::Long;
 use strict;
 
-my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFileQuestion, $mappingFileOrganism, $userDb, $stopAfterStep, $skipStepsString, $log4jProp, $listSteps);
-my $schema = "userlogins5";
-my $replicationContext = "no";
-my $cleanAppDBWdkCache = "yes";
-my $cleanUserDBModelCache = "yes";
-my $cleanExpandedSteps = "yes";
-my $projectsWithMapping = "PlasmoDB,EuPathDB";
-
- 
+my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFileQuestion, $mappingFileOrganism, $stopAfterStep, $skipStepsString, $listSteps, $schema, $isReplicated, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMappings);
 
 &GetOptions('controlDir=s' => \$controlDir,
             'primaryModel=s' => \$primaryModel,
             'projects=s' => \$projects,
+            'projectsWithMappings=s' => \$projectsWithMappings,
             'removeGuestsCutoff=s' => \$removeGuestsCutoff,
             'mappingFilesDir=s' => \$mappingFilesDir,
-            'userDb=s' => \$userDb,
+            'schema=s' => \$schema,
+            'isReplicated=s' => \$isReplicated,
+            'cleanAppDbWdkCache=s' => \$cleanAppDbWdkCache,
+            'cleanUserDbModelCache=s' => \$cleanUserDbModelCache,
+            'cleanExpandedSteps=s' => \$cleanExpandedSteps,
             'stopAfterStep=s' => \$stopAfterStep,
             'skipSteps=s' => \$skipStepsString,
-            'log4jPropFile=s' => \$log4jProp,
-	          'listSteps!' => \$listSteps,
+	    'listSteps!' => \$listSteps,
            );
 
 usage() unless ($controlDir || $listSteps);
 
-my @stepstest = (
-	     ['echo-1', "sleep 10; echo $controlDir"],
-	     ['echo-2', 'sleep 10; echo goodbye'],
-	     ['ls','ls /home/pickle'],
-	    );
+my @stepstest =
+  (
+   ['echo-1', "sleep 10; echo $controlDir"],
+   ['echo-2', 'sleep 10; echo goodbye'],
+   ['ls','ls /home/pickle'],
+  );
 
-my @stepsMiddleOfRelease = (
-         ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", 0 ],
-         ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $mappingFilesDir" , 0 , $projectsWithMapping],
-         ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $mappingFilesDir" , 0 , $projectsWithMapping],
-	       ['expandStep', "wdkExpandStep -model $primaryModel", 0],
-	       ['invalidStepReport',"wdkInvalidStepReport -model $primaryModel", 0],
-	    );
+# columns:
+#  -name
+#  -command
+#  -caresAboutReplication
+#  -required command line arg values
+#  -PROJECT_MACRO values list
 
-my @steps = (
-	       ['removeGuests', "wdkRemoveGuests -model $primaryModel -cutoffDate $removeGuestsCutoff", 0 ], 
-         ['sleepAfterRemoveGuests', "sleep 1800", 1 ], #wait for replication to catch up
-         ['validateReplAfterGuests', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
-         ['removeBroken', "wdkRemoveBroken -model $primaryModel"  ],  # remove broken strategies
-         ['sleepAfterRemoveBroken', "sleep 1800" , 1 ], #wait for replication to catch up
-         ['validateReplAfterBroken', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
-         @stepsMiddleOfRelease,
-         ['validateSteps', "wdkValidateStep -model PROJECT_MACRO" , 0 , $projects],
-	    );
+my @stepsMiddleOfRelease =
+  (
+   ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", 0, $projects ],
+   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismMappingFile" , 0, $organismMappingFile, $projectsWithMapping],
+   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionMappingFile" , 0, $questionMappingFile, $projectsWithMapping],
+   ['expandStep', "wdkExpandStep -model $primaryModel", 0],
+   ['invalidStepReport',"wdkInvalidStepReport -model $primaryModel", 0],
+  );
+
+my @steps =
+  (
+   ['removeGuests', "wdkRemoveGuests -model $primaryModel -cutoffDate $removeGuestsCutoff", 0 ],
+   ['sleepAfterRemoveGuests', "sleep 1800", 1 ], #wait for replication to catch up
+   ['validateReplAfterGuests', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
+   ['removeBroken', "wdkRemoveBroken -model $primaryModel"  ], # remove broken strategies
+   ['sleepAfterRemoveBroken', "sleep 1800" , 1 ], #wait for replication to catch up
+   ['validateReplAfterBroken', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
+   @stepsMiddleOfRelease,
+   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO" , 0 , $projects],
+  );
 
 
 if ($listSteps) {
