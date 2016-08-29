@@ -2,13 +2,17 @@
  * AllSites.css - CSS rules common for all EuPathDB websites
  */
 
+body {
+  min-width: 1070px;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       =Scrollbars for webkit browsers on OS x
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* need this to make scrollbar show for whole page */
 html {
-  overflow-y: auto;
+  /* overflow-y: auto; */
   background-color: transparent;
 }
 .show-scrollbar *::-webkit-scrollbar {
@@ -552,7 +556,7 @@ div#quick-search td {
 #header2 {
 	color: #666666;
 	font-size: 10px;  /*version,date*/
-	min-width: 980px;
+	min-width: 1070px;
 	height: 104px;
 	background-repeat: no-repeat;
 }
@@ -698,7 +702,7 @@ span.smallTitle {
   padding: 0;
   box-sizing: border-box;
   z-index: 99;
-  min-width: 980px;
+  min-width: 1070px;
   width: 100%;
   background-color: #a0a0a0;
   border: 1px solid #a9a9a9;
@@ -716,6 +720,7 @@ span.smallTitle {
 /* Favorites icon */
 .eupathdb-Menu > .eupathdb-MenuItem:last-of-type {
   float: right;
+  height: 100%;
 }
 
 .eupathdb-Menu > .eupathdb-MenuItem:last-of-type .eupathdb-MenuItemText {
@@ -815,7 +820,7 @@ span.smallTitle {
 .sf-menu {
   box-sizing: border-box;
   z-index: 99;
-  min-width: 980px;
+  min-width: 1070px;
   width: 100%;
   /*
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
