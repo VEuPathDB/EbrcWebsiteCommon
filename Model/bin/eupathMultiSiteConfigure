@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+my ($projectsList, $fileNameTemplate) = @ARGV;
+
+usage() unless $fileNameTemplate && $projectsList;
+
+my @projects = split(/,\s*/, $projectsList);
+
+foreach my $project (@projects) {
+  my $metaFile = $fileNameTemplate;
+  $metaFile =~ s/PROJECT/$project/;
+  die "Can't find meta file '$metaFile'\n" unless -e $metaFile;
+  my $cmd = "eupathSiteConfigure -model $project -filename $metaFile";
+  print STDERR "$cmd\n";
+  system($cmd) && die "Failed running cmd:\n$cmd\n";
+}
+
+sub usage {
+
+die "
+
+Call eupathSiteConfigure for a set of projects.
+
+Usage: eupathMultiSiteConfigure projects_list meta_file_template
+
+Where:
+  projects_list: a comma delimited list of projects to run eupathSiteConfigure
+  meta_file_template:  eg, metaPROJECT.yaml (PROJECT is the macro that each project name from projects_list is substituted into)
+n
+
+";
+
+}
