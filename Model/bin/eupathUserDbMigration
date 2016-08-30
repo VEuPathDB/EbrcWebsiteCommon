@@ -3,91 +3,124 @@
 use Getopt::Long;
 use strict;
 
-my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $mappingFileQuestion, $mappingFileOrganism, $stopAfterStep, $skipStepsString, $listSteps, $schema, $isReplicated, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMappings);
+my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappingFile, $organismsMappingFile, $stopAfterStep, $skipStepsString, $listSteps, $schema, $skipReplicationSteps, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMapping, $stepsSpecName, $validateSteps);
 
 &GetOptions('controlDir=s' => \$controlDir,
+            'stepsSpecName=s' => \$stepsSpecName,
+            'skipSteps=s' => \$skipStepsString,
+            'skipReplicationSteps!' => \$skipReplicationSteps,
+            'stopAfterStep=s' => \$stopAfterStep,
+	    'listSteps!' => \$listSteps,
+	    'validateSteps!' => \$validateSteps,
+
+	    # step specific arguments
             'primaryModel=s' => \$primaryModel,
             'projects=s' => \$projects,
-            'projectsWithMappings=s' => \$projectsWithMappings,
+            'projectsWithMapping=s' => \$projectsWithMapping,
             'removeGuestsCutoff=s' => \$removeGuestsCutoff,
-            'mappingFilesDir=s' => \$mappingFilesDir,
+            'questionsMappingFile=s' => \$questionsMappingFile,
+            'organismsMappingFile=s' => \$organismsMappingFile,
             'schema=s' => \$schema,
-            'isReplicated=s' => \$isReplicated,
-            'cleanAppDbWdkCache=s' => \$cleanAppDbWdkCache,
-            'cleanUserDbModelCache=s' => \$cleanUserDbModelCache,
-            'cleanExpandedSteps=s' => \$cleanExpandedSteps,
-            'stopAfterStep=s' => \$stopAfterStep,
-            'skipSteps=s' => \$skipStepsString,
-	    'listSteps!' => \$listSteps,
+            'cleanAppDbWdkCache!' => \$cleanAppDbWdkCache,
+            'cleanUserDbModelCache!' => \$cleanUserDbModelCache,
+            'cleanExpandedSteps!' => \$cleanExpandedSteps,
            );
 
-usage() unless ($controlDir || $listSteps);
-
-my @stepstest =
-  (
-   ['echo-1', "sleep 10; echo $controlDir"],
-   ['echo-2', 'sleep 10; echo goodbye'],
-   ['ls','ls /home/pickle'],
-  );
 
 # columns:
 #  -name
 #  -command
-#  -caresAboutReplication
+#  -step only needed if replication context
 #  -required command line arg values
 #  -PROJECT_MACRO values list
 
-my @stepsMiddleOfRelease =
-  (
-   ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", 0, $projects ],
-   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismMappingFile" , 0, $organismMappingFile, $projectsWithMapping],
-   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionMappingFile" , 0, $questionMappingFile, $projectsWithMapping],
-   ['expandStep', "wdkExpandStep -model $primaryModel", 0],
-   ['invalidStepReport',"wdkInvalidStepReport -model $primaryModel", 0],
-  );
+my $REPLIC_STEP = 1;
+my %stepsSpec;
 
-my @steps =
-  (
-   ['removeGuests', "wdkRemoveGuests -model $primaryModel -cutoffDate $removeGuestsCutoff", 0 ],
-   ['sleepAfterRemoveGuests', "sleep 1800", 1 ], #wait for replication to catch up
-   ['validateReplAfterGuests', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
-   ['removeBroken', "wdkRemoveBroken -model $primaryModel"  ], # remove broken strategies
-   ['sleepAfterRemoveBroken', "sleep 1800" , 1 ], #wait for replication to catch up
-   ['validateReplAfterBroken', "validateReplication -schema $schema -rowTolerance 20" , 1 ],
-   @stepsMiddleOfRelease,
-   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO" , 0 , $projects],
-  );
+$stepsSpec{middleOfRelease} =
+  [
+   ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", !$REPLIC_STEP, $projects ],
+   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismsMappingFile" , !$REPLIC_STEP, $organismsMappingFile && $projectsWithMapping, $projectsWithMapping],
+   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionsMappingFile" , !$REPLIC_STEP, $questionsMappingFile && $projectsWithMapping, $projectsWithMapping],
+   ['expandStep', "wdkExpandStep -model $primaryModel", !$REPLIC_STEP, $primaryModel],
+   ['invalidStepReport',"wdkInvalidStepReport -model $primaryModel", !$REPLIC_STEP, $primaryModel],
+  ];
 
+$stepsSpec{release} =
+  [
+   ['removeGuests', "wdkRemoveGuests -model $primaryModel -cutoffDate $removeGuestsCutoff", !$REPLIC_STEP, $primaryModel && $removeGuestsCutoff],
+   ['sleepAfterRemoveGuests', "sleep 1800", $REPLIC_STEP, 1 ], #wait for replication to catch up
+   ['validateReplAfterGuests', "validateReplication -schema $schema -rowTolerance 20", $REPLIC_STEP, $schema],
+   ['removeBroken', "wdkRemoveBroken -model $primaryModel", !$REPLIC_STEP, $primaryModel], # remove broken strategies
+   ['sleepAfterRemoveBroken', "sleep 1800" , $REPLIC_STEP ], #wait for replication to catch up
+   ['validateReplAfterBroken', "validateReplication -schema $schema -rowTolerance 20" , $REPLIC_STEP, $schema ],
+   @{$stepsSpec{middleOfRelease}},
+   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , $projects, $projects],
+  ];
 
-if ($listSteps) {
-  print STDERR "\nListing steps...\n\n";
-  foreach my $step (@steps) {
-    print STDERR "$step->[0]\t$step->[1]\n\n";
-  }
-  exit 0;
+$stepsSpec{test} =
+  [
+   ['echo-1', "sleep 10; echo $stepsSpecName", !$REPLIC_STEP, $stepsSpecName],
+   ['echo-2', 'sleep 10; echo goodbye', $REPLIC_STEP, 1],
+   ['echo-3', 'sleep 10; echo PROJECT_MACRO', $REPLIC_STEP, 1, "PlasmoDB, ToxoDB"],
+   ['ls','ls /home/pickle', !$REPLIC_STEP, 1],
+  ];
+
+usage() unless $stepsSpecName && ($controlDir || $listSteps || $validateSteps);
+
+my $stepsSpec = $stepsSpec{$stepsSpecName};
+die "Error: can't find steps spec with name '$stepsSpecName'\n" unless $stepsSpec;
+
+my %unexpandedStepsSpec;
+foreach my $stepSpec (@$stepsSpec) {
+  die "Duplicate step name '$unexpandedStepsSpec{$stepSpec->[0]}'\n" if $unexpandedStepsSpec{$stepSpec->[0]};
+  $unexpandedStepsSpec{$stepSpec->[0]} = 1;
 }
-
-my %steps;
-foreach my $step (@steps) {
-  die "Duplicate step name '$step->[0]'\n" if $steps{$step->[0]};
-  $steps{$step->[0]} = $step->[1];
-}
-
 
 my %skipSteps;
 if ($skipStepsString) {
   my @skipSteps = split(/,\s*/, $skipStepsString);
-  foreach my $step (@skipSteps) {
-    die "Trying to skip step '$step' which does not exist\n" unless $steps{$step};
-    $skipSteps{$step} = 1;
+  foreach my $stepName (@skipSteps) {
+    die "Trying to skip step '$stepName' which does not exist\n" unless $unexpandedStepsSpec{$stepName};
+    $skipSteps{$stepName} = 1;
   }
 }
+
+
+my @expandedSteps;
+foreach my $stepSpec (@$stepsSpec) {
+  my $step = {};
+  ($step->{name}, $step->{cmd}, $step->{isReplic}, $step->{hasReqdArgs}, $step->{projectMacroValues}) = @$stepSpec;
+  next if ($skipSteps{$step->{name}});
+  next if ($step->{isReplic} && $skipReplicationSteps);
+
+  die "Step '$step->{name}' can't be run because its command depends on cmd line arguments you didn't provide. Here is the command:\n$step->{cmd}\n" unless $step->{hasReqdArgs};
+  die "Step '$step->{name}' includes a PROJECT_MACRO but no projects were included for it on the cmd line\n" if $step->{cmd} =~ /PROJECT_MACRO/ && !$step->{projectMacroValues};
+
+  if ($step->{projectMacroValues}) {
+    my @projectNames = split(/,\s*/, $step->{projectMacroValues});
+    foreach my $projectName (@projectNames) {
+      my $newStep = {};
+      $newStep->{name} = "$step->{name}-$projectName";
+      $newStep->{cmd} = $step->{cmd};
+      $newStep->{cmd} =~ s/PROJECT_MACRO/$projectName/g;
+      push(@expandedSteps, $newStep);
+      print STDERR "$newStep->{name}:\t$newStep->{cmd}\n" if $validateSteps;
+    }
+  } else {
+    push(@expandedSteps, $step);
+    print STDERR "$step->{name}:\t$step->{cmd}\n" if $validateSteps;
+
+  }
+}
+
+exit 0 if $validateSteps;
 
 chdir $controlDir || die "Can't 'chdir $controlDir'\n";
 my $cursor = 0;
 while (1) {
-  my $stepName = $steps[$cursor]->[0];
-  my $stepCmd = $steps[$cursor]->[1];
+  my $step = $expandedSteps[$cursor];
+  my $stepName = $step->{name};
   if (-e "$stepName.failed") {
     &log("Step '$stepName' failed.  Can't proceed");
     exit 1;
@@ -109,8 +142,8 @@ while (1) {
     $cursor++;
     next;
   }
-  &log("Step '$stepName' running: '$stepCmd'");
-  my $cmd = "echo '$stepCmd' | eupathUserDbMigrationStepWrapper $stepName &";
+  &log("Step '$stepName' running: '$step->{cmd}'");
+  my $cmd = "echo '$step->{cmd}' | eupathUserDbMigrationStepWrapper $stepName &";
   system($cmd) && die "Failed running '$cmd'";
   sleep(1);
 }
@@ -125,23 +158,27 @@ sub log {
 
 sub usage {
 
+  my $stepsSpecNames = join(", ", keys(%stepsSpec));
+
 die "
-eupathUserDbMigration --controlDir my_control_dir --primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --mappingFilesDir my_mapping_files_dir [--userDb ApiCommDevN] [--stopAfterStep validStepReport] [--skipSteps deleteAllStrats,deleteAllUsers]  [--log4jPropFile my_log4j] [--listSteps]
+
+eupathUserDbMigration --stepsSpecName spec_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps] [--skipReplicationSteps]
+
+Additional step-specific arguments (all are optional, required only if used by a step that will run):
+
+--primaryModel PlasmoDB  --projects \"EuPathDB, PlasmoDB\" --projectsWithMapping \"EuPathDB, PlasmoDB\" --removeGuestsCutoff \"2016/1/15\"  --questionsMappingFile mapping_file --organismsMappingFile mapping_file --schema userslogin5 --cleanAppDbWdkCache --cleanUserDbModelCache --cleanExpandedSteps
 
 Where:
+  stepsSpecName: the name of a list of steps to run.  Options are: $stepsSpecNames
   controlDir: the dir in which this program will write all its log files
-  primaryModel: the model to use to find the model-config.xml
-  projects: the projects to migrate
-  removeGuestsCutoff: used by the remove guests step.  the date cutoff.
-  mappingFilesDir: a directory containing mapping files. (see below)
-  userDb: the user db to log into.  (Default: found in model-config.xml)
+  listSteps: list the steps in the provided stepsSpecName.  (Does not expand steps based on PROJECT_MACRO)
+  validateSteps: don't run any commands.  Just validate the steps in the provided stepsSpecName (expanding PROJECT_MACRO), confirming that all required step-specific args are provided.
   stopAfterStep: the name of the step to stop after (Default: none)
   skipSteps: a comma delimited list of steps to skip (Default: none)
-  log4jPropFile: a log4j.properties file to use (Default: hard coded by this program)
-  listSteps: don't run any steps, just list them, and their commands
+  skipReplicationSteps: skip the steps marked as useful only in a replication context
 
 Mapping files
-The mappingFilesDir contains a set of files describing mappings for question names and parameter values.
+The mapping files describe  mappings for question names and parameter values.
 MORE DETAILS HERE...
 
 ";
