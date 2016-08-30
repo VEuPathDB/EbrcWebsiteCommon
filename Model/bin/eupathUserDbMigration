@@ -3,7 +3,7 @@
 use Getopt::Long;
 use strict;
 
-my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappingFile, $organismsMappingFile, $stopAfterStep, $skipStepsString, $listSteps, $schema, $skipReplicationSteps, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMapping, $stepsSpecName, $validateSteps);
+my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappingFile, $organismsMappingFile, $stopAfterStep, $skipStepsString, $listSteps, $schema, $skipReplicationSteps, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMapping, $stepsSpecName, $validateSteps, $configFileTemplate);
 
 &GetOptions('controlDir=s' => \$controlDir,
             'stepsSpecName=s' => \$stepsSpecName,
@@ -24,6 +24,7 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappin
             'cleanAppDbWdkCache!' => \$cleanAppDbWdkCache,
             'cleanUserDbModelCache!' => \$cleanUserDbModelCache,
             'cleanExpandedSteps!' => \$cleanExpandedSteps,
+            'configFileTemplate=s' => \$configFileTemplate,
            );
 
 
@@ -39,6 +40,7 @@ my %stepsSpec;
 
 $stepsSpec{middleOfRelease} =
   [
+   ['buildConfigFiles', "eupathMultiSiteConfig '$projects $configFileTemplate'", !$REPLIC_STEP, $projects, $configFileTemplate ],
    ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", !$REPLIC_STEP, $projects ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismsMappingFile" , !$REPLIC_STEP, $organismsMappingFile && $projectsWithMapping, $projectsWithMapping],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionsMappingFile" , !$REPLIC_STEP, $questionsMappingFile && $projectsWithMapping, $projectsWithMapping],
@@ -61,8 +63,8 @@ $stepsSpec{release} =
 $stepsSpec{test} =
   [
    ['echo-1', "sleep 10; echo $stepsSpecName", !$REPLIC_STEP, $stepsSpecName],
-   ['echo-2', 'sleep 10; echo goodbye', $REPLIC_STEP, 1],
-   ['echo-3', 'sleep 10; echo PROJECT_MACRO', $REPLIC_STEP, 1, "PlasmoDB, ToxoDB"],
+   ['echo-2', "sleep 10; echo $primaryModel", $REPLIC_STEP, $primaryModel],
+   ['echo-3', "sleep 10; echo PROJECT_MACRO", $REPLIC_STEP, 1, "PlasmoDB, ToxoDB"],
    ['ls','ls /home/pickle', !$REPLIC_STEP, 1],
   ];
 
