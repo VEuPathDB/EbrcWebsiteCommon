@@ -18,7 +18,6 @@ foreach my $project (@projects) {
 sub usage {
 
 die "
-
 Call eupathSiteConfigure for a set of projects.
 
 Usage: eupathMultiSiteConfigure projects_list meta_file_template
@@ -26,7 +25,6 @@ Usage: eupathMultiSiteConfigure projects_list meta_file_template
 Where:
   projects_list: a comma delimited list of projects to run eupathSiteConfigure
   meta_file_template:  eg, metaPROJECT.yaml (PROJECT is the macro that each project name from projects_list is substituted into)
-n
 
 ";
 
