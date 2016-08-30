@@ -91,8 +91,14 @@ my @expandedSteps;
 foreach my $stepSpec (@$stepsSpec) {
   my $step = {};
   ($step->{name}, $step->{cmd}, $step->{isReplic}, $step->{hasReqdArgs}, $step->{projectMacroValues}) = @$stepSpec;
-  next if ($skipSteps{$step->{name}});
-  next if ($step->{isReplic} && $skipReplicationSteps);
+
+  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $skipReplicationSteps;
+
+  if ($step->{skip}) {
+    push(@expandedSteps, $step);
+    print STDERR "$step->{name}: SKIPPING\n" if $validateSteps;
+    next;
+  }
 
   die "Step '$step->{name}' can't be run because its command depends on cmd line arguments you didn't provide. Here is the command:\n$step->{cmd}\n" unless $step->{hasReqdArgs};
   die "Step '$step->{name}' includes a PROJECT_MACRO but no projects were included for it on the cmd line\n" if $step->{cmd} =~ /PROJECT_MACRO/ && !$step->{projectMacroValues};
@@ -137,7 +143,7 @@ while (1) {
   if (-e "$stepName.running") {
     next;
   }
-  if ($skipSteps{$stepName}) {
+  if ($step->{skip}) {
     &log("Step '$stepName' skipped");
     $cursor++;
     next;
