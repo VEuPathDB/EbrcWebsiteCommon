@@ -89,6 +89,8 @@ if ($skipStepsString) {
 }
 
 
+# expand steps with PROJECT_MACRO
+# and validate that all included steps have their required args satisfied.
 my @expandedSteps;
 foreach my $stepSpec (@$stepsSpec) {
   my $step = {};
@@ -113,12 +115,23 @@ foreach my $stepSpec (@$stepsSpec) {
       $newStep->{cmd} = $step->{cmd};
       $newStep->{cmd} =~ s/PROJECT_MACRO/$projectName/g;
       push(@expandedSteps, $newStep);
-      print STDERR "$newStep->{name}:\t$newStep->{cmd}\n" if $validateSteps;
+      if ($validateSteps) {
+	print STDERR "$newStep->{name}:\t$newStep->{cmd}\n";
+	if ($stopAfterStep eq $newStep->{name}) {
+	  print STDERR "StopAfter='$newStep->{name}'.  Exiting";
+	  last;
+	}
+      }
     }
   } else {
     push(@expandedSteps, $step);
-    print STDERR "$step->{name}:\t$step->{cmd}\n" if $validateSteps;
-
+    if ($validateSteps) {
+      print STDERR "$step->{name}:\t$step->{cmd}\n";
+      if ($stopAfterStep eq $step->{name}) {
+	print STDERR "StopAfter='$step->{name}'.  Exiting";
+	last;
+      }
+    }
   }
 }
 
