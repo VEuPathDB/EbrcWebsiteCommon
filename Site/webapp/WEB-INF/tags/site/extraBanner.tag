@@ -38,3 +38,19 @@
 Note: the Enzyme Commission (EC) numbers associated with proteins were obtained only from UniProt. In future releases we expect to include EC numbers from multiple sources including the annotation.
 
 </c:if>
+
+<c:if test="${refer == 'home' || refer == 'home2'}">
+  <c:set var="homeClass" value="home"/>
+</c:if>
+
+<table><tr><td>
+  <imp:image src="images/warningSign.png" alt="warningSign" /></td>
+  <td >
+    ${wdkModel.name} beta release 29 is available for early community review.       
+    Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>
+    contact us</a> with your feedback. 
+    Previous database available at <a href="http://r28. ${wdkModel.name}.org">${wdkModel.name} Rel.28</a>.
+  </td></tr>
+</table>
+
+
