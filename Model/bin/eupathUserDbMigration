@@ -40,7 +40,7 @@ my %stepsSpec;
 
 $stepsSpec{middleOfRelease} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfig '$projects $configFileTemplate'", !$REPLIC_STEP, $projects, $configFileTemplate ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$projects' $configFileTemplate", !$REPLIC_STEP, $projects && $configFileTemplate ],
    ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", !$REPLIC_STEP, $projects ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismsMappingFile" , !$REPLIC_STEP, $organismsMappingFile && $projectsWithMapping, $projectsWithMapping],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionsMappingFile" , !$REPLIC_STEP, $questionsMappingFile && $projectsWithMapping, $projectsWithMapping],
@@ -118,7 +118,7 @@ foreach my $stepSpec (@$stepsSpec) {
       if ($validateSteps) {
 	print STDERR "$newStep->{name}:\t$newStep->{cmd}\n";
 	if ($stopAfterStep eq $newStep->{name}) {
-	  print STDERR "StopAfter='$newStep->{name}'.  Exiting";
+	  print STDERR "StopAfter='$newStep->{name}'.  Exiting\n";
 	  last;
 	}
       }
@@ -128,7 +128,7 @@ foreach my $stepSpec (@$stepsSpec) {
     if ($validateSteps) {
       print STDERR "$step->{name}:\t$step->{cmd}\n";
       if ($stopAfterStep eq $step->{name}) {
-	print STDERR "StopAfter='$step->{name}'.  Exiting";
+	print STDERR "StopAfter='$step->{name}'.  Exiting\n";
 	last;
       }
     }
