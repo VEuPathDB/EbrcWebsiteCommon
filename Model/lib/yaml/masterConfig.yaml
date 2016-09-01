@@ -95,7 +95,8 @@ default:
   highSpeedChipSnpSearchJobsDir: /var/www/Common/tmp/highSpeedChipSnpSearch
   highSpeedChipSnpSearchIdPrefix: NULL
 
-  # needed in all sites but portal, to access blast gbrowse link
+  # needed in all sites so treeParam shows the checkboxes
+  # in component sites also to access blast gbrowse link
   # also needed for model xml macros: WEBAPP_URL and LEGACY_WEBAPP_URL
   myURL: ${myURL}
 
@@ -159,6 +160,7 @@ cryptodb: {}
 eupathdb:
   amebURL: ${amebURL}
   crypURL: ${crypURL}
+  fungURL: ${fungURL}
   giarURL: ${giarURL}
   micrURL: ${micrURL}
   piroURL: ${piroURL}
@@ -166,11 +168,6 @@ eupathdb:
   toxoURL: ${toxoURL}
   tricURL: ${tricURL}
   trypURL: ${trypURL}
-
-  fungURL: ${fungURL}
-
-
-  myURL: none
 
 fungidb: 
   twitter: FungiDB
