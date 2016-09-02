@@ -45,7 +45,7 @@
 <%-- end hardcoded message only for beta sites --%>
 
 <!-- ================== ALPHA SITES ============ -->
-<%-- hardcoded warning message only for alpha sites --%>
+<%-- hardcoded warning message only for alpha sites
 <c:if test="${
     param.alpha eq 'true' || 
     fn:startsWith(pageContext.request.serverName, 'alpha') ||
@@ -68,6 +68,7 @@
   </div>
 </div>
 </c:if>
+ --%>
 <%-- end hardcoded message only for alpha sites --%>
 
 
