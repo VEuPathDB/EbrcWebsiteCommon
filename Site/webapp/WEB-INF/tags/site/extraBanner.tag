@@ -50,7 +50,7 @@ Note: the Enzyme Commission (EC) numbers associated with proteins were obtained 
     We made significant upgrades in this release and reloaded all data.        
     Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>
     contact us</a> with your feedback. 
-    Previous database available at <a href="http://r28. ${wdkModel.name}.org">${wdkModel.name} Release 28</a>.
+    Previous database available at <a href="http://r28.${wdkModel.name}.org">${wdkModel.name} Release 28</a>.
   </td></tr>
 </table>
 
