@@ -49,7 +49,7 @@ Note: the Enzyme Commission (EC) numbers associated with proteins were obtained 
     This ${wdkModel.name} has been significantly upgraded.  
     In addition to a refresh of all data to the latest versions, the site reflects a large development effort to upgrade many website and data features (see the <a href="<c:url value='/showXmlDataContent.do?name=XmlQuestions.News'/> ">Release Notes</a>). 
     Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>
-    contact us</a> with your feedback. 
+    Contact Us</a> with your feedback. 
     Previous database available at <a href="http://r28.${wdkModel.name}.org">${wdkModel.name} Release 28</a>.
   </td></tr>
 </table>
