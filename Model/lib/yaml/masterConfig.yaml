@@ -82,7 +82,7 @@ default:
 
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
   cndSrcBin: /opt/cndsrc/bin
-  
+
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
   webServiceUrl: local
   blastPath: /opt/ncbi-blast+/bin/
@@ -113,18 +113,18 @@ default:
 
   # needed only in portal to access comp sites
   amebURL: none
-  crypURL: none 
-  giarURL: none 
-  micrURL: none 
-  piroURL: none 
-  plasURL: none 
-  toxoURL: none 
-  tricURL: none 
+  crypURL: none
+  fungURL: none
+  giarURL: none
+  mbioURL: none
+  micrURL: none
+  piroURL: none
+  plasURL: none
+  toxoURL: none
+  tricURL: none
   trypURL: none
 
-  fungURL: none
 
- 
 #=======================================================================================================
 
 production:
@@ -154,7 +154,7 @@ apiSite:
   profile.connection: dbi:Oracle:${appDb.instance}
 
 amoebadb: {}
- 
+
 cryptodb: {}
 
 eupathdb:
@@ -169,7 +169,7 @@ eupathdb:
   tricURL: ${tricURL}
   trypURL: ${trypURL}
 
-fungidb: 
+fungidb:
   twitter: FungiDB
   twitterWidgetId: 479835314844758017
   facebook: pages/FungiDB/169472636469487

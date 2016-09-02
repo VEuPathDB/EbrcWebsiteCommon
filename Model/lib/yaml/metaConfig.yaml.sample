@@ -35,8 +35,8 @@ required:
  # these only needed in the portal 
  amebURL: http://amoebadb.org/amoeba/
  crypURL: http://cryptodb.org/cryptodb/
- giarURL: http://giardiadb.org/giardiadb/
  fungURL: http://fungidb.org/fungidb/
+ giarURL: http://giardiadb.org/giardiadb/
  mbioURL: http://microbiomedb.org/mbio/
  micrURL: http://microsporidiadb.org/micro/
  piroURL: http://piroplasmadb.org/piro/
