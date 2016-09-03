@@ -27,6 +27,9 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappin
             'configFileTemplate=s' => \$configFileTemplate,
            );
 
+die "Error: controlDir must be a full path" if $controlDir && substr($controlDir, 1, 0) ne '/';
+die "Error: questionsMappingFile must be a full path" if $questionsMappingFile && substr($questionsMappingFile, 1, 0) ne '/';
+die "Error: organismsMappingFile must be a full path" if $organismsMappingFile && substr($organismsMappingFile, 1, 0) ne '/';
 
 # columns:
 #  -name
@@ -138,6 +141,7 @@ foreach my $stepSpec (@$stepsSpec) {
 exit 0 if $validateSteps;
 
 chdir $controlDir || die "Can't 'chdir $controlDir'\n";
+open (LOG, ">>$controDir/pipeline.log") || die "Can't open log file '$controDir/pipeline.log' for writing\n";
 my $cursor = 0;
 while (1) {
   my $step = $expandedSteps[$cursor];
@@ -173,7 +177,7 @@ while (1) {
 sub log {
   my ($msg) = @_;
   my $t = localtime;
-  print STDERR "$t\t$msg\n\n";
+  print LOG "$t\t$msg\n\n";
 }
 
 
