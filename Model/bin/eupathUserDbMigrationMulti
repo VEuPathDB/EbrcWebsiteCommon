@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+
+use strict;
+
+my %argsMap = &extractArgs(@ARGV);
+
+die "Error: Can't use eupathUserDbMigration without a --projects argument\n" unless $argsMap{'--projects'};
+
+my @projects = split(/,\s*/, $argsMap{'--projects'});
+
+die "Error: No projects supplied" unless scalar(@projects);
+
+my $controlDir = $argsMap{'--controlDir'};
+die "Error: Control dir '$controlDir' already exists.\n" if -e $controlDir;
+
+mkdir $controlDir || die "Could not create controlDir '$controlDir'\n";
+
+my $logFile = "$controlDir/multi.log";
+open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
+
+foreach my $project (@projects) {
+  my %newArgsMap = %argsMap;
+
+  $newArgsMap{'--projects'} = $project;
+  $newArgsMap{'--primaryModel'} = $project if $newArgsMap{'--primaryModel'};
+  $newArgsMap{'--projectsWithMapping'} = $argsMap{'--projectsWithMapping'} =~ /$project/? $project : '""';
+  $newArgsMap{'--controlDir'} .= "/$project";
+  if (!mkdir $newArgsMap{'--controlDir'}) {
+    print LOG "Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project\n";
+    next;
+  }
+  my $cmd = "eupathUserDbMigration " . join (" ", %newArgsMap) ." 2> $newArgsMap{'--controlDir'}/pipeline.err &";
+  print LOG "$cmd\n\n";
+  system($cmd);
+}
+
+sub extractArgs {
+  my @args = @_;
+  my %map;
+  my $prevArg;
+  foreach my $arg (@args) {
+    if (substr($arg,0,2) eq '--') {
+      $map{$arg} = "";
+      $prevArg = $arg;
+    } else {
+      $map{$prevArg} = $arg;
+    }
+  }
+  return %map;
+}
+
