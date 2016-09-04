@@ -10,7 +10,7 @@ foreach my $project (@projects) {
   my $metaFile = $fileNameTemplate;
   $metaFile =~ s/PROJECT/$project/;
   die "Can't find meta file '$metaFile'\n" unless -e $metaFile;
-  my $cmd = "eupathSiteConfigure -model $project -filename $metaFile";
+  my $cmd = "eupathSiteConfigure -model $project -filename $metaFile 'monitorBlockedThreads: false'";
   print STDERR "$cmd\n";
   system($cmd) && die "Failed running cmd:\n$cmd\n";
 }
