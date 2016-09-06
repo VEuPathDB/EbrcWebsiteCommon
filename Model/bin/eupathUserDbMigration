@@ -110,6 +110,7 @@ if ($skipStepsString) {
   }
 }
 
+print STDERR "\nRunning in --validateSteps mode\n\n" if $validateSteps;
 
 # expand steps with PROJECT_MACRO
 # and validate that all included steps have their required args satisfied.
