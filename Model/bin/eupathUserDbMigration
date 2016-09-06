@@ -3,7 +3,7 @@
 use Getopt::Long;
 use strict;
 
-my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappingFile, $organismsMappingFile, $stopAfterStep, $skipStepsString, $listSteps, $schema, $skipReplicationSteps, $cleanAppDbWdkCache, $cleanUserDbModelCache, $cleanExpandedSteps, $projectsWithMapping, $stepsSpecName, $validateSteps, $configFileTemplate);
+my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappingFile, $organismsMappingFile, $stopAfterStep, $skipStepsString, $listSteps, $schema, $skipReplicationSteps, $cleanAppDbWdkCache, $cleanUserDbModelCache, $keepUserDBCache, $cleanExpandedSteps, $projectsWithMapping, $stepsSpecName, $validateSteps, $configFileTemplate);
 
 &GetOptions('controlDir=s' => \$controlDir,
             'stepsSpecName=s' => \$stepsSpecName,
@@ -23,13 +23,14 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappin
             'schema=s' => \$schema,
             'cleanAppDbWdkCache!' => \$cleanAppDbWdkCache,
             'cleanUserDbModelCache!' => \$cleanUserDbModelCache,
+            'keepUserDBCache!' => \$keepUserDBCache,
             'cleanExpandedSteps!' => \$cleanExpandedSteps,
             'configFileTemplate=s' => \$configFileTemplate,
            );
 
-die "Error: controlDir must be a full path" if $controlDir && substr($controlDir, 1, 0) ne '/';
-die "Error: questionsMappingFile must be a full path" if $questionsMappingFile && substr($questionsMappingFile, 1, 0) ne '/';
-die "Error: organismsMappingFile must be a full path" if $organismsMappingFile && substr($organismsMappingFile, 1, 0) ne '/';
+die "Error: controlDir must be a full path" if $controlDir && substr($controlDir, 0, 1) ne '/';
+die "Error: questionsMappingFile must be a full path" if $questionsMappingFile && substr($questionsMappingFile, 0, 1) ne '/';
+die "Error: organismsMappingFile must be a full path" if $organismsMappingFile && substr($organismsMappingFile, 0, 1) ne '/';
 
 # columns:
 #  -name
@@ -39,12 +40,14 @@ die "Error: organismsMappingFile must be a full path" if $organismsMappingFile &
 #  -PROJECT_MACRO values list
 
 my $REPLIC_STEP = 1;
+$keepUserDBCache = $keepUserDBCache ? '--keepCache': ' ';
+
 my %stepsSpec;
 
 $stepsSpec{middleOfRelease} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$projects' $configFileTemplate", !$REPLIC_STEP, $projects && $configFileTemplate ],
-   ['wdkCacheModel', "wdkCacheModel -expand -model '$projects'", !$REPLIC_STEP, $projects ],
+   ['wdkCacheModel', "wdkCacheModel $keepUserDBCache -expand -model '$projects'", !$REPLIC_STEP, $projects && $keepUserDBCache ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $organismsMappingFile" , !$REPLIC_STEP, $organismsMappingFile && $projectsWithMapping, $projectsWithMapping],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $questionsMappingFile" , !$REPLIC_STEP, $questionsMappingFile && $projectsWithMapping, $projectsWithMapping],
    ['expandStep', "wdkExpandStep -model $primaryModel", !$REPLIC_STEP, $primaryModel],
@@ -158,9 +161,9 @@ print "\n";
 exit 0 if $validateSteps;
 
 chdir $controlDir || die "Can't 'chdir $controlDir'\n";
-open (LOG, ">>$controDir/pipeline.log") || die "Can't open log file '$controDir/pipeline.log' for writing\n";
+open (LOG, ">>$controlDir/pipeline.log") || die "Can't open log file '$controlDir/pipeline.log' for writing\n";
 my $cursor = 0;
-while (1) {
+while ($cursor < scalar(@expandedSteps)) {
 
   my $step = $expandedSteps[$cursor];
   my $stepName = $step->{name};
