@@ -10,8 +10,8 @@ my ($controlDir, $primaryModel, $projects, $removeGuestsCutoff, $questionsMappin
             'skipSteps=s' => \$skipStepsString,
             'skipReplicationSteps!' => \$skipReplicationSteps,
             'stopAfterStep=s' => \$stopAfterStep,
-	    'listSteps!' => \$listSteps,
-	    'validateSteps!' => \$validateSteps,
+	          'listSteps!' => \$listSteps,
+	          'validateSteps!' => \$validateSteps,
 
 	    # step specific arguments
             'primaryModel=s' => \$primaryModel,
@@ -51,17 +51,30 @@ $stepsSpec{middleOfRelease} =
    ['invalidStepReport',"wdkInvalidStepReport -model $primaryModel", !$REPLIC_STEP, $primaryModel],
   ];
 
-$stepsSpec{release} =
+$stepsSpec{expand} =
   [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$projects' $configFileTemplate", !$REPLIC_STEP, $projects && $configFileTemplate ],
+   ['expandStep', "wdkExpandStep -model $primaryModel", !$REPLIC_STEP, $primaryModel],
+  ];
+
+$stepsSpec{cleanup} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$projects' $configFileTemplate", !$REPLIC_STEP, $projects && $configFileTemplate ],
    ['removeGuests', "wdkRemoveGuests -model $primaryModel -cutoffDate $removeGuestsCutoff", !$REPLIC_STEP, $primaryModel && $removeGuestsCutoff],
    ['sleepAfterRemoveGuests', "sleep 1800", $REPLIC_STEP, 1 ], #wait for replication to catch up
    ['validateReplAfterGuests', "validateReplication -schema $schema -rowTolerance 20", $REPLIC_STEP, $schema],
    ['removeBroken', "wdkRemoveBroken -model $primaryModel", !$REPLIC_STEP, $primaryModel], # remove broken strategies
    ['sleepAfterRemoveBroken', "sleep 1800" , $REPLIC_STEP ], #wait for replication to catch up
    ['validateReplAfterBroken', "validateReplication -schema $schema -rowTolerance 20" , $REPLIC_STEP, $schema ],
+  ];
+
+$stepsSpec{release} =
+  [
+   @{$stepsSpec{cleanup}},
    @{$stepsSpec{middleOfRelease}},
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , $projects, $projects],
   ];
+
 
 $stepsSpec{test} =
   [
@@ -73,11 +86,14 @@ $stepsSpec{test} =
 
 usage() unless $stepsSpecName && ($controlDir || $listSteps || $validateSteps);
 
+print"\n";
+
 my $stepsSpec = $stepsSpec{$stepsSpecName};
 die "Error: can't find steps spec with name '$stepsSpecName'\n" unless $stepsSpec;
 
 my %unexpandedStepsSpec;
 foreach my $stepSpec (@$stepsSpec) {
+
   die "Duplicate step name '$unexpandedStepsSpec{$stepSpec->[0]}'\n" if $unexpandedStepsSpec{$stepSpec->[0]};
   $unexpandedStepsSpec{$stepSpec->[0]} = 1;
 }
@@ -119,6 +135,7 @@ foreach my $stepSpec (@$stepsSpec) {
       $newStep->{cmd} =~ s/PROJECT_MACRO/$projectName/g;
       push(@expandedSteps, $newStep);
       if ($validateSteps) {
+print "\n";
 	print STDERR "$newStep->{name}:\t$newStep->{cmd}\n";
 	if ($stopAfterStep eq $newStep->{name}) {
 	  print STDERR "StopAfter='$newStep->{name}'.  Exiting\n";
@@ -144,6 +161,7 @@ chdir $controlDir || die "Can't 'chdir $controlDir'\n";
 open (LOG, ">>$controDir/pipeline.log") || die "Can't open log file '$controDir/pipeline.log' for writing\n";
 my $cursor = 0;
 while (1) {
+
   my $step = $expandedSteps[$cursor];
   my $stepName = $step->{name};
   if (-e "$stepName.failed") {
@@ -169,6 +187,7 @@ while (1) {
   }
   &log("Step '$stepName' running: '$step->{cmd}'");
   my $cmd = "echo '$step->{cmd}' | eupathUserDbMigrationStepWrapper $stepName &";
+print "\n";
   system($cmd) && die "Failed running '$cmd'";
   sleep(1);
 }
