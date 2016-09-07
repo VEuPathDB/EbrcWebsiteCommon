@@ -1,3 +1,7 @@
+import { createElement } from 'react';
+import { render } from 'react-dom';
+import Announcements from './client/components/Announcements';
+
 wdk.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
@@ -206,8 +210,16 @@ wdk.namespace("eupath.setup", function(ns, $) {
     }
   };
 
+  function siteAnnouncements($el) {
+    render(createElement(Announcements, {
+      projectId: wdk.MODEL_NAME,
+      webAppUrl: wdk.webappUrl()
+    }), $el[0]);
+  }
+
   ns.setUpContactUsLogic = setUpContactUsLogic;
   ns.configureSidebar = configureSidebar;
   ns.configureMenuBar = configureMenuBar;
+  ns.siteAnnouncements = siteAnnouncements;
 
 });

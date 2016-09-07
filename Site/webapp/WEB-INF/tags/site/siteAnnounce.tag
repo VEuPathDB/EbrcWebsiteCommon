@@ -74,18 +74,7 @@
 
 <!-- ================== IF SHOWBANNER, determined in pageFrame ============ -->
 
-<c:if test="${not empty showBanner}">
-  <div class="info announcebox ${homeClass}" style="color:darkred;font-size:120%">
-    <table><tr>
-			<td><imp:image src="images/clearInfoIcon.png" alt="warningSign" /></td>
-    	<td>
-      	<span class="warningMessage">
-					${showBanner}
-      	</span>
-     	</td>
-		</tr></table>
-  </div>
-</c:if>
+<div data-controller="eupath.setup.siteAnnouncements"></div>
 
 
 <!-- ================== READING MESSAGES FROM APICOMM (Information, Degraded, Down) =============== -->
