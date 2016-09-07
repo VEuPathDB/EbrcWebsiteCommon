@@ -1234,6 +1234,10 @@ th.mythStyle {
 	background-image: url(../images/warnbox.jpg);
 }
 
+body.home .eupathdb-Announcement {
+  margin-left: 230px !important;
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =genes Filters
