@@ -50,6 +50,33 @@ html {
      (after the order set up in header.tag)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      = Used to be in PlasmoDB.css
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+a:link, a:visited, div.divlink, .link, button.wdk-Link {
+	color: #069;
+}
+
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
+	text-decoration: underline;
+}
+
+h1 {
+	color: #444;
+}
+
+h2 {
+  	color: #444;
+}
+
+.h2center, .h3left,.h3center, .h4left {
+  	color:  #444;
+}
+
+a[name] {
+  text-decoration: none;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   =GENERAL: useful classes for styling
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -61,6 +88,14 @@ html {
   outline-offset: -2px;
 }
 
+/*
+ * General button styling. Notice the inclusion of a.eupathdb-Button and
+ * a.eupathdb-BigButton. These are used to make links look like buttons.
+ * The enforcement of using it on an <a> element is to enforce accessibility.
+ * See http://www.karlgroves.com/2013/05/14/links-are-not-buttons-neither-are-divs-and-spans/
+ */
+a.eupathdb-Button,
+a.eupathdb-BigButton,
 input[type="submit"],
 input[type="button"],
 button {
@@ -72,11 +107,17 @@ button {
   border: 1px solid #afafaf;
   border-radius: 2px;
   padding: 2px 6px;
+  color: black;
+  text-decoration: none;
 }
 
+a.eupathdb-Button:focus,
+a.eupathdb-BigButton:focus,
 input[type="submit"]:focus,
 input[type="button"]:focus,
 button:focus,
+a.eupathdb-Button:hover,
+a.eupathdb-BigButton:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover,
 button:hover {
@@ -87,12 +128,16 @@ button:hover {
   background: linear-gradient(#ededed, #dddddd);
 }
 
+a.eupathdb-Button:focus,
+a.eupathdb-BigButton:focus,
 input[type="submit"]:focus,
 input[type="button"]:focus,
 button:focus {
   border-color: #717171;
 }
 
+a.eupathdb-Button:active,
+a.eupathdb-BigButton:active,
 input[type="submit"]:active,
 input[type="button"]:active,
 button:active {
@@ -108,6 +153,7 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+a.eupathdb-BigButton,
 input[type="submit"],
 button[type="submit"] {
   font-size:  0.9rem;
@@ -152,33 +198,6 @@ article section {
   margin-top: 1em;
 }
 
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      = Used to be in PlasmoDB.css
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-a:link, a:visited, div.divlink, .link, button.wdk-Link {
-	color: #069;
-}
-
-a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
-	text-decoration: underline;
-}
-
-h1 {
-	color: #444;
-}
-
-h2 {
-  	color: #444;
-}
-
-.h2center, .h3left,.h3center, .h4left {
-  	color:  #444;
-}
-
-a[name] {
-  text-decoration: none;
-}
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
