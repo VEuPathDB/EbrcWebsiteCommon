@@ -32,7 +32,7 @@ foreach my $project (@projects) {
     next;
   }
   my @cmdLineArgs = map { ($_, $newArgsMap{$_}) } @$argsArr;
-  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) ." 2> $newArgsMap{'--controlDir'}/pipeline.err &";
+  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) ." 2> $newArgsMap{'--controlDir'}/pipeline.err";
   print LOG "$cmd\n\n";
   system($cmd);
 }
