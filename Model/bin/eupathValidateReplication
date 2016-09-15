@@ -4,43 +4,45 @@ use strict;
 use lib "$ENV{GUS_HOME}/lib/perl";
 
 use ApiCommonWebsite::Model::ModelConfig;
+use ApiCommonWebsite::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
-use DBD::Oracle;
 
-use lib $ENV{CGILIB};
-
-my $GUS_HOME = $ENV{GUS_HOME};
-
-my $reporter = "genbank";
-my $baseDir;
-my $model;
-
-my $params;
-
-# get the model and dir (will pass other params directly)
+my ($schema, $primaryModel, $rowTolerance, $remoteUserDbName);
 &GetOptions('schema=s' => \$schema,
             'primaryModel=s' => \$primaryModel,
             'rowTolerance=s' => \$rowTolerance,
-	    'remoteUserDbiDsn=s' => \$remoteUserDbiDsn,
+	    'remoteUserDbName=s' => \$remoteUserDbName,
 	   );
 
+usage() unless ($schema && $primaryModel && $rowTolerance && $remoteUserDbName);
+
+
+my @tests = (["user table", "select count(*) from $schema.users"],
+	     ["step table", "select count(*) from $schema.steps"]
+	    );
+
+
+
+
 my $modelConfig = ApiCommonWebsite::Model::ModelConfig->new($primaryModel);
+my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+$dsn[2] = $remoteUserDbName;
+my $remoteUserDbiDsn = join(':', @dsn);
 my $localUserDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
 my $remoteUserDbh = &getDbh($remoteUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 
-my @tests = (["user table", "select count(*) from $schema.user"],
-	     ["step table", "select count(*) from $schema.step"]
-	    );
+print STDERR "\n";
 
 my $foundError = 0;
 foreach my $test (@tests) {
-  print STDERR "Running test $test->[0]\n";
-  my $count = &compareResults("user table", $sql, $localUserDbh, $remoteUserDbh);
+  print STDERR "Running test: $test->[0]\n";
+  my $count = &compareResults($test->[0], $test->[1], $localUserDbh, $remoteUserDbh);
   print STDERR "Diff: $count\n";
   $foundError |= $count > $rowTolerance;
 }
-die "One or more tests had more than $rowTolerance difference\n" if $foundError;
+die "
+One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
 
 
 sub compareResults {
@@ -63,10 +65,28 @@ sub getCount {
 
 sub getDbh {
   my ($dsn, $login, $password) = @_;
+  print STDERR "Connecting to $dsn\n";
   my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
 
   # solve oracle clob problem; not that we're liable to need it...
   $dbh->{LongTruncOk} = 0;
   $dbh->{LongReadLen} = 10000000;
   return $dbh;
+}
+
+sub usage {
+  die "
+Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB specified by the provided remoteUserDbiDsn.  Both user databases must share a login and password found in model-config.xml.
+
+The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathValidationReplication
+
+Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --remoteUserDbName db_name
+
+Where:
+  schema: the schema in which to find the tables to test.
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
+  rowTolerance: the number of rows of difference to tolerate between any two compared tables.
+  remoteUserDbName:  the name to use in the connect string, eg, apicomms
+
+";
 }
