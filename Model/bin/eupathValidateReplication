@@ -22,39 +22,51 @@ my $params;
 &GetOptions('schema=s' => \$schema,
             'primaryModel=s' => \$primaryModel,
             'rowTolerance=s' => \$rowTolerance,
-            );
+	    'remoteUserDbiDsn=s' => \$remoteUserDbiDsn,
+	   );
 
 my $modelConfig = ApiCommonWebsite::Model::ModelConfig->new($primaryModel);
+my $localUserDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
+my $remoteUserDbh = &getDbh($remoteUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
+
+my @tests = (["user table", "select count(*) from $schema.user"],
+	     ["step table", "select count(*) from $schema.step"]
+	    );
+
+my $foundError = 0;
+foreach my $test (@tests) {
+  print STDERR "Running test $test->[0]\n";
+  my $count = &compareResults("user table", $sql, $localUserDbh, $remoteUserDbh);
+  print STDERR "Diff: $count\n";
+  $foundError |= $count > $rowTolerance;
+}
+die "One or more tests had more than $rowTolerance difference\n" if $foundError;
 
 
-my $dbh = DBI->connect( $modelConfig->getDbiDsn(),
-                        $modelConfig->getLogin(),
-                        $modelConfig->getPassword()
-                      )
-  || die "unable to open db handle to ", $modelConfig->getDbiDsn();
+sub compareResults {
+  my ($testName, $sql, $localUserDbh, $remoteUserDbh) = @_;
 
-# solve oracle clob problem; not that we're liable to need it...
-$dbh->{LongTruncOk} = 0;
-$dbh->{LongReadLen} = 10000000;
+  my $localCount = &getCount($localUserDbh, $sql);
+  my $remoteCount = &getCount($remoteUserDbh, $sql);
+  return abs($localCount - $remoteCount);
+}
 
-  my $sql = "select ";
+sub getCount {
+  my ($dbh, $sql) = @_;
 
-  my $sh = $dbh->prepare($sql);
-  $sh->execute();
+  my $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+  my ($count) = $stmt->fetchrow_array();
+  $stmt->finish();
+  return $count;
+}
 
-  while(my ($sequence, $file) = $sh->fetchrow_array()) {
-#    $file =~ s/^\/files\/cbil\/data\/cbil/\/eupath\/data/;
-    $rv{$sequence} = $file;
+sub getDbh {
+  my ($dsn, $login, $password) = @_;
+  my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
 
-
-  }
-
-
-
-  $sh->finish();
-
-
-
-
-
-1;
+  # solve oracle clob problem; not that we're liable to need it...
+  $dbh->{LongTruncOk} = 0;
+  $dbh->{LongReadLen} = 10000000;
+  return $dbh;
+}
