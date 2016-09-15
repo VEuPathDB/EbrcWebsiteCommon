@@ -14,7 +14,7 @@ const announcements = [
   (props) => {
     if (props.projectId != 'OrthoMCL' && (/showQuestion\.do.+blast/i).test(location.href)) {
       return (
-        <div>
+        <div key="blast">
           As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity.
           Prior versions of the search used WU-BLAST.
           <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a>
@@ -28,7 +28,7 @@ const announcements = [
   (props) => {
     if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
       return (
-        <div>
+        <div key="ortho-enzyme">
           Note: the Enzyme Commission (EC) numbers associated with proteins were
           obtained only from UniProt. In future releases we expect to include EC
           numbers from multiple sources including the annotation.
@@ -41,7 +41,7 @@ const announcements = [
   // Alt-splice release
   (props) => {
     return props.projectId == 'OrthoMCL' ? null : (
-      <div>
+      <div key="alt-splice-release">
         This {props.projectId} has been significantly upgraded. In addition to a
         refresh of all data to the latest versions, the site reflects a large
         development effort to upgrade many website and data features
