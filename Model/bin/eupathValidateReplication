@@ -52,7 +52,9 @@ sub compareResults {
   my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
 
   my $northCount = &getCount($northUserDbh, $sql);
+  print "\nnorth: $northCount\n";
   my $southCount = &getCount($southUserDbh, $sql);
+  print "\nsouth: $southCount\n";
   return abs($northCount - $southCount);
 }
 
