@@ -19,8 +19,13 @@ my ($schema, $primaryModel, $rowTolerance, $northUserDbName, $southUserDbName);
 usage() unless ($schema && $primaryModel && $rowTolerance && $northUserDbName && $southUserDbName);
 
 
-my @tests = (["user table", "select count(*) from $schema.users"],
-	     ["step table", "select count(*) from $schema.steps"]
+my @tests = (["users count", "select count(*) from $schema.users"],
+	     ["steps count", "select count(*) from $schema.steps"],
+       ["guests count", "select count(*) from $schema.users 
+                                        where is_guest = 1"],
+	     ["guest steps count", "select count(*) from $schema.steps st, $schema.users u 
+                                             where st.user_id = u.user_id 
+                                               and u.is_guest = 1"],
 	    );
 
 
@@ -39,10 +44,10 @@ print STDERR "\n";
 
 my $foundError = 0;
 foreach my $test (@tests) {
-  print STDERR "Running test: $test->[0]\n";
+  print STDERR "\n-----\nRunning test: $test->[0]\n";
   my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
   print STDERR "Diff: $count\n";
-  $foundError |= $count > $rowTolerance;
+#  $foundError |= $count > $rowTolerance;
 }
 die "
 One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
@@ -52,9 +57,9 @@ sub compareResults {
   my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
 
   my $northCount = &getCount($northUserDbh, $sql);
-  print "\nnorth: $northCount\n";
+  print "\nnorth: $northUserDbName -- $northCount\n";
   my $southCount = &getCount($southUserDbh, $sql);
-  print "\nsouth: $southCount\n";
+  print "\nsouth: $southUserDbName -- $southCount\n";
   return abs($northCount - $southCount);
 }
 

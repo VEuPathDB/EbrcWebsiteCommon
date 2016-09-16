@@ -87,6 +87,20 @@ $stepsSpec{middleOfRelease} =
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
+
+$stepsSpec{cacheModel} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache'] ],
+  ];
+
+$stepsSpec{gus4} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+  ];
+
+
 $stepsSpec{expand} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
@@ -96,12 +110,13 @@ $stepsSpec{expand} =
 $stepsSpec{cleanup} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
-   ['sleepAfterRemoveGuests', "sleep 1800", $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterGuests', "validateReplication -schema $args{schema} -rowTolerance 20", $REPLIC_STEP, ['schema']],
+   ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
+   ['validateReplAfterGuests2', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
    ['sleepAfterRemoveBroken', "sleep 1800" , $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterBroken', "validateReplication -schema $args{schema} -rowTolerance 20" , $REPLIC_STEP, ['schema'] ],
+   ['validateReplAfterBrokenRemoved', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicommdevs  -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
   ];
 
 $stepsSpec{release} =
