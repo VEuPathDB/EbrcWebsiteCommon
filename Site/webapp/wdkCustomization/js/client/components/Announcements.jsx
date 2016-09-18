@@ -39,21 +39,16 @@ const announcements = [
   },
 
   // Alt-splice release
+/*
   (props) => {
     return props.projectId == 'OrthoMCL' ? null : (
       <div key="alt-splice-release">
-        This {props.projectId} has been significantly upgraded. In addition to a
-        refresh of all data to the latest versions, the site reflects a large
-        development effort to upgrade many website and data features
-        (see the <a href="{props.webAppUrl}/showXmlDataContent.do?name=XmlQuestions.News">Release Notes</a>).
-        Please explore the site and <a className="new-window" data-name="contact_us"
-          href="{props.webAppUrl}/contact.do"> Contact Us</a> with your feedback.
-        Previous database available at <a href={'http://r28.' +
-          location.hostname.split('.').slice(-2).join('.')}>
-          {props.projectId} Release 28</a>.
+Release 29 is an alpha release that includes significant updates to the underlying data and infrastructure. In addition to refreshing all data to the latest versions, we redesigned gene pages, incorporated alternative transcripts into gene pages and searches, and updated search categories. 
+Please <a className="new-window" data-name="contact_us" href="{props.webAppUrl}/contact.do"> Contact Us</a> to let us know what you think. Release 28 is still available and fully functional.
       </div>
     );
   }
+*/
 ];
 
 /**

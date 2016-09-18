@@ -43,6 +43,7 @@ Note: the Enzyme Commission (EC) numbers associated with proteins were obtained 
   <c:set var="homeClass" value="home"/>
 </c:if>
 
+<!--
 <table><tr><td>
   <imp:image src="images/warningSign.png" alt="warningSign" /></td>
   <td> 
@@ -53,5 +54,5 @@ Note: the Enzyme Commission (EC) numbers associated with proteins were obtained 
     Previous database available at <a href="http://r28.${wdkModel.name}.org">${wdkModel.name} Release 28</a>.
   </td></tr>
 </table>
-
+-->
 
