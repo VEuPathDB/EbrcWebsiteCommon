@@ -62,15 +62,29 @@ a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hove
 }
 
 h1 {
-	color: #444;
+  color: #444;
+  margin: 0;
+  padding: 22px 0;
 }
 
 h2 {
-  	color: #444;
+  color: #444;
+  margin: 0;
+  padding: 12px 0 8px 0;
+}
+
+h3 {
+  margin: 0;
+  padding: 22px 0 8px 0;
+}
+
+h4 {
+  margin: 0;
+  padding: 10px 0 8px 0;
 }
 
 .h2center, .h3left,.h3center, .h4left {
-  	color:  #444;
+  color:  #444;
 }
 
 a[name] {
