@@ -87,6 +87,14 @@ $stepsSpec{middleOfRelease} =
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
+$stepsSpec{mappingQuestOrgs} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+  ];
+
+
 
 $stepsSpec{cacheModel} =
   [
