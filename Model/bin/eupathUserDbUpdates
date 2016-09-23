@@ -1,0 +1,62 @@
+#!/usr/bin/perl
+
+use strict;
+use lib "$ENV{GUS_HOME}/lib/perl";
+
+use ApiCommonWebsite::Model::ModelConfig;
+use ApiCommonWebsite::Model::DbUtils qw(jdbc2oracleDbi);
+use Getopt::Long;
+use DBI;
+
+my ($schema, $primaryModel, $userDbName);
+&GetOptions('schema=s' => \$schema,
+            'primaryModel=s' => \$primaryModel,
+	    'userDbName=s' => \$userDbName,
+	   );
+
+usage() unless ($schema && $primaryModel && $userDbName);
+
+
+my @tests = (["users count", "select count(*) from $schema.users", "a very nice test"],
+	     ["steps count", "select count(*) from $schema.steps", "a very happy test"],
+	    );
+
+my $modelConfig = ApiCommonWebsite::Model::ModelConfig->new($primaryModel);
+my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+$dsn[2] = $userDbName;
+my $userDbiDsn = join(':', @dsn);
+my $userDbh = &getDbh($userDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
+
+print STDERR "\n";
+
+foreach my $test (@tests) {
+  print STDERR "\n-----\nRunning test: $test->[0]\t$test->[2]\n";
+  my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
+  my $rows = $dbh->do($sql)           or die $dbh->errstr;
+  print STDERR "updated $rows rows\n";
+}
+
+sub getDbh {
+  my ($dsn, $login, $password) = @_;
+  print STDERR "Connecting to $dsn\n";
+  my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
+
+  # solve oracle clob problem; not that we're liable to need it...
+  $dbh->{LongTruncOk} = 0;
+  $dbh->{LongReadLen} = 10000000;
+  return $dbh;
+}
+
+sub usage {
+  die "
+Run a bunch of update statements on a user db.
+
+Usage: eupathUserDbUpdates --schema schema --primaryModel model --userDbName db_name
+
+Where:
+  schema: the schema in which to find the tables to test.
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
+  userDbName:  the name to use in the connect string, eg, apicomms
+
+";
+}
