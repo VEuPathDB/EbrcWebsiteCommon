@@ -2,6 +2,9 @@ import { createElement } from 'react';
 import { render } from 'react-dom';
 import Announcements from './client/components/Announcements';
 
+// include scroll to top button
+import 'eupathdb/js/scroll-to-top';
+
 wdk.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
