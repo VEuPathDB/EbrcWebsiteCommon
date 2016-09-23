@@ -191,23 +191,6 @@ wdk.namespace("eupath.setup", function(ns, $) {
     var $lastMenuItem = $('> ul > li:last-child', menu);
 
     $('.sf-menu', menu).superfish();
-    $(window).on('scroll', updateMenuBar);
-    updateMenuBar();
-
-    function updateMenuBar() {
-      if (menu.getBoundingClientRect().top < 1) {
-        if (linkInMenu) return;
-        $body.addClass('fixed-menu');
-        $topLinkMenuItem.insertBefore($lastMenuItem);
-        linkInMenu = true;
-      }
-      else {
-        if (!linkInMenu) return;
-        $body.removeClass('fixed-menu');
-        $topLinkMenuItem.detach();
-        linkInMenu = false;
-      }
-    }
   };
 
   function siteAnnouncements($el) {
