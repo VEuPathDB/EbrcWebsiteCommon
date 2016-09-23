@@ -96,6 +96,12 @@ $stepsSpec{mappingQuestOrgs} =
 
 
 
+$stepsSpec{fixBaskets} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+  ];
+
 $stepsSpec{cacheModel} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
@@ -106,6 +112,12 @@ $stepsSpec{gus4} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
    ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+  ];
+
+$stepsSpec{gus4Ortho} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
+   ['gus4', "gus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
 
