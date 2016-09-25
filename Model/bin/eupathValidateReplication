@@ -40,13 +40,13 @@ my $southUserDbiDsn = join(':', @dsn);
 my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 
-print STDERR "\n";
+print STDOUT "\n";
 
 my $foundError = 0;
 foreach my $test (@tests) {
-  print STDERR "\n-----\nRunning test: $test->[0]\n";
+  print STDOUT "\n-----\nRunning test: $test->[0]\n";
   my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
-  print STDERR "Diff: $count\n";
+  print STDOUT "Diff: $count\n";
 #  $foundError |= $count > $rowTolerance;
 }
 die "
@@ -75,7 +75,7 @@ sub getCount {
 
 sub getDbh {
   my ($dsn, $login, $password) = @_;
-  print STDERR "Connecting to $dsn\n";
+  print STDOUT "Connecting to $dsn\n";
   my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
 
   # solve oracle clob problem; not that we're liable to need it...
