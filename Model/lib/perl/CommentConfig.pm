@@ -2,7 +2,7 @@ package EuPathSiteCommon::Model::CommentConfig;
 
 use strict;
 use XML::Simple;
-use EuPathSiteCommon::Model::DbUtils qw(jdbc2oracleDbi dbi2connectString);
+use WDK::Model::DbUtils qw(jdbc2oracleDbi dbi2connectString);
 
 sub new {
     my ($class, $model) = @_;
