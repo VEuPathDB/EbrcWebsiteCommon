@@ -3,8 +3,8 @@
 use strict;
 use lib "$ENV{GUS_HOME}/lib/perl";
 
-use ApiCommonWebsite::Model::ModelConfig;
-use ApiCommonWebsite::Model::DbUtils qw(jdbc2oracleDbi);
+use EuPathSiteCommon::Model::ModelConfig;
+use EuPathSiteCommon::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
 
@@ -21,7 +21,7 @@ my @tests = (["users count", "select count(*) from $schema.users", "a very nice 
 	     ["steps count", "select count(*) from $schema.steps", "a very happy test"],
 	    );
 
-my $modelConfig = ApiCommonWebsite::Model::ModelConfig->new($primaryModel);
+my $modelConfig = EuPathSiteCommon::Model::ModelConfig->new($primaryModel);
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 $dsn[2] = $userDbName;
 my $userDbiDsn = join(':', @dsn);
