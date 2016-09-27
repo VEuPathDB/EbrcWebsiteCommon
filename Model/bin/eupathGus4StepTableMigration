@@ -1,0 +1,3 @@
+#!/bin/bash
+
+fgpJava org.gusdb.wdk.model.fix.table.TableRowUpdater org.eupathdb.common.fix.NonApiGus4StepMigrationPlugin $@
