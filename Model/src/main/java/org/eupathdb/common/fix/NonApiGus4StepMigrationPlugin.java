@@ -1,0 +1,271 @@
+package org.eupathdb.common.fix;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.log4j.Logger;
+import org.gusdb.fgputil.JsonIterators;
+import org.gusdb.fgputil.JsonType;
+import org.gusdb.fgputil.JsonType.ValueType;
+import org.gusdb.fgputil.ListBuilder;
+import org.gusdb.wdk.model.WdkModel;
+import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
+import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
+import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowWriter;
+import org.gusdb.wdk.model.fix.table.TableRowUpdater;
+import org.gusdb.wdk.model.fix.table.steps.StepData;
+import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
+import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
+import org.gusdb.wdk.model.fix.table.steps.StepQuestionUpdater;
+import org.gusdb.wdk.model.query.param.FilterParam;
+import org.gusdb.wdk.model.query.param.Param;
+import org.gusdb.wdk.model.question.Question;
+import org.gusdb.wdk.model.user.Step;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<StepData>{
+
+  private static final Logger LOG = Logger.getLogger(NonApiGus4StepMigrationPlugin.class);
+
+  private static final String USE_BOOLEAN_FILTER_PARAM = "use_boolean_filter";
+
+  private static final AtomicInteger INVALID_STEP_COUNT_PARAMS = new AtomicInteger(0);
+
+  private WdkModel _wdkModel;
+  private StepQuestionUpdater _qNameUpdater;
+
+  @Override
+  public void configure(WdkModel wdkModel, List<String> args) throws Exception {
+    _wdkModel = wdkModel;
+    if (args.size() > 0) {
+      _qNameUpdater = new StepQuestionUpdater(args.get(0), false);
+    }
+  }
+
+  @Override
+  public TableRowUpdater<StepData> getTableRowUpdater(WdkModel wdkModel) {
+    return new TableRowUpdater<StepData>(new StepDataFactory(false),
+        new ListBuilder<TableRowWriter<StepData>>()
+        .add(new StepDataWriter())
+        .add(new UpdatedStepWriter())
+        .toList(), this, wdkModel);
+  }
+
+  @Override
+  public RowResult<StepData> processRecord(StepData step) throws Exception {
+    RowResult<StepData> result = new RowResult<>(step);
+
+    // 1. Update question names from mapper file if provided
+    if (_qNameUpdater != null) {
+      _qNameUpdater.updateQuestionName(result);
+    }
+
+    // 2. If "params" prop not present then place entire paramFilters inside and write back
+    updateParamsProperty(result);
+
+    // 3. Add "filters" property if not present and convert any found objects to filter array
+    updateFiltersProperty(result, Step.KEY_FILTERS);
+    updateFiltersProperty(result, Step.KEY_VIEW_FILTERS);
+
+    // 4. Remove use_boolean_filter param when found
+    removeUseBooleanFilterParam(result);
+
+    // 5. Some steps have both a params property and params as top-level properties in display_params; remove the latter
+    removeOldDisplayParamProps(result);
+
+    // Look up question for the current step; needs to be done after #1 so we are reading new question names
+    Question question;
+    try {
+      // use (possibly already modified) question name to look up question in the current model
+      question = _wdkModel.getQuestion(step.getQuestionName());
+    }
+    catch (WdkModelException e) {
+      LOG.warn("Question name " + step.getQuestionName() + " does not appear in the WDK model");
+      return result;
+    }
+    
+    // 6. Filter param format has changed a bit; update existing steps to comply
+    fixFilterParamValues(result, question, true, INVALID_STEP_COUNT_PARAMS);
+
+    return result;
+  }
+
+  @Override
+  public void dumpStatistics() {
+    // no statistics collected
+  }
+
+  public static boolean updateParamsProperty(RowResult<StepData> result) {
+    JSONObject paramFilters = result.getRow().getParamFilters();
+    if (paramFilters.has(Step.KEY_PARAMS)) return false;
+    JSONObject newParamFilters = new JSONObject();
+    newParamFilters.put(Step.KEY_PARAMS, paramFilters);
+    result.getRow().setParamFilters(newParamFilters);
+    result.setShouldWrite(true);
+    return true;
+  }
+
+  public static boolean removeOldDisplayParamProps(RowResult<StepData> result) {
+    JSONObject paramFilters = result.getRow().getParamFilters();
+    // at this point we expect the step to have params, filters, viewFilters, and that's it
+    if (paramFilters.has(Step.KEY_PARAMS) &&
+        paramFilters.has(Step.KEY_FILTERS) &&
+        paramFilters.has(Step.KEY_VIEW_FILTERS) &&
+        paramFilters.length() == 3) {
+      // found exactly the correct props; do nothing
+      return false;
+    }
+    // otherwise create a new object with just the props we want (they SHOULD already be present)
+    JSONObject newParamFilters = new JSONObject();
+    newParamFilters.put(Step.KEY_PARAMS, paramFilters.getJSONObject(Step.KEY_PARAMS));
+    newParamFilters.put(Step.KEY_FILTERS, paramFilters.getJSONObject(Step.KEY_FILTERS));
+    newParamFilters.put(Step.KEY_VIEW_FILTERS, paramFilters.getJSONObject(Step.KEY_VIEW_FILTERS));
+    result.getRow().setParamFilters(newParamFilters);
+    result.setShouldWrite(true);
+    return true;
+  }
+
+  public static boolean updateFiltersProperty(RowResult<StepData> result, String filtersKey) {
+    JSONObject paramFilters = result.getRow().getParamFilters();
+    try {
+      JsonType json = new JsonType(paramFilters.get(filtersKey));
+      if (json.getType().equals(ValueType.ARRAY)) {
+        // value is already array; do nothing
+        return false;
+      }
+      // otherwise need to convert to array
+    }
+    catch (JSONException e) {
+      // means filter value not present; add
+    }
+    paramFilters.put(filtersKey, new JSONArray());
+    result.setShouldWrite(true);
+    return true;
+  }
+
+  public static boolean removeUseBooleanFilterParam(RowResult<StepData> result) {
+    JSONObject params = result.getRow().getParamFilters().getJSONObject(Step.KEY_PARAMS);
+    if (!params.has(USE_BOOLEAN_FILTER_PARAM)) return false;
+    params.remove(USE_BOOLEAN_FILTER_PARAM);
+    result.setShouldWrite(true);
+    return true;
+  }
+
+  public static boolean fixFilterParamValues(RowResult<StepData> result, Question question,
+      boolean logInvalidSteps, AtomicInteger invalidStepCountByParams) throws WdkModelException {
+    StepData step = result.getRow();
+    JSONObject params = step.getParamFilters().getJSONObject(Step.KEY_PARAMS);
+    boolean modifiedByThisMethod = false;
+
+    Map<String, Param> qParams = question.getParamMap();
+
+    Set<String> paramNames = params.keySet();
+    boolean stepCountedAsInvalid = false;
+    int invalidStepsByParam = invalidStepCountByParams.get();
+    for (String paramName : paramNames) {
+      if (!qParams.containsKey(paramName)) {
+        if (!stepCountedAsInvalid) {
+          // only increment invalid step count once for this step (not once for each bad param)
+          invalidStepsByParam = invalidStepCountByParams.incrementAndGet();
+          stepCountedAsInvalid = true;
+        }
+        if (logInvalidSteps) {
+          LOG.warn("Step " + result.getRow().getStepId() +
+              " contains param " + paramName + ", no longer required by question " +
+              question.getFullName() + " (" + invalidStepsByParam +
+              " invalid steps by param).");
+        }
+        // skip this param but continue to fix other params
+        continue;
+      }
+      Param param = qParams.get(paramName);
+      if (!(param instanceof FilterParam)) {
+        // this fix only applies to filter params
+        continue;
+      }
+      // all filter params must be modified; brand new format
+      JSONObject filterParamValue = new JSONObject(params.getString(paramName));
+      JSONArray valueFilters = filterParamValue.getJSONArray("filters");
+      for (int i = 0; i < valueFilters.length(); i++) {
+        // need to replace each filter object with one in the current format
+        JSONObject oldFilter = valueFilters.getJSONObject(i);
+        if (alreadyCurrentFilterFormat(oldFilter)) {
+          continue;
+        }
+        result.setShouldWrite(true);
+        modifiedByThisMethod = true;
+        JSONObject newFilter = new JSONObject();
+        // Add "field" property- should always be a string now
+        JsonType oldField = new JsonType(oldFilter.get("field"));
+        newFilter.put("field", (oldField.getType().equals(ValueType.OBJECT) ?
+            oldField.getJSONObject().getString("term") : // if object, get term property
+            oldField.getString()));                      // should be string if not object
+        // see if old filter had values property
+        if (oldFilter.has("values")) {
+          JsonType json = new JsonType(oldFilter.get("values"));
+          switch(json.getType()) {
+            case OBJECT:
+              newFilter.put("value", minMaxToString(json.getJSONObject()));
+              break;
+            case ARRAY:
+              newFilter.put("value", replaceUnknowns(json.getJSONArray()));
+              break;
+            default:
+              throw new WdkModelException("Unexpected value type " +
+                  json.getType() + " of value " + json + " in values property.");
+          }
+        }
+        else {
+          // really old format; min and max are outside values prop in their own props
+          newFilter.put("value", minMaxToString(oldFilter));
+        }
+        valueFilters.put(i, newFilter);
+      }
+      params.put(paramName, filterParamValue.toString());
+    }
+    return modifiedByThisMethod;
+  }
+
+  private static boolean alreadyCurrentFilterFormat(JSONObject filterObj) {
+    return (
+        filterObj.length() == 2 &&
+        filterObj.has("field") &&
+        filterObj.get("field") instanceof String &&
+        filterObj.has("value") &&
+        (filterObj.get("value") instanceof JSONObject ||
+         filterObj.get("value") instanceof JSONArray)
+    );
+  }
+
+  private static JSONObject minMaxToString(JSONObject object) {
+    try {
+      JSONObject newObj = new JSONObject();
+      newObj.put("min", getJsonNullOrString(object.get("min")));
+      newObj.put("max", getJsonNullOrString(object.get("max")));
+      return newObj;
+    }
+    catch (JSONException e) {
+      LOG.error("Could not find min or max properties on object: " + object.toString(2));
+      throw e;
+    }
+  }
+
+  private static Object getJsonNullOrString(Object object) {
+    if (object.equals(JSONObject.NULL)) return object;
+    return object.toString();
+  }
+
+  private static JSONArray replaceUnknowns(JSONArray array) {
+    JSONArray newArray = new JSONArray();
+    for (JsonType value : JsonIterators.arrayIterable(array)) {
+      newArray.put(value.getType().equals(ValueType.STRING) && "Unknown".equals(value.getString()) ?
+        JSONObject.NULL : value.get());
+    }
+    return newArray;
+  }
+}
