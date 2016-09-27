@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.db.SqlUtils;
+import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.w3c.dom.Document;
@@ -138,30 +139,31 @@ public class ProjectMapper {
     return timeout;
   }
 
-  public String getRecordUrl(String recordClass, String projectId,
-      String sourceId) {
+  public String getRecordUrl(String recordClassName, String projectId,
+      String sourceId) throws WdkModelException {
     String site = getWebAppUrl(projectId);
+    RecordClass recordClass = wdkModel.getRecordClass(recordClassName);
+    String recordClassUrlSegment = FormatUtil.getUtf8EncodedString(recordClass.getUrlSegment());
     projectId = FormatUtil.getUtf8EncodedString(projectId);
     sourceId = FormatUtil.getUtf8EncodedString(sourceId);
-    return site + "showRecord.do?name=" + recordClass + "&project_id="
-        + projectId + "&source_id=" + sourceId;
+    return site + "app/record/" + recordClassUrlSegment + "/" + sourceId;
   }
 
   /**
    * Special URL for transcript record
    * 
-   * @param recordClass
+   * @param recordClassName
    * @param projectId
    * @param sourceId
    * @param geneSourceId
    * @return
+   * @throws WdkModelException 
    */
-  public String getRecordUrl(String recordClass, String projectId,
-      String sourceId, String geneSourceId) {
-    String site = getWebAppUrl(projectId);
-    geneSourceId = FormatUtil.getUtf8EncodedString(geneSourceId);
-    return site + "app/record/gene/" + geneSourceId;
+  public String getRecordUrl(String recordClassName, String projectId,
+      String sourceId, String geneSourceId) throws WdkModelException {
+    return getRecordUrl(recordClassName, projectId, geneSourceId);
   }
+
 
   public String getWebServiceUrl(String projectId) {
     if (projectId.equals(myProjectId)) return myWebSvcUrl;
