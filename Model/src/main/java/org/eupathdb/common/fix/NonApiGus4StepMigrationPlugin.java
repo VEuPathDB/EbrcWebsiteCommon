@@ -123,8 +123,8 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     // otherwise create a new object with just the props we want (they SHOULD already be present)
     JSONObject newParamFilters = new JSONObject();
     newParamFilters.put(Step.KEY_PARAMS, paramFilters.getJSONObject(Step.KEY_PARAMS));
-    newParamFilters.put(Step.KEY_FILTERS, paramFilters.getJSONObject(Step.KEY_FILTERS));
-    newParamFilters.put(Step.KEY_VIEW_FILTERS, paramFilters.getJSONObject(Step.KEY_VIEW_FILTERS));
+    newParamFilters.put(Step.KEY_FILTERS, paramFilters.getJSONArray(Step.KEY_FILTERS));
+    newParamFilters.put(Step.KEY_VIEW_FILTERS, paramFilters.getJSONArray(Step.KEY_VIEW_FILTERS));
     result.getRow().setParamFilters(newParamFilters);
     result.setShouldWrite(true);
     return true;
