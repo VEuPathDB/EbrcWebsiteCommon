@@ -189,42 +189,69 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
         continue;
       }
       // all filter params must be modified; brand new format
-      JSONObject filterParamValue = new JSONObject(params.getString(paramName));
-      JSONArray valueFilters = filterParamValue.getJSONArray("filters");
-      for (int i = 0; i < valueFilters.length(); i++) {
-        // need to replace each filter object with one in the current format
-        JSONObject oldFilter = valueFilters.getJSONObject(i);
-        if (alreadyCurrentFilterFormat(oldFilter)) {
-          continue;
+      String paramValue = params.getString(paramName);
+      JSONObject filterParamValue = null;
+      try {
+        // try to parse value as a JSONObject
+        filterParamValue = new JSONObject(paramValue);
+      }
+      catch (JSONException e) {
+        // do nothing; we will check filterParamValue for null to decide what to do next
+      }
+
+      if (filterParamValue == null) {
+        // Model XML says this is a filter param, but value is not JSON;
+        //   split on comma and convert to new format:
+        //     { values: string[]; ignored: string[]; filters: Filter[]; }
+        //   Values may be invalid but at least WDK will be able to parse them.
+        String[] values = paramValue.split(",");
+        JSONArray valuesArr = new JSONArray();
+        for (String value : values) {
+          valuesArr.put(value);
         }
-        result.setShouldWrite(true);
-        modifiedByThisMethod = true;
-        JSONObject newFilter = new JSONObject();
-        // Add "field" property- should always be a string now
-        JsonType oldField = new JsonType(oldFilter.get("field"));
-        newFilter.put("field", (oldField.getType().equals(ValueType.OBJECT) ?
-            oldField.getJSONObject().getString("term") : // if object, get term property
-            oldField.getString()));                      // should be string if not object
-        // see if old filter had values property
-        if (oldFilter.has("values")) {
-          JsonType json = new JsonType(oldFilter.get("values"));
-          switch(json.getType()) {
-            case OBJECT:
-              newFilter.put("value", minMaxToString(json.getJSONObject()));
-              break;
-            case ARRAY:
-              newFilter.put("value", replaceUnknowns(json.getJSONArray()));
-              break;
-            default:
-              throw new WdkModelException("Unexpected value type " +
-                  json.getType() + " of value " + json + " in values property.");
+        filterParamValue = new JSONObject();
+        filterParamValue.put("values", valuesArr);
+        filterParamValue.put("ignored", new JSONArray());
+        filterParamValue.put("filters", new JSONArray());
+      }
+      else {
+        // value parses as JSON object, but may be a couple different formats; try to figure out which and fix
+        JSONArray valueFilters = filterParamValue.getJSONArray("filters");
+        for (int i = 0; i < valueFilters.length(); i++) {
+          // need to replace each filter object with one in the current format
+          JSONObject oldFilter = valueFilters.getJSONObject(i);
+          if (alreadyCurrentFilterFormat(oldFilter)) {
+            continue;
           }
+          result.setShouldWrite(true);
+          modifiedByThisMethod = true;
+          JSONObject newFilter = new JSONObject();
+          // Add "field" property- should always be a string now
+          JsonType oldField = new JsonType(oldFilter.get("field"));
+          newFilter.put("field", (oldField.getType().equals(ValueType.OBJECT) ?
+              oldField.getJSONObject().getString("term") : // if object, get term property
+              oldField.getString()));                      // should be string if not object
+          // see if old filter had values property
+          if (oldFilter.has("values")) {
+            JsonType json = new JsonType(oldFilter.get("values"));
+            switch(json.getType()) {
+              case OBJECT:
+                newFilter.put("value", minMaxToString(json.getJSONObject()));
+                break;
+              case ARRAY:
+                newFilter.put("value", replaceUnknowns(json.getJSONArray()));
+                break;
+              default:
+                throw new WdkModelException("Unexpected value type " +
+                    json.getType() + " of value " + json + " in values property.");
+            }
+          }
+          else {
+            // really old format; min and max are outside values prop in their own props
+            newFilter.put("value", minMaxToString(oldFilter));
+          }
+          valueFilters.put(i, newFilter);
         }
-        else {
-          // really old format; min and max are outside values prop in their own props
-          newFilter.put("value", minMaxToString(oldFilter));
-        }
-        valueFilters.put(i, newFilter);
       }
       params.put(paramName, filterParamValue.toString());
     }
