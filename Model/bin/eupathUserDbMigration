@@ -153,6 +153,11 @@ $stepsSpec{release} =
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
   ];
 
+$stepsSpec{validate} =
+  [
+   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
+  ];
+
 
 $stepsSpec{test} =
   [
