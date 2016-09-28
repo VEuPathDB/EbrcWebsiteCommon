@@ -24,7 +24,8 @@
         <a href="http://${fn:toLowerCase(siteName)}.org">${siteName}</a> ${version}
         <span class="release">${releaseDate_formatted}</span><br/>
       </div>
-      <div class="copyright">&amp;copy;${copyrightYear} The EuPathDB Project Team</div>
+      <div class="copyright">&amp;copy;${copyrightYear}
+        The ${siteName eq 'MicrobiomeDB' ? 'MicrobiomeDB' : 'EuPathDB'} Project Team</div>
     </div>
 
     <div class="right">
@@ -42,70 +43,72 @@
       </div>
     </div>
 
-    <div class="bottom">
-      <ul class="site-icons">
-        <li title="EuPathDB.org">
-          <a href="http://www.eupathdb.org">
-            <imp:image src="images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
-          </a>
-        </li>
-        <li class="short-space" title="AmoebaDB.org">
-          <a href="http://amoebadb.org">
-            <imp:image src="images/AmoebaDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="CryptoDB.org">
-          <a href="http://cryptodb.org">
-            <imp:image src="images/CryptoDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="FungiDB.org">
-          <a href="http://fungidb.org">
-            <imp:image src="images/FungiDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="GiardiaDB.org">
-          <a href="http://giardiadb.org">
-            <imp:image src="images/GiardiaDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="long-space" title="MicrosporidiaDB.org">
-          <a href="http://microsporidiadb.org">
-            <imp:image src="images/MicrosporidiaDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="PiroplasmaDB.org">
-          <a href="http://piroplasmadb.org">
-            <imp:image src="images/PiroplasmaDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="long-space" title="PlasmoDB.org">
-          <a href="http://plasmodb.org">
-            <imp:image src="images/PlasmoDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="long-space" title="ToxoDB.org">
-          <a href="http://toxodb.org">
-            <imp:image src="images/ToxoDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="TrichDB.org">
-          <a href="http://trichdb.org">
-            <imp:image src="images/TrichDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="TriTrypDB.org">
-          <a href="http://tritrypdb.org">
-            <imp:image src="images/TriTrypDB/footer-logo.png"/>
-          </a>
-        </li>
-        <li class="short-space" title="OrthoMCL.org">
-          <a href="http://orthomcl.org">
-            <imp:image src="images/OrthoMCL/footer-logo.png"/>
-          </a>
-        </li>
-      </ul>
-    </div>
+    <c:if test="${siteName ne 'MicrobiomeDB'}">
+      <div class="bottom">
+        <ul class="site-icons">
+          <li title="EuPathDB.org">
+            <a href="http://www.eupathdb.org">
+              <imp:image src="images/eupathdblink.png" alt="Link to EuPathDB homepage"/>
+            </a>
+          </li>
+          <li class="short-space" title="AmoebaDB.org">
+            <a href="http://amoebadb.org">
+              <imp:image src="images/AmoebaDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="CryptoDB.org">
+            <a href="http://cryptodb.org">
+              <imp:image src="images/CryptoDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="FungiDB.org">
+            <a href="http://fungidb.org">
+              <imp:image src="images/FungiDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="GiardiaDB.org">
+            <a href="http://giardiadb.org">
+              <imp:image src="images/GiardiaDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="long-space" title="MicrosporidiaDB.org">
+            <a href="http://microsporidiadb.org">
+              <imp:image src="images/MicrosporidiaDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="PiroplasmaDB.org">
+            <a href="http://piroplasmadb.org">
+              <imp:image src="images/PiroplasmaDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="long-space" title="PlasmoDB.org">
+            <a href="http://plasmodb.org">
+              <imp:image src="images/PlasmoDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="long-space" title="ToxoDB.org">
+            <a href="http://toxodb.org">
+              <imp:image src="images/ToxoDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="TrichDB.org">
+            <a href="http://trichdb.org">
+              <imp:image src="images/TrichDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="TriTrypDB.org">
+            <a href="http://tritrypdb.org">
+              <imp:image src="images/TriTrypDB/footer-logo.png"/>
+            </a>
+          </li>
+          <li class="short-space" title="OrthoMCL.org">
+            <a href="http://orthomcl.org">
+              <imp:image src="images/OrthoMCL/footer-logo.png"/>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </c:if>
 
   </div>
 
