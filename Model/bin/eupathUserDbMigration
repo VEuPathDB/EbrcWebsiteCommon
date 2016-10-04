@@ -141,7 +141,7 @@ $stepsSpec{cleanup} =
    ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
    ['validateReplAfterGuests2', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
-   ['sleepAfterRemoveBroken', "sleep 1800" , $REPLIC_STEP, [] ], #wait for replication to catch up
+   ['sleepAfterRemoveBroken', "sleep 10" , $REPLIC_STEP, [] ], #wait for replication to catch up
    ['validateReplAfterBrokenRemoved', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicommdevs  -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
   ];
 
