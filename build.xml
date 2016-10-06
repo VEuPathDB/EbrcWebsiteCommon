@@ -120,6 +120,7 @@
            relative="true"
            executable="node"
            parallel="true"
+           verbose="true"
            output="${webappTargetDir}/assets-manifest.json">
       <arg line="${projectsDir}/EuPathSiteCommon/Site/scripts/generateAssetsManifest.js"/>
       <fileset dir="${webappTargetDir}" casesensitive="false">
