@@ -23,19 +23,23 @@ if (!files.length) {
   process.exit();
 }
 
-var manifest = {};
+try {
+  var manifest = {};
 
-manifest.files = files
-  .reduce(function(acc, file) {
-    acc[file] = {
-      checksum: MD5(fs.readFileSync(file)),
-      size: fs.statSync(file).size
-    };
-    return acc;
-  }, {});
+  manifest.files = files
+    .reduce(function(acc, file) {
+      acc[file] = {
+        checksum: MD5(fs.readFileSync(file)),
+        size: fs.statSync(file).size
+      };
+      return acc;
+    }, {});
 
-process.stdout.write(JSON.stringify(manifest, null, 4) + '\n', 'utf-8');
-process.exit();
+  process.stdout.write(JSON.stringify(manifest, null, 4) + '\n', 'utf-8', process.exit);
+}
+catch (err) {
+  process.stderr.write('Unable to create assets manifest.\n' + err.stack, 'utf-8', process.exit.bind(process, 1));
+}
 
 function usage() {
   process.stdout.write('Usage:  node generateAssetsManifest.js [file, ]\n');
