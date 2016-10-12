@@ -26,9 +26,6 @@ required:
  oauthClientId: apiComponentSite
  oauthClientSecret: 12345
 
- # wdk temporary file path
- wdkTempDir: /var/tmp
-
  ###############################################################################################
  # dev sites don't typically need to bother with anything below here (except OrthoMCL dev sites)
  ###############################################################################################
