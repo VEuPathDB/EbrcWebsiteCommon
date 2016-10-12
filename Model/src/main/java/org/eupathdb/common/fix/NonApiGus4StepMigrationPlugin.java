@@ -6,10 +6,10 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
-import org.gusdb.fgputil.JsonIterators;
-import org.gusdb.fgputil.JsonType;
-import org.gusdb.fgputil.JsonType.ValueType;
 import org.gusdb.fgputil.ListBuilder;
+import org.gusdb.fgputil.json.JsonIterators;
+import org.gusdb.fgputil.json.JsonType;
+import org.gusdb.fgputil.json.JsonType.ValueType;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;

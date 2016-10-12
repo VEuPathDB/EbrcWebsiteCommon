@@ -127,8 +127,8 @@
   <!-- END log4jdbc appenders -->
 
   <logger name="org.gusdb"><level value="info"/></logger>
-  <logger name="org.gusdb.fgputil.db.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
-  <logger name="org.gusdb.fgputil.db.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
+  <logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
+  <logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
   <logger name="org.gusdb.wdk.service.filter.RequestLoggingFilter" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
   <logger name="org.gusdb.wdk.service.provider.LoggingWriterInterceptor" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
   <logger name="org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger" additivity="false"><level value="info"/><appender-ref ref="http-response-log" /></logger>
