@@ -23,5 +23,5 @@
   data-controller="eupath.setup.siteAnnouncements"
   data-project-id="${project}"
   data-web-app-url="${pageContext.request.contextPath}"
-  data-announcements='{"information": ${information}, "degraded": ${degraded}, "down": ${down}}'>
+  data-announcements='{"information": ${fn:escapeXml(information)}, "degraded": ${fn:escapeXml(degraded)}, "down": ${fn:escapeXml(down)}}'>
 </div>
