@@ -26,6 +26,9 @@ default:
   keyStoreFile: /etc/pki/java/cacerts
   keyStorePassPhrase: ""
 
+  # wdk temporary file path
+  wdkTempDir: /var/tmp
+
   #monitorBlockedThreads="true" and blockedThreshold="20" should be applied to live sites.
   monitorBlockedThreads: true
   blockedThreshold: 20
