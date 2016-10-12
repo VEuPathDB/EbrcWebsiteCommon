@@ -25,44 +25,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Sends a support email to the support email address configured in
- * model-config.xml (see org.gusdb.wdk.model.ModelConfig.getSupportEmail())
+ * Sends a support email to the support email address configured in model-config.xml (see
+ * org.gusdb.wdk.model.ModelConfig.getSupportEmail())
  *
  * @author dfalke
  */
 public class ContactUsAction extends WdkAction {
 
   private static final Logger logger = Logger.getLogger(ContactUsAction.class.getName());
-  
+
   private static final String ERROR_AJAX_RESPONSE = "error";
-  
+
   /** the reply-to address */
-	private static final String PARAM_REPLY = "reply";
-	
-	/** the email subject */
-	private static final String PARAM_SUBJECT = "subject";
+  private static final String PARAM_REPLY = "reply";
 
-	/** the email content */
-	private static final String PARAM_CONTENT = "content";
+  /** the email subject */
+  private static final String PARAM_SUBJECT = "subject";
 
-	/** CC addresses */
-	private static final String PARAM_ADDCC = "addCc";
+  /** the email content */
+  private static final String PARAM_CONTENT = "content";
 
-	/** referring URL **/
-	private static final String PARAM_REFERRER = "referrer";
+  /** CC addresses */
+  private static final String PARAM_ADDCC = "addCc";
 
-	/** Attachments */
-	private static final String PARAM_ATTACHMENT_PREFIX = "attachment";
-	private static final int PARAM_ATTACHMENT_COUNT = 3;
-	private static final int PARAM_ATTACHMENT_MAX_SIZE_MB = 5;
+  /** referring URL **/
+  private static final String PARAM_REFERRER = "referrer";
 
-  private static final Map<String, ParamDef> PARAM_DEFS = new ParamDefMapBuilder()
-    .addParam(PARAM_REPLY, new ParamDef(Required.REQUIRED))
-    .addParam(PARAM_SUBJECT, new ParamDef(Required.REQUIRED))
-    .addParam(PARAM_CONTENT, new ParamDef(Required.REQUIRED))
-    .addParam(PARAM_ADDCC, new ParamDef(Required.OPTIONAL))
-    .addParam(PARAM_REFERRER, new ParamDef(Required.OPTIONAL))
-    .toMap();
+  /** Attachments */
+  private static final String PARAM_ATTACHMENT_PREFIX = "attachment";
+  private static final int PARAM_ATTACHMENT_COUNT = 3;
+  private static final int PARAM_ATTACHMENT_MAX_SIZE_MB = 5;
+
+  private static final Map<String, ParamDef> PARAM_DEFS = new ParamDefMapBuilder().addParam(PARAM_REPLY,
+      new ParamDef(Required.REQUIRED)).addParam(PARAM_SUBJECT, new ParamDef(Required.REQUIRED)).addParam(
+          PARAM_CONTENT, new ParamDef(Required.REQUIRED)).addParam(PARAM_ADDCC,
+              new ParamDef(Required.OPTIONAL)).addParam(PARAM_REFERRER,
+                  new ParamDef(Required.OPTIONAL)).toMap();
 
   static {
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
@@ -80,39 +78,36 @@ public class ContactUsAction extends WdkAction {
   protected boolean shouldCheckSpam() {
     return true;
   }
-	
-	@Override
-	protected Map<String, ParamDef> getParamDefs() {
-	  return PARAM_DEFS;
-	}
+
+  @Override
+  protected Map<String, ParamDef> getParamDefs() {
+    return PARAM_DEFS;
+  }
 
   @Override
   protected int getMaxUploadSize() {
     return PARAM_ATTACHMENT_MAX_SIZE_MB;
   }
-  
-	  
-	@Override
-	protected ActionResult handleRequest(ParamGroup params) throws Exception {
-	  logger.debug("Entering ContactUs...");
-	  
-	  UserBean user = getCurrentUser();
-	  WdkModelBean wdkModelBean = getWdkModel();
-	  WdkModel wdkModel = wdkModelBean.getModel();
-	  
-	  String reply = params.getValueOrEmpty(PARAM_REPLY);
-	  String subject = params.getValueOrEmpty(PARAM_SUBJECT);
-	  String content = params.getValueOrEmpty(PARAM_CONTENT);
+
+  @Override
+  protected ActionResult handleRequest(ParamGroup params) throws Exception {
+    logger.debug("Entering ContactUs...");
+
+    UserBean user = getCurrentUser();
+    WdkModelBean wdkModelBean = getWdkModel();
+    WdkModel wdkModel = wdkModelBean.getModel();
+
+    String reply = params.getValueOrEmpty(PARAM_REPLY);
+    String subject = params.getValueOrEmpty(PARAM_SUBJECT);
+    String content = params.getValueOrEmpty(PARAM_CONTENT);
     String addCc = params.getValueOrEmpty(PARAM_ADDCC);
     String referrer = params.getValueOrEmpty(PARAM_REFERRER);
 
     ArrayList<DataHandler> attachmentList = new ArrayList<DataHandler>();
     for (int i = 1; i <= PARAM_ATTACHMENT_COUNT; i++) {
-      FileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX
-          + Integer.toString(i));
+      FileItem attachment = params.getUpload(PARAM_ATTACHMENT_PREFIX + Integer.toString(i));
       if (attachment != null && attachment.getSize() > 0L) {
-        ByteArrayDataSource ads = new ByteArrayDataSource(attachment.get(),
-            attachment.getContentType());
+        ByteArrayDataSource ads = new ByteArrayDataSource(attachment.get(), attachment.getContentType());
         ads.setName(attachment.getName());
         DataHandler adh = new DataHandler(ads);
         attachmentList.add(adh);
@@ -120,79 +115,79 @@ public class ContactUsAction extends WdkAction {
     }
     DataHandler[] attachments = attachmentList.toArray(new DataHandler[0]);
 
-    
-	  String supportEmail = wdkModel.getModelConfig().getSupportEmail();
-	  String uid = Integer.toString(user.getUserId());
-	  String version = wdkModelBean.getBuild(); //getVersion() reads from releaseVersion in model.xml which is not maintained
-	  String website = wdkModelBean.getDisplayName();
-	  // TODO: need to move these to a WDK config file
-	  String reporterEmail = "websitesupportform@apidb.org";
-	  String redmineEmail = "redmine@apidb.org";
-	  
-	  if (reply.isEmpty()) {
-	    reply = supportEmail;
-	  }
-	  
-	  if (!addCc.isEmpty() && addCc.split(",\\s*(?=\\w)").length > 10) {
-	    // only 10 addresses allowed
-	    return getJsonResult(ERROR_AJAX_RESPONSE, "No more than 10 Cc addresses" +
-	    		"are allowed. Please reduce your list to 10 email addresses.");
-	  }
-	  
-	  RequestData reqData = getRequestData();
-	  
-	  String metaInfo = "ReplyTo: " + reply + "\n" +
-	      "CC: " + addCc + "\n" +
-	      "Privacy preferences: " + "\n" +
-	      "Uid: " + uid + "\n" +
-	      "Browser information: " + reqData.getBrowser() + "\n" +
-	      "Referrer page: " + referrer + "\n" +
-	      "WDK Model version: " + version;
-	  
-	  String autoContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
-	      " response, that includes your message for your records, to let you" +
-	      " know that we have received your email and will get back to you as" +
-	      " soon as possible. Thanks so much for contacting us!\n\nThis was" +
-	      " your message:\n\n---------------------\n" + content +
-	      "\n---------------------";
-	  
-	  String redmineMetaInfo = "Project: usersupportrequests\n" +
-	      "Category: " + website + "\n" +
-	      "\n" + metaInfo + "\n" +
-	      "Client IP Address: " + reqData.getIpAddress() + "\n";
-	  
-	  try {
-	    // send auto-reply
-      Utilities.sendEmail(wdkModel, reply, supportEmail, subject,
+    String supportEmail = wdkModel.getModelConfig().getSupportEmail();
+    String uid = Integer.toString(user.getUserId());
+    // TODO: getVersion() reads from releaseVersion in model.xml which is not maintained
+    String version = wdkModelBean.getBuild();
+    String website = wdkModelBean.getDisplayName();
+    // TODO: need to move these to a WDK config file
+    String reporterEmail = "websitesupportform@apidb.org";
+    String redmineEmail = "redmine@apidb.org";
+
+    if (reply.isEmpty()) {
+      reply = supportEmail;
+    }
+
+    if (!addCc.isEmpty() && addCc.split(",\\s*(?=\\w)").length > 10) {
+      // only 10 addresses allowed
+      return getJsonResult(ERROR_AJAX_RESPONSE,
+          "No more than 10 Cc addresses" + "are allowed. Please reduce your list to 10 email addresses.");
+    }
+
+    RequestData reqData = getRequestData();
+
+    String metaInfo =
+        "ReplyTo: " + reply + "\n" +
+        "CC: " + addCc + "\n" +
+        "Privacy preferences: " + "\n" +
+        "Uid: " + uid + "\n" +
+        "Browser information: " + reqData.getBrowser() + "\n" +
+        "Referrer page: " + referrer + "\n" +
+        "WDK Model version: " + version;
+
+    String autoContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
+        " response, that includes your message for your records, to let you" +
+        " know that we have received your email and will get back to you as" +
+        " soon as possible. Thanks so much for contacting us!\n\nThis was" +
+        " your message:\n\n---------------------\n" + content + "\n---------------------";
+
+    String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + website + "\n" + "\n" +
+        metaInfo + "\n" + "Client IP Address: " + reqData.getIpAddress() + "\n";
+
+    String smtpServer = wdkModel.getModelConfig().getSmtpServer();
+
+    try {
+
+      // send auto-reply
+      Utilities.sendEmail(smtpServer, reply, supportEmail, subject,
           escapeHtml(metaInfo + "\n\n" + autoContent + "\n\n"), addCc, attachments);
 
       // send support email
-      Utilities.sendEmail(wdkModel, supportEmail, reply, subject,
+      Utilities.sendEmail(smtpServer, supportEmail, reply, subject,
           escapeHtml(metaInfo + "\n\n" + content + "\n\n"), null, attachments);
 
       // send redmine email
-      Utilities.sendEmail(wdkModel, redmineEmail, reporterEmail, subject,
+      Utilities.sendEmail(smtpServer, redmineEmail, reporterEmail, subject,
           escapeHtml(redmineMetaInfo + "\n\n" + content + "\n\n"), null, attachments);
 
       // not using Ajax at the moment due to file uploads
-    	// return getJsonResult(SUCCESS_AJAX_RESPONSE,
-    	//     "We appreciate your feedback. Your message was sent successfully.");    	
+      // return getJsonResult(SUCCESS_AJAX_RESPONSE,
+      //     "We appreciate your feedback. Your message was sent successfully.");
       return new ActionResult().setViewName(SUCCESS);
-	  }
-	  catch (Exception ex) {
-	    logger.error("Failure while processing 'contact us' request", ex);
-	    return getJsonResult(ERROR_AJAX_RESPONSE,
-	        "There was an error and your message may not have been sent.");
-	  }
+    }
+    catch (Exception ex) {
+      logger.error("Failure while processing 'contact us' request", ex);
+      return getJsonResult(ERROR_AJAX_RESPONSE,
+          "There was an error and your message may not have been sent.");
+    }
   }
-  
+
   private ActionResult getJsonResult(String status, String message) throws JSONException {
     JSONObject jsMessage = new JSONObject();
     jsMessage.put("status", status);
     jsMessage.put("message", message);
-    return new ActionResult(ResponseType.json)
-        .setRequestAttribute("jsonData", jsMessage.toString())
-        .setViewName(SUCCESS);
+    return new ActionResult(ResponseType.json).setRequestAttribute("jsonData",
+        jsMessage.toString()).setViewName(SUCCESS);
   }
 
 }
