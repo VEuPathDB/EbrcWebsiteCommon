@@ -117,7 +117,7 @@ $stepsSpec{gus4} =
 $stepsSpec{gus4Ortho} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
-   ['gus4', "gus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
+   ['gus4', "eupathGus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
 
