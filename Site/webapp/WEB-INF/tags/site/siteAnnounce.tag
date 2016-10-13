@@ -14,10 +14,19 @@
 
 
 <c:set var="project" value="${wdkModel.name}"/>
-
-<api:messages var="information" projectName="${project}" messageCategory="Information"/>
 <api:messages var="degraded" projectName="${project}" messageCategory="Degraded"/>
 <api:messages var="down" projectName="${project}" messageCategory="Down"/>
+
+  <!-- refer: ${refer} -->
+<%-- only show information message from dashboard on home page --%>
+<c:choose>
+  <c:when test="${refer eq 'home'}">
+    <api:messages var="information" projectName="${project}" messageCategory="Information"/>
+  </c:when>
+  <c:otherwise>
+    <c:set var="information" value="[]"/>
+  </c:otherwise>
+</c:choose>
 
 <div
   data-controller="eupath.setup.siteAnnouncements"
