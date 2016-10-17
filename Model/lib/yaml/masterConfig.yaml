@@ -27,7 +27,7 @@ default:
   keyStorePassPhrase: ""
 
   # wdk temporary file path
-  wdkTempDir: /var/tmp
+  wdkTempDir: /var/tmp/wdk
 
   #monitorBlockedThreads="true" and blockedThreshold="20" should be applied to live sites.
   monitorBlockedThreads: true
