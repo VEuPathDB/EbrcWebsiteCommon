@@ -110,10 +110,6 @@ default:
   webServiceMirrorOrtho: none
   googleAnalyticsId: none
 
-  twitter: EuPathDB
-  twitterWidgetId: 344817818073714691
-  facebook: pages/EuPathDB/133123003429972
-
   # needed only in portal to access comp sites
   amebURL: none
   crypURL: none
@@ -156,6 +152,11 @@ apiSite:
   profile.perlExec: /usr/bin/perl
   profile.connection: dbi:Oracle:${appDb.instance}
 
+  twitter: EuPathDB
+  twitterWidgetId: 344817818073714691
+  facebook: pages/EuPathDB/133123003429972
+  youtube: EuPathDB
+
 amoebadb: {}
 
 cryptodb: {}
@@ -176,6 +177,7 @@ fungidb:
   twitter: FungiDB
   twitterWidgetId: 479835314844758017
   facebook: pages/FungiDB/169472636469487
+  youtube: EuPathDB
 
 giardiadb: {}
 
@@ -185,6 +187,11 @@ microsporidiadb: {}
 
 microbiomedb:
   modelName: microbiomeModel
+  twitter: MicrobiomeDB
+  twitterWidgetId: 788427253331951616
+  facebook: ''
+  youtube: ''
+  supportEmail: microbiomedb@gmail.com
 
 orthomcl:
   modelName: OrthoMCL
