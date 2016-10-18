@@ -7,6 +7,9 @@ var wdkRoot = path.join(projectHome, 'WDK/View');
 // Get Wdk's webpack.config.
 var config = require(path.join(wdkRoot, 'webpack.config'));
 
+// remove webpack.optimize.CommonsChunkPlugin
+config.plugins.pop();
+
 var wdkContext = path.join(projectHome, 'WDK/View/webapp/wdk');
 var eupathdbContext = path.join(projectHome, 'EuPathSiteCommon/Site/webapp');
 var siteContext = path.join(process.cwd(), 'webapp');
