@@ -22,9 +22,12 @@ required:
  
  # authentication method
  authenticationMethod: user_db
- oauthUrl: https://integrate.eupathdb.org/oauth
+ #authenticationMethod: oauth2
+
+ # to use OAuth2 for authentication switch method above and fill in client secret below
+ oauthUrl: https://eupathdb.org/oauth
  oauthClientId: apiComponentSite
- oauthClientSecret: 12345
+ oauthClientSecret: XXXXXXXXXX
 
  ###############################################################################################
  # dev sites don't typically need to bother with anything below here (except OrthoMCL dev sites)
