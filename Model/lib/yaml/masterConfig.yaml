@@ -110,6 +110,12 @@ default:
   webServiceMirrorOrtho: none
   googleAnalyticsId: none
 
+  # social media
+  twitter: EuPathDB
+  twitterWidgetId: 344817818073714691
+  facebook: pages/EuPathDB/133123003429972
+  youtube: EuPathDB
+
   # needed only in portal to access comp sites
   amebURL: none
   crypURL: none
@@ -152,11 +158,6 @@ apiSite:
   profile.perlExec: /usr/bin/perl
   profile.connection: dbi:Oracle:${appDb.instance}
 
-  twitter: EuPathDB
-  twitterWidgetId: 344817818073714691
-  facebook: pages/EuPathDB/133123003429972
-  youtube: EuPathDB
-
 amoebadb: {}
 
 cryptodb: {}
@@ -177,7 +178,6 @@ fungidb:
   twitter: FungiDB
   twitterWidgetId: 479835314844758017
   facebook: pages/FungiDB/169472636469487
-  youtube: EuPathDB
 
 giardiadb: {}
 
