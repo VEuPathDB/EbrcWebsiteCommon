@@ -154,7 +154,8 @@ public class ContactUsAction extends WdkAction {
         " your message:\n\n---------------------\n" + content + "\n---------------------";
 
     String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + website + "\n" + "\n" +
-        metaInfo + "\n" + "Client IP Address: " + reqData.getIpAddress() + "\n";
+        metaInfo + "\n" + "Client IP Address: " + reqData.getIpAddress() + "\n" +
+        "WDK Host: " + reqData.getAppHostName() + " (" + reqData.getAppHostAddress() + ")\n";
 
     String smtpServer = wdkModel.getModelConfig().getSmtpServer();
 
