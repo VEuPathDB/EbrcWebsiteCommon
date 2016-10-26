@@ -100,7 +100,7 @@ default:
 
   # needed in all sites so treeParam shows the checkboxes
   # in component sites also to access blast gbrowse link
-  # also needed for model xml macros: WEBAPP_URL and LEGACY_WEBAPP_URL
+  # also needed for model xml macros: WEBAPP_BASE_URL and LEGACY_WEBAPP_BASE_URL
   myURL: ${myURL}
 
   plasmoPubsURL: none
