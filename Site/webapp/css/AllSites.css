@@ -345,26 +345,26 @@ div.innertube #record-toolbox li {
 
 
 
-#bubbles .info .wdk-CheckboxTree-expandedItem,
-#bubbles .info .wdk-CheckboxTree-collapsedItem {
+#bubbles .info .wdk-CheckboxTreeItem__expanded,
+#bubbles .info .wdk-CheckboxTreeItem__collapsed {
   list-style: none;
 }
 
-#bubbles .wdk-CheckboxTree-list li label {
+#bubbles .wdk-CheckboxTreeList li label {
   white-space: initial;
 }
 
-#bubbles .wdk-CheckboxTree-expandedItem:after {
+#bubbles .wdk-CheckboxTreeItem__expanded:after {
   display: none;
 }
 
-#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTree-list > li.wdk-CheckboxTree-leafItem {
+#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTreeList > li.wdk-CheckboxTreeItem__leaf {
   list-style: disc inside;
   margin-left: 0px;
   color: #aaa;
 }
 
-#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTree-list > li.wdk-CheckboxTree-leafItem label {
+#bubbles .info .wdk-CheckboxTree > .wdk-CheckboxTreeList > li.wdk-CheckboxTreeItem__leaf label {
   position: relative;
   left: -4px;
 }
