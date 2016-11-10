@@ -46,7 +46,7 @@ public class UpdatedStepWriter implements TableRowWriter<StepData> {
     DataSource userDs = userDb.getDataSource();
     if (!userDb.getPlatform().checkTableExists(
         userDs, UPDATED_STEPS_TABLE_SCHEMA, UPDATED_STEPS_TABLE_NAME)) {
-      new SQLRunner(userDs, CREATE_TABLE_SQL).executeStatement();
+      new SQLRunner(userDs, CREATE_TABLE_SQL, "create-updated-steps-table").executeStatement();
     }
   }
 
