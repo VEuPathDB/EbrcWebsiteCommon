@@ -53,11 +53,11 @@ html {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = Used to be in PlasmoDB.css
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-a:link, a:visited, div.divlink, .link, button.wdk-Link {
+a:link, a:visited, div.divlink, .link, .wdk-Link {
 	color: #069;
 }
 
-a:hover, a:active, a:focus, div.divlink:hover, .link:hover, button.wdk-Link:hover {
+a:hover, a:active, a:focus, div.divlink:hover, .link:hover, .wdk-Link:hover {
 	text-decoration: underline;
 }
 
