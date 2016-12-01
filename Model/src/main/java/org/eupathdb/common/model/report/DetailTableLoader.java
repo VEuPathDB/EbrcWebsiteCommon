@@ -30,7 +30,7 @@ import org.gusdb.wdk.model.record.TableField;
 import org.gusdb.wdk.model.record.attribute.AttributeField;
 import org.gusdb.wdk.model.record.attribute.ColumnAttributeField;
 import org.gusdb.wdk.model.record.attribute.LinkAttributeField;
-import org.gusdb.wdk.model.record.attribute.PrimaryKeyAttributeField;
+import org.gusdb.wdk.model.record.attribute.IdAttributeField;
 import org.gusdb.wdk.model.record.attribute.TextAttributeField;
 
 /**
@@ -123,7 +123,7 @@ public class DetailTableLoader extends BaseCLI {
           TableField table = tables.get(fieldName);
           if (table == null)
             throw new WdkModelException("The table field doesn't exist: " + fieldName);
-          dumpTable(wdkModel.getAppDb(), detailTable, table, idSql);
+          dumpTable(wdkModel.getAppDb(), detailTable, table, idSql, recordClass);
         }
       }
       else { // no table specified, only dump tables with a specific flag
@@ -131,7 +131,7 @@ public class DetailTableLoader extends BaseCLI {
           String[] props = table.getPropertyList(PROP_EXCLUDE_FROM_DUMPER);
           if (props.length > 0 && props[0].equalsIgnoreCase("true"))
             continue;
-          dumpTable(wdkModel.getAppDb(), detailTable, table, idSql);
+          dumpTable(wdkModel.getAppDb(), detailTable, table, idSql, recordClass);
         }
       }
 
@@ -161,7 +161,7 @@ public class DetailTableLoader extends BaseCLI {
    * @param table
    * @param idSql
    */
-  private void dumpTable(DatabaseInstance appDb, String detailTable, TableField table, String idSql)
+  private void dumpTable(DatabaseInstance appDb, String detailTable, TableField table, String idSql, RecordClass recordClass)
       throws WdkModelException, SQLException, WdkUserException {
     logger.debug("Dumping table [" + table.getName() + "]...");
     long start = System.currentTimeMillis();
@@ -178,7 +178,7 @@ public class DetailTableLoader extends BaseCLI {
     Connection updateConnection = updateDataSource.getConnection();
     logger.debug("Connection obtained...");
 
-    String[] pkColumns = table.getRecordClass().getPrimaryKeyAttributeField().getColumnRefs();
+    String[] pkColumns = recordClass.getPrimaryKeyDefinition().getColumnRefs();
     String pkNames;
     String pkBind;
 
@@ -380,8 +380,8 @@ public class DetailTableLoader extends BaseCLI {
     }
 
     String text = null;
-    if (attribute instanceof PrimaryKeyAttributeField) {
-      text = ((PrimaryKeyAttributeField) attribute).getText();
+    if (attribute instanceof IdAttributeField) {
+      text = ((IdAttributeField) attribute).getText();
     }
     else if (attribute instanceof TextAttributeField) {
       text = ((TextAttributeField) attribute).getText();

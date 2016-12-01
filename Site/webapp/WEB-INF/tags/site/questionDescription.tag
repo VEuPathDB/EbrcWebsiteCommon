@@ -99,9 +99,9 @@
                 href="${appUrl}/record/dataset/${ds_id}">${ds_display}</a>
               <div class="detail">
                 <div class="summary">${ds_attributes['summary']}</div>
-                <c:if test="${fn:length(ds_publications) > 0}">
+                <c:if test="${ds_publications.numRows > 0}">
                     <ul class="publications">
-                      <c:forEach items="${ds_publications}" var="publication">
+                      <c:forEach items="${ds_publications.iterator}" var="publication">
                         <li>
                         <a href="${publication['pubmed_link'].url}">${publication['citation'].value}</a>
                         </li>
