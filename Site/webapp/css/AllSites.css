@@ -767,7 +767,7 @@ span.smallTitle {
   padding: 0;
   margin: 0;
   list-style: none;
-  transition: visibility 0s linear 0.5s, opacity 0.5s linear;
+  transition: visibility 0s linear 1s, opacity 0.25s linear 1s;
   visibility: hidden;
   opacity: 0;
   box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.2);
@@ -776,7 +776,11 @@ span.smallTitle {
 .eupathdb-MenuItem:hover > .eupathdb-MenuItemText__parent + .eupathdb-Submenu {
   visibility: visible;
   opacity: 1;
-  transition-delay: 0s;
+}
+
+.eupathdb-Menu:hover .eupathdb-MenuItem > .eupathdb-MenuItemText__parent + .eupathdb-Submenu,
+.eupathdb-MenuItem:hover > .eupathdb-MenuItemText__parent + .eupathdb-Submenu {
+  transition-delay: .5s;
 }
 
 .eupathdb-Submenu {
