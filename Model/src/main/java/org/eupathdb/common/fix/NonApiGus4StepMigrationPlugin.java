@@ -58,25 +58,25 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
 
   @Override
   public RowResult<StepData> processRecord(StepData step) throws Exception {
-    RowResult<StepData> result = new RowResult<>(step);
+    boolean modified = false;
 
     // 1. Update question names from mapper file if provided
     if (_qNameUpdater != null) {
-      _qNameUpdater.updateQuestionName(result);
+      modified |= _qNameUpdater.updateQuestionName(step);
     }
 
     // 2. If "params" prop not present then place entire paramFilters inside and write back
-    updateParamsProperty(result);
+    modified |= updateParamsProperty(step);
 
     // 3. Add "filters" property if not present and convert any found objects to filter array
-    updateFiltersProperty(result, Step.KEY_FILTERS);
-    updateFiltersProperty(result, Step.KEY_VIEW_FILTERS);
+    modified |= updateFiltersProperty(step, Step.KEY_FILTERS);
+    modified |= updateFiltersProperty(step, Step.KEY_VIEW_FILTERS);
 
     // 4. Remove use_boolean_filter param when found
-    removeUseBooleanFilterParam(result);
+    modified |= removeUseBooleanFilterParam(step);
 
     // 5. Some steps have both a params property and params as top-level properties in display_params; remove the latter
-    removeOldDisplayParamProps(result);
+    modified |= removeOldDisplayParamProps(step);
 
     // Look up question for the current step; needs to be done after #1 so we are reading new question names
     Question question;
@@ -86,13 +86,13 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     }
     catch (WdkModelException e) {
       LOG.warn("Question name " + step.getQuestionName() + " does not appear in the WDK model");
-      return result;
+      return new RowResult<StepData>(step).setShouldWrite(modified);
     }
     
     // 6. Filter param format has changed a bit; update existing steps to comply
-    fixFilterParamValues(result, question, true, INVALID_STEP_COUNT_PARAMS);
+    modified |= fixFilterParamValues(step, question, true, INVALID_STEP_COUNT_PARAMS);
 
-    return result;
+    return new RowResult<StepData>(step).setShouldWrite(modified);
   }
 
   @Override
@@ -100,18 +100,17 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     // no statistics collected
   }
 
-  public static boolean updateParamsProperty(RowResult<StepData> result) {
-    JSONObject paramFilters = result.getRow().getParamFilters();
+  public static boolean updateParamsProperty(StepData step) {
+    JSONObject paramFilters = step.getParamFilters();
     if (paramFilters.has(Step.KEY_PARAMS)) return false;
     JSONObject newParamFilters = new JSONObject();
     newParamFilters.put(Step.KEY_PARAMS, paramFilters);
-    result.getRow().setParamFilters(newParamFilters);
-    result.setShouldWrite(true);
+    step.setParamFilters(newParamFilters);
     return true;
   }
 
-  public static boolean removeOldDisplayParamProps(RowResult<StepData> result) {
-    JSONObject paramFilters = result.getRow().getParamFilters();
+  public static boolean removeOldDisplayParamProps(StepData step) {
+    JSONObject paramFilters = step.getParamFilters();
     // at this point we expect the step to have params, filters, viewFilters, and that's it
     if (paramFilters.has(Step.KEY_PARAMS) &&
         paramFilters.has(Step.KEY_FILTERS) &&
@@ -125,13 +124,12 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     newParamFilters.put(Step.KEY_PARAMS, paramFilters.getJSONObject(Step.KEY_PARAMS));
     newParamFilters.put(Step.KEY_FILTERS, paramFilters.getJSONArray(Step.KEY_FILTERS));
     newParamFilters.put(Step.KEY_VIEW_FILTERS, paramFilters.getJSONArray(Step.KEY_VIEW_FILTERS));
-    result.getRow().setParamFilters(newParamFilters);
-    result.setShouldWrite(true);
+    step.setParamFilters(newParamFilters);
     return true;
   }
 
-  public static boolean updateFiltersProperty(RowResult<StepData> result, String filtersKey) {
-    JSONObject paramFilters = result.getRow().getParamFilters();
+  public static boolean updateFiltersProperty(StepData step, String filtersKey) {
+    JSONObject paramFilters = step.getParamFilters();
     try {
       JsonType json = new JsonType(paramFilters.get(filtersKey));
       if (json.getType().equals(ValueType.ARRAY)) {
@@ -144,29 +142,26 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
       // means filter value not present; add
     }
     paramFilters.put(filtersKey, new JSONArray());
-    result.setShouldWrite(true);
     return true;
   }
 
-  public static boolean removeUseBooleanFilterParam(RowResult<StepData> result) {
-    JSONObject params = result.getRow().getParamFilters().getJSONObject(Step.KEY_PARAMS);
-    if (!params.has(USE_BOOLEAN_FILTER_PARAM)) return false;
-    params.remove(USE_BOOLEAN_FILTER_PARAM);
-    result.setShouldWrite(true);
-    return true;
-  }
-
-  public static boolean fixFilterParamValues(RowResult<StepData> result, Question question,
-      boolean logInvalidSteps, AtomicInteger invalidStepCountByParams) throws WdkModelException {
-    StepData step = result.getRow();
+  public static boolean removeUseBooleanFilterParam(StepData step) {
     JSONObject params = step.getParamFilters().getJSONObject(Step.KEY_PARAMS);
+    if (!params.has(USE_BOOLEAN_FILTER_PARAM)) {
+      return false;
+    }
+    params.remove(USE_BOOLEAN_FILTER_PARAM);
+    return true;
+  }
+
+  public static boolean fixFilterParamValues(StepData step, Question question,
+      boolean logInvalidSteps, AtomicInteger invalidStepCountByParams) throws WdkModelException {
     boolean modifiedByThisMethod = false;
-
+    JSONObject params = step.getParamFilters().getJSONObject(Step.KEY_PARAMS);
     Map<String, Param> qParams = question.getParamMap();
-
-    Set<String> paramNames = params.keySet();
     boolean stepCountedAsInvalid = false;
     int invalidStepsByParam = invalidStepCountByParams.get();
+    Set<String> paramNames = params.keySet();
     for (String paramName : paramNames) {
       if (!qParams.containsKey(paramName)) {
         if (!stepCountedAsInvalid) {
@@ -175,7 +170,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
           stepCountedAsInvalid = true;
         }
         if (logInvalidSteps) {
-          LOG.warn("Step " + result.getRow().getStepId() +
+          LOG.warn("Step " + step.getStepId() +
               " contains param " + paramName + ", no longer required by question " +
               question.getFullName() + " (" + invalidStepsByParam +
               " invalid steps by param).");
@@ -189,6 +184,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
         continue;
       }
       // all filter params must be modified; brand new format
+      modifiedByThisMethod = true;
       String paramValue = params.getString(paramName);
       JSONObject filterParamValue = null;
       try {
@@ -223,8 +219,6 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
           if (alreadyCurrentFilterFormat(oldFilter)) {
             continue;
           }
-          result.setShouldWrite(true);
-          modifiedByThisMethod = true;
           JSONObject newFilter = new JSONObject();
           // Add "field" property- should always be a string now
           JsonType oldField = new JsonType(oldFilter.get("field"));
