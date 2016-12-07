@@ -1,0 +1,100 @@
+#!/usr/bin/perl
+
+use strict;
+
+my ($metaFile, $instanceSuffix) = @ARGV;
+
+my @components = (
+ ['plas', 'PlasmoDB'],
+ ['toxo', 'ToxoDB'],
+ ['cryp', 'CryptoDB'],
+ ['fung', 'FungiDB'],
+);
+
+my @c = map {join("\t", @$_)} @components;
+my $componentsString = join("\n", @c);
+
+usage() unless $metaFile;
+
+my $masterPrefix;
+if ($metaFile =~ /(\w\w\w\w)MetaConfig.yaml/) {
+  $masterPrefix = $1;
+  my $found;
+  foreach my $c (@components) { if ($c->[0] eq $masterPrefix) { $found = 1; last }}
+  die "\nmeta file '$metaFile' prefix '$masterPrefix' is not recognized by this program:\n\n$componentsString\n" unless $found;
+} else {
+  die "\nmeta file '$metaFile' must be of the form xxxxMetaConfig.yaml\n" unless $metaFile =~ /(\w\w\w\w)MetaConfig.yaml/;
+}
+
+open(F, $metaFile) || die "Can't open meta file '$metaFile'\n";
+my @metaFileLines = <F>;
+close(F);
+
+my %instanceSuffixes;
+if (!$instanceSuffix) {
+  open(S, "apiTnsSummary|") || die "Can't run apiTnsSummary";
+  while(<S>) {
+    $instanceSuffixes{$1} = 'inc' if (/(\w\w\w\w)-inc/);
+    $instanceSuffixes{$1} = 'rbld' if (/(\w\w\w\w)-rbld/);
+  }
+}
+
+my $projectLineIndex;
+my $appDbLineIndex;
+my $index = 0;
+foreach my $line (@metaFileLines) {
+  $projectLineIndex = $index if $line =~ /project\:/;
+  $appDbLineIndex = $index if $line =~ /appDb.instance\:/;
+  $index++;
+}
+
+die "Can't find 'project:' or 'appDb.instance:' lines in provided meta file\n" unless $projectLineIndex && $appDbLineIndex;
+
+foreach my $component (@components) {
+  my $prefix = $component->[0];
+  next if $prefix eq $masterPrefix;
+  my $project = $component->[1];
+  my $file = "${prefix}MetaConfig.yaml";
+  open(C, ">$file") || die "Can't open '$file' for output\n";
+  my $i = 0;
+  my $suffix = $instanceSuffix;
+  $suffix = "-$instanceSuffixes{$prefix}" unless $suffix;
+  die "Couldn't find a line for '$prefix' in apiTnsSummary\n" unless $suffix;
+  my $instance = "${prefix}$suffix";
+  foreach my $line (@metaFileLines) {
+    $line =~ s/project: \S+/project: $project/ if $i == $projectLineIndex;
+    $line =~ s/appDb.instance: \S+/appDb.instance: $instance/ if $i == $appDbLineIndex;
+    $i++;
+    print C $line;
+  }
+  close(C);
+}
+
+sub usage {
+
+  die "
+
+Generate a set of metaConfig.yaml files from a provided example meta file.  Each output file is for one component
+website, eg, ToxoDB, CryptoDB, etc.
+
+Usage: eupathCloneMetaFile meta_file [instance_suffix]
+
+Where:
+  meta_file:         the file to copy from.  Must be of the form xxxxMetaConfig.yaml, where xxxx is a known
+                     component prefix (see below).
+  instance_suffix:   optional.  If provided, use this suffix to construct the appDb.instance name.
+                     Eg, provide 029n to get instances like toxo029n, cryp029n, etc.   If not provided, use
+                     either -inc or -rbld, whichever is present in apiTnsSummary
+
+Output: a set of files in the current directory of the form xxxxMetaConfig.yaml, where xxxx is the component suffix.
+
+The output files are identical to the provided meta file, except these lines:
+ project: PlasmoDB
+ appDb.instance: plas-inc
+
+The components currently supported are the following (update the script file to change this):
+
+$componentsString
+
+";
+}
