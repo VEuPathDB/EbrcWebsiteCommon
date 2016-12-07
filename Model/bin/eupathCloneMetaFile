@@ -84,7 +84,7 @@ Where:
                      component prefix (see below).
   instance_suffix:   optional.  If provided, use this suffix to construct the appDb.instance name.
                      Eg, provide 029n to get instances like toxo029n, cryp029n, etc.   If not provided, use
-                     either -inc or -rbld, whichever is present in apiTnsSummary
+                     either -inc or -rbld, whichever is present in apiTnsSummary for this component
 
 Output: a set of files in the current directory of the form xxxxMetaConfig.yaml, where xxxx is the component suffix.
 
