@@ -184,7 +184,6 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
         continue;
       }
       // all filter params must be modified; brand new format
-      modifiedByThisMethod = true;
       String paramValue = params.getString(paramName);
       JSONObject filterParamValue = null;
       try {
@@ -209,6 +208,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
         filterParamValue.put("values", valuesArr);
         filterParamValue.put("ignored", new JSONArray());
         filterParamValue.put("filters", new JSONArray());
+        modifiedByThisMethod = true;
       }
       else {
         // value parses as JSON object, but may be a couple different formats; try to figure out which and fix
@@ -219,6 +219,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
           if (alreadyCurrentFilterFormat(oldFilter)) {
             continue;
           }
+          modifiedByThisMethod = true;
           JSONObject newFilter = new JSONObject();
           // Add "field" property- should always be a string now
           JsonType oldField = new JsonType(oldFilter.get("field"));
