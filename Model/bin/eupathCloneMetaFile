@@ -14,6 +14,7 @@ my @components = (
  ['micr', 'MicrosporidiaDB'],
  ['piro', 'PiroplasmaDB'],
  ['plas', 'PlasmoDB'],
+ ['schi', 'SchistoDB'],
  ['toxo', 'ToxoDB'],
  ['tryp', 'TriTrypDB'],
  ['tvag', 'TrichDB'],
