@@ -183,7 +183,7 @@ input.link, button.link, button.wdk-Link {
 
 /* Search boxes */
 textarea,
-input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=radio]):not([type=reset]) {
+input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=radio]):not([type=reset]):not([type=submit]) {
   border: 1px solid #888;
   background: #fafaf9;
 }
