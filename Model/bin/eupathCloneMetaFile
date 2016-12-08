@@ -5,10 +5,18 @@ use strict;
 my ($metaFile, $instanceSuffix) = @ARGV;
 
 my @components = (
+ ['ameb', 'AmoebaDB'],
+ ['cryp', 'CryptoDB'],
+ ['eupa', 'EuPathDB'],
+ ['fung', 'FungiDB'],
+ ['giar', 'GiardiaDB'],
+ ['host', 'HostDB'],
+ ['micr', 'MicrosporidiaDB'],
+ ['piro', 'PiroplasmaDB'],
  ['plas', 'PlasmoDB'],
  ['toxo', 'ToxoDB'],
- ['cryp', 'CryptoDB'],
- ['fung', 'FungiDB'],
+ ['tryp', 'TriTrypDB'],
+ ['tvag', 'TrichDB'],
 );
 
 my @c = map {join("\t", @$_)} @components;
