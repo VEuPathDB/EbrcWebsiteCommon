@@ -5,18 +5,10 @@ use strict;
 my ($metaFile, $instanceSuffix) = @ARGV;
 
 my @components = (
- ['ameb', 'AmoebaDB'],
- ['cryp', 'CryptoDB'],
- ['eupa', 'EuPathDB'],
- ['fung', 'FungiDB'],
- ['giar', 'GiardiaDB'],
- ['host', 'HostDB'],
- ['micr', 'MicrosporidiaDB'],
- ['piro', 'PiroplasmaDB'],
  ['plas', 'PlasmoDB'],
  ['toxo', 'ToxoDB'],
- ['tvag', 'TrichDB'],
- ['tryp', 'TriTrypDB'],
+ ['cryp', 'CryptoDB'],
+ ['fung', 'FungiDB'],
 );
 
 my @c = map {join("\t", @$_)} @components;
@@ -24,14 +16,15 @@ my $componentsString = join("\n", @c);
 
 usage() unless $metaFile;
 
+my $masterProject;
 my $masterPrefix;
-if ($metaFile =~ /(\w\w\w\w)MetaConfig.yaml/) {
-  $masterPrefix = $1;
+if ($metaFile =~ /(\w+)MetaConfig.yaml/) {
+  $masterProject = $1;
   my $found;
-  foreach my $c (@components) { if ($c->[0] eq $masterPrefix) { $found = 1; last }}
-  die "\nmeta file '$metaFile' prefix '$masterPrefix' is not known.  These are the known components:\n\n$componentsString\n" unless $found;
+  foreach my $c (@components) { if ($c->[1] eq $masterProject) { $found = 1; $masterPrefix = $c->[0]; last }}
+  die "\nmeta file '$metaFile' project '$masterProject' is not known.  These are the known components:\n\n$componentsString\n" unless $found;
 } else {
-  die "\nmeta file '$metaFile' must be of the form xxxxMetaConfig.yaml\n" unless $metaFile =~ /(\w\w\w\w)MetaConfig.yaml/;
+  die "\nmeta file '$metaFile' must be of the form xxxxxMetaConfig.yaml\n" unless $metaFile =~ /(\w+)MetaConfig.yaml/;
 }
 
 open(F, $metaFile) || die "Can't open meta file '$metaFile'\n";
@@ -61,7 +54,7 @@ foreach my $line (@metaFileLines) {
     my $instanceNm = $1;
     $appDbLineIndex = $index;
     my $expectedSuffix = $instanceSuffix;
-    $expectedSuffix = "-$instanceSuffixes{$masterPrefix}" unless $expectedSuffix;
+    $expectedSuffix = $instanceSuffixes{$masterPrefix} unless $expectedSuffix;
     die "Please set ${metaFile}'s appDb.instance to $masterPrefix$expectedSuffix\n" unless $instanceNm =~ /$expectedSuffix/;
   }
   $index++;
@@ -73,7 +66,7 @@ foreach my $component (@components) {
   my $prefix = $component->[0];
   next if $prefix eq $masterPrefix;
   my $project = $component->[1];
-  my $file = "${prefix}MetaConfig.yaml";
+  my $file = "${project}MetaConfig.yaml";
   open(C, ">$file") || die "Can't open '$file' for output\n";
   my $i = 0;
   my $suffix = $instanceSuffix;
@@ -99,16 +92,23 @@ website, eg, ToxoDB, CryptoDB, etc.
 Usage: eupathCloneMetaFile meta_file [instance_suffix]
 
 Where:
-  meta_file:         the file to copy from.  Must be of the form xxxxMetaConfig.yaml, where xxxx is a known
-                     component prefix (see below).
+  meta_file:         the file to copy from.  Must be of the form xxxxxMetaConfig.yaml, where xxxxx is a known
+                     component project name(see below).
   instance_suffix:   optional.  If provided, use this suffix to construct the appDb.instance name.
                      Eg, provide 029n to get instances like toxo029n, cryp029n, etc.   If not provided, use
                      either -inc or -rbld, whichever is present in apiTnsSummary for this component
 
+Example command lines:
+
+  eupathCloneMetaFile PlasmoDBMetaFile.yaml 029n
+
+  apiTnsSummary | eupathCloneMetaFile PlasmoDBMetaFile.yaml
+
+
 Input:  unless instance_suffix is provided, STDIN is a stream of lines that contain instance names like plas-inc.  The output of
         apiTnsSummary is the typical input.  the relevant instance names are discovered by the pattern /(\w\w\w\w)-(inc|rbld)/.
 
-Output: a set of files in the current directory of the form xxxxMetaConfig.yaml, where xxxx is the component suffix.
+Output: a set of files in the current directory of the form xxxxxMetaConfig.yaml, where xxxx is the project name.
 
 The output files are identical to the provided meta file, except these lines:
  project: PlasmoDB
