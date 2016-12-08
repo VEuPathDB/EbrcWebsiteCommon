@@ -32,10 +32,14 @@ close(F);
 
 my %instanceSuffixes;
 if (!$instanceSuffix) {
-  open(S, "apiTnsSummary|") || die "Can't run apiTnsSummary";
-  while(<S>) {
-    $instanceSuffixes{$1} = 'inc' if (/(\w\w\w\w)-inc/);
-    $instanceSuffixes{$1} = 'rbld' if (/(\w\w\w\w)-rbld/);
+  print STDERR "Reading instance info from STDIN...\n";
+  while(<STDIN>) {
+    if (/(\w\w\w\w)-(inc|rbld)/) {
+      my $prefix = $1;
+      my $suffix = $2;
+      die "Prefix '$prefix' is has both -inc and -rbld in STDIN.  Please remove one (eg, use grep -v).\n" if $instanceSuffixes{$prefix};
+      $instanceSuffixes{$prefix} = "-$suffix" ;
+    }
   }
 }
 close(S);
@@ -65,7 +69,7 @@ foreach my $component (@components) {
   open(C, ">$file") || die "Can't open '$file' for output\n";
   my $i = 0;
   my $suffix = $instanceSuffix;
-  $suffix = "-$instanceSuffixes{$prefix}" unless $suffix;
+  $suffix = $instanceSuffixes{$prefix} unless $suffix;
   die "Couldn't find a line for '$prefix' in apiTnsSummary\n" unless $suffix;
   my $instance = "${prefix}$suffix";
   foreach my $line (@metaFileLines) {
@@ -92,6 +96,9 @@ Where:
   instance_suffix:   optional.  If provided, use this suffix to construct the appDb.instance name.
                      Eg, provide 029n to get instances like toxo029n, cryp029n, etc.   If not provided, use
                      either -inc or -rbld, whichever is present in apiTnsSummary for this component
+
+Input:  unless instance_suffix is provided, STDIN is a stream of lines that contain instance names like plas-inc.  The output of
+        apiTnsSummary is the typical input.  the relevant instance names are discovered by the pattern /(\w\w\w\w)-(inc|rbld)/.
 
 Output: a set of files in the current directory of the form xxxxMetaConfig.yaml, where xxxx is the component suffix.
 
