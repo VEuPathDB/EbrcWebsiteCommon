@@ -21,7 +21,7 @@ if ($metaFile =~ /(\w\w\w\w)MetaConfig.yaml/) {
   $masterPrefix = $1;
   my $found;
   foreach my $c (@components) { if ($c->[0] eq $masterPrefix) { $found = 1; last }}
-  die "\nmeta file '$metaFile' prefix '$masterPrefix' is not recognized by this program:\n\n$componentsString\n" unless $found;
+  die "\nmeta file '$metaFile' prefix '$masterPrefix' is not known.  These are the known components:\n\n$componentsString\n" unless $found;
 } else {
   die "\nmeta file '$metaFile' must be of the form xxxxMetaConfig.yaml\n" unless $metaFile =~ /(\w\w\w\w)MetaConfig.yaml/;
 }
@@ -38,13 +38,20 @@ if (!$instanceSuffix) {
     $instanceSuffixes{$1} = 'rbld' if (/(\w\w\w\w)-rbld/);
   }
 }
+close(S);
 
 my $projectLineIndex;
 my $appDbLineIndex;
 my $index = 0;
 foreach my $line (@metaFileLines) {
   $projectLineIndex = $index if $line =~ /project\:/;
-  $appDbLineIndex = $index if $line =~ /appDb.instance\:/;
+  if ($line =~ /appDb.instance\:\s*(\S+)/) {
+    my $instanceNm = $1;
+    $appDbLineIndex = $index;
+    my $expectedSuffix = $instanceSuffix;
+    $expectedSuffix = "-$instanceSuffixes{$masterPrefix}" unless $expectedSuffix;
+    die "Please set ${metaFile}'s appDb.instance to $masterPrefix$expectedSuffix\n" unless $instanceNm =~ /$expectedSuffix/;
+  }
   $index++;
 }
 
