@@ -26,6 +26,22 @@ my @tests = (["users count", "select count(*) from $schema.users"],
 	     ["guest steps count", "select count(*) from $schema.steps st, $schema.users u 
                                              where st.user_id = u.user_id 
                                                and u.is_guest = 1"],
+       ["steps count 0: no params keyword in display_params","select project_id,count(*) 
+             from userlogins5.steps st, userlogins5.users u
+      	    where	st.user_id = u.user_id
+      	      and u.is_guest=0
+      	      and is_deleted != 1
+              and display_params not like '{\"params\":{%'
+  	        group by project_id
+            order by project_id"],
+       ["steps count 0: no filters keyword in display_params","select project_id,count(*) 
+             from userlogins5.steps st, userlogins5.users u
+      	    where	st.user_id = u.user_id
+      	      and u.is_guest=0
+      	      and is_deleted != 1
+              and display_params not like '%,\"filters\":[%'
+            group by project_id
+           	order by project_id"],
 	    );
 
 
@@ -46,7 +62,7 @@ my $foundError = 0;
 foreach my $test (@tests) {
   print STDOUT "\n-----\nRunning test: $test->[0]\n";
   my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
-  print STDOUT "Diff: $count\n";
+#  print STDOUT "Diff: $count\n";
 #  $foundError |= $count > $rowTolerance;
 }
 die "
@@ -55,22 +71,28 @@ One or more tests had more than a $rowTolerance row count difference\n\n" if $fo
 
 sub compareResults {
   my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
-
+  print "\nnorth: $northUserDbName\n";
   my $northCount = &getCount($northUserDbh, $sql);
-  print "\nnorth: $northUserDbName -- $northCount\n";
+  print "\n--south: $southUserDbName\n";
   my $southCount = &getCount($southUserDbh, $sql);
-  print "\nsouth: $southUserDbName -- $southCount\n";
   return abs($northCount - $southCount);
 }
 
 sub getCount {
   my ($dbh, $sql) = @_;
 
+  print STDOUT "\n$sql\n";
   my $stmt = $dbh->prepare($sql);
   $stmt->execute();
-  my ($count) = $stmt->fetchrow_array();
+ # my ($count) = $stmt->fetchrow_array();
+  my $ref;
+  while($ref = $stmt->fetchrow_arrayref) {
+    print STDOUT join (", ", @{$ref}), "\n";
+  }
+
   $stmt->finish();
-  return $count;
+ # return $count;
+  return 0;
 }
 
 sub getDbh {

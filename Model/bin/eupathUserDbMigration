@@ -111,7 +111,9 @@ $stepsSpec{cacheModel} =
 $stepsSpec{gus4} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{configFileTemplate}", !$REPLIC_STEP, ['projects', 'configFileTemplate'] ],
-   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+#   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['gus4', "gus4StepTableMigration '$args{projects}'" , !$REPLIC_STEP, [] ],
+   ['validateGus4', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname rm9972", $REPLIC_STEP, ['schema']],
   ];
 
 $stepsSpec{gus4Ortho} =
