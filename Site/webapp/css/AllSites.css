@@ -187,7 +187,8 @@ input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=
   border: 1px solid #888;
   background: #fafaf9;
 }
-textarea, input:not([class="wdk-RealTimeSearchBoxInput"]):not([class="wdk-Answer-filterInput"]) {
+textarea,
+input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=radio]):not([type=reset]):not([type=submit]):not([type=range]):not([class="wdk-RealTimeSearchBoxInput"]):not([class="wdk-Answer-filterInput"]) {
   padding: 4px;
 }
 
