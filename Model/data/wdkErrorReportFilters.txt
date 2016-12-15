@@ -1,10 +1,11 @@
 #filter	projects	comment
-SharedVQ.TelomereChromosomes	EuPathDB	No item returned by the query [SharedVQ.TelomereChromosomes] of FlatVocabParam [sharedParams.telomere_chromosomes].
+SharedVQ.TelomereChromosomes	EuPathDB	Redmine #24127
+PluginUserException
 The blast database doesn't exist: /var/www/Common/apiSiteFilesMirror/webServices//TrichDB/build-29/TvaginalisRG/blast/TvaginalisRGAnnotatedProteins	EuPathDB, TrichDB	
 BlastAlgorithm_invalid	EuPathDB, FungiDB	
 motif_organism=Trichomonas vaginalis G3	TrichDB	
 Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in record: OrfRecordClasses.OrfRecordClass		
-The attribute field [category] cannot be found		
+The attribute field [category] cannot be found		     	     fixed: jsp in datasets paged
 view "APIDBTUNING.SNPCHIPATTRIBUTES" has errors		
 matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass		
 is not in the form 'setName.elementName		
@@ -36,7 +37,7 @@ StepFactory.java:826		step can't be found
 Unclosed character class		should be user error (motif search bad regex)
 # service filters
 ORA-12541: TNS:no listener
-Attribute query && doesn't return any row
+Attribute query && doesn't return any row && /app/record
 ORA-12514: TNS:listener does not currently know of service
 java.io.StringReader.<init>(StringReader.java:50)
 Could not get uncached results from DB && table or view does not exist
