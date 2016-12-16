@@ -48,6 +48,11 @@ if ($project eq "OrthoMCL" || $project eq "MicrobiomeDB") {
 
 usage($configTemplateFiles) unless scalar(@ARGV) >= 4;
 
+my $projectConfigDir = "$ENV{GUS_HOME}/config/${project}";
+if (! -d $project) {
+  mkdir $projectConfigDir || die "Could not mkdir '$projectConfigDir'\n";
+}
+
 # define file to hold config template file data
 my $filename = "/tmp/templates.$$.tmp";
 
