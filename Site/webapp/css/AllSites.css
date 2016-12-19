@@ -183,12 +183,12 @@ input.link, button.link, button.wdk-Link {
 
 /* Search boxes */
 textarea,
-input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=radio]):not([type=reset]):not([type=submit]):not([type=range]) {
+input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]) {
   border: 1px solid #888;
   background: #fafaf9;
 }
 textarea,
-input[type]:not([type=button]):not([type=image]):not([type=checkbox]):not([type=radio]):not([type=reset]):not([type=submit]):not([type=range]):not([class="wdk-RealTimeSearchBoxInput"]):not([class="wdk-Answer-filterInput"]) {
+input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]):not([class~="wdk-RealTimeSearchBoxInput"]):not([class~="wdk-Answer-filterInput"]) {
   padding: 4px;
 }
 
