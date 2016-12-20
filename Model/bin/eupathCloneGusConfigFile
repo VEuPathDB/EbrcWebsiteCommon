@@ -30,27 +30,30 @@ foreach my $line (@masterFileLines) {
   $projectLineIndex = $index if $line =~ /^project=/;
 
   # dbiDsn=dbi:Oracle:plas-inc
-   $dbiLineIndex = $index if ($line =~ /^\s*dbiDsn\s*=\s*dbi:Oracle/);
+   $dbiLineIndex = $index if ($line =~ /^\s*dbiDsn\s*=/);
 
   # jdbcDsn=jdbc:oracle:oci:@plas-inc
-  $jdbcLineIndex = $index if ($line =~ /^\s*dbiDsn\s*=\s*dbi:Oracle/);
+  $jdbcLineIndex = $index if ($line =~ /^\s*jdbcDsn\s*=/);
 
   $index++;
 }
+print STDERR "$jdbcLineIndex\n";
 
 die "Can't find 'project:' or 'dbi' lines in example gus.config file\n" unless $projectLineIndex && $dbiLineIndex && $jdbcLineIndex;
 
 foreach my $project (@projects) {
   my $prefix = $project->[0];
   my $project = $project->[1];
-  my $file = "$ENV{GUS_HOME}/${project}/gus.config";
+  my $dir = "$ENV{GUS_HOME}/config/${project}";
+  mkdir $dir unless -d $dir;
+  my $file = "$dir/gus.config";
   open(C, ">$file") || die "Can't open '$file' for output\n";
   my $i = 0;
   my $instance = "${prefix}$instanceSuffix";
   foreach my $line (@masterFileLines) {
     $line =~ s/^\s*project\s*=\s*\S+/project=$project/ if $i == $projectLineIndex;
     $line =~ s/^\s*dbiDsn\s*=\s*dbi:Oracle:\S+/dbiDsn=dbi:Oracle:$instance/ if $i == $dbiLineIndex;
-    $line =~ s/^\s*jdbcDsn\s*=\s*jdbc:Oracle:oci:\S+/jdbcDsn=jdbc:Oracle:oci:$instance/ if $i == $jdbcLineIndex;
+    $line =~ s/^\s*jdbcDsn\s*=\s*jdbc:oracle:oci:\S+/jdbcDsn=jdbc:oracle:oci:\@$instance/ if $i == $jdbcLineIndex;
     $i++;
     print C $line;
   }
