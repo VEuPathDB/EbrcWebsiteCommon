@@ -25,6 +25,7 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
     Map<String, Object> attributes = new HashMap<>();
 
     // split template into 3 sections, header, middle, footer
+    step.setAnswerValuePaging(1, -1);
     String message = step.getAnswerValue().getResultMessage();
     String[] pieces = message.split(MACRO_SUMMARY, 2);
     attributes.put(ATTR_HEADER, pieces[0]);
