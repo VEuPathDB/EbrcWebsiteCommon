@@ -312,6 +312,7 @@ div.innertube #record-toolbox li {
   padding-bottom: 20px;
   padding-top: 6px;
   padding-left: 15px;  /* 19px; */
+  line-height: 1.5em;
 }
 
 #bubbles .info ul, #bubbles .tools ul  {
@@ -323,9 +324,7 @@ div.innertube #record-toolbox li {
   margin-top: 1em;
 }
 
-#bubbles .info li, #bubbles .tools li {
-  line-height: 1.5em;
-  /* list-style-image: url(../images/cir_bullet.png);*/
+#bubbles .tools li {
   list-style-type: none;
   margin-left: 7px;
 }
@@ -333,14 +332,19 @@ div.innertube #record-toolbox li {
 #bubbles .info li ul, #bubbles .tools li ul  {
   margin: 0 0 4px 0;
 }
+
 #bubbles .info li ul li {
   /* border-bottom:1px solid lightgrey; separation lines might not be needed */
-  list-style-type: disc;
+  list-style: disc;
   color: #aaa;
-  margin-left: 20px;
   line-height: 1.1em;
   padding:1px;
+  margin-left: 30px;
 }
+#bubbles .info li ul li .wdk-CheckboxTreeNodeContent {
+  margin-left: 0;
+}
+
 #bubbles .tools li ul li {
   line-height: 1.1em;
   padding:1px;
