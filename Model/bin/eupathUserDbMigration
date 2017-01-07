@@ -76,6 +76,8 @@ my $REPLIC_STEP = 1;
 
 my %stepsSpec;
 
+
+
 $stepsSpec{middleOfRelease} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
@@ -112,7 +114,7 @@ $stepsSpec{gus4} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
 #   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['gus4', "gus4StepTableMigration '$args{projects}'" , !$REPLIC_STEP, [] ],
-   ['validateGus4', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname rm9972", $REPLIC_STEP, ['schema']],
+   ['validateGus4', "fgpJava org.gusdb.wdk.model.WdkSqlScriptRunner $args{primaryModel} USER $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/gus4migrationValidatin.sql", !$REPLIC_STEP, ['primaryModel']],
   ];
 
 $stepsSpec{gus4Ortho} =
@@ -120,6 +122,7 @@ $stepsSpec{gus4Ortho} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
    ['gus4', "eupathGus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
   ];
+
 
 
 $stepsSpec{expand} =
@@ -133,6 +136,8 @@ $stepsSpec{replValidation} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
    ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname apicommn", $REPLIC_STEP, ['schema']],
   ];
+
+
 
 $stepsSpec{cleanup} =
   [
@@ -152,7 +157,10 @@ $stepsSpec{release} =
    @{$stepsSpec{cleanup}},
    @{$stepsSpec{middleOfRelease}},
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
+   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
+
+
 
 $stepsSpec{validate} =
   [
