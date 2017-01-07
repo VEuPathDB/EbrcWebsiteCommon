@@ -77,7 +77,19 @@ my $REPLIC_STEP = 1;
 my %stepsSpec;
 
 
+###############################################################################################################
+############  Main pipelines                                                                   ################
+############    these are in the rough order they will be used in the typical release scenario ################
+###############################################################################################################
 
+# Used by DD team relatively early in the cycle, to validate the SQL in the wdk model.
+$stepsSpec{cacheModel} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
+  ];
+
+# Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
 $stepsSpec{middleOfRelease} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
@@ -88,26 +100,33 @@ $stepsSpec{middleOfRelease} =
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
-$stepsSpec{mappingQuestOrgs} =
+# Can be called in advance of release, to make progress on this big job. 
+$stepsSpec{cleanup} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
-   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
-   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
+   ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
+   ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
+   ['validateReplAfterGuests2', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
+   ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
+   ['sleepAfterRemoveBroken', "sleep 10" , $REPLIC_STEP, [] ], #wait for replication to catch up
+   ['validateReplAfterBrokenRemoved', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicommdevs  -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
   ];
 
 
-
-$stepsSpec{fixBaskets} =
+# Called at release.  Hopefully, the cleanup will run quickly, because it was already done once earlier in the cycle
+$stepsSpec{release} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   @{$stepsSpec{cleanup}},
+   @{$stepsSpec{middleOfRelease}},
+   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
    ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
-$stepsSpec{cacheModel} =
-  [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
-  ];
+
+#####################################################################################################################
+##########   Special case pipelines
+#####################################################################################################################
 
 $stepsSpec{gus4} =
   [
@@ -124,6 +143,26 @@ $stepsSpec{gus4Ortho} =
   ];
 
 
+######################################################################################################################
+##########  Redundant individual pipelines, possibly used for convenience sometimes
+######################################################################################################################
+
+
+$stepsSpec{mappingQuestOrgs} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+  ];
+
+
+
+$stepsSpec{fixBaskets} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+  ];
+
 
 $stepsSpec{expand} =
   [
@@ -136,30 +175,6 @@ $stepsSpec{replValidation} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
    ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname apicommn", $REPLIC_STEP, ['schema']],
   ];
-
-
-
-$stepsSpec{cleanup} =
-  [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
-   ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
-   ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
-   ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterGuests2', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
-   ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
-   ['sleepAfterRemoveBroken', "sleep 10" , $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterBrokenRemoved', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicommdevs  -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
-  ];
-
-
-$stepsSpec{release} =
-  [
-   @{$stepsSpec{cleanup}},
-   @{$stepsSpec{middleOfRelease}},
-   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
-   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
-  ];
-
 
 
 $stepsSpec{validate} =
