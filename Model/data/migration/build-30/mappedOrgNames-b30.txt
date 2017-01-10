@@ -9,6 +9,6 @@ Cryptococcus gattii R265=Cryptococcus deuterogattii R265
 Vavraia culicis floridensis=Vavraia culicis subsp. floridensis
 Sarcocystis neurona SN1=Sarcocystis neurona SO SN1
 Trypanosoma brucei TREU927=Trypanosoma brucei brucei TREU927
-Ajellomyces capsulatus=Histoplasma capsulatus
+Ajellomyces capsulatus=Histoplasma capsulatum
 Botryotinia fuckeliana=Botrytris cinerea
 Neosartorya fischeri=Aspergillus fischeri
