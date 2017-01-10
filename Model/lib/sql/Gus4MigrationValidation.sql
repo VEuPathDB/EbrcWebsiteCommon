@@ -3,9 +3,10 @@
 --   If migration script is successful, all counts below should be zero
 
 -- 1. No steps with these questions have GeneRecordClass in display_params
-select 'Number with GeneRecordClass in display_params' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name in (
+select 'Number with GeneRecordClass in display_params' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name in (
     'GeneQuestions.GenesBySimilarity',
     'GenomicSequenceQuestions.SequencesBySimilarity',
     'InternalQuestions.GeneRecordClasses_GeneRecordClassBySnapshotBasket',
@@ -16,9 +17,10 @@ select count(*) from userlogins5.steps
   and display_params like '%GeneRecordClass%';
 
 -- 2. No steps with these questions have IsolateRecordClass in display_params
-select 'Number with IsolateRecordClass in display_params' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name in (
+select 'Number with IsolateRecordClass in display_params' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name in (
     'IsolateQuestions.IsolatesBySimilarity',
     'InternalQuestions.IsolateRecordClasses_IsolateRecordClassBySnapshotBasket',
     'InternalQuestions.boolean_question_IsolateRecordClasses_IsolateRecordClass',
@@ -27,18 +29,20 @@ select count(*) from userlogins5.steps
   and display_params like '%IsolateRecordClass%';
 
 -- 3. These question names should be purged
-select 'Number with old internal questions' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name in (
+select 'Number with old internal questions' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name in (
     'InternalQuestions.boolean_question_GeneRecordClasses_GeneRecordClass',
     'InternalQuestions.GeneRecordClasses_GeneRecordClassBySnapshotBasket',
     'InternalQuestions.boolean_question_IsolateRecordClasses_IsolateRecordClass',
-    'InternalQuestions.PopsetRecordClasses_PopsetRecordClassBySnapshotBasket' );
+    'InternalQuestions.IsolateRecordClasses_IsolateRecordClassBySnapshotBasket' );
 
 -- 4. Question names in question mapping file should be purged
-select 'Number with old questions from mapping file' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name in (
+select 'Number with old questions from mapping file' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name in (
 'InternalQuestions.boolean_question_GeneRecordClasses_GeneRecordClass',
 'InternalQuestions.GeneRecordClasses_GeneRecordClassBySnapshotBasket',
 'InternalQuestions.boolean_question_IsolateRecordClasses_IsolateRecordClass',
@@ -94,45 +98,52 @@ select count(*) from userlogins5.steps
 'GeneQuestions.GenesBySpliceSitestbruTREU927_Nilsson_Spliced_Leader_rnaSeqSplicedLeaderAndPolyASites_RSRC' );
 
 -- 5. All display_params should have params, filters, viewFilters
-select 'Number without params or without filters or without viewFilters' as op from dual;
-select count(*) from userlogins5.steps
-  where display_params not like '%"params":%'
-  or display_params not like '%"filters":%'
-  or display_params not like '%"viewFilters":%';
+select 'Number without params or without filters or without viewFilters' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and (display_params not like '%"params":%'
+   or display_params not like '%"filters":%'
+   or display_params not like '%"viewFilters":%');
 
 -- 6. use_boolean_filter should not appear in display_params
-select 'Number with use_boolean_filter param' as op from dual;
-select count(*) from userlogins5.steps
-  where display_params like '%use_boolean_filter%';
+select 'Number with use_boolean_filter param' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and display_params like '%use_boolean_filter%';
 
 -- 7. (maybe?) All transcript question steps should have display_params with
 --    either "matched_transcript_filter_array" or "gene_boolean_filter_array"
-select 'Number of tx steps without one of the always-on filters' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name like '%GeneQuestions%'
+select 'Number of tx steps without one of the always-on filters' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name like '%GeneQuestions%'
   and display_params not like '%matched_transcript_filter_array%'
   and display_params not like '%gene_boolean_filter_array%';
 
 -- 8. Remove "matched_transcript_filter_array" from non-transcript steps
-select 'Number of non-tx steps with matched tx filter' as op from dual;
-select count(*) from userlogins5.steps
-  where question_name not like '%GeneQuestions%'
+select 'Number of non-tx steps with matched tx filter' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and question_name not like '%GeneQuestions%'
   and display_params like '%matched_transcript_filter_array%';
 
 -- 9. Look for bad orgs in display_params
-select 'Number with old orgs from mapping file' from dual;
-select count(*) from userlogins5.steps
-  where display_params like '%Phytophthora cinnamomi var. cinnamomi%'
-  or display_params like '%Phytophthora ramorum%'
-  or display_params like '%Phytophthora sojae%'
-  or display_params like '%Ajellomyces capsulatus G186AR%'
-  or display_params like '%Ajellomyces capsulatus NAm1%'
-  or display_params like '%Botryotinia fuckeliana B05.10%'
-  or display_params like '%Neosartorya fischeri NRRL 181%'
-  or display_params like '%Cryptococcus gattii R265%'
-  or display_params like '%Vavraia culicis floridensis%'
-  or display_params like '%Sarcocystis neurona SN1%'
-  or display_params like '%Trypanosoma brucei TREU927%'
-  or display_params like '%Ajellomyces capsulatus%'
-  or display_params like '%Botryotinia fuckeliana%'
-  or display_params like '%Neosartorya fischeri%';
+select 'Number with old orgs from mapping file' as test_name from dual;
+select count(*) from userlogins5.steps st, userlogins5.users u
+  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and (
+    display_params like '%Phytophthora cinnamomi var. cinnamomi%'
+    or display_params like '%Phytophthora ramorum%'
+    or display_params like '%Phytophthora sojae%'
+    or display_params like '%Ajellomyces capsulatus G186AR%'
+    or display_params like '%Ajellomyces capsulatus NAm1%'
+    or display_params like '%Botryotinia fuckeliana B05.10%'
+    or display_params like '%Neosartorya fischeri NRRL 181%'
+    or display_params like '%Cryptococcus gattii R265%'
+    or display_params like '%Vavraia culicis floridensis%'
+    or display_params like '%Sarcocystis neurona SN1%'
+    or display_params like '%Trypanosoma brucei TREU927%'
+    or display_params like '%Ajellomyces capsulatus%'
+    or display_params like '%Botryotinia fuckeliana%'
+    or display_params like '%Neosartorya fischeri%'
+    or display_params like '%Cryptococcus gattii%' );
