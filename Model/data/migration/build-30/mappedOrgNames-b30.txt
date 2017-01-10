@@ -12,3 +12,4 @@ Trypanosoma brucei TREU927=Trypanosoma brucei brucei TREU927
 Ajellomyces capsulatus=Histoplasma capsulatum
 Botryotinia fuckeliana=Botrytris cinerea
 Neosartorya fischeri=Aspergillus fischeri
+Cryptococcus gattii=Cryptococcus deuterogattii
