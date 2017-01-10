@@ -55,7 +55,7 @@
       if (errors.length > 0) {
         if (preventOnValidationError) event.preventDefault();
         $messageDiv.show(400, function() {
-          errors[0].param.$el.qtip('show');
+          errors[0].param.$el.parent().qtip('show');
         })
       }
       else {
