@@ -32,7 +32,7 @@ my @stepSpecificArgs =
  'schema=s',
  'keepUserDBCache!',
  'skipParams!',
- 'metaFileTemplate=s',
+ 'metaFileNameTemplate=s',
 );
 
 my @argv = @ARGV; # save before emptied by getoptions
@@ -85,14 +85,14 @@ my %stepsSpec;
 # Used by DD team relatively early in the cycle, to validate the SQL in the wdk model.
 $stepsSpec{cacheModel} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
 $stepsSpec{middleOfRelease} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
@@ -103,7 +103,7 @@ $stepsSpec{middleOfRelease} =
 # Can be called in advance of release, to make progress on this big job. 
 $stepsSpec{cleanup} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
    ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
@@ -130,7 +130,7 @@ $stepsSpec{release} =
 
 $stepsSpec{gus4} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
 #   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['gus4', "gus4StepTableMigration '$args{projects}'" , !$REPLIC_STEP, [] ],
    ['validateGus4', "fgpJava org.gusdb.wdk.model.WdkSqlScriptRunner $args{primaryModel} USER $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/gus4migrationValidation.sql", !$REPLIC_STEP, ['primaryModel']],
@@ -138,7 +138,7 @@ $stepsSpec{gus4} =
 
 $stepsSpec{gus4Ortho} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['gus4', "eupathGus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
@@ -150,7 +150,7 @@ $stepsSpec{gus4Ortho} =
 
 $stepsSpec{mappingQuestOrgs} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
   ];
@@ -159,20 +159,20 @@ $stepsSpec{mappingQuestOrgs} =
 
 $stepsSpec{fixBaskets} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
 
 $stepsSpec{expand} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
 $stepsSpec{replValidation} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileTemplate}", !$REPLIC_STEP, ['projects', 'metaFileTemplate'] ],
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname apicommn", $REPLIC_STEP, ['schema']],
   ];
 
