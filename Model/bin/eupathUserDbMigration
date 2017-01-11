@@ -95,32 +95,37 @@ $stepsSpec{middleOfRelease} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['validateReplOrganism', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
+
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['validateReplQuestion', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
+
    ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+   ['validateReplExpand', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
+
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
-# Can be called in advance of release, to make progress on this big job. 
+# Is not called as part of release.  Can be done anytime during the cycle. 
 $stepsSpec{cleanup} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
-   ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
-   ['sleepAfterRemoveGuests', "sleep 10", $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterGuests2', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname rm15873 -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
+   ['validateReplGuests', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
-   ['sleepAfterRemoveBroken', "sleep 10" , $REPLIC_STEP, [] ], #wait for replication to catch up
-   ['validateReplAfterBrokenRemoved', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicommdevs  -northUserDbname apicommdevn", $REPLIC_STEP, ['schema']],
+   ['validateReplBroken', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
   ];
 
 
-# Called at release.  Hopefully, the cleanup will run quickly, because it was already done once earlier in the cycle
+# Called at release.  Doesn't need cleanup, because cleanup is not needed at release time.  It can be done at any time.
 $stepsSpec{release} =
   [
-   @{$stepsSpec{cleanup}},
    @{$stepsSpec{middleOfRelease}},
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
+   ['validateReplValSteps', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
+
    ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+   ['validateReplBasket', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
   ];
 
 
@@ -173,7 +178,7 @@ $stepsSpec{expand} =
 $stepsSpec{replValidation} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
-   ['validateReplAfterGuests1', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -southUserDbname apicomms -northUserDbname apicommn", $REPLIC_STEP, ['schema']],
+   ['validateRepl', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
   ];
 
 

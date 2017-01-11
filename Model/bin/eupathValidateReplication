@@ -12,25 +12,35 @@ my ($schema, $primaryModel, $rowTolerance, $northUserDbName, $southUserDbName);
 &GetOptions('schema=s' => \$schema,
             'primaryModel=s' => \$primaryModel,
             'rowTolerance=s' => \$rowTolerance,
-	    'northUserDbName=s' => \$northUserDbName,
-	    'southUserDbName=s' => \$southUserDbName,
+	    'sleep=s' => \$sleep,
 	   );
 
-usage() unless ($schema && $primaryModel && $rowTolerance && $northUserDbName && $southUserDbName);
+usage() unless ($schema && $primaryModel && $rowTolerance);
 
 
 my @tests = (
        ["users count", "select count(*) from $schema.users"],
        ["steps count", "select count(*) from $schema.steps"],
-       ["guests count", "select count(*) from $schema.users 
-                           where is_guest = 1"],
-       ["guest steps count", "select count(*) from $schema.steps st, $schema.users u 
-                                where st.user_id = u.user_id 
-                                and u.is_guest = 1"]
-);
+	     ["guests count", "select count(*) from $schema.users where is_guest = 1"],
+	     ["guest steps count", "select count(*) from $schema.steps st, $schema.users u
+                                             where st.user_id = u.user_id
+                                               and u.is_guest = 1"],
+	    );
 
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+my $northUserDbName;
+my $southUserDbName;
+if ($dsn[2] =~ /(.*)s$/) {
+  $southUserDbName = $dsn[2];
+  $northUserDbName ="${1}n";
+} elsif ($dsn[2] =~ /(.*)n$/) {
+  $northUserDbName = $dsn[2];
+  $southUserDbName ="${1}s";
+} else {
+  die "The model conig has userDb '$dsn[2]'.  It does not end in either n or s.\n";
+}
+
 $dsn[2] = $northUserDbName;
 my $northUserDbiDsn = join(':', @dsn);
 $dsn[2] = $southUserDbName;
@@ -39,6 +49,8 @@ my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getLogin(), $modelCon
 my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 
 print STDOUT "\n";
+
+sleep($sleep);
 
 my $foundError = 0;
 foreach my $test (@tests) {
@@ -90,18 +102,17 @@ sub getDbh {
 
 sub usage {
   die "
-Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB specified by the provided southUserDbiDsn.  Both user databases must share a login and password found in model-config.xml.
+Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB that has the same name, but is on the other campus.  Both user databases must share a login and password found in model-config.xml.
 
 The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathValidationReplication
 
-Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --northUserDbName db_name --southUserDbName db_name
+Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --sleep sleep
 
 Where:
   schema: the schema in which to find the tables to test.
   primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
   rowTolerance: the number of rows of difference to tolerate between any two compared tables.
-  northUserDbName:  the name to use in the connect string, eg, apicommn
-  southUserDbName:  the name to use in the connect string, eg, apicomms
+  sleep:  the amount to sleep before running the tests (to give replication time to catch up).
 
 ";
 }
