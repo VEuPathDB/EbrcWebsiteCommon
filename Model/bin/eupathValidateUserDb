@@ -8,40 +8,71 @@ use WDK::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
 
-my ($schema, $primaryModel, $rowTolerance, $northUserDbName, $southUserDbName);
+my ($schema, $primaryModel);
 &GetOptions('schema=s' => \$schema,
-            'primaryModel=s' => \$primaryModel,
-            'sqlFile=s' => \$sqlFile,
+            'primaryModel=s' => \$primaryModel
 	   );
 
-usage() unless ($schema && $primaryModel && $sqlFile);
-
-my @tests = parseSqlFile($sqlFile);
+usage() unless ($primaryModel && $sqlFile);
 
 
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
 
+my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{schema});
+
 print STDOUT "\n";
 
 my $foundError = 0;
+my @passedTests;
+my %failedTests;
 foreach my $test (@tests) {
-  print STDOUT "\n-----\nRunning test: $test->[0]\n";
-  my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
-#  print STDOUT "Diff: $count\n";
-#  $foundError |= $count > $rowTolerance;
+  print STDOUT "\n-----\nRunning test: $test->{name}\n";
+  my $count = getCount($userDbh, $test->{sql});
+  if ($count) {
+    $failedTests{$test->{name}} = $count;
+  } else {
+    push(@passedTests, $test->{name});
+  }
 }
-die "
-One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
 
+print "\nPassed Tests\n";
+foreach my $t (@passedTests) {
+  print "  $t\n";
+}
 
-sub compareResults {
-  my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
-  print "\nnorth: $northUserDbName\n";
-  my $northCount = &getCount($northUserDbh, $sql);
-  print "\n--south: $southUserDbName\n";
-  my $southCount = &getCount($southUserDbh, $sql);
-  return abs($northCount - $southCount);
+print "\nFailed Tests\n";
+foreach my $t (keys(%passedTests)) {
+  print "  $t: $passedTests{$t}\n";
+}
+
+exit(scalar(%failedTests));	# count of failed tests
+
+sub parseSqlFile {
+  my ($sqlFile, $schema) = @_;
+
+  open(F, $sqlFile) || die "Can't open file '$sqlFile'\n";
+  my @tests;
+  my @currentLines;
+  my $currentTest;
+  while (<F>) {
+    chomp;
+    next if (/^\s*$/);	# skip blank line
+    if (/^;$/) {
+      my $sql = join("\n", @currentLines);
+      if (!$currentTest->{name}) {
+	die "SQL is expected to be test_name\n$sql\n" unless $sql =~ /\'(.*)\'.*test_name/;
+	$currentTest->{name} = $1;
+      } else {
+	die "SQL is expected to mention schema name $schema\n$sql\n" unless $sql =~ /$schema/;
+	$currentTest->{test} = $sql;
+	push(@tests, $currentTest);
+      }
+    } else {
+      push(@currentLines, $_);
+    }
+  }
+  return $currentTest;
 }
 
 sub getCount {
@@ -50,15 +81,9 @@ sub getCount {
   print STDOUT "\n$sql\n";
   my $stmt = $dbh->prepare($sql);
   $stmt->execute();
- # my ($count) = $stmt->fetchrow_array();
-  my $ref;
-  while($ref = $stmt->fetchrow_arrayref) {
-    print STDOUT join (", ", @{$ref}), "\n";
-  }
-
+  my ($count) = $stmt->fetchrow_array();
   $stmt->finish();
- # return $count;
-  return 0;
+  return $count;
 }
 
 sub getDbh {
@@ -74,18 +99,42 @@ sub getDbh {
 
 sub usage {
   die "
-Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB specified by the provided southUserDbiDsn.  Both user databases must share a login and password found in model-config.xml.
+Validate updates to the user DB.  Runs a set of SQL tests, each of which return a count.  A non-zero count indicates an invalid result.
 
-The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathValidationReplication
+Prints a report about all the tests that are run.
 
-Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --northUserDbName db_name --southUserDbName db_name
+Usage: eupathValidateUserDb --schema schema --primaryModel model --sqlFile sql_file
 
 Where:
   schema: the schema in which to find the tables to test.
-  primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
-  rowTolerance: the number of rows of difference to tolerate between any two compared tables.
-  northUserDbName:  the name to use in the connect string, eg, apicommn
-  southUserDbName:  the name to use in the connect string, eg, apicomms
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has user DB connect info.
+  sqlFile: a file of sql tests (see below).
+
+Required format of sqlFile:
+ - a series of sql statements, *not* terminated by semi-colon
+ - the SQLs are delimited by a line with a single character, a semi-colon
+ - the SQLs alternate between
+    - an sql that provides a name for the test.  it *must* include the string test_name
+    - an sql that performs the test.  it *must* include the name of the current userdb schema (eg, userlogins5)
+ - blank lines are ignored
+ - this format means that the sql file can be run as a pure sql script, if desired.
+
+Example sqlFile:
+
+select 'user basket has current IDs' as test_name from dual
+;
+select count(*)
+from userlogins5.basket
+where la de dah
+;
+
+select 'user steps are happy' as test_name from dual
+;
+select count(*)
+from userlogins5.steps
+where la de dah
+;
+
 
 ";
 }
