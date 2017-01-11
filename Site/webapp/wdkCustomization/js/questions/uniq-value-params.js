@@ -22,40 +22,47 @@
       // clear previous valdity messages
       paramNames.forEach(function(name) {
         $form.find(makeParamSelector(name)).toArray().forEach(function(el) {
-          $(el).parent().qtip('destroy').find('.eupathdb__invalid').remove();
+          $(el).closest('.param')
+            .qtip('destroy')
+            .css({
+              display: '',
+              boxShadow: ''
+            });
         });
       });
 
       errors.forEach(function(error) {
         error.param.$el
-          .parent()
+          .closest('.param')
           .qtip({
             content: {
               text: '<div style="color: darkred;">' + error.message + '</div>'
             },
             position: {
-              my: 'top center',
-              at: 'bottom center'
+              my: 'left center',
+              at: 'right center'
             },
             style: {
               classes: 'qtip-bootstrap'
+            },
+            show: {
+              solo: true
             }
           })
-          .not(':has(.eupathdb__invalid)')
-          .prepend($('<div class="eupathdb__invalid"/>').css({
-            'box-shadow': '0 0 4px 1px red',
-            width: error.param.$el.width(),
-            height: error.param.$el.height(),
-            'border-radius': Math.floor(error.param.$el.width() / 2),
-            position: 'absolute',
+          .css({
+            boxShadow: '0 0 4px 1px red',
             display: 'inline-block'
-          }))
+          })
       });
 
       if (errors.length > 0) {
         if (preventOnValidationError) event.preventDefault();
+
         $messageDiv.show(400, function() {
-          if (preventOnValidationError) errors[0].param.$el.parent().qtip('show');
+          if (preventOnValidationError) {
+            this.scrollIntoView();
+            errors[0].param.$el.closest('.param').qtip('show');
+          }
         })
       }
       else {
@@ -72,7 +79,7 @@
   function makeParamRecords(paramNames, $form) {
     return paramNames.map(function(name) {
       var $el = $form.find(makeParamSelector(name, true));
-      var displayName = $el.closest('.param-item').find('>label').text().trim();
+      var displayName = $el.closest('.param').attr('prompt');
       return {
         name: name,
         displayName: displayName,
@@ -84,7 +91,7 @@
   function makeErrorRecords(params) {
     return params.map(function(param) {
       var duplicates = params.filter(function(otherParam) {
-        return param.name !== otherParam.name && param.$el.val() === otherParam.$el.val();
+        return param.name !== otherParam.name && getParamValue(param) === getParamValue(otherParam);
       });
       return {
         param: param,
@@ -95,10 +102,16 @@
     })
   }
 
+  function getParamValue(param) {
+    return _(param.$el)
+      .map(_.property('value'))
+      .join();
+  }
+
   function formatCustomValidityMessage(duplicateParams) {
-    var otherParams = duplicateParams.map(function(param) {
-      return param.displayName;
-    }).join(', ')
+    var otherParams = duplicateParams
+      .map(_.property('displayName'))
+      .join(', ')
     return otherParams ? 'This value must be different from ' + otherParams : '';
   }
 
