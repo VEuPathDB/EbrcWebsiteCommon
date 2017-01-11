@@ -1,0 +1,91 @@
+#!/usr/bin/perl
+
+use strict;
+use lib "$ENV{GUS_HOME}/lib/perl";
+
+use WDK::Model::ModelConfig;
+use WDK::Model::DbUtils qw(jdbc2oracleDbi);
+use Getopt::Long;
+use DBI;
+
+my ($schema, $primaryModel, $rowTolerance, $northUserDbName, $southUserDbName);
+&GetOptions('schema=s' => \$schema,
+            'primaryModel=s' => \$primaryModel,
+            'sqlFile=s' => \$sqlFile,
+	   );
+
+usage() unless ($schema && $primaryModel && $sqlFile);
+
+my @tests = parseSqlFile($sqlFile);
+
+
+my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
+my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
+
+print STDOUT "\n";
+
+my $foundError = 0;
+foreach my $test (@tests) {
+  print STDOUT "\n-----\nRunning test: $test->[0]\n";
+  my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
+#  print STDOUT "Diff: $count\n";
+#  $foundError |= $count > $rowTolerance;
+}
+die "
+One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
+
+
+sub compareResults {
+  my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
+  print "\nnorth: $northUserDbName\n";
+  my $northCount = &getCount($northUserDbh, $sql);
+  print "\n--south: $southUserDbName\n";
+  my $southCount = &getCount($southUserDbh, $sql);
+  return abs($northCount - $southCount);
+}
+
+sub getCount {
+  my ($dbh, $sql) = @_;
+
+  print STDOUT "\n$sql\n";
+  my $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+ # my ($count) = $stmt->fetchrow_array();
+  my $ref;
+  while($ref = $stmt->fetchrow_arrayref) {
+    print STDOUT join (", ", @{$ref}), "\n";
+  }
+
+  $stmt->finish();
+ # return $count;
+  return 0;
+}
+
+sub getDbh {
+  my ($dsn, $login, $password) = @_;
+  print STDOUT "Connecting to $dsn\n";
+  my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
+
+  # solve oracle clob problem; not that we're liable to need it...
+  $dbh->{LongTruncOk} = 0;
+  $dbh->{LongReadLen} = 10000000;
+  return $dbh;
+}
+
+sub usage {
+  die "
+Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB specified by the provided southUserDbiDsn.  Both user databases must share a login and password found in model-config.xml.
+
+The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathValidationReplication
+
+Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --northUserDbName db_name --southUserDbName db_name
+
+Where:
+  schema: the schema in which to find the tables to test.
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
+  rowTolerance: the number of rows of difference to tolerate between any two compared tables.
+  northUserDbName:  the name to use in the connect string, eg, apicommn
+  southUserDbName:  the name to use in the connect string, eg, apicomms
+
+";
+}
