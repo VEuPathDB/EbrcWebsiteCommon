@@ -8,8 +8,8 @@ use WDK::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
 
-my ($schema, $primaryModel);
-&GetOptions('schema=s' => \$schema,
+my ($sqlFile, $primaryModel);
+&GetOptions('sqlFile=s' => \$sqlFile,
             'primaryModel=s' => \$primaryModel
 	   );
 
@@ -19,15 +19,16 @@ usage() unless ($primaryModel && $sqlFile);
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
 
-my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{schema});
-
-print STDOUT "\n";
+my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{userSchema});
 
 my $foundError = 0;
 my @passedTests;
 my %failedTests;
+my $count;
+print STDERR "Running tests: \n";
 foreach my $test (@tests) {
-  print STDOUT "\n-----\nRunning test: $test->{name}\n";
+  $count++;
+  print STDERR "  $count. $test->{name}\n";
   my $count = getCount($userDbh, $test->{sql});
   if ($count) {
     $failedTests{$test->{name}} = $count;
@@ -42,8 +43,8 @@ foreach my $t (@passedTests) {
 }
 
 print "\nFailed Tests\n";
-foreach my $t (keys(%passedTests)) {
-  print "  $t: $passedTests{$t}\n";
+foreach my $t (keys(%failedTests)) {
+  print "  $t: $failedTests{$t}\n";
 }
 
 exit(scalar(%failedTests));	# count of failed tests
@@ -54,7 +55,7 @@ sub parseSqlFile {
   open(F, $sqlFile) || die "Can't open file '$sqlFile'\n";
   my @tests;
   my @currentLines;
-  my $currentTest;
+  my $currentTest = {};
   while (<F>) {
     chomp;
     next if (/^\s*$/);	# skip blank line
@@ -64,21 +65,23 @@ sub parseSqlFile {
 	die "SQL is expected to be test_name\n$sql\n" unless $sql =~ /\'(.*)\'.*test_name/;
 	$currentTest->{name} = $1;
       } else {
-	die "SQL is expected to mention schema name $schema\n$sql\n" unless $sql =~ /$schema/;
-	$currentTest->{test} = $sql;
+	die "SQL is expected to mention schema name '$schema'\n$sql\n" unless $sql =~ /$schema/;
+	$currentTest->{sql} = $sql;
 	push(@tests, $currentTest);
+	$currentTest = {};
       }
+      @currentLines = ();
     } else {
       push(@currentLines, $_);
     }
   }
-  return $currentTest;
+  return @tests;
 }
 
 sub getCount {
   my ($dbh, $sql) = @_;
 
-  print STDOUT "\n$sql\n";
+#  print STDOUT "\n$sql\n";
   my $stmt = $dbh->prepare($sql);
   $stmt->execute();
   my ($count) = $stmt->fetchrow_array();
@@ -119,7 +122,7 @@ Required format of sqlFile:
  - blank lines are ignored
  - this format means that the sql file can be run as a pure sql script, if desired.
 
-Example sqlFile:
+EXAMPLE SQL FILE
 
 select 'user basket has current IDs' as test_name from dual
 ;
