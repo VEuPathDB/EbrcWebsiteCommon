@@ -152,6 +152,10 @@ $stepsSpec{gus4Ortho} =
 ##########  Redundant individual pipelines, possibly used for convenience sometimes
 ######################################################################################################################
 
+$stepsSpec{configureProjects} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+  ];
 
 $stepsSpec{mappingQuestOrgs} =
   [
