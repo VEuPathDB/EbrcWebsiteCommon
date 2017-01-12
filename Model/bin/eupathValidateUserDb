@@ -106,10 +106,9 @@ Validate updates to the user DB.  Runs a set of SQL tests, each of which return 
 
 Prints a report about all the tests that are run.
 
-Usage: eupathValidateUserDb --schema schema --primaryModel model --sqlFile sql_file
+Usage: eupathValidateUserDb --primaryModel model --sqlFile sql_file
 
 Where:
-  schema: the schema in which to find the tables to test.
   primaryModel: the project in gus_home/config in which to find model-config.xml that has user DB connect info.
   sqlFile: a file of sql tests (see below).
 
