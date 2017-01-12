@@ -129,7 +129,9 @@ select 'Number of tx steps without one of the always-on filters' as test_name fr
 ;
 select count(*) from userlogins5.steps st, userlogins5.users u
   where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+  and is_valid != 0 -- ignore old, invalid questions
   and question_name like '%GeneQuestions%'
+  and question_name != 'GeneQuestions.GenesByTaxonGene' -- actually a Gene question (not transcript)
   and display_params not like '%matched_transcript_filter_array%'
   and display_params not like '%gene_boolean_filter_array%'
 ;
@@ -140,10 +142,16 @@ select 'Number of non-tx steps with matched tx filter' as test_name from dual
 select count(*) from userlogins5.steps st, userlogins5.users u
   where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
   and question_name not like '%GeneQuestions%'
+  and question_name != 'UniversalQuestions.UnifiedBlast' -- can be a transcript question too
+  -- strange case- exploring...
+  --and question_name != 'GenesBySpliceSitestbruTREU927_Nilsson_Spliced_Leader_rnaSeqSplicedLeaderAndPolyASites_RSRC'
   and display_params like '%matched_transcript_filter_array%'
 ;
 
 -- 9. Look for bad orgs in display_params
+
+/* comment for now; this test should be done after the org mapping migration step
+
 select 'Number with old orgs from mapping file' as test_name from dual
 ;
 select count(*) from userlogins5.steps st, userlogins5.users u
@@ -165,3 +173,4 @@ select count(*) from userlogins5.steps st, userlogins5.users u
     or display_params like '%Neosartorya fischeri%'
     or display_params like '%Cryptococcus gattii%' )
 ;
+*/
