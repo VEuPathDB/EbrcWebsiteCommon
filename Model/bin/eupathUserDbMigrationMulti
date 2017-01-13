@@ -14,7 +14,7 @@ die "Error: No projects supplied" unless scalar(@projects);
 
 my $controlDir = $argsMap->{'--controlDir'};
 
-die "Control dir '$controlDir' does not exist\n" unless if (-d $controlDir);
+die "Control dir '$controlDir' does not exist\n" unless (-d $controlDir);
 
 my $logFile = "$controlDir/multi.log";
 open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
