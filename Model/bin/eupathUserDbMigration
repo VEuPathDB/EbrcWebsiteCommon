@@ -86,14 +86,14 @@ my %stepsSpec;
 $stepsSpec{cacheModel} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
 $stepsSpec{middleOfRelease} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model $args{skipParams} '$args{projects}'", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams} ", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['validateReplOrganism', "eupathValidateReplication -schema $args{schema} -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['schema']],
 
