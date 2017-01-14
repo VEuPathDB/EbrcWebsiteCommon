@@ -27,13 +27,18 @@ foreach my $project (@projects) {
   $newArgsMap{'--projectsWithMapping'} = $argsMap->{'--projectsWithMapping'} =~ /$project/? $project : '""';
   $newArgsMap{'--controlDir'} .= "/$project";
   if (!mkdir $newArgsMap{'--controlDir'}) {
-    print LOG "Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project\n";
+    log("Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project");
     next;
   }
   my @cmdLineArgs = map { ($_, $newArgsMap{$_}) } @$argsArr;
   my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) ." 2> $newArgsMap{'--controlDir'}/pipeline.err";
-  print LOG "$cmd\n\n";
+  log($cmd);
   system($cmd);
+}
+
+sub log {
+  my ($msg) = @_;
+  print LOG localtime . "\t$msg\n\n";
 }
 
 sub extractArgs {
