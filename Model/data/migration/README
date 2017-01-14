@@ -1,0 +1,70 @@
+
+This document is meant to provide exact instructions for how to migrate the user
+database between releases.  The goal is for this to be a living document that is
+updated while considering what needs a given release has.  Changes should be
+developed and tested against sandbox databases and apicommdev so that on the day
+of the release, we need only follow these exact instructions on apicomm.
+
+Migration steps
+
+1. Create and visit a standalone migration dir and visit it (using ~/migration as an example).
+
+> mkdir ~/migration
+> cd ~/migration
+
+2. Download helper script.
+
+> wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh
+
+3. Run directory setup script from the current directory.  This will check out and build required projects and may take a few minutes.
+
+> bash build_framework.sh
+
+4. Source environment setup script (sets GUS_HOME and PROJECT_HOME and adds GUS dirs to PATH).
+
+> source ./project_home/install/bin/gusEnv.bash
+
+5. Visit the yaml directory to clone meta files and deploy to project-specific config dirs
+
+> cd yaml
+
+6. Visit ./yaml/PlasmoDBMetaConfig.yaml and edit for the UserDB you wish to migrate (don't forget dblink).  You should NOT change "project", "appDb.*" or other project-specific fields.  It may be handier to copy an existing metaConfig.yaml you have already been using, but it must be a PlasmoDB meta file.
+
+NOTE: It is still important to run migration steps with the wdkmaint user!
+
+> emacs PlasmoDBMetaConfig.yaml
+
+7. Clone the meta config file to all projects ("-inc" is an example; you may need something else)
+
+> eupathCloneMetaFile PlasmoDBMetaConfig.yaml -inc
+
+8. Clone a version for OrthoMCL manually.  This involves:
+
+> cp PlasmoDBMetaConfig.yaml OrthoMCLMetaConfig.yaml
+> emacs OrthoMCLMetaConfig.yaml
+
+Replace project and appDb fields and swap " - apiSite" for " - orthomcl".
+
+9. Return to main migration directory
+
+> cd ..
+
+10. Run build-specific migration steps.  For Build 30, two commands are needed, each with their own control directory (which must be created in advance).  If you put the command in the background (as below), you can follow along as the scripts do their thing.
+
+> mkdir control/gus4Ortho
+
+> eupathUserDbMigration --stepsSpecName gus4Ortho --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "OrthoMCL" --controlDir $(pwd)/control/gus4Ortho &
+
+> tail -f control/gus4Ortho/gus4.err
+
+> mkdir control/gus4
+
+> eupathUserDbMigrationMulti --stepsSpecName gus4 --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,EuPathDB" --controlDir $(pwd)/control/gus4 --primaryModel PlasmoDB --skipReplicationSteps --questionsMappingFile $(pwd)/project_home/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt &
+
+> tail -f control/gus4/AmoebaDB/gus4-AmoebaDB.err
+
+11. If not covered by #10, validate build-specific migration steps.  For Build 30, run the following command:
+
+> eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $PROJECT_HOME/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql
+
+12. 
