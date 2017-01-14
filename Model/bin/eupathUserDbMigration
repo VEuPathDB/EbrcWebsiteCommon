@@ -90,6 +90,12 @@ $stepsSpec{cacheModel} =
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
+$stepsSpec{dropCacheModel} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+  ];
+
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
 $stepsSpec{middleOfRelease} =
   [
