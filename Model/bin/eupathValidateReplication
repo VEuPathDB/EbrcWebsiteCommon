@@ -56,8 +56,8 @@ my $foundError = 0;
 foreach my $test (@tests) {
   print STDOUT "\n-----\nRunning test: $test->[0]\n";
   my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
-#  print STDOUT "Diff: $count\n";
-#  $foundError |= $count > $rowTolerance;
+  print STDOUT "Diff: $count\n";
+  $foundError |= $count > $rowTolerance;
 }
 die "
 One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
@@ -78,15 +78,9 @@ sub getCount {
   print STDOUT "\n$sql\n";
   my $stmt = $dbh->prepare($sql);
   $stmt->execute();
- # my ($count) = $stmt->fetchrow_array();
-  my $ref;
-  while($ref = $stmt->fetchrow_arrayref) {
-    print STDOUT join (", ", @{$ref}), "\n";
-  }
-
+  my ($count) = $stmt->fetchrow_array();
   $stmt->finish();
- # return $count;
-  return 0;
+  return $count;
 }
 
 sub getDbh {
