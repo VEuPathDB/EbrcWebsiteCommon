@@ -137,8 +137,7 @@ $stepsSpec{gus4} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects'], $args{projects}],
-#   ['gus4', "gus4StepTableMigration '$args{projects}'" , !$REPLIC_STEP, [] ],
-   ['validateGus4', "fgpJava org.gusdb.wdk.model.WdkSqlScriptRunner $args{primaryModel} USER $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/gus4migrationValidation.sql", !$REPLIC_STEP, ['primaryModel']],
+   ['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['primaryModel']]
   ];
 
 $stepsSpec{gus4Ortho} =
