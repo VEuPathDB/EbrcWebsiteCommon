@@ -19,6 +19,7 @@ die "Control dir '$controlDir' does not exist\n" unless (-d $controlDir);
 my $logFile = "$controlDir/multi.log";
 open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
 
+my $failedCount = 0;
 foreach my $project (@projects) {
   my %newArgsMap = %$argsMap;
 
@@ -26,15 +27,19 @@ foreach my $project (@projects) {
   $newArgsMap{'--primaryModel'} = $project if $newArgsMap{'--primaryModel'};
   $newArgsMap{'--projectsWithMapping'} = $argsMap->{'--projectsWithMapping'} =~ /$project/? $project : '""';
   $newArgsMap{'--controlDir'} .= "/$project";
-  if (!mkdir $newArgsMap{'--controlDir'}) {
+  if (! -d $newArgsMap{'--controlDir'} && !mkdir $newArgsMap{'--controlDir'}) {
     log("Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project");
     next;
   }
   my @cmdLineArgs = map { ($_, $newArgsMap{$_}) } @$argsArr;
   my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) ." 2> $newArgsMap{'--controlDir'}/pipeline.err";
-  log($cmd);
-  system($cmd);
+  &log($cmd);
+  my $status = system($cmd);
+  $failedCount++ if $status;
+  &log($status? "Failed\n" : "Succeeded\n");
 }
+
+&log("Done ($failedCount failed)");
 
 sub log {
   my ($msg) = @_;
