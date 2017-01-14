@@ -5,6 +5,10 @@ updated while considering what needs a given release has.  Changes should be
 developed and tested against sandbox databases and apicommdev so that on the day
 of the release, we need only follow these exact instructions on apicomm.
 
+The hope is that changes to this document will be minimal from release to
+release.  Steps 10 and 11 cover release-specific scripts and should be modified
+to reflect the current release (and committed so we have a history).
+
 Migration steps
 
 1. Create and visit a standalone migration dir and visit it (using ~/migration as an example).
