@@ -101,8 +101,7 @@ select count(*) from userlogins5.steps st, userlogins5.users u
 'GeneQuestions.GenesByExpressionPercentileBoothroyd',
 'GeneQuestions.ToxoGenesBySibleyRNASeqBradyzoitePct',
 'GeneQuestions.ToxoGenesByBoothroydRNASeqOocystPct',
-'GeneQuestions.GenesByTimeSeriesFoldChangeBradyBoothroyd',
-'GeneQuestions.GenesBySpliceSitestbruTREU927_Nilsson_Spliced_Leader_rnaSeqSplicedLeaderAndPolyASites_RSRC' )
+'GeneQuestions.GenesByTimeSeriesFoldChangeBradyBoothroyd' )
 ;
 
 -- 5. All display_params should have params, filters, viewFilters
