@@ -150,27 +150,26 @@ select count(*) from userlogins5.steps st, userlogins5.users u
 
 -- 9. Look for bad orgs in display_params
 
-/* comment for now; this test should be done after the org mapping migration step
+-- comment for now; this test should be done after the org mapping migration step
 
-select 'Number with old orgs from mapping file' as test_name from dual
-;
-select count(*) from userlogins5.steps st, userlogins5.users u
-  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
-  and (
-    display_params like '%Phytophthora cinnamomi var. cinnamomi%'
-    or display_params like '%Phytophthora ramorum%'
-    or display_params like '%Phytophthora sojae%'
-    or display_params like '%Ajellomyces capsulatus G186AR%'
-    or display_params like '%Ajellomyces capsulatus NAm1%'
-    or display_params like '%Botryotinia fuckeliana B05.10%'
-    or display_params like '%Neosartorya fischeri NRRL 181%'
-    or display_params like '%Cryptococcus gattii R265%'
-    or display_params like '%Vavraia culicis floridensis%'
-    or display_params like '%Sarcocystis neurona SN1%'
-    or display_params like '%Trypanosoma brucei TREU927%'
-    or display_params like '%Ajellomyces capsulatus%'
-    or display_params like '%Botryotinia fuckeliana%'
-    or display_params like '%Neosartorya fischeri%'
-    or display_params like '%Cryptococcus gattii%' )
-;
-*/
+--select 'Number with old orgs from mapping file' as test_name from dual
+--;
+--select count(*) from userlogins5.steps st, userlogins5.users u
+--  where st.user_id = u.user_id and u.is_guest = 0 and is_deleted != 1
+--  and (
+--    display_params like '%Phytophthora cinnamomi var. cinnamomi%'
+--    or display_params like '%Phytophthora ramorum%'
+--    or display_params like '%Phytophthora sojae%'
+--    or display_params like '%Ajellomyces capsulatus G186AR%'
+--    or display_params like '%Ajellomyces capsulatus NAm1%'
+--    or display_params like '%Botryotinia fuckeliana B05.10%'
+--    or display_params like '%Neosartorya fischeri NRRL 181%'
+--    or display_params like '%Cryptococcus gattii R265%'
+--    or display_params like '%Vavraia culicis floridensis%'
+--    or display_params like '%Sarcocystis neurona SN1%'
+--    or display_params like '%Trypanosoma brucei TREU927%'
+--    or display_params like '%Ajellomyces capsulatus%'
+--    or display_params like '%Botryotinia fuckeliana%'
+--    or display_params like '%Neosartorya fischeri%'
+--    or display_params like '%Cryptococcus gattii%' )
+--;
