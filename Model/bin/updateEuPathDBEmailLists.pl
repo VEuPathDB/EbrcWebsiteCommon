@@ -5,11 +5,10 @@ use Getopt::Long;
 use Mail::Send;
 use lib "$ENV{GUS_HOME}/lib/perl";
 
-my($list,$email,$passwd,$gusConfigFile,$useWdkModel,$verbose, $suppressUpdate);
+my($email,$passwd,$gusConfigFile,$useWdkModel,$verbose, $suppressUpdate);
 my $projectId = 'PlasmoDB';
 
-&GetOptions("list|l=s" => \$list, 
-            "email|e=s"=> \$email,
+&GetOptions("email|e=s"=> \$email,
             "passwd|p=s" => \$passwd,
             "gusConfigFile|g=s" => \$gusConfigFile,
             "useWdkModel|w!" => \$useWdkModel,
