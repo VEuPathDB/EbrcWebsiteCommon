@@ -21,6 +21,7 @@ open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
 
 my $failedCount = 0;
 foreach my $project (@projects) {
+  next if ($argsMap->{skipReplicationSteps});
   my %newArgsMap = %$argsMap;
 
   $newArgsMap{'--projects'} = $project;
