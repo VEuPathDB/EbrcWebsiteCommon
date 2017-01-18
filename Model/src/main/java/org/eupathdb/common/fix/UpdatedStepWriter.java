@@ -14,15 +14,13 @@ import org.gusdb.wdk.model.fix.table.steps.StepData;
 
 public class UpdatedStepWriter implements TableRowWriter<StepData> {
 
-  private static final String UPDATED_STEPS_TABLE_SCHEMA = "wdkmaint";
   private static final String UPDATED_STEPS_TABLE_NAME = "WDK_UPDATED_STEPS";
-  private static final String UPDATED_STEPS_TABLE = UPDATED_STEPS_TABLE_SCHEMA + "." + UPDATED_STEPS_TABLE_NAME;
 
   private static final String CREATE_TABLE_SQL =
-      "CREATE TABLE " + UPDATED_STEPS_TABLE + " ( \"STEP_ID\" NUMBER(12) NOT NULL )";
+      "CREATE TABLE " + UPDATED_STEPS_TABLE_NAME + " ( \"STEP_ID\" NUMBER(12) NOT NULL )";
 
   private static final String INSERT_STEP_ID_SQL =
-      "INSERT INTO " + UPDATED_STEPS_TABLE + " (STEP_ID) VALUES (?)";
+      "INSERT INTO " + UPDATED_STEPS_TABLE_NAME + " (STEP_ID) VALUES (?)";
 
   @Override
   public String getWriteSql(String schema) {
@@ -45,7 +43,7 @@ public class UpdatedStepWriter implements TableRowWriter<StepData> {
     DatabaseInstance userDb = wdkModel.getUserDb();
     DataSource userDs = userDb.getDataSource();
     if (!userDb.getPlatform().checkTableExists(
-        userDs, UPDATED_STEPS_TABLE_SCHEMA, UPDATED_STEPS_TABLE_NAME)) {
+        userDs, wdkModel.getUserDb().getDefaultSchema(), UPDATED_STEPS_TABLE_NAME)) {
       new SQLRunner(userDs, CREATE_TABLE_SQL, "create-updated-steps-table").executeStatement();
     }
   }
