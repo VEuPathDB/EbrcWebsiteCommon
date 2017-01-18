@@ -8,15 +8,16 @@ use WDK::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
 
-my ($schema, $primaryModel, $rowTolerance, $northUserDbName, $southUserDbName);
-&GetOptions('schema=s' => \$schema,
-            'primaryModel=s' => \$primaryModel,
+my ($sleep, $primaryModel, $rowTolerance);
+&GetOptions('primaryModel=s' => \$primaryModel,
             'rowTolerance=s' => \$rowTolerance,
 	    'sleep=s' => \$sleep,
 	   );
 
-usage() unless ($schema && $primaryModel && $rowTolerance);
+usage() unless ($primaryModel && $rowTolerance);
 
+my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
+my $schema = $modelConfig->{userDb}->{userSchema};
 
 my @tests = (
        ["users count", "select count(*) from $schema.users"],
@@ -27,7 +28,6 @@ my @tests = (
                                                and u.is_guest = 1"],
 	    );
 
-my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 my $northUserDbName;
 my $southUserDbName;
