@@ -115,13 +115,12 @@ $stepsSpec{middleOfRelease} =
 # Is not called as part of release.  Can be done anytime during the cycle. 
 $stepsSpec{cleanup} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{cacheModel}},
    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
    ['validateReplBroken', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
   ];
-
 
 # Called at release.  Doesn't need cleanup, because cleanup is not needed at release time.  It can be done at any time.
 $stepsSpec{release} =
