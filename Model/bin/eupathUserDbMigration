@@ -38,14 +38,14 @@ my @stepSpecificArgs =
 my @argv = @ARGV; # save before emptied by getoptions
 my %args;
 &GetOptions(\%args,
-	    'controlDir=s',
-            'stepsSpecName=s',
-            'skipSteps=s',
-            'usingSandbox!',
-            'stopAfterStep=s',
-	    'listSteps!',
-	    'validateSteps!',
-	    @stepSpecificArgs
+      'controlDir=s',
+      'stepsSpecName=s',
+      'skipSteps=s',
+      'usingSandbox!',
+      'stopAfterStep=s',
+      'listSteps!',
+      'validateSteps!',
+      @stepSpecificArgs
 );
 
 # EDIT_PIPELINE - Step 2
@@ -169,14 +169,11 @@ $stepsSpec{mappingQuestOrgs} =
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
   ];
 
-
-
 $stepsSpec{fixBaskets} =
   [
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
    ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
-
 
 $stepsSpec{expand} =
   [
@@ -190,12 +187,10 @@ $stepsSpec{replValidation} =
    ['validateRepl', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
   ];
 
-
 $stepsSpec{validate} =
   [
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
   ];
-
 
 $stepsSpec{test} =
   [
@@ -204,8 +199,6 @@ $stepsSpec{test} =
    ['echo-3', "sleep 10; echo PROJECT_MACRO", $REPLIC_STEP, [], "PlasmoDB, ToxoDB"],
    ['ls','ls /home/pickle', !$REPLIC_STEP, []],
   ];
-
-
 
 
 usage() unless $args{stepsSpecName} && ($args{controlDir} || $args{listSteps} || $args{validateSteps});
