@@ -41,7 +41,7 @@ my %args;
 	    'controlDir=s',
             'stepsSpecName=s',
             'skipSteps=s',
-            'skipReplicationSteps!',
+            'usingSandbox!',
             'stopAfterStep=s',
 	    'listSteps!',
 	    'validateSteps!',
@@ -245,7 +245,7 @@ foreach my $stepSpec (@$stepsSpec) {
   $step->{hasReqdArgs} = 1;
   foreach my $argName (@{$step->{reqdArgsList}}) { $step->{hasReqdArgs} &= defined($args{$argName});}
 
-  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $args{skipReplicationSteps};
+  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $args{usingSandbox};
 
   # if skipping this step, remember that, and put out a message
   if ($step->{skip}) {
@@ -342,7 +342,7 @@ sub usage {
 
 die "
 
-eupathUserDbMigration --stepsSpecName spec_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps] [--skipReplicationSteps]
+eupathUserDbMigration --stepsSpecName spec_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps] [--usingSandbox]
 
 Where:
   stepsSpecName: the name of a list of steps to run.  Options are: $stepsSpecNames
@@ -351,7 +351,7 @@ Where:
   validateSteps: don't run any commands.  Just validate the steps in the provided stepsSpecName (expanding PROJECT_MACRO), confirming that all required step-specific args are provided.
   stopAfterStep: the name of the step to stop after (Default: none)
   skipSteps: a comma delimited list of steps to skip (Default: none)
-  skipReplicationSteps: skip the steps marked as useful only in a replication context
+  usingSandbox: skip the steps marked as useful only in a replication context
 
 Additional step-specific arguments are: --" . join(" --", @stepSpecificArgs) . "
 
