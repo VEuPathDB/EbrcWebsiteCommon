@@ -36,7 +36,7 @@ foreach my $project (@projects) {
   &log($cmd);
   my $status = system($cmd);
   $failedCount++ if $status;
-  &log($status? "Failed\n" : "Succeeded\n");
+  &log($project . ($status? " Failed\n" : " Succeeded\n"));
 }
 
 &log("Done ($failedCount failed)");
