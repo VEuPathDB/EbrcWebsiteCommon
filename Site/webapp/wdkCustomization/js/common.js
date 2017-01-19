@@ -197,7 +197,9 @@ wdk.namespace("eupath.setup", function(ns, $) {
   };
 
   function siteAnnouncements($el) {
-    render(createElement(Announcements, $el.data()), $el[0]);
+    render(createElement(Announcements, Object.assign({
+      location: window.location
+    }, $el.data())), $el[0]);
   }
 
   ns.setUpContactUsLogic = setUpContactUsLogic;
