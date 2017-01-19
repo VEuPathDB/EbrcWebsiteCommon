@@ -102,7 +102,7 @@ NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbo
 
 14. (optionally done in advance, but depends on step 13) Run cleanup pipeline on all projects.
 
-NOTE: You much choose a cut-off date for guest users (2-7 days ago recommended).  See below for an example.
+NOTE: You much choose a cut-off date for guest users (2-7 days ago recommended, in yyyy/mm/dd format).  See below for an example.
 NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
 
 > mkdir control/cleanup
