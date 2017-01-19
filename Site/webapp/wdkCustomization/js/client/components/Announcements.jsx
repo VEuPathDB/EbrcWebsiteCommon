@@ -101,7 +101,7 @@ const siteAnnouncements = [
 
   // 3'UTR sequences for Tb927 genes
   ({ projectId, location }) => projectId === 'TriTrypDB' && location.pathname.includes('/record/gene/Tb927.') && (
-    <div key="tb927-3'utr" style={{ color: 'red', fontWeight: 'bold' }}>
+    <div key="tb927-3'utr">
       We discovered a mistake in the representation of 3'UTR sequences for
       Tb927 genes and are working to correct the problem. Please refer to
       TriTrypDB Release 28 when viewing or downloading Tb927 3'UTR sequences. A
