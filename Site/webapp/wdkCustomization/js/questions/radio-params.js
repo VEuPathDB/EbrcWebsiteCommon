@@ -5,7 +5,13 @@
 
   $(document).on(initEvent, '[data-radio-params]', function(event) {
     var $el = $(event.target);
-    initRadioParams($el.closest('form'), $el.data('radio-params'));
+    try {
+      initRadioParams($el.closest('form'), $el.data('radio-params'));
+    }
+    catch(err) {
+      alert("Unable to initialize radio-params:\n" + err.message);
+      console.error(err);
+    }
   });
 
   /**
@@ -19,14 +25,24 @@
       throw new Error('The "termName" and "wildcardName" properties must be specified.');
     }
 
-    var radioStr = '<div class="param-radio"><input type="radio" name="active-param"/></div>';
-    var nonsenseValue = 'N/A';
-
     var termWrapper = $form.find('.param-item:has([name="' +
       termName + '"])');
 
     var wildcardWrapper = $form.find('.param-item:has([name="' +
       wildcardName + '"])');
+
+    if (termWrapper.length === 0)
+      throw new Error("Could not find the param `" + termName + "` in the form.");
+
+    if (wildcardWrapper.length === 0)
+      throw new Error("Could not find the param `" + wildcardName + "` in the form.");
+
+
+    wildcardWrapper.find('input').attr('placeholder', '* returns all results');
+
+    var radioStr = '<div class="param-radio"><input type="radio" name="active-param"/></div>';
+
+    var nonsenseValue = 'N/A';
 
     var wildcardValue = wildcardWrapper.find('input[name="value(' +
       wildcardName + ')"]').val();
