@@ -5,22 +5,20 @@ use Getopt::Long;
 use Mail::Send;
 use lib "$ENV{GUS_HOME}/lib/perl";
 
-my($email,$passwd,$gusConfigFile,$useWdkModel,$verbose, $suppressUpdate);
+my($email,$passwd,$verbose, $suppressUpdate);
 my $projectId = 'PlasmoDB';
 
-&GetOptions("email|e=s"=> \$email,
-            "passwd|p=s" => \$passwd,
-            "gusConfigFile|g=s" => \$gusConfigFile,
-            "useWdkModel|w!" => \$useWdkModel,
+&GetOptions("email|e=s"=> \$email,  ## email address of list admin
+            "passwd|p=s" => \$passwd,  ## passwd of list admin
+            "projectName|n=s" => \$projectId,  ## project name of website that is configured eg. PlasmoDB 
+            "suppressUpdate|s!" => \$suppressUpdate,  ## include this for testing ... doesn't send the emails
             "verbose|v!" => \$verbose,
-            "suppressUpdate|s!" => \$suppressUpdate,
             );
 
 my $listAddress = 'listserv@lists.upenn.edu';
 
-die "email|e address of admin sender required" unless $email;
-die "password|p of admin required" unless $passwd;
-die "gusConfigFile|g required with database of apicomm" unless $gusConfigFile;
+die "email|e address of admin sender required\n" unless $email;
+die "password|p of admin required\n" unless $passwd;
 
 my $dbh = getDbHandle();
 
@@ -80,42 +78,23 @@ sub getDbHandle {
    
   my ($dbh, $dsn, $login, $passwd);
   
-  if ($useWdkModel) {
     
-    require EuPathSiteCommon::Model::CommentConfig;
-    my $c = new EuPathSiteCommon::Model::CommentConfig($projectId);
+  require EuPathSiteCommon::Model::CommentConfig;
+  my $c = new EuPathSiteCommon::Model::CommentConfig($projectId);
+  
+  $dsn    = $c->getDbiDsn();
+  $login  = $c->getLogin();
+  $passwd = $c->getPassword();
 
-    $dsn    = $c->getDbiDsn();
-    $login  = $c->getLogin();
-    $passwd = $c->getPassword();
-    
-    $dbh = DBI->connect(
-                  $dsn, 
-                  $login, 
-                  $passwd,
-                  { PrintError => 1, RaiseError => 0}
-                  ) or die "Can't connect to the database: $DBI::errstr\n";
+  die "You must run this on apicomm(n|s), not an apicommdev instance\n" if $dsn =~ /dev/i;
   
-  } else {
+  $dbh = DBI->connect(
+                      $dsn, 
+                      $login, 
+                      $passwd,
+                      { PrintError => 1, RaiseError => 0}
+                     ) or die "Can't connect to the database: $DBI::errstr\n";
   
-    require GUS::ObjRelP::DbiDatabase;
-    require GUS::Supported::GusConfig;
-    
-    my $gusconfig = GUS::Supported::GusConfig->new($gusConfigFile);
-    
-    $dsn    = $gusconfig->getDbiDsn();
-    $login  = $gusconfig->getReadOnlyDatabaseLogin();
-    $passwd = $gusconfig->getReadOnlyDatabasePassword();
-    
-    my $db = GUS::ObjRelP::DbiDatabase->new($dsn,
-             $login,
-             $passwd,
-             $verbose,0,1,
-             $gusconfig->getCoreSchemaName,
-             $gusconfig->getOracleDefaultRollbackSegment());
-    
-    $dbh = $db->getQueryHandle();
-  }
 
   print "db info:\n  dsn=$dsn\n  login=$login\n\n" if $verbose;
   return $dbh;
