@@ -31,14 +31,14 @@ my @tests = (
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 my $northUserDbName;
 my $southUserDbName;
-if ($dsn[2] =~ /(.*)s$/) {
+if ($dsn[2] =~ /(.*)[sS]$/) {
   $southUserDbName = $dsn[2];
   $northUserDbName ="${1}n";
-} elsif ($dsn[2] =~ /(.*)n$/) {
+} elsif ($dsn[2] =~ /(.*)[nN]$/) {
   $northUserDbName = $dsn[2];
   $southUserDbName ="${1}s";
 } else {
-  die "The model conig has userDb '$dsn[2]'.  It does not end in either n or s.\n";
+  die "The model conig has userDb '$dsn[2]'.  It does not end in either n/N or s/S.\n";
 }
 
 $dsn[2] = $northUserDbName;
