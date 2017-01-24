@@ -20,13 +20,13 @@ my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my $schema = $modelConfig->{userDb}->{userSchema};
 
 my @tests = (
-       ["users count", "select count(*) from $schema.users"],
-       ["steps count", "select count(*) from $schema.steps"],
-	     ["guests count", "select count(*) from $schema.users where is_guest = 1"],
-	     ["guest steps count", "select count(*) from $schema.steps st, $schema.users u
-                                             where st.user_id = u.user_id
-                                               and u.is_guest = 1"],
-	    );
+       ["users count", "select count(*) from ${schema}users"],
+       ["steps count", "select count(*) from ${schema}steps"],
+       ["guests count", "select count(*) from ${schema}users where is_guest = 1"],
+       ["guest steps count", "select count(*) from ${schema}steps st, ${schema}users u
+                                              where st.user_id = u.user_id
+                                              and u.is_guest = 1"]
+);
 
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 my $northUserDbName;
