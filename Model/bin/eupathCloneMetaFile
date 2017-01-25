@@ -76,12 +76,15 @@ foreach my $line (@metaFileLines) {
 
 die "Can't find 'project:' or 'appDb.instance:' lines in provided meta file\n" unless $projectLineIndex && $appDbLineIndex;
 
+# print "Indexes: $projectLineIndex, $appDbLineIndex, $projectSectionLineIndex\n";
+# print "Masters: $masterProject, $masterProjectLower\n";
 foreach my $component (@components) {
   my $prefix = $component->[0];
   next if $prefix eq $masterPrefix;
   my $project = $component->[1];
   my $projectLower = lc($project);
   my $file = "${project}MetaConfig.yaml";
+  print "Generating $file...\n";
   open(C, ">$file") || die "Can't open '$file' for output\n";
   my $i = 0;
   my $suffix = $instanceSuffix;
@@ -91,7 +94,7 @@ foreach my $component (@components) {
   foreach my $line (@metaFileLines) {
     $line =~ s/project: \S+/project: $project/ if $i == $projectLineIndex;
     $line =~ s/appDb.instance: \S+/appDb.instance: $instance/ if $i == $appDbLineIndex;
-    $line =~ s/$masterProjectLower/$projectLower/ if $i == $projectSectionLineIndex;
+    $line =~ s/ - \S+/ - $projectLower/ if $i == $projectSectionLineIndex;
     $i++;
     print C $line;
   }
