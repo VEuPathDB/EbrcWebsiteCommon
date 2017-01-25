@@ -11,8 +11,8 @@ use DBI;
 my ($sleep, $primaryModel, $rowTolerance);
 &GetOptions('primaryModel=s' => \$primaryModel,
             'rowTolerance=s' => \$rowTolerance,
-	    'sleep=s' => \$sleep,
-	   );
+            'sleep=s' => \$sleep,
+);
 
 usage() unless ($primaryModel && $rowTolerance);
 
@@ -48,8 +48,7 @@ my $southUserDbiDsn = join(':', @dsn);
 my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
 
-print STDOUT "\n";
-
+print STDOUT "\nSleeping for $sleep seconds to give replication time to catch up.\n";
 sleep($sleep);
 
 my $foundError = 0;
