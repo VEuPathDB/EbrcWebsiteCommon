@@ -93,12 +93,12 @@ drop table wdk_updated_steps;
 drop sequence wdk_questions_pkseq;
 drop sequence wdk_params_pkseq;
 
-13. (optionally done in advance) Run middle-of-release pipeline on all projects.
+13. (optionally done in advance) Run updateAndReportOnSteps pipeline on all projects.
 
 NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration command below.
 
-> mkdir control/middleOfRelease
-> eupathUserDbMigrationMulti --stepsSpecName middleOfRelease --metaFileNameTemplate $(pwd)/yaml/PlasmoDBMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/middleOfRelease --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+> mkdir control/updateAndReportOnSteps
+> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/middleOfRelease --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
 
 Check for success of all components.
 
@@ -109,7 +109,7 @@ NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandb
 
 > mkdir control/cleanup
 > CUTOFF_DATE='2017/01/15'
-> eupathUserDbMigrationMulti --stepsSpecName cleanup --metaFileNameTemplate $(pwd)/yaml/PlasmoDBMetaConfig.yaml --primaryModel PlasmoDB --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --controlDir $(pwd)/control/cleanup --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --removeGuestsCutoff $CUTOFF_DATE
+> eupathUserDbMigrationMulti --stepsSpecName cleanup --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --primaryModel PlasmoDB --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --controlDir $(pwd)/control/cleanup --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --removeGuestsCutoff $CUTOFF_DATE
 
 Check for success of all components.
 
@@ -119,6 +119,6 @@ NOTE: It is still important to run fixBasket with the wdkmaint user!
 NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
 
 > mkdir control/release
-> eupathUserDbMigrationMulti --stepsSpecName release --metaFileNameTemplate $(pwd)/yaml/PlasmoDBMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/release --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+> eupathUserDbMigrationMulti --stepsSpecName release --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/release --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
 
 Check for success of all components.

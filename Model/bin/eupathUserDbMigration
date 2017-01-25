@@ -63,7 +63,7 @@ $args{skipParams} = $args{skipParams} ? '-skipParams': ' ';
 # EDIT_PIPELINE - Step 4
 # Declare the pipelines!
 
-# The following are a set of "steps specs."  Each step spec is a list of steps in a named pipeline, eg, middleOfRelease.
+# The following are a set of "steps specs."  Each step spec is a list of steps in a named pipeline, eg, updateAndReportOnSteps.
 # Each spec has a number of rows, with each row representing a step in that pipeline.
 # Each row has standard columns:
 #  -step name
@@ -82,22 +82,27 @@ my %stepsSpec;
 ############    these are in the rough order they will be used in the typical release scenario ################
 ###############################################################################################################
 
+$stepsSpec{configureProjects} =
+  [
+   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ]
+  ];
+
 # Used by DD team relatively early in the cycle, to validate the SQL in the wdk model.
 $stepsSpec{cacheModel} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
 $stepsSpec{dropCacheModel} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
-$stepsSpec{middleOfRelease} =
+$stepsSpec{updateAndReportOnSteps} =
   [
    @{$stepsSpec{cacheModel}},
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
@@ -115,6 +120,7 @@ $stepsSpec{middleOfRelease} =
 # Is not called as part of release.  Can be done anytime during the cycle. 
 $stepsSpec{cleanup} =
   [
+   @{$stepsSpec{dropCacheModel}},
    @{$stepsSpec{cacheModel}},
    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
@@ -125,7 +131,8 @@ $stepsSpec{cleanup} =
 # Called at release.  Doesn't need cleanup, because cleanup is not needed at release time.  It can be done at any time.
 $stepsSpec{release} =
   [
-   @{$stepsSpec{middleOfRelease}},
+   @{$stepsSpec{dropCacheModel}},
+   @{$stepsSpec{updateAndReportOnSteps}},
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
@@ -140,7 +147,7 @@ $stepsSpec{release} =
 
 $stepsSpec{gus4} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects'], $args{projects}],
    # Cannot put validation here since it checks the whole DB (is not project-specific)
    #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['primaryModel']]
@@ -148,7 +155,7 @@ $stepsSpec{gus4} =
 
 $stepsSpec{gus4Ortho} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['gus4', "eupathGus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
@@ -157,33 +164,28 @@ $stepsSpec{gus4Ortho} =
 ##########  Redundant individual pipelines, possibly used for convenience sometimes
 ######################################################################################################################
 
-$stepsSpec{configureProjects} =
-  [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
-  ];
-
 $stepsSpec{mappingQuestOrgs} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
   ];
 
 $stepsSpec{fixBaskets} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
 $stepsSpec{expand} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
 $stepsSpec{replValidation} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+   @{$stepsSpec{configureProjects}},
    ['validateRepl', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
   ];
 
