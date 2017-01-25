@@ -98,7 +98,7 @@ drop sequence wdk_params_pkseq;
 NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration command below.
 
 > mkdir control/updateAndReportOnSteps
-> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/middleOfRelease --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/updateAndReportOnSteps --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
 
 Check for success of all components.
 
