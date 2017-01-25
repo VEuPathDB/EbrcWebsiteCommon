@@ -11,6 +11,7 @@ my @components = (
  ['fung', 'FungiDB'],
  ['giar', 'GiardiaDB'],
  ['host', 'HostDB'],
+ ['mbio', 'MicrobiomeDB'],
  ['micr', 'MicrosporidiaDB'],
  ['piro', 'PiroplasmaDB'],
  ['plas', 'PlasmoDB'],
@@ -26,9 +27,11 @@ my $componentsString = join("\n", @c);
 usage() unless $metaFile;
 
 my $masterProject;
+my $masterProjectLower;
 my $masterPrefix;
 if ($metaFile =~ /(\w+)MetaConfig.yaml/) {
   $masterProject = $1;
+  $masterProjectLower = lc($masterProject);
   my $found;
   foreach my $c (@components) { if ($c->[1] eq $masterProject) { $found = 1; $masterPrefix = $c->[0]; last }}
   die "\nmeta file '$metaFile' project '$masterProject' is not known.  These are the known components:\n\n$componentsString\n" unless $found;
@@ -56,9 +59,11 @@ close(S);
 
 my $projectLineIndex;
 my $appDbLineIndex;
+my $projectSectionLineIndex;
 my $index = 0;
 foreach my $line (@metaFileLines) {
   $projectLineIndex = $index if $line =~ /project\:/;
+  $projectSectionLineIndex = $index if $line =~ / - $masterProjectLower/;
   if ($line =~ /appDb.instance\:\s*(\S+)/) {
     my $instanceNm = $1;
     $appDbLineIndex = $index;
@@ -75,6 +80,7 @@ foreach my $component (@components) {
   my $prefix = $component->[0];
   next if $prefix eq $masterPrefix;
   my $project = $component->[1];
+  my $projectLower = lc($project);
   my $file = "${project}MetaConfig.yaml";
   open(C, ">$file") || die "Can't open '$file' for output\n";
   my $i = 0;
@@ -85,6 +91,7 @@ foreach my $component (@components) {
   foreach my $line (@metaFileLines) {
     $line =~ s/project: \S+/project: $project/ if $i == $projectLineIndex;
     $line =~ s/appDb.instance: \S+/appDb.instance: $instance/ if $i == $appDbLineIndex;
+    $line =~ s/$masterProjectLower/$projectLower/ if $i == $projectSectionLineIndex;
     $i++;
     print C $line;
   }
@@ -122,6 +129,7 @@ Output: a set of files in the current directory of the form xxxxxMetaConfig.yaml
 The output files are identical to the provided meta file, except these lines:
  project: PlasmoDB
  appDb.instance: plas-inc
+ - plasmodb
 
 The components currently supported are the following (update the script file to change this):
 

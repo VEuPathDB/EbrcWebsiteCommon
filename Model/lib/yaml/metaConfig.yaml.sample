@@ -7,17 +7,22 @@
 # The 'required:' section provides required meta-config properties.  They are used to configure the masterConfig.yaml file.
 # The values here are subsituted into macros in masterConfig.yaml file (not directly into the template files)
 required:
+
  project: PlasmoDB
+
  appDb.instance: plas-inc
  appDb.login: your_db_login
  appDb.password: your_db_password
  appDb.userDbLink: devn.LOGIN_COMMENT
+
  userDb.instance: apicommDevN
  userDb.login: your_db_login
  userDb.password: your_db_password
+
  commentDb.instance: apicommDevN
  commentDb.login: your_db_login
  commentDb.password: your_db_login
+
  gushome: $ENV{GUS_HOME}
  
  # authentication method
@@ -32,7 +37,6 @@ required:
  ###############################################################################################
  # dev sites don't typically need to bother with anything below here (except OrthoMCL dev sites)
  ###############################################################################################
-
 
  # these only needed in the portal 
  amebURL: http://amoebadb.org/amoeba/
@@ -50,20 +54,15 @@ required:
  # this needed in all sites (even if URL mapping already exists above)
  myURL: http://hostdb.org/hostdb/
 
-
 # The 'sections:' section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
-# Uncomment one from -apiSite/-orthomcl
+# Uncomment either -apiSite/-{projectid} or -orthomcl
 sections:
  - apiSite
-
-# - cryptodb
+ - plasmodb
 
 # - orthomcl
 
 
 # The 'custom:' section overrides all key/values in masterConfig.yaml.  It lets you make a non-standard configuration as needed.
 custom:
-
- 
-
 

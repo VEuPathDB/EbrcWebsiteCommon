@@ -121,7 +121,6 @@ default:
   crypURL: none
   fungURL: none
   giarURL: none
-  mbioURL: none
   micrURL: none
   piroURL: none
   plasURL: none
@@ -221,4 +220,3 @@ toxodb:
 trichdb: {}
 
 tritrypdb: {}
-
