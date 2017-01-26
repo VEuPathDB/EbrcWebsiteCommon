@@ -8,7 +8,11 @@ var config = require(path.join(wdkRoot, 'webpack.config'));
 
 config.context = process.cwd();
 
-var pkg = require(path.join(process.cwd(), 'package.json'));
+var pkgAliases;
+try {
+  pkgAliases = require(path.join(process.cwd(), 'package.json')).browser;
+}
+catch(err) { /* skip */ }
 
 // remove webpack.optimize.CommonsChunkPlugin
 config.plugins.pop();
@@ -34,7 +38,7 @@ Object.assign(config.resolve.alias, {
   wdk: wdkContext,
   eupathdb: eupathdbContext,
   site: siteContext
-}, pkg.browser);
+}, pkgAliases);
 
 
 // Map external libraries Wdk exposes so we can do things like:
