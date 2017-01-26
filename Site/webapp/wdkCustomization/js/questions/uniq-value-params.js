@@ -1,5 +1,12 @@
 /* global $, wdk */
 
+/**
+ * Show an error message if specified parameter values are identical. In the
+ * case of mulipick params, treat as error only if a single value is selected
+ * for each. If we want to treat multiple identical values as an error, we
+ * should make it a flag.
+ */
+
 (function() {
   var initEvent = wdk.parameterHandlers.QUESTION_INITIALIZE_EVENT;
 
@@ -91,7 +98,7 @@
   function makeErrorRecords(params) {
     return params.map(function(param) {
       var duplicates = params.filter(function(otherParam) {
-        return param.name !== otherParam.name && getParamValue(param) === getParamValue(otherParam);
+        return param.name !== otherParam.name && hasDuplicateValue(param, otherParam);
       });
       return {
         param: param,
@@ -100,6 +107,12 @@
     }).filter(function(error) {
       return error.message;
     })
+  }
+
+  function hasDuplicateValue(param1, param2) {
+    return param1.$el.length === 1 &&
+           param2.$el.length === 1 &&
+           getParamValue(param1) === getParamValue(param2);
   }
 
   function getParamValue(param) {
