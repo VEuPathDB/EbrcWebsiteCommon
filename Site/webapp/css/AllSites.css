@@ -509,9 +509,8 @@ table#news {
   width:100%;
 }
 table#news ul {
-  list-style: inside disc;
+  list-style: disc;
   padding-left: 2em;
-  text-indent: -1em;
 }
 table#news ul ul {
   list-style-type: circle;
