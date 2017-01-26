@@ -1,17 +1,20 @@
 // Enhance WDK's webpack config so we can share packages
 
 var path = require('path');
-var projectHome = process.env.PROJECT_HOME;
-var wdkRoot = path.join(projectHome, 'WDK/View');
+var wdkRoot = path.resolve(__dirname, '../../WDK/View');
 
 // Get Wdk's webpack.config.
 var config = require(path.join(wdkRoot, 'webpack.config'));
 
+config.context = process.cwd();
+
+var pkg = require(path.join(process.cwd(), 'package.json'));
+
 // remove webpack.optimize.CommonsChunkPlugin
 config.plugins.pop();
 
-var wdkContext = path.join(projectHome, 'WDK/View/webapp/wdk');
-var eupathdbContext = path.join(projectHome, 'EuPathSiteCommon/Site/webapp');
+var wdkContext = path.resolve(__dirname, '../../WDK/View/webapp/wdk');
+var eupathdbContext = path.join(__dirname, 'webapp');
 var siteContext = path.join(process.cwd(), 'webapp');
 
 // clear wdk entry config and code splitting
@@ -20,17 +23,18 @@ config.output = null;
 
 // Make sure properties are initialized on config, without overwriting values.
 initializeProps(config, 'resolve.alias', { });
-initializeProps(config, 'resolveLoader');
+initializeProps(config, 'resolveLoader.modules', [ ]);
 initializeProps(config, 'externals', []);
 
 // This lets us use build tools Wdk has already loaded.
-config.resolveLoader.fallback = [
-  path.join(wdkRoot, 'node_modules')
-];
+config.resolveLoader.modules.push('node_modules')
+config.resolveLoader.modules.push(path.join(wdkRoot, 'node_modules'))
 
-config.resolve.alias.wdk = wdkContext;
-config.resolve.alias.eupathdb = eupathdbContext;
-config.resolve.alias.site = siteContext;
+Object.assign(config.resolve.alias, {
+  wdk: wdkContext,
+  eupathdb: eupathdbContext,
+  site: siteContext
+}, pkg.browser);
 
 
 // Map external libraries Wdk exposes so we can do things like:
