@@ -4,6 +4,8 @@ my ($projectsList, $fileNameTemplate) = @ARGV;
 
 usage() unless $fileNameTemplate && $projectsList;
 
+die "Your meta file template '$fileNameTemplate' must include the macro 'PROJECT'\n" unless $fileNameTemplate =~ /PROJECT/;
+
 my @projects = split(/,\s*/, $projectsList);
 
 foreach my $project (@projects) {
