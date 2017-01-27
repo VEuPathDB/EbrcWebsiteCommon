@@ -212,8 +212,6 @@ $stepsSpec{test} =
 
 usage() unless $args{stepsSpecName} && ($args{controlDir} || $args{listSteps} || $args{validateSteps});
 
-print"\n";
-
 # get desired steps spec, and validate that it has no duplicate step names
 my $stepsSpec = $stepsSpec{$args{stepsSpecName}};
 die "Error: can't find steps spec with name '$args{stepsSpecName}'\n" unless $stepsSpec;
@@ -313,7 +311,6 @@ while ($cursor < scalar(@expandedSteps)) {
   }
   &log("Step '$stepName' running: '$step->{cmd}'");
   my $cmd = "echo '$step->{cmd}' | eupathUserDbMigrationStepWrapper $stepName &";
-print "\n";
   system($cmd) && die "Failed running '$cmd'";
   sleep(1);
 }
@@ -328,7 +325,6 @@ sub log {
 sub validatingAndStopAfter {
   my ($step) = @_;
   if ($args{validateSteps}) {
-    print "\n";
     print STDERR "$step->{name}:\t$step->{cmd}\n";
     if ($args{stopAfterStep} eq $step->{name}) {
       print STDERR "StopAfter='$step->{name}'.  Exiting\n";
