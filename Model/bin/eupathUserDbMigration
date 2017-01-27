@@ -99,13 +99,6 @@ $stepsSpec{dropCacheModel} =
    ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
-# Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
-$stepsSpec{updateAndReportOnSteps} =
-  [
-   @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{updateAndReportOnStepsInternal}},
-  ];
-
 $stepsSpec{updateAndReportOnStepsInternal} =
   [
    @{$stepsSpec{cacheModel}},
@@ -119,6 +112,13 @@ $stepsSpec{updateAndReportOnStepsInternal} =
    ['validateReplExpand', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+  ];
+
+# Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
+$stepsSpec{updateAndReportOnSteps} =
+  [
+   @{$stepsSpec{configureProjects}},
+   @{$stepsSpec{updateAndReportOnStepsInternal}},
   ];
 
 # Is not called as part of release.  Can be done anytime during the cycle. 
