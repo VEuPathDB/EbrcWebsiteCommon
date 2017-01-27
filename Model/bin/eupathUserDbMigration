@@ -96,7 +96,7 @@ $stepsSpec{cacheModel} =
 
 $stepsSpec{dropCacheModel} =
   [
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
