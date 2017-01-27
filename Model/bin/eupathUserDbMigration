@@ -103,6 +103,11 @@ $stepsSpec{dropCacheModel} =
 $stepsSpec{updateAndReportOnSteps} =
   [
    @{$stepsSpec{configureProjects}},
+   @{$stepsSpec{updateAndReportOnStepsInternal}},
+  ];
+
+$stepsSpec{updateAndReportOnStepsInternal} =
+  [
    @{$stepsSpec{cacheModel}},
    ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
    ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
@@ -132,8 +137,9 @@ $stepsSpec{cleanup} =
 # Called at release.  Doesn't need cleanup, because cleanup is not needed at release time.  It can be done at any time.
 $stepsSpec{release} =
   [
+   @{$stepsSpec{configureProjects}},
    @{$stepsSpec{dropCacheModel}},
-   @{$stepsSpec{updateAndReportOnSteps}},
+   @{$stepsSpec{updateAndReportOnStepsInternal}},
    ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
