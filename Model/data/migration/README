@@ -93,7 +93,7 @@ drop table wdk_updated_steps;
 drop sequence wdk_questions_pkseq;
 drop sequence wdk_params_pkseq;
 
-13. (optionally done in advance) Run updateAndReportOnSteps pipeline on all projects.
+13. (done in advance; does NOT need to be done during release) Run updateAndReportOnSteps pipeline on all projects.
 
 NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration command below.
 
@@ -102,13 +102,13 @@ NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbo
 
 Check for success of all components.
 
-14. (optionally done in advance, but depends on step 13) Run cleanup pipeline on all projects.
+14. (optionally done in advance) Run cleanup pipeline on all projects.
 
 NOTE: You much choose a cut-off date for guest users (2-7 days ago recommended, in yyyy/mm/dd format).  See below for an example.
 NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
 
 > mkdir control/cleanup
-> CUTOFF_DATE='2017/01/15'
+> CUTOFF_DATE='2017/01/24'
 > eupathUserDbMigrationMulti --stepsSpecName cleanup --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --primaryModel PlasmoDB --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --controlDir $(pwd)/control/cleanup --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --removeGuestsCutoff $CUTOFF_DATE
 
 Check for success of all components.
