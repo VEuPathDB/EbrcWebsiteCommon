@@ -11,11 +11,11 @@ module.exports = function configure(additionalConfig) {
   return baseConfig.merge({
     context: process.cwd(),
     resolve: {
-      alias: {
+      alias: Object.assign({
         wdk: wdkRoot + '/webapp/wdk',
         eupathdb: __dirname + '/webapp',
         site: process.cwd() + '/webapp'
-      }
+      }, pkgAliases)
     },
     resolveLoader: {
       modules: [ 'node_modules', path.join(wdkRoot, 'node_modules') ]
@@ -30,13 +30,13 @@ module.exports = function configure(additionalConfig) {
     // without having to rewrite a bunch of application code.
     externals: [
       resolveWdkClientExternal,
-      Object.assign({
+      {
         'jquery'       : 'jQuery',
         'lodash'       : '_',
         'react'        : 'React',
         'react-dom'    : 'ReactDOM',
         'react-router' : 'ReactRouter'
-      }, pkgAliases)
+      }
     ]
   }, additionalConfig);
 }
