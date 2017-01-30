@@ -3,7 +3,6 @@ var fs = require('fs');
 
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
 var pkgPath = path.join(process.cwd(), 'package.json');
-var pkgAliases = fs.existsSync(pkgPath) ? require(pkgPath).browser : undefined;
 
 var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
 
@@ -11,11 +10,11 @@ module.exports = function configure(additionalConfig) {
   return baseConfig.merge({
     context: process.cwd(),
     resolve: {
-      alias: Object.assign({
+      alias: {
         wdk: wdkRoot + '/webapp/wdk',
         eupathdb: __dirname + '/webapp',
         site: process.cwd() + '/webapp'
-      }, pkgAliases)
+      }
     },
     resolveLoader: {
       modules: [ 'node_modules', path.join(wdkRoot, 'node_modules') ]
