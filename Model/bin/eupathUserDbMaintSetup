@@ -1,0 +1,54 @@
+#!/bin/bash
+
+set -x # echo commands as they run
+set -e # exit on error
+
+if [ "$#" != "6" ]; then
+  echo 'USAGE: eupathUserDbMaintSetup control_dir gus_app_dir build_num instance_name master_meta_file trunk_or_branch'
+  echo ""
+  echo "SAMPLE: eupathUserDbMaintSetup /eupath/data/EuPathDB/apicommMaint/release/bld30 /home/maintGusApp 30 apicomms /home/maintGusApp/PlasmoDBMetaFile.yaml api-release-30/"
+  exit 1
+fi
+
+controlDir=$1
+gusAppDir=$2
+buildNum=$3
+instanceName=$4
+masterMetaFile=$5
+trunkOrBranch=$6
+
+masterMetaFileBaseName=$(basename $masterMetaFile)
+
+if [ $masterMetaFileBaseName != 'PlasmoDBMetaConfig.yaml' ]; then
+    echo "master meta file '$masterMetaFile' must have basename PlasmoDBMetaConfig.yaml"
+    exit 1
+fi
+
+if [ -e $controlDir ]; then
+  echo "Control dir $controlDir already exists"
+  exit 1
+fi 
+
+mkdir $controlDir
+
+if [ -e $gusAppDir ]; then
+  echo "Gus app dir $gusAppDir already exists"
+  exit 1
+fi  
+
+mkdir $gusAppDirDir
+
+cd $gusAppDir
+
+wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh
+
+bash ./build_framework.sh $trunkOrBranch
+
+source ./project_home/install/bin/gusEnv.bash
+
+mkdir "$controlDir/yaml"
+
+cd "$controlDir/yaml"
+
+eupathCloneMetaFile $masterMetaFile -inc
+
