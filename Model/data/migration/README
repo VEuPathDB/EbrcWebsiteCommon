@@ -20,9 +20,9 @@ Migration steps
 
 > wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh
 
-3. Run directory setup script from the current directory.  This will check out and build required projects and may take a few minutes.
+3. Run directory setup script from the current directory.  Use this release's branch.  This will check out and build required projects and may take a few minutes.
 
-> bash build_framework.sh
+> bash build_framework.sh <branch_name>
 
 4. Source environment setup script (sets GUS_HOME and PROJECT_HOME and adds GUS dirs to PATH).
 
