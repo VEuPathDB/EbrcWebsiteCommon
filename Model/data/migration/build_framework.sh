@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e # exit on error
+
 if [ "$#" != "1" ]; then
   echo 'USAGE: build_framework.sh ["trunk"|<svn_branch>]'
   exit 1
@@ -10,6 +12,8 @@ branchPath=$branch
 if [ "$branch" != "trunk" ]; then
   branchPath=branches/$branch
 fi
+
+set -x # echo commands as they run
 
 mkdir -p gus_home/config project_home yaml control
 export GUS_HOME=$(pwd)/gus_home
