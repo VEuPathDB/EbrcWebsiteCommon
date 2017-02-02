@@ -1,12 +1,16 @@
 #!/bin/bash
 
-set -x # echo commands as they run
 set -e # exit on error
+
+function runCmd {
+    echo $1
+    $1
+}
 
 if [ "$#" != "6" ]; then
   echo 'USAGE: eupathUserDbMaintSetup control_dir gus_app_dir build_num instance_name master_meta_file trunk_or_branch'
   echo ""
-  echo "SAMPLE: eupathUserDbMaintSetup /eupath/data/EuPathDB/apicommMaint/release/bld30 /home/maintGusApp 30 apicomms /home/maintGusApp/PlasmoDBMetaFile.yaml api-release-30/"
+  echo "SAMPLE: eupathUserDbMaintSetup /eupath/data/EuPathDB/apicommMaint/release/bld30 /home/maintGusApp 30 apicomms /home/maintGusApp/PlasmoDBMetaFile.yaml api-build-30"
   exit 1
 fi
 
@@ -29,26 +33,28 @@ if [ -e $controlDir ]; then
   exit 1
 fi 
 
-mkdir $controlDir
+echo ""
+
+runCmd "mkdir $controlDir"
 
 if [ -e $gusAppDir ]; then
   echo "Gus app dir $gusAppDir already exists"
   exit 1
 fi  
 
-mkdir $gusAppDirDir
+runCmd "mkdir $gusAppDir"
 
-cd $gusAppDir
+runCmd "cd $gusAppDir"
 
-wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh
+runCmd "wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh"
 
-bash ./build_framework.sh $trunkOrBranch
+runCmd "bash ./build_framework.sh $trunkOrBranch"
 
-source ./project_home/install/bin/gusEnv.bash
+runCmd "source ./project_home/install/bin/gusEnv.bash"
 
-mkdir "$controlDir/yaml"
+runCmd "mkdir $controlDir/yaml"
 
-cd "$controlDir/yaml"
+runCmd "cd $controlDir/yaml"
 
-eupathCloneMetaFile $masterMetaFile -inc
+runCmd "eupathCloneMetaFile $masterMetaFile -inc"
 
