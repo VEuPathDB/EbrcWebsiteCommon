@@ -87,14 +87,6 @@ $stepsSpec{configureProjects} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ]
   ];
 
-# Run by migration team in advance of release to run long-duration steps that don't write to the DB
-$stepsSpec{releaseSetup} =
-  [
-   @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{dropCacheModel}},
-   @{$stepsSpec{cacheModel}}
-  ];
-
 # Used by DD team relatively early in the cycle, to validate the SQL in the wdk model.
 $stepsSpec{cacheModel} =
   [
@@ -105,6 +97,14 @@ $stepsSpec{cacheModel} =
 $stepsSpec{dropCacheModel} =
   [
    ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
+  ];
+
+# Run by migration team in advance of release to run long-duration steps that don't write to the DB
+$stepsSpec{releaseSetup} =
+  [
+   @{$stepsSpec{configureProjects}},
+   @{$stepsSpec{dropCacheModel}},
+   @{$stepsSpec{cacheModel}}
   ];
 
 $stepsSpec{updateAndReportOnStepsInternal} =
