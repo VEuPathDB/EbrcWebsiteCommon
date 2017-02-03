@@ -141,7 +141,6 @@ $stepsSpec{cleanup} =
 $stepsSpec{release} =
   [
    @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{dropCacheModel}},
    @{$stepsSpec{updateAndReportOnStepsInternal}},
 
    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
