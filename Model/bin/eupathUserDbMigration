@@ -87,10 +87,13 @@ $stepsSpec{configureProjects} =
    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ]
   ];
 
-# Used by DD team relatively early in the cycle, to validate the SQL in the wdk model.
+$stepsSpec{createCacheModel} =
+  [
+   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ]
+  ];
+
 $stepsSpec{cacheModel} =
   [
-   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
