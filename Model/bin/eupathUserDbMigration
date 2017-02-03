@@ -103,7 +103,6 @@ $stepsSpec{dropCacheModel} =
 $stepsSpec{releaseSetup} =
   [
    @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{dropCacheModel}},
    @{$stepsSpec{cacheModel}}
   ];
 
