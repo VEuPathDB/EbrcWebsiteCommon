@@ -17,7 +17,7 @@ usage() unless ($primaryModel && $sqlFile);
 
 
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
-my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getLogin(), $modelConfig->getPassword());
+my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
 
 my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{userSchema});
 

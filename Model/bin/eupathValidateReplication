@@ -45,8 +45,8 @@ $dsn[2] = $northUserDbName;
 my $northUserDbiDsn = join(':', @dsn);
 $dsn[2] = $southUserDbName;
 my $southUserDbiDsn = join(':', @dsn);
-my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
-my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
+my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
+my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
 
 print STDOUT "\nSleeping for $sleep seconds to give replication time to catch up.\n";
 sleep($sleep);

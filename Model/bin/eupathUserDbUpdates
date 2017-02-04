@@ -25,7 +25,7 @@ my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 $dsn[2] = $userDbName;
 my $userDbiDsn = join(':', @dsn);
-my $userDbh = &getDbh($userDbiDsn, $modelConfig->getLogin(), $modelConfig->getPassword());
+my $userDbh = &getDbh($userDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
 
 print STDERR "\n";
 
