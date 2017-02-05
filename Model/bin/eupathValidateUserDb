@@ -8,9 +8,10 @@ use WDK::Model::DbUtils qw(jdbc2oracleDbi);
 use Getopt::Long;
 use DBI;
 
-my ($sqlFile, $primaryModel);
+my ($sqlFile, $primaryModel, $project);
 &GetOptions('sqlFile=s' => \$sqlFile,
             'primaryModel=s' => \$primaryModel
+            'project=s' => \$project
 	   );
 
 usage() unless ($primaryModel && $sqlFile);
@@ -19,7 +20,7 @@ usage() unless ($primaryModel && $sqlFile);
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
 my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
 
-my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{userSchema});
+my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{userSchema}, $project);
 
 my $foundError = 0;
 my @passedTests;
@@ -50,7 +51,7 @@ foreach my $t (keys(%failedTests)) {
 exit(scalar(%failedTests));	# count of failed tests
 
 sub parseSqlFile {
-  my ($sqlFile, $schema) = @_;
+  my ($sqlFile, $schema, $project) = @_;
 
   open(F, $sqlFile) || die "Can't open file '$sqlFile'\n";
   my @tests;
@@ -66,6 +67,8 @@ sub parseSqlFile {
 	$currentTest->{name} = $1;
       } else {
 	die "SQL is expected to mention schema name '$schema'\n$sql\n" unless $sql =~ /$schema/;
+	die "SQL is expected to include the macro PROJECT_MACRO" if $project && $sql !~ /PROJECT_MACRO/;
+	$sql =~ s/PROJECT_MACRO/$project/g if $project;
 	$currentTest->{sql} = $sql;
 	push(@tests, $currentTest);
 	$currentTest = {};
@@ -106,18 +109,20 @@ Validate updates to the user DB.  Runs a set of SQL tests, each of which return 
 
 Prints a report about all the tests that are run.
 
-Usage: eupathValidateUserDb --primaryModel model --sqlFile sql_file
+Usage: eupathValidateUserDb --primaryModel model --sqlFile sql_file [--project project_name]
 
 Where:
   primaryModel: the project in gus_home/config in which to find model-config.xml that has user DB connect info.
   sqlFile: a file of sql tests (see below).
+  project: the name of a project to subsitute into the sql. If provided, the test sql must contain the macro PROJECT_MACRO
 
 Required format of sqlFile:
  - a series of sql statements, *not* terminated by semi-colon
  - the SQLs are delimited by a line with a single character, a semi-colon
  - the SQLs alternate between
     - an sql that provides a name for the test.  it *must* include the string test_name
-    - an sql that performs the test.  it *must* include the name of the current userdb schema (eg, userlogins5)
+    - an sql that performs the test.  it *must* include the name of the current userdb schema (eg, userlogins5).
+      the sql can optionally include the macro PROJECT_MACRO (only if the --project argument is supplied)
  - blank lines are ignored
  - this format means that the sql file can be run as a pure sql script, if desired.
 
