@@ -14,8 +14,9 @@ usage: eupathUserDbMigrationStepWrapper step_name
 
 my $cmd = <STDIN>;
 chomp $cmd;
+my $t = time();
 system("echo '$cmd' > $stepName.running");
-system("$cmd > $stepName.out 2> $stepName.err");
+system("$cmd > $stepName.$t.out 2> $stepName.$t.err");
 my $status = $? >> 8;
 
 system("echo '$cmd' > $stepName.done") unless $status;
