@@ -3,6 +3,9 @@
 use Getopt::Long;
 use strict;
 
+my $firstLog = 1;
+my @allowedPhases = ('init', 'main');
+
 # FOR NOW... the pipelines used by eupathUserDbMigration are HARD CODED in this file!
 
 # To edit a pipeline, see all comments labeled with EDIT_PIPELINE
@@ -24,8 +27,7 @@ use strict;
 my @stepSpecificArgs =
 (
  'primaryModel=s',
- 'projects=s',
- 'projectsWithMapping=s',
+ 'project=s',
  'removeGuestsCutoff=s',
  'questionsMappingFile=s',
  'organismsMappingFile=s',
@@ -38,15 +40,20 @@ my @stepSpecificArgs =
 my @argv = @ARGV; # save before emptied by getoptions
 my %args;
 &GetOptions(\%args,
-      'controlDir=s',
-      'stepsSpecName=s',
-      'skipSteps=s',
-      'usingSandbox!',
-      'stopAfterStep=s',
-      'listSteps!',
-      'validateSteps!',
-      @stepSpecificArgs
-);
+	    'controlDir=s',
+	    'pipeline=s',
+	    'skipSteps=s',
+	    'usingSandbox!',
+	    'stopAfterStep=s',
+	    'redoStep=s',
+	    'listSteps!',
+	    'validateSteps!',
+	    'phase=s',
+	    @stepSpecificArgs
+    );
+
+die "Argument 'phase' must be absent, or exactly one of: " . join (",", @allowedPhases) . "\n"
+    if $args{phase} && !grep(/$args{phase}/, @allowedPhases);
 
 # EDIT_PIPELINE - Step 2
 # Validate that each file or dir argument is a full path
@@ -70,52 +77,39 @@ $args{skipParams} = $args{skipParams} ? '-skipParams': ' ';
 #  -command to run, which can include embedded args from the eupathUserDbMigration command line, or other variables, as needed
 #  -a flag indicating if this step is only needed in a replication context.  Must be 0 or 1.
 #  -a list of required eupathUserDbMigration command line args (those referred to by the command).  (Use [] if none).
-#  -PROJECT_MACRO values list.  If the command includes a PROJECT_MACRO, then expand this single command into multiple commands, where each is instantiated with a single project from this list.
 
 my $REPLIC_STEP = 1;
 
-my %stepsSpec;
+#################################################################################################################
+#####  Private sub-pipelines
+#################################################################################################################
+my %subPipeline;
 
 
-###############################################################################################################
-############  Main pipelines                                                                   ################
-############    these are in the rough order they will be used in the typical release scenario ################
-###############################################################################################################
-
-$stepsSpec{configureProjects} =
+$subPipeline{configureProjects} =
   [
-   ['buildConfigFiles', "eupathMultiSiteConfigure '$args{projects}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ]
+    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
   ];
 
-$stepsSpec{createCacheModel} =
+
+$subPipeline{cacheModelInit} =
   [
-   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ]
+   @{$subPipeline{configureProjects}},
+   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
+   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
   ];
 
-$stepsSpec{cacheModel} =
+$subPipeline{cacheModel} =
   [
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{projects}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
   ];
 
-$stepsSpec{dropCacheModel} =
+$subPipeline{updateAndReportOnStepsInternal} =
   [
-   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
-  ];
-
-# Run by migration team in advance of release to run long-duration steps that don't write to the DB
-$stepsSpec{releaseSetup} =
-  [
-   @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{cacheModel}}
-  ];
-
-$stepsSpec{updateAndReportOnStepsInternal} =
-  [
-   @{$stepsSpec{cacheModel}},
-   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['mapOrganism', "eupathMapOrganism $args{project} $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projects']],
 #   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
-   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
+   ['mapQuestionName', "eupathMapQuestion $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects']],
 #   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
    ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
@@ -124,110 +118,148 @@ $stepsSpec{updateAndReportOnStepsInternal} =
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
+
+###############################################################################################################
+############  Main pipelines                                                                   ################
+############    these are in the rough order they will be used in the typical release scenario ################
+###############################################################################################################
+
+my %pipelines;
+
 # Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
-$stepsSpec{updateAndReportOnSteps} =
-  [
-   @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{updateAndReportOnStepsInternal}},
-  ];
+$pipelines{updateAndReportOnSteps} =
+  {
+   init =>
+   [
+    @{$subPipeline{cacheModelInit}},
+   ],
+
+   main =>
+   [
+    @{$subPipeline{cacheModel}},
+    @{$subPipeline{updateAndReportOnStepsInternal}},
+   ]
+  };
+
+$pipelines{releaseSetup} =
+  {
+   init =>
+   [
+    @{$subPipeline{cacheModelInit}},
+   ],
+
+   main =>
+   [
+    @{$subPipeline{cacheModel}},
+   ]
+  };
+
+
+# Called at release.
+$pipelines{release} =
+  {
+   main =>
+   [
+    @{$subPipeline{updateAndReportOnStepsInternal}},
+
+    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
+    ['validateReplBroken', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+    ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['projects']],
+    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+
+    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
+    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ]
+  };
 
 # Is not called as part of release.  Can be done anytime during the cycle. 
-$stepsSpec{cleanup} =
-  [
-   @{$stepsSpec{configureProjects}},
-   ['guestUserReport', "eupathGuestUserReport --primaryModel $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
-   ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
-#   ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-  ];
+$pipelines{cleanup} =
+  {
+   main =>
+   [
+   @{$subPipeline{configureProjects}},
+    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
+    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ]
+  };
 
-# Called at release.  Doesn't need cleanup, because cleanup is not needed at release time.  It can be done at any time.
-$stepsSpec{release} =
-  [
-   @{$stepsSpec{configureProjects}},
-   @{$stepsSpec{updateAndReportOnStepsInternal}},
-
-   ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
-#   ['validateReplBroken', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-
-   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
-#   ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-
-   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
-#   ['validateReplBasket', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-  ];
+$pipelines{test} =
+  {
+   init =>
+   [
+    ['echo-0', "sleep 10; echo $args{pipeline}", !$REPLIC_STEP, ['pipeline']],
+   ],
+   main =>
+   [
+    ['echo-1', "sleep 10; echo $args{pipeline}", !$REPLIC_STEP, ['pipeline']],
+    ['echo-2', "sleep 10; echo $args{primaryModel}", $REPLIC_STEP, ['primaryModel']],
+    ['echo-3', "sleep 10; echo woohoo, $REPLIC_STEP", []],
+    ['ls','ls /home/pickle', !$REPLIC_STEP, []],
+   ]
+  };
 
 
 #####################################################################################################################
 ##########   Special case pipelines
 #####################################################################################################################
 
-$stepsSpec{gus4} =
+$pipelines{gus4} =
   [
-   @{$stepsSpec{configureProjects}},
-   ['gus4', "gus4StepTableMigration PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects'], $args{projects}],
+   @{$subPipeline{configureProjects}},
+   ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects']],
    # Cannot put validation here since it checks the whole DB (is not project-specific)
    #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['primaryModel']]
   ];
 
-$stepsSpec{gus4Ortho} =
+$pipelines{gus4Ortho} =
   [
-   @{$stepsSpec{configureProjects}},
-   ['gus4', "eupathGus4StepTableMigration '$args{projects}' " , !$REPLIC_STEP, ['projects'] ],
+   @{$subPipeline{configureProjects}},
+   ['gus4', "eupathGus4StepTableMigration '$args{project}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
+##################################################################################################################
 
-######################################################################################################################
-##########  Redundant individual pipelines, possibly used for convenience sometimes
-######################################################################################################################
+usage() unless $args{pipeline} && ($args{controlDir} || $args{listSteps} || $args{validateSteps});
 
-$stepsSpec{mappingQuestOrgs} =
-  [
-   @{$stepsSpec{configureProjects}},
-   ['mapOrganism', "eupathMapOrganism PROJECT_MACRO $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
-   ['mapQuestionName', "eupathMapQuestion PROJECT_MACRO $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projectsWithMapping'], $args{projectsWithMapping}],
-  ];
+my $pipeline = $pipelines{$args{pipeline}};
+die "Error: can't find pipeline with name '$args{pipeline}'\n" unless $pipeline;
 
-$stepsSpec{fixBaskets} =
-  [
-   @{$stepsSpec{configureProjects}},
-   ['fixBaskets', "wdkFixBasket -model '$args{projects}'", !$REPLIC_STEP, ['projects'] ],
-  ];
+# get steps in the requested phases.
+my @stepSpecs;
+if ($args{phase}) {
+  die "Phase '$args{phase}' is not supported\n" unless grep(/$args{phase}/, @allowedPhases);
+  if ($pipeline->{$args{phase}}) {
+    push(@stepSpecs, @{$pipeline->{$args{phase}}});
+  } else {
+    &log("Phase '$args{phase}' for pipeline '$args{pipeline}' is not defined.  Exiting with status 0.");
+    exit 0;
+  }
+} else {
+  foreach my $phaseName (@allowedPhases) {
+    push(@stepSpecs, @{$pipeline->{$phaseName}}) if $pipeline->{$phaseName};
+  }
+}
 
-$stepsSpec{expand} =
-  [
-   @{$stepsSpec{configureProjects}},
-   ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
-  ];
+# validate that pipeline has no duplicate step names
+my %stepNamesHash;
+foreach my $stepSpec (@stepSpecs) {
+  die "Duplicate step name '$stepSpec->[0]'\n" if $stepNamesHash{$stepSpec->[0]};
+  $stepNamesHash{$stepSpec->[0]} = 1;
+}
 
-$stepsSpec{replValidation} =
-  [
-   @{$stepsSpec{configureProjects}},
-   ['validateRepl', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-  ];
+# validate stop after, if any
+if ($args{stopAfterStep}) {
+  my $found = 0;
+  foreach my $stepSpec (@stepSpecs) { $found |= ($stepSpec->[0] eq $args{stopAfterStep}); }
+  die "Invalid stopAfterStep '$args{stopAfterStep}'\n" unless $found;
+}
 
-$stepsSpec{validate} =
-  [
-   ['validateSteps', "wdkValidateStep -model PROJECT_MACRO", !$REPLIC_STEP , ['projects'], $args{projects}],
-  ];
-
-$stepsSpec{test} =
-  [
-   ['echo-1', "sleep 10; echo $args{stepsSpecName}", !$REPLIC_STEP, ['stepsSpecName']],
-   ['echo-2', "sleep 10; echo $args{primaryModel}", $REPLIC_STEP, ['primaryModel']],
-   ['echo-3', "sleep 10; echo PROJECT_MACRO", $REPLIC_STEP, [], "PlasmoDB, ToxoDB"],
-   ['ls','ls /home/pickle', !$REPLIC_STEP, []],
-  ];
-
-
-usage() unless $args{stepsSpecName} && ($args{controlDir} || $args{listSteps} || $args{validateSteps});
-
-# get desired steps spec, and validate that it has no duplicate step names
-my $stepsSpec = $stepsSpec{$args{stepsSpecName}};
-die "Error: can't find steps spec with name '$args{stepsSpecName}'\n" unless $stepsSpec;
-my %unexpandedStepsSpec;
-foreach my $stepSpec (@$stepsSpec) {
-  die "Duplicate step name '$unexpandedStepsSpec{$stepSpec->[0]}'\n" if $unexpandedStepsSpec{$stepSpec->[0]};
-  $unexpandedStepsSpec{$stepSpec->[0]} = 1;
+# validate redo step, if any
+if ($args{redoStep}) {
+  my $found = 0;
+  foreach my $stepSpec (@stepSpecs) { $found |= ($stepSpec->[0] eq $args{redoStep}); }
+  die "Invalid redoStep '$args{redoStep}'\n" unless $found;
 }
 
 
@@ -236,19 +268,17 @@ my %skipSteps;
 if ($args{skipSteps}) {
   my @skipSteps = split(/,\s*/, $args{skipSteps});
   foreach my $stepName (@skipSteps) {
-    die "Trying to skip step '$stepName' which does not exist\n" unless $unexpandedStepsSpec{$stepName};
+    die "Trying to skip step '$stepName' which does not exist\n" unless $stepNamesHash{$stepName};
     $skipSteps{$stepName} = 1;
   }
 }
 
-
 # iterate through steps in spec
 #   - construct step objects
-#   - expand steps with PROJECT_MACRO
 #   - validate that all included steps have their required args satisfied.
 print STDERR "\nRunning in --validateSteps mode\n\n" if $args{validateSteps};
-my @expandedSteps;
-foreach my $stepSpec (@$stepsSpec) {
+my @stepObjects;
+foreach my $stepSpec (@stepSpecs) {
   my $step = {};
   ($step->{name}, $step->{cmd}, $step->{isReplic}, $step->{reqdArgsList}, $step->{projectMacroValues}) = @$stepSpec;
   $step->{hasReqdArgs} = 1;
@@ -258,44 +288,36 @@ foreach my $stepSpec (@$stepsSpec) {
 
   # if skipping this step, remember that, and put out a message
   if ($step->{skip}) {
-    push(@expandedSteps, $step);
+    push(@stepObjects, $step);
     print STDERR "$step->{name}: SKIPPING\n" if $args{validateSteps};
     next;
   }
 
   # if not skipping this step, validate its input args
   die "Step '$step->{name}' can't be run because its command depends on cmd line arguments you didn't provide. The required args are: --" . join(", --", @{$step->{reqdArgsList}}) . "\n" unless $step->{hasReqdArgs};
-  die "Step '$step->{name}' includes a PROJECT_MACRO but no projects were included for it on the cmd line\n" if $step->{cmd} =~ /PROJECT_MACRO/ && !$step->{projectMacroValues};
 
-  # expand its PROJECT_MACRO, if it has one
   # and for each step, if only validating, put out the 
   my $stoppedAfter = 0;
-  if ($step->{projectMacroValues}) {
-    my @projectNames = split(/,\s*/, $step->{projectMacroValues});
-    foreach my $projectName (@projectNames) {
-      my $newStep = {};
-      $newStep->{name} = "$step->{name}-$projectName";
-      $newStep->{cmd} = $step->{cmd};
-      $newStep->{cmd} =~ s/PROJECT_MACRO/$projectName/g;
-      push(@expandedSteps, $newStep);
-      last if ($stoppedAfter = &validatingAndStopAfter($newStep));
-    }
-  } else {
-    push(@expandedSteps, $step);
-    $stoppedAfter = &validatingAndStopAfter($step);
-  }
+  push(@stepObjects, $step);
+  $stoppedAfter = &validatingAndStopAfter($step);
   last if $stoppedAfter;
 }
 
 exit 0 if $args{validateSteps};
 
 chdir $args{controlDir} || die "Can't 'chdir $args{controlDir}'\n";
-open (LOG, ">>$args{controlDir}/pipeline.log") || die "Can't open log file '$args{controlDir}/pipeline.log' for writing\n";
-&log("Running cmd: eupathUserDbMigration " . join(" ", @argv));
-my $cursor = 0;
-while ($cursor < scalar(@expandedSteps)) {
 
-  my $step = $expandedSteps[$cursor];
+# if redo option provided, removed done files for that and subsequent steps
+my $removeDone;
+foreach my $step (@stepObjects) {
+  $removeDone = 1 if ($step->{name} eq $args{redoStep});
+  unlink "$step->{name}.done" if $removeDone;
+}
+
+my $cursor = 0;
+while ($cursor < scalar(@stepObjects)) {
+
+  my $step = $stepObjects[$cursor];
   my $stepName = $step->{name};
   if (-e "$stepName.failed") {
     &log("Step '$stepName' failed.  Can't proceed");
@@ -327,7 +349,16 @@ while ($cursor < scalar(@expandedSteps)) {
 
 sub log {
   my ($msg) = @_;
+
   my $t = localtime;
+
+  if ($firstLog) {
+    open (LOG, ">>$args{controlDir}/pipeline.log") || die "Can't open log file '$args{controlDir}/pipeline.log' for writing\n";
+
+    print LOG "===========================================================================";
+    print LOG "$t\tRunning cmd: eupathUserDbMigration " . join(" ", @argv) . "\n\n";
+    $firstLog = 0;
+  }
   print LOG "$t\t$msg\n\n";
 }
 
@@ -345,20 +376,22 @@ sub validatingAndStopAfter {
 
 sub usage {
 
-  my $stepsSpecNames = join(", ", keys(%stepsSpec));
+  my $pipelineNames = join(", ", keys(%pipelines));
 
 die "
 
-eupathUserDbMigration --stepsSpecName spec_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps] [--usingSandbox]
+eupathUserDbMigration --pipelineName pipeline_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps]  [--redoStep step_name] [--usingSandbox] [--phase phase]
 
 Where:
-  stepsSpecName: the name of a list of steps to run.  Options are: $stepsSpecNames
+  pipeline: the name of a list of steps to run.  Options are: $pipelineNames
   controlDir: the dir in which this program will write all its log files
-  listSteps: list the steps in the provided stepsSpecName.  (Does not expand steps based on PROJECT_MACRO)
-  validateSteps: don't run any commands.  Just validate the steps in the provided stepsSpecName (expanding PROJECT_MACRO), confirming that all required step-specific args are provided.
+  listSteps: list the steps in the provided pipelineName.
+  validateSteps: don't run any commands.  Just validate the steps in the provided pipelineName, confirming that all required step-specific args are provided.
   stopAfterStep: the name of the step to stop after (Default: none)
   skipSteps: a comma delimited list of steps to skip (Default: none)
+  redoStep: a step to restart the pipeline at.  If it and following steps were marked as done, their done files will be removed.  (Default: none)
   usingSandbox: skip the steps marked as useful only in a replication context
+  phase: if present, must be either 'init' or 'main', to limit this run to those phases of the pipeline.
 
 Additional step-specific arguments are: --" . join(" --", @stepSpecificArgs) . "
 

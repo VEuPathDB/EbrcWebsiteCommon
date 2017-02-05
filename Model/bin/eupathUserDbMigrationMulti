@@ -19,7 +19,10 @@ die "Control dir '$controlDir' does not exist\n" unless (-d $controlDir);
 my $logFile = "$controlDir/multi.log";
 open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
 
+
+
 my $failedCount = 0;
+my $initIsDone = 0;
 foreach my $project (@projects) {
   next if ($argsMap->{'--usingSandbox'} && $project eq 'EuPathDB');
   my %newArgsMap = %$argsMap;
@@ -33,7 +36,18 @@ foreach my $project (@projects) {
     next;
   }
   my @cmdLineArgs = map { ($_, $newArgsMap{$_}) } @$argsArr;
-  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) ." 2> $newArgsMap{'--controlDir'}/pipeline.err";
+  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs);
+  my $redirect = " 2> $newArgsMap{'--controlDir'}/pipeline.err";
+  if (!$initIsDone) {
+    my $initCmd = "$cmd --phase init $redirect";
+    &log($initCmd);
+    my $status = system($initCmd);
+    if ($status) {
+      &log("Init phase failed.  Exiting with status 1");
+      exit 1;
+    }
+    $initIsDone = 1;
+  }
   &log($cmd);
   my $status = system($cmd);
   $failedCount++ if $status;
