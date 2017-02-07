@@ -4,7 +4,7 @@ use Getopt::Long;
 use strict;
 
 my $firstLog = 1;
-my @allowedPhases = ('init', 'main');
+my @allowedPhases = ('init', 'main', 'clean');
 
 # FOR NOW... the pipelines used by eupathUserDbMigration are HARD CODED in this file!
 
@@ -95,6 +95,7 @@ $subPipeline{configureProjects} =
 $subPipeline{cacheModelInit} =
   [
    @{$subPipeline{configureProjects}},
+   ['wdkMaintDrop', "wdkMaintDrop", !$REPLIC_STEP, [] ],
    ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
    ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
   ];
@@ -118,6 +119,13 @@ $subPipeline{updateAndReportOnStepsInternal} =
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
+$subPipeline{reportBroken} =
+  [
+    ['wdkReportBroken', "wdkReportBroken '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
+  ];
+
+
+
 
 ###############################################################################################################
 ############  Main pipelines                                                                   ################
@@ -138,7 +146,13 @@ $pipelines{updateAndReportOnSteps} =
    [
     @{$subPipeline{cacheModel}},
     @{$subPipeline{updateAndReportOnStepsInternal}},
-   ]
+   ],
+
+   clean =>
+   [
+    @{$subPipeline{reportBroken}},
+   ],
+
   };
 
 $pipelines{releaseSetup} =
@@ -169,7 +183,12 @@ $pipelines{release} =
 
     ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
     ['validateReplBasket', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
-   ]
+   ],
+
+   clean =>
+   [
+    @{$subPipeline{reportBroken}},
+   ],
   };
 
 # Is not called as part of release.  Can be done anytime during the cycle. 
@@ -188,14 +207,14 @@ $pipelines{test} =
   {
    init =>
    [
-    ['echo-0', "sleep 10; echo $args{pipeline}", !$REPLIC_STEP, ['pipeline']],
+    ['echo-0', "sleep 10; echo $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
    ],
    main =>
    [
-    ['echo-1', "sleep 10; echo $args{pipeline}", !$REPLIC_STEP, ['pipeline']],
+    ['echo-1', "sleep 10; echo $args{project}", !$REPLIC_STEP, ['project']],
     ['echo-2', "sleep 10; echo $args{primaryModel}", $REPLIC_STEP, ['primaryModel']],
     ['echo-3', "sleep 10; echo woohoo, $REPLIC_STEP", []],
-    ['ls','ls /home/pickle', !$REPLIC_STEP, []],
+    ['ls','ls', !$REPLIC_STEP, []],
    ]
   };
 
@@ -355,7 +374,7 @@ sub log {
   if ($firstLog) {
     open (LOG, ">>$args{controlDir}/pipeline.log") || die "Can't open log file '$args{controlDir}/pipeline.log' for writing\n";
 
-    print LOG "===========================================================================";
+    print LOG "===========================================================================\n\n";
     print LOG "$t\tRunning cmd: eupathUserDbMigration " . join(" ", @argv) . "\n\n";
     $firstLog = 0;
   }

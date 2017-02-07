@@ -6,9 +6,9 @@ usage() unless scalar(@ARGV);
 
 my ($argsMap, $argsArr) = &extractArgs(@ARGV);
 
-die "Error: Can't use eupathUserDbMigrationMulti without a --projects argument\n" unless $argsMap->{'--projects'};
+die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel and --project\n" unless $argsMap->{'--project'} && $argsMap->{'--primaryModel'};
 
-my @projects = split(/,\s*/, $argsMap->{'--projects'});
+my @projects = split(/,\s*/, $argsMap->{'--project'});
 
 die "Error: No projects supplied" unless scalar(@projects);
 
@@ -17,44 +17,68 @@ my $controlDir = $argsMap->{'--controlDir'};
 die "Control dir '$controlDir' does not exist\n" unless (-d $controlDir);
 
 my $logFile = "$controlDir/multi.log";
-open(LOG, ">$logFile") || die "Can't open log file '$logFile'\n";
+open(LOG, ">>$logFile") || die "Can't open log file '$logFile'\n";
+print LOG "===========================================================================\n\n";
+print LOG localtime . "\tRunning cmd: eupathUserDbMigrationMulti " . join(" ", @ARGV) . "\n\n";
 
 
+# do init phase
+doPhase($argsMap, $argsArr, "init");
 
+# do each project
 my $failedCount = 0;
-my $initIsDone = 0;
 foreach my $project (@projects) {
   next if ($argsMap->{'--usingSandbox'} && $project eq 'EuPathDB');
   my %newArgsMap = %$argsMap;
-
-  $newArgsMap{'--projects'} = $project;
+  $newArgsMap{'--project'} = $project;
   $newArgsMap{'--primaryModel'} = $project if $newArgsMap{'--primaryModel'};
-  $newArgsMap{'--projectsWithMapping'} = $argsMap->{'--projectsWithMapping'} =~ /$project/? $project : '""';
   $newArgsMap{'--controlDir'} .= "/$project";
   if (! -d $newArgsMap{'--controlDir'} && !mkdir $newArgsMap{'--controlDir'}) {
     log("Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project");
     next;
   }
-  my @cmdLineArgs = map { ($_, $newArgsMap{$_}) } @$argsArr;
-  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs);
-  my $redirect = " 2> $newArgsMap{'--controlDir'}/pipeline.err";
-  if (!$initIsDone) {
-    my $initCmd = "$cmd --phase init $redirect";
-    &log($initCmd);
-    my $status = system($initCmd);
-    if ($status) {
-      &log("Init phase failed.  Exiting with status 1");
-      exit 1;
-    }
-    $initIsDone = 1;
-  }
-  &log($cmd);
-  my $status = system($cmd);
+  my $status = runPipeline(\%newArgsMap, $argsArr);
   $failedCount++ if $status;
   &log($project . ($status? " Failed\n" : " Succeeded\n"));
 }
 
-&log("Done ($failedCount failed)");
+# do clean phase
+if ($failedCount) {
+  &log("$failedCount projects failed.  Skipping clean phase.");
+} else {
+  doPhase($argsMap, $argsArr, "clean");
+  &log("Done. No projects failed.");
+}
+
+
+
+
+###################################################################################################
+
+sub doPhase {
+  my ($argsMap, $argsArr, $phase) = @_;
+  my %newArgsMap = %$argsMap;
+  $newArgsMap{'--project'} = $argsMap->{'--primaryModel'};
+  $newArgsMap{'--controlDir'} .= "/$phase";
+  $newArgsMap{'--phase'} = $phase;
+  if (! -d $newArgsMap{'--controlDir'} && !mkdir $newArgsMap{'--controlDir'}) {
+    die("Could not create controlDir '$newArgsMap{'--controlDir'}'.\n");
+  }
+  runPipeline(\%newArgsMap, $argsArr)
+    && die "Failed running $phase phase.\n";
+}
+
+
+sub runPipeline {
+  my ($argsMap, $argsArr) = @_;
+
+ # my @cmdLineArgs = map { ($_, $argsMap->{$_}) } @$argsArr;
+  my @cmdLineArgs = map { ($_, $argsMap->{$_}) } keys(%$argsMap);
+  my $cmd = "eupathUserDbMigration " . join (" ", @cmdLineArgs) . " 2> $argsMap->{'--controlDir'}/pipeline.err";
+  &log($cmd);
+  my $status = system($cmd);
+  return $status;
+}
 
 sub log {
   my ($msg) = @_;
@@ -81,17 +105,18 @@ sub extractArgs {
 sub usage {
 
 die "
-Run a set of user db migration pipelines in parallel, one per project.
+Run a set of user db migration pipelines (serially), one per project.  Set things up by running a single pipeline, in  init phase, using the primary model as the model.  Finalize by running a single pipeline, in the clean phase, using the primary model as the model.  Only run clean if all project pipelines succeeed.
 
 Usage: eupathUserDbMigrationMulti cmd_line_args
 
 Where: 
   cmd_line_args:  the exact arguments you want passed to each parallel run of eupathUserDbMigration.
 
-The --projects argument is used to drive the parallel runs.  Each project P specified in that list is given its own run.  In those separate runs:
-  - the --projects argument is set to a single project, P.
+The --primaryProject argument is used as the project for the init and clean phases.
+
+The --project argument is used to drive the parallel runs.  Each project P specified in that list is given its own run.  In those separate runs:
+  - the --project argument is set to a single project, P.
   - the --primaryModel argument is set to P
-  - the --projectsWithMapping argument is reduced to P, if it contained P, or empty otherwise
   - the --controlDir argument is appended with /P, to give each run a private control dir named after its project
 
 The set of commands executed by eupathUserDbMigrationMulti are listed in controlDir/multi.log
