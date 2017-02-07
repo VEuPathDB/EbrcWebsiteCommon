@@ -88,32 +88,32 @@ my %subPipeline;
 
 $subPipeline{configureProjects} =
   [
-    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['projects', 'metaFileNameTemplate'] ],
+    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{primaryModel}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['primaryModel', 'metaFileNameTemplate'] ],
   ];
 
 
 $subPipeline{cacheModelInit} =
   [
    @{$subPipeline{configureProjects}},
-   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
-   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
+   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
+   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
   ];
 
 $subPipeline{cacheModel} =
   [
-   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['projects', 'keepUserDBCache', 'skipParams'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['project', 'keepUserDBCache', 'skipParams'] ],
   ];
 
 $subPipeline{updateAndReportOnStepsInternal} =
   [
-   ['mapOrganism', "eupathMapOrganism $args{project} $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'projects']],
-#   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['mapOrganism', "eupathMapOrganism $args{project} $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'project']],
+   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
-   ['mapQuestionName', "eupathMapQuestion $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects']],
-#   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['mapQuestionName', "eupathMapQuestion $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
+   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
    ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
-#   ['validateReplExpand', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['validateReplExpand', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
 
    ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
