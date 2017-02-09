@@ -5,7 +5,7 @@ response.setStatus(500);
 --%>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="api" uri="http://apidb.org/taglib" %>
+<%@ taglib prefix="api" uri="http://eupathdb.org/taglib" %>
 
 <imp:pageFrame title="Unexpected Error" >
 

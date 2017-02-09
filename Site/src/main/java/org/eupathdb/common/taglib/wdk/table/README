@@ -1,0 +1,59 @@
+taglib for WDK tables - it closes the database connection in the tag so you don't have to remember to close in the JSP
+
+Sample Usage:
+
+<table border="1" cellspacing="3" cellpadding="2" align="${align}">
+
+<%-- table header --%>
+<api:table var="tbl" tableName="AllDbLinks">
+
+  <tr class="secondary3">
+  <api:whileColumnHeader var="hCol">
+  
+    <c:if test="${!hCol.internal}">
+    <th align="left"><font size="-2">${hCol.displayName}</font></th>
+    </c:if>
+  
+  </api:whileColumnHeader>
+  </tr>
+
+  <c:set var="i" value="0"/>
+
+  <api:whileRow var="row">
+    <c:choose>
+    <c:when test="${i % 2 == 0}"><tr class="rowLight"></c:when>
+    <c:otherwise><tr class="rowMedium"></c:otherwise>
+    </c:choose>
+
+    <api:whileColumn var="col">
+        <c:choose>
+            <c:when test="${col.class.name eq 'org.gusdb.wdk.model.AttributeFieldValue' && col.name eq 'pval'}">
+                <td nowrap="nowrap">
+            </c:when>
+            <c:when test="${col eq 'pval'}">
+                <td nowrap="nowrap">
+            </c:when>
+            <c:otherwise>
+                <td>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${col.class.name eq 'org.gusdb.wdk.model.LinkValue'}">
+                <a href="${col.url}">${col.visible}</a>
+            </c:when>
+            <c:when test="${col.class.name eq 'org.gusdb.wdk.model.AttributeFieldValue'}">
+                ${col.value}
+            </c:when>
+            <c:otherwise>
+                ${col}
+            </c:otherwise>
+        </c:choose>
+    </api:whileColumn>
+
+   </tr>
+   <c:set var="i" value="${i +  1}"/>
+ </api:whileRow>
+
+</api:table>
+</table>
+

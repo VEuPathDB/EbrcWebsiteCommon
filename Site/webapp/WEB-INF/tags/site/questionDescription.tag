@@ -4,7 +4,7 @@
 <%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
 <%@ taglib prefix="bean" uri="http://struts.apache.org/tags-bean" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="api" uri="http://apidb.org/taglib" %>
+<%@ taglib prefix="api" uri="http://eupathdb.org/taglib" %>
 
 
 <%-- get wdkQuestion; setup requestScope HashMap to collect help info for footer --%>

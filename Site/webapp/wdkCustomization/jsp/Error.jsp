@@ -8,7 +8,7 @@
 response.setStatus(500);
 %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="api" uri="http://apidb.org/taglib" %>
+<%@ taglib prefix="api" uri="http://eupathdb.org/taglib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:catch var='e'>
