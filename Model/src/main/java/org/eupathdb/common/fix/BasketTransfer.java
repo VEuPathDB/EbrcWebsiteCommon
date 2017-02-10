@@ -35,7 +35,7 @@ public class BasketTransfer {
   public static final String SELECT_MERGE_VALUES_SQL_MACRO = "##selection_macro##";
 
   public static final String MERGE_SQL =
-      "MERGE INTO users dest" +
+      "MERGE INTO userlogins5.user_baskets dest" +
       "  USING ( " + SELECT_MERGE_VALUES_SQL_MACRO + " ) src" +
       "    ON( dest.basket_id = src.basket_id )" +
       "  WHEN MATCHED THEN" +
