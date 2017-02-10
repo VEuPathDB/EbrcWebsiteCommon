@@ -10,5 +10,5 @@ my $args = &FgpUtil::Util::CommandHelper::getJavaArgs(@ARGV);
 
 my $cmd = "java $sysProps -classpath $CLASSPATH org.apidb.apicommon.model.report.DetailTableLoader $args";
 
-system($cmd);
+system($cmd) && exit(1);
 
