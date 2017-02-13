@@ -2,24 +2,37 @@
 
 use strict;
 
-my ($metaFile, $instanceSuffix) = @ARGV;
+my ($metaFile, $instanceSuffix, $projectsFile) = @ARGV;
 
-my @components = (
- ['ameb', 'AmoebaDB'],
- ['cryp', 'CryptoDB'],
- ['eupa', 'EuPathDB'],
- ['fung', 'FungiDB'],
- ['giar', 'GiardiaDB'],
- ['host', 'HostDB'],
- ['mbio', 'MicrobiomeDB'],
- ['micr', 'MicrosporidiaDB'],
- ['piro', 'PiroplasmaDB'],
- ['plas', 'PlasmoDB'],
- ['schi', 'SchistoDB'],
- ['toxo', 'ToxoDB'],
- ['tryp', 'TriTrypDB'],
- ['tvag', 'TrichDB'],
-);
+my @components;
+if ($projectsFile) {
+  open(F, $projectsFile) || die "Can't open projects_file '$projectsFile'\n";
+  while (<F>) {
+    my ($abbrev, $project) = split(/\s/);
+    die "In projects_file '$projectsFile' abbrev '$abbrev' is not valid.  It should be four letters\n" unless $abbrev =~ /\w\w\w\w/;
+    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/;
+    push(@components, [$abbrev, $project]);
+  }
+  close(F);
+} else {
+  @components = (
+		 ['ameb', 'AmoebaDB'],
+		 ['cryp', 'CryptoDB'],
+		 ['eupa', 'EuPathDB'],
+		 ['fung', 'FungiDB'],
+		 ['giar', 'GiardiaDB'],
+		 ['host', 'HostDB'],
+		 ['mbio', 'MicrobiomeDB'],
+		 ['micr', 'MicrosporidiaDB'],
+		 ['piro', 'PiroplasmaDB'],
+		 ['plas', 'PlasmoDB'],
+		 ['schi', 'SchistoDB'],
+		 ['toxo', 'ToxoDB'],
+		 ['tryp', 'TriTrypDB'],
+		 ['tvag', 'TrichDB'],
+		);
+}
+
 
 my @c = map {join("\t", @$_)} @components;
 my $componentsString = join("\n", @c);
@@ -119,13 +132,17 @@ Where:
 
 Example command lines:
 
-  eupathCloneMetaFile PlasmoDBMetaFile.yaml 029n
+  eupathCloneMetaFile PlasmoDBMetaFile.yaml 029n [projects_file]
 
   apiTnsSummary | eupathCloneMetaFile PlasmoDBMetaFile.yaml
 
 
 Input:  unless instance_suffix is provided, STDIN is a stream of lines that contain instance names like plas-inc.  The output of
         apiTnsSummary is the typical input.  the relevant instance names are discovered by the pattern /(\w\w\w\w)-(inc|rbld)/.
+
+        If projects_file is provided, use it to determine the list of projects.  It is a two column tab file.
+        Each row has instance suffix and project name, eg:  plas PlasmoDB.
+        If it is not provided, use hard-coded projects.
 
 Output: a set of files in the current directory of the form xxxxxMetaConfig.yaml, where xxxx is the project name.
 
