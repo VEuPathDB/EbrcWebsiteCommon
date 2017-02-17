@@ -1,12 +1,9 @@
 package org.eupathdb.common.taglib.wdk;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -14,20 +11,23 @@ import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.log4j.Logger;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.taglib.TagUtils;
-import org.eupathdb.common.errors.ErrorBundle;
-import org.eupathdb.common.errors.ErrorContext;
-import org.eupathdb.common.errors.ErrorHandler;
-import org.eupathdb.common.errors.ValueMaps;
-import org.eupathdb.common.errors.ErrorHandler.WriterProvider;
-import org.eupathdb.common.errors.ValueMaps.RequestAttributeValueMap;
-import org.eupathdb.common.errors.ValueMaps.ServletContextValueMap;
-import org.eupathdb.common.errors.ValueMaps.SessionAttributeValueMap;
+import org.gusdb.fgputil.events.Events;
+import org.gusdb.fgputil.web.HttpRequestData;
 import org.gusdb.wdk.controller.CConstants;
-import org.gusdb.wdk.controller.actionutil.HttpRequestData;
+import org.gusdb.wdk.errors.ErrorBundle;
+import org.gusdb.wdk.errors.ErrorContext;
+import org.gusdb.wdk.errors.ErrorContext.RequestType;
+import org.gusdb.wdk.errors.ValueMaps;
+import org.gusdb.wdk.errors.ValueMaps.RequestAttributeValueMap;
+import org.gusdb.wdk.errors.ValueMaps.ServletContextValueMap;
+import org.gusdb.wdk.errors.ValueMaps.SessionAttributeValueMap;
+import org.gusdb.wdk.events.ErrorEvent;
+import org.gusdb.wdk.model.WdkException;
 import org.gusdb.wdk.model.WdkModel;
 
 /**
@@ -57,16 +57,15 @@ import org.gusdb.wdk.model.WdkModel;
  */
 public class ErrorsTag extends WdkTagBase {
 
-    // file defining error filters
-    private static final String FILTER_FILE = "/WEB-INF/wdk-model/config/errorsTag.filter";
-    
+    private static final Logger LOG = Logger.getLogger(ErrorsTag.class);
+
     // holds showStackTrace tag attribute which may or may not have been passed
     private Boolean _showStacktrace;
-    
+
     public ErrorsTag() {
         super(PageContext.PAGE_SCOPE);
     }
-    
+
     @Override
     public void doTag() throws JspException { 
         super.doTag();
@@ -76,27 +75,35 @@ public class ErrorsTag extends WdkTagBase {
             JspContext jspContext = getJspContext();
             PageContext pageContext = (PageContext)jspContext;
             HttpServletRequest request = (HttpServletRequest)getRequest();
-            
-            // create and configure handler for this error
-            ErrorHandler handler = new ErrorHandler(
-                // contains possible errors sent to this tag
-                getErrorBundle(pageContext, request),
-                // contains filters to sort errors
-                getFilters(pageContext),
-                // contains current server and request context
-                getErrorContext(servletContext, request, getWdkModel()),
-                // allows access to JSP writer
-                new JspWriterProvider(jspContext));
-            
-            // if caller added showStacktrace attribute, set it on handler
-            if (_showStacktrace != null) handler.setShowStacktrace(_showStacktrace);
-            
-            // log, mail, and display error as appropriate
-            handler.handleErrors();
+
+            // contains possible errors sent to this tag
+            ErrorBundle errors = getErrorBundle(pageContext, request);
+
+            // contains current server and request context
+            ErrorContext context = getErrorContext(servletContext, request, getWdkModel());
+
+            // write error to log
+            logException(errors, context);
+
+            // trigger error event so listeners can handle this error
+            Events.trigger(new ErrorEvent(errors, context));
+
+            // if caller added showStacktrace attribute, use it; otherwise show only if site is not monitored
+            boolean showStacktrace = (_showStacktrace != null ? _showStacktrace : !context.isSiteMonitored());
+
+            // write error summary in HTML to output provided
+            writeErrorSummaryToPage(jspContext, errors, context.getLogMarker(), showStacktrace);
         }
         catch (Exception e) {
             throw new JspException("Unable to complete errors tag logic.", e);
         }
+    }
+
+    private static void logException(ErrorBundle errors, ErrorContext context) {
+      String exceptionText = errors.getStackTraceAsText();
+      if (exceptionText != null)
+          LOG.error(exceptionText);
+      LOG.error("log4j marker: " + context.getLogMarker());
     }
 
     /**
@@ -109,7 +116,7 @@ public class ErrorsTag extends WdkTagBase {
     public void setShowStacktrace(String showStacktrace) {
         _showStacktrace = Boolean.parseBoolean(showStacktrace);
     }
-    
+
     /**
      * Gather the exceptions and error messages that may have been sent to this
      * tag and encapsulate in ErrorBundle.
@@ -121,8 +128,8 @@ public class ErrorsTag extends WdkTagBase {
      */
     private static ErrorBundle getErrorBundle(PageContext pageContext, HttpServletRequest request) throws JspException {
         return new ErrorBundle(
-            pageContext.getException(),                                // exceptions during page processing (e.g. JSTL syntax errors)
             (Exception)request.getAttribute(Globals.EXCEPTION_KEY),    // exceptions caught by Struts (e.g. thrown by Actions)
+            pageContext.getException(),                                // exceptions during page processing (e.g. JSTL syntax errors)
             (Exception)request.getAttribute(CConstants.WDK_EXCEPTION), // exceptions explicitly passed (e.g. from question form or to showErrorPage.do)
             getActionErrors(pageContext));                             // error messages (e.g. added during form processing)
     }
@@ -150,22 +157,6 @@ public class ErrorsTag extends WdkTagBase {
     }
 
     /**
-     * Loads filters from config file into Properties object
-     * 
-     * @param context context to use to fetch resource
-     * @return properties object containing filters
-     * @throws IOException if unable to load filters
-     */
-    private static Properties getFilters(PageContext context) throws IOException {
-        Properties filters = new Properties();
-        InputStream is = context.getServletContext().getResourceAsStream(FILTER_FILE);
-        if (is != null) {
-            filters.load(is);
-        }
-        return filters;
-    }
-    
-    /**
      * Aggregate environment context data into an object for easy referencing
      * 
      * @param servletContext current servlet context
@@ -177,31 +168,42 @@ public class ErrorsTag extends WdkTagBase {
             HttpServletRequest request, WdkModel wdkModel) {
         return new ErrorContext(
             wdkModel,
-            servletContext.getInitParameter("model"),
             new HttpRequestData(request),
             ValueMaps.toMap(new ServletContextValueMap(servletContext)),
             ValueMaps.toMap(new RequestAttributeValueMap(request)),
-            ValueMaps.toMap(new SessionAttributeValueMap(request.getSession())));
+            ValueMaps.toMap(new SessionAttributeValueMap(request.getSession())),
+            RequestType.WDK_SITE);
     }
-    
+
     /**
-     * Implementation of WriterProvider that provides access to a JspWriter via
-     * a JspContext.  Writer is not initialized until getPrintWriter() is called
-     * the first time; all subsequent calls return the same PrintWriter.
+     * Writes an appropriate error message to the JSP page for user to view.
      * 
-     * @author rdoherty
+     * @param jspContext context from which writer will be retrieved
+     * @param errors error bundle for this error
+     * @param logMarker log marker which may be displayed
+     * @param showStacktrace whether to show stack trace for any exception
      */
-    public static class JspWriterProvider implements WriterProvider {
-        private JspContext _context;
-        private PrintWriter _writer;
-        public JspWriterProvider(JspContext context) {
-            _context = context;
+    private static void writeErrorSummaryToPage(JspContext jspContext,
+            ErrorBundle errors, String logMarker, boolean showStacktrace) {
+
+        PrintWriter out = new PrintWriter(jspContext.getOut());
+
+        String actionErrors = errors.getActionErrorsAsHtml();
+        if (!actionErrors.isEmpty()) {
+            out.println("<br/>\n<em><b>Please correct the following error(s): </b></em><br/>\n" + actionErrors);
         }
-        @Override
-        public PrintWriter getPrintWriter() {
-            if (_writer == null)
-                _writer = new PrintWriter(_context.getOut());
-            return _writer;
+
+        Exception wdkException = errors.getRequestException();
+        if (wdkException != null && wdkException instanceof WdkException) {
+            out.println("<br>\n<pre>\n" + ((WdkException)wdkException).formatErrors() + "\n</pre>\n\n");
+        }
+
+        if (showStacktrace) {
+            String st = errors.getStackTraceAsText();
+            if (st != null) {
+                out.println("<br>\n<pre>\n\n" + st + "\n</pre>\n");
+            }
+            out.println("log4j marker: " + logMarker);
         }
     }
 }
