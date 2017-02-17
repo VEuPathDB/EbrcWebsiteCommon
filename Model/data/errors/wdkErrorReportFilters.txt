@@ -1,17 +1,16 @@
 #filter	projects	comment
+tomcat@q
 SharedVQ.TelomereChromosomes	EuPathDB	Redmine #24127
-PluginUserException
 The blast database doesn't exist: /var/www/Common/apiSiteFilesMirror/webServices//TrichDB/build-29/TvaginalisRG/blast/TvaginalisRGAnnotatedProteins	EuPathDB, TrichDB	
 BlastAlgorithm_invalid	EuPathDB, FungiDB	
 motif_organism=Trichomonas vaginalis G3	TrichDB	
 Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in record: OrfRecordClasses.OrfRecordClass		
-The attribute field [category] cannot be found		     	     fixed: jsp in datasets paged
 view "APIDBTUNING.SNPCHIPATTRIBUTES" has errors		
 matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass		
 is not in the form 'setName.elementName		
 GetVocabAction.java:114		
-oracle.jdbc.driver.OraclePreparedStatementWrapper		
-pool error Timeout		
+oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed		
+pool error Timeout		should increase max limits?
 GC overhead limit exceeded		
 OutOfMemoryError: Java heap space		
 ORA-12514		tns listener
@@ -23,7 +22,6 @@ No item returned by the query [GeneVQ.GeneTypes]
 The term of flatVocabParam [popsetParams.product] is null	eupathdb	
 SummaryTableUpdateProcessor.java:143		
 Set 'GeneQuestions' returned null for 'GenesBySageTagRStat'		
-MicrobiomeDB/news.xml		
 GiardiaGenesByDifferentialExpressionTwo		old link in news
 ProcessFavoriteAction.java:97		
 PathwaysByGeneList, Unable to insert record into cache		fixed by dd
@@ -32,7 +30,7 @@ The attribute field [filename] cannot be found
 No configuration form can be found for the selected format		
 APIDB"."REVERSE_COMPLEMENT": invalid identifier	eupathdb	
 (USERLOGINS5.preferences_pk) violated		
-unable to extend temp segment		
+unable to extend temp segment						
 StepFactory.java:826		step can't be found
 Unclosed character class		should be user error (motif search bad regex)
 # service filters
@@ -45,3 +43,29 @@ Cannot get value for column 'struct_name'
 "APIDB"."WRAP": invalid identifier
 "IDSQL_2"."MATCHED_RESULT": invalid identifier
 'PathwayAttributes.Bfmv' doesn't return the same number
+# new in bld31
+RodMalPhenotype		fixed
+Stajich_HyphalGrowth
+primaryKeyValue is mandatory for tag recordLink && favorites		fixed
+IllegalArgumentException: No bean specified
+Unable to load class for JSP && Favorite		fixed
+value(single_gene_id) = [ ATGAACC
+Unable to check instance ID && ORA-00942: table or view does not exist		debug after upgrade in SqlUtils to dump errant SQL
+tomcat@q  	filter away qa site errors
+ProcessRESTAction.java:191 && /webservice		fixed, kind of.  dodge NPE caused by reporting error with null err msg
+"GENE_SOURCE_ID": invalid identifier
+does not include question GenesByEHistolyticaExpressionTiming
+Unable to create value row for table
+ORA-00920: invalid relational operator
+Unable to create cache
+ORA-00904: "MATCHED_RESULT": invalid identifier
+PluginModelException: Time out, the command is cancelled.
+PluginModelException: The invocation is failed: Can't take sqrt of
+GenesByRNASeqpfal3D7_Caro
+InvokeAttributePluginAction.java:43
+FlatVocabularyFetcher.java:174
+More than one strategy of signature
+ORA-01790: expression must have same datatype
+#The integrated attribute query 'TranscriptAttributes.TranscriptSequence' doesn't return the same number of records
+doesn't return the same number of records as ID SQL && userlogins5.user_baskets
+
