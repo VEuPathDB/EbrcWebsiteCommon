@@ -9,7 +9,7 @@ view "APIDBTUNING.SNPCHIPATTRIBUTES" has errors
 matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass		
 is not in the form 'setName.elementName		
 GetVocabAction.java:114		
-oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed		
+oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed && TranscriptSearch		fixed.  check isClosed() before close()	
 pool error Timeout		should increase max limits?
 GC overhead limit exceeded		
 OutOfMemoryError: Java heap space		
@@ -30,7 +30,7 @@ The attribute field [filename] cannot be found
 No configuration form can be found for the selected format		
 APIDB"."REVERSE_COMPLEMENT": invalid identifier	eupathdb	
 (USERLOGINS5.preferences_pk) violated		
-unable to extend temp segment						
+unable to extend temp segment && AttributeValueContainer
 StepFactory.java:826		step can't be found
 Unclosed character class		should be user error (motif search bad regex)
 # service filters
@@ -52,7 +52,7 @@ Unable to load class for JSP && Favorite		fixed
 value(single_gene_id) = [ ATGAACC
 Unable to check instance ID && ORA-00942: table or view does not exist		debug after upgrade in SqlUtils to dump errant SQL
 tomcat@q  	filter away qa site errors
-ProcessRESTAction.java:191 && /webservice		fixed, kind of.  dodge NPE caused by reporting error with null err msg
+ProcessRESTAction.java:191 && /webservice		fixed,
 "GENE_SOURCE_ID": invalid identifier
 does not include question GenesByEHistolyticaExpressionTiming
 Unable to create value row for table
