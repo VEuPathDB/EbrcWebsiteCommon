@@ -138,7 +138,7 @@ production:
   appDb.maxIdle: 10
   userDb.maxIdle: 10
   commentDb.maxIdle: 10
-  adminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu
+  adminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu, mheiges@uga.edu
 
 apiSite:
   modelName: apiCommonModel
