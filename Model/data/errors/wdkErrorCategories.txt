@@ -10,7 +10,7 @@ matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.
 is not in the form 'setName.elementName		
 GetVocabAction.java:114		
 oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed && TranscriptSearch		fixed.  check isClosed() before close()	
-pool error Timeout		should increase max limits?
+pool error Timeout		trello card to increase limits
 GC overhead limit exceeded		
 OutOfMemoryError: Java heap space		
 ORA-12514		tns listener
@@ -19,7 +19,7 @@ No configuration form can be found for the selected format: attributesTabular
 No item returned by the query [GeneVQ.GenericPercentileSamples]		
 No item returned by the query [organismVQ.withGenes]	eupathdb	
 No item returned by the query [GeneVQ.GeneTypes]		
-The term of flatVocabParam [popsetParams.product] is null	eupathdb	
+The term of flatVocabParam [popsetParams.product] is null	eupathdb	bindu or cristina should be able to fix. see mail from steve
 SummaryTableUpdateProcessor.java:143		
 Set 'GeneQuestions' returned null for 'GenesBySageTagRStat'		
 GiardiaGenesByDifferentialExpressionTwo		old link in news
@@ -41,7 +41,7 @@ java.io.StringReader.<init>(StringReader.java:50)
 Could not get uncached results from DB && table or view does not exist
 Cannot get value for column 'struct_name'
 "APIDB"."WRAP": invalid identifier
-"IDSQL_2"."MATCHED_RESULT": invalid identifier && download		need fresh examples... new log markers
+"IDSQL_2"."MATCHED_RESULT": invalid identifier && download		need fresh examples... or wait till SQL is logged in exceptions
 'PathwayAttributes.Bfmv' doesn't return the same number
 # new in bld31
 RodMalPhenotype		fixed
@@ -53,13 +53,13 @@ value(single_gene_id) = [ ATGAACC
 Unable to check instance ID && ORA-00942: table or view does not exist		debug after upgrade in SqlUtils to dump errant SQL
 tomcat@q  	filter away qa site errors
 ProcessRESTAction.java:191 && /webservice		fixed,
-"GENE_SOURCE_ID": invalid identifier
+"GENE_SOURCE_ID": invalid identifier		no longer in logs.  will be easier to debug when all sql exceptions include the SQL	
 does not include question GenesByEHistolyticaExpressionTiming
 Unable to create value row for table
 ORA-00920: invalid relational operator
 Unable to create cache
 ORA-00904: "MATCHED_RESULT": invalid identifier
-PluginModelException: Time out, the command is cancelled. && Blast		
+PluginModelException: Time out, the command is cancelled. && Blast		cristina will revert change to allow low complexity filter
 PluginModelException: The invocation is failed: Can't take sqrt of
 GenesByRNASeqpfal3D7_Caro
 InvokeAttributePluginAction.java:43
@@ -68,4 +68,6 @@ More than one strategy of signature
 ORA-01790: expression must have same datatype
 #The integrated attribute query 'TranscriptAttributes.TranscriptSequence' doesn't return the same number of records
 doesn't return the same number of records as ID SQL && userlogins5.user_baskets
+Proteomics analysis of sporozoite excystation
+
 
