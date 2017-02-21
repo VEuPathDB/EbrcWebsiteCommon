@@ -418,6 +418,8 @@ To create or edit a pipeline, you have to edit the source code \$PROJECT_HOME/Eu
 
 To run multiple, parallel, pipelines (one per project), see the eupathUserDbMigrationMulti command
 
+If a step in the pipeline fails, it produces a step_name.failed file in the control directory.  After cleaning up any consequences of the failure, remove this file, and restart the pipeline.
+
 Mapping files
 The mapping files describe  mappings for question names and parameter values.
 MORE DETAILS HERE...
