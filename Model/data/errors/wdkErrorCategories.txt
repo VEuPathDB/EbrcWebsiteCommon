@@ -8,7 +8,7 @@ Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in re
 view "APIDBTUNING.SNPCHIPATTRIBUTES" has errors		
 matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass		
 is not in the form 'setName.elementName		
-GetVocabAction.java:114		
+GetVocabAction.java:114		fixed - convert to WdkUserException		
 oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed && TranscriptSearch		fixed.  check isClosed() before close()	
 pool error Timeout		trello card to increase limits
 GC overhead limit exceeded		
