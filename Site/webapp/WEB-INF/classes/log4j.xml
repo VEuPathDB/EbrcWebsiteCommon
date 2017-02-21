@@ -50,7 +50,7 @@
     </filter>
   </appender>
 
-  <appender name="errors-filtered"
+  <appender name="errors-ignored"
             class="org.apache.log4j.RollingFileAppender">
     <param name="maxFileSize" value="100MB" />
     <param name="maxBackupIndex" value="1" />

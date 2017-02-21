@@ -3,6 +3,7 @@ package org.eupathdb.common.controller;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandler;
 import org.gusdb.fgputil.events.Event;
 import org.gusdb.fgputil.events.EventListener;
@@ -12,6 +13,8 @@ import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
+
+  private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
 
   /**
    * Initialize any parts of the ApiCommon web application not handled by normal
@@ -39,7 +42,9 @@ public class EuPathSiteSetup {
       }, ErrorEvent.class);
     }
     catch (IOException e) {
-      throw new WdkRuntimeException("Could not load error email filters.", e);
+      String message = "Could not load error email filters.";
+      LOG.error(message, e);
+      throw new WdkRuntimeException(message, e);
     }
   }
 }

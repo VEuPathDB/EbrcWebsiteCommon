@@ -1,5 +1,7 @@
 package org.eupathdb.common.errors;
 
+import static org.gusdb.fgputil.FormatUtil.getInnerClassLog4jName;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,20 +35,26 @@ public class ErrorHandler {
 
   private static Logger LOG = Logger.getLogger(ErrorHandler.class);
 
-  // file defining error filters (relative to gus_home)
-  private static final String FILTER_FILE = "config/errorsTag.filter";
+  // files defining error filters and categories (relative to gus_home)
+  private static final String ERROR_CONFIG_DIR = "data/EuPathSiteCommon/Model/errors/";
+  private static final String FILTER_FILE = ERROR_CONFIG_DIR + "wdkErrorFilters.txt";
+  private static final String CATEGORY_FILE = ERROR_CONFIG_DIR + "wdkErrorCategories.txt";
 
   private static final String PAGE_DIV = "\n************************************************\n";
 
-  // special logs to write ignored (i.e. filtered) and retained errors
-  private static class IgnoredErrorLog {
-    @SuppressWarnings("hiding")
-    public static final Logger LOG = Logger.getLogger(IgnoredErrorLog.class);
+  /**
+   * Contains errors that matched filters
+   */
+  private static final class IgnoredErrorLog {
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(IgnoredErrorLog.class));
+    private IgnoredErrorLog() {}
+    public static Logger getLogger() { return _logger; }
   }
 
   private static class RetainedErrorLog {
-    @SuppressWarnings("hiding")
-    public static final Logger LOG = Logger.getLogger(RetainedErrorLog.class);
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(RetainedErrorLog.class));
+    private RetainedErrorLog() {}
+    public static Logger getLogger() { return _logger; }
   }
 
   /**
@@ -87,7 +95,7 @@ public class ErrorHandler {
     String matchedFilterKey = filterMatch(_errors, _context.getRequestData(), _filters);
 
     // take action on this error depending on context and filter match
-    Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.LOG : RetainedErrorLog.LOG);
+    Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.getLogger() : RetainedErrorLog.getLogger());
     errorLog.error(getErrorText(_errors, _context, matchedFilterKey));
 
     if (matchedFilterKey == null && _context.isSiteMonitored()) {

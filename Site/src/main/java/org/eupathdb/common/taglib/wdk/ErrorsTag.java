@@ -29,6 +29,7 @@ import org.gusdb.wdk.errors.ValueMaps.SessionAttributeValueMap;
 import org.gusdb.wdk.events.ErrorEvent;
 import org.gusdb.wdk.model.WdkException;
 import org.gusdb.wdk.model.WdkModel;
+import org.gusdb.wdk.model.WdkUserException;
 
 /**
  * Error handling tag modeled after (and meant to replace) WDK's errors.tag.
@@ -78,6 +79,9 @@ public class ErrorsTag extends WdkTagBase {
 
             // contains possible errors sent to this tag
             ErrorBundle errors = getErrorBundle(pageContext, request);
+
+            // write nothing if no errors present
+            if (!errors.hasErrors()) return;
 
             // contains current server and request context
             ErrorContext context = getErrorContext(servletContext, request, getWdkModel());
@@ -189,16 +193,15 @@ public class ErrorsTag extends WdkTagBase {
         PrintWriter out = new PrintWriter(jspContext.getOut());
 
         String actionErrors = errors.getActionErrorsAsHtml();
+        Exception wdkException = errors.getException();
         if (!actionErrors.isEmpty()) {
             out.println("<br/>\n<em><b>Please correct the following error(s): </b></em><br/>\n" + actionErrors);
         }
-
-        Exception wdkException = errors.getRequestException();
-        if (wdkException != null && wdkException instanceof WdkException) {
-            out.println("<br>\n<pre>\n" + ((WdkException)wdkException).formatErrors() + "\n</pre>\n\n");
+        else if (wdkException != null && wdkException instanceof WdkException) {
+            out.println("<br>\n<pre style=\"margin:0\">" + ((WdkException)wdkException).formatErrors().trim() + "</pre>\n\n");
         }
 
-        if (showStacktrace) {
+        if (showStacktrace && !(wdkException instanceof WdkUserException)) {
             String st = errors.getStackTraceAsText();
             if (st != null) {
                 out.println("<br>\n<pre>\n\n" + st + "\n</pre>\n");
