@@ -143,7 +143,7 @@ public class ContactUsAction extends WdkAction {
         "CC: " + addCc + "\n" +
         "Privacy preferences: " + "\n" +
         "Uid: " + uid + "\n" +
-        "Browser information: " + reqData.getBrowser() + "\n" +
+        "Browser information: " + reqData.getUserAgent() + "\n" +
         "Referrer page: " + referrer + "\n" +
         "WDK Model version: " + version;
 
