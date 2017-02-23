@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.functional.TreeNode;
 import org.gusdb.fgputil.functional.TreeNode.StructureMapper;
+import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.ontology.OntologyNode;
 
@@ -21,10 +22,10 @@ public class SiteMapOntologyPlugin2 extends EuPathDbOwlParserWdkPlugin {
   private static final boolean DEBUG = false;
 
   @Override
-  public TreeNode<OntologyNode> getTree(Map<String, String> parameters, String ontologyName)
+  public TreeNode<OntologyNode> getTree(Map<String, String> parameters, String ontologyName, WdkModel wdkModel)
       throws WdkModelException {
 
-    TreeNode<OntologyNode> tree = super.getTree(parameters, ontologyName);
+    TreeNode<OntologyNode> tree = super.getTree(parameters, ontologyName, wdkModel);
     TreeNode<OntologyNode> siteMapTree = tree.mapStructure(new SiteMapMapper());
 
     return siteMapTree;
