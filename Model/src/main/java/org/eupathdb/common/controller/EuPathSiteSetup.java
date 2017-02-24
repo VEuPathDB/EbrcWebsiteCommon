@@ -1,6 +1,5 @@
 package org.eupathdb.common.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -45,8 +44,8 @@ public class EuPathSiteSetup {
         }
       }, ErrorEvent.class);
     }
-    catch (IOException e) {
-      String message = "Could not load error email filters.";
+    catch (Exception e) {
+      String message = "Could not load error email filters or categories.";
       LOG.error(message, e);
       throw new WdkRuntimeException(message, e);
     }

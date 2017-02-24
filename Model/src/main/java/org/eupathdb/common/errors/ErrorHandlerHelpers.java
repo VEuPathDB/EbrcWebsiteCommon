@@ -86,7 +86,7 @@ public class ErrorHandlerHelpers {
         inJsonStr.append(br.readLine().trim());
       }
     }
-    for (JsonType categoryJson : JsonIterators.arrayIterable(new JSONArray(inJsonStr))) {
+    for (JsonType categoryJson : JsonIterators.arrayIterable(new JSONArray(inJsonStr.toString()))) {
       if (!categoryJson.getType().equals(ValueType.OBJECT)) {
         LOG.warn("Error category file: array contains value that is not a JSON object (skipping): " + categoryJson.toString());
         continue;
@@ -107,7 +107,8 @@ public class ErrorHandlerHelpers {
           continue;
         }
         String comment = JsonUtil.getStringOrDefault(category, "comment", "");
-        Integer redmineIssue = JsonUtil.getIntegerOrDefault(category, "redmine", null);
+        Integer redmineIssue = JsonUtil.getIntegerOrDefault(category, "redmine", -1);
+        if (redmineIssue == -1) redmineIssue = null; // convert to null if not present
         boolean isFixed = JsonUtil.getBooleanOrDefault(category, "isFixed", false);
         boolean isEmailWorthy = JsonUtil.getBooleanOrDefault(category, "emailWorthy", false);
         categories.add(new ErrorCategory(matchStrings, comment, redmineIssue, isFixed, isEmailWorthy));
