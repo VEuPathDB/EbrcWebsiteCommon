@@ -95,9 +95,9 @@ $subPipeline{configureProjects} =
 $subPipeline{cacheModelInit} =
   [
    @{$subPipeline{configureProjects}},
-   ['wdkMaintDrop', "wdkMaintDrop", !$REPLIC_STEP, [] ],
    ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
    ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
+   ['stepExpanderDrop', "wdkExpandStep -dropTablesOnly -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
   ];
 
 $subPipeline{cacheModel} =
@@ -197,8 +197,8 @@ $pipelines{cleanup} =
    main =>
    [
    @{$subPipeline{configureProjects}},
-    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
     ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
+    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
     ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
    ]
   };
