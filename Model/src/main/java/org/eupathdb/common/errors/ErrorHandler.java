@@ -5,6 +5,7 @@ import static org.eupathdb.common.errors.ErrorHandlerHelpers.valueOrDefault;
 import static org.gusdb.fgputil.FormatUtil.NL;
 import static org.gusdb.fgputil.FormatUtil.getInnerClassLog4jName;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -27,7 +28,6 @@ import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.web.RequestData;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
-import org.gusdb.wdk.errors.ErrorContext.RequestType;
 
 public class ErrorHandler {
 
@@ -68,43 +68,40 @@ public class ErrorHandler {
     if (!errors.hasErrors())
       return;
 
-    String subject = getErrorTextSubject(context);
-    String fullErrorText = getErrorTextBody(errors, context);
+    String searchText = getErrorText(errors, context);
 
     // check to see if this error matches a filter
-    String matchedFilterKey = matchFilter(fullErrorText, context.getRequestData(), _filters);
+    String matchedFilterKey = matchFilter(searchText, context.getRequestData(), _filters);
+
+    String fullErrorText = new StringBuilder(ERROR_START).append(NL)
+        .append("Matched Filter: ").append(matchedFilterKey).append(NL).append(NL)
+        .append(searchText).append(NL).toString();
 
     // determine where to log this error based on context and filter match
     Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.getLogger() : RetainedErrorLog.getLogger());
-    errorLog.error(getErrorText(subject, fullErrorText, matchedFilterKey));
+    errorLog.error(fullErrorText);
 
     if (matchedFilterKey == null && context.isSiteMonitored()) {
       // error passes through filters; email if it doesn't fall into an existing category
-      ErrorCategory category = matchCategory(fullErrorText, _categories);
+      ErrorCategory category = matchCategory(searchText, _categories);
       if (category == null || category.isFixed() || category.isEmailWorthy()) {
         // error did not match filter or category, category should have been fixed, or category should always send email
-        sendMail(subject, fullErrorText, context);
+        sendMail(fullErrorText, context);
       }
     }
   }
 
-  private static String getErrorTextSubject(ErrorContext context) {
-    String source = context.getRequestType().equals(RequestType.WDK_SITE) ? "Site" : "Service";
-    return context.getProjectName() + " " + source + " Error" + " - " +
-        context.getRequestData().getRemoteHost();
-  }
-
-  private static String getErrorTextBody(ErrorBundle errors, ErrorContext context) {
+  private static String getErrorText(ErrorBundle errors, ErrorContext context) {
 
     String doubleNewline = NL + NL;
     RequestData requestData = context.getRequestData();
     String errorUrl = getErrorUrl(requestData);
 
     return new StringBuilder()
-        .append(ERROR_START).append(doubleNewline)
 
-        .append("Timestamp: ").append(context.getErrorDate()).append(NL)
+        .append("Date: ").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(context.getErrorDate())).append(NL)
         .append("Error on: ").append(errorUrl == null ? "<unable to determine request URI>" : errorUrl).append(NL)
+        .append("Project: ").append(context.getProjectName()).append(NL)
         .append("Remote Host: ").append(valueOrDefault(requestData.getRemoteHost(), "<not set>")).append(NL)
         .append("Server Name: " ).append(valueOrDefault(requestData.getServerName(), "<unknown>")).append(NL)
         .append("Referred from: ").append(valueOrDefault(requestData.getReferrer(), "<not set>")).append(NL)
@@ -112,7 +109,7 @@ public class ErrorHandler {
 
         // "JkEnvVar SERVER_ADDR" is required in Apache configuration
         .append("Server Addr: ").append(valueOrDefault((String)requestData.getRequestAttribute("SERVER_ADDR"),
-            "<not set; is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?>")).append(doubleNewline)
+            "<not set; is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?>")).append(NL)
 
         .append(SECTION_DIV)
         .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
@@ -141,7 +138,7 @@ public class ErrorHandler {
         //.append(getAttributeMapText(context.getServletContextAttributes()))
 
         .append(SECTION_DIV)
-        .append("log4j marker: " + context.getLogMarker())
+        .append("log4j marker: " + context.getLogMarker()).append(NL)
 
         .append(SECTION_DIV)
         .append("Struts Action Errors").append(doubleNewline)
@@ -159,14 +156,6 @@ public class ErrorHandler {
     String queryString = (String) requestData.getRequestAttribute("javax.servlet.forward.query_string");
     return (requestURI == null ? null
         : requestData.getNoContextUrl() + requestURI + (queryString == null ? "" : "?" + queryString));
-  }
-
-  private static String getErrorText(String subject, String message, String matchedFilterKey) {
-    return new StringBuilder()
-        .append("Filter Match: " + matchedFilterKey + "\n")
-        .append("Subject: " + subject + "\n")
-        .append(message)
-        .toString();
   }
 
   /**
@@ -248,12 +237,11 @@ public class ErrorHandler {
   private static ErrorCategory matchCategory(String searchText, List<ErrorCategory> categories) {
     for (ErrorCategory category : categories) {
       boolean matches = true;
-      for (String regex : category.getMatchStrings()) {
+      for (String matchString : category.getMatchStrings()) {
         // searchText must match each regex in category to be "found"
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(searchText);
-        if (!m.find()) {
+        if (searchText.indexOf(matchString) == -1) {
           matches = false;
+          break;
         }
       }
       if (matches) {
@@ -263,10 +251,12 @@ public class ErrorHandler {
     return null;
   }
 
-  private static void sendMail(String subject, String body, ErrorContext context) {
+  private static void sendMail(String body, ErrorContext context) {
 
     String from = "tomcat@" + context.getRequestData().getServerName();
     List<String> recipients = context.getAdminEmails();
+    String subject = context.getProjectName() + " " + context.getRequestType().getLabel() +
+        " Error - " + context.getRequestData().getRemoteHost();
 
     if (recipients.isEmpty()) {
       // Replaced SITE_ADMIN_EMAIL in model.prop with adminEmail attribute in model-config.xml
