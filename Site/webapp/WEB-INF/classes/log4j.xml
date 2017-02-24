@@ -56,9 +56,7 @@
     <param name="maxBackupIndex" value="1" />
     <param name="File" value="${catalina.base}/logs/@WEBAPP@/errors-ignored.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
-      <param name="ConversionPattern"
-             value="##ERROR##\n[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %m%n" />
+      <param name="ConversionPattern" value="" />
     </layout>
     <filter class="org.apache.log4j.varia.LevelRangeFilter">
       <param name="LevelMin" value="trace" />
@@ -72,9 +70,7 @@
     <param name="maxBackupIndex" value="1" />
     <param name="File" value="${catalina.base}/logs/@WEBAPP@/errors-retained.log" />
     <layout class="org.apache.log4j.PatternLayout">
-      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
-      <param name="ConversionPattern"
-             value="##ERROR##\n[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %m%n" />
+      <param name="ConversionPattern" value="" />
     </layout>
     <filter class="org.apache.log4j.varia.LevelRangeFilter">
       <param name="LevelMin" value="trace" />

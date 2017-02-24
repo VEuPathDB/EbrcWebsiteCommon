@@ -1,10 +1,13 @@
 package org.eupathdb.common.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandler;
+import org.eupathdb.common.errors.ErrorHandlerHelpers;
+import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
 import org.gusdb.fgputil.events.Event;
 import org.gusdb.fgputil.events.EventListener;
 import org.gusdb.fgputil.events.Events;
@@ -32,12 +35,13 @@ public class EuPathSiteSetup {
   private static void addErrorListener() {
     try {
       // only load filters once from disk
-      final Properties filters = ErrorHandler.getErrorFilters();
+      final Properties filters = ErrorHandlerHelpers.loadErrorFilters();
+      final List<ErrorCategory> categories = ErrorHandlerHelpers.loadErrorCategories();
       Events.subscribe(new EventListener() {
         @Override
         public void eventTriggered(Event event) throws Exception {
           ErrorEvent error = (ErrorEvent)event;
-          new ErrorHandler(error.getErrorBundle(), error.getErrorContext(), filters).handleError();
+          new ErrorHandler(filters, categories).handleError(error.getErrorBundle(), error.getErrorContext());
         }
       }, ErrorEvent.class);
     }

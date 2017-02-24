@@ -1,15 +1,12 @@
 package org.eupathdb.common.errors;
 
+import static org.eupathdb.common.errors.ErrorHandlerHelpers.getAttributeMapText;
+import static org.eupathdb.common.errors.ErrorHandlerHelpers.valueOrDefault;
+import static org.gusdb.fgputil.FormatUtil.NL;
 import static org.gusdb.fgputil.FormatUtil.getInnerClassLog4jName;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -24,8 +21,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
+import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
+import org.eupathdb.common.errors.ErrorHandlerHelpers.Stringifier;
 import org.gusdb.fgputil.FormatUtil;
-import org.gusdb.fgputil.runtime.GusHome;
 import org.gusdb.fgputil.web.RequestData;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
@@ -33,14 +31,10 @@ import org.gusdb.wdk.errors.ErrorContext.RequestType;
 
 public class ErrorHandler {
 
-  private static Logger LOG = Logger.getLogger(ErrorHandler.class);
+  private static final Logger LOG = Logger.getLogger(ErrorHandler.class);
 
-  // files defining error filters and categories (relative to gus_home)
-  private static final String ERROR_CONFIG_DIR = "data/EuPathSiteCommon/Model/errors/";
-  private static final String FILTER_FILE = ERROR_CONFIG_DIR + "wdkErrorFilters.txt";
-  private static final String CATEGORY_FILE = ERROR_CONFIG_DIR + "wdkErrorCategories.txt";
-
-  private static final String PAGE_DIV = "\n************************************************\n";
+  private static final String ERROR_START = "##ERROR_START##";
+  private static final String SECTION_DIV = NL + "************************************************" + NL;
 
   /**
    * Contains errors that matched filters
@@ -51,72 +45,128 @@ public class ErrorHandler {
     public static Logger getLogger() { return _logger; }
   }
 
-  private static class RetainedErrorLog {
+  /**
+   * Contains errors that didn't match filters
+   */
+  private static final class RetainedErrorLog {
     private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(RetainedErrorLog.class));
     private RetainedErrorLog() {}
     public static Logger getLogger() { return _logger; }
   }
 
-  /**
-   * Converts an arbitrary type to a string with the assistance of a qualifier
-   * 
-   * @param <T>
-   *          type of value being stringified
-   */
-  private static class Stringifier<T> {
-    /**
-     * @param value
-     *          value to be stringified
-     * @param qualifier
-     *          indicator to help stringify
-     */
-    public String stringify(T value, String qualifier) {
-      return value.toString();
-    }
-  }
-
-  private final ErrorBundle _errors;
-  private final ErrorContext _context;
   private final Properties _filters;
+  private final List<ErrorCategory> _categories;
 
-  public ErrorHandler(ErrorBundle errors, ErrorContext context, Properties filters) {
-    _errors = errors;
-    _context = context;
+  public ErrorHandler(Properties filters, List<ErrorCategory> categories) {
     _filters = filters;
+    _categories = categories;
   }
 
-  public void handleError() {
+  public void handleError(ErrorBundle errors, ErrorContext context) {
 
     // do nothing and return if no errors
-    if (!_errors.hasErrors())
+    if (!errors.hasErrors())
       return;
 
+    String subject = getErrorTextSubject(context);
+    String fullErrorText = getErrorTextBody(errors, context);
+
     // check to see if this error matches a filter
-    String matchedFilterKey = filterMatch(_errors, _context.getRequestData(), _filters);
+    String matchedFilterKey = matchFilter(fullErrorText, context.getRequestData(), _filters);
 
-    // take action on this error depending on context and filter match
+    // determine where to log this error based on context and filter match
     Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.getLogger() : RetainedErrorLog.getLogger());
-    errorLog.error(getErrorText(_errors, _context, matchedFilterKey));
+    errorLog.error(getErrorText(subject, fullErrorText, matchedFilterKey));
 
-    if (matchedFilterKey == null && _context.isSiteMonitored()) {
-      // error did not match filters
-      constructAndSendMail(_errors, _context);
+    if (matchedFilterKey == null && context.isSiteMonitored()) {
+      // error passes through filters; email if it doesn't fall into an existing category
+      ErrorCategory category = matchCategory(fullErrorText, _categories);
+      if (category == null || category.isFixed() || category.isEmailWorthy()) {
+        // error did not match filter or category, category should have been fixed, or category should always send email
+        sendMail(subject, fullErrorText, context);
+      }
     }
   }
 
-  private static String getErrorText(ErrorBundle errors, ErrorContext context, String matchedFilterKey) {
+  private static String getErrorTextSubject(ErrorContext context) {
+    String source = context.getRequestType().equals(RequestType.WDK_SITE) ? "Site" : "Service";
+    return context.getProjectName() + " " + source + " Error" + " - " +
+        context.getRequestData().getRemoteHost();
+  }
 
-    StringBuilder errorText = new StringBuilder();
-    String from = "tomcat@" + context.getRequestData().getServerName();
-    String subject = getEmailSubject(context);
-    String message = getEmailBody(errors, context);
+  private static String getErrorTextBody(ErrorBundle errors, ErrorContext context) {
 
-    return errorText
+    String doubleNewline = NL + NL;
+    RequestData requestData = context.getRequestData();
+    String errorUrl = getErrorUrl(requestData);
+
+    return new StringBuilder()
+        .append(ERROR_START).append(doubleNewline)
+
+        .append("Timestamp: ").append(context.getErrorDate()).append(NL)
+        .append("Error on: ").append(errorUrl == null ? "<unable to determine request URI>" : errorUrl).append(NL)
+        .append("Remote Host: ").append(valueOrDefault(requestData.getRemoteHost(), "<not set>")).append(NL)
+        .append("Server Name: " ).append(valueOrDefault(requestData.getServerName(), "<unknown>")).append(NL)
+        .append("Referred from: ").append(valueOrDefault(requestData.getReferrer(), "<not set>")).append(NL)
+        .append("UserAgent: ").append(requestData.getUserAgent()).append(NL)
+
+        // "JkEnvVar SERVER_ADDR" is required in Apache configuration
+        .append("Server Addr: ").append(valueOrDefault((String)requestData.getRequestAttribute("SERVER_ADDR"),
+            "<not set; is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?>")).append(doubleNewline)
+
+        .append(SECTION_DIV)
+        .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
+        .append("Request ID: ").append(context.getMdcBundle().getRequestId()).append(NL)
+        .append("Request duration at error: ").append(context.getMdcBundle().getRequestDuration()).append(NL)
+        .append("Request Parameters (request to the server)").append(doubleNewline)
+        .append(getAttributeMapText(requestData.getTypedParamMap(), new Stringifier<String[]>() {
+          @Override public String stringify(String[] value, String qualifier) {
+            return FormatUtil.arrayToString(value);
+          }}))
+
+        .append(SECTION_DIV)
+        .append("Associated Request-Scope Attributes").append(doubleNewline)
+        .append(getAttributeMapText(context.getRequestAttributeMap(), new Stringifier<Object>() {
+          @Override public String stringify(Object value, String key) {
+            return (key.toLowerCase().startsWith("email") || key.toLowerCase().startsWith("passw")) ?
+                "*****" : value.toString();
+          }}))
+
+        .append(SECTION_DIV)
+        .append("Session Attributes").append(doubleNewline)
+        .append(getAttributeMapText(context.getSessionAttributeMap()))
+
+        //.append(SECTION_DIV)
+        //.append("ServletContext Attributes").append(doubleNewline)
+        //.append(getAttributeMapText(context.getServletContextAttributes()))
+
+        .append(SECTION_DIV)
+        .append("log4j marker: " + context.getLogMarker())
+
+        .append(SECTION_DIV)
+        .append("Struts Action Errors").append(doubleNewline)
+        .append(errors.getActionErrorsAsText()).append(NL)
+
+        .append(SECTION_DIV)
+        .append("Stacktrace:").append(doubleNewline)
+        .append(valueOrDefault(errors.getStackTraceAsText(), "")).append(doubleNewline)
+
+        .toString();
+  }
+
+  private static String getErrorUrl(RequestData requestData) {
+    String requestURI = (String) requestData.getRequestAttribute("javax.servlet.forward.request_uri");
+    String queryString = (String) requestData.getRequestAttribute("javax.servlet.forward.query_string");
+    return (requestURI == null ? null
+        : requestData.getNoContextUrl() + requestURI + (queryString == null ? "" : "?" + queryString));
+  }
+
+  private static String getErrorText(String subject, String message, String matchedFilterKey) {
+    return new StringBuilder()
         .append("Filter Match: " + matchedFilterKey + "\n")
         .append("Subject: " + subject + "\n")
-        .append("From: " + from + "\n")
-        .append(message + "\n")
-        .append("\n//\n").toString();
+        .append(message)
+        .toString();
   }
 
   /**
@@ -139,12 +189,9 @@ public class ErrorHandler {
    * 
    * Allowed subkeys are referer ip
    **/
-  private static String filterMatch(ErrorBundle errors, RequestData requestData, Properties filters) {
+  private static String matchFilter(String searchText, RequestData requestData, Properties filters) {
 
-    StringBuilder allErrors = new StringBuilder();
-    allErrors.append(errors.getStackTraceAsText());
-    allErrors.append(errors.getActionErrorsAsHtml());
-    LOG.debug("Will use the following text as filter input:\n" + allErrors.toString());
+    LOG.debug("Will use the following text as filter input:\n" + searchText);
 
     Set<String> propertyNames = filters.stringPropertyNames();
     for (String key : propertyNames) {
@@ -155,7 +202,7 @@ public class ErrorHandler {
 
       String regex = filters.getProperty(key);
       Pattern p = Pattern.compile(regex);
-      Matcher m = p.matcher(allErrors);
+      Matcher m = p.matcher(searchText);
 
       LOG.debug("Checking against filter: " + regex);
       if (m.find()) {
@@ -189,8 +236,7 @@ public class ErrorHandler {
           continue;
         }
 
-        // Otherwise no subkeys were checked (so primary
-        // filter match is sufficient)
+        // Otherwise no subkeys were checked (so primary filter match is sufficient)
         return key + " = " + regex;
       }
     }
@@ -199,102 +245,35 @@ public class ErrorHandler {
     return null;
   }
 
-  /**
-   * Loads filters from config file into Properties object
-   * 
-   * @param context
-   *          context to use to fetch resource
-   * @return properties object containing filters
-   * @throws IOException
-   *           if unable to load filters
-   */
-  public static Properties getErrorFilters() throws IOException {
-    Path filterFile = Paths.get(GusHome.getGusHome(), FILTER_FILE);
-    Properties filters = new Properties();
-    try (InputStream is = new FileInputStream(filterFile.toFile())) {
-      filters.load(is);
+  private static ErrorCategory matchCategory(String searchText, List<ErrorCategory> categories) {
+    for (ErrorCategory category : categories) {
+      boolean matches = true;
+      for (String regex : category.getMatchStrings()) {
+        // searchText must match each regex in category to be "found"
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(searchText);
+        if (!m.find()) {
+          matches = false;
+        }
+      }
+      if (matches) {
+        return category;
+      }
     }
-    return filters;
+    return null;
   }
 
-  private static void constructAndSendMail(ErrorBundle errors, ErrorContext context) {
+  private static void sendMail(String subject, String body, ErrorContext context) {
 
-    RequestData requestData = context.getRequestData();
+    String from = "tomcat@" + context.getRequestData().getServerName();
     List<String> recipients = context.getAdminEmails();
 
-    String from = "tomcat@" + requestData.getServerName();
-    String subject = getEmailSubject(context);
-    String message = getEmailBody(errors, context);
-
-    sendMail(recipients, from, subject, message.toString());
-  }
-
-  private static String getEmailSubject(ErrorContext context) {
-    String source = context.getRequestType().equals(RequestType.WDK_SITE) ? "Site" : "Service";
-    return context.getProjectName() + " " + source + " Error" + " - " +
-        context.getRequestData().getRemoteHost();
-  }
-
-  private static String getEmailBody(ErrorBundle errors, ErrorContext context) {
-
-    StringBuilder body = new StringBuilder();
-    RequestData requestData = context.getRequestData();
-
-    String errorUrl = getErrorUrl(requestData);
-    body.append("Error on: " + (errorUrl == null ? "<unable to determine request URI>" : "\n  " + errorUrl) +
-        "\n").append(
-            "Remote Host: " + valueOrDefault(requestData.getRemoteHost(), "<not set>") + "\n").append(
-                "Referred from: " + valueOrDefault(requestData.getReferrer(), "<not set>") + "\n").append(
-                    "UserAgent: " + "\n  " + requestData.getUserAgent() + "\n");
-
-    // "JkEnvVar SERVER_ADDR" is required in Apache configuration
-    body.append("Server Addr: " + valueOrDefault((String) requestData.getRequestAttribute("SERVER_ADDR"),
-        "<not set; is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?>") + "\n");
-
-    body.append(PAGE_DIV).append("Request Parameters (request to the server)\n\n");
-    body.append(getAttributeMapText(requestData.getTypedParamMap(), new Stringifier<String[]>() {
-      @Override
-      public String stringify(String[] value, String qualifier) {
-        return FormatUtil.arrayToString(value);
-      }
-    }));
-
-    body.append(PAGE_DIV).append("Associated Request-Scope Attributes\n\n");
-    body.append(getAttributeMapText(context.getRequestAttributeMap(), new Stringifier<Object>() {
-      @Override
-      public String stringify(Object value, String key) {
-        return (key.toLowerCase().startsWith("email") || key.toLowerCase().startsWith("passw")) ? "*****"
-            : value.toString();
-      }
-    }));
-
-    body.append(PAGE_DIV).append("Session Attributes\n\n");
-    body.append(getAttributeMapText(context.getSessionAttributeMap()));
-
-    // body.append(PAGE_DIV).append("ServletContext Attributes\n\n");
-    // body.append(getAttributeMapText(context.getServletContextAttributes()));
-
-    body.append(PAGE_DIV).append("log4j marker: " + context.getLogMarker());
-
-    body.append(PAGE_DIV).append("Stacktrace: \n\n").append(
-        valueOrDefault(errors.getStackTraceAsText(), "")).append("\n\n");
-
-    return body.toString();
-  }
-
-  private static String getErrorUrl(RequestData requestData) {
-    String requestURI = (String) requestData.getRequestAttribute("javax.servlet.forward.request_uri");
-    String queryString = (String) requestData.getRequestAttribute("javax.servlet.forward.query_string");
-    return (requestURI == null ? null
-        : requestData.getNoContextUrl() + requestURI + (queryString == null ? "" : "?" + queryString));
-  }
-
-  private static void sendMail(List<String> recipients, String from, String subject, String message) {
     if (recipients.isEmpty()) {
-      // Replacing SITE_ADMIN_EMAIL from model.prop with ADMIN_EMAIL for model-config.xml
-      LOG.error("ADMIN_EMAIL is not configured in model-config.xml; cannot send exception report.");
+      // Replaced SITE_ADMIN_EMAIL in model.prop with adminEmail attribute in model-config.xml
+      LOG.error("adminEmail is not configured in model-config.xml; cannot send exception report.");
       return;
     }
+
     try {
       Properties props = new Properties();
       props.put("mail.smtp.host", "localhost");
@@ -319,7 +298,7 @@ public class ErrorHandler {
       msg.setRecipients(Message.RecipientType.TO, addressTo);
       msg.setFrom(addressFrom);
       msg.setSubject(subject);
-      msg.setContent(message, "text/plain");
+      msg.setContent(body, "text/plain");
 
       Transport.send(msg);
     }
@@ -327,23 +306,4 @@ public class ErrorHandler {
       LOG.error(me);
     }
   }
-
-  /*************************** Utility functions ***************************/
-
-  private static String valueOrDefault(String value, String defaultValue) {
-    return (value == null ? defaultValue : value);
-  }
-
-  private static <T> String getAttributeMapText(Map<String, T> attributeMap) {
-    return getAttributeMapText(attributeMap, new Stringifier<T>());
-  }
-
-  private static <T> String getAttributeMapText(Map<String, T> attributeMap, Stringifier<T> stringifier) {
-    StringBuilder sb = new StringBuilder();
-    for (String key : attributeMap.keySet()) {
-      sb.append(key + " = " + stringifier.stringify(attributeMap.get(key), key) + "\n");
-    }
-    return sb.toString();
-  }
-
 }
