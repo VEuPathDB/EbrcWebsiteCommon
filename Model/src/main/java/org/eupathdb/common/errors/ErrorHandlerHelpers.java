@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.json.JsonIterators;
 import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonType.ValueType;
@@ -152,7 +153,7 @@ public class ErrorHandlerHelpers {
   static <T> String getAttributeMapText(Map<String, T> attributeMap, Stringifier<T> stringifier) {
     StringBuilder sb = new StringBuilder();
     for (String key : attributeMap.keySet()) {
-      sb.append(key + " = " + stringifier.stringify(attributeMap.get(key), key) + "\n");
+      sb.append(key + " = " + stringifier.stringify(attributeMap.get(key), key) + FormatUtil.NL);
     }
     return sb.toString();
   }
