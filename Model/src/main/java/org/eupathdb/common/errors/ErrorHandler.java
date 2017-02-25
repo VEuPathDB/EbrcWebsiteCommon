@@ -40,6 +40,7 @@ public class ErrorHandler {
   private static final Logger LOG = Logger.getLogger(ErrorHandler.class);
 
   private static final String ERROR_START = "##ERROR_START##";
+  private static final String ERROR_END = "##ERROR_END##";
   private static final String SECTION_DIV = "************************************************" + NL;
 
   /**
@@ -81,7 +82,7 @@ public class ErrorHandler {
 
     String fullErrorText = new StringBuilder(ERROR_START).append(NL)
         .append("Matched Filter: ").append(matchedFilterKey).append(NL).append(NL)
-        .append(searchText).append(NL).toString();
+        .append(searchText).append(NL).append(ERROR_END).append(NL).toString();
 
     // determine where to log this error based on context and filter match
     Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.getLogger() : RetainedErrorLog.getLogger());
