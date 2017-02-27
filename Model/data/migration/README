@@ -63,22 +63,37 @@ Replace project and appDb fields and swap " - apiSite" for " - orthomcl".
 
 11. Drop any existing migration tables and sequences from your maintenance user in SQL Developer or similar.  The following is a complete list:
 
-drop table baskettemp;
-drop table step_params;
-drop table step_updater_plugin_test;
-drop table wdk_broken_strategies;
-drop table wdk_dangle_steps;
-drop table wdk_dangle_strategies;
-drop table wdk_enum_params;
-drop table wdk_guests;
+-- ModelCacher - does its own drop.
 drop table wdk_params;
-drop table wdk_parent_steps;
-drop table wdk_part_steps;
 drop table wdk_questions;
-drop table wdk_strats_unknownrc;
-drop table wdk_updated_steps;
+drop table wdk_enum_params;
 drop sequence wdk_questions_pkseq;
 drop sequence wdk_params_pkseq;
+
+-- basket fixer - does its own drop
+drop table baskettemp_PROJECT;
+
+-- step expander
+drop table step_params;
+
+-- updated step logger (called by step updaters)
+drop table wdk_updated_steps;
+
+-- not found in source
+drop table step_updater_plugin_test;
+
+-- remove broken steps - does its own drop
+drop table wdk_broken_strategies;
+drop table wdk_strats_unknownrc;
+
+-- step validator - does its own drop
+drop table wdk_dangle_steps;
+drop table wdk_dangle_strategies;
+drop table wdk_parent_steps;
+drop table wdk_part_steps;
+
+-- guest remover - does its own drop
+drop table wdk_guests;
 
 12. (optionally done in advance) Run releaseSetup on all projects.  This will cache the model for use later.
 
