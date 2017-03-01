@@ -39,19 +39,19 @@ required:
  ###############################################################################################
 
  # these only needed in the portal 
- amebURL: http://amoebadb.org/amoeba/
- crypURL: http://cryptodb.org/cryptodb/
- fungURL: http://fungidb.org/fungidb/
- giarURL: http://giardiadb.org/giardiadb/
- micrURL: http://microsporidiadb.org/micro/
- piroURL: http://piroplasmadb.org/piro/
- plasURL: http://plasmodb.org/plasmo/
- toxoURL: http://toxodb.org/toxo/
- tricURL: http://trichdb.org/trichdb/
- trypURL: http://tritrypdb.org/tritrypdb/
+ amebURL: http://amoebadb.org/amoeba
+ crypURL: http://cryptodb.org/cryptodb
+ fungURL: http://fungidb.org/fungidb
+ giarURL: http://giardiadb.org/giardiadb
+ micrURL: http://microsporidiadb.org/micro
+ piroURL: http://piroplasmadb.org/piro
+ plasURL: http://plasmodb.org/plasmo
+ toxoURL: http://toxodb.org/toxo
+ tricURL: http://trichdb.org/trichdb
+ trypURL: http://tritrypdb.org/tritrypdb
 
  # this needed in all sites (even if URL mapping already exists above)
- myURL: http://hostdb.org/hostdb/
+ myURL: http://hostdb.org/hostdb
 
 # The 'sections:' section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
 # Uncomment either -apiSite/-{projectid} or -orthomcl
