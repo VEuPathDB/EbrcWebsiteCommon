@@ -121,7 +121,7 @@ sub usage {
 Generate a set of metaConfig.yaml files from a provided example meta file.  Each output file is for one component
 website, eg, ToxoDB, CryptoDB, etc.
 
-Usage: eupathCloneMetaFile meta_file [instance_suffix]
+Usage: eupathCloneMetaFile meta_file [instance_suffix] [projects_file]
 
 Where:
   meta_file:         the file to copy from.  Must be of the form xxxxxMetaConfig.yaml, where xxxxx is a known
@@ -129,6 +129,8 @@ Where:
   instance_suffix:   optional.  If provided, use this suffix to construct the appDb.instance name.
                      Eg, provide 029n to get instances like toxo029n, cryp029n, etc.   If not provided, use
                      either -inc or -rbld, whichever is present in apiTnsSummary for this component
+  projects_file:     optional, but if provided, instance_suffix is requred.  a white-space delimited file that provides a list
+                     of projects.  first column is project four letter abbreviation, second column is project name.
 
 Example command lines:
 
