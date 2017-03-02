@@ -6,22 +6,26 @@ usage() unless scalar(@ARGV);
 
 my ($argsMap, $argsArr) = &extractArgs(@ARGV);
 
-die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel and [--project or --projectsFile]\n" unless ($argsMap->{'--project'} || $argsMap->{'--projectsFile'}) && $argsMap->{'--primaryModel'};
+die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel\n" unless $argsMap->{'--primaryModel'};
 
-my $projectsFile = $argsMap->{'--primaryModel'};
+my $projectsFile = "$ENV{PROJECT_HOME}/EuPathSiteCommon/Model/data/migration/projects.xml";
+$projectsFile = $argsMap->{'--projectsFile'} if $argsMap->{'--projectsFile'};
 
+# by default use projects file, unless command line overrides
 my @projects;
-if ($projectsFile) {
+if ($argsMap->{'--project'}) {
+  @projects = split(/,\s*/, $argsMap->{'--project'});
+}
+else {
   open(F, $projectsFile) || die "Can't open projectsFile '$projectsFile'\n";
   while (<F>) {
+    next if /^#/; # skip comments
     my ($abbrev, $project) = split(/\s/);
     die "In projects_file '$projectsFile' abbrev '$abbrev' is not valid.  It should be four letters\n" unless $abbrev =~ /\w\w\w\w/;
-    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/;
+    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/ || $project eq 'OrthoMCL';
     push(@projects, $project);
   }
   close(F);
-} else {
-  @projects = split(/,\s*/, $argsMap->{'--project'});
 }
 
 die "Error: No projects supplied" unless scalar(@projects);
@@ -126,14 +130,18 @@ Usage: eupathUserDbMigrationMulti cmd_line_args [--projectsFile]
 Where: 
   cmd_line_args:  the exact arguments you want passed to each parallel run of eupathUserDbMigration.
 
-Except:
-  --projectsFile:  if you provide this, then do not provide a --project argument.  The list of projects is taken from this file instead.  It is
-                   a two column tab file.  First column (not needed for this script) is 4 char abbrev, eg, plas.  Second column is project
-                   name, eg PlasmoDB.  If you do not provide --projectsFile, instead, provide
+The list of projects is controlled by the following, in priority order:
+  --project:       A comma delimited list of projects on the command line.
+  --projectsFile:  if you provide this, then do not provide a --project argument.  The list of projects is taken from this file instead.
+                   It is a two column tab file.  First column (not needed for this script) is 4 char abbrev, eg, plas.
+                   Second column is project name, eg PlasmoDB.
+
+                   If you do not provide either --project or --projectsFile, projects will come from:
+                   \$PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt
 
 The --primaryProject argument is used as the project for the init and clean phases.
 
-The --project argument is used to drive the parallel runs.  It is a comma delimited list. Each project P specified in that list is given its own run.
+The projects list is used to drive the parallel runs.  Each project P specified in that list is given its own run.
 In those separate runs:
   - the --project argument is set to a single project, P.
   - the --primaryModel argument is set to P
