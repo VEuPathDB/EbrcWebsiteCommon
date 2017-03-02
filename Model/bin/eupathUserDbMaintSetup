@@ -2,10 +2,10 @@
 
 set -e # exit on error
 
-if [ "$#" != "5" ]; then
+if [ "$#" != "6" ]; then
   echo 'USAGE: eupathUserDbMaintSetup control_dir gus_app_dir master_meta_file trunk_or_branch db_suffix'
   echo ""
-  echo "SAMPLE: eupathUserDbMaintSetup /eupath/data/EuPathDB/apicommMaint/release/bld30 /home/maintGusApp /home/maintGusApp/PlasmoDBMetaFile.yaml api-build-30 -inc"
+  echo "SAMPLE: eupathUserDbMaintSetup /eupath/data/EuPathDB/apicommMaint/release/bld30 /home/maintGusApp /home/maintGusApp/PlasmoDBMetaFile.yaml api-build-30 -inc q1.plasmodb.org"
   exit 1
 fi
 
@@ -14,6 +14,7 @@ gusAppDir=$2
 masterMetaFile=$3
 trunkOrBranch=$4
 dbSuffix=$5
+sourceSite=$6
 
 function runCmd {
     echo $1 >> "$controlDir/setup.log"
@@ -57,5 +58,7 @@ runCmd "mkdir $controlDir/yaml"
 
 runCmd "cd $controlDir/yaml"
 
-runCmd "eupathCloneMetaFile $masterMetaFile $dbSuffix"
+runCmd "eupathCloneMetaFile $masterMetaFile $dbSuffix $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
+
+runCmd "jenkinsJobScmUpdateMulti $sourceSite $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
 
