@@ -8,9 +8,10 @@ my @components;
 if ($projectsFile) {
   open(F, $projectsFile) || die "Can't open projects_file '$projectsFile'\n";
   while (<F>) {
+    next if /^#/; # skip comments
     my ($abbrev, $project, $instanceSuffixOverride, $notApisite) = split(/\s/);
     die "In projects_file '$projectsFile' abbrev '$abbrev' is not valid.  It should be four letters\n" unless $abbrev =~ /\w\w\w\w/;
-    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/;
+    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/ || $project eq 'OrthoMCL';
     push(@components, [$abbrev, $project, $instanceSuffixOverride, $notApisite]);
   }
   close(F);
