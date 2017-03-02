@@ -8,7 +8,7 @@ my ($argsMap, $argsArr) = &extractArgs(@ARGV);
 
 die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel\n" unless $argsMap->{'--primaryModel'};
 
-my $projectsFile = "$ENV{PROJECT_HOME}/EuPathSiteCommon/Model/data/migration/projects.xml";
+my $projectsFile = "$ENV{PROJECT_HOME}/EuPathSiteCommon/Model/data/migration/projects.txt";
 $projectsFile = $argsMap->{'--projectsFile'} if $argsMap->{'--projectsFile'};
 
 # by default use projects file, unless command line overrides
@@ -51,6 +51,7 @@ foreach my $project (@projects) {
   $newArgsMap{'--project'} = $project;
   $newArgsMap{'--primaryModel'} = $project if $newArgsMap{'--primaryModel'};
   $newArgsMap{'--controlDir'} .= "/$project";
+  $newArgsMap{'--phase'} = "main";
   if (! -d $newArgsMap{'--controlDir'} && !mkdir $newArgsMap{'--controlDir'}) {
     log("Could not create controlDir '$newArgsMap{'--controlDir'}'.  Skipping this project");
     next;
