@@ -1,15 +1,21 @@
+# used by three programs: eupathCloneMetaFile, eupathUserDbMigrationMulti, jenkinsJobScmUpdateMulti
+# five columns:
+#  abbrev (eupathCloneMetaFile)
+#  project (all)
+#  instance suffix override (eupathCloneMetaFile)
+#  flag indicating not an apisite (eupathCloneMetaFile)
+#  flag indicating not a component site (jenkinsJobScmUpdateMulti)
 ameb	AmoebaDB
 cryp	CryptoDB
-eupa	EuPathDB
+eupa	EuPathDB			not_component
 fung	FungiDB
 giar	GiardiaDB
-host	HostDB
-mbio	MicrobiomeDB	bl1n	not_apisite
+host	HostDB			not_component
 micr	MicrosporidiaDB
 piro	PiroplasmaDB
 plas	PlasmoDB
-schi	SchistoDB
+schi	SchistoDB			not_component
 toxo	ToxoDB
 tryp	TriTrypDB
 tvag	TrichDB
-orth	OrthoMCL	501n	not_apisite
+orth	OrthoMCL	501n	not_apisite	not_component
