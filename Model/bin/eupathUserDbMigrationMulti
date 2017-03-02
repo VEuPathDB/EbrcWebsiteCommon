@@ -6,9 +6,23 @@ usage() unless scalar(@ARGV);
 
 my ($argsMap, $argsArr) = &extractArgs(@ARGV);
 
-die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel and --project\n" unless $argsMap->{'--project'} && $argsMap->{'--primaryModel'};
+die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel and [--project or --projectsFile]\n" unless ($argsMap->{'--project'} || $argsMap->{'--projectsFile'}) && $argsMap->{'--primaryModel'};
 
-my @projects = split(/,\s*/, $argsMap->{'--project'});
+my $projectsFile = $argsMap->{'--primaryModel'};
+
+my @projects;
+if ($projectsFile) {
+  open(F, $projectsFile) || die "Can't open projectsFile '$projectsFile'\n";
+  while (<F>) {
+    my ($abbrev, $project) = split(/\s/);
+    die "In projects_file '$projectsFile' abbrev '$abbrev' is not valid.  It should be four letters\n" unless $abbrev =~ /\w\w\w\w/;
+    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/;
+    push(@projects, $project);
+  }
+  close(F);
+} else {
+  @projects = split(/,\s*/, $argsMap->{'--project'});
+}
 
 die "Error: No projects supplied" unless scalar(@projects);
 
@@ -107,14 +121,20 @@ sub usage {
 die "
 Run a set of user db migration pipelines (serially), one per project.  Set things up by running a single pipeline, in  init phase, using the primary model as the model.  Finalize by running a single pipeline, in the clean phase, using the primary model as the model.  Only run clean if all project pipelines succeeed.
 
-Usage: eupathUserDbMigrationMulti cmd_line_args
+Usage: eupathUserDbMigrationMulti cmd_line_args [--projectsFile]
 
 Where: 
   cmd_line_args:  the exact arguments you want passed to each parallel run of eupathUserDbMigration.
 
+Except:
+  --projectsFile:  if you provide this, then do not provide a --project argument.  The list of projects is taken from this file instead.  It is
+                   a two column tab file.  First column (not needed for this script) is 4 char abbrev, eg, plas.  Second column is project
+                   name, eg PlasmoDB.  If you do not provide --projectsFile, instead, provide
+
 The --primaryProject argument is used as the project for the init and clean phases.
 
-The --project argument is used to drive the parallel runs.  Each project P specified in that list is given its own run.  In those separate runs:
+The --project argument is used to drive the parallel runs.  It is a comma delimited list. Each project P specified in that list is given its own run.
+In those separate runs:
   - the --project argument is set to a single project, P.
   - the --primaryModel argument is set to P
   - the --controlDir argument is appended with /P, to give each run a private control dir named after its project
