@@ -18,4 +18,4 @@ schi	SchistoDB			not_component
 toxo	ToxoDB
 tryp	TriTrypDB
 tvag	TrichDB
-#orth	OrthoMCL	501n	not_apisite	not_component
+orth	OrthoMCL	501n	not_apisite	not_component
