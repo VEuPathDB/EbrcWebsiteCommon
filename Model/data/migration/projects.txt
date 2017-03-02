@@ -1,0 +1,15 @@
+ameb	AmoebaDB
+cryp	CryptoDB
+eupa	EuPathDB
+fung	FungiDB
+giar	GiardiaDB
+host	HostDB
+mbio	MicrobiomeDB	bl1n	not_apisite
+micr	MicrosporidiaDB
+piro	PiroplasmaDB
+plas	PlasmoDB
+schi	SchistoDB
+toxo	ToxoDB
+tryp	TriTrypDB
+tvag	TrichDB
+orth	OrthoMCL	501n	not_apisite
