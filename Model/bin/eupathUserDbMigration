@@ -86,42 +86,44 @@ my $REPLIC_STEP = 1;
 my %subPipeline;
 
 
-$subPipeline{configureProjects} =
+$subPipeline{configureProject} =
   [
-    ['buildConfigFiles', "eupathMultiSiteConfigure '$args{primaryModel}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['primaryModel', 'metaFileNameTemplate'] ],
+    # we use multi site configure here only because it lets us use a name template.  we only actually configure one file at a time.
+    ['buildConfigFile', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['project', 'metaFileNameTemplate'] ],
   ];
 
 
 $subPipeline{cacheModelInit} =
   [
-   @{$subPipeline{configureProjects}},
-   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
-   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
-   ['stepExpanderDrop', "wdkExpandStep -dropTablesOnly -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+   @{$subPipeline{configureProject}},
+   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+   ['stepExpanderDrop', "wdkExpandStep -dropTablesOnly -model $args{project}", !$REPLIC_STEP, ['project']],
   ];
 
 $subPipeline{cacheModel} =
   [
+   @{$subPipeline{configureProject}},  # we might re-configure the primary project that was configured during init, but that is ok
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['project', 'keepUserDBCache', 'skipParams'] ],
   ];
 
 $subPipeline{updateAndReportOnStepsInternal} =
   [
    ['mapOrganism', "eupathMapOrganism $args{project} $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'project']],
-   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
 
    ['mapQuestionName', "eupathMapQuestion $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
-   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
 
-   ['expandStep', "wdkExpandStep -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
-   ['validateReplExpand', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   ['expandStep', "wdkExpandStep -model $args{project}", !$REPLIC_STEP, ['project']],
+   ['validateReplExpand', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
 
-   ['invalidStepReport',"wdkInvalidStepReport -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+   ['invalidStepReport',"wdkInvalidStepReport -model $args{project}", !$REPLIC_STEP, ['project']],
   ];
 
 $subPipeline{reportBroken} =
   [
-    ['wdkReportBroken', "wdkReportBroken '$args{primaryModel}'", !$REPLIC_STEP, ['primaryModel'] ],
+    ['wdkReportBroken', "wdkReportBroken '$args{project}'", !$REPLIC_STEP, ['project'] ],
   ];
 
 
@@ -176,13 +178,13 @@ $pipelines{release} =
    [
     @{$subPipeline{updateAndReportOnStepsInternal}},
 
-    ['removeBroken', "wdkRemoveBroken -model $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']], # remove broken strategies
-    ['validateReplBroken', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+    ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
+    ['validateReplBroken', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
     ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['projects']],
-    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
 
     ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
-    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
    ],
 
    clean =>
@@ -196,10 +198,10 @@ $pipelines{cleanup} =
   {
    main =>
    [
-   @{$subPipeline{configureProjects}},
-    ['removeGuests', "wdkRemoveGuests -model $args{primaryModel} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['primaryModel', 'removeGuestsCutoff']],
-    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
-    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{primaryModel} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['primaryModel']],
+   @{$subPipeline{configureProject}},
+    ['removeGuests', "wdkRemoveGuests -model $args{project} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['project', 'removeGuestsCutoff']],
+    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{project}", !$REPLIC_STEP, ['project']],
+    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
    ]
   };
 
@@ -207,12 +209,12 @@ $pipelines{test} =
   {
    init =>
    [
-    ['echo-0', "sleep 10; echo $args{primaryModel}", !$REPLIC_STEP, ['primaryModel']],
+    ['echo-0', "sleep 10; echo $args{project}", !$REPLIC_STEP, ['project']],
    ],
    main =>
    [
     ['echo-1', "sleep 10; echo $args{project}", !$REPLIC_STEP, ['project']],
-    ['echo-2', "sleep 10; echo $args{primaryModel}", $REPLIC_STEP, ['primaryModel']],
+    ['echo-2', "sleep 10; echo $args{project}", $REPLIC_STEP, ['project']],
     ['echo-3', "sleep 10; echo woohoo, $REPLIC_STEP", []],
     ['ls','ls', !$REPLIC_STEP, []],
    ]
@@ -225,15 +227,15 @@ $pipelines{test} =
 
 $pipelines{gus4} =
   [
-   @{$subPipeline{configureProjects}},
+   @{$subPipeline{configureProject}},
    ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects']],
    # Cannot put validation here since it checks the whole DB (is not project-specific)
-   #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['primaryModel']]
+   #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['project']]
   ];
 
 $pipelines{gus4Ortho} =
   [
-   @{$subPipeline{configureProjects}},
+   @{$subPipeline{configureProject}},
    ['gus4', "eupathGus4StepTableMigration '$args{project}' " , !$REPLIC_STEP, ['projects'] ],
   ];
 
