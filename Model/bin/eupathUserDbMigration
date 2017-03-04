@@ -123,7 +123,7 @@ $subPipeline{updateAndReportOnStepsInternal} =
 
 $subPipeline{reportBroken} =
   [
-    ['wdkReportBroken', "wdkReportBroken '$args{project}'", !$REPLIC_STEP, ['project'] ],
+    ['wdkReportBroken', "wdkRemoveBroken -reportOnly -model $args{project}", !$REPLIC_STEP, ['project'] ],
   ];
 
 
