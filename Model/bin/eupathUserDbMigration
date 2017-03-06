@@ -176,15 +176,14 @@ $pipelines{release} =
   {
    main =>
    [
+    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
+    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
     @{$subPipeline{updateAndReportOnStepsInternal}},
 
     ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
     ['validateReplBroken', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
     ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['projects']],
     ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
-
-    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
-    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
    ],
 
    clean =>
@@ -246,6 +245,12 @@ usage() unless $args{pipeline} && ($args{controlDir} || $args{listSteps} || $arg
 my $pipeline = $pipelines{$args{pipeline}};
 die "Error: can't find pipeline with name '$args{pipeline}'\n" unless $pipeline;
 
+# get all steps from all phases
+my @stepSpecsAllPhases;
+foreach my $phaseName (@allowedPhases) {
+  push(@stepSpecsAllPhases, @{$pipeline->{$phaseName}}) if $pipeline->{$phaseName};
+}
+
 # get steps in the requested phases.
 my @stepSpecs;
 if ($args{phase}) {
@@ -263,23 +268,23 @@ if ($args{phase}) {
 }
 
 # validate that pipeline has no duplicate step names
-my %stepNamesHash;
-foreach my $stepSpec (@stepSpecs) {
-  die "Duplicate step name '$stepSpec->[0]'\n" if $stepNamesHash{$stepSpec->[0]};
-  $stepNamesHash{$stepSpec->[0]} = 1;
+my %stepNamesHashAllPhases;
+foreach my $stepSpec (@stepSpecsAllPhases) {
+  die "Duplicate step name '$stepSpec->[0]'\n" if $stepNamesHashAllPhases{$stepSpec->[0]};
+  $stepNamesHashAllPhases{$stepSpec->[0]} = 1;
 }
 
 # validate stop after, if any
 if ($args{stopAfterStep}) {
   my $found = 0;
-  foreach my $stepSpec (@stepSpecs) { $found |= ($stepSpec->[0] eq $args{stopAfterStep}); }
+  foreach my $stepSpec (@stepSpecsAllPhases) { $found |= ($stepSpec->[0] eq $args{stopAfterStep}); }
   die "Invalid stopAfterStep '$args{stopAfterStep}'\n" unless $found;
 }
 
 # validate redo step, if any
 if ($args{redoStep}) {
   my $found = 0;
-  foreach my $stepSpec (@stepSpecs) { $found |= ($stepSpec->[0] eq $args{redoStep}); }
+  foreach my $stepSpec (@stepSpecsAllPhases) { $found |= ($stepSpec->[0] eq $args{redoStep}); }
   die "Invalid redoStep '$args{redoStep}'\n" unless $found;
 }
 
@@ -289,7 +294,7 @@ my %skipSteps;
 if ($args{skipSteps}) {
   my @skipSteps = split(/,\s*/, $args{skipSteps});
   foreach my $stepName (@skipSteps) {
-    die "Trying to skip step '$stepName' which does not exist\n" unless $stepNamesHash{$stepName};
+    die "Trying to skip step '$stepName' which does not exist\n" unless $stepNamesHashAllPhases{$stepName};
     $skipSteps{$stepName} = 1;
   }
 }
@@ -340,7 +345,7 @@ while ($cursor < scalar(@stepObjects)) {
 
   my $step = $stepObjects[$cursor];
   my $stepName = $step->{name};
-  if (-e "$stepName.failed") {
+  if (-e "$stepName.failed" && !$step->{skip}) {
     &log("Step '$stepName' failed.  Can't proceed");
     exit 1;
   }
