@@ -96,7 +96,6 @@ die "Can't find 'project:' or 'appDb.instance:' lines in provided meta file\n" u
 # print "Masters: $masterProject, $masterProjectLower\n";
 foreach my $component (@components) {
   my $prefix = $component->[0];
-  next if $prefix eq $masterPrefix;
   my $project = $component->[1];
   my $projectLower = lc($project);
   my $file = "${project}MetaConfig.yaml";
@@ -109,7 +108,7 @@ foreach my $component (@components) {
   die "Couldn't find a line for '$prefix' in apiTnsSummary\n" unless $suffix;
   my $instance = "${prefix}$suffix";
   foreach my $line (@metaFileLines) {
-    next if $i == $apisiteLineIndex && $components[3];  # if not an apisite project, skip that line
+    next if $i == $apisiteLineIndex && $component->[3];  # if not an apisite project, skip that line
     $line =~ s/project: \S+/project: $project/ if $i == $projectLineIndex;
     $line =~ s/appDb.instance: \S+/appDb.instance: $instance/ if $i == $appDbLineIndex;
     $line =~ s/ - \S+/ - $projectLower/ if $i == $projectSectionLineIndex;
