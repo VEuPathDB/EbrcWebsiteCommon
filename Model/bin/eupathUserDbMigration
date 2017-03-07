@@ -17,7 +17,7 @@ my @allowedPhases = ('init', 'main', 'clean');
 #      - decide on a command line argument prompt for eupathUserDbMigration, eg --cleanExpandedSteps
 #      - add that to the GetOptions declaration
 #        - if it is a boolean argument, use the ! notation (see, eg, keepUserDBCache)
-#        - if it is a string argument, use the =s notation (see projects)
+#        - if it is a string argument, use the =s notation (see project)
 #      - if it is a file argument add it to the list in the section below that validates that file/dir args are full paths
 #  3) add it to a row in one of the 
 
@@ -176,13 +176,13 @@ $pipelines{release} =
   {
    main =>
    [
-    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['projects'] ],
+    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
     ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
     @{$subPipeline{updateAndReportOnStepsInternal}},
 
     ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
     ['validateReplBroken', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
-    ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['projects']],
+    ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['project']],
     ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
    ],
 
@@ -227,7 +227,7 @@ $pipelines{test} =
 $pipelines{gus4} =
   [
    @{$subPipeline{configureProject}},
-   ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'projects']],
+   ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
    # Cannot put validation here since it checks the whole DB (is not project-specific)
    #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['project']]
   ];
@@ -235,7 +235,7 @@ $pipelines{gus4} =
 $pipelines{gus4Ortho} =
   [
    @{$subPipeline{configureProject}},
-   ['gus4', "eupathGus4StepTableMigration '$args{project}' " , !$REPLIC_STEP, ['projects'] ],
+   ['gus4', "eupathGus4StepTableMigration '$args{project}' " , !$REPLIC_STEP, ['project'] ],
   ];
 
 ##################################################################################################################
