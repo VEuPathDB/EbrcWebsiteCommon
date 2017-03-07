@@ -110,7 +110,7 @@ sub extractArgs {
   my @arr;
   my $prevArg;
   foreach my $arg (@args) {
-    if (substr($arg,0,2) eq '--') {
+    if (substr($arg,0,1) eq '-') {
       $map{$arg} = "";
       $prevArg = $arg;
       push(@arr, $arg);
