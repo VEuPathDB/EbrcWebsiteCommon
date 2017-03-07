@@ -103,7 +103,7 @@ $subPipeline{cacheModelInit} =
 
 $subPipeline{cacheModel} =
   [
-   @{$subPipeline{configureProject}},  # we might re-configure the primary project that was configured during init, but that is ok
+   ['rebuildConfigFile', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['project', 'metaFileNameTemplate'] ],
    ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['project', 'keepUserDBCache', 'skipParams'] ],
   ];
 
