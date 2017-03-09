@@ -14,7 +14,7 @@
  */
 
 var fs = require('fs');
-var MD5 = require('MD5');
+var md5 = require('md5');
 
 var files = process.argv.slice(2);
 
@@ -29,7 +29,7 @@ try {
   manifest.files = files
     .reduce(function(acc, file) {
       acc[file] = {
-        checksum: MD5(fs.readFileSync(file)),
+        checksum: md5(fs.readFileSync(file)),
         size: fs.statSync(file).size
       };
       return acc;

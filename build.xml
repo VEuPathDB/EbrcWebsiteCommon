@@ -99,6 +99,11 @@
 
   <target name="EuPathSiteCommon/Site-WebInstallation">
  
+    <ant target="yarn">
+      <property name="project" value="EuPathSiteCommon"/>
+      <property name="component" value="Site"/>
+    </ant>
+
     <ant target="defaultWebComponentInstall">
       <property name="project" value="EuPathSiteCommon"/>
       <property name="component" value="Site"/>
@@ -106,13 +111,55 @@
 
   </target>
 
-  <!-- Custum Web Installation related targets -->
-  <!-- <target name="assets-checksums-prop" extensionOf="webinstall-posthook"> -->
+  <!-- Target to be used by implementing sites -->
+  <target name="eupathWebComponentInstall">
+    <echo message="Building ${project}/${component} assets"/>
+    <available file="${projectsDir}/${project}/${component}/webpack.config.js" property="webpack.config.js.present"/>
+    <ant target="eupath-merge-tags"/>
+    <ant target="defaultWebComponentInstall"/>
+    <ant target="yarn"/>
+    <ant target="webpack"/>
+    <ant target="generate-assets-manifest"/>
+  </target>
+
+  <target name="yarn">
+    <exec executable="yarn"
+      dir="${projectsDir}/${project}/${component}"
+      failonerror="true"
+      failifexecutionfails="true"/>
+  </target>
+
+  <target name="webpack" if="webpack.config.js.present">
+    <exec executable="${projectsDir}/WDK/View/node_modules/.bin/webpack"
+      dir="${projectsDir}/${project}/${component}"
+      failonerror="true"
+      failifexecutionfails="true">
+      <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
+      <arg line="--output-path ${webappTargetDir}"/>
+    </exec>
+  </target>
+
+  <target name="eupath-merge-tags">
+    <mkdir dir="${webappTargetDir}/WEB-INF/tags/site"/>
+    <delete>
+      <fileset dir="${webappTargetDir}/WEB-INF/tags/site" includes="*.tag"/>
+    </delete>
+    <copy todir="${webappTargetDir}/WEB-INF/tags/site">
+      <fileset dir="${projectsDir}/EuPathSiteCommon/Site/webapp/WEB-INF/tags/site-common">
+        <include name="*.tag"/>
+      </fileset>
+    </copy>
+    <copy todir="${webappTargetDir}/WEB-INF/tags/site" overwrite="true">
+      <fileset dir="${projectsDir}/${project}/${component}/webapp/WEB-INF/tags/site">
+        <include name="*.tag"/>
+      </fileset>
+    </copy>
+  </target>
 
   <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
   <!-- Projects which depend on this one should call this after defaultWebComponentInstal -->
   <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
-  <target name="EuPathSiteCommon-post-webinstall">
+  <target name="generate-assets-manifest">
 
     <echo>Generating assets-manifest.json</echo>
 

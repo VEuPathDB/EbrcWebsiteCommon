@@ -1,9 +1,17 @@
-import { createElement } from 'react';
-import { render } from 'react-dom';
-import Announcements from './client/components/Announcements';
+/* global wdk */
+// import css files
+import 'eupathdb/wdkCustomization/css/superfish/css/superfish.css';
+import 'eupathdb/css/AllSites.css';
+import './lib/hoverIntent';
+import './lib/superfish';
+import '!!script-loader!eupathdb/js/newwindow';
 
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
+
+import { createElement } from 'react';
+import { render } from 'react-dom';
+import Announcements from './client/components/Announcements';
 
 wdk.namespace("eupath.setup", function(ns, $) {
 
@@ -37,7 +45,7 @@ wdk.namespace("eupath.setup", function(ns, $) {
     });
 
     // handle file changes
-    $form.on("change", ":file", function(e) {
+    $form.on("change", ":file", function() {
 
       if ($(this).parent().has(".remove_file").length === 0) {
         // add additional file input, and add/remove links
@@ -160,39 +168,20 @@ wdk.namespace("eupath.setup", function(ns, $) {
     wdk.util.addSpamTimestamp($form);
   };
 
-	// currently only used in ortho's sidebar.tag
+  // currently only used in ortho's sidebar.tag
   var configureSidebar = function() {
-    $("#sidebar").accordion({
-     active:1,                  // do not combine with navigation
-     animate: 200,
-     collapsible: false,
-		 heightStyle: "content",
-     icons:false
+    var $sidebar = $("#sidebar");
+    $sidebar.accordion({
+      active: $sidebar.data("default-open-index") || 1,
+      animate: 200,
+      collapsible: false,
+      heightStyle: "content",
+      icons:false
     });
   };
 
   var configureMenuBar = function() {
     var menu = document.getElementById('menu');
-    var $body = $(document.body);
-    var linkInMenu = false;
-    var $topLink = $('<a class="back-to-top" href="#" title="Back to top of page">' +
-                     '  <i class="fa fa-2x fa-arrow-circle-up"></i>' +
-                     '</a>')
-      .css({
-        padding: '2px 1em',
-        borderLeft: 'none'
-      })
-      .click(function(e) {
-        e.preventDefault();
-        e.target.blur();
-        window.scrollTo(0, 0);
-      });
-    var $topLinkMenuItem = $('<li/>').append($topLink)
-      .css({
-        float: 'right',
-      });
-    var $lastMenuItem = $('> ul > li:last-child', menu);
-
     $('.sf-menu', menu).superfish();
   };
 

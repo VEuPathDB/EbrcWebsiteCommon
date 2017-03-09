@@ -218,9 +218,14 @@ article section {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-#contentwrapper {
+.eupathdb-PageContent {
   background-color: white;
   min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
+}
+
+.eupathdb-PageContent:not(.eupathdb-PageContent__summary) {
+  padding: 1em;
+  overflow: auto;
 }
 
 #search-bubbles {
@@ -400,27 +405,56 @@ div.innertube #record-toolbox li {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
-#menu_lefttop {
-	width: 220px;
-	margin-top: 8px;
-	position: absolute;
-	left: 6px;
-	top: 129px;
-        z-index: 10;
+#sidebar, #menu_lefttop {
+  width: 220px;
+  position: absolute;
+  left: 6px;
+  z-index: 10;
+  /*
+  margin-top: 8px;
+  top: 129px;
+  */
 }
 
+#sidebar a.heading:link, #sidebar a.heading:visited,
 #menu_lefttop a.heading:link, #menu_lefttop a.heading:visited {
 	color: #FFFFFF;
 	display: block;
 }
 
+#sidebar a.heading:hover,
 #menu_lefttop a.heading:hover {
 	color: #CCCCCC;
 	display: block;
 }
 
+#sidebar img,
 #menu_lefttop img {
         display: block;
+}
+
+#sidebar h3 {
+  padding: 0;
+}
+
+#sidebar h3.ui-state-active {
+  background:0;
+  border:0;
+}
+
+#sidebar h3.ui-state-default {
+  background:0;
+  border:0;
+}
+
+#sidebar div {
+   font-family: Arial, Helvetica, sans-serif;
+   font-size: 12px;
+   font-weight: normal;
+   padding: 6px;
+   line-height: 15px;
+   background-color: #FFFFFF;
+   margin: -5px 0px 5px;
 }
 
 #menu_lefttop div {
@@ -453,6 +487,7 @@ div.innertube #record-toolbox li {
 
 
 
+#sidebar a.heading,
 #menu_lefttop a.heading {
   text-align: center;
   height: 26px;
@@ -577,12 +612,58 @@ ul.cirbulletlist {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =HEADER
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.eupathdb-SmallMenu > .eupathdb-SmallMenuItem {
+  display: inline-block;
+  padding-right: 10px;
+}
+
+.eupathdb-SmallMenu > .eupathdb-SmallMenuItem > .eupathdb-SmallMenu {
+  visibility: hidden;
+  position: absolute;
+  z-index: 2;
+  text-align: left;
+  border: 1px solid;
+  padding: 6px 6px 6px 18px;
+  margin: 0;
+  width: 13em;
+  list-style: disc;
+  background: white;
+  transition: visibility 250ms linear 250ms;
+}
+
+.eupathdb-SmallMenu > .eupathdb-SmallMenuItem:active > .eupathdb-SmallMenu,
+.eupathdb-SmallMenu > .eupathdb-SmallMenuItem:hover > .eupathdb-SmallMenu {
+  visibility: visible;
+}
+
+.eupathdb-SmallMenu .eupathdb-SmallMenuItem .eupathdb-SmallMenuItem {
+  padding: 2px 0;
+  display: list-item;
+}
+
+.eupathdb-SmallMenuDivider {
+  color: gray;
+  margin-top: 8px;
+  font-style: italic;
+  font-size: 90%;
+  list-style: none;
+}
+
+.eupathdb-SmallMenuItem.eupathdb-SmallMenuSocialMediaContainer {
+  padding: 0;
+}
+
 #nav-top li ul {  /* second-level lists */
   background-repeat: repeat-x;      /*was in AllSites, did not make it into WDK*/
   width:13em;
   padding: 6px 6px 6px 18px;
 }
 
+#quick-search {
+  margin-bottom: 12px;
+  margin-top: 16px;
+  height: 26px;
+}
 
 div#quick-search td {
   white-space: nowrap;
@@ -605,7 +686,8 @@ div#quick-search td {
    font-size: 12px;
    float: right;
    text-align: right;
-   margin-right: 25px;
+   margin-right: 12px;
+   margin-top: 26px;
 }
 
 #header_rt a:link, #header_rt a:visited {
@@ -624,7 +706,10 @@ div#quick-search td {
 }
 
 #toplink {
-	padding-top: 1px;
+  padding-top: 1px;
+  position: absolute;
+  top: 0;
+  right: 25px;
 }
 
 #toplink a:link, #toplink a:visited{
@@ -636,6 +721,17 @@ div#quick-search td {
 	display: block;
 	text-align: right;
 }
+
+.eupathdb-Logo {
+  overflow: auto;
+}
+.eupathdb-LogoImage {
+  float: left;
+}
+.eupathdb-LogoRelease {
+  display: inline-block;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =ABOUT  menu (in sidebar and header)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -665,69 +761,6 @@ span.smallTitle {
   margin-top: 36px;
 }
 
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 =SOCIALMEDIA (about, help, etc.)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.twitter,
-.facebook,
-.youtube {
-  height: 22px;
-  width: 22px;
-  background: url(../images/social_sprites_22.png) no-repeat;
-  display: inline-block;
-}
-.twitter {
-  background-position: -25px -2px;
-}
-.facebook {
-  background-position: -2px -2px;
-}
-.youtube {
-  background-position: -48px -2px;
-}
-.facebook.small,
-.twitter.small,
-.youtube.small {
-  height: 14px;
-  width: 14px;
-  background: url(../images/social_sprites_14.png) no-repeat;
-  display: inline-block;
-  vertical-align: bottom;
-}
-.facebook.small {
-  background-position: -15px 0px ;
-}
-.twitter.small {
-  background-position: 0px 0px ;
-}
-.youtube.small {
-  background-position: -30px 0px ;
-}
-.twitter + span,
-.facebook + span,
-.youtube + span {
-  margin-left: 12px;
-}
-.socmedia-link .facebook,
-.socmedia-link .twitter,
-.socmedia-link .youtube {
-  margin-left: 2px;
-}
-#sidebar .socmedia-link,
-#menu_lefttop .socmedia-link {
-  list-style: none;
-  padding-top: 2px;
-}
-#sidebar .twitter,
-#sidebar .facebook,
-#sidebar .youtube,
-#menu .twitter,
-#menu .facebook,
-#menu .youtube {
-  position: relative;
-  top: 2px;
-}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Menu bar
@@ -797,8 +830,9 @@ span.smallTitle {
   display: inline-block;
 }
 
+a.eupathdb-MenuItemText,
 .eupathdb-MenuItemText {
-  color: white !important;
+  color: white;
   font-weight: 500;
   border-left: 1px solid #fff;
   border-top: none;
@@ -811,14 +845,14 @@ span.smallTitle {
   white-space: nowrap;
 }
 
-.eupathdb-MenuItemText__beta,
-.eupathdb-MenuItemText__new {
+a.eupathdb-MenuItemText__beta,
+a.eupathdb-MenuItemText__new {
   position: relative;
   padding-right: 40px;
 }
 
-.eupathdb-MenuItemText__beta:after,
-.eupathdb-MenuItemText__new:after {
+a.eupathdb-MenuItemText__beta:after,
+a.eupathdb-MenuItemText__new:after {
   position: absolute;
   padding-left: 5px;
 }
@@ -827,6 +861,8 @@ span.smallTitle {
  * The '~' prefix indicates a top-level module path, which
  * is used by the image-loader webpack plugin to inline the
  * image data as base64 encoded string.
+ *
+ * See https://github.com/tcoopman/image-webpack-loader
  */
 
 .eupathdb-MenuItemText__beta:after {
@@ -848,6 +884,48 @@ span.smallTitle {
 
 .eupathdb-Submenu .eupathdb-MenuItemText__parent:after {
   content: '\f0da';
+}
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 =SOCIALMEDIA (about, help, etc.)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+.eupathdb-SocialMedia__twitter:before,
+.eupathdb-SocialMedia__facebook:before,
+.eupathdb-SocialMedia__youtube:before,
+.eupathdb-MenuItemText__twitter:before,
+.eupathdb-MenuItemText__facebook:before,
+.eupathdb-MenuItemText__youtube:before {
+  font-family: FontAwesome;
+  margin-right: 10px;
+  display: inline-block;
+  border-radius: 4px;
+  border: 0;
+  background: white;
+  font-size: 1.8em;
+  padding: 0px;
+  width: 18px;
+  height: 18px;
+  line-height: 19px;
+}
+.eupathdb-SocialMedia__twitter:before,
+.eupathdb-MenuItemText__twitter:before {
+  content: '\f081';
+  color: #1da1f2;
+}
+.eupathdb-SocialMedia__facebook:before,
+.eupathdb-MenuItemText__facebook:before {
+  content: '\f082';
+  color: #4267b2;
+}
+.eupathdb-SocialMedia__youtube:before,
+.eupathdb-MenuItemText__youtube:before {
+  content: '\f16a';
+  color: darkred;
+  height: 12px;
+  line-height: 15px;
+  border-radius: 10px;
+  font-size: 1.6em;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

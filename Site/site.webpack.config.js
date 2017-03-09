@@ -1,14 +1,15 @@
 var path = require('path');
-var fs = require('fs');
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
-var pkgPath = path.join(process.cwd(), 'package.json');
-
 var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
 
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge({
     context: process.cwd(),
+    output: {
+      path: path.join(process.cwd(), 'dist'),
+      filename: 'site-[name].bundle.js'
+    },
     resolve: {
       alias: {
         wdk: wdkRoot + '/webapp/wdk',
@@ -36,7 +37,30 @@ module.exports = function configure(additionalConfig) {
         'react-dom'    : 'ReactDOM',
         'react-router' : 'ReactRouter'
       }
+    ],
+
+    // Extract CSS into a separate file for each entry
+    module: {
+      rules: [
+        {
+          test: /\.css$/,
+          use: ExtractTextPlugin.extract({
+            use: {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            fallback: 'style-loader'
+          })
+        }
+      ]
+    },
+
+    plugins: [
+      new ExtractTextPlugin('site-[name].bundle.css')
     ]
+
   }, additionalConfig);
 }
 

@@ -24,7 +24,7 @@
       window.__asset_path_remove_me_please__ = "${model.modelConfig.assetsUrl}/";
 
       // used by EuPathSiteCommon to initialize wdk
-      window.__WDK_CONFIG__ = {
+      window.__SITE_CONFIG__ = {
         rootElement: "#wdk-container",
         rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
         endpoint: "${webAppUrl}/service",
@@ -36,7 +36,7 @@
         twitterId: "${props.TWITTER_ID}",
         youtubeId: "${props.YOUTUBE_ID}"
       };
-      window.__EUPATHDB_ANNOUNCEMENTS__ = {
+      window.__SITE_ANNOUNCEMENTS__ = {
         information: ${information},
         degraded: ${degraded},
         down: ${down}
@@ -51,7 +51,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="wdk/css/wdk.min.css"/>
-    <imp:stylesheet rel="stylesheet" type="text/css" href="wdkCustomization/css/client.css"/>
+    <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="css/${model.projectId}.css"/>
     <imp:script charset="utf8" src="wdk-client.bundle.js" ></imp:script>
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
