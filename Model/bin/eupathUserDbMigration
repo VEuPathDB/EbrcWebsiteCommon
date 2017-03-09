@@ -43,7 +43,7 @@ my %args;
 	    'controlDir=s',
 	    'pipeline=s',
 	    'skipSteps=s',
-	    'usingSandbox!',
+	    'noReplication!',
 	    'stopAfterStep=s',
 	    'redoStep=s',
 	    'listSteps!',
@@ -182,7 +182,9 @@ $pipelines{release} =
 
     ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
     ['validateReplBroken', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+    ['invalidStepsSummaryBefore',"wdkInvalidStepReport -summaryOnly -model $args{project}", !$REPLIC_STEP, ['project']],
     ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['project']],
+    ['invalidStepsSummaryAfter',"wdkInvalidStepReport -summaryOnly -model $args{project}", !$REPLIC_STEP, ['project']],
     ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
    ],
 
@@ -310,7 +312,7 @@ foreach my $stepSpec (@stepSpecs) {
   $step->{hasReqdArgs} = 1;
   foreach my $argName (@{$step->{reqdArgsList}}) { $step->{hasReqdArgs} &= defined($args{$argName});}
 
-  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $args{usingSandbox};
+  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $args{noReplication};
 
   # if skipping this step, remember that, and put out a message
   if ($step->{skip}) {
@@ -406,7 +408,7 @@ sub usage {
 
 die "
 
-eupathUserDbMigration --pipelineName pipeline_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps]  [--redoStep step_name] [--usingSandbox] [--phase phase]
+eupathUserDbMigration --pipelineName pipeline_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps]  [--redoStep step_name] [--noReplication] [--phase phase]
 
 Where:
   pipeline: the name of a list of steps to run.  Options are: $pipelineNames
@@ -416,7 +418,7 @@ Where:
   stopAfterStep: the name of the step to stop after (Default: none)
   skipSteps: a comma delimited list of steps to skip (Default: none)
   redoStep: a step to restart the pipeline at.  If it and following steps were marked as done, their done files will be removed.  (Default: none)
-  usingSandbox: skip the steps marked as useful only in a replication context
+  noReplication: skip the steps marked as useful only in a replication context
   phase: if present, must be either 'init' or 'main', to limit this run to those phases of the pipeline.
 
 Additional step-specific arguments are: --" . join(" --", @stepSpecificArgs) . "
