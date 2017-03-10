@@ -109,12 +109,14 @@
       <property name="component" value="Site"/>
     </ant>
 
-    <available file="${targetDir}/config/log4j.xml.custom-web" property="custom.weblog4j.present"/>
-    <available file="${targetDir}/config/log4j.xml.custom-web" property="custom.weblog4j.present"/>
-    <antcall target="installCustomWebLog4j"/>
-    <available file="${webappTargetDir}/WEB-INF/classes/log4j.xml" property="weblog4j.present"/>
-    <antcall target="setLog4j"/>
+    <ant target="webComponentPartCopy">
+      <property name="componentDir" value="${projectsDir}/EuPathSiteCommon/Site"/>
+      <property name="part" value="dashboard"/>
+      <property name="to" value="${htdocsTargetDir}/../dashboard"/>
+    </ant>
 
+    <available file="${htdocsTargetDir}/../dashboard" type="dir" property="dashboard.present"/>
+    <antcall target="dashboardDoc"/>
 
   </target>
 
@@ -163,6 +165,24 @@
     </copy>
   </target>
 
+  <target name="dashboardDoc" if="dashboard.present">
+    <echo message="Compiling phpdoc" />
+    <!-- errors to /dev/null due to Smarty bug: https://bugzilla.redhat.com/show_bug.cgi?id=1352882 -->
+    <exec executable="phpdoc" 
+      failonerror="false"
+      failifexecutionfails="false"
+      error="/dev/null"
+    >
+      <arg line="--ignore phpdoc/,css/,js/,config/,test/,images/,doc/" />
+      <arg line="--defaultpackagename dashboard" />
+      <arg line="--title /dashboard" />
+      <arg line="-t ${htdocsTargetDir}/../dashboard/phpdoc" />
+      <arg line="-d ${htdocsTargetDir}/../dashboard" />
+      <arg line="-o HTML:Smarty:PHP" />
+      <arg value="-q"/>      
+    </exec>
+  </target>
+
   <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
   <!-- Projects which depend on this one should call this after defaultWebComponentInstal -->
   <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
@@ -188,21 +208,7 @@
     </apply>
 
   </target>
-
-  <target name="installCustomWebLog4j" if="custom.weblog4j.present">
-    <echo message="Installing custom log4j.xml from"/>
-    <echo message="${targetDir}/config/log4j.xml.custom-web"/>
-    <copy overwrite="true"
-      file="${targetDir}/config/log4j.xml.custom-web" 
-      tofile="${webappTargetDir}/WEB-INF/classes/log4j.xml"/>
-  </target>
-
-  <target name="setLog4j" if="weblog4j.present">
-    <dirname  property="webappDir" file="${webappTargetDir}"/>
-    <basename property="webapp" file="${webappDir}"/>
-    <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml" token="@WEBAPP@" value="${webapp}"/>
-  </target>
-
+ 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
