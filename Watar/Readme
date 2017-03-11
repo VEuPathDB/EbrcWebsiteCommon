@@ -1,5 +1,7 @@
 stuff for web application testing and reporting
 
+!! Compilation of the java classes uses the GUS build system.
+build EuPathSiteCommon/Watar-Installation install -append
 
 !! installation
 ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \

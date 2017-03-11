@@ -156,7 +156,7 @@
     <javac 
         debug="true" 
         destdir="${destdir}"
-        srcdir="${componentDir}/src/java" 
+        srcdir="${componentDir}/src/main/java" 
         tempdir="${destdir}"
     >
       <classpath refid="project_classpath"/>
@@ -167,6 +167,7 @@
         <exclude name="**/CVS/*" />
       </fileset>
     </copy>
+    <echo>${targetDir}/lib/java/${project}-${component}.jar</echo>
     <jar basedir="${componentDir}/classes" 
          destfile="${targetDir}/lib/java/${project}-${component}.jar"/>
   </target>

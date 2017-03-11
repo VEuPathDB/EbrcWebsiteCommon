@@ -11,6 +11,7 @@
         <groups>
           <run>
             <include name="deployment"/>
+            <include name="dashboard"/>
           </run>
         </groups>
         <classes>
@@ -23,6 +24,7 @@
           <run>
             <include name="deployment"/>
             <include name="xmlrecord"/>
+            <include name="dashboard"/>
           </run>
         </groups>
         <classes>
@@ -36,6 +38,7 @@
             <include name="deployment"/>
             <include name="xmlrecord"/>
             <include name="wdkrecord"/>
+            <include name="dashboard"/>
           </run>
         </groups>
         <classes>
@@ -59,6 +62,7 @@
         <groups>
           <run>
             <include name="deployment"/>
+            <include name="dashboard"/>
           </run>
         </groups>
         <classes>

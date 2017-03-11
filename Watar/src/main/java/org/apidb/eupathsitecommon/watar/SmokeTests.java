@@ -1,6 +1,7 @@
 package org.apidb.eupathsitecommon.watar;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -8,12 +9,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 
 public class SmokeTests {
 
@@ -82,6 +83,30 @@ public class SmokeTests {
         if (geneId == null) throw new Exception("unable to get gene id for testing");
         String url = baseurl + "/" + webappname + Utilities.GENE_RECORD_PATH_TMPL + geneId;
         assertHeaderStatusMessageIsOK(url);
+    }
+
+    @Test(description="Assert valid JSON from /dashboard/json API.", 
+          groups = { "dashboard" })
+    public void Dashboard_JsonApiIsValid() throws Exception {
+        String url = baseurl + "/dashboard/json";
+        Page page = browser.getPage(url);
+        WebResponse response = page.getWebResponse();
+        assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + " .");
+        assertTrue(response.getContentType().equals("application/json"), "Content-Type is 'application/json'");
+        String pageSource = response.getContentAsString();
+        assertTrue(pageSource.contains("\"wdk\":"), "JSON contains '\"wdk\"'");
+    }
+
+    @Test(description="Assert valid XML from /dashboard/xml API.", 
+          groups = { "dashboard" })
+    public void Dashboard_XmlApiIsValid() throws Exception {
+        String url = baseurl + "/dashboard/xml";
+        Page page = browser.getPage(url);
+        WebResponse response = page.getWebResponse();
+        assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + " .");
+        assertTrue(response.getContentType().equals("text/xml"), "Content-Type is 'text/xml'");
+        String pageSource = response.getContentAsString();
+        assertTrue(pageSource.contains("<wdk>"), "XML contains '<wdk>'");
     }
 
     /** 
