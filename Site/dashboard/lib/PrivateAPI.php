@@ -9,6 +9,7 @@ require_once dirname(__FILE__) . "/modules/ProxyInfo.php";
 require_once dirname(__FILE__) . "/modules/WdkMeta.php";
 require_once dirname(__FILE__) . "/modules/Webapp.php";
 require_once dirname(__FILE__) . "/modules/Jvm.php";
+require_once dirname(__FILE__) . "/modules/ServletInfo.php";
 require_once dirname(__FILE__) . "/modules/WdkCache.php";
 require_once dirname(__FILE__) . "/LdapTnsNameResolver.php";
 
@@ -54,6 +55,9 @@ class PrivateAPI {
 
     $jvm = new Jvm();
     $jvm_attr = $jvm->attributes();
+
+    $servletinfo = new ServletInfo();
+    $servlet_data = $servletinfo->attributes();
 
     $cache = new WdkCache();
     $cache_attr = $cache->attributes();
@@ -108,6 +112,7 @@ class PrivateAPI {
             'instance'  => $jvm_attr{'SystemProperties'}{'instance.name'},
             'instancestarttime'  => $jvm_attr{'Uptime'},
             'instancestarttext'  => $jvm->uptime_as_text(),
+            'serverinfo'  => $servlet_data{'ServerInfo'},
         ),
         'svn' => $this->init_svn_info($build->get_data_map()),
         'vmenv' => $this->virtual_machine_environment_settings(
