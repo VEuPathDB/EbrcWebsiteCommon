@@ -10,6 +10,8 @@ require_once dirname(__FILE__) . "/JolModule.php";
 */
 class ServletInfo extends JolModule {
 
+  private $major_version;
+
   /**
    * @return array servlet attributes
    */
@@ -27,7 +29,23 @@ class ServletInfo extends JolModule {
         "...\nFor request " . $req->http_postdata_as_json());
       return null;
     }
-    return $response[0]->value();
+    $attrs = $response[0]->value();
+    $this->set_major_version($attrs{'ServerInfo'});
+    $attrs{'MajorVersion'} = $this->set_major_version($attrs{'ServerInfo'});
+    return $attrs;
+  }
+
+  /**
+   * Set Tomcat major version given Tomcat serverinfo string.
+   * "Apache Tomcat/6.0.43" returns "6"
+   */
+  private function set_major_version($serverinfo) {
+    preg_match(';.+/(\d)\..+;', $serverinfo, $m);
+    $this->major_version = $m[1];
+  }
+
+  public function major_version() {
+    return $this->major_version;
   }
 
 }

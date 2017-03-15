@@ -113,6 +113,7 @@ class PrivateAPI {
             'instancestarttime'  => $jvm_attr{'Uptime'},
             'instancestarttext'  => $jvm->uptime_as_text(),
             'serverinfo'  => $servlet_data{'ServerInfo'},
+            'majorversion'  => $servletinfo->major_version(),
         ),
         'svn' => $this->init_svn_info($build->get_data_map()),
         'vmenv' => $this->virtual_machine_environment_settings(
