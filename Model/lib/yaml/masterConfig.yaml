@@ -111,10 +111,10 @@ default:
   googleAnalyticsId: none
 
   # social media
-  twitter: EuPathDB
   twitterWidgetId: 344817818073714691
-  facebook: pages/EuPathDB/133123003429972
-  youtube: EuPathDB
+  twitterUrl: https://twitter.com/EuPathDB
+  facebookUrl: https://facebook.com/pages/EuPathDB/133123003429972
+  youtubeUrl: https://youtube.com/user/EuPathDB/videos?sort=dd&flow=list&view=1
 
   # needed only in portal to access comp sites
   amebURL: none
@@ -185,9 +185,9 @@ eupathdb:
   trypURL: ${trypURL}
 
 fungidb:
-  twitter: FungiDB
   twitterWidgetId: 479835314844758017
-  facebook: pages/FungiDB/169472636469487
+  twitterUrl: https://twitter.com/FungiDB
+  facebookUrl: https://facebook.com/pages/FungiDB/169472636469487
 
 giardiadb: {}
 
@@ -197,10 +197,10 @@ microsporidiadb: {}
 
 microbiomedb:
   modelName: microbiomeModel
-  twitter: MicrobiomeDB
   twitterWidgetId: 788427253331951616
-  facebook: ''
-  youtube: ''
+  twitterUrl: https://twitter.com/MicrobiomeDB
+  facebookUrl: ''
+  youtubeUrl: ''
   supportEmail: microbiomedb@gmail.com
 
 orthomcl:

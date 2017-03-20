@@ -34,9 +34,9 @@ function Header(props) {
   const {
     announcements,
     buildNumber,
-    facebookId,
-    twitterId,
-    youtubeId,
+    facebookUrl,
+    twitterUrl,
+    youtubeUrl,
     projectId,
     releaseDate,
     webAppUrl
@@ -85,24 +85,24 @@ function Header(props) {
                   target: '_blank'
                 }
               ])
-                  .concat(twitterId ? {
+                  .concat(twitterUrl ? {
                     liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
                     className: 'eupathdb-SocialMedia eupathdb-SocialMedia__twitter',
-                    url: `https://twitter.com/${twitterId}`,
+                    url: twitterUrl,
                     title: 'Follow us on Twitter!',
                     target: '_blank'
                   } : [])
-                  .concat(facebookId ? {
+                  .concat(facebookUrl ? {
                     liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
                     className: 'eupathdb-SocialMedia eupathdb-SocialMedia__facebook',
-                    url: `https://facebook.com/${facebookId}`,
+                    url: facebookUrl,
                     title: 'Follow us on Facebook!',
                     target: '_blank'
                   } : [])
-                  .concat(youtubeId ? {
+                  .concat(youtubeUrl ? {
                     liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
                     className: 'eupathdb-SocialMedia eupathdb-SocialMedia__youtube',
-                    url: `http://www.youtube.com/user/${youtubeId}/videos?sort=dd&flow=list&view=1`,
+                    url: youtubeUrl,
                     title: 'Follow us on YouTube!',
                     target: '_blank'
                   } : [])

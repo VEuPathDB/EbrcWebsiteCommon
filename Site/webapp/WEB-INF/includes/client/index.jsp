@@ -32,9 +32,9 @@
         buildNumber: "${model.buildNumber}",
         releaseDate: "${model.releaseDate}",
         webAppUrl: "${webAppUrl}",
-        facebookId: "${props.FACEBOOK_ID}",
-        twitterId: "${props.TWITTER_ID}",
-        youtubeId: "${props.YOUTUBE_ID}"
+        facebookUrl: "${props.FACEBOOK_URL}",
+        twitterUrl: "${props.TWITTER_URL}",
+        youtubeUrl: "${props.YOUTUBE_URL}"
       };
       window.__SITE_ANNOUNCEMENTS__ = {
         information: ${information},

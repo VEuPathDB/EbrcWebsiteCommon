@@ -14,29 +14,29 @@
       description="Use link text"/>
 
   <!-- set default facebook and twitter IDs (can be overridden in model properties) -->
-  <c:set var="facebook" value="${applicationScope.wdkModel.properties['FACEBOOK_ID']}" />
-  <c:set var="twitter" value="${applicationScope.wdkModel.properties['TWITTER_ID']}" />
-  <c:set var="youtube" value="${applicationScope.wdkModel.properties['YOUTUBE_ID']}" />
+  <c:set var="facebookUrl" value="${applicationScope.wdkModel.properties['FACEBOOK_URL']}" />
+  <c:set var="twitterUrl" value="${applicationScope.wdkModel.properties['TWITTER_URL']}" />
+  <c:set var="youtubeUrl" value="${applicationScope.wdkModel.properties['YOUTUBE_URL']}" />
 
-  <c:if test="${not empty twitter}">
+  <c:if test="${not empty twitterUrl}">
     <li class="socmedia-link no-divider">
-      <a target="_blank" href="http://twitter.com/${twitter}" class="eupathdb-SocialMedia eupathdb-SocialMedia__twitter">
+      <a target="_blank" href="${twitterUrl}" class="eupathdb-SocialMedia eupathdb-SocialMedia__twitter">
         <c:if test="${label}"><span>Follow us on Twitter!</span></c:if>
       </a>
     </li>
   </c:if>
 
-  <c:if test="${not empty facebook}">
+  <c:if test="${not empty facebookUrl}">
     <li class="socmedia-link no-divider">
-      <a target="_blank" href="http://facebook.com/${facebook}" class="eupathdb-SocialMedia eupathdb-SocialMedia__facebook">
+      <a target="_blank" href="${facebookUrl}" class="eupathdb-SocialMedia eupathdb-SocialMedia__facebook">
         <c:if test="${label}"><span>Follow us on Facebook!</span></c:if>
       </a>
     </li>
   </c:if>
 
-  <c:if test="${not empty youtube}">
+  <c:if test="${not empty youtubeUrl}">
     <li class="socmedia-link no-divider">
-      <a target="_blank" href="https://www.youtube.com/user/${youtube}/videos?sort=dd&amp;flow=list&amp;view=1" class="eupathdb-SocialMedia eupathdb-SocialMedia__youtube">
+      <a target="_blank" href="${youtubeUrl}" class="eupathdb-SocialMedia eupathdb-SocialMedia__youtube">
         <c:if test="${label}"><span>Follow us on YouTube!</span></c:if>
       </a>
     </li>
