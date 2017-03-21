@@ -61,7 +61,7 @@ function Header(props) {
             <QuickSearch webAppUrl={webAppUrl} questions={quickSearches}/>
             <SmallMenu
               webAppUrl={webAppUrl}
-              entries={smallMenuEntries(siteConfig).concat([
+              entries={smallMenuEntries(props).concat([
                 isLoggedIn ? {
                   text: `${user.firstName} ${user.lastName}'s Profile`,
                   route: 'user/profile'
@@ -141,7 +141,7 @@ function Header(props) {
             webAppUrl: '/showApplication.do?tab=basket',
             loginRequired: true
           }]
-          .concat(additionalMenuEntries(siteConfig))
+          .concat(additionalMenuEntries(props))
           .concat([{
             id: 'favorites',
             text: (
