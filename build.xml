@@ -126,9 +126,31 @@
     <available file="${projectsDir}/${project}/${component}/webpack.config.js" property="webpack.config.js.present"/>
     <ant target="eupath-merge-tags"/>
     <ant target="defaultWebComponentInstall"/>
+    <ant target="siteLog4j"/>
     <ant target="yarn"/>
     <ant target="webpack"/>
     <ant target="generate-assets-manifest"/>
+  </target>
+
+  <target name="siteLog4j">
+    <available file="${targetDir}/config/log4j.xml.custom-web" property="custom.weblog4j.present"/>
+    <antcall target="installCustomWebLog4j"/>
+    <available file="${webappTargetDir}/WEB-INF/classes/log4j.xml" property="weblog4j.present"/>
+    <antcall target="setLog4j"/>
+  </target>
+
+  <target name="installCustomWebLog4j" if="custom.weblog4j.present">
+    <echo message="Installing custom log4j.xml from"/>
+    <echo message="${targetDir}/config/log4j.xml.custom-web"/>
+    <copy overwrite="true"
+          file="${targetDir}/config/log4j.xml.custom-web" 
+          tofile="${webappTargetDir}/WEB-INF/classes/log4j.xml"/>
+  </target>
+
+  <target name="setLog4j" if="weblog4j.present">
+    <dirname  property="webappDir" file="${webappTargetDir}"/>
+    <basename property="webapp" file="${webappDir}"/>
+    <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml" token="@WEBAPP@" value="${webapp}"/>
   </target>
 
   <target name="yarn">
