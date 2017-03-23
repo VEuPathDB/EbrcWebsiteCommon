@@ -12,8 +12,10 @@ import { initialize as initializeWdk, wrapComponents } from 'wdk-client';
 import { debounce, mergeWith, identity, flow } from 'lodash';
 import { loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
 import makeHeaderWrapper from './component-wrappers/Header';
+import makeDownloadFormWrapper from './component-wrappers/DownloadForm';
 import Footer from './component-wrappers/Footer';
 import eupathStoreWrappers from './store-wrappers';
+import { selectReporterComponent } from './util/reporter';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -40,8 +42,10 @@ export function initialize(options = {}) {
     additionalMenuEntries: options.additionalMenuEntries,
     smallMenuEntries: options.smallMenuEntries
   });
+  const DownloadForm = makeDownloadFormWrapper(selectReporterComponent);
   const eupathComponentWrappers = {
     Header,
+    DownloadForm,
     Footer
   };
   const {
