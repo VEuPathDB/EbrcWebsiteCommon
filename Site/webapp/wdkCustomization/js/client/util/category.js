@@ -1,4 +1,4 @@
-import {seq} from 'wdk-client/IterableUtils';
+import {Seq} from 'wdk-client/IterableUtils';
 import {preorderSeq, pruneDescendantNodes} from 'wdk-client/TreeUtils';
 import {getTree} from 'wdk-client/OntologyUtils';
 import {getRecordClassName, isQualifying} from 'wdk-client/CategoryUtils';
@@ -35,7 +35,7 @@ export function getSearchMenuCategoryTree(ontology, recordClasses, options) {
  * @returns {RecordClassTree[]}
  */
 function groupByRecordClass(categoryTree, recordClassMap, options) {
-  let recordClassCategories = seq(recordClassMap.keys())
+  let recordClassCategories = Seq.from(recordClassMap.keys())
   .filter(includeExclude(options))
   .map(name => recordClassMap.get(name))
   .map(getRecordClassTree(categoryTree))
