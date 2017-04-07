@@ -39,6 +39,7 @@ export function initialize(options = {}) {
     isPartOfEuPathDB: options.isPartOfEuPathDB,
     flattenSearches: options.flattenSearches,
     includeQueryGrid: options.includeQueryGrid,
+    // TODO Rename this to `mainMenuEntries`
     additionalMenuEntries: options.additionalMenuEntries,
     smallMenuEntries: options.smallMenuEntries
   });

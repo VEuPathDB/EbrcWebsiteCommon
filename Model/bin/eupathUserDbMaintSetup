@@ -16,6 +16,8 @@ trunkOrBranch=$4
 dbSuffix=$5
 sourceSite=$6
 
+cwd=$PWD
+
 function runCmd {
     echo $1 >> "$controlDir/setup.log"
     $1
@@ -43,7 +45,6 @@ if [ -e $gusAppDir ]; then
   exit 1
 fi  
 
-
 runCmd "mkdir $gusAppDir"
 
 runCmd "cd $gusAppDir"
@@ -61,4 +62,6 @@ runCmd "cd $controlDir/yaml"
 runCmd "eupathCloneMetaFile $masterMetaFile $dbSuffix $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
 
 runCmd "jenkinsJobScmUpdateMulti $sourceSite $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
+
+runCmd "cd $cwd"
 

@@ -15,6 +15,9 @@ export default function Footer() {
           <br/>
         </div>
         <div className="copyright">©{new Date().getFullYear()} The EuPathDB Project Team</div>
+        <div className="twitter-footer">Follow us on 
+          <a className="eupathdb-SocialMedia eupathdb-SocialMedia__twitter" href="https://twitter.com/MicrobiomeDB" target="_blank"></a>
+        </div>
       </div>
       <div className="right">
         <ul className="attributions">

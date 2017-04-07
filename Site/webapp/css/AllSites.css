@@ -519,6 +519,11 @@ iframe.twitter-timeline {
 		margin-top:8px;
 }
 
+
+div.twitter-footer {
+  display: none;
+}
+
 #menu_lefttop div ul.related-sites li,
 #menu_lefttop div ul#news li,
 #menu_lefttop div ul#communityEventList li {

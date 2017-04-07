@@ -13,38 +13,25 @@ import Menu from './Menu';
 /** Site header */
 function Header(props) {
   const {
-    basketCounts,
-    ontology,
     quickSearches,
-    recordClasses,
     user,
-    showLoginForm,
     showLoginWarning,
-    showLogoutWarning,
     location,
-
-    siteConfig,
-    includeQueryGrid,
     isPartOfEuPathDB,
-    flattenSearches,
     additionalMenuEntries,
-    smallMenuEntries
+    smallMenuEntries,
+    siteConfig
   } = props;
 
   const {
     announcements,
     buildNumber,
-    facebookUrl,
-    twitterUrl,
-    youtubeUrl,
     projectId,
     releaseDate,
     webAppUrl
   } = siteConfig;
 
-  const totalBasketCount = reduce(basketCounts, add, 0);
-
-  const isLoggedIn = user && !user.isGuest;
+  const menuEntries = makeMenuEntries(props);
 
   return (
     <div>
@@ -61,52 +48,7 @@ function Header(props) {
             <QuickSearch webAppUrl={webAppUrl} questions={quickSearches}/>
             <SmallMenu
               webAppUrl={webAppUrl}
-              entries={smallMenuEntries(props).concat([
-                isLoggedIn ? {
-                  text: `${user.firstName} ${user.lastName}'s Profile`,
-                  route: 'user/profile'
-                } : {
-                  text: 'Login',
-                  url: '#login',
-                  onClick: e => { e.preventDefault(); showLoginForm(); }
-                },
-
-                isLoggedIn ? {
-                  text: 'Logout',
-                  url: '#logout',
-                  onClick: e => { e.preventDefault(); showLogoutWarning(); }
-                } : {
-                  text: 'Register',
-                  webAppUrl: '/showRegister.do'
-                },
-                {
-                  text: 'Contact Us',
-                  webAppUrl: '/contact.do',
-                  target: '_blank'
-                }
-              ])
-                  .concat(twitterUrl ? {
-                    liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
-                    className: 'eupathdb-SocialMedia eupathdb-SocialMedia__twitter',
-                    url: twitterUrl,
-                    title: 'Follow us on Twitter!',
-                    target: '_blank'
-                  } : [])
-                  .concat(facebookUrl ? {
-                    liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
-                    className: 'eupathdb-SocialMedia eupathdb-SocialMedia__facebook',
-                    url: facebookUrl,
-                    title: 'Follow us on Facebook!',
-                    target: '_blank'
-                  } : [])
-                  .concat(youtubeUrl ? {
-                    liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
-                    className: 'eupathdb-SocialMedia eupathdb-SocialMedia__youtube',
-                    url: youtubeUrl,
-                    title: 'Follow us on YouTube!',
-                    target: '_blank'
-                  } : [])
-              }
+              entries={smallMenuEntries(props, menuEntries)}
             />
           </div>
           <div className="eupathdb-Logo">
@@ -126,43 +68,7 @@ function Header(props) {
           projectId={projectId}
           showLoginWarning={showLoginWarning}
           isGuest={user ? user.isGuest : true}
-          entries={[
-          { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
-          { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
-            children: getSearchEntries(ontology, recordClasses, flattenSearches).concat(
-              includeQueryGrid ? [
-                { id: 'query-grid', text: 'View all available searches', route: 'query-grid' }
-              ] : [])
-          },
-          { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
-          {
-            id: 'basket',
-            text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
-            webAppUrl: '/showApplication.do?tab=basket',
-            loginRequired: true
-          }]
-          .concat(additionalMenuEntries(props))
-          .concat([{
-            id: 'favorites',
-            text: (
-              <div>
-                <span className="fa-stack fa-pull-left"
-                  style={{
-                    position: 'relative',
-                    top: '-16px',
-                    fontSize: '1.8em',
-                    marginRight: '-6px',
-                    marginLeft: '-18px'
-                  }}>
-                  <i className="fa fa-star fa-stack-1x" style={{color: 'yellow'}}/>
-                  <i className="fa fa-star-o fa-stack-1x" style={{color: '#eb971f'}}/>
-                </span>
-                {' My Favorites'}
-              </div>
-            ),
-            webAppUrl: '/showFavorite.do',
-            loginRequired: true
-          }])}/>
+          entries={additionalMenuEntries(props, menuEntries)}/>
       </div>
       <Announcements projectId={projectId} webAppUrl={webAppUrl} location={location} announcements={announcements}/>
     </div>
@@ -223,4 +129,132 @@ function createMenuEntry(searchNode) {
     webAppUrl: getTargetType(searchNode) === 'search' &&
       '/showQuestion.do?questionFullName=' + getId(searchNode)
   };
+}
+
+/**
+ * Common menu entries used by our sites.
+ * Some are used in the small menu, and some in the main menu.
+ * We collect them here to allow the specific site to decide where and
+ * how to use them.
+ *
+ * This is imperfect, but what it provides is the construction of the most
+ * common set of menu items used across our sites, allowing each site to
+ * modify or extend the data structure at will.
+ *
+ * Note, each top-level entry has a unique id. This can be leveraged to alter
+ * the final structure of the menu entries.
+ */
+function makeMenuEntries(props) {
+  const {
+    basketCounts,
+    user,
+    siteConfig,
+    ontology,
+    recordClasses,
+    showLoginForm,
+    showLogoutWarning,
+    includeQueryGrid,
+    flattenSearches
+  } = props;
+
+  const {
+    facebookUrl,
+    twitterUrl,
+    youtubeUrl,
+    webAppUrl
+  } = siteConfig;
+
+  const totalBasketCount = reduce(basketCounts, add, 0);
+
+  const isLoggedIn = user && !user.isGuest;
+
+  return [
+    { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
+    { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
+      children: getSearchEntries(ontology, recordClasses, flattenSearches).concat(
+        includeQueryGrid ? [
+          { id: 'query-grid', text: 'View all available searches', route: 'query-grid' }
+        ] : [])
+    },
+    { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
+    {
+      id: 'basket',
+      text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
+      webAppUrl: '/showApplication.do?tab=basket',
+      loginRequired: true
+    },
+    {
+      id: 'favorites',
+      text: (
+        <div>
+          <span className="fa-stack fa-pull-left"
+            style={{
+              position: 'relative',
+              top: '-16px',
+              fontSize: '1.8em',
+              marginRight: '-6px',
+              marginLeft: '-18px'
+            }}>
+            <i className="fa fa-star fa-stack-1x" style={{color: 'yellow'}}/>
+            <i className="fa fa-star-o fa-stack-1x" style={{color: '#eb971f'}}/>
+          </span>
+          {' My Favorites'}
+        </div>
+      ),
+      webAppUrl: '/showFavorite.do',
+      loginRequired: true
+    },
+
+    isLoggedIn ? {
+      id: 'profile-or-login',
+      text: `${user.firstName} ${user.lastName}'s Profile`,
+      route: 'user/profile'
+    } : {
+      id: 'profile-or-login',
+      text: 'Login',
+      url: '#login',
+      onClick: e => { e.preventDefault(); showLoginForm(); }
+    },
+
+    isLoggedIn ? {
+      id: 'register-or-logout',
+      text: 'Logout',
+      url: '#logout',
+      onClick: e => { e.preventDefault(); showLogoutWarning(); }
+    } : {
+      id: 'register-or-logout',
+      text: 'Register',
+      webAppUrl: '/showRegister.do'
+    },
+    {
+      id: 'contact-us',
+      text: 'Contact Us',
+      webAppUrl: '/contact.do',
+      target: '_blank'
+    }
+  ]
+    .concat(twitterUrl ? {
+      id: 'twitter',
+      liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
+      className: 'eupathdb-SocialMedia eupathdb-SocialMedia__twitter',
+      url: twitterUrl,
+      title: 'Follow us on Twitter!',
+      target: '_blank'
+    } : [])
+    .concat(facebookUrl ? {
+      id: 'facebook',
+      liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
+      className: 'eupathdb-SocialMedia eupathdb-SocialMedia__facebook',
+      url: facebookUrl,
+      title: 'Follow us on Facebook!',
+      target: '_blank'
+    } : [])
+    .concat(youtubeUrl ? {
+      id: 'youtube',
+      liClassName: 'eupathdb-SmallMenuSocialMediaContainer',
+      className: 'eupathdb-SocialMedia eupathdb-SocialMedia__youtube',
+      url: youtubeUrl,
+      title: 'Follow us on YouTube!',
+      target: '_blank'
+    } : [])
 }
