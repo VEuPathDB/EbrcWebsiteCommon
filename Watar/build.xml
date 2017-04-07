@@ -197,13 +197,13 @@
 export JAVA_HOME=/usr/lib/jvm/java-1.6.0-sun
 export PATH=$JAVA_HOME/bin:$PATH
 export CHOME=/var/www/ToxoDB/toxo.mheiges/test_home
-ant -f $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
+ant -f $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
     install \
-    -Dproj=EuPathSiteCommon \
+    -Dproj=EbrcWebsiteCommon \
     -Dcomp=Watar \
     -DtargetDir=$CHOME  \
     -DprojectsDir=$PROJECT_HOME
 
-ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml -Dcomp=Watar -Dproj=EuPathSiteCommon -DprojectsDir=$PROJECT_HOME -DtargetDir=$PROJECT_HOME/test_home smoketest
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml -Dcomp=Watar -Dproj=EbrcWebsiteCommon -DprojectsDir=$PROJECT_HOME -DtargetDir=$PROJECT_HOME/test_home smoketest
 
 -->

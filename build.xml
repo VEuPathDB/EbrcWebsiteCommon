@@ -1,4 +1,4 @@
-<project name="EuPathSiteCommon" default="Installation" basedir=".">
+<project name="EbrcWebsiteCommon" default="Installation" basedir=".">
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
@@ -11,7 +11,7 @@
   <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathSiteCommon-ChildCheckout">
+  <target name="EbrcWebsiteCommon-ChildCheckout">
     <available file="${projectsDir}/WDK" type="dir"  property="WDK.present" />
     <antcall target="WDK-Checkout"/>
   </target>
@@ -29,7 +29,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo    Update    oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
- <target name="EuPathSiteCommon-ChildUpdate">
+ <target name="EbrcWebsiteCommon-ChildUpdate">
     <ant target="defaultProjectUpdate">
       <property name="project" value="WDK"/>
     </ant>
@@ -40,13 +40,13 @@
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathSiteCommon-Installation" depends="WDK-Installation,
-                                                        EuPathSiteCommon-MavenInstallation,
-                                                        EuPathSiteCommon/Site-Installation,
-                                                        EuPathSiteCommon/Model-Installation,
-                                                        EuPathSiteCommon/Watar-Installation">
+  <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
+                                                        EbrcWebsiteCommon-MavenInstallation,
+                                                        EbrcWebsiteCommon/Site-Installation,
+                                                        EbrcWebsiteCommon/Model-Installation,
+                                                        EbrcWebsiteCommon/Watar-Installation">
     <ant target="defaultProjectInstall">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
     </ant>
 
     <!-- remove conflicting jar file -->
@@ -55,9 +55,9 @@
     
   </target>  
 
-  <target name="EuPathSiteCommon-MavenInstallation">
+  <target name="EbrcWebsiteCommon-MavenInstallation">
         <ant target="mavenBuildProject">
-          <property name="project" value="EuPathSiteCommon"/>
+          <property name="project" value="EbrcWebsiteCommon"/>
         </ant>
        <property name="alreadyBuilt" value="true"/>
  </target>
@@ -67,23 +67,23 @@
 
   <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
 
-  <target name="EuPathSiteCommon/Model-Installation">
+  <target name="EbrcWebsiteCommon/Model-Installation">
     <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
       <property name="component" value="Model"/>
     </ant>
   </target>
 
-  <target name="EuPathSiteCommon/Site-Installation">
+  <target name="EbrcWebsiteCommon/Site-Installation">
     <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
   </target>
 
-  <target name="EuPathSiteCommon/Watar-Installation">
+  <target name="EbrcWebsiteCommon/Watar-Installation">
     <ant target="defaultComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
       <property name="component" value="Watar"/>
     </ant>
   </target>
@@ -92,25 +92,25 @@
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathSiteCommon-WebInstallation" depends="WDK-WebInstallation,
-                                                           EuPathSiteCommon-Installation,
-                                                           EuPathSiteCommon/Site-WebInstallation">
+  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
+                                                           EbrcWebsiteCommon-Installation,
+                                                           EbrcWebsiteCommon/Site-WebInstallation">
   </target>
 
-  <target name="EuPathSiteCommon/Site-WebInstallation">
+  <target name="EbrcWebsiteCommon/Site-WebInstallation">
  
     <ant target="yarn">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
 
     <ant target="defaultWebComponentInstall">
-      <property name="project" value="EuPathSiteCommon"/>
+      <property name="project" value="EbrcWebsiteCommon"/>
       <property name="component" value="Site"/>
     </ant>
 
     <ant target="webComponentPartCopy">
-      <property name="componentDir" value="${projectsDir}/EuPathSiteCommon/Site"/>
+      <property name="componentDir" value="${projectsDir}/EbrcWebsiteCommon/Site"/>
       <property name="part" value="dashboard"/>
       <property name="to" value="${htdocsTargetDir}/../dashboard"/>
     </ant>
@@ -176,7 +176,7 @@
       <fileset dir="${webappTargetDir}/WEB-INF/tags/site" includes="*.tag"/>
     </delete>
     <copy todir="${webappTargetDir}/WEB-INF/tags/site">
-      <fileset dir="${projectsDir}/EuPathSiteCommon/Site/webapp/WEB-INF/tags/site-common">
+      <fileset dir="${projectsDir}/EbrcWebsiteCommon/Site/webapp/WEB-INF/tags/site-common">
         <include name="*.tag"/>
       </fileset>
     </copy>
@@ -218,7 +218,7 @@
            parallel="true"
            verbose="true"
            output="${webappTargetDir}/assets-manifest.json">
-      <arg line="${projectsDir}/EuPathSiteCommon/Site/scripts/generateAssetsManifest.js"/>
+      <arg line="${projectsDir}/EbrcWebsiteCommon/Site/scripts/generateAssetsManifest.js"/>
       <fileset dir="${webappTargetDir}" casesensitive="false">
         <include name="**/*.js"/>
         <include name="**/*.css"/>
@@ -235,7 +235,7 @@
   <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EuPathSiteCommon-Distributable" depends="ProjectTree">
+  <target name="EbrcWebsiteCommon-Distributable" depends="ProjectTree">
 
     <copy todir="${targetDir}">
       <fileset dir="${projectsDir}" >

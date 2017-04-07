@@ -37,7 +37,7 @@ import org.gusdb.wdk.model.record.attribute.TextAttributeField;
  * @author xingao, steve fischer
  * 
  *         this command generates the data into detail table. Do not use this one, use the one in
- *         ApiCommonShared/Model instead.
+ *         ApiCommonModel/Model instead.
  * 
  */
 @Deprecated

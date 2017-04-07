@@ -236,7 +236,7 @@ $pipelines{gus4} =
    @{$subPipeline{configureProject}},
    ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
    # Cannot put validation here since it checks the whole DB (is not project-specific)
-   #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['project']]
+   #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['project']]
   ];
 
 $pipelines{gus4Ortho} =
@@ -428,7 +428,7 @@ Where:
 
 Additional step-specific arguments are: --" . join(" --", @stepSpecificArgs) . "
 
-To create or edit a pipeline, you have to edit the source code \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathUserDbMigration.  See instructions in line.
+To create or edit a pipeline, you have to edit the source code \$PROJECT_HOME/EbrcWebsiteCommon/Model/bin/eupathUserDbMigration.  See instructions in line.
 
 To run multiple, parallel, pipelines (one per project), see the eupathUserDbMigrationMulti command
 

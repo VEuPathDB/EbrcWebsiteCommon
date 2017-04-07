@@ -29,6 +29,6 @@ cd $PROJECT_HOME
 rm -rf FgpUtil install
 fgpCheckout allsite $branch
 cd ..
-bld EuPathPresenters
+bld ApiCommonPresenters
 bld OrthoMCLWebsite
-cp $PROJECT_HOME/EuPathSiteCommon/Model/lib/yaml/metaConfig.yaml.sample yaml/PlasmoDBMetaConfig.yaml
+cp $PROJECT_HOME/EbrcWebsiteCommon/Model/lib/yaml/metaConfig.yaml.sample yaml/PlasmoDBMetaConfig.yaml

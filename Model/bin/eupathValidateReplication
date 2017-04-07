@@ -97,7 +97,7 @@ sub usage {
   die "
 Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB that has the same name, but is on the other campus.  Both user databases must share a login and password found in model-config.xml.
 
-The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EuPathSiteCommon/Model/bin/eupathValidationReplication
+The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EbrcWebsiteCommon/Model/bin/eupathValidationReplication
 
 Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --sleep sleep
 

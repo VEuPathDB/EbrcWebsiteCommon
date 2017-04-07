@@ -23,7 +23,7 @@
       // used for webpack. remove this when this can be set at build time.
       window.__asset_path_remove_me_please__ = "${model.modelConfig.assetsUrl}/";
 
-      // used by EuPathSiteCommon to initialize wdk
+      // used by EbrcWebsiteCommon to initialize wdk
       window.__SITE_CONFIG__ = {
         rootElement: "#wdk-container",
         rootUrl: "${webAppUrl}${pageContext.request.servletPath}",

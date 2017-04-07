@@ -79,8 +79,8 @@ sub getDbHandle {
   my ($dbh, $dsn, $login, $passwd);
   
     
-  require EuPathSiteCommon::Model::CommentConfig;
-  my $c = new EuPathSiteCommon::Model::CommentConfig($projectId);
+  require EbrcWebsiteCommon::Model::CommentConfig;
+  my $c = new EbrcWebsiteCommon::Model::CommentConfig($projectId);
   
   $dsn    = $c->getDbiDsn();
   $login  = $c->getLogin();

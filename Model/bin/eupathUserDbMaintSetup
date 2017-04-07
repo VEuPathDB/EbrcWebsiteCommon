@@ -49,7 +49,7 @@ runCmd "mkdir $gusAppDir"
 
 runCmd "cd $gusAppDir"
 
-runCmd "wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/data/migration/build_framework.sh"
+runCmd "wget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/data/migration/build_framework.sh"
 
 runCmd "bash ./build_framework.sh $trunkOrBranch"
 
@@ -59,9 +59,9 @@ runCmd "mkdir $controlDir/yaml"
 
 runCmd "cd $controlDir/yaml"
 
-runCmd "eupathCloneMetaFile $masterMetaFile $dbSuffix $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
+runCmd "eupathCloneMetaFile $masterMetaFile $dbSuffix $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/projects.txt"
 
-runCmd "jenkinsJobScmUpdateMulti $sourceSite $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt"
+runCmd "jenkinsJobScmUpdateMulti $sourceSite $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/projects.txt"
 
 runCmd "cd $cwd"
 

@@ -26,7 +26,7 @@ export appDbSuffix=030s                   # extension to use while cloning yaml 
 
 3. Download helper script.
 
-> wget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/$branchPath/Model/data/migration/build_framework.sh
+> wget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/$branchPath/Model/data/migration/build_framework.sh
 
 4. Run directory setup script from the current directory.  Use this release's branch.  This will check out and build required projects and may take a few minutes.
 
@@ -111,12 +111,12 @@ NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbo
 > tail -f control/gus4Ortho/gus4.err
 
 > mkdir control/gus4
-> eupathUserDbMigrationMulti --stepsSpecName gus4 --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,EuPathDB" --controlDir $(pwd)/control/gus4 --primaryModel PlasmoDB --questionsMappingFile $(pwd)/project_home/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt &
+> eupathUserDbMigrationMulti --stepsSpecName gus4 --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,EuPathDB" --controlDir $(pwd)/control/gus4 --primaryModel PlasmoDB --questionsMappingFile $(pwd)/project_home/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt &
 > tail -f control/gus4/AmoebaDB/gus4-AmoebaDB.err
 
 14. If not covered by the last step, validate build-specific migration steps.  For Build 30, run the following command:
 
-> eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $PROJECT_HOME/EuPathSiteCommon/Model/lib/sql/Gus4MigrationValidation.sql
+> eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $PROJECT_HOME/EbrcWebsiteCommon/Model/lib/sql/Gus4MigrationValidation.sql
 
 All tests must pass.
 
@@ -125,7 +125,7 @@ All tests must pass.
 NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration command below.
 
 > mkdir control/updateAndReportOnSteps
-> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/updateAndReportOnSteps --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/updateAndReportOnSteps --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
 
 Check for success of all components.
 
@@ -146,6 +146,6 @@ NOTE: It is still important to run fixBasket with the wdkmaint user!
 NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
 
 > mkdir control/release
-> eupathUserDbMigrationMulti --stepsSpecName release --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/release --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EuPathSiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+> eupathUserDbMigrationMulti --stepsSpecName release --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/release --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
 
 Check for success of all components.

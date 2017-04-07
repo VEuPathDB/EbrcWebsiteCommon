@@ -54,7 +54,7 @@ echo "  <Parameter name=\"model\" value=\"$model\"/>" >> $contextFile
 echo "</Context>" >> $contextFile
 
 echo "Downloading meta yaml sample and populating known values"
-mywget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/lib/yaml/metaConfig.yaml.sample
+mywget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/lib/yaml/metaConfig.yaml.sample
 sed "s/PlasmoDB/$model/g" metaConfig.yaml.sample | sed "s/hostdb.org\/hostdb/localhost:8080\/$modelLower/g" > site/etc/metaConfig.yaml
 rm metaConfig.yaml.sample
 
@@ -80,7 +80,7 @@ mv fgpCheckout $GUS_HOME/bin
 mywget https://www.cbil.upenn.edu/svn/gus/FgpUtil/trunk/Util/bin/generateFilesFromTemplates
 chmod 755 generateFilesFromTemplates
 mv generateFilesFromTemplates $GUS_HOME/bin
-mywget https://www.cbil.upenn.edu/svn/apidb/EuPathSiteCommon/trunk/Model/bin/eupathSiteConfigure
+mywget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/bin/eupathSiteConfigure
 chmod 755 eupathSiteConfigure
 mv eupathSiteConfigure $GUS_HOME/bin
 

@@ -8,7 +8,7 @@ my ($argsMap, $argsArr) = &extractArgs(@ARGV);
 
 die "Error: Can't use eupathUserDbMigrationMulti without arguments: --primaryModel\n" unless $argsMap->{'--primaryModel'};
 
-my $projectsFile = "$ENV{PROJECT_HOME}/EuPathSiteCommon/Model/data/migration/projects.txt";
+my $projectsFile = "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/data/migration/projects.txt";
 $projectsFile = $argsMap->{'--projectsFile'} if $argsMap->{'--projectsFile'};
 
 # by default use projects file, unless command line overrides
@@ -138,7 +138,7 @@ The list of projects is controlled by the following, in priority order:
                    Second column is project name, eg PlasmoDB.
 
                    If you do not provide either --project or --projectsFile, projects will come from:
-                   \$PROJECT_HOME/EuPathSiteCommon/Model/data/migration/projects.txt
+                   \$PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/projects.txt
 
 The --primaryProject argument is used as the project for the init and clean phases.
 

@@ -1,21 +1,21 @@
 stuff for web application testing and reporting
 
 !! Compilation of the java classes uses the GUS build system.
-build EuPathSiteCommon/Watar-Installation install -append
+build EbrcWebsiteCommon/Watar-Installation install -append
 
 !! installation
-ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
     -Dcomp=Watar \
-    -Dproj=EuPathSiteCommon \
+    -Dproj=EbrcWebsiteCommon \
     -DprojectsDir=$PROJECT_HOME \
     -DtargetDir=$PROJECT_HOME/test_home \
     install
 
 !! example installation, remove any previous results, run smoketests
 !! defined in config/smoketest.xml
-ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
     -Dcomp=Watar \
-    -Dproj=EuPathSiteCommon \
+    -Dproj=EbrcWebsiteCommon \
     -DprojectsDir=$PROJECT_HOME \
     -DtargetDir=$PROJECT_HOME/test_home \
     -Dbaseurl='http://integrate.toxodb.org' \
@@ -37,9 +37,9 @@ java -cp "$PROJECT_HOME/test_home/lib/java/*"   \
 !! example installation, remove any previous results, run 
 !! testbynames; where testnames are defined in 
 !! config/smoketest_ng.xml.
-ant -file $PROJECT_HOME/EuPathSiteCommon/Watar/build.xml \
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
     -Dcomp=Watar \
-    -Dproj=EuPathSiteCommon \
+    -Dproj=EbrcWebsiteCommon \
     -DprojectsDir=$PROJECT_HOME \
     -DtargetDir=$PROJECT_HOME/test_home \
     -Dbaseurl='http://integrate.toxodb.org' \

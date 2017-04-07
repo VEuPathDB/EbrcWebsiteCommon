@@ -73,7 +73,7 @@ Any subversion working directories in project_home that are not defined as depen
     </tr>
     <?php
     /**
-      example prop: ApiCommonShared.Model.buildtime
+      example prop: ApiCommonModel.Model.buildtime
       1. sort
       2. list only *.buildtime props
       3. remove '.buildtime'
@@ -209,10 +209,10 @@ Any subversion working directories in project_home that are not defined as depen
 function svninfo_from_build_data($prop, $data) {
     if ($end_of_proj_name = strpos($prop, '.svn.info')) {
       # $prop matches '.svn.info'. $data, e.g. is:
-      #    Path: ApiCommonShared
-      #    Working Copy Root Path: /var/www/AmoebaDB/amoeba.integrate/project_home/ApiCommonShared
-      #    URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonShared/trunk
-      #    Relative URL: ^/ApiCommonShared/trunk
+      #    Path: ApiCommonModel
+      #    Working Copy Root Path: /var/www/AmoebaDB/amoeba.integrate/project_home/ApiCommonModel
+      #    URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonModel/trunk
+      #    Relative URL: ^/ApiCommonModel/trunk
       #    Repository Root: https://www.cbil.upenn.edu/svn/apidb
       #    Repository UUID: 735e2a04-f8fc-0310-8a1b-f2942603c481
       #    Revision: 67558
@@ -227,9 +227,9 @@ function svninfo_from_build_data($prop, $data) {
       foreach ($infoset as $attr) {
         if (strlen($attr) == 0) { continue; }
         # $attr is of the form
-        #     Path: ApiCommonShared
+        #     Path: ApiCommonModel
         # and
-        #     URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonShared/trunk
+        #     URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonModel/trunk
         # etc. 
         # Split each of those by ':' (with a array lenght limit of '2'
         # so we don't split on the colons in the url or timestamps).
@@ -243,9 +243,9 @@ function svninfo_from_build_data($prop, $data) {
       }
       # Extract the working directory name from the $prop . e.g.
       # strip off '.svn.info'.
-      #   EuPathSiteCommon.svn.info
+      #   EbrcWebsiteCommon.svn.info
       # becomes
-      #   EuPathSiteCommon
+      #   EbrcWebsiteCommon
       $info['Working Directory'] = str_replace('.', '/', substr($prop, 0, $end_of_proj_name));
       return $info;
     }

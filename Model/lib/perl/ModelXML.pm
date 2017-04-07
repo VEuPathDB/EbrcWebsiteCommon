@@ -1,4 +1,4 @@
-package EuPathSiteCommon::Model::ModelXML;
+package EbrcWebsiteCommon::Model::ModelXML;
 
 use strict;
 use XML::Twig;
@@ -93,12 +93,12 @@ __END__
 
 =head1 NAME
 
-EuPathSiteCommon::Model::ModelXML - access to WDK Model XML
+EbrcWebsiteCommon::Model::ModelXML - access to WDK Model XML
 
 =head1 SYNOPSIS
 
-    use EuPathSiteCommon::Model::ModelXML;
-    my $model = EuPathSiteCommon::Model::ModelXML->new('apiCommonModel.xml');
+    use EbrcWebsiteCommon::Model::ModelXML;
+    my $model = EbrcWebsiteCommon::Model::ModelXML->new('apiCommonModel.xml');
 
     print $model->getBuildNumberByProjectId('AmoebaDB');
     print $model->getSiteVersionByProjectId('AmoebaDB');    
@@ -115,7 +115,7 @@ Provides Perl access to selected values in a WDK model xml file.
 
 =head2 new
 
- Usage   : my $model = new EuPathSiteCommon::Model::ModelXML('apiCommonModel.xml');
+ Usage   : my $model = new EbrcWebsiteCommon::Model::ModelXML('apiCommonModel.xml');
  Returns : An object containing data parsed from the model xml file.
  Args    : The name of the model xml file. If only a filename is given 
            the path is assumed to be $GUS_HOME/lib/wdk. A full path may 

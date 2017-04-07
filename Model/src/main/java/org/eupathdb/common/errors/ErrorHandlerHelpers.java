@@ -28,7 +28,7 @@ public class ErrorHandlerHelpers {
   private static final Logger LOG = Logger.getLogger(ErrorHandlerHelpers.class);
 
   // files defining error filters and categories (relative to gus_home)
-  private static final String ERROR_CONFIG_DIR = "data/EuPathSiteCommon/Model/errors/";
+  private static final String ERROR_CONFIG_DIR = "data/EbrcWebsiteCommon/Model/errors/";
   private static final String FILTER_FILE = ERROR_CONFIG_DIR + "wdkErrorFilters.txt";
   private static final String CATEGORY_FILE = ERROR_CONFIG_DIR + "wdkErrorCategories.txt";
 

@@ -1,4 +1,4 @@
-package EuPathSiteCommon::Model::CommentConfig;
+package EbrcWebsiteCommon::Model::CommentConfig;
 
 use strict;
 use XML::Simple;
@@ -41,13 +41,13 @@ __END__
 
 =head1 NAME
 
-EuPathSiteCommon::Model::CommentConfig - access to WDK comment-config.xml properties
+EbrcWebsiteCommon::Model::CommentConfig - access to WDK comment-config.xml properties
 
 =head1 SYNOPSIS
 
-    use EuPathSiteCommon::Model::CommentConfig;
+    use EbrcWebsiteCommon::Model::CommentConfig;
 
-    my $cfg = new EuPathSiteCommon::Model::CommentConfig('TrichDB');
+    my $cfg = new EbrcWebsiteCommon::Model::CommentConfig('TrichDB');
     
     my $username = $cfg->getLogin;
     my $password = $cfg->getPassword;
@@ -80,7 +80,7 @@ Mark Heiges, mheiges@uga.edu
 
 =head2 new
 
- Usage   : my $cfg = new EuPathSiteCommon::Model::CommentConfig('TrichDB');
+ Usage   : my $cfg = new EbrcWebsiteCommon::Model::CommentConfig('TrichDB');
  Returns : object containing data parsed from the WDK comment configuration file.
  Args    : the name of the model. This follows the name convention used for
            the WDK commandline utilities. This is used to find the Model's 
