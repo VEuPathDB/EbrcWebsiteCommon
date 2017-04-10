@@ -4,12 +4,12 @@
 
   <parent>
     <groupId>org.eupathdb</groupId>
-    <artifactId>eupath-site-common</artifactId>
+    <artifactId>ebrc-website-common</artifactId>
     <version>1.0.0</version>
   </parent>
 
-  <name>EuPathDB Site Common - Site</name>
-  <artifactId>eupath-site-common-site</artifactId>
+  <name>EuPathDB BRC Website Common - Site</name>
+  <artifactId>ebrc-website-common-site</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
