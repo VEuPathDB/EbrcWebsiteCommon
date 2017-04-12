@@ -203,6 +203,13 @@ microbiomedb:
   youtubeUrl: ''
   supportEmail: microbiomedb@gmail.com
 
+prismdb:
+  modelName: clinEpiModel
+  twitterWidgetId: ''
+  twitterUrl: ''
+  youtubeUrl: ''
+  facebookUrl: ''
+
 orthomcl:
   modelName: OrthoMCL
   webServiceMirrorOrtho: /var/www/Common/apiSiteFilesMirror/webServices/OrthoMCL

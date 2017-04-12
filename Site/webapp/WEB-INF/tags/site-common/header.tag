@@ -12,6 +12,7 @@
     description="Title of page"/>
 
   <c:set var="project" value="${applicationScope.wdkModel.properties['PROJECT_ID']}" />
+  <c:set var="displayName" value="${applicationScope.wdkModel.displayName}" />
   <c:set var="version" value="${applicationScope.wdkModel.build}" />
 
   <!-- required for date parsing when client browser (e.g. curl) does not send locale -->
@@ -26,7 +27,7 @@
     </div>
     <div class="eupathdb-Logo">
       <a href="${pageContext.request.contextPath}/home.do">
-        <imp:image class="eupathdb-LogoImage" src="images/${project}/title_s.png" alt="Link to ${project} homepage" />
+        <imp:image class="eupathdb-LogoImage" src="images/${project}/title_s.png" alt="${displayName} homepage" />
       </a>
       <span class="eupathdb-LogoRelease">
         Release ${version}<br/>

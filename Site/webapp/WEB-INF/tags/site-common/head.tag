@@ -13,11 +13,17 @@
   <jsp:directive.attribute name="banner" required="false"
     description="Value to appear at top of page if there is no title provided"/>
 
+  <jsp:directive.attribute name="scaleMobile" required="false" type="java.lang.Boolean"
+              description="Set viewport initial scale to 1 (for mobile devices). Defaults to false"/>
+
   <c:set var="project" value="${applicationScope.wdkModel.properties['PROJECT_ID']}" />
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/> 
+    <c:if test="${scaleMobile eq true}">
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    </c:if>
     <title>
       <jsp:text>${empty title ? banner : title}</jsp:text>
     </title>

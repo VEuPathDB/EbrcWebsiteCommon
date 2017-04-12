@@ -9,7 +9,7 @@
   <jsp:directive.attribute name="refer" required="false" 
               description="Page calling this tag"/>
   
-  <c:set var="siteName" value="${applicationScope.wdkModel.name}" />
+  <c:set var="siteName" value="${applicationScope.wdkModel.displayName}" />
   <c:set var="version" value="${applicationScope.wdkModel.build}" />
   <fmt:setLocale value="en-US"/> <!-- req. for date parsing when client browser (e.g. curl) does not send locale -->
   <fmt:parseDate  var="releaseDate" value="${applicationScope.wdkModel.releaseDate}" pattern="dd MMMM yyyy HH:mm"/> 

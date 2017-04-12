@@ -619,7 +619,9 @@ ul.cirbulletlist {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 .eupathdb-SmallMenu > .eupathdb-SmallMenuItem {
   display: inline-block;
-  padding-right: 10px;
+  padding: 0 5px;
+  border-left: 1px solid #716e61;
+  line-height: .8;
 }
 
 .eupathdb-SmallMenu > .eupathdb-SmallMenuItem > .eupathdb-SmallMenu {
@@ -656,6 +658,15 @@ ul.cirbulletlist {
 
 .eupathdb-SmallMenuItem.eupathdb-SmallMenuSocialMediaContainer {
   padding: 0;
+}
+
+.eupathdb-SmallMenuItem.eupathdb-SmallMenuSocialMediaContainer {
+  padding-left: 10px;
+}
+
+.eupathdb-SmallMenuItem.eupathdb-SmallMenuSocialMediaContainer,
+.eupathdb-SmallMenu > .eupathdb-SmallMenuItem:first-of-type {
+  border-left: none;
 }
 
 #nav-top li ul {  /* second-level lists */

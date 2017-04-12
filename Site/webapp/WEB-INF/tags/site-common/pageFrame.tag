@@ -14,11 +14,14 @@
   <jsp:directive.attribute name="banner" required="false"
               description="Value to appear at top of page if there is no title provided"/>
 
+  <jsp:directive.attribute name="scaleMobile" required="false" type="java.lang.Boolean"
+              description="Set viewport initial scale to 1 (for mobile devices). Defaults to false"/>
+
   <!-- jsp:output tag for doctype no longer supports simple HTML5 declaration -->
   <jsp:text>&lt;!DOCTYPE html&gt;</jsp:text>
   <html lang="en">
     <!--~~~~~~~ HEAD of HTML doc ~~~~~~~-->
-    <imp:head title="${title}" refer="${refer}" banner="${banner}"/>
+    <imp:head title="${title}" refer="${refer}" banner="${banner}" scaleMobile="${scaleMobile}"/>
     <body class="${refer}">
       <imp:header refer="${refer}" title= "${title}" />
       <a name="skip" id="skip"><jsp:text/></a>

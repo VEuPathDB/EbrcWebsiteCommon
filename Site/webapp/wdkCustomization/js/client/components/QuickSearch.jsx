@@ -8,10 +8,11 @@ import { wrappable } from 'wdk-client/ComponentUtils';
 function QuickSearch(props) {
   let { questions, webAppUrl } = props;
 
+  if (questions == null) return null;
+
   return (
     <div id="quick-search" style={{display: 'flex', marginBottom: '12px', marginTop: '16px', height: '26px'}}>
-      { questions == null ? null
-      : questions.length == 0 ? (
+      { questions.length == 0 ? (
         <div style={{
           width: '100%',
           height: '2em',
