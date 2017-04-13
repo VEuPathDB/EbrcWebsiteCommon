@@ -38,10 +38,10 @@ export default class Menu extends Component {
     return (
       <div ref="trackingNode" style={{ overflow: 'visible'}}>
         <ul className="eupathdb-Menu" style={{ position, top }}>
-          {this.props.entries.map((entry) => (
-            <MenuEntry
-              key={entry.id}
-              entry={entry}
+          {this.props.items.map((item) => (
+            <MenuItem
+              key={item.id}
+              item={item}
               webAppUrl={this.props.webAppUrl}
               isGuest={this.props.isGuest}
               showLoginWarning={this.props.showLoginWarning}
@@ -57,46 +57,46 @@ export default class Menu extends Component {
 Menu.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
   showLoginWarning: PropTypes.func.isRequired,
-  entries: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
   isGuest: PropTypes.bool.isRequired,
   projectId: PropTypes.string.isRequired
 };
 
 /**
- * Site menu entry.
+ * Site menu item.
  */
-function MenuEntry(props) {
-  let { entry, webAppUrl, showLoginWarning, isGuest, projectId } = props;
+function MenuItem(props) {
+  let { item, webAppUrl, showLoginWarning, isGuest, projectId } = props;
 
-  if (!include(entry, projectId)) return null;
+  if (!include(item, projectId)) return null;
 
   let handleClick = (e) => {
-    if (entry.loginRequired && isGuest) {
+    if (item.loginRequired && isGuest) {
       e.preventDefault();
       showLoginWarning('use this feature', e.currentTarget.href);
     }
   }
   let baseClassName = 'eupathdb-MenuItemText';
-  let className = baseClassName + ' ' + baseClassName + '__' + entry.id +
-    (entry.beta ? ' ' + baseClassName + '__beta' : '') +
-    (entry.new ? ' ' + baseClassName + '__new' : '') +
-    (!isEmpty(entry.children) ? ' ' + baseClassName + '__parent' : '');
+  let className = baseClassName + ' ' + baseClassName + '__' + item.id +
+    (item.beta ? ' ' + baseClassName + '__beta' : '') +
+    (item.new ? ' ' + baseClassName + '__new' : '') +
+    (!isEmpty(item.children) ? ' ' + baseClassName + '__parent' : '');
 
   return (
     <li className="eupathdb-MenuItem">
 
-      { entry.url ? <a className={className} title={entry.tooltip} href={entry.url} target={entry.target}>{renderEntryText(entry.text)}</a>
-      : entry.webAppUrl ? <a onClick={handleClick} className={className} title={entry.tooltip} href={webAppUrl + entry.webAppUrl}>{renderEntryText(entry.text)}</a>
-      : entry.route ? <Link onClick={handleClick} className={className} title={entry.tooltip} to={entry.route}>{renderEntryText(entry.text)}</Link>
-      : <div className={className} title={entry.tooltip}>{renderEntryText(entry.text)}</div> }
+      { item.url ? <a className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
+      : item.webAppUrl ? <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + item.webAppUrl}>{renderItemText(item.text)}</a>
+      : item.route ? <Link onClick={handleClick} className={className} title={item.tooltip} to={item.route}>{renderItemText(item.text)}</Link>
+      : <div className={className} title={item.tooltip}>{renderItemText(item.text)}</div> }
 
-      { !isEmpty(entry.children) &&
+      { !isEmpty(item.children) &&
         <ul className="eupathdb-Submenu">
-          {entry.children.map(childEntry =>
-            <MenuEntry
+          {item.children.map(childItem =>
+            <MenuItem
               {...props}
-              key={childEntry.id}
-              entry={childEntry}
+              key={childItem.id}
+              item={childItem}
             />
           )}
         </ul> }
@@ -105,24 +105,24 @@ function MenuEntry(props) {
   );
 }
 
-MenuEntry.propTypes = {
+MenuItem.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
   showLoginWarning: PropTypes.func.isRequired,
-  entry: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired,
   isGuest: PropTypes.bool.isRequired,
   projectId: PropTypes.string.isRequired
 };
 
 /**
- * Determine is menu entry should be include for projectId
+ * Determine is menu item should be include for projectId
  */
-function include(entry, projectId) {
-  const { include, exclude } = entry;
+function include(item, projectId) {
+  const { include, exclude } = item;
   return (include == null && exclude == null)
     || (include != null && include.indexOf(projectId) !== -1)
     || (exclude != null && exclude.indexOf(projectId) === -1);
 }
 
-function renderEntryText(text) {
+function renderItemText(text) {
   return typeof text === 'string' ? safeHtml(text) : text;
 }

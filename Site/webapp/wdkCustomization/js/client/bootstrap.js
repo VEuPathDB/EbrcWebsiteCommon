@@ -31,7 +31,8 @@ import '../../../js/scroll-to-top';
  * @param {boolean} options.isPartOfEuPathDB
  * @param {boolean} options.flattenSearches
  * @param {boolean} options.includeQueryGrid
- * @param {Array} options.additionalMenuEntries
+ * @param {Array} options.mainMenuItems
+ * @param {Array} options.smallMenuItems
  */
 export function initialize(options = {}) {
   const Header = makeHeaderWrapper({
@@ -40,8 +41,8 @@ export function initialize(options = {}) {
     flattenSearches: options.flattenSearches,
     includeQueryGrid: options.includeQueryGrid,
     // TODO Rename this to `mainMenuEntries`
-    additionalMenuEntries: options.additionalMenuEntries,
-    smallMenuEntries: options.smallMenuEntries
+    mainMenuItems: options.mainMenuItems,
+    smallMenuItems: options.smallMenuItems
   });
   const DownloadForm = makeDownloadFormWrapper(selectReporterComponent);
   const eupathComponentWrappers = {

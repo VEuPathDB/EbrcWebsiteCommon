@@ -18,8 +18,8 @@ function Header(props) {
     showLoginWarning,
     location,
     isPartOfEuPathDB,
-    additionalMenuEntries,
-    smallMenuEntries,
+    mainMenuItems,
+    smallMenuItems,
     siteConfig
   } = props;
 
@@ -31,7 +31,7 @@ function Header(props) {
     webAppUrl
   } = siteConfig;
 
-  const menuEntries = makeMenuEntries(props);
+  const menuItems = makeMenuItems(props);
 
   return (
     <div>
@@ -48,7 +48,7 @@ function Header(props) {
             <QuickSearch webAppUrl={webAppUrl} questions={quickSearches}/>
             <SmallMenu
               webAppUrl={webAppUrl}
-              entries={smallMenuEntries(props, menuEntries)}
+              items={smallMenuItems(props, menuItems)}
             />
           </div>
           <div className="eupathdb-Logo">
@@ -62,13 +62,13 @@ function Header(props) {
             </span>
           </div>
         </div>
-        {/* TODO Put entries into an external JSON file. */}
+        {/* TODO Put items into an external JSON file. */}
         <Menu
           webAppUrl={webAppUrl}
           projectId={projectId}
           showLoginWarning={showLoginWarning}
           isGuest={user ? user.isGuest : true}
-          entries={additionalMenuEntries(props, menuEntries)}/>
+          items={mainMenuItems(props, menuItems)}/>
       </div>
       <Announcements projectId={projectId} webAppUrl={webAppUrl} location={location} announcements={announcements}/>
     </div>
@@ -91,16 +91,16 @@ Header.propTypes = {
   includeQueryGrid: PropTypes.bool,
   isPartOfEuPathDB: PropTypes.bool,
   flattenSearches: PropTypes.bool,
-  additionalMenuEntries: PropTypes.func,
-  smallMenuEntries: PropTypes.func
+  mainMenuItems: PropTypes.func,
+  smallMenuItems: PropTypes.func
 };
 
 Header.defaultProps = {
   includeQueryGrid: true,
   isPartOfEuPathDB: true,
   flattenSearches: false,
-  additionalMenuEntries: () => [],
-  smallMenuEntries: () => []
+  mainMenuItems: () => [],
+  smallMenuItems: () => []
 };
 
 export default wrappable(Header);
@@ -109,30 +109,30 @@ export default wrappable(Header);
 // helpers
 
 /**
- * Map search tree to menu entries. If flatten is true, return a flat
- * list of search entries. Otherwise, return the full tree of search
- * entries.
+ * Map search tree to menu items. If flatten is true, return a flat
+ * list of search items. Otherwise, return the full tree of search
+ * items.
  */
-function getSearchEntries(ontology, recordClasses, flatten = false) {
+function getSearchItems(ontology, recordClasses, flatten = false) {
   if (ontology == null || recordClasses == null) return [];
   let tree = getSearchMenuCategoryTree(ontology, recordClasses, {});
-  return flatten ? preorderSeq(tree).filter(isIndividual).map(createMenuEntry)
-                 : tree.children.map(createMenuEntry);
+  return flatten ? preorderSeq(tree).filter(isIndividual).map(createMenuItem)
+                 : tree.children.map(createMenuItem);
 }
 
 /** Map a search node to a meny entry */
-function createMenuEntry(searchNode) {
+function createMenuItem(searchNode) {
   return {
     id: getId(searchNode),
     text: getDisplayName(searchNode),
-    children: searchNode.children.map(createMenuEntry),
+    children: searchNode.children.map(createMenuItem),
     webAppUrl: getTargetType(searchNode) === 'search' &&
       '/showQuestion.do?questionFullName=' + getId(searchNode)
   };
 }
 
 /**
- * Common menu entries used by our sites.
+ * Common menu items used by our sites.
  * Some are used in the small menu, and some in the main menu.
  * We collect them here to allow the specific site to decide where and
  * how to use them.
@@ -142,9 +142,9 @@ function createMenuEntry(searchNode) {
  * modify or extend the data structure at will.
  *
  * Note, each top-level entry has a unique id. This can be leveraged to alter
- * the final structure of the menu entries.
+ * the final structure of the menu items.
  */
-function makeMenuEntries(props) {
+function makeMenuItems(props) {
   const {
     basketCounts,
     user,
@@ -171,7 +171,7 @@ function makeMenuEntries(props) {
   return [
     { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
-      children: getSearchEntries(ontology, recordClasses, flattenSearches).concat(
+      children: getSearchItems(ontology, recordClasses, flattenSearches).concat(
         includeQueryGrid ? [
           { id: 'query-grid', text: 'View all available searches', route: 'query-grid' }
         ] : [])
