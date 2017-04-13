@@ -185,22 +185,7 @@ function makeMenuItems(props) {
     },
     {
       id: 'favorites',
-      text: (
-        <div>
-          <span className="fa-stack fa-pull-left"
-            style={{
-              position: 'relative',
-              top: '-16px',
-              fontSize: '1.8em',
-              marginRight: '-6px',
-              marginLeft: '-18px'
-            }}>
-            <i className="fa fa-star fa-stack-1x" style={{color: 'yellow'}}/>
-            <i className="fa fa-star-o fa-stack-1x" style={{color: '#eb971f'}}/>
-          </span>
-          {' My Favorites'}
-        </div>
-      ),
+      text: 'My Favorites',
       webAppUrl: '/showFavorite.do',
       loginRequired: true
     },

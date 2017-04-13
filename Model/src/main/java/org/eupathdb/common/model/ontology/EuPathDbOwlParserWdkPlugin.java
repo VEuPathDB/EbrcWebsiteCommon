@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gusdb.fgputil.db.SqlUtils;
+import org.gusdb.fgputil.db.runner.SQLRunner;
+import org.gusdb.fgputil.db.runner.SQLRunner.ResultSetHandler;
+import org.gusdb.fgputil.db.runner.SQLRunnerException;
 import org.gusdb.fgputil.functional.FunctionalInterfaces.Predicate;
 import org.gusdb.fgputil.functional.TreeNode;
 import org.gusdb.fgputil.runtime.GusHome;
@@ -19,6 +22,7 @@ import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.ontology.OntologyFactoryPlugin;
 import org.gusdb.wdk.model.ontology.OntologyNode;
 import org.gusdb.wdk.model.query.SqlQuery;
+import org.gusdb.wdk.model.record.attribute.AttributeField;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -180,32 +184,42 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	        if(queryInfo.length != 2) {
 	        	  throw new WdkModelException("An attribute meta query label " + ontologyNode.get("label") + " must be in the form querySet.query");
 	        }
-		    SqlQuery query = (SqlQuery) wdkModel.getQuerySet(queryInfo[0]).getQuery(queryInfo[1]);
-		    List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>();
-		    String sql = query.getSql();
 		    
 		    // Using the original attributeMetaQuery entry content for the new attributes.  Just a few modifications
 		    // needed (to label, name, and targetType).
-		    OntologyNode templateContent = childNode.getContents();
-	 	    ResultSet resultSet = null;
-	 	    try {
-	 	      resultSet = SqlUtils.executeQuery(wdkModel.getAppDb().getDataSource(), sql, query.getFullName() + "__meta-cols");
-	 	      while(resultSet.next()) {
-	 		     OntologyNode newNode = (OntologyNode)templateContent.clone();
-	 		     String name = resultSet.getString("name");
-	 		     newNode.put("name", new ArrayList<>(Arrays.asList(name)));
-	 		     newNode.put("targetType", new ArrayList<>(Arrays.asList("attribute")));
-	 		     String label = newNode.get("recordClassName").get(0) + "." + name; 
-	 		     newNode.put("label", new ArrayList<>(Arrays.asList(label)));
-	 		     substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
-	 	      }
+		    final OntologyNode templateContent = childNode.getContents();
+	        final List<TreeNode<OntologyNode>> newerChildNodes = new ArrayList<>();
+	        try {
+	          SqlQuery query = (SqlQuery) wdkModel.getQuerySet(queryInfo[0]).getQuery(queryInfo[1]);
+	          new SQLRunner(wdkModel.getAppDb().getDataSource(), query.getSql(), query.getFullName() + "__meta-cols")
+	            .executeQuery(new ResultSetHandler() {
+	              @Override
+	              public void handleResult(ResultSet resultSet) throws SQLException {
+	                try { 
+	            	  List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>(); 
+	 	              while(resultSet.next()) {
+	 		            OntologyNode newNode = (OntologyNode)templateContent.clone();
+	 		            String name = resultSet.getString("name");
+	 		            newNode.put("name", new ArrayList<>(Arrays.asList(name)));
+	 		            newNode.put("targetType", new ArrayList<>(Arrays.asList("attribute")));
+	 		            String label = newNode.get("recordClassName").get(0) + "." + name; 
+	 		            newNode.put("label", new ArrayList<>(Arrays.asList(label)));
+	 		            substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
+	 	              }
+	 	              newerChildNodes.addAll(substituteLeaves);
+	                }
+	                catch(SQLException sre) {
+	    	          throw new SQLRunnerException("Unable to replace attribute meta query references");
+	                }
+	              }
+	            });
+	            newChildNodes.addAll(newerChildNodes);
 	        }
-	        catch(SQLException se) {
-	    	      throw new WdkModelException("Unable to replace attribute meta query references");
+	        catch(SQLRunnerException se) {
+	          throw new WdkModelException("Unable to replace attribute meta query references.", se.getCause());
 	        }
-	 	    newChildNodes.addAll(substituteLeaves);
 	      }
-	    }
+		}  
 	  }
 	  
 	  // If this branch contained any attributeMetaQueries, add the new children to the branch and

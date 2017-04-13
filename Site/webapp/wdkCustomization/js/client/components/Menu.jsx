@@ -83,7 +83,7 @@ function MenuItem(props) {
     (!isEmpty(item.children) ? ' ' + baseClassName + '__parent' : '');
 
   return (
-    <li className="eupathdb-MenuItem">
+    <li className={`eupathdb-MenuItem eupathdb-MenuItem__${item.id}`}>
 
       { item.url ? <a className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
       : item.webAppUrl ? <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + item.webAppUrl}>{renderItemText(item.text)}</a>
