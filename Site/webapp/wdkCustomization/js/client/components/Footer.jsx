@@ -1,6 +1,6 @@
 import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
-import { buildNumber, releaseDate, projectId, webAppUrl } from '../config';
+import { buildNumber, releaseDate, displayName, projectId, webAppUrl } from '../config';
 
 /** Application footer */
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="left">
         <div className="build-info">
           <span>
-            <a href={'http://' + projectId.toLowerCase() + '.org'}>{projectId}</a>
+            <a href={'http://' + projectId.toLowerCase() + '.org'}>{displayName}</a>
             <span> {buildNumber} &nbsp;&nbsp; {formatReleaseDate(releaseDate)}</span>
           </span>
           <br/>

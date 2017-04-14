@@ -2,6 +2,7 @@
 export const {
   rootUrl,
   rootElement,
+  displayName,
   endpoint,
   projectId,
   buildNumber,

@@ -28,6 +28,7 @@
         rootElement: "#wdk-container",
         rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
         endpoint: "${webAppUrl}/service",
+        displayName: "${model.displayName}",
         projectId: "${model.projectId}",
         buildNumber: "${model.buildNumber}",
         releaseDate: "${model.releaseDate}",
