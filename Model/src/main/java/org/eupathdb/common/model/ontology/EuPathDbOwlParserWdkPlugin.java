@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.gusdb.fgputil.db.SqlUtils;
+import org.apache.log4j.Logger;
 import org.gusdb.fgputil.db.runner.SQLRunner;
 import org.gusdb.fgputil.db.runner.SQLRunner.ResultSetHandler;
 import org.gusdb.fgputil.db.runner.SQLRunnerException;
@@ -22,7 +22,6 @@ import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.ontology.OntologyFactoryPlugin;
 import org.gusdb.wdk.model.ontology.OntologyNode;
 import org.gusdb.wdk.model.query.SqlQuery;
-import org.gusdb.wdk.model.record.attribute.AttributeField;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -36,6 +35,7 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 
+  private static Logger LOG = Logger.getLogger(EuPathDbOwlParserWdkPlugin.class);
   public static final String orderAnnotPropStr = "http://purl.obolibrary.org/obo/EUPATH_0000274"; // Display order annotation property IRI                                                                                        
   public static final String reasonerName = "hermit";
   public static final String owlFilePathParam = "owlFilePath";
@@ -164,6 +164,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
    */
   protected void postProcessAttributeMetaQueries(TreeNode<OntologyNode> tree, WdkModel wdkModel) throws WdkModelException {
 	List<TreeNode<OntologyNode>> branches = tree.getNonLeafNodes();
+	int nodesRemoved = 0;
 
 	// Starting with the non-leaf nodes because we need to link the new nodes back to the parent.  So we need a
 	// handle on the parent.
@@ -187,6 +188,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 		    
 		    // Using the original attributeMetaQuery entry content for the new attributes.  Just a few modifications
 		    // needed (to label, name, and targetType).
+	        //LOG.info("Attribute Meta Query: " + ontologyNode.get("name"));
 		    final OntologyNode templateContent = childNode.getContents();
 	        final List<TreeNode<OntologyNode>> newerChildNodes = new ArrayList<>();
 	        try {
@@ -196,7 +198,8 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	              @Override
 	              public void handleResult(ResultSet resultSet) throws SQLException {
 	                try { 
-	            	  List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>(); 
+	            	  List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>();
+	            	  int counter = 0;
 	 	              while(resultSet.next()) {
 	 		            OntologyNode newNode = (OntologyNode)templateContent.clone();
 	 		            String name = resultSet.getString("name");
@@ -204,6 +207,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	 		            newNode.put("targetType", new ArrayList<>(Arrays.asList("attribute")));
 	 		            String label = newNode.get("recordClassName").get(0) + "." + name; 
 	 		            newNode.put("label", new ArrayList<>(Arrays.asList(label)));
+	 		            newNode.put("display order", new ArrayList<>(Arrays.asList(String.valueOf(counter++))));
 	 		            substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
 	 	              }
 	 	              newerChildNodes.addAll(substituteLeaves);
@@ -226,7 +230,9 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	  // remove the now useless attributeMetaQuery leaves.
 	  if(!newChildNodes.isEmpty()) {
 	    branch = branch.addAllChildNodes(newChildNodes);
-	    branch.removeAllNodes(ATTRIBUTE_META_QUERY_PREDICATE);
+	    nodesRemoved += branch.removeAllNodes(ATTRIBUTE_META_QUERY_PREDICATE);
+	    //LOG.info("Total nodes removed after branch " + branch.getContents().get("name") + " is " + nodesRemoved);
+	    
 	  }  
 	}
   }	
