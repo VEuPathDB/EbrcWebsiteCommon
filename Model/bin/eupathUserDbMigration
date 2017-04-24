@@ -127,7 +127,11 @@ $subPipeline{reportBroken} =
   ];
 
 
-
+$subPipeline{fixBaskets} =
+  [
+    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+  ];
 
 ###############################################################################################################
 ############  Main pipelines                                                                   ################
@@ -170,6 +174,24 @@ $pipelines{releaseSetup} =
    ]
   };
 
+# Pipeline for short releases where we dont revalidate the steps
+# (instead of pipeline 'release') 
+# Be aware we might need to map organisms and questions
+# If interested on an invalid step report we will need a pre releaseSetup pipeline
+$pipelines{releaseWithNoValidation} =
+  {
+   init =>
+   [
+    @{$subPipeline{configureProject}},  # redo configuration in case it was fiddled with after release setup.
+   ],
+
+   main =>
+   [
+     @{$subPipeline{fixBaskets}},
+     @{$subPipeline{updateAndReportOnStepsInternal}},
+   ]
+  };
+
 
 # Called at release.
 $pipelines{release} =
@@ -181,8 +203,7 @@ $pipelines{release} =
 
    main =>
    [
-    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
-    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+    @{$subPipeline{fixBaskets}},
     @{$subPipeline{updateAndReportOnStepsInternal}},
 
     ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
@@ -195,7 +216,7 @@ $pipelines{release} =
 
    clean =>
    [
-    @{$subPipeline{reportBroken}},
+    @{$subPipeline{reportBroken}}
    ],
   };
 

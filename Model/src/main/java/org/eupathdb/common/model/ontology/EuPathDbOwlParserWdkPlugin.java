@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.gusdb.fgputil.db.runner.SQLRunner;
 import org.gusdb.fgputil.db.runner.SQLRunner.ResultSetHandler;
 import org.gusdb.fgputil.db.runner.SQLRunnerException;
-import org.gusdb.fgputil.functional.FunctionalInterfaces.Predicate;
 import org.gusdb.fgputil.functional.TreeNode;
 import org.gusdb.fgputil.runtime.GusHome;
 import org.gusdb.wdk.model.WdkModel;
@@ -42,18 +42,6 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
   public static final String ATTRIBUTE_META_QUERY = "attributeMetaQuery";
   
   private TreeNode<OntologyNode> tree = null;
-  
-
-  public final Predicate<TreeNode<OntologyNode>> ATTRIBUTE_META_QUERY_PREDICATE = new Predicate<TreeNode<OntologyNode>>() {
-    public boolean test(TreeNode<OntologyNode> treeNode) {
-    	  OntologyNode ontologyNode = treeNode.getContents();
-	  return  treeNode.isLeaf()
-			  && ontologyNode.get("targetType") != null
-			  && ATTRIBUTE_META_QUERY.equalsIgnoreCase(ontologyNode.get("targetType").get(0)); 
-	} 
-  };
-
-  
   
   @Override
   public TreeNode<OntologyNode> getTree(Map<String, String> parameters, String ontologyName, WdkModel wdkModel)
@@ -163,16 +151,20 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
    * @throws WdkModelException
    */
   protected void postProcessAttributeMetaQueries(TreeNode<OntologyNode> tree, WdkModel wdkModel) throws WdkModelException {
+	int totalAttributeMetaQueryNodes = 0;
+	int totalNodesRemoved = 0;
+	int totalNodesAdded = 0;
 	List<TreeNode<OntologyNode>> branches = tree.getNonLeafNodes();
-	int nodesRemoved = 0;
 
 	// Starting with the non-leaf nodes because we need to link the new nodes back to the parent.  So we need a
 	// handle on the parent.
 	for(TreeNode<OntologyNode> branch : branches) {
 	  List<TreeNode<OntologyNode>> childNodes = branch.getChildNodes();
-	  List<TreeNode<OntologyNode>> newChildNodes = new ArrayList<>();
-	  for(TreeNode<OntologyNode> childNode : childNodes) {
-		 
+	  final List<TreeNode<OntologyNode>> newChildNodes = new ArrayList<>();
+	  Iterator<TreeNode<OntologyNode>> childNodeIterator = childNodes.iterator();
+	  while(childNodeIterator.hasNext()) {
+        TreeNode<OntologyNode> childNode = childNodeIterator.next();
+ 
 		// The attribute meta query node, if present, will be a leaf node  
 		if(childNode.isLeaf()) {
 	      OntologyNode ontologyNode = childNode.getContents();
@@ -180,17 +172,17 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	      // The attribute meta query node's target type will identify it as such.
 	      if(ontologyNode.get("targetType") != null && ATTRIBUTE_META_QUERY.equalsIgnoreCase(ontologyNode.get("targetType").get(0))) {
 	    	  
-	    	    // The label will contain the query set and the query separated by a period.
+	    	// The label will contain the query set and the query separated by a period.
 		    String[] queryInfo = ontologyNode.get("label").get(0).split("\\.");
 	        if(queryInfo.length != 2) {
-	        	  throw new WdkModelException("An attribute meta query label " + ontologyNode.get("label") + " must be in the form querySet.query");
+	          throw new WdkModelException("An attribute meta query label " + ontologyNode.get("label") + " must be in the form querySet.query");
 	        }
+	        
+	        totalAttributeMetaQueryNodes++;
 		    
 		    // Using the original attributeMetaQuery entry content for the new attributes.  Just a few modifications
 		    // needed (to label, name, and targetType).
-	        //LOG.info("Attribute Meta Query: " + ontologyNode.get("name"));
 		    final OntologyNode templateContent = childNode.getContents();
-	        final List<TreeNode<OntologyNode>> newerChildNodes = new ArrayList<>();
 	        try {
 	          SqlQuery query = (SqlQuery) wdkModel.getQuerySet(queryInfo[0]).getQuery(queryInfo[1]);
 	          new SQLRunner(wdkModel.getAppDb().getDataSource(), query.getSql(), query.getFullName() + "__meta-cols")
@@ -210,31 +202,35 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 	 		            newNode.put("display order", new ArrayList<>(Arrays.asList(String.valueOf(counter++))));
 	 		            substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
 	 	              }
-	 	              newerChildNodes.addAll(substituteLeaves);
+	 	              newChildNodes.addAll(substituteLeaves);
 	                }
 	                catch(SQLException sre) {
 	    	          throw new SQLRunnerException("Unable to replace attribute meta query references");
 	                }
 	              }
 	            });
-	            newChildNodes.addAll(newerChildNodes);
 	        }
 	        catch(SQLRunnerException se) {
 	          throw new WdkModelException("Unable to replace attribute meta query references.", se.getCause());
 	        }
-	      }
-		}  
-	  }
-	  
-	  // If this branch contained any attributeMetaQueries, add the new children to the branch and
-	  // remove the now useless attributeMetaQuery leaves.
-	  if(!newChildNodes.isEmpty()) {
+	        childNodeIterator.remove();
+	        ++totalNodesRemoved;
+	      } // childNode is attribute meta query type inside this block
+		} // childNode is leaf inside this block 
+      } // iterating over all child nodes of the branch
+      if(newChildNodes.size() > 0) {
 	    branch = branch.addAllChildNodes(newChildNodes);
-	    nodesRemoved += branch.removeAllNodes(ATTRIBUTE_META_QUERY_PREDICATE);
-	    //LOG.info("Total nodes removed after branch " + branch.getContents().get("name") + " is " + nodesRemoved);
-	    
-	  }  
-	}
+	    LOG.debug("Branch " + branch.getContents().get("name"));
+	    totalNodesAdded += newChildNodes.size();
+	    LOG.debug("Total attribute nodes added " + newChildNodes.size());
+        LOG.debug("Running total attribute meta query nodes removed " + totalNodesRemoved);
+        LOG.debug("");
+      }  
+      
+    } // iterating over all branches of tree
+	LOG.debug("Total attribute meta query nodes " + totalAttributeMetaQueryNodes);
+	LOG.debug("Total nodes added overall " + totalNodesAdded);
+    LOG.debug("Total nodes removed overall " + totalNodesRemoved);
   }	
 
   @Override

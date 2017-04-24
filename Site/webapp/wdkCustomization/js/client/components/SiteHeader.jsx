@@ -1,4 +1,4 @@
-import { add, reduce } from 'lodash';
+import { add, reduce,keyBy } from 'lodash';
 import { PropTypes } from 'react';
 import { getId, getDisplayName, getTargetType, isIndividual } from 'wdk-client/CategoryUtils';
 import { wrappable } from 'wdk-client/ComponentUtils';
@@ -38,6 +38,10 @@ function Header(props) {
       <div id="header">
         <div id="header2">
           <div id="header_rt">
+            <div id="private-Logo">
+              <a target=":blank" href="http://www.vet.upenn.edu">
+                <img width="210px" src={webAppUrl + '/images/PrivateLogo.png'}/>
+              </a></div>
             <div id="toplink">
               {isPartOfEuPathDB &&
                 <a href="http://eupathdb.org">
@@ -168,7 +172,7 @@ function makeMenuItems(props) {
 
   const isLoggedIn = user && !user.isGuest;
 
-  return [
+  return keyBy( [
     { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
       children: getSearchItems(ontology, recordClasses, flattenSearches).concat(
@@ -191,28 +195,28 @@ function makeMenuItems(props) {
     },
 
     isLoggedIn ? {
-      id: 'profile-or-login',
+      id: 'profileOrLogin',
       text: `${user.firstName} ${user.lastName}'s Profile`,
       route: 'user/profile'
     } : {
-      id: 'profile-or-login',
+      id: 'profileOrLogin',
       text: 'Login',
       url: '#login',
       onClick: e => { e.preventDefault(); showLoginForm(); }
     },
 
     isLoggedIn ? {
-      id: 'register-or-logout',
+      id: 'registerOrLogout',
       text: 'Logout',
       url: '#logout',
       onClick: e => { e.preventDefault(); showLogoutWarning(); }
     } : {
-      id: 'register-or-logout',
+      id: 'registerOrLogout',
       text: 'Register',
       webAppUrl: '/showRegister.do'
     },
     {
-      id: 'contact-us',
+      id: 'contactUs',
       text: 'Contact Us',
       webAppUrl: '/contact.do',
       target: '_blank'
@@ -242,4 +246,5 @@ function makeMenuItems(props) {
       title: 'Follow us on YouTube!',
       target: '_blank'
     } : [])
+    ,"id")
 }

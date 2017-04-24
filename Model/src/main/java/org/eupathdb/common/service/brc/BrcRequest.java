@@ -11,6 +11,11 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Holds the BRC request information for experiment searches by gene list
+ * @author crisl-adm
+ *
+ */
 public class BrcRequest {
   private String type;
   private String idSource;
@@ -20,6 +25,13 @@ public class BrcRequest {
   private boolean useOrthology;
   private String datasetId;
 
+  /**
+   * Salts the JSON object provided by the BRC search request into members for later use in
+   * assembling the request to the WDK answer service.
+   * @param json
+   * @return
+   * @throws RequestMisformatException
+   */
   public static BrcRequest createFromJson(JSONObject json) throws RequestMisformatException {
     try {
       BrcRequest request = new BrcRequest();
@@ -39,17 +51,32 @@ public class BrcRequest {
     }
   }
   
+  /**
+   * Converts the gene list data from the BRC request into a JSON object that serves as
+   * a WDK dataset param request
+   * @return - JSON object to send to WDK dataset param request
+   */
   public JSONObject getDatasetJson() {
 	return new JSONObject()
       .put("ids", ids);
   }
   
+  /**
+   * Converts the search data from the BRC request and the dataset param request
+   * into a JSON object that serves as a WDK answer request
+   * @return - JSON object to send to WDK answer request
+   */
   public JSONObject getAnswerJson() {
     return new JSONObject()
       .put("answerSpec", getAnswerSpecJson())
       .put("formatting", getFormatting());
   }
-	  
+
+  /**
+   * Convenience method breaking out the answer spec portion of the
+   * answer JSON
+   * @return
+   */
   public JSONObject getAnswerSpecJson() {
 	return new JSONObject()
 	  .put("questionName", "DatasetQuestions.DatasetsByGeneList")
@@ -57,6 +84,11 @@ public class BrcRequest {
 	  .put("wdk_weight", 10);
   }
   
+  /**
+   * Convenience method breaking out the formatting portion of the
+   * answer JSON
+   * @return
+   */
   public JSONObject getFormatting() {
     return new JSONObject()
       .put("formatConfig", new JSONObject()
@@ -68,7 +100,12 @@ public class BrcRequest {
           .put("percent_count")
           ));
   }
-	  
+
+  /**
+   * Convenience method breaking out the parameters portion of the 
+   * answer JSON
+   * @return
+   */
   public JSONObject getParametersJson() {
 	return new JSONObject()  
     .put("orthologyFlag", useOrthology ? "yes" : "no")

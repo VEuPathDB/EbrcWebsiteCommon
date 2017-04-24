@@ -7,8 +7,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Formats BRC bean back into BRC JSON responses. 
+ * @author crisl-adm
+ *
+ */
 public class BrcFormatter {
-	
+
+  /**
+   * Converts a set of BRC beans into a BRC response to a BRC search request.	
+   * @param beans
+   * @return
+   * @throws JSONException
+   * @throws WdkModelException
+   */
   public static JSONArray getJson(Set<BrcBean> beans) throws JSONException, WdkModelException {
 	JSONArray array = new JSONArray();
 	for(BrcBean bean : beans) {
@@ -17,6 +29,16 @@ public class BrcFormatter {
 	return array;
   }
 
+  /**
+   * Converts a BRC bean into a BRC response to a BRC search or experiment request.  Since some
+   * idlist information is irrelevant in the case of a simple experiment record retrieval, a 
+   * flag is provided to distinguish between the two request types.
+   * @param bean
+   * @param search - true if a search, false otherwise
+   * @return
+   * @throws JSONException
+   * @throws WdkModelException
+   */
   public static JSONObject getBrcJson(BrcBean bean, boolean search) throws JSONException, WdkModelException {
 	BrcGeneListBean idLists = bean.getIdLists();
     JSONArray idListsJson = new JSONArray();
@@ -33,6 +55,12 @@ public class BrcFormatter {
       .put("idLists", idListsJson);
   }
   
+  /**
+   * Convenience method to populate the gene list portion of the experiment record
+   * @param bean
+   * @param search
+   * @return
+   */
   public static JSONObject getGeneListJson(BrcGeneListBean bean, boolean search) {
     JSONObject json = new JSONObject()
       .put("listIdentifier", bean.getListIdentifier())
@@ -47,6 +75,20 @@ public class BrcFormatter {
         .put("significanceType", bean.getSignificanceType());
     }
     return json;
+  }
+  
+  /**
+   * Returns an JSON array of gene list ids in response to a gene list ids
+   * request.
+   * @param bean
+   * @return
+   */
+  public static JSONArray getGeneListIdsJson(BrcGeneListBean bean) {
+    JSONArray idsJson = new JSONArray();
+    for(String id : bean.getIds()) {
+      idsJson.put(id);
+    }
+    return idsJson;
   }
 
 }

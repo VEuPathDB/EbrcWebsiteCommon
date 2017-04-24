@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -27,6 +28,11 @@ import org.gusdb.wdk.service.request.exception.RequestMisformatException;
 import org.gusdb.wdk.service.service.WdkService;
 import org.json.JSONObject;
 
+/**
+ * Provides service in conformance with the BRC Use Case 4 specification as of Apr 2017.
+ * @author crisl-adm
+ *
+ */
 @Path("/hpi")
 public class BrcService extends WdkService {
 	
@@ -35,6 +41,16 @@ public class BrcService extends WdkService {
   private NewCookie sessionCookie;
   private final String EXPERIMENT_ID_PATH_PARAM = "experimentId";
   private final String ID_LIST_ID_PATH_PARAM = "idListId";
+  private final String INCLUDE_ORTHOLOGS_QUERY_PARAM = "includeOrthologs";
+  
+  /**
+   * Utility method to return the initial portion of the request uri so we can make internal REST calls
+   * using that same base uri.  The scheme is assumed to be http.
+   * @return - uri string up to app name and service path
+   */
+  protected String getBaseUri() {
+    return getUriInfo().getBaseUri().toString();
+  }
   
   /**
    * REST service version of the DatasetQuestions.DatasetsByGeneList question
@@ -42,11 +58,12 @@ public class BrcService extends WdkService {
    * @return
    */
   @POST
-  @Path("/experiment/search/gene-list")
+  @Path("/search/experiment/gene-list")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response getBrc(String body) {
     JSONObject requestJson = new JSONObject(body);
+
     try {
       BrcRequest brcRequest = BrcRequest.createFromJson(requestJson);
       String userId = callUserService();
@@ -112,11 +129,38 @@ public class BrcService extends WdkService {
   }
   
   /**
+   * Provides a list of gene ids for the given experiment and id list.
+   * @param experimentId
+   * @param idListId
+   * @return
+   */
+  @GET
+  @Path("/experiment/{experimentId}/gene-list/{idListId}/ids")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getIds(@PathParam(EXPERIMENT_ID_PATH_PARAM) String experimentId,
+		  @PathParam(ID_LIST_ID_PATH_PARAM) String idListId,
+		  @QueryParam(INCLUDE_ORTHOLOGS_QUERY_PARAM) String includeOrthologs) {
+    try {
+      ExperimentRequest experimentRequest = new ExperimentRequest();
+      experimentRequest.setExperimentId(experimentId);
+      experimentRequest.setOrthologs(includeOrthologs);
+      LOG.info("JSON to DatasetRecordService: " + experimentRequest.getDatasetRecordJson().toString(2));
+      JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
+      LOG.info("Dataset Record Service to JSON: " + datasetRecordJson.toString(2));
+      BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, false).getIdLists();
+      return Response.ok(BrcFormatter.getGeneListIdsJson(brcGeneListBean).toString()).build();
+    }
+    catch(WdkModelException e) {
+  	  throw new BadRequestException(e);
+  	}
+  }
+  
+  /**
    * Provides an API for the gene list search detailing the input types
    * @return
    */
   @GET
-  @Path("/experiment/search/gene-list/api")
+  @Path("/search/experiment/gene-list/api")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getApi() {
     return Response.ok(ApiFormatter.getJson().toString()).build();
@@ -133,7 +177,7 @@ public class BrcService extends WdkService {
       .newBuilder()
       .build();
     Response response = client
-      .target("http://localhost:8080/plasmodb/service/answer")
+      .target(getBaseUri() + "answer")
       .property("Content-Type", MediaType.APPLICATION_JSON)
       .request(MediaType.APPLICATION_JSON)
       .cookie(authCookie)
@@ -170,7 +214,7 @@ public class BrcService extends WdkService {
       .newBuilder()
       .build();
 	Response response = client
-      .target("http://localhost:8080/plasmodb/service/user/current")
+      .target(getBaseUri() + "user/current")
       .request(MediaType.APPLICATION_JSON)
       .get();
     try {
@@ -209,7 +253,7 @@ public class BrcService extends WdkService {
       .newBuilder()
       .build();
     Response response = client
-      .target("http://localhost:8080/plasmodb/service/user/" + userId + "/dataset")
+      .target(getBaseUri() + "user/" + userId + "/dataset")
 	  .property("Content-Type", MediaType.APPLICATION_JSON)
       .request(MediaType.APPLICATION_JSON)
       .cookie(authCookie)
@@ -247,7 +291,7 @@ public class BrcService extends WdkService {
       .newBuilder()
       .build();
     Response response = client
-      .target("http://localhost:8080/plasmodb/service/record/DatasetRecordClasses.DatasetRecordClass/instance")
+      .target(getBaseUri() + "record/DatasetRecordClasses.DatasetRecordClass/instance")
       .property("Content-Type", MediaType.APPLICATION_JSON)
       .request(MediaType.APPLICATION_JSON)
 	  .post(Entity.entity(datasetRecordJson.toString(), MediaType.APPLICATION_JSON));

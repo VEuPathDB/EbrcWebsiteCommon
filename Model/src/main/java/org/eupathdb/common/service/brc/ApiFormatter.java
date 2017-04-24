@@ -3,6 +3,11 @@ package org.eupathdb.common.service.brc;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Hardcoded JSON object in support of a BRC API request.
+ * @author crisl-adm
+ *
+ */
 public class ApiFormatter {
 	
   public static JSONObject getJson() {
@@ -13,7 +18,7 @@ public class ApiFormatter {
 		  .put("displayName", "Gene Set")
 		  .put("description", "A list of genes to match against experiments")
 		  .put("idSources", new JSONArray()
-            .put("genebank"))
+            .put("ensembl"))
 		  .put("thresholdTypes", new JSONArray()
             .put(new JSONObject()
               .put("name", "Percent matched")

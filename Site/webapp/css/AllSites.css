@@ -408,6 +408,7 @@ div.innertube #record-toolbox li {
 #sidebar, #menu_lefttop {
   width: 220px;
   position: absolute;
+  top: 12em;
   left: 6px;
   z-index: 10;
   /*
@@ -748,6 +749,10 @@ div#quick-search td {
   display: inline-block;
 }
 
+
+#private-Logo {
+  display:none;
+}
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =ABOUT  menu (in sidebar and header)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
