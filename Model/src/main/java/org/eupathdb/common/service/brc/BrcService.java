@@ -71,7 +71,7 @@ public class BrcService extends WdkService {
       LOG.info("JSON to AnswerService: " + brcRequest.getAnswerJson().toString(2));
       JSONObject answerJson = callAnswerService(brcRequest.getAnswerJson());
       LOG.info("Answer Service to JSON: " + answerJson.toString(2));
-      Set<BrcBean> brcBeans = BrcBean.parseAnswerJson(answerJson);
+      Set<BrcBean> brcBeans = BrcBean.parseAnswerJson(answerJson, getBaseUri());
       return Response.ok(BrcFormatter.getJson(brcBeans).toString()).build();
     }
     catch(WdkModelException | RequestMisformatException e) {
@@ -95,7 +95,7 @@ public class BrcService extends WdkService {
       LOG.info("JSON to DatasetRecordService: " + experimentRequest.getDatasetRecordJson().toString(2));
       JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
       LOG.info("Dataset Record Service to JSON: " + datasetRecordJson.toString(2));
-      BrcBean brcBean = BrcBean.parseRecordJson(datasetRecordJson, false);
+      BrcBean brcBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false);
       return Response.ok(BrcFormatter.getBrcJson(brcBean, false).toString()).build();
 	}
 	catch(WdkModelException e) {
@@ -120,7 +120,7 @@ public class BrcService extends WdkService {
     ExperimentRequest experimentRequest = new ExperimentRequest();
     experimentRequest.setExperimentId(experimentId);
     JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
-    BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, false).getIdLists();
+    BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false).getIdLists();
     return Response.ok(BrcFormatter.getGeneListJson(brcGeneListBean, false).toString()).build();
 	}
 	catch(WdkModelException e) {
@@ -147,7 +147,7 @@ public class BrcService extends WdkService {
       LOG.info("JSON to DatasetRecordService: " + experimentRequest.getDatasetRecordJson().toString(2));
       JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
       LOG.info("Dataset Record Service to JSON: " + datasetRecordJson.toString(2));
-      BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, false).getIdLists();
+      BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false).getIdLists();
       return Response.ok(BrcFormatter.getGeneListIdsJson(brcGeneListBean).toString()).build();
     }
     catch(WdkModelException e) {

@@ -29,12 +29,12 @@ public class BrcBean {
    * @return
    * @throws WdkModelException
    */
-  public static Set<BrcBean> parseAnswerJson(JSONObject answerJson) throws WdkModelException {
+  public static Set<BrcBean> parseAnswerJson(JSONObject answerJson, String baseUri) throws WdkModelException {
 	Set<BrcBean> brcBeans = new HashSet<>();  
 	JSONArray recordsJson = answerJson.getJSONArray("records");
 	for(int i = 0; i < recordsJson.length(); i++) {
 	  JSONObject recordJson = recordsJson.getJSONObject(i);
-	  BrcBean brcBean = parseRecordJson(recordJson, true);
+	  BrcBean brcBean = parseRecordJson(recordJson, baseUri, true);
 	  brcBeans.add(brcBean);
 	}
 	return brcBeans;
@@ -50,16 +50,17 @@ public class BrcBean {
    * @return
    * @throws WdkModelException
    */
-  protected static BrcBean parseRecordJson(JSONObject recordJson, boolean search) throws WdkModelException {
+  protected static BrcBean parseRecordJson(JSONObject recordJson, String baseServiceUri, boolean search) throws WdkModelException {
     BrcBean brcBean = new BrcBean();
     brcBean.setExperimentIdentifier(
       String.valueOf(((JSONObject)recordJson.getJSONArray("id").get(0)).get("value"))
     );
     JSONObject attributesJson = recordJson.getJSONObject("attributes");
     brcBean.setDisplayName(attributesJson.getString("display_name"));
-    brcBean.setType("NA");
-    brcBean.setDescription(attributesJson.getString("description"));
-    brcBean.setUri("NA");
+    brcBean.setType(attributesJson.getString("newcategory"));
+    brcBean.setDescription(attributesJson.getString("summary"));
+    String baseApiUri = baseServiceUri.substring(0, baseServiceUri.indexOf("service/")) + "app/";
+    brcBean.setUri(baseApiUri + "record/dataset/" + brcBean.getExperimentIdentifier());
     brcBean.setSpecies(attributesJson.getString("organism_prefix"));
     brcBean.setGenomeVersion("NA");
     brcBean.setIdLists(BrcGeneListBean.parseRecordGeneListJson(recordJson, search));
