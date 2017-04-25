@@ -25,7 +25,7 @@ public class ExperimentRequest {
           .put("value", experimentId)))
       .put("attributes", new JSONArray()
         .put("display_name")
-        .put("description")
+        .put("summary")
         .put("organism_prefix")
         .put("newcategory"))
       .put("tables", new JSONArray()

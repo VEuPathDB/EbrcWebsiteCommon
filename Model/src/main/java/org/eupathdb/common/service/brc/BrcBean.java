@@ -58,7 +58,7 @@ public class BrcBean {
     JSONObject attributesJson = recordJson.getJSONObject("attributes");
     brcBean.setDisplayName(attributesJson.getString("display_name"));
     brcBean.setType(attributesJson.getString("newcategory"));
-    brcBean.setDescription(attributesJson.getString("description"));
+    brcBean.setDescription(attributesJson.getString("summary"));
     String baseApiUri = baseServiceUri.substring(0, baseServiceUri.indexOf("service/")) + "app/";
     brcBean.setUri(baseApiUri + "record/dataset/" + brcBean.getExperimentIdentifier());
     brcBean.setSpecies(attributesJson.getString("organism_prefix"));
