@@ -1,0 +1,147 @@
+#!/usr/bin/perl
+
+use strict;
+use lib "$ENV{GUS_HOME}/lib/perl";
+
+use WDK::Model::ModelConfig;
+use WDK::Model::DbUtils qw(jdbc2oracleDbi);
+use Getopt::Long;
+use DBI;
+
+my ($sqlFile, $primaryModel, $project);
+&GetOptions('sqlFile=s' => \$sqlFile,
+            'primaryModel=s' => \$primaryModel
+            'project=s' => \$project
+	   );
+
+usage() unless ($primaryModel && $sqlFile);
+
+
+my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
+my $userDbh = &getDbh($modelConfig->getUserDbiDsn(), $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
+
+my @tests = parseSqlFile($sqlFile, $modelConfig->{userDb}->{userSchema}, $project);
+
+my $foundError = 0;
+my @passedTests;
+my %failedTests;
+my $count;
+print STDERR "Running tests: \n";
+foreach my $test (@tests) {
+  $count++;
+  print STDERR "  $count. $test->{name}\n";
+  my $count = getCount($userDbh, $test->{sql});
+  if ($count) {
+    $failedTests{$test->{name}} = $count;
+  } else {
+    push(@passedTests, $test->{name});
+  }
+}
+
+print "\nPassed Tests\n";
+foreach my $t (@passedTests) {
+  print "  $t\n";
+}
+
+print "\nFailed Tests\n";
+foreach my $t (keys(%failedTests)) {
+  print "  $t: $failedTests{$t}\n";
+}
+
+exit(scalar(%failedTests));	# count of failed tests
+
+sub parseSqlFile {
+  my ($sqlFile, $schema, $project) = @_;
+
+  open(F, $sqlFile) || die "Can't open file '$sqlFile'\n";
+  my @tests;
+  my @currentLines;
+  my $currentTest = {};
+  while (<F>) {
+    chomp;
+    next if (/^\s*$/);	# skip blank line
+    if (/^;$/) {
+      my $sql = join("\n", @currentLines);
+      if (!$currentTest->{name}) {
+	die "SQL is expected to be test_name\n$sql\n" unless $sql =~ /\'(.*)\'.*test_name/;
+	$currentTest->{name} = $1;
+      } else {
+	die "SQL is expected to mention schema name '$schema'\n$sql\n" unless $sql =~ /$schema/;
+	die "SQL is expected to include the macro PROJECT_MACRO" if $project && $sql !~ /PROJECT_MACRO/;
+	$sql =~ s/PROJECT_MACRO/$project/g if $project;
+	$currentTest->{sql} = $sql;
+	push(@tests, $currentTest);
+	$currentTest = {};
+      }
+      @currentLines = ();
+    } else {
+      push(@currentLines, $_);
+    }
+  }
+  return @tests;
+}
+
+sub getCount {
+  my ($dbh, $sql) = @_;
+
+#  print STDOUT "\n$sql\n";
+  my $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+  my ($count) = $stmt->fetchrow_array();
+  $stmt->finish();
+  return $count;
+}
+
+sub getDbh {
+  my ($dsn, $login, $password) = @_;
+  print STDOUT "Connecting to $dsn\n";
+  my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
+
+  # solve oracle clob problem; not that we're liable to need it...
+  $dbh->{LongTruncOk} = 0;
+  $dbh->{LongReadLen} = 10000000;
+  return $dbh;
+}
+
+sub usage {
+  die "
+Validate updates to the user DB.  Runs a set of SQL tests, each of which return a count.  A non-zero count indicates an invalid result.
+
+Prints a report about all the tests that are run.
+
+Usage: eupathValidateUserDb --primaryModel model --sqlFile sql_file [--project project_name]
+
+Where:
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has user DB connect info.
+  sqlFile: a file of sql tests (see below).
+  project: the name of a project to subsitute into the sql. If provided, the test sql must contain the macro PROJECT_MACRO
+
+Required format of sqlFile:
+ - a series of sql statements, *not* terminated by semi-colon
+ - the SQLs are delimited by a line with a single character, a semi-colon
+ - the SQLs alternate between
+    - an sql that provides a name for the test.  it *must* include the string test_name
+    - an sql that performs the test.  it *must* include the name of the current userdb schema (eg, userlogins5).
+      the sql can optionally include the macro PROJECT_MACRO (only if the --project argument is supplied)
+ - blank lines are ignored
+ - this format means that the sql file can be run as a pure sql script, if desired.
+
+EXAMPLE SQL FILE
+
+select 'user basket has current IDs' as test_name from dual
+;
+select count(*)
+from userlogins5.basket
+where la de dah
+;
+
+select 'user steps are happy' as test_name from dual
+;
+select count(*)
+from userlogins5.steps
+where la de dah
+;
+
+
+";
+}

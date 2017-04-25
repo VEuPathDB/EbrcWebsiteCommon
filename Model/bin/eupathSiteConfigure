@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+
+use strict;
+
+my ($lit1,$project,$lit2,$metaConfigFile,$commandLineConfigTxt) = @ARGV;
+if ($commandLineConfigTxt ne "") { 
+    $commandLineConfigTxt = "\"$commandLineConfigTxt\"";
+}
+
+#############################################################
+# define the template populator input data; format is:
+#    template_file1 \t output_location1 \n
+#    template_file2 \t output_location2 \n
+#    etc.
+#############################################################
+my $configTemplateFiles='';
+if ($project eq "OrthoMCL" || $project eq "MicrobiomeDB" || $project eq "PrismDB") {
+    $configTemplateFiles = 
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/model-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/\${project}/model-config.xml\n".
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/model.prop.tmpl\t".
+        "$ENV{GUS_HOME}/config/\${project}/model.prop\n".
+        "$ENV{PROJECT_HOME}/EbrcWebSvcCommon/WSFPlugin/config/blast-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/blast-config.xml\n".
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/projects.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/projects.xml";
+} else {
+    $configTemplateFiles = 
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/model-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/\${project}/model-config.xml\n".
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/model.prop.tmpl\t".
+        "$ENV{GUS_HOME}/config/\${project}/model.prop\n".
+        "$ENV{PROJECT_HOME}/ApiCommonWebService/WSFPlugin/config/profileSimilarity-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/profileSimilarity-config.xml\n".
+        "$ENV{PROJECT_HOME}/ApiCommonWebsite/Model/config/comment-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/\${project}/comment-config.xml\n".
+        "$ENV{PROJECT_HOME}/EbrcWebSvcCommon/WSFPlugin/config/blast-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/blast-config.xml\n".
+        "$ENV{PROJECT_HOME}/ApiCommonWebService/WSFPlugin/config/highSpeedSnpSearch-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/highSpeedSnpSearch-config.xml\n".
+        "$ENV{PROJECT_HOME}/ApiCommonWebService/WSFPlugin/config/highSpeedChipSnpSearch-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/highSpeedChipSnpSearch-config.xml\n".
+        "$ENV{PROJECT_HOME}/ApiCommonWebService/WSFPlugin/config/motifSearch-config.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/motifSearch-config.xml\n".
+        "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/projects.xml.tmpl\t".
+        "$ENV{GUS_HOME}/config/projects.xml";
+}
+
+usage($configTemplateFiles) unless scalar(@ARGV) >= 4;
+
+my $projectConfigDir = "$ENV{GUS_HOME}/config/${project}";
+if (! -d $project) {
+  mkdir $projectConfigDir || die "Could not mkdir '$projectConfigDir'\n";
+}
+
+# define file to hold config template file data
+my $filename = "/tmp/templates.$$.tmp";
+
+my $cmd = "generateFilesFromTemplates $ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/lib/yaml/masterConfig.yaml $metaConfigFile $commandLineConfigTxt < $filename";
+
+open(my $TMP, '>', $filename) or die "Could not open temp file '$filename' $!";
+print $TMP $configTemplateFiles;
+close $TMP;
+
+print STDERR "\n$cmd\n\n";
+system($cmd);
+
+unlink $filename;
+
+exit ($? >> 8);
+
+sub usage {
+  my ($configTemplateFiles) = @_;
+  die "
+
+Configure a EuPathDB website (also OrthoMCL) by reading the provided meta config file, and subsituting values from there into three config templates:
+$configTemplateFiles.
+
+Usage: eupathSiteConfigure -model PlasmoDB -filename meta_config_file
+
+Where:
+  -model is the website(project name, model name) you want to generate config files for (eg.:PlasmoDB)
+  -filename is the meta file where you include the specific information for this website (database, logins etc). 
+   See \$PROJECT_HOME/EbrcWebsiteCommon/Model/lib/yaml/metaConfig.yaml.sample for an example.
+
+To fully understand this command, get the usage for the generateFilesFromTemplates command.
+
+";
+}

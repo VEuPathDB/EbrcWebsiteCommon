@@ -1,0 +1,106 @@
+@import '../../css/AllSites.css';
+
+body, h1, h2, h3, h4, h5, h6 {
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+}
+h1 {
+  text-align: left;
+  font-size: 2.8em;
+  font-weight: 400;
+  color: #222;
+}
+h2 {
+  font-size: 1.8em;
+  font-weight: 500;
+}
+h3 {
+  font-size: 1.5em;
+  font-weight: 500;
+}
+h4 {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.form-group {
+  margin: .6em 0;
+}
+
+.form-radio {
+  margin: .4em;
+}
+
+#wdk-container {
+  min-height: calc(100% - 206px);
+  position: relative;
+  text-rendering: optimizeLegibility;
+}
+
+/* 230px is based on height of header, footer, and margin/padding of wdk-PageContent */
+.wdk-PageContent {
+  background-color: #ffffff;
+  min-height: calc(100vh - 230px);
+}
+
+.wdk-NotFound p {
+  font-size: 1.2em;
+}
+
+.wdk-RecordOverview:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* FIXME: Remove when rest of page is responsive */
+.wdk-RecordContainer {
+  max-width: calc(100vw - 8em);
+}
+
+.wdk-RecordSidebarToggle,
+.wdk-RecordNavigationSectionHeader {
+  color: #777;
+}
+
+.wdk-UserDatasetOverview {
+  font-size: 1.4em;
+}
+
+.wdk-UserDatasetOverviewItemText {
+  font-weight: 300;
+}
+
+.wdk-UserDatasetSection {
+  font-size: 1.2em;
+  font-weight: 400;
+}
+
+.wdk-UserDatasetSectionHeading {
+  font-size: 1.4em;
+}
+
+.wdk-RecordSidebar__fixed {
+  left: -298px;
+}
+
+.wdk-DataTableCellExpand {
+  color: #777;
+}
+
+.wdk-RecordSection__collapsed {
+  display: none;
+}
+
+/* offset so things don't hide under menubar */
+.wdk-RecordSection,
+.wdk-RecordSubsection {
+  padding-top: 32px;
+  margin-top: -42px;
+}
+
+.wdk-RecordTableContainer,
+.wdk-RecordAttributeSectionItem,
+.eupathdb-GbrowseContext {
+  padding-top: 32px;
+  margin-top: -32px;
+}

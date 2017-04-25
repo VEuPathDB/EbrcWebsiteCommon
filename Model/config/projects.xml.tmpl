@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  THESE URLS are used to access:
+        - in portal: in ApiFedPlugin to access all sites
+        - in portal: in any result: access recordpage
+        - in all sites: in the genomic blast result: access GBrowse (red links)
+
+  Feel free to update your project.xml to point to your own sites or qa sites.
+-->
+<!-- the timeout, in seconds, of a remote call to a project. -->
+<projects timeout="0" xmlns="http://www.eupathdb.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.eupathdb.org ../lib/rng/projects.xsd ">
+  <project name="AmoebaDB" site="${amebURL}" />
+  <project name="CryptoDB" site="${crypURL}" />
+  <project name="FungiDB" site="${fungURL}" />
+  <project name="GiardiaDB" site="${giarURL}" />
+  <project name="MicrosporidiaDB" site="${micrURL}" />
+  <project name="PiroplasmaDB" site="${piroURL}" />
+  <project name="PlasmoDB" site="${plasURL}" />
+  <project name="ToxoDB" site="${toxoURL}" />
+  <project name="TrichDB" site="${tricURL}" />
+  <project name="TriTrypDB" site="${trypURL}" />
+</projects>

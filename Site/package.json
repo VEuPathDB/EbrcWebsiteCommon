@@ -1,0 +1,11 @@
+{
+  "name": "ebrc-website-common-site",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "license": "MIT",
+  "dependencies": {
+    "extract-text-webpack-plugin": "^2.0.0-beta",
+    "md5": "^2.2.1"
+  }
+}

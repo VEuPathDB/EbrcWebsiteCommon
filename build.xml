@@ -1,0 +1,255 @@
+<project name="EbrcWebsiteCommon" default="Installation" basedir=".">
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <import file="${projectsDir}/WDK/build.xml" />
+
+  
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo    Checkout    oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EbrcWebsiteCommon-ChildCheckout">
+    <available file="${projectsDir}/WDK" type="dir"  property="WDK.present" />
+    <antcall target="WDK-Checkout"/>
+  </target>
+
+
+  <target name="WDK-Checkout" unless="WDK.present">
+    <ant target="defaultProjectCheckout" inheritAll="false">
+      <property name="svnurl" value="https://www.cbil.upenn.edu/svn/gus/WDK"/>
+      <property name="project" value="WDK"/>
+      <property name="version" value="alter-views"/>
+    </ant>
+  </target>
+
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo    Update    oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+ <target name="EbrcWebsiteCommon-ChildUpdate">
+    <ant target="defaultProjectUpdate">
+      <property name="project" value="WDK"/>
+    </ant>
+  </target>
+
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
+                                                        EbrcWebsiteCommon-MavenInstallation,
+                                                        EbrcWebsiteCommon/Site-Installation,
+                                                        EbrcWebsiteCommon/Model-Installation,
+                                                        EbrcWebsiteCommon/Watar-Installation">
+    <ant target="defaultProjectInstall">
+      <property name="project" value="EbrcWebsiteCommon"/>
+    </ant>
+
+    <!-- remove conflicting jar file -->
+    <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
+    <delete file="${targetDir}/lib/java/jsp-api-2.0.jar" />
+    
+  </target>  
+
+  <target name="EbrcWebsiteCommon-MavenInstallation">
+        <ant target="mavenBuildProject">
+          <property name="project" value="EbrcWebsiteCommon"/>
+        </ant>
+       <property name="alreadyBuilt" value="true"/>
+ </target>
+
+  <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
+
+
+  <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
+
+  <target name="EbrcWebsiteCommon/Model-Installation">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="EbrcWebsiteCommon"/>
+      <property name="component" value="Model"/>
+    </ant>
+  </target>
+
+  <target name="EbrcWebsiteCommon/Site-Installation">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="EbrcWebsiteCommon"/>
+      <property name="component" value="Site"/>
+    </ant>
+  </target>
+
+  <target name="EbrcWebsiteCommon/Watar-Installation">
+    <ant target="defaultComponentInstall">
+      <property name="project" value="EbrcWebsiteCommon"/>
+      <property name="component" value="Watar"/>
+    </ant>
+  </target>
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
+                                                           EbrcWebsiteCommon-Installation,
+                                                           EbrcWebsiteCommon/Site-WebInstallation">
+  </target>
+
+  <target name="EbrcWebsiteCommon/Site-WebInstallation">
+ 
+    <ant target="yarn">
+      <property name="project" value="EbrcWebsiteCommon"/>
+      <property name="component" value="Site"/>
+    </ant>
+
+    <ant target="defaultWebComponentInstall">
+      <property name="project" value="EbrcWebsiteCommon"/>
+      <property name="component" value="Site"/>
+    </ant>
+
+    <ant target="webComponentPartCopy">
+      <property name="componentDir" value="${projectsDir}/EbrcWebsiteCommon/Site"/>
+      <property name="part" value="dashboard"/>
+      <property name="to" value="${htdocsTargetDir}/../dashboard"/>
+    </ant>
+
+    <available file="${htdocsTargetDir}/../dashboard" type="dir" property="dashboard.present"/>
+    <antcall target="dashboardDoc"/>
+
+  </target>
+
+  <!-- Target to be used by implementing sites -->
+  <target name="eupathWebComponentInstall">
+    <echo message="Building ${project}/${component} assets"/>
+    <available file="${projectsDir}/${project}/${component}/webpack.config.js" property="webpack.config.js.present"/>
+    <ant target="eupath-merge-tags"/>
+    <ant target="defaultWebComponentInstall"/>
+    <ant target="siteLog4j"/>
+    <ant target="yarn"/>
+    <ant target="webpack"/>
+    <ant target="generate-assets-manifest"/>
+  </target>
+
+  <target name="siteLog4j">
+    <available file="${targetDir}/config/log4j.xml.custom-web" property="custom.weblog4j.present"/>
+    <antcall target="installCustomWebLog4j"/>
+    <available file="${webappTargetDir}/WEB-INF/classes/log4j.xml" property="weblog4j.present"/>
+    <antcall target="setLog4j"/>
+  </target>
+
+  <target name="installCustomWebLog4j" if="custom.weblog4j.present">
+    <echo message="Installing custom log4j.xml from"/>
+    <echo message="${targetDir}/config/log4j.xml.custom-web"/>
+    <copy overwrite="true"
+          file="${targetDir}/config/log4j.xml.custom-web" 
+          tofile="${webappTargetDir}/WEB-INF/classes/log4j.xml"/>
+  </target>
+
+  <target name="setLog4j" if="weblog4j.present">
+    <dirname  property="webappDir" file="${webappTargetDir}"/>
+    <basename property="webapp" file="${webappDir}"/>
+    <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml" token="@WEBAPP@" value="${webapp}"/>
+  </target>
+
+  <target name="yarn">
+    <exec executable="yarn"
+      dir="${projectsDir}/${project}/${component}"
+      failonerror="true"
+      failifexecutionfails="true"/>
+  </target>
+
+  <target name="webpack" if="webpack.config.js.present">
+    <exec executable="${projectsDir}/WDK/View/node_modules/.bin/webpack"
+      dir="${projectsDir}/${project}/${component}"
+      failonerror="true"
+      failifexecutionfails="true">
+      <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
+      <arg line="--output-path ${webappTargetDir}"/>
+    </exec>
+  </target>
+
+  <target name="eupath-merge-tags">
+    <mkdir dir="${webappTargetDir}/WEB-INF/tags/site"/>
+    <delete>
+      <fileset dir="${webappTargetDir}/WEB-INF/tags/site" includes="*.tag"/>
+    </delete>
+    <copy todir="${webappTargetDir}/WEB-INF/tags/site">
+      <fileset dir="${projectsDir}/EbrcWebsiteCommon/Site/webapp/WEB-INF/tags/site-common">
+        <include name="*.tag"/>
+      </fileset>
+    </copy>
+    <copy todir="${webappTargetDir}/WEB-INF/tags/site" overwrite="true">
+      <fileset dir="${projectsDir}/${project}/${component}/webapp/WEB-INF/tags/site">
+        <include name="*.tag"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="dashboardDoc" if="dashboard.present">
+    <echo message="Compiling phpdoc" />
+    <!-- errors to /dev/null due to Smarty bug: https://bugzilla.redhat.com/show_bug.cgi?id=1352882 -->
+    <exec executable="phpdoc" 
+      failonerror="false"
+      failifexecutionfails="false"
+      error="/dev/null"
+    >
+      <arg line="--ignore phpdoc/,css/,js/,config/,test/,images/,doc/" />
+      <arg line="--defaultpackagename dashboard" />
+      <arg line="--title /dashboard" />
+      <arg line="-t ${htdocsTargetDir}/../dashboard/phpdoc" />
+      <arg line="-d ${htdocsTargetDir}/../dashboard" />
+      <arg line="-o HTML:Smarty:PHP" />
+      <arg value="-q"/>      
+    </exec>
+  </target>
+
+  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
+  <!-- Projects which depend on this one should call this after defaultWebComponentInstal -->
+  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
+  <target name="generate-assets-manifest">
+
+    <echo>Generating assets-manifest.json</echo>
+
+    <apply dir="${webappTargetDir}"
+           relative="true"
+           executable="node"
+           parallel="true"
+           verbose="true"
+           output="${webappTargetDir}/assets-manifest.json">
+      <arg line="${projectsDir}/EbrcWebsiteCommon/Site/scripts/generateAssetsManifest.js"/>
+      <fileset dir="${webappTargetDir}" casesensitive="false">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+        <include name="**/*.jpg"/>
+        <include name="**/*.jpeg"/>
+        <include name="**/*.png"/>
+        <include name="**/*.gif"/>
+      </fileset>
+    </apply>
+
+  </target>
+ 
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="EbrcWebsiteCommon-Distributable" depends="ProjectTree">
+
+    <copy todir="${targetDir}">
+      <fileset dir="${projectsDir}" >
+        <exclude name="**/.svn/*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooo  ProjectTree  ooooooooooooooooooooooooooo -->
+  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
+
+  <target name="ProjectTree" if="${checkout}">
+    <ant target="projectCheckOut"/>
+  </target>  
+
+</project>

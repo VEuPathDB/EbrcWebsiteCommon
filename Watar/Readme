@@ -1,0 +1,66 @@
+stuff for web application testing and reporting
+
+!! Compilation of the java classes uses the GUS build system.
+build EbrcWebsiteCommon/Watar-Installation install -append
+
+!! installation
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
+    -Dcomp=Watar \
+    -Dproj=EbrcWebsiteCommon \
+    -DprojectsDir=$PROJECT_HOME \
+    -DtargetDir=$PROJECT_HOME/test_home \
+    install
+
+!! example installation, remove any previous results, run smoketests
+!! defined in config/smoketest.xml
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
+    -Dcomp=Watar \
+    -Dproj=EbrcWebsiteCommon \
+    -DprojectsDir=$PROJECT_HOME \
+    -DtargetDir=$PROJECT_HOME/test_home \
+    -Dbaseurl='http://integrate.toxodb.org' \
+    -Dwebappname='toxo.integrate' \
+    -DmsTimeout='30000' \
+    install cleantestresults smoketest 
+
+!! msTimeout is optional. Default is per htmlunit WebClientOptions.
+
+!! run specified methods without ant
+java -cp "$PROJECT_HOME/test_home/lib/java/*"   \
+    -Dbaseurl='http://integrate.toxodb.org' \
+    -Dwebappname='toxo.integrate' \
+    org.testng.TestNG \
+    -methods 'org.apidb.eupathsitecommon.watar.SmokeTests.WsfServicePage_HttpHeaderStatusIsOK'
+
+
+
+!! example installation, remove any previous results, run 
+!! testbynames; where testnames are defined in 
+!! config/smoketest_ng.xml.
+ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
+    -Dcomp=Watar \
+    -Dproj=EbrcWebsiteCommon \
+    -DprojectsDir=$PROJECT_HOME \
+    -DtargetDir=$PROJECT_HOME/test_home \
+    -Dbaseurl='http://integrate.toxodb.org' \
+    -Dwebappname='toxo.integrate' \
+    -Dtestnames="Integration" \
+    -DmsTimeout='30000' \
+    install cleantestresults testbynames 
+
+
+!! testnames (when using testbynames ant target) are
+!! defined in config/smoketest_ng.xml . For example,
+!! -Dtestname="QA" will run 'deployment' and 'xmlrecord' tests.
+!! Those names correspond to test groups in the SmokeTests class.
+        <test name="QA" junit="false" enabled="true">
+            <groups>
+              <run>
+                <include name="deployment"/>
+                <include name="xmlrecord"/>
+              </run>
+            </groups>
+            <classes>
+                <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
+            </classes>
+        </test>

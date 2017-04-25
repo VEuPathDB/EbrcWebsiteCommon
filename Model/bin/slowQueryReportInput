@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+use strict;
+use Getopt::Long;
+
+my ($siteSet, $build, $type);
+
+&GetOptions('siteSet=s' => \$siteSet,
+	    'build=i' => \$build,
+	    't=s' => \$type
+	   );
+
+usage() if ($siteSet ne "q" && $siteSet ne "w") || $build !~ /^\d+$/ || ($type ne 'wdk' && $type ne "gbrowse");
+
+my @componentList = ` find /var/www  -maxdepth 1 -type d -name '*DB' -printf "%f\n"|grep -v ApiDB`;
+my @campusList = (1, 2);
+
+foreach my $campus (@campusList) {
+  foreach my $component (@componentList) {
+    chomp($component);
+    my $lcComponent = lc($component);
+    my $site = "$siteSet$campus.$lcComponent.org";
+    if ($type eq 'gbrowse') {
+      print "$site /var/www/Common/tmp/gbrowseLogs/$site/slowQueries.log /var/log/httpd/$site/access_log\n";
+    } else {
+      print "$site /usr/local/tomcat_instances/$component/logs/*.b$build/slowQueries.log4j* /var/log/httpd/$site/access_log\n";
+    }
+
+  }
+}
+
+sub usage {
+  print STDERR "
+
+This is a convenience script that prints to standard output the tab-delimited input expected by
+gbrowseSlowQueryReport and wdkSlowQueryReport.
+
+The script may be run on any EuPathDB web server. It assumes a certain directory structure, such
+as /var/www.   It probes that directory structure to find the name of all the EuPathDB component
+websites.
+
+The output of this program is three columns (tab delimited):
+   - server name (eg w1.plasmodb.org)
+   - slow query log
+   - apache access log
+
+Each row provides the info needed for given component's (for the specified build of that component).
+
+usage:  slowQueryReportInput -siteSet [ q | w ] -build <build> -t [ gbrowse | wdk ]
+
+where:
+  [q | w] determines whether to specify a report on [w]ww or [q]a sites, and
+  <build> is the build number (e.g. \"-build 12\")
+  [gbrowse | wdk] is the type of report
+
+example command pipelines:
+slowQueryReportInput -siteSet w -t gbrowse | gbrowseSlowQueryReport -s 0.001 -i -d
+slowQueryReportInput -siteSet w -t gbrowse | grep -i crypto | gbrowseSlowQueryReport -s 0.001 -i -d
+slowQueryReportInput -siteSet w -t gbrowse | grep -vi EuPathDB | gbrowseSlowQueryReport -s 0.001 -i -d
+slowQueryReportInput -siteSet q -t gbrowse | grep q2 | gbrowseSlowQueryReport -s 0.001 -i -d
+
+slowQueryReportInput -siteSet w -build 11 -t wdk | wdkSlowQueryReport -s 0.01 -i
+slowQueryReportInput -siteSet w -build 11 -t wdk | grep -i crypto | wdkSlowQueryReport -s 0.01 -t 1309276800 -i
+slowQueryReportInput -siteSet w -build 12 -t wdk | grep -vi EuPathDB | wdkSlowQueryReport -s 0.01 -t 1309276800 -i
+slowQueryReportInput -siteSet q -build 13 -t wdk | grep q2 | wdkSlowQueryReport -s 0.01 -t 1309276800 -i
+
+";
+  exit(1);
+}

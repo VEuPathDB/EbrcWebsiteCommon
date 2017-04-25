@@ -1,0 +1,22 @@
+# used by three programs: eupathCloneMetaFile, eupathUserDbMigrationMulti, jenkinsJobScmUpdateMulti
+# five columns:
+#  abbrev (eupathCloneMetaFile)
+#  project (all)
+#  instance suffix override (eupathCloneMetaFile)
+#  flag indicating not an apisite (eupathCloneMetaFile)
+#  flag indicating not a component site (jenkinsJobScmUpdateMulti)
+ameb	AmoebaDB
+cryp	CryptoDB
+fung	FungiDB
+giar	GiardiaDB
+host	HostDB			not_component
+micr	MicrosporidiaDB
+piro	PiroplasmaDB
+plas	PlasmoDB
+schi	SchistoDB			not_component
+toxo	ToxoDB
+tryp	TriTrypDB
+tvag	TrichDB
+orth	OrthoMCL	501n	not_apisite	not_component
+# put portal last so that model and maint sites are likely to be ok by the time we get there.
+eupa	EuPathDB			not_component

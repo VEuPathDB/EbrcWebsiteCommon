@@ -1,0 +1,12 @@
+package org.eupathdb.common.taglib.wdk.info;
+
+import org.eupathdb.common.taglib.wdk.WdkTagBase;
+import javax.servlet.jsp.JspException;
+
+public class TemplateTag extends WdkTagBase {
+
+    public void doTag() throws JspException {
+        super.doTag();
+    }
+    
+}

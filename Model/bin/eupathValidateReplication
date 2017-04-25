@@ -1,0 +1,111 @@
+#!/usr/bin/perl
+
+use strict;
+use lib "$ENV{GUS_HOME}/lib/perl";
+
+use WDK::Model::ModelConfig;
+use WDK::Model::DbUtils qw(jdbc2oracleDbi);
+use Getopt::Long;
+use DBI;
+
+my ($sleep, $primaryModel, $rowTolerance);
+&GetOptions('primaryModel=s' => \$primaryModel,
+            'rowTolerance=s' => \$rowTolerance,
+            'sleep=s' => \$sleep,
+);
+
+usage() unless ($primaryModel && $rowTolerance);
+
+my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
+my $schema = $modelConfig->{userDb}->{userSchema};
+
+my @tests = (
+       ["users count", "select count(*) from ${schema}users"],
+       ["steps count", "select count(*) from ${schema}steps"],
+       ["guests count", "select count(*) from ${schema}users where is_guest = 1"],
+       ["guest steps count", "select count(*) from ${schema}steps st, ${schema}users u
+                                              where st.user_id = u.user_id
+                                              and u.is_guest = 1"]
+);
+
+my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+my $northUserDbName;
+my $southUserDbName;
+if ($dsn[2] =~ /(.*)[sS]$/) {
+  $southUserDbName = $dsn[2];
+  $northUserDbName ="${1}n";
+} elsif ($dsn[2] =~ /(.*)[nN]$/) {
+  $northUserDbName = $dsn[2];
+  $southUserDbName ="${1}s";
+} else {
+  die "The model conig has userDb '$dsn[2]'.  It does not end in either n/N or s/S.\n";
+}
+
+$dsn[2] = $northUserDbName;
+my $northUserDbiDsn = join(':', @dsn);
+$dsn[2] = $southUserDbName;
+my $southUserDbiDsn = join(':', @dsn);
+my $northUserDbh = &getDbh($northUserDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
+my $southUserDbh = &getDbh($southUserDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
+
+print STDOUT "\nSleeping for $sleep seconds to give replication time to catch up.\n";
+sleep($sleep);
+
+my $foundError = 0;
+foreach my $test (@tests) {
+  print STDOUT "\n-----\nRunning test: $test->[0]\n";
+  my $count = &compareResults($test->[0], $test->[1], $northUserDbh, $southUserDbh);
+  print STDOUT "Diff: $count\n";
+  $foundError |= $count > $rowTolerance;
+}
+die "
+One or more tests had more than a $rowTolerance row count difference\n\n" if $foundError;
+
+
+sub compareResults {
+  my ($testName, $sql, $northUserDbh, $southUserDbh) = @_;
+  print "\nnorth: $northUserDbName\n";
+  my $northCount = &getCount($northUserDbh, $sql);
+  print "\n--south: $southUserDbName\n";
+  my $southCount = &getCount($southUserDbh, $sql);
+  return abs($northCount - $southCount);
+}
+
+sub getCount {
+  my ($dbh, $sql) = @_;
+
+  print STDOUT "\n$sql\n";
+  my $stmt = $dbh->prepare($sql);
+  $stmt->execute();
+  my ($count) = $stmt->fetchrow_array();
+  $stmt->finish();
+  return $count;
+}
+
+sub getDbh {
+  my ($dsn, $login, $password) = @_;
+  print STDOUT "Connecting to $dsn\n";
+  my $dbh = DBI->connect( $dsn, $login, $password) || die "unable to open db handle to ", $dsn;
+
+  # solve oracle clob problem; not that we're liable to need it...
+  $dbh->{LongTruncOk} = 0;
+  $dbh->{LongReadLen} = 10000000;
+  return $dbh;
+}
+
+sub usage {
+  die "
+Validate that tables in two WDK UserDBs are propertly synced by replication.  It compares the userDb in the primaryModel's configuration with the userDB that has the same name, but is on the other campus.  Both user databases must share a login and password found in model-config.xml.
+
+The individual tests (SQL) are specified inline in the program.  See \$PROJECT_HOME/EbrcWebsiteCommon/Model/bin/eupathValidationReplication
+
+Usage: eupathValidateReplication --schema schema --primaryModel model --rowTolerance tolerance --sleep sleep
+
+Where:
+  schema: the schema in which to find the tables to test.
+  primaryModel: the project in gus_home/config in which to find model-config.xml that has connect info.
+  rowTolerance: the number of rows of difference to tolerate between any two compared tables.
+  sleep:  the amount to sleep before running the tests (to give replication time to catch up).
+
+";
+}

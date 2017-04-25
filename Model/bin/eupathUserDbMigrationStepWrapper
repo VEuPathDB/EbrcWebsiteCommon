@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use Cwd;
+
+my ($stepName) = @ARGV;
+
+die "
+A wrapper to run commands, called by eupathUserDbMigration, from its control dir
+
+usage: eupathUserDbMigrationStepWrapper step_name
+
+" unless $stepName;
+
+# find log file suffix
+opendir(my $dh,cwd());
+my $suffix = scalar(grep { /^$stepName.*\.err/ } readdir($dh)) + 1;
+close($dh);
+
+my $cmd = <STDIN>;
+chomp $cmd;
+system("echo '$cmd' > $stepName.running");
+system("$cmd > $stepName.$suffix.out 2> $stepName.$suffix.err");
+my $status = $? >> 8;
+
+system("echo '$cmd' > $stepName.done") unless $status;
+system("echo '$cmd' > $stepName.failed") if $status;
+unlink "$stepName.running" || die "Can't unlink '$stepName.running'\n";
+
+
+
+
+

@@ -1,0 +1,156 @@
+#!/usr/bin/perl
+
+use strict;
+
+my ($metaFile, $instanceSuffix, $projectsFile) = @ARGV;
+
+my @components;
+if ($projectsFile) {
+  open(F, $projectsFile) || die "Can't open projects_file '$projectsFile'\n";
+  while (<F>) {
+    next if /^#/; # skip comments
+    my ($abbrev, $project, $instanceSuffixOverride, $notApisite) = split(/\s/);
+    die "In projects_file '$projectsFile' abbrev '$abbrev' is not valid.  It should be four letters\n" unless $abbrev =~ /\w\w\w\w/;
+    die "In projects_file '$projectsFile' project '$project' is not valid.  It should end in DB\n" unless $project =~ /DB$/ || $project eq 'OrthoMCL';
+    push(@components, [$abbrev, $project, $instanceSuffixOverride, $notApisite]);
+  }
+  close(F);
+} else {
+  @components = (
+		 ['ameb', 'AmoebaDB'],
+		 ['cryp', 'CryptoDB'],
+		 ['eupa', 'EuPathDB'],
+		 ['fung', 'FungiDB'],
+		 ['giar', 'GiardiaDB'],
+		 ['host', 'HostDB'],
+		 ['mbio', 'MicrobiomeDB'],
+		 ['micr', 'MicrosporidiaDB'],
+		 ['piro', 'PiroplasmaDB'],
+		 ['plas', 'PlasmoDB'],
+		 ['schi', 'SchistoDB'],
+		 ['toxo', 'ToxoDB'],
+		 ['tryp', 'TriTrypDB'],
+		 ['tvag', 'TrichDB'],
+		);
+}
+
+
+my @c = map {join("\t", @$_)} @components;
+my $componentsString = join("\n", @c);
+
+usage() unless $metaFile;
+
+my $masterProject;
+my $masterProjectLower;
+my $masterPrefix;
+if ($metaFile =~ /(\w+)MetaConfig.yaml/) {
+  $masterProject = $1;
+  $masterProjectLower = lc($masterProject);
+  my $found;
+  foreach my $c (@components) { if ($c->[1] eq $masterProject) { $found = 1; $masterPrefix = $c->[0]; last }}
+  die "\nmeta file '$metaFile' project '$masterProject' is not known.  These are the known components:\n\n$componentsString\n" unless $found;
+} else {
+  die "\nmeta file '$metaFile' must be of the form xxxxxMetaConfig.yaml\n" unless $metaFile =~ /(\w+)MetaConfig.yaml/;
+}
+
+open(F, $metaFile) || die "Can't open meta file '$metaFile'\n";
+my @metaFileLines = <F>;
+close(F);
+
+my %instanceSuffixes;
+if (!$instanceSuffix) {
+  print STDERR "Reading instance info from STDIN...\n";
+  while(<STDIN>) {
+    if (/(\w\w\w\w)-(inc|rbld)/) {
+      my $prefix = $1;
+      my $suffix = $2;
+      die "Prefix '$prefix' is has both -inc and -rbld in STDIN.  Please remove one (eg, use grep -v).\n" if $instanceSuffixes{$prefix};
+      $instanceSuffixes{$prefix} = "-$suffix" ;
+    }
+  }
+}
+close(S);
+
+my $projectLineIndex;
+my $appDbLineIndex;
+my $projectSectionLineIndex;
+my $apisiteLineIndex;
+my $index = 0;
+foreach my $line (@metaFileLines) {
+  $projectLineIndex = $index if $line =~ /project\:/;
+  $apisiteLineIndex = $index if $line =~ /apisite/;
+  $projectSectionLineIndex = $index if $line =~ / - $masterProjectLower/;
+  if ($line =~ /appDb.instance\:\s*(\S+)/) {
+    my $instanceNm = $1;
+    $appDbLineIndex = $index;
+    my $expectedSuffix = $instanceSuffix;
+    $expectedSuffix = $instanceSuffixes{$masterPrefix} unless $expectedSuffix;
+    die "Please set ${metaFile}'s appDb.instance to $masterPrefix$expectedSuffix\n" unless $instanceNm =~ /$expectedSuffix/;
+  }
+  $index++;
+}
+
+die "Can't find 'project:' or 'appDb.instance:' lines in provided meta file\n" unless $projectLineIndex && $appDbLineIndex;
+
+# print "Indexes: $projectLineIndex, $appDbLineIndex, $projectSectionLineIndex\n";
+# print "Masters: $masterProject, $masterProjectLower\n";
+foreach my $component (@components) {
+  my $prefix = $component->[0];
+  my $project = $component->[1];
+  my $projectLower = lc($project);
+  my $file = "${project}MetaConfig.yaml";
+  print "Generating $file...\n";
+  open(C, ">$file") || die "Can't open '$file' for output\n";
+  my $i = 0;
+  my $suffix = $component->[2]; # use value from projects file, if provided
+  $suffix = $instanceSuffix unless $suffix;
+  $suffix = $instanceSuffixes{$prefix} unless $suffix;
+  die "Couldn't find a line for '$prefix' in apiTnsSummary\n" unless $suffix;
+  my $instance = "${prefix}$suffix";
+  foreach my $line (@metaFileLines) {
+    next if $i == $apisiteLineIndex && $component->[3];  # if not an apisite project, skip that line
+    $line =~ s/project: \S+/project: $project/ if $i == $projectLineIndex;
+    $line =~ s/appDb.instance: \S+/appDb.instance: $instance/ if $i == $appDbLineIndex;
+    $line =~ s/ - \S+/ - $projectLower/ if $i == $projectSectionLineIndex;
+    $i++;
+    print C $line;
+  }
+  close(C);
+}
+
+sub usage {
+
+  die "
+
+Generate a set of metaConfig.yaml files from a provided example meta file.  Each output file is for one component
+website, eg, ToxoDB, CryptoDB, etc.
+
+Usage: eupathCloneMetaFile meta_file instance_suffix projects_file
+
+Where:
+  meta_file:         the file to copy from.  Must be of the form xxxxxMetaConfig.yaml, where xxxxx is a known
+                     component project name(see below).
+  instance_suffix:   Use this suffix to construct the appDb.instance name.
+                     Eg, provide 029n to get instances like toxo029n, cryp029n, etc.
+  projects_file:     a white-space delimited file that provides a list of projects. (see below)
+
+Example command line:
+
+ eupathCloneMetaFile PlasmoDBMetaFile.yaml 029n projects_file
+
+Projects file has four columns:
+  1) four letter abbreviation, eg plas
+  2) project name, eg PlasmoDB
+  3) (optional) override of instance_suffix, eg, rbld
+  4) (optional) non-null to indicate this is not an apisite project (eg, for orthomcl).  typical value might be 'not-apisite'
+
+Output: a set of files in the current directory of the form xxxxxMetaConfig.yaml, where xxxx is the project name.
+
+The output files are identical to the provided meta file, except these lines:
+ project: PlasmoDB
+ appDb.instance: plas-inc
+ - apisite
+ - plasmodb
+
+";
+}

@@ -1,0 +1,464 @@
+#!/usr/bin/perl
+
+use Getopt::Long;
+use strict;
+
+my $firstLog = 1;
+my @allowedPhases = ('init', 'main', 'clean');
+
+# FOR NOW... the pipelines used by eupathUserDbMigration are HARD CODED in this file!
+
+# To edit a pipeline, see all comments labeled with EDIT_PIPELINE
+
+# EDIT_PIPELINE
+# To add a step to a pipeline:
+#  1) figure out what command line args you want to pass to it's command.  You will pass these in from command line args to eupathUserDbMigration
+#  2) for each of those:
+#      - decide on a command line argument prompt for eupathUserDbMigration, eg --cleanExpandedSteps
+#      - add that to the GetOptions declaration
+#        - if it is a boolean argument, use the ! notation (see, eg, keepUserDBCache)
+#        - if it is a string argument, use the =s notation (see project)
+#      - if it is a file argument add it to the list in the section below that validates that file/dir args are full paths
+#  3) add it to a row in one of the 
+
+
+# EDIT_PIPELINE - Step 1
+# Declare arguments here that will be passed from the eupathUserDbMigration command line to the commands called in the pipeline
+my @stepSpecificArgs =
+(
+ 'primaryModel=s',
+ 'project=s',
+ 'removeGuestsCutoff=s',
+ 'questionsMappingFile=s',
+ 'organismsMappingFile=s',
+ 'schema=s',
+ 'keepUserDBCache!',
+ 'skipParams!',
+ 'metaFileNameTemplate=s',
+);
+
+my @argv = @ARGV; # save before emptied by getoptions
+my %args;
+&GetOptions(\%args,
+	    'controlDir=s',
+	    'pipeline=s',
+	    'skipSteps=s',
+	    'noReplication!',
+	    'stopAfterStep=s',
+	    'redoStep=s',
+	    'listSteps!',
+	    'validateSteps!',
+	    'phase=s',
+	    @stepSpecificArgs
+    );
+
+die "Argument 'phase' must be absent, or exactly one of: " . join (",", @allowedPhases) . "\n"
+    if $args{phase} && !grep(/$args{phase}/, @allowedPhases);
+
+# EDIT_PIPELINE - Step 2
+# Validate that each file or dir argument is a full path
+foreach my $fileArg ($args{controlDir}, $args{questionsMappingFile}, $args{organismsMappingFile}) {
+  die "Error: this file or dir argument must be a full path" if $fileArg && substr($fileArg, 0, 1) ne '/';
+}
+
+# EDIT_PIPELINE - Step 3
+# Convert boolean input arguments from 0/1 to values that can be passed to the command we run
+$args{keepUserDBCache} = $args{keepUserDBCache} ? '-keepCache': ' ';
+$args{skipParams} = $args{skipParams} ? '-skipParams': ' ';
+
+
+# EDIT_PIPELINE - Step 4
+# Declare the pipelines!
+
+# The following are a set of "steps specs."  Each step spec is a list of steps in a named pipeline, eg, updateAndReportOnSteps.
+# Each spec has a number of rows, with each row representing a step in that pipeline.
+# Each row has standard columns:
+#  -step name
+#  -command to run, which can include embedded args from the eupathUserDbMigration command line, or other variables, as needed
+#  -a flag indicating if this step is only needed in a replication context.  Must be 0 or 1.
+#  -a list of required eupathUserDbMigration command line args (those referred to by the command).  (Use [] if none).
+
+my $REPLIC_STEP = 1;
+
+#################################################################################################################
+#####  Private sub-pipelines
+#################################################################################################################
+my %subPipeline;
+
+
+$subPipeline{configureProject} =
+  [
+    # we use multi site configure here only because it lets us use a name template.  we only actually configure one file at a time.
+    ['buildConfigFile', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['project', 'metaFileNameTemplate'] ],
+  ];
+
+
+$subPipeline{cacheModelInit} =
+  [
+   @{$subPipeline{configureProject}},
+   ['wdkCacheModelDrop', "wdkCacheModel $args{keepUserDBCache} -drop -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+   ['wdkCacheModelCreate', "wdkCacheModel -create -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+   ['stepExpanderDrop', "wdkExpandStep -dropTablesOnly -model $args{project}", !$REPLIC_STEP, ['project']],
+  ];
+
+$subPipeline{cacheModel} =
+  [
+   ['rebuildConfigFile', "eupathMultiSiteConfigure '$args{project}' $args{metaFileNameTemplate}", !$REPLIC_STEP, ['project', 'metaFileNameTemplate'] ],
+   ['wdkCacheModel', "wdkCacheModel $args{keepUserDBCache} -expand -model '$args{project}' $args{skipParams}", !$REPLIC_STEP, ['project', 'keepUserDBCache', 'skipParams'] ],
+  ];
+
+$subPipeline{updateAndReportOnStepsInternal} =
+  [
+   ['mapOrganism', "eupathMapOrganism $args{project} $args{organismsMappingFile}" , !$REPLIC_STEP, ['organismsMappingFile', 'project']],
+   ['validateReplOrganism', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+
+   ['mapQuestionName', "eupathMapQuestion $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
+   ['validateReplQuestion', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+
+   ['expandStep', "wdkExpandStep -model $args{project}", !$REPLIC_STEP, ['project']],
+   ['validateReplExpand', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+
+   ['invalidStepReport',"wdkInvalidStepReport -model $args{project}", !$REPLIC_STEP, ['project']],
+  ];
+
+$subPipeline{reportBroken} =
+  [
+    ['wdkReportBroken', "wdkRemoveBroken -reportOnly -model $args{project}", !$REPLIC_STEP, ['project'] ],
+  ];
+
+
+$subPipeline{fixBaskets} =
+  [
+    ['fixBaskets', "wdkFixBasket -model '$args{project}'", !$REPLIC_STEP, ['project'] ],
+    ['validateReplBasket', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+  ];
+
+###############################################################################################################
+############  Main pipelines                                                                   ################
+############    these are in the rough order they will be used in the typical release scenario ################
+###############################################################################################################
+
+my %pipelines;
+
+# Used by Infra team, to sanity check step invalidation.  Work with DD to get a reasonable set of mappings.
+$pipelines{updateAndReportOnSteps} =
+  {
+   init =>
+   [
+    @{$subPipeline{cacheModelInit}},
+   ],
+
+   main =>
+   [
+    @{$subPipeline{cacheModel}},
+    @{$subPipeline{updateAndReportOnStepsInternal}},
+   ],
+
+   clean =>
+   [
+    @{$subPipeline{reportBroken}},
+   ],
+
+  };
+
+$pipelines{releaseSetup} =
+  {
+   init =>
+   [
+    @{$subPipeline{cacheModelInit}},
+   ],
+
+   main =>
+   [
+    @{$subPipeline{cacheModel}},
+   ]
+  };
+
+# Pipeline for short releases where we dont revalidate the steps
+# (instead of pipeline 'release') 
+# Be aware we might need to map organisms and questions
+# If interested on an invalid step report we will need a pre releaseSetup pipeline
+$pipelines{releaseWithNoValidation} =
+  {
+   init =>
+   [
+    @{$subPipeline{configureProject}},  # redo configuration in case it was fiddled with after release setup.
+   ],
+
+   main =>
+   [
+     @{$subPipeline{fixBaskets}},
+     @{$subPipeline{updateAndReportOnStepsInternal}},
+   ]
+  };
+
+
+# Called at release.
+$pipelines{release} =
+  {
+   init =>
+   [
+    @{$subPipeline{configureProject}},  # redo configuration in case it was fiddled with after release setup.
+   ],
+
+   main =>
+   [
+    @{$subPipeline{fixBaskets}},
+    @{$subPipeline{updateAndReportOnStepsInternal}},
+
+    ['removeBroken', "wdkRemoveBroken -model $args{project}", !$REPLIC_STEP, ['project']], # remove broken strategies
+    ['validateReplBroken', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+    ['invalidStepsSummaryBefore',"wdkInvalidStepReport -summaryOnly -model $args{project}", !$REPLIC_STEP, ['project']],
+    ['validateSteps', "wdkValidateStep -model $args{project}", !$REPLIC_STEP , ['project']],
+    ['invalidStepsSummaryAfter',"wdkInvalidStepReport -summaryOnly -model $args{project}", !$REPLIC_STEP, ['project']],
+    ['validateReplValSteps', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+   ],
+
+   clean =>
+   [
+    @{$subPipeline{reportBroken}}
+   ],
+  };
+
+# Is not called as part of release.  Can be done anytime during the cycle. 
+$pipelines{cleanup} =
+  {
+   main =>
+   [
+   @{$subPipeline{configureProject}},
+    ['removeGuests', "wdkRemoveGuests -model $args{project} -cutoffDate $args{removeGuestsCutoff}", !$REPLIC_STEP, ['project', 'removeGuestsCutoff']],
+    ['guestUserReport', "eupathGuestUserReport --primaryModel $args{project}", !$REPLIC_STEP, ['project']],
+    ['validateReplGuests', "eupathValidateReplication -primaryModel $args{project} -rowTolerance 20 -sleep 10", $REPLIC_STEP, ['project']],
+   ]
+  };
+
+$pipelines{test} =
+  {
+   init =>
+   [
+    ['echo-0', "sleep 10; echo $args{project}", !$REPLIC_STEP, ['project']],
+   ],
+   main =>
+   [
+    ['echo-1', "sleep 10; echo $args{project}", !$REPLIC_STEP, ['project']],
+    ['echo-2', "sleep 10; echo $args{project}", $REPLIC_STEP, ['project']],
+    ['echo-3', "sleep 10; echo woohoo, $REPLIC_STEP", []],
+    ['ls','ls', !$REPLIC_STEP, []],
+   ]
+  };
+
+
+#####################################################################################################################
+##########   Special case pipelines
+#####################################################################################################################
+
+$pipelines{gus4} =
+  [
+   @{$subPipeline{configureProject}},
+   ['gus4', "gus4StepTableMigration $args{project} $args{questionsMappingFile}" , !$REPLIC_STEP, ['questionsMappingFile', 'project']],
+   # Cannot put validation here since it checks the whole DB (is not project-specific)
+   #['validateGus4', "eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/lib/sql/Gus4MigrationValidation.sql", !$REPLIC_STEP, ['project']]
+  ];
+
+$pipelines{gus4Ortho} =
+  [
+   @{$subPipeline{configureProject}},
+   ['gus4', "eupathGus4StepTableMigration '$args{project}' " , !$REPLIC_STEP, ['project'] ],
+  ];
+
+##################################################################################################################
+
+usage() unless $args{pipeline} && ($args{controlDir} || $args{listSteps} || $args{validateSteps});
+
+my $pipeline = $pipelines{$args{pipeline}};
+die "Error: can't find pipeline with name '$args{pipeline}'\n" unless $pipeline;
+
+# get all steps from all phases
+my @stepSpecsAllPhases;
+foreach my $phaseName (@allowedPhases) {
+  push(@stepSpecsAllPhases, @{$pipeline->{$phaseName}}) if $pipeline->{$phaseName};
+}
+
+# get steps in the requested phases.
+my @stepSpecs;
+if ($args{phase}) {
+  die "Phase '$args{phase}' is not supported\n" unless grep(/$args{phase}/, @allowedPhases);
+  if ($pipeline->{$args{phase}}) {
+    push(@stepSpecs, @{$pipeline->{$args{phase}}});
+  } else {
+    &log("Phase '$args{phase}' for pipeline '$args{pipeline}' is not defined.  Exiting with status 0.");
+    exit 0;
+  }
+} else {
+  foreach my $phaseName (@allowedPhases) {
+    push(@stepSpecs, @{$pipeline->{$phaseName}}) if $pipeline->{$phaseName};
+  }
+}
+
+# validate that pipeline has no duplicate step names
+my %stepNamesHashAllPhases;
+foreach my $stepSpec (@stepSpecsAllPhases) {
+  die "Duplicate step name '$stepSpec->[0]'\n" if $stepNamesHashAllPhases{$stepSpec->[0]};
+  $stepNamesHashAllPhases{$stepSpec->[0]} = 1;
+}
+
+# validate stop after, if any
+if ($args{stopAfterStep}) {
+  my $found = 0;
+  foreach my $stepSpec (@stepSpecsAllPhases) { $found |= ($stepSpec->[0] eq $args{stopAfterStep}); }
+  die "Invalid stopAfterStep '$args{stopAfterStep}'\n" unless $found;
+}
+
+# validate redo step, if any
+if ($args{redoStep}) {
+  my $found = 0;
+  foreach my $stepSpec (@stepSpecsAllPhases) { $found |= ($stepSpec->[0] eq $args{redoStep}); }
+  die "Invalid redoStep '$args{redoStep}'\n" unless $found;
+}
+
+
+# find steps to skip
+my %skipSteps;
+if ($args{skipSteps}) {
+  my @skipSteps = split(/,\s*/, $args{skipSteps});
+  foreach my $stepName (@skipSteps) {
+    die "Trying to skip step '$stepName' which does not exist\n" unless $stepNamesHashAllPhases{$stepName};
+    $skipSteps{$stepName} = 1;
+  }
+}
+
+# iterate through steps in spec
+#   - construct step objects
+#   - validate that all included steps have their required args satisfied.
+print STDERR "\nRunning in --validateSteps mode\n\n" if $args{validateSteps};
+my @stepObjects;
+foreach my $stepSpec (@stepSpecs) {
+  my $step = {};
+  ($step->{name}, $step->{cmd}, $step->{isReplic}, $step->{reqdArgsList}, $step->{projectMacroValues}) = @$stepSpec;
+  $step->{hasReqdArgs} = 1;
+  foreach my $argName (@{$step->{reqdArgsList}}) { $step->{hasReqdArgs} &= defined($args{$argName});}
+
+  $step->{skip} = $skipSteps{$step->{name}} || $step->{isReplic} && $args{noReplication};
+
+  # if skipping this step, remember that, and put out a message
+  if ($step->{skip}) {
+    push(@stepObjects, $step);
+    print STDERR "$step->{name}: SKIPPING\n" if $args{validateSteps};
+    next;
+  }
+
+  # if not skipping this step, validate its input args
+  die "Step '$step->{name}' can't be run because its command depends on cmd line arguments you didn't provide. The required args are: --" . join(", --", @{$step->{reqdArgsList}}) . "\n" unless $step->{hasReqdArgs};
+
+  # and for each step, if only validating, put out the 
+  my $stoppedAfter = 0;
+  push(@stepObjects, $step);
+  $stoppedAfter = &validatingAndStopAfter($step);
+  last if $stoppedAfter;
+}
+
+exit 0 if $args{validateSteps};
+
+chdir $args{controlDir} || die "Can't 'chdir $args{controlDir}'\n";
+
+# if redo option provided, removed done files for that and subsequent steps
+my $removeDone;
+foreach my $step (@stepObjects) {
+  $removeDone = 1 if ($step->{name} eq $args{redoStep});
+  unlink "$step->{name}.done" if $removeDone;
+}
+
+my $cursor = 0;
+while ($cursor < scalar(@stepObjects)) {
+
+  my $step = $stepObjects[$cursor];
+  my $stepName = $step->{name};
+  if (-e "$stepName.failed" && !$step->{skip}) {
+    &log("Step '$stepName' failed.  Can't proceed");
+    exit 1;
+  }
+  if (-e "$stepName.done") {
+    &log("Step '$stepName' done");
+    if ($args{stopAfterStep} eq $stepName) {
+      &log("StopAfter='$stepName'.  Exiting");
+      exit 0;
+    }
+    $cursor++;
+    next;
+  }
+  if (-e "$stepName.running") {
+    next;
+  }
+  if ($step->{skip}) {
+    &log("Step '$stepName' skipped");
+    $cursor++;
+    next;
+  }
+  &log("Step '$stepName' running: '$step->{cmd}'");
+  my $cmd = "echo '$step->{cmd}' | eupathUserDbMigrationStepWrapper $stepName &";
+  system($cmd) && die "Failed running '$cmd'";
+  sleep(1);
+}
+&log("Pipeline run complete");
+
+sub log {
+  my ($msg) = @_;
+
+  my $t = localtime;
+
+  if ($firstLog) {
+    open (LOG, ">>$args{controlDir}/pipeline.log") || die "Can't open log file '$args{controlDir}/pipeline.log' for writing\n";
+
+    print LOG "===========================================================================\n\n";
+    print LOG "$t\tRunning cmd: eupathUserDbMigration " . join(" ", @argv) . "\n\n";
+    $firstLog = 0;
+  }
+  print LOG "$t\t$msg\n\n";
+}
+
+sub validatingAndStopAfter {
+  my ($step) = @_;
+  if ($args{validateSteps}) {
+    print STDERR "$step->{name}:\t$step->{cmd}\n";
+    if ($args{stopAfterStep} eq $step->{name}) {
+      print STDERR "StopAfter='$step->{name}'.  Exiting\n";
+      return 1;
+    }
+  }
+  return 0;
+}
+
+sub usage {
+
+  my $pipelineNames = join(", ", keys(%pipelines));
+
+die "
+
+eupathUserDbMigration --pipelineName pipeline_name {--controlDir my_control_dir | --listSteps | --validateSteps } [--stopAfterStep step_name] [--skipSteps comma_delim_list_of_steps]  [--redoStep step_name] [--noReplication] [--phase phase]
+
+Where:
+  pipeline: the name of a list of steps to run.  Options are: $pipelineNames
+  controlDir: the dir in which this program will write all its log files
+  listSteps: list the steps in the provided pipelineName.
+  validateSteps: don't run any commands.  Just validate the steps in the provided pipelineName, confirming that all required step-specific args are provided.
+  stopAfterStep: the name of the step to stop after (Default: none)
+  skipSteps: a comma delimited list of steps to skip (Default: none)
+  redoStep: a step to restart the pipeline at.  If it and following steps were marked as done, their done files will be removed.  (Default: none)
+  noReplication: skip the steps marked as useful only in a replication context
+  phase: if present, must be either 'init' or 'main', to limit this run to those phases of the pipeline.
+
+Additional step-specific arguments are: --" . join(" --", @stepSpecificArgs) . "
+
+To create or edit a pipeline, you have to edit the source code \$PROJECT_HOME/EbrcWebsiteCommon/Model/bin/eupathUserDbMigration.  See instructions in line.
+
+To run multiple, parallel, pipelines (one per project), see the eupathUserDbMigrationMulti command
+
+If a step in the pipeline fails, it produces a step_name.failed file in the control directory.  After cleaning up any consequences of the failure, remove this file, and restart the pipeline.
+
+Mapping files
+The mapping files describe  mappings for question names and parameter values.
+MORE DETAILS HERE...
+
+";
+
+}

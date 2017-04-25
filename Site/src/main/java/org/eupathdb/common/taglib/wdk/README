@@ -1,0 +1,26 @@
+wdk/WdkRecord.java generates a wdk record without going through a specifically 
+named custom record page - allowing multiple views of the data without having to
+create multiple record classes in the wdk model.
+
+Sample usage, the customPages/EstRecordClasses.EstRecord.jsp can be included
+as a static page (not pre-rendered) into /gene.jsp by using the following lines:
+
+
+<%@ taglib prefix="api" uri="http://eupathdb.org/taglib" %>
+<api:wdkRecord name="${param.name}" primaryKey="${param.primary_key}" projectID="${param.project_id}"/>
+<%@ include file="customPages/EstRecordClasses.EstRecordClass.jsp" %>
+
+A functional gene record page is displayed with the url:
+
+/gene.jsp?name=EstRecordClasses.EstRecordClass&project_id=PlasmoDB&primary_key=PFA0645c
+
+
+
+Can also combine multiple records in a single JSP
+
+<api:wdkRecord name="UtilityRecordClasses.SiteInfo" />
+<api:wdkRecord name="EstRecordClasses.EstRecordClass" primaryKey="PF11_0344"
+    recordKey="jeebus" />
+<c:set var="attrs" value="${wdkRecord.attributes}"/>
+<c:set var="geneattrs" value="${jeebus.attributes}"/>
+

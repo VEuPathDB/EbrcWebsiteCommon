@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<taglib>
+  <tlibversion>1.1</tlibversion>
+  <jspversion>2.0</jspversion>·
+  <info>EuPathDB Assets tag library</info>
+  <uri>http://eupathdb.org/jsp/tlds/assetsfn</uri>
+
+  <function>
+    <name>fingerprint</name>
+    <function-class>org.eupathdb.common.controller.functions.AssetFunctions</function-class>
+    <function-signature>java.lang.String doFingerprint(java.lang.String, javax.servlet.ServletContext)</function-signature>
+  </function>
+
+</taglib>

@@ -1,0 +1,165 @@
+[
+  {"matchStrings": ["tomcat@q"]},
+  {
+    "matchStrings": ["SharedVQ.TelomereChromosomes"],
+    "redmine": 24127
+  },
+  {"matchStrings": ["The blast database doesn't exist: /var/www/Common/apiSiteFilesMirror/webServices//TrichDB/build-29/TvaginalisRG/blast/TvaginalisRGAnnotatedProteins"]},
+  {"matchStrings": ["BlastAlgorithm_invalid"]},
+  {"matchStrings": ["motif_organism=Trichomonas vaginalis G3"]},
+  {"matchStrings": ["Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in record: OrfRecordClasses.OrfRecordClass"]},
+  {"matchStrings": ["view \"APIDBTUNING.SNPCHIPATTRIBUTES\" has errors"]},
+  {"matchStrings": ["matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass"]},
+  {"matchStrings": ["is not in the form 'setName.elementName"]},
+  {
+    "matchStrings": ["GetVocabAction.java:114"],
+    "comment": "fixed - convert to WdkUserException",
+    "fixed": true
+  },
+  {
+    "matchStrings": [
+      "oracle.jdbc.driver.OraclePreparedStatementWrapper",
+      "is closed",
+      "TranscriptSearch"
+    ],
+    "comment": "check isClosed() before close()",
+    "fixed": true
+  },
+  {
+    "matchStrings": ["pool error Timeout"],
+    "comment": "trello card to increase limits"
+  },
+  {"matchStrings": ["GC overhead limit exceeded"]},
+  {"matchStrings": ["OutOfMemoryError: Java heap space"]},
+  {
+    "matchStrings": ["ORA-12514"],
+    "comment": "tns listener"
+  },
+  {"matchStrings": ["doesn't have step"]},
+  {"matchStrings": ["No configuration form can be found for the selected format: attributesTabular"]},
+  {"matchStrings": ["No item returned by the query [GeneVQ.GenericPercentileSamples]"]},
+  {"matchStrings": ["No item returned by the query [organismVQ.withGenes]"]},
+  {"matchStrings": ["No item returned by the query [GeneVQ.GeneTypes]"]},
+  {
+    "matchStrings": ["The term of flatVocabParam [popsetParams.product] is null"],
+    "comment": "bindu or cristina should be able to fix. see mail from steve"
+  },
+  {"matchStrings": ["SummaryTableUpdateProcessor.java:143"]},
+  {"matchStrings": ["Set 'GeneQuestions' returned null for 'GenesBySageTagRStat'"]},
+  {
+    "matchStrings": ["GiardiaGenesByDifferentialExpressionTwo"],
+    "comment": "old link in news"
+  },
+  {"matchStrings": ["ProcessFavoriteAction.java:97"]},
+  {
+    "matchStrings": ["PathwaysByGeneList, Unable to insert record into cache"],
+    "comment": "fixed by DD",
+    "fixed": true
+  },
+  {
+    "matchStrings": ["Illegal repetition"],
+    "comment": "should be user error (motif search bad regex)"
+  },
+  {"matchStrings": ["The attribute field [filename] cannot be found"]},
+  {"matchStrings": ["No configuration form can be found for the selected format"]},
+  {"matchStrings": ["APIDB\".\"REVERSE_COMPLEMENT\": invalid identifier"]},
+  {"matchStrings": ["(USERLOGINS5.preferences_pk) violated"]},
+  {
+    "matchStrings": [
+      "unable to extend temp segment",
+      "AttributeValueContainer"
+    ],
+    "comment": "should mark as 'recurrent'"
+  },
+  {
+    "matchStrings": ["StepFactory.java:826"],
+    "comment": "step can't be found"
+  },
+  {
+    "matchStrings": ["Unclosed character class"],
+    "comment": "should be user error (motif search bad regex)"
+  },
+  {"matchStrings": [
+    "Attribute query",
+    "doesn't return any row",
+    "/app/record"
+  ]},
+  {"matchStrings": ["java.io.StringReader.<init>(StringReader.java:50)"]},
+  {"matchStrings": [
+    "Could not get uncached results from DB",
+    "table or view does not exist"
+  ]},
+  {"matchStrings": ["Cannot get value for column 'struct_name'"]},
+  {"matchStrings": ["\"APIDB\".\"WRAP\": invalid identifier"]},
+  {
+    "matchStrings": [
+      "\"IDSQL_2\".\"MATCHED_RESULT\": invalid identifier",
+      "download"
+    ],
+    "comment": "need fresh examples... or wait till SQL is logged in exceptions"
+  },
+  {"matchStrings": ["'PathwayAttributes.Bfmv' doesn't return the same number"]},
+  {
+    "matchStrings": ["RodMalPhenotype"],
+    "fixed": true
+  },
+  {"matchStrings": ["Stajich_HyphalGrowth"]},
+  {
+    "matchStrings": [
+      "primaryKeyValue is mandatory for tag recordLink",
+      "favorites"
+    ],
+    "fixed": true
+  },
+  {"matchStrings": ["IllegalArgumentException: No bean specified"]},
+  {
+    "matchStrings": [
+      "Unable to load class for JSP",
+      "Favorite"
+    ],
+    "fixed": true
+  },
+  {"matchStrings": ["value(single_gene_id) = [ ATGAACC"]},
+  {
+    "matchStrings": [
+      "Unable to check instance ID",
+      "ORA-00942: table or view does not exist"
+    ],
+    "comment": "debug after upgrade in SqlUtils to dump errant SQL"
+  },
+  {"matchStrings": ["tomcat@q"]},
+  {
+    "matchStrings": [
+      "ProcessRESTAction.java:191",
+      "/webservice"
+    ],
+    "fixed": true
+  },
+  {
+    "matchStrings": ["\"GENE_SOURCE_ID\": invalid identifier"],
+    "comment": "no longer in logs.  will be easier to debug when all sql exceptions include the SQL"
+  },
+  {"matchStrings": ["does not include question GenesByEHistolyticaExpressionTiming"]},
+  {"matchStrings": ["Unable to create value row for table"]},
+  {"matchStrings": ["ORA-00920: invalid relational operator"]},
+  {"matchStrings": ["Unable to create cache"]},
+  {"matchStrings": ["ORA-00904: \"MATCHED_RESULT\": invalid identifier"]},
+  {
+    "matchStrings": [
+      "PluginModelException: Time out, the command is cancelled.",
+      "Blast"
+    ],
+    "comment": "cristina will revert change to allow low complexity filter"
+  },
+  {"matchStrings": ["PluginModelException: The invocation is failed: Can't take sqrt of"]},
+  {"matchStrings": ["GenesByRNASeqpfal3D7_Caro"]},
+  {"matchStrings": ["InvokeAttributePluginAction.java:43"]},
+  {"matchStrings": ["FlatVocabularyFetcher.java:174"]},
+  {"matchStrings": ["More than one strategy of signature"]},
+  {"matchStrings": ["ORA-01790: expression must have same datatype"]},
+  {"matchStrings": [
+    "doesn't return the same number of records as ID SQL",
+    "userlogins5.user_baskets"
+  ]},
+  {"matchStrings": ["Proteomics analysis of sporozoite excystation"]}
+]

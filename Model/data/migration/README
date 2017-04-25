@@ -1,0 +1,151 @@
+
+This document is meant to provide exact instructions for how to migrate the user
+database between releases.  The goal is for this to be a living document that is
+updated while considering what needs a given release has.  Changes should be
+developed and tested against sandbox databases and apicommdev so that on the day
+of the release, we need only follow these exact instructions on apicomm.
+
+The hope is that changes to this document will be minimal from release to
+release.  Steps 13 and 14 cover release-specific scripts and should be modified
+to reflect the current release (and committed so we have a history).
+
+Migration steps
+
+1. Before starting, decide on a few params that will be used below.  You don't
+   need to set them as environment variables but we will refer to them below as
+   such.
+
+export branchName=api-build-30            # SVN branch name (or 'trunk')
+export branchPath=branches/api-build-30   # SVN path segment for the above branch (or 'trunk')
+export appDbSuffix=030s                   # extension to use while cloning yaml files (e.g. '-inc')
+
+2. Create and visit a standalone migration dir and visit it (using ~/migration as an example).
+
+> mkdir ~/migration
+> cd ~/migration
+
+3. Download helper script.
+
+> wget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/$branchPath/Model/data/migration/build_framework.sh
+
+4. Run directory setup script from the current directory.  Use this release's branch.  This will check out and build required projects and may take a few minutes.
+
+> bash build_framework.sh $branchName
+
+5. Source environment setup script (sets GUS_HOME and PROJECT_HOME and adds GUS dirs to PATH).
+
+> source ./project_home/install/bin/gusEnv.bash
+
+6. Visit the yaml directory to clone meta files and deploy to project-specific config dirs
+
+> cd yaml
+
+7. Visit ./yaml/PlasmoDBMetaConfig.yaml and edit for the UserDB you wish to migrate (don't forget dblink).  You should NOT change "project", "appDb.*" or other project-specific fields.  It may be handier to copy an existing metaConfig.yaml you have already been using, but it must be a PlasmoDB meta file.
+
+NOTE: You probably want to change the site URLs to QA so the portal points to WSFs with the correct model!
+
+> emacs PlasmoDBMetaConfig.yaml
+
+8. Clone the meta config file to all projects
+
+> eupathCloneMetaFile PlasmoDBMetaConfig.yaml $appDbSuffix
+
+9. Clone a version for OrthoMCL manually.  This involves:
+
+> cp PlasmoDBMetaConfig.yaml OrthoMCLMetaConfig.yaml
+> emacs OrthoMCLMetaConfig.yaml
+
+Replace project and appDb fields and swap " - apiSite" for " - orthomcl".
+
+10. Return to main migration directory
+
+> cd ..
+
+11. Drop any existing migration tables and sequences from your maintenance user in SQL Developer or similar.  The following is a complete list:
+
+-- ModelCacher - does its own drop.
+drop table wdk_params;
+drop table wdk_questions;
+drop table wdk_enum_params;
+drop sequence wdk_questions_pkseq;
+drop sequence wdk_params_pkseq;
+
+-- basket fixer - does its own drop
+drop table baskettemp_PROJECT;
+
+-- step expander
+drop table step_params;
+
+-- updated step logger (called by step updaters)
+drop table wdk_updated_steps;
+
+-- not found in source
+drop table step_updater_plugin_test;
+
+-- remove broken steps - does its own drop
+drop table wdk_broken_strategies;
+drop table wdk_strats_unknownrc;
+
+-- step validator - does its own drop
+drop table wdk_dangle_steps;
+drop table wdk_dangle_strategies;
+drop table wdk_parent_steps;
+drop table wdk_part_steps;
+
+-- guest remover - does its own drop
+drop table wdk_guests;
+
+12. (optionally done in advance) Run releaseSetup on all projects.  This will cache the model for use later.
+
+> mkdir control/releaseSetup
+> eupathUserDbMigrationMulti --stepsSpecName releaseSetup --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --controlDir $(pwd)/control/releaseSetup --keepUserDbCache --skipParams=false
+
+Check for success of all components.
+
+13. Run build-specific migration steps.  For Build 30, two commands are needed, each with their own control directory (which must be created in advance).  If you put the command in the background (as below), you can follow along as the scripts do their thing.
+
+NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
+
+> mkdir control/gus4Ortho
+> eupathUserDbMigration --stepsSpecName gus4Ortho --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "OrthoMCL" --controlDir $(pwd)/control/gus4Ortho &
+> tail -f control/gus4Ortho/gus4.err
+
+> mkdir control/gus4
+> eupathUserDbMigrationMulti --stepsSpecName gus4 --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,EuPathDB" --controlDir $(pwd)/control/gus4 --primaryModel PlasmoDB --questionsMappingFile $(pwd)/project_home/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt &
+> tail -f control/gus4/AmoebaDB/gus4-AmoebaDB.err
+
+14. If not covered by the last step, validate build-specific migration steps.  For Build 30, run the following command:
+
+> eupathValidateUserDb --primaryModel PlasmoDB --sqlFile $PROJECT_HOME/EbrcWebsiteCommon/Model/lib/sql/Gus4MigrationValidation.sql
+
+All tests must pass.
+
+15. (done in advance; does NOT need to be done during release) Run updateAndReportOnSteps pipeline on all projects.
+
+NOTE: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration command below.
+
+> mkdir control/updateAndReportOnSteps
+> eupathUserDbMigrationMulti --stepsSpecName updateAndReportOnSteps --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/updateAndReportOnSteps --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+
+Check for success of all components.
+
+16. (CORRECTION: do not do during release; will be done after) Run cleanup pipeline on all projects.
+
+NOTE: You much choose a cut-off date for guest users (2-7 days ago recommended, in yyyy/mm/dd format).  See below for an example.
+NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
+
+> mkdir control/cleanup
+> CUTOFF_DATE='2017/01/29'
+> eupathUserDbMigrationMulti --stepsSpecName cleanup --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --primaryModel PlasmoDB --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --controlDir $(pwd)/control/cleanup --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --removeGuestsCutoff $CUTOFF_DATE
+
+Check for success of all components.
+
+17. Run release pipeline on all projects
+
+NOTE: It is still important to run fixBasket with the wdkmaint user!
+NOTE2: when practicing these steps in a non-replicated sandbox, add --usingSandbox to the migration commands below.
+
+> mkdir control/release
+> eupathUserDbMigrationMulti --stepsSpecName release --metaFileNameTemplate $(pwd)/yaml/PROJECTMetaConfig.yaml --projects "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB"   --controlDir $(pwd)/control/release --keepUserDbCache --projectsWithMapping "AmoebaDB,CryptoDB,FungiDB,GiardiaDB,MicrosporidiaDB,PiroplasmaDB,PlasmoDB,ToxoDB,TrichDB,TriTrypDB,SchistoDB,HostDB,OrthoMCL,EuPathDB" --organismsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedOrgNames-b30.txt --questionsMappingFile $PROJECT_HOME/EbrcWebsiteCommon/Model/data/migration/build-30/mappedQuestions-b30.txt --primaryModel PlasmoDB --skipParams=false
+
+Check for success of all components.
