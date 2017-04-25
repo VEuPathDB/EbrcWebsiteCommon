@@ -98,6 +98,7 @@ public class BrcRequest {
           .put("organism_prefix")
           .put("hit_count")
           .put("percent_count")
+          .put("newcategory")
           ));
   }
 
