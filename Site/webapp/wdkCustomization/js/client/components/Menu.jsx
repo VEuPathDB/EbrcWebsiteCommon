@@ -1,7 +1,7 @@
+import { isEmpty, identity } from 'lodash';
 import { Component, PropTypes } from 'react';
 import { Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/ComponentUtils';
-import { isEmpty } from 'lodash';
 
 /**
  * Site menu
@@ -38,7 +38,7 @@ export default class Menu extends Component {
     return (
       <div ref="trackingNode" style={{ overflow: 'visible'}}>
         <ul className="eupathdb-Menu" style={{ position, top }}>
-          {this.props.items.map((item) => (
+          {this.props.items.filter(identity).map((item) => (
             <MenuItem
               key={item.id}
               item={item}
@@ -92,7 +92,7 @@ function MenuItem(props) {
 
       { !isEmpty(item.children) &&
         <ul className="eupathdb-Submenu">
-          {item.children.map(childItem =>
+          {item.children.filter(identity).map(childItem =>
             <MenuItem
               {...props}
               key={childItem.id}

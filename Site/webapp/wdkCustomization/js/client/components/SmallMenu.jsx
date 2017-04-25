@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, identity } from 'lodash';
 import { PropTypes } from 'react';
 import { Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/ComponentUtils';
@@ -8,7 +8,7 @@ import { safeHtml } from 'wdk-client/ComponentUtils';
  */
 const SmallMenu = ({ items, webAppUrl }) => isEmpty(items) ? null : (
   <ul className="eupathdb-SmallMenu">
-    {items.map(item =>
+    {items.filter(identity).map(item =>
       <Item key={item.id} item={item} webAppUrl={webAppUrl}/>
     )}
   </ul>
