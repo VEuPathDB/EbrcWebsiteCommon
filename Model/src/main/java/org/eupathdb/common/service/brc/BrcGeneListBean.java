@@ -32,14 +32,15 @@ public class BrcGeneListBean {
    * @return
    * @throws WdkModelException
    */
-  public static BrcGeneListBean parseRecordGeneListJson(JSONObject recordJson, boolean answer) throws WdkModelException {
+  public static BrcGeneListBean parseRecordGeneListJson(JSONObject recordJson, String exptServiceUri, boolean answer) throws WdkModelException {
 	BrcGeneListBean brcGeneListBean = new BrcGeneListBean();
 	brcGeneListBean.setListIdentifier(
 	  String.valueOf(((JSONObject)recordJson.getJSONArray("id").get(0)).get("value"))
 	);
 	brcGeneListBean.setDisplayName("NA");
 	brcGeneListBean.setDescription("NA");
-	brcGeneListBean.setUri("NA");
+	String geneListIdsUri = exptServiceUri + "/gene-list/" + brcGeneListBean.getListIdentifier() + "/ids";
+	brcGeneListBean.setUri(geneListIdsUri);
 	brcGeneListBean.setType("NA");
 	brcGeneListBean.setProvenance("NA");
 	JSONObject attributesJson = recordJson.getJSONObject("attributes");

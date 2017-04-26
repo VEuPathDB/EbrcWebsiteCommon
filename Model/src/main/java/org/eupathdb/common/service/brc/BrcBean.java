@@ -63,7 +63,8 @@ public class BrcBean {
     brcBean.setUri(baseApiUri + "record/dataset/" + brcBean.getExperimentIdentifier());
     brcBean.setSpecies(attributesJson.getString("organism_prefix"));
     brcBean.setGenomeVersion("NA");
-    brcBean.setIdLists(BrcGeneListBean.parseRecordGeneListJson(recordJson, search));
+    String exptServiceUri = baseServiceUri + "hpi/experiment/" + brcBean.getExperimentIdentifier();
+    brcBean.setIdLists(BrcGeneListBean.parseRecordGeneListJson(recordJson, exptServiceUri, search));
     return brcBean;
   }
   
