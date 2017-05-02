@@ -49,10 +49,15 @@ html {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 header {
   position: relative;
+  z-index: 3;
+}
+
+.eupathdb-PageContent {
+  position: relative;
   z-index: 2;
 }
 
-.eupathdb-PageContent, footer {
+footer {
   position: relative;
   z-index: 1;
 }
