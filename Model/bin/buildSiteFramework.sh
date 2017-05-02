@@ -54,7 +54,7 @@ echo "  <Parameter name=\"model\" value=\"$model\"/>" >> $contextFile
 echo "</Context>" >> $contextFile
 
 echo "Downloading meta yaml sample and populating known values"
-mywget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/lib/yaml/metaConfig.yaml.sample
+mywget https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/lib/yaml/metaConfig.yaml.sample
 sed "s/PlasmoDB/$model/g" metaConfig.yaml.sample | sed "s/hostdb.org\/hostdb/localhost:8080\/$modelLower/g" > site/etc/metaConfig.yaml
 rm metaConfig.yaml.sample
 
@@ -72,15 +72,15 @@ mkdir -p project_home
 cd project_home
 
 # download files needed to download projects and configure build
-mywget https://www.cbil.upenn.edu/svn/gus/FgpUtil/trunk/Util/lib/perl/ProjectBrancher.pm
+mywget https://cbilsvn.pmacs.upenn.edu/svn/gus/FgpUtil/trunk/Util/lib/perl/ProjectBrancher.pm
 mv ProjectBrancher.pm $GUS_HOME/lib/perl/FgpUtil/Util
-mywget https://www.cbil.upenn.edu/svn/gus/FgpUtil/trunk/Util/bin/fgpCheckout
+mywget https://cbilsvn.pmacs.upenn.edu/svn/gus/FgpUtil/trunk/Util/bin/fgpCheckout
 chmod 755 fgpCheckout
 mv fgpCheckout $GUS_HOME/bin
-mywget https://www.cbil.upenn.edu/svn/gus/FgpUtil/trunk/Util/bin/generateFilesFromTemplates
+mywget https://cbilsvn.pmacs.upenn.edu/svn/gus/FgpUtil/trunk/Util/bin/generateFilesFromTemplates
 chmod 755 generateFilesFromTemplates
 mv generateFilesFromTemplates $GUS_HOME/bin
-mywget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/bin/eupathSiteConfigure
+mywget https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/bin/eupathSiteConfigure
 chmod 755 eupathSiteConfigure
 mv eupathSiteConfigure $GUS_HOME/bin
 

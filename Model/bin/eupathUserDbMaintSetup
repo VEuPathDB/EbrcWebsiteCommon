@@ -49,7 +49,7 @@ runCmd "mkdir $gusAppDir"
 
 runCmd "cd $gusAppDir"
 
-runCmd "wget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/data/migration/build_framework.sh"
+runCmd "wget https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Model/data/migration/build_framework.sh"
 
 runCmd "bash ./build_framework.sh $trunkOrBranch"
 

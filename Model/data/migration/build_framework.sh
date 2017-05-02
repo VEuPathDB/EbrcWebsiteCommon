@@ -20,8 +20,8 @@ export GUS_HOME=$(pwd)/gus_home
 export PROJECT_HOME=$(pwd)/project_home
 echo "perl=/usr/bin/perl" > $GUS_HOME/config/gus.config
 cd $PROJECT_HOME
-svn co https://www.cbil.upenn.edu/svn/gus/install/$branchPath install
-svn co https://www.cbil.upenn.edu/svn/gus/FgpUtil/$branchPath FgpUtil
+svn co https://cbilsvn.pmacs.upenn.edu/svn/gus/install/$branchPath install
+svn co https://cbilsvn.pmacs.upenn.edu/svn/gus/FgpUtil/$branchPath FgpUtil
 cd ..
 source $PROJECT_HOME/install/bin/gusEnv.bash
 bld FgpUtil

@@ -335,9 +335,9 @@ BUILD_NO=19
       # $prop matches '.svn.info'. $data, e.g. is:
       #    Path: ApiCommonModel
       #    Working Copy Root Path: /var/www/AmoebaDB/amoeba.integrate/project_home/ApiCommonModel
-      #    URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonModel/trunk
+      #    URL: https://cbilsvn.pmacs.upenn.edu/svn/apidb/ApiCommonModel/trunk
       #    Relative URL: ^/ApiCommonModel/trunk
-      #    Repository Root: https://www.cbil.upenn.edu/svn/apidb
+      #    Repository Root: https://cbilsvn.pmacs.upenn.edu/svn/apidb
       #    Repository UUID: 735e2a04-f8fc-0310-8a1b-f2942603c481
       #    Revision: 67558
       #    Node Kind: directory
@@ -353,7 +353,7 @@ BUILD_NO=19
         # $attr is of the form
         #     Path: ApiCommonModel
         # and
-        #     URL: https://www.cbil.upenn.edu/svn/apidb/ApiCommonModel/trunk
+        #     URL: https://cbilsvn.pmacs.upenn.edu/svn/apidb/ApiCommonModel/trunk
         # etc. 
         # Split each of those by ':' (with a array lenght limit of '2'
         # so we don't split on the colons in the url or timestamps).

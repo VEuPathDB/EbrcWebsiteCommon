@@ -9,7 +9,7 @@
 ##
 #####################################################################
 
-svnRepo=https://www.cbil.upenn.edu/svn
+svnRepo=https://cbilsvn.pmacs.upenn.edu/svn
 repoNames="gus apidb"
 tmpFilePrefix=/tmp/eupathJavaDeps.$$
 

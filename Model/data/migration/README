@@ -26,7 +26,7 @@ export appDbSuffix=030s                   # extension to use while cloning yaml 
 
 3. Download helper script.
 
-> wget https://www.cbil.upenn.edu/svn/apidb/EbrcWebsiteCommon/$branchPath/Model/data/migration/build_framework.sh
+> wget https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/$branchPath/Model/data/migration/build_framework.sh
 
 4. Run directory setup script from the current directory.  Use this release's branch.  This will check out and build required projects and may take a few minutes.
 
