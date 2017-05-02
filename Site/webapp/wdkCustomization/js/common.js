@@ -1,23 +1,20 @@
 /* global wdk */
 // import css files
-import 'eupathdb/wdkCustomization/css/superfish/css/superfish.css';
 import 'eupathdb/css/AllSites.css';
-import './lib/hoverIntent';
-import './lib/superfish';
 import '!!script-loader!eupathdb/js/newwindow';
 
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
 
 import { createElement } from 'react';
-import { render } from 'react-dom';
-import Announcements from './client/components/Announcements';
+import { renderWithContext } from './clientComponentAdapter';
+import { Header, Footer } from 'wdk-client/Components';
 
 wdk.namespace("eupath.setup", function(ns, $) {
 
 // defines all initial setup logic for Ortho pages not handled by WDK
 // functions are called using onload-function 
-  var setUpContactUsLogic = function($el) {
+  function setUpContactUsLogic($el) {
     var $form = $el.find("#contact-us");
     var $container = $el.find("#contact-files");
 
@@ -166,11 +163,10 @@ wdk.namespace("eupath.setup", function(ns, $) {
       });
 
     wdk.util.addSpamTimestamp($form);
-  };
+  }
 
   // currently only used in ortho's sidebar.tag
-  var configureSidebar = function() {
-    var $sidebar = $("#sidebar");
+  function configureSidebar($sidebar) {
     $sidebar.accordion({
       active: $sidebar.data("default-open-index") || 1,
       animate: 200,
@@ -178,22 +174,19 @@ wdk.namespace("eupath.setup", function(ns, $) {
       heightStyle: "content",
       icons:false
     });
-  };
+  }
 
-  var configureMenuBar = function() {
-    var menu = document.getElementById('menu');
-    $('.sf-menu', menu).superfish();
-  };
+  function header($el) {
+    renderWithContext(createElement(Header), $el[0]);
+  }
 
-  function siteAnnouncements($el) {
-    render(createElement(Announcements, Object.assign({
-      location: window.location
-    }, $el.data())), $el[0]);
+  function footer($el) {
+    renderWithContext(createElement(Footer), $el[0]);
   }
 
   ns.setUpContactUsLogic = setUpContactUsLogic;
   ns.configureSidebar = configureSidebar;
-  ns.configureMenuBar = configureMenuBar;
-  ns.siteAnnouncements = siteAnnouncements;
+  ns.header = header;
+  ns.footer = footer;
 
 });

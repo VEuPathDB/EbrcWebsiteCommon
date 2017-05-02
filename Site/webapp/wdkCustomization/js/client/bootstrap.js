@@ -35,8 +35,15 @@ import '../../../js/scroll-to-top';
  * @param {Array} options.smallMenuItems
  */
 export function initialize(options = {}) {
+  const {
+    quickSearches,
+    componentWrappers,
+    storeWrappers,
+    wrapRoutes
+  } = options;
   const Header = makeHeaderWrapper({
     siteConfig,
+    quickSearchReferences: quickSearches,
     isPartOfEuPathDB: options.isPartOfEuPathDB,
     flattenSearches: options.flattenSearches,
     includeQueryGrid: options.includeQueryGrid,
@@ -50,12 +57,6 @@ export function initialize(options = {}) {
     DownloadForm,
     Footer
   };
-  const {
-    quickSearches,
-    componentWrappers,
-    storeWrappers,
-    wrapRoutes
-  } = options;
 
   unaliasWebappUrl();
   removeJsessionid();
@@ -71,6 +72,8 @@ export function initialize(options = {}) {
     endpoint,
     onLocationChange: makeLocationHandler()
   });
+
+  (window.ebrc || (window.ebrc = {})).context = context
 
   // XXX Move calls to dispatchAction to controller override?
 

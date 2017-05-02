@@ -40,7 +40,7 @@ const infoIcon = (
 const siteAnnouncements = [
   // alpha
   (props) => {
-    if (param('alpha', window.location) === 'true' || /^(alpha|a1|a2)/.test(window.location.hostname)) {
+    if (param('alpha', location) === 'true' || /^(alpha|a1|a2)/.test(location.hostname)) {
       return (
         <div key="alpha">
           This pre-release version of {props.projectId} is available for early community review.
@@ -57,7 +57,7 @@ const siteAnnouncements = [
 
   // beta
   (props) => {
-    if (param('beta', window.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname)) {
+    if (param('beta', location) === 'true' || /^(beta|b1|b2)/.test(location.hostname)) {
       return (
         <div key="beta">
           This pre-release version of {props.projectId} is available for early community review.
@@ -73,7 +73,7 @@ const siteAnnouncements = [
 
   // Blast
   (props) => {
-    if (props.projectId != 'OrthoMCL' && (/showQuestion\.do.+blast/i).test(window.location.href)) {
+    if (props.projectId != 'OrthoMCL' && (/showQuestion\.do.+blast/i).test(location.href)) {
       return (
         <div key="blast">
           As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity.
@@ -87,7 +87,7 @@ const siteAnnouncements = [
 
   // OrthoMCL enzyme/compound
   (props) => {
-    if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(window.location.href)) {
+    if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
       return (
         <div key="ortho-enzyme">
           Note: the Enzyme Commission (EC) numbers associated with proteins were

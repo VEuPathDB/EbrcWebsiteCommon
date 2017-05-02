@@ -1,6 +1,7 @@
 /**
  * Created by dfalke on 8/22/16.
  */
+import { keyBy } from 'lodash';
 import { broadcast } from 'wdk-client/StaticDataUtils';
 
 export const BASKETS_LOADED = 'eupathdb/basket'
@@ -34,20 +35,18 @@ export function loadBasketCounts() {
  */
 export function loadQuickSearches(questions) {
   return function run(dispatch, { wdkService }) {
-    let requests = questions.map(({ name, quickSearchParamName, quickSearchDisplayName }) => {
+    let requests = questions.map((reference) => {
       return wdkService.sendRequest({
         method: 'GET',
-        path: '/question/' + name,
+        path: '/question/' + reference.name,
         params: { expandParams: true },
         useCache: true
-      }).then(question => {
-        return Object.assign({}, question, { quickSearchParamName, quickSearchDisplayName })
       });
     });
     return Promise.all(requests).then(questions => {
       return dispatch(broadcast({
         type: QUICK_SEARCH_LOADED,
-        payload: { questions }
+        payload: { questions: keyBy(questions, 'name') }
       }));
     });
   }

@@ -30,8 +30,12 @@ export default function makeHeaderWrapper(options) {
   if (options.siteConfig === undefined)
     throw new Error("Header `options.siteConfig` must be defined.");
 
-  return () => flow(
+  const withContext = flow(
     withActions(UserActionCreators),
-    withStore(state => Object.assign(pick(state.globalData, globalDataItems), options))
-  )(SiteHeader)
+    withStore(state => Object.assign({}, options, pick(state.globalData, globalDataItems)))
+  );
+
+  return function HeaderWrapper() {
+    return withContext(SiteHeader)
+  }
 }

@@ -13,6 +13,7 @@ import Menu from './Menu';
 /** Site header */
 function Header(props) {
   const {
+    quickSearchReferences,
     quickSearches,
     user,
     showLoginWarning,
@@ -49,7 +50,11 @@ function Header(props) {
                 </a>
               }
             </div>
-            <QuickSearch webAppUrl={webAppUrl} questions={quickSearches}/>
+            <QuickSearch
+              webAppUrl={webAppUrl}
+              references={quickSearchReferences}
+              questions={quickSearches}
+            />
             <SmallMenu
               webAppUrl={webAppUrl}
               items={smallMenuItems(props, menuItems)}
@@ -85,7 +90,8 @@ Header.propTypes = {
   ontology: PropTypes.object,
   recordClasses: PropTypes.array,
   basketCounts: PropTypes.object,
-  quickSearches: PropTypes.array,
+  quickSearchReferences: PropTypes.array,
+  quickSearches: PropTypes.object,
   preferences: PropTypes.object,
   location: PropTypes.object,
   showLoginForm: PropTypes.func.isRequired,
@@ -104,7 +110,8 @@ Header.defaultProps = {
   isPartOfEuPathDB: true,
   flattenSearches: false,
   mainMenuItems: () => [],
-  smallMenuItems: () => []
+  smallMenuItems: () => [],
+  location: window.location
 };
 
 export default wrappable(Header);

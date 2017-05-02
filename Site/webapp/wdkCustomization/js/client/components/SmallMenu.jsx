@@ -1,6 +1,5 @@
 import { isEmpty, identity } from 'lodash';
 import { PropTypes } from 'react';
-import { Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/ComponentUtils';
 
 /**
@@ -21,15 +20,15 @@ SmallMenu.propTypes = {
 
 export default SmallMenu
 
-const Item = ({ item, webAppUrl }) => (
-  <li className={'eupathdb-SmallMenuItem ' + (item.liClassName || '')}>
+const Item = (props) => (
+  <li className={'eupathdb-SmallMenuItem ' + (props.item.liClassName || '')}>
 
-    { item.url ? <ItemUrl item={item}/>
-    : item.webAppUrl ? <ItemWebAppUrl item={item} webAppUrl={webAppUrl}/>
-    : item.route ? <ItemRoute item={item}/>
-    : safeHtml(item.text) }
+    { props.item.url ? <ItemUrl {...props}/>
+    : props.item.webAppUrl ? <ItemWebAppUrl {...props}/>
+    : props.item.route ? <ItemRoute {...props}/>
+    : safeHtml(props.item.text) }
 
-    <SmallMenu items={item.children} webAppUrl={webAppUrl}/>
+    <SmallMenu {...props} items={props.item.children} />
   </li>
 )
 
@@ -53,11 +52,12 @@ const ItemWebAppUrl = ({ item, webAppUrl }) => (
   >{safeHtml(item.text)}</a>
 )
 
-const ItemRoute = ({ item }) => (
-  <Link
+const ItemRoute = ({ item, webAppUrl }) => (
+  <a
     className={item.className}
     title={item.tooltip}
-    to={item.route}
+    href={webAppUrl + '/app/' + item.route}
     onClick={item.onClick}
-  >{safeHtml(item.text)}</Link>
+    target={item.target}
+  >{safeHtml(item.text)}</a>
 )
