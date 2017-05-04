@@ -203,7 +203,7 @@ microbiomedb:
   youtubeUrl: ''
   supportEmail: microbiomedb@gmail.com
 
-prismdb:
+clinepidb:
   modelName: clinEpiModel
   twitterWidgetId: ''
   twitterUrl: ''

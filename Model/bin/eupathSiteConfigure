@@ -14,7 +14,7 @@ if ($commandLineConfigTxt ne "") {
 #    etc.
 #############################################################
 my $configTemplateFiles='';
-if ($project eq "OrthoMCL" || $project eq "MicrobiomeDB" || $project eq "PrismDB") {
+if ($project eq "OrthoMCL" || $project eq "MicrobiomeDB" || $project eq "ClinEpiDB") {
     $configTemplateFiles = 
         "$ENV{PROJECT_HOME}/EbrcWebsiteCommon/Model/config/model-config.xml.tmpl\t".
         "$ENV{GUS_HOME}/config/\${project}/model-config.xml\n".
