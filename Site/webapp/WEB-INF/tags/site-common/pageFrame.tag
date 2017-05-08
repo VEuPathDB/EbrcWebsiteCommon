@@ -25,7 +25,7 @@
     <body class="${refer}">
       <imp:header refer="${refer}" title= "${title}" />
       <a name="skip" id="skip"><jsp:text/></a>
-      <div class="eupathdb-PageContent eupathdb-PageContent__${refer}">
+      <div class="wdk-PageContent wdk-PageContent__${refer}">
         <jsp:doBody/>
       </div>
       <imp:footer refer="${refer}"/>

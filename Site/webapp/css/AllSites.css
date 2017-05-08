@@ -52,7 +52,7 @@ header {
   z-index: 3;
 }
 
-.eupathdb-PageContent {
+.wdk-PageContent {
   position: relative;
   z-index: 2;
 }
@@ -237,16 +237,16 @@ article section {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.eupathdb-PageContent {
+.wdk-PageContent {
   background-color: white;
   min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
 }
 
-.eupathdb-PageContent__summary {
+.wdk-PageContent__summary {
   min-height: calc(100vh - 208px); /* keeps footer at bottom of screen */
 }
 
-.eupathdb-PageContent:not(.eupathdb-PageContent__summary) {
+.wdk-PageContent:not(.wdk-PageContent__summary) {
   padding: 12px;
   overflow: auto;
 }
