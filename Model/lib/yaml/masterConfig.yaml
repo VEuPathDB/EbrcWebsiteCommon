@@ -131,6 +131,9 @@ default:
   # User Dataset Store Config
   userDatasetStoreConfig: ''
 
+  # Feature flag for legacy record page. Defaults to 'false'
+  useLegacyRecordPage: 'false'
+
 
 #=======================================================================================================
 
@@ -214,6 +217,7 @@ orthomcl:
   modelName: OrthoMCL
   webServiceMirrorOrtho: /var/www/Common/apiSiteFilesMirror/webServices/OrthoMCL
   idBlastRegex: "<![CDATA[^*(?:>)*(?:\s)*(\S+)]]>"
+  useLegacyRecordPage: 'true'
 
 piroplasmadb: {}
 

@@ -244,11 +244,7 @@ article section {
 
 .wdk-PageContent__summary {
   min-height: calc(100vh - 208px); /* keeps footer at bottom of screen */
-}
-
-.wdk-PageContent:not(.wdk-PageContent__summary) {
-  padding: 12px;
-  overflow: auto;
+  padding: 1em;
 }
 
 #search-bubbles {
