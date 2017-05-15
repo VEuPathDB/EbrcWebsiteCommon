@@ -1,4 +1,4 @@
-import { find, get } from 'lodash';
+import { find, get, map } from 'lodash';
 import { Component, PropTypes } from 'react';
 import {Tooltip} from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
@@ -158,11 +158,9 @@ QuickSearchItem.propTypes = {
 function QuickSearch(props) {
   let { references, questions = {}, webAppUrl } = props;
 
-  if (references == null) return null;
-
   return (
     <div id="quick-search" style={{display: 'flex', marginBottom: '12px', marginTop: '16px', height: '26px'}}>
-      {references.map(reference => (
+      {map(references, reference => (
         <QuickSearchItem
           key={reference.name}
           question={questions[reference.name]}
