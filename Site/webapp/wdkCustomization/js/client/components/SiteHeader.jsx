@@ -203,7 +203,7 @@ function makeMenuItems(props) {
 
     isLoggedIn ? {
       id: 'profileOrLogin',
-      text: `${user.firstName} ${user.lastName}'s Profile`,
+      text: `${user.properties.firstName} ${user.properties.lastName}'s Profile`,
       route: 'user/profile'
     } : {
       id: 'profileOrLogin',

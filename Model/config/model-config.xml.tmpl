@@ -6,7 +6,6 @@
              smtpServer="${smtpServer}"
              supportEmail="${supportEmail}"
              adminEmail="${adminEmail}"
-             defaultRole="${defaultRole}"
              secretKeyFile="${secretKeyFile}"
              monitorBlockedThreads="${monitorBlockedThreads}"
              blockedThreshold="${blockedThreshold}"
@@ -19,14 +18,14 @@
              keyStorePassPhrase="${keyStorePassPhrase}"
              wdkTempDir="${wdkTempDir}"
              >
-             
+
     <queryMonitor
              baseline="${queryMonitor.baseline}"
              slow="${queryMonitor.slow}"
              />
-             
+
     <!-- the maxPkColumnWidth the max side of the string type primary key columns. Those columns in 
-         the cache tables will be resized to the specified value. optional, default is 150 -->    
+         the cache tables will be resized to the specified value. optional, default is 150 -->
     <appDb  login="${appDb.login}"
             password="${appDb.password}"
             connectionUrl="jdbc:oracle:oci:@${appDb.instance}"
@@ -38,10 +37,10 @@
             showConnections="${appDb.showConnections}"
             showConnectionsInterval="${appDb.showConnectionsInterval}"
             showConnectionsDuration="${appDb.showConnectionsDuration}"
-            userDbLink="@${appDb.userDbLink}" 
+            userDbLink="@${appDb.userDbLink}"
             maxPkColumnWidth="${appDb.maxPkColumnWidth}"
             driverInitClass="${appDb.driverInitClass}"/>
-             
+
     <userDb login="${userDb.login}"
             password="${userDb.password}"
             connectionUrl="jdbc:oracle:oci:@${userDb.instance}"
@@ -55,6 +54,25 @@
             showConnectionsDuration="${userDb.showConnectionsDuration}"
             userSchema="${userDb.userSchema}"
             driverInitClass="${userDb.driverInitClass}"/>
+
+    <accountDb login="${accountDb.login}"
+            password="${accountDb.password}"
+            connectionUrl="jdbc:oracle:oci:@${accountDb.instance}"
+            platform="${accountDb.platform}"
+            maxActive="${accountDb.maxActive}"
+            maxIdle="${accountDb.maxIdle}"
+            minIdle="${accountDb.minIdle}"
+            maxWait="${accountDb.maxWait}"
+            showConnections="${accountDb.showConnections}"
+            showConnectionsInterval="${accountDb.showConnectionsInterval}"
+            showConnectionsDuration="${accountDb.showConnectionsDuration}"
+            accountSchema="${accountDb.userSchema}"
+            driverInitClass="${accountDb.driverInitClass}">
+      <userProperty name="firstName" displayName="First Name" dbKey="first_name" required="true"/>
+      <userProperty name="middleName" displayName="Middle Name" dbKey="middle_name"/>
+      <userProperty name="lastName" displayName="Last Name" dbKey="last_name" required="true"/>
+      <userProperty name="organization" displayName="Organization" dbKey="organization" required="true"/>
+    </accountDb>
 
     ${userDatasetStoreConfig}
 

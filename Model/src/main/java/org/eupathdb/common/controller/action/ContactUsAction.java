@@ -118,7 +118,7 @@ public class ContactUsAction extends WdkAction {
     DataHandler[] attachments = attachmentList.toArray(new DataHandler[0]);
 
     String supportEmail = wdkModel.getModelConfig().getSupportEmail();
-    String uid = Integer.toString(user.getUserId());
+    String uid = Long.toString(user.getUserId());
     // TODO: getVersion() reads from releaseVersion in model.xml which is not maintained
     String version = wdkModelBean.getBuild();
     String website = wdkModelBean.getDisplayName();

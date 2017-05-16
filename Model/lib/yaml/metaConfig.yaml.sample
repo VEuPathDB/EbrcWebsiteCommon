@@ -19,6 +19,10 @@ required:
  userDb.login: your_db_login
  userDb.password: your_db_password
 
+ accountDb.instance: apicommN
+ accountDb.login: your_db_login
+ accountDb.password: your_db_password
+ 
  commentDb.instance: apicommDevN
  commentDb.login: your_db_login
  commentDb.password: your_db_login
