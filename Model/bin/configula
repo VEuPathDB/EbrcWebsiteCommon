@@ -23,9 +23,7 @@ use WDK::Model::Configula;
 
 my ($this) = basename $0;
 
-my $wmc = WDK::Model::Configula->new({
-  'modelName' => 'apiCommonModel',
-});
+my $wmc = WDK::Model::Configula->new();
 
 # myURL ensures that there is  a product => url mapping for this website.
 # This is esp. important for HostDB and FungiDB which are
