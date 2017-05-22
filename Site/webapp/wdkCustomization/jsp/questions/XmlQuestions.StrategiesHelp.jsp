@@ -3,10 +3,9 @@
 
 <%-- get wdkXmlAnswer saved in request scope --%>
 <c:set var="xmlAnswer" value="${requestScope.wdkXmlAnswer}"/>
-<c:set var="banner" value="${xmlAnswer.question.displayName}"/>
 <c:set var="wdkModel" value="${applicationScope.wdkModel}"/>
 
-<imp:pageFrame title="${wdkModel.displayName} : Did You Know" banner="${banner}">
+<imp:pageFrame title="${wdkModel.displayName} : Did You Know">
 
   <div id="strategyTips">
 
