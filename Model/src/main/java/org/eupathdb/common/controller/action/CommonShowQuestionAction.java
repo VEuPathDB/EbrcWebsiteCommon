@@ -1,0 +1,27 @@
+package org.eupathdb.common.controller.action;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.gusdb.wdk.controller.action.ShowQuestionAction;
+
+public class CommonShowQuestionAction extends ShowQuestionAction {
+  
+  private static String WIZARD_PARAM_NAME = "wizard";
+  private static String QUESTION_PARAM_NAME = "questionFullName";
+  private static String QUESTION_ATTR_NAME = "question";
+
+  public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+      HttpServletResponse response) throws Exception {
+    String wizard = request.getParameter(WIZARD_PARAM_NAME);
+    if ("true".equals(wizard)) {
+      request.setAttribute(QUESTION_ATTR_NAME, request.getParameter(QUESTION_PARAM_NAME));
+      return mapping.findForward("wizard");
+    }
+    return super.execute(mapping, form, request, response);
+  }
+
+}

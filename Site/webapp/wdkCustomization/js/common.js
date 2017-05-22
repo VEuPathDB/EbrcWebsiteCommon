@@ -2,6 +2,7 @@
 // import css files
 import 'eupathdb/css/AllSites.css';
 import '!!script-loader!eupathdb/js/newwindow';
+import './controllers/wizard';
 
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
