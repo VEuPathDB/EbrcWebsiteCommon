@@ -70,6 +70,9 @@ function MenuItem(props) {
   if (!include(item, projectId)) return null;
 
   let handleClick = (e) => {
+    if (item.onClick) {
+      item.onClick(e);
+    }
     if (item.loginRequired && isGuest) {
       e.preventDefault();
       showLoginWarning('use this feature', e.currentTarget.href);
@@ -84,7 +87,7 @@ function MenuItem(props) {
   return (
     <li className={`eupathdb-MenuItem eupathdb-MenuItem__${item.id}`}>
 
-      { item.url ? <a className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
+      { item.url ? <a onClick={handleClick} className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
       : item.webAppUrl ? <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + item.webAppUrl}>{renderItemText(item.text)}</a>
       : item.route ?  <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + '/app/' + item.route}>{renderItemText(item.text)}</a>
       : <div className={className} title={item.tooltip}>{renderItemText(item.text)}</div> }
