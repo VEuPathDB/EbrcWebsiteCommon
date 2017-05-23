@@ -23,7 +23,6 @@
         <groups>
           <run>
             <include name="deployment"/>
-            <include name="xmlrecord"/>
             <include name="dashboard"/>
           </run>
         </groups>
