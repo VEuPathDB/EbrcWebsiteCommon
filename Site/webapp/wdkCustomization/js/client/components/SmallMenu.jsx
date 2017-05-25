@@ -7,8 +7,8 @@ import { safeHtml } from 'wdk-client/ComponentUtils';
  */
 const SmallMenu = ({ items, webAppUrl }) => isEmpty(items) ? null : (
   <ul className="eupathdb-SmallMenu">
-    {items.filter(identity).map(item =>
-      <Item key={item.id} item={item} webAppUrl={webAppUrl}/>
+    {items.filter(identity).map((item, index) =>
+      <Item key={item.id || '_' + index} item={item} webAppUrl={webAppUrl}/>
     )}
   </ul>
 )
