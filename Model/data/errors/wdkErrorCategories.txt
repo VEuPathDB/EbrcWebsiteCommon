@@ -22,7 +22,7 @@
       "is closed",
       "TranscriptSearch"
     ],
-    "comment": "check isClosed() before close()",
+    "comment": "check isClosed() before close(). see r20098",
     "fixed": true
   },
   {
@@ -36,7 +36,10 @@
     "comment": "tns listener"
   },
   {"matchStrings": ["doesn't have step"]},
-  {"matchStrings": ["No configuration form can be found for the selected format: attributesTabular"]},
+  {
+    "matchStrings": ["No configuration form can be found for the selected format: attributesTabular"],
+    "comment": "trello card assigned to ryan, to retire downloadStep.do"
+  },
   {"matchStrings": ["No item returned by the query [GeneVQ.GenericPercentileSamples]"]},
   {"matchStrings": ["No item returned by the query [organismVQ.withGenes]"]},
   {"matchStrings": ["No item returned by the query [GeneVQ.GeneTypes]"]},
@@ -66,10 +69,9 @@
   {"matchStrings": ["(USERLOGINS5.preferences_pk) violated"]},
   {
     "matchStrings": [
-      "unable to extend temp segment",
-      "AttributeValueContainer"
+      "unable to extend temp segment"
     ],
-    "comment": "should mark as 'recurrent'"
+    "comment": "should mark as 'recurrent'.  these are side effects of problematic SQL that Ana must find for us."
   },
   {
     "matchStrings": ["StepFactory.java:826"],
