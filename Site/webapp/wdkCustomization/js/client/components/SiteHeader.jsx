@@ -220,7 +220,7 @@ function makeMenuItems(props) {
     } : {
       id: 'registerOrLogout',
       text: 'Register',
-      webAppUrl: '/showRegister.do'
+      route: 'user/registration'
     },
     {
       id: 'contactUs',
