@@ -1,6 +1,10 @@
 import React from 'react';
 import { Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
+import { paramPropTypes } from './QuestionWizard';
 
+/**
+ * FilterParamNew component
+ */
 export default function FilterParamNew(props) {
   const { param, value, uiState, onActiveOntologyTermChange, onParamValueChange } = props;
   const { filters = [] } = JSON.parse(value);
@@ -22,3 +26,5 @@ export default function FilterParamNew(props) {
     </div>
   )
 }
+
+FilterParamNew.propTypes = paramPropTypes;

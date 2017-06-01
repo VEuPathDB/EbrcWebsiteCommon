@@ -7,6 +7,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.gusdb.wdk.controller.action.ShowQuestionAction;
+import org.gusdb.wdk.controller.actionutil.ActionUtility;
+import org.gusdb.wdk.model.jspwrap.QuestionBean;
+import org.gusdb.wdk.model.jspwrap.WdkModelBean;
 
 public class CommonShowQuestionAction extends ShowQuestionAction {
   
@@ -16,8 +19,10 @@ public class CommonShowQuestionAction extends ShowQuestionAction {
 
   public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
       HttpServletResponse response) throws Exception {
-    String wizard = request.getParameter(WIZARD_PARAM_NAME);
-    if ("true".equals(wizard)) {
+    WdkModelBean wdkModel = ActionUtility.getWdkModel(servlet);
+    QuestionBean question = wdkModel.getQuestion(request.getParameter(QUESTION_PARAM_NAME));
+    String[] wizard = question.getPropertyList(WIZARD_PARAM_NAME);
+    if ("true".equals(wizard[0])) {
       request.setAttribute(QUESTION_ATTR_NAME, request.getParameter(QUESTION_PARAM_NAME));
       return mapping.findForward("wizard");
     }
