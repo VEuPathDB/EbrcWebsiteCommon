@@ -22,7 +22,7 @@ public class CommonShowQuestionAction extends ShowQuestionAction {
     WdkModelBean wdkModel = ActionUtility.getWdkModel(servlet);
     QuestionBean question = wdkModel.getQuestion(request.getParameter(QUESTION_PARAM_NAME));
     String[] wizard = question.getPropertyList(WIZARD_PARAM_NAME);
-    if ("true".equals(wizard[0])) {
+    if (wizard.length == 1 && "true".equals(wizard[0])) {
       request.setAttribute(QUESTION_ATTR_NAME, request.getParameter(QUESTION_PARAM_NAME));
       return mapping.findForward("wizard");
     }
