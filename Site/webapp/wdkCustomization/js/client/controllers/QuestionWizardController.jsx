@@ -5,6 +5,9 @@ import { groupBy, isEqual } from 'lodash';
 
 /**
  * Controller for question wizard
+ *
+ * FIXME Move state management into a Store. As-is, there are potential race
+ * conditions due to `setState()` being async.
  */
 export default class QuestionWizardController extends React.Component {
 
@@ -139,7 +142,7 @@ export default class QuestionWizardController extends React.Component {
 
     // submit question form
     createForm({
-      action: '/a/processQuestion.do',
+      action: 'processQuestion.do',
       method: 'post',
       elements: [
         { name: 'questionFullName', value: this.state.question.name },
@@ -199,7 +202,7 @@ export default class QuestionWizardController extends React.Component {
       // for each parameter, reinitialize param state and value
       // these are params with a vocab, so we have to check if current value is compatible
       // if not, then reset value to default
-      question.parameters.forEach(param => {
+      const paramValues = question.parameters.reduce((paramValues, param) => {
         if (param.type === 'FilterParamNew') {
           const { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
           // TODO update param value with invalid filters removed
@@ -207,11 +210,17 @@ export default class QuestionWizardController extends React.Component {
           if (filters.length !== newFilters.length) {
             console.log('Invalid filters detected', { filters, newFilters });
           }
+          this._updateFilterParamCounts(param.name, newFilters);
+          return Object.assign(paramValues, {
+            [param.name]: JSON.stringify({ filters: newFilters })
+          });
         }
         else {
           console.warn('Unable to handle unexpected param type `%o`.', param.type);
+          return paramValues;
         }
-      });
+      }, Object.assign({}, this.state.paramValues));
+      this.setState({ paramValues })
     });
   }
 
@@ -223,9 +232,20 @@ export default class QuestionWizardController extends React.Component {
    * @param {Iterable<Group>} groups
    */
   _updateGroupCounts(groups) {
+
+    // set loading state for group counts
+    const groupUIState = groups.reduce((state, group) => Object.assign(state, {
+      [group.name]: { accumulatedTotal: 'loading' }
+    }), Object.assign({}, this.state.groupUIState));
+
+    this.setState({ groupUIState });
+
     const defaultParamValues = this.state.question.parameters.reduce(function(defaultParamValues, param) {
       return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
     }, {});
+
+    // transform each group into an answer value promise with accumulated param
+    // values of previous groups
     const countsByGroup = Seq.from(groups)
       .map(group => Seq.from(this.state.question.groups)
         .takeWhile(g => g !== group)

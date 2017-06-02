@@ -2,6 +2,7 @@ import 'eupathdb/wdkCustomization/css/question-wizard.css';
 import React from 'react';
 import FilterParamNew from './FilterParamNew';
 import StringParam from './StringParam';
+import { Loading } from 'wdk-client/Components';
 
 /**
  * QuestionWizard component
@@ -121,7 +122,9 @@ function GroupList(props) {
             {group.displayName}
           </button>
           <div className="ebrc-QuestionWizardParamGroupCount">
-            {groupUIState[group.name].accumulatedTotal}
+            {groupUIState[group.name].accumulatedTotal === 'loading' ? (
+              <Loading radius={2} className="ebrc-QuestionWizardParamGroupCountLoading"/>
+            ) : groupUIState[group.name].accumulatedTotal}
           </div>
         </div>
       ))}

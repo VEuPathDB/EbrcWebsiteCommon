@@ -46,7 +46,7 @@
   content: '\f178'; /* long-right-arrow */
   position: absolute;
   left: -1em;
-  opacity: .5;
+  opacity: .6;
 }
 
 .ebrc-QuestionWizardParamGroup:first-of-type {
@@ -76,7 +76,7 @@ button.ebrc-QuestionWizardParamGroupButton {
 }
 
 button.ebrc-QuestionWizardParamGroupButton__configured {
-  background: linear-gradient(#b6d7a8, #9aca99);
+  background: linear-gradient(#c3dbb9, #acd8ab);
   border-color: gray;
 }
 
@@ -87,14 +87,20 @@ button.ebrc-QuestionWizardParamGroupButton__configured:hover {
 }
 
 button.ebrc-QuestionWizardParamGroupButton__active {
+  background: linear-gradient(#9aca99, #9aca99);
   border: 1px solid black;
-  box-shadow: 0px 0px 0px 1px #999;
+  box-shadow: 0px 0px 0px 2px #333;
 }
 
 .ebrc-QuestionWizardParamGroupCount {
   height: 1em;
   margin: .4em;
   text-align: center;
+  position: relative;
+}
+
+.ebrc-QuestionWizardParamGroupCountLoading {
+  position: static;
 }
 
 .ebrc-QuestionWizardGetStarted {
