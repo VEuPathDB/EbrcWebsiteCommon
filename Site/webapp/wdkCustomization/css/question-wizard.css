@@ -1,0 +1,118 @@
+.ebrc-QuestionWizard {
+  font-size: 1.2em;
+}
+
+.ebrc-QuestionWizardHeading {
+  font-size: 2.4em;
+}
+
+.ebrc-QuestionWizardNavigationContainer,
+.ebrc-QuestionWizardParamGroupContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.ebrc-QuestionWizardActiveGroupContainer {
+  font-size: .8rem;
+  padding: 1em;
+}
+
+.ebrc-QuestionWizardIcon {
+  display: block;
+  width: 3em;
+}
+
+.ebrc-QuestionWizardIcon__ParticipantRecordClasses\.ParticipantRecordClass:after {
+  font-family: FontAwesome;
+  content: '\f183';
+  font-style: normal;
+  font-size: 1.6em;
+  background: #333;
+  color: white;
+  padding: 5px 0;
+  text-align: center;
+  border-radius: 4px;
+  display: block;
+}
+
+.ebrc-QuestionWizardParamGroup {
+  margin: 0 1em;
+  position: relative;
+}
+
+.ebrc-QuestionWizardParamGroup:before {
+  font-family: FontAwesome;
+  font-size: 2em;
+  content: '\f178'; /* long-right-arrow */
+  position: absolute;
+  left: -1em;
+  opacity: .5;
+}
+
+.ebrc-QuestionWizardParamGroup:first-of-type {
+  margin-left: 2em;
+}
+
+button.ebrc-QuestionWizardSubmitButton,
+button.ebrc-QuestionWizardParamGroupButton {
+  padding: .5em 1em;
+}
+
+button.ebrc-QuestionWizardSubmitButton {
+  background: linear-gradient(#4289d9, #3c78d8);
+  color: white;
+  margin-left: 1em;
+}
+
+button.ebrc-QuestionWizardSubmitButton:active,
+button.ebrc-QuestionWizardSubmitButton:focus,
+button.ebrc-QuestionWizardSubmitButton:hover {
+  background: linear-gradient(#4270d9, #3c78d8);
+}
+
+button.ebrc-QuestionWizardParamGroupButton {
+  border-radius: 5px;
+  outline: none;
+}
+
+button.ebrc-QuestionWizardParamGroupButton__configured {
+  background: linear-gradient(#b6d7a8, #9aca99);
+  border-color: gray;
+}
+
+button.ebrc-QuestionWizardParamGroupButton__configured:active,
+button.ebrc-QuestionWizardParamGroupButton__configured:focus,
+button.ebrc-QuestionWizardParamGroupButton__configured:hover {
+  background: linear-gradient(#a7ca99, #9aca99);
+}
+
+button.ebrc-QuestionWizardParamGroupButton__active {
+  border: 1px solid black;
+  box-shadow: 0px 0px 0px 1px #999;
+}
+
+.ebrc-QuestionWizardParamGroupCount {
+  height: 1em;
+  margin: .4em;
+  text-align: center;
+}
+
+.ebrc-QuestionWizardGetStarted {
+  position: relative;
+  top: -1em;
+  left: 6em;
+  font-weight: 500;
+}
+
+.ebrc-QuestionWizardGetStarted:before {
+  font-family: FontAwesome;
+  color: #6bad69;
+  content: '\f062';
+  position: absolute;
+  top: -1em;
+  font-size: 1.5em;
+}
+
+.ebrc-QuestionWizardHelpText {
+  padding: 1em;
+}
