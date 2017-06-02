@@ -1,7 +1,7 @@
 import React from 'react';
 import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
-import { groupBy, isEqual } from 'lodash';
+import { groupBy, isEqual, memoize } from 'lodash';
 
 /**
  * Controller for question wizard
@@ -18,6 +18,7 @@ export default class QuestionWizardController extends React.Component {
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
   }
 
   loadQuestion(props) {
@@ -82,13 +83,11 @@ export default class QuestionWizardController extends React.Component {
           }
         });
 
-        this.props.wdkService.getAnswer({
+        this._getAnswerCount({
           questionName: question.name,
           parameters: paramValues
-        }).then(answer => {
-          this.setState({
-            totalCount: answer.meta.totalCount
-          });
+        }).then(totalCount => {
+          this.setState({ totalCount });
         });
 
       },
@@ -264,9 +263,7 @@ export default class QuestionWizardController extends React.Component {
         }
       ])
       .map(([ group, answerSpec ]) => {
-        return this.props.wdkService.getAnswer(answerSpec).then(answer => {
-          return [ group, answer.meta.totalCount ];
-        });
+        return this._getAnswerCount(answerSpec).then(totalCount => [ group, totalCount ]);
       });
 
     Promise.all(countsByGroup).then(counts => {
@@ -275,6 +272,10 @@ export default class QuestionWizardController extends React.Component {
       }, {});
       this.setState({ groupUIState: Object.assign({}, this.state.groupUIState, groupUIState) });
     });
+  }
+
+  _getAnswerCount(answerSpec) {
+    return this.props.wdkService.getAnswer(answerSpec).then(answer => answer.meta.totalCount);
   }
 
   _updateFilterParamCounts(paramName, filters) {
