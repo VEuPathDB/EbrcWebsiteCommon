@@ -19,12 +19,12 @@
              keyStorePassPhrase="${keyStorePassPhrase}"
              wdkTempDir="${wdkTempDir}"
              >
-             
+
     <queryMonitor
              baseline="${queryMonitor.baseline}"
              slow="${queryMonitor.slow}"
              />
-             
+
     <!-- the maxPkColumnWidth the max side of the string type primary key columns. Those columns in 
          the cache tables will be resized to the specified value. optional, default is 150 -->    
     <appDb  login="${appDb.login}"
@@ -41,7 +41,7 @@
             userDbLink="@${appDb.userDbLink}" 
             maxPkColumnWidth="${appDb.maxPkColumnWidth}"
             driverInitClass="${appDb.driverInitClass}"/>
-             
+
     <userDb login="${userDb.login}"
             password="${userDb.password}"
             connectionUrl="jdbc:oracle:oci:@${userDb.instance}"
@@ -71,4 +71,3 @@
         ]]>
     </emailContent>
 </modelConfig>
-
