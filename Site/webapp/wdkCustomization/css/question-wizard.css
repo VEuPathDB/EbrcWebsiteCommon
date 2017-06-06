@@ -89,7 +89,7 @@ button.ebrc-QuestionWizardParamGroupButton__configured:hover {
 button.ebrc-QuestionWizardParamGroupButton__active {
   background: linear-gradient(#9aca99, #9aca99);
   border: 1px solid black;
-  box-shadow: 0px 0px 0px 2px #333;
+  box-shadow: 0px 0px 0px 1px #333;
 }
 
 .ebrc-QuestionWizardParamGroupCount {
