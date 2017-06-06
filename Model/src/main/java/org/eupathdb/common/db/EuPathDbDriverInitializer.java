@@ -59,7 +59,8 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
       connection.setAutoCommit(true);
       try {
         LOG.trace("Attempting to close DB link '" + dbLinkName + "' on connection before returning it to the pool.");
-        new SQLRunner(connection, preCloseSql).executeStatement();
+        new SQLRunner(connection, preCloseSql, "close-db-link").executeStatement();
+        LOG.info("Successfully closed DB link '" + dbLinkName + "' before returning connection to pool.");
       }
       catch (SQLRunnerException exceptionWrapper) {
         String message = "Unable to execute pre-close SQL <" + preCloseSql + ">";
