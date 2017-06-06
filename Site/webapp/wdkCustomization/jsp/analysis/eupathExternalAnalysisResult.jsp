@@ -24,7 +24,7 @@
 
   <html>
     <body>
-      <div style="text-align:center">
+      <div style="text-align:center" data-controller="eupathdb.analysis.externalAnalysis">
         <iframe style="border:0" src="${iframeUrl}" width="${viewModel.iframeWidth}" height="${viewModel.iframeHeight}"/>
       </div>
     </body>

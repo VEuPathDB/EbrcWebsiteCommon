@@ -1,0 +1,92 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $baseGus = $ENV{BASE_GUS};
+my $projectHome = $ENV{PROJECT_HOME};
+my $gusHome = $ENV{GUS_HOME};
+
+my ($projectName, $webapp) = $baseGus =~ /\/(\w+)\/([\w\.]+)\/?$/;
+
+unless($baseGus && $projectHome && $gusHome) {
+  die "WHOOPS!  Did you forgot to source your setenv file?";
+}
+
+my $svnPrefix;
+if ($projectName eq "MicrobiomeDB" || $projectName eq "ClinEpiDB") {
+  $svnPrefix =$projectName;
+  $svnPrefix =~s/DB//  ;
+} else {
+  $svnPrefix = "ApiCommon";
+}
+
+
+my $mode = $ARGV[0];
+
+my @modes;
+if ($svnPrefix eq "ApiCommon") {
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site");
+} else {
+  @modes = ("full", "model", "site");
+}
+
+my $isValidMode;
+foreach(@modes) {
+  $isValidMode++ if($_ eq $mode);
+}
+
+unless($isValidMode) {
+  die("Whoops... You specified an incorrect command line option: [$mode].  Viable options are " . join(",", @modes));
+}
+
+
+my $cmd;
+
+my $dieOnError = "set -e";
+
+my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $projectHome/$svnPrefix\Model/Model/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
+
+my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $projectName reload $webapp";
+
+my $stopWebapp = "instance_manager manage $projectName stop $webapp";
+
+my $wdkXml = "wdkXml -model $projectName";
+
+my $cleanGbrowseCache = "rm -rf $baseGus/html/gbrowse/tmp/*";
+
+if($mode eq 'full') {
+  $cmd = "$dieOnError; bldw $svnPrefix\Presenters $baseGus/etc/webapp.prop; $wdkXml; $reloadWebapp";
+}
+
+if($mode eq 'model') {
+  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+}
+
+if($mode eq 'graph') {
+  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld $svnPrefix\Website/View; $injectTemplates";
+}
+
+if($mode eq 'gbrowse') {
+  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+}
+
+if($mode eq 'ontology') {
+  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
+}
+
+if($mode eq 'site') {
+  $cmd = "$dieOnError; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop";
+}
+
+
+print STDERR "Running Command:  $cmd\n";
+
+
+unless(system($cmd) == 0) {
+  system($stopWebapp);
+  die "ERROR [$?] running Command: $cmd";;
+}
+
+print STDERR "FINISHED Command:  $cmd\n";
+
+1;

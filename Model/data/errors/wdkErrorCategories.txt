@@ -53,7 +53,27 @@
     "matchStrings": ["GiardiaGenesByDifferentialExpressionTwo"],
     "comment": "old link in news"
   },
-  {"matchStrings": ["ProcessFavoriteAction.java:97"]},
+  {
+     "matchStrings": ["ProcessFavoriteAction.java:97"],
+     "comment": "fixed by preventing npe"
+  },
+  {
+     "matchStrings": ["ProcessFavoriteAction.java", "JSONObject[\"source_id\"] not found"],
+     "comment": "probably spam; dont care as this action will be retired soon"
+  },
+  {
+     "matchStrings": ["ProcessBasketAction.java", "JSONObject[\"source_id\"] not found"],
+     "comment": "probably spam; dont care as this action will be retired soon"
+  },
+  {
+     "matchStrings": ["ProcessBasketAction.java", "JSONObject[\"gene_source_id\"] not found"],
+     "comment": "probably spam; dont care as this action will be retired soon"
+  },
+  {
+     "matchStrings": ["CustomProcessBasketAction.java", "JSONException"],
+     "comment": "probably spam; dont care as this action will be retired soon"
+  },
+
   {
     "matchStrings": ["PathwaysByGeneList, Unable to insert record into cache"],
     "comment": "fixed by DD",
@@ -163,5 +183,88 @@
     "doesn't return the same number of records as ID SQL",
     "userlogins5.user_baskets"
   ]},
-  {"matchStrings": ["Proteomics analysis of sporozoite excystation"]}
+  {"matchStrings": ["Proteomics analysis of sporozoite excystation"]},
+  {"matchStrings": ["ORA-00942: table or view does not exist", "QueryResult"]},
+  {"matchStrings": ["ORA-00942: table or view does not exist", "Gff3"]},
+  {"matchStrings": ["Some of the input parameters are invalid or missing"]},
+  {
+    "matchStrings": [
+      "PatternSyntaxException",
+      "AbstractMotifPlugin"
+    ],
+    "comment": "should be a pluginuserexception"
+  },
+  {
+    "matchStrings": [
+      "ORA-00376",
+      "fung032s"
+    ],
+    "comment": "caused by a temporary boo-boo by ana."
+  },
+  {
+    "matchStrings": [
+      "ORA-00028: your session has been killed"
+    ],
+    "comment": "a slow query that we fixed ran so long it needed to be killed"
+  },
+  {
+    "matchStrings": [
+      "No headline", "addComment.do"
+    ],
+    "comment": "error thrown by NewCommentForm.java.  should be user exception"
+  },
+  {
+    "matchStrings": [
+      "No content : content is required!", "addComment.do"
+    ],
+    "comment": "error thrown by NewCommentForm.java.  should be user exception"
+  },
+  {
+    "matchStrings": [
+      "Invalid Gene Identifier", "addComment.do"
+    ],
+    "comment": "error thrown by NewCommentForm.java.  should be user exception"
+  },
+  {
+    "matchStrings": [
+      "PluginModelException: Actual value is too big for column [Locations]"
+    ],
+    "comment": "span logic error.  should be a user exception, with a better message"
+  },
+  {
+    "matchStrings": [
+      "'TranscriptAttributes.CellularLocalization' doesn't return the same number of records"
+    ],
+    "comment": "fixed"
+  },
+  {
+    "matchStrings": [
+      "importStrategy",
+      "does not include question"
+    ],
+    "comment": "should be a user exception"
+  },
+
+  {
+    "matchStrings": [
+      "BeanUtilsBean",
+      "Missing End Delimiter"
+    ],
+    "comment": "possibly a bad bookmark"
+  },
+  {"matchStrings": ["'gene_boolean_filter_array' doesn't exist"]},
+  {"matchStrings": ["No item returned by the query [SharedVQ.BlastOrganismFiles]"]},
+  {"matchStrings": ["Error reading 'briefDisplay'"]},
+  {"matchStrings": ["Record ordering in attribute query data [SnpAttributes.Bfmv.txt] does not match ID query"]},
+  {
+    "matchStrings": [
+      "Expected to find",
+      "records in paged id query result",
+      "OrganismAttributes.organismAttrs"
+    ],
+    "comment": "possibly a data dev issue"
+  },
+
+  {"matchStrings": ["WdkModelException: The Step", "of user", "cannot be found"]}
 ]
+
