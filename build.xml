@@ -169,16 +169,12 @@
   </target>
 
   <target name="webpack" if="webpack.config.js.present">
-    <condition property="webpack.env" value="--env.production" else="--env.development">
-      <isset property="optimizeWebAssets"/>
-    </condition>
-
     <exec executable="${projectsDir}/WDK/View/node_modules/.bin/webpack"
       dir="${projectsDir}/${project}/${component}"
       failonerror="true"
       failifexecutionfails="true">
       <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
-      <arg line="--output-path ${webappTargetDir} ${webpack.env}"/>
+      <arg line="--output-path ${webappTargetDir}"/>
     </exec>
   </target>
 

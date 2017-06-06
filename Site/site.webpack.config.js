@@ -4,7 +4,7 @@ var wdkRoot = path.resolve(__dirname, '../../WDK/View');
 var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
 
 module.exports = function configure(additionalConfig) {
-  return baseConfig.merge(Object.assign({
+  return baseConfig.merge({
     context: process.cwd(),
     output: {
       path: path.join(process.cwd(), 'dist'),
@@ -61,7 +61,7 @@ module.exports = function configure(additionalConfig) {
       new ExtractTextPlugin('site-[name].bundle.css')
     ]
 
-  }, additionalConfig));
+  }, additionalConfig);
 }
 
 /**
