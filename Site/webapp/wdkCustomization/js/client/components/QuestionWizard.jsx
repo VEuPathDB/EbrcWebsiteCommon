@@ -1,6 +1,7 @@
 import 'eupathdb/wdkCustomization/css/question-wizard.css';
 import React from 'react';
 import FilterParamNew from './FilterParamNew';
+import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
 import { Loading } from 'wdk-client/Components';
 
@@ -159,6 +160,7 @@ function findParamComponent(param) {
   switch(param.type) {
     case 'FilterParamNew': return FilterParamNew;
     case 'StringParam': return StringParam;
+    case 'FlatVocabParam': return FlatVocabParam;
     default: return Param;
   }
 }
