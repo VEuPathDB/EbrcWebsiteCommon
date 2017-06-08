@@ -117,7 +117,7 @@ function GroupList(props) {
             className={'ebrc-QuestionWizardParamGroupButton' +
                 (group == activeGroup ?
                   ' ebrc-QuestionWizardParamGroupButton__active' : '') +
-                (groupUIState[group.name].accumulatedTotal ?
+                (groupUIState[group.name].accumulatedTotal != null ?
                   ' ebrc-QuestionWizardParamGroupButton__configured' : '')}
             onClick={() => onGroupSelect(group)}
           >

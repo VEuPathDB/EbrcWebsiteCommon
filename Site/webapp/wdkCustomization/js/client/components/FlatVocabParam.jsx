@@ -8,7 +8,7 @@ import { paramPropTypes } from './QuestionWizard';
 export default function FlatVocabParam(props) {
   return (
     <select
-      onChange={event => props.onParamValueChange(props.param, event.value)}
+      onChange={event => props.onParamValueChange(props.param, event.target.value)}
       value={props.value}
       multiple={props.param.multiPick}
     >

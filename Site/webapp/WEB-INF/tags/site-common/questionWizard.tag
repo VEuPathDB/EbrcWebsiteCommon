@@ -10,7 +10,7 @@
   <c:set var="questionParamValues">
     {
     <c:forEach items="${question.params}" var="questionParam" varStatus="loop">
-      "${questionParam.name}": "${fn:replace(questionParam.rawValue, '"', '\\"')}" <c:if test="${loop.last eq false}">,</c:if>
+      "${questionParam.name}": "${fn:replace(questionParam.stableValue, '"', '\\"')}" <c:if test="${loop.last eq false}">,</c:if>
     </c:forEach>
     }
   </c:set>
