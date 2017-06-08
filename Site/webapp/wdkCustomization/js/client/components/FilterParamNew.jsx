@@ -18,8 +18,8 @@ export default function FilterParamNew(props) {
         activeFieldSummary={uiState.ontologyTermSummaries[uiState.activeOntologyTerm]}
         fields={param.ontology}
         filters={filters}
-        dataCount={uiState.counts.unfiltered}
-        filteredDataCount={uiState.counts.filtered}
+        dataCount={uiState.unfilteredCount}
+        filteredDataCount={uiState.filteredCount}
         onActiveFieldChange={term => onActiveOntologyTermChange(param, filters, term)}
         onFiltersChange={filters => onParamValueChange(param, JSON.stringify({ filters }))}
       />

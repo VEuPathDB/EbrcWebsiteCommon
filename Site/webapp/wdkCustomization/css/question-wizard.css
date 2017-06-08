@@ -1,5 +1,6 @@
 .ebrc-QuestionWizard {
   font-size: 1.2em;
+  padding: 0 1em;
 }
 
 .ebrc-QuestionWizardHeading {
@@ -105,7 +106,7 @@ button.ebrc-QuestionWizardParamGroupButton__active {
 
 .ebrc-QuestionWizardGetStarted {
   position: relative;
-  top: -1em;
+  top: .2em;
   left: 6em;
   font-weight: 500;
 }

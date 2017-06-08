@@ -23,7 +23,7 @@ export default function QuestionWizard(props) {
   } = props;
   return (
     <div className="ebrc-QuestionWizard">
-      <h1 className="ebrc-QuestionWizardHeading">Build a Set of {recordClass.displayNamePlural}</h1>
+      <h1 className="ebrc-QuestionWizardHeading">{question.displayName}</h1>
       <div className="ebrc-QuestionWizardNavigationContainer">
         <div>
           <i className={'ebrc-QuestionWizardIcon ebrc-QuestionWizardIcon__' + recordClass.name}/>
@@ -38,10 +38,7 @@ export default function QuestionWizard(props) {
           onGroupSelect={onActiveGroupChange}
         />
         <div>
-          <button
-            type="button"
-            className="ebrc-QuestionWizardSubmitButton"
-            onClick={props.onSubmit}>Done</button>
+          <button className="ebrc-QuestionWizardSubmitButton" >Done</button>
         </div>
       </div>
       {activeGroup == null ? (
@@ -76,6 +73,11 @@ export default function QuestionWizard(props) {
           </div>
         </div>
       )}
+      <input type="hidden" name="questionFullName" value={question.name}/>
+      <input type="hidden" name="questionSubmit" value="Get Answer"/>
+      {question.parameters.map(param => (
+        <input type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
+      ))}
     </div>
   )
 }
@@ -90,8 +92,7 @@ QuestionWizard.propTypes = {
   totalCount: React.PropTypes.number,
   onActiveGroupChange: React.PropTypes.func.isRequired,
   onActiveOntologyTermChange: React.PropTypes.func.isRequired,
-  onParamValueChange: React.PropTypes.func.isRequired,
-  onSubmit: React.PropTypes.func.isRequired
+  onParamValueChange: React.PropTypes.func.isRequired
 };
 
 export const paramPropTypes = {

@@ -14,9 +14,15 @@
 
 <c:forEach var="prop" items="${webProps}">
   <c:choose>
-    <c:when test="${prop == 'hideOperation'}"><c:set var="hideOperation" value="${true}" /></c:when>
-    <c:when test="${prop == 'hideTitle'}"><c:set var="hideTitle" value="${true}" /></c:when>
-    <c:when test="${prop == 'hideAttrDescr'}"><c:set var="hideAttrDescr" value="${true}" /></c:when>
+    <c:when test="${prop eq 'hideOperation'}">
+      <c:set var="hideOperation" value="${true}" />
+    </c:when>
+    <c:when test="${prop eq 'hideTitle'}">
+      <c:set var="hideTitle" value="${true}" />
+    </c:when>
+    <c:when test="${prop eq 'hideAttrDescr'}">
+      <c:set var="hideAttrDescr" value="${true}" />
+    </c:when>
   </c:choose>
 </c:forEach>
 
@@ -39,6 +45,7 @@
 
 <div id="query-search-form">
   <html:form method="post" enctype='multipart/form-data' action="/processQuestion.do">
+
     <imp:questionForm />
 
     <c:if test="${hideOperation == false}">

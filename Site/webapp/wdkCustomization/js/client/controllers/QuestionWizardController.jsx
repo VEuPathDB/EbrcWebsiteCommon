@@ -13,11 +13,12 @@ export default class QuestionWizardController extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = {
+      paramValues: this.props.paramValues
+    };
     this.onActiveGroupChange = this.onActiveGroupChange.bind(this);
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
   }
 
@@ -38,11 +39,8 @@ export default class QuestionWizardController extends React.Component {
       ([ question, recordClass ]) => {
         document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
 
-        const paramValues = question.parameters.reduce(function(paramValues, param) {
-          return Object.assign(paramValues, {
-            [param.name]: param.defaultValue
-          });
-        }, {});
+        const { paramValues } = this.state;
+        const defaultParamValues = getDefaultParamValues(question.parameters);
 
         const paramUIState = question.parameters.reduce(function(uiState, param) {
           switch(param.type) {
@@ -67,29 +65,38 @@ export default class QuestionWizardController extends React.Component {
           });
         }, {});
 
+        const lastConfiguredGroup = Seq.from(question.groups)
+          .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
+          .last();
+
+        const configuredGroups = lastConfiguredGroup == null ? []
+          : Seq.from(question.groups)
+              .takeWhile(group => group !== lastConfiguredGroup)
+              .concat(Seq.of(lastConfiguredGroup));
+
         this.setState({
           question,
-          paramValues,
           paramUIState,
           groupUIState,
           recordClass,
           activeGroup: undefined
-        });
+        }, () => {
+          question.parameters.forEach(param => {
+            if (param.type === 'FilterParamNew') {
+              this._updateFilterParamCounts(param.name,
+                JSON.parse(paramValues[param.name]).filters || []);
+            }
+          });
 
-        question.parameters.forEach(param => {
-          if (param.type === 'FilterParamNew') {
-            this._updateFilterParamCounts(param.name,
-              JSON.parse(paramValues[param.name]).filters || []);
-          }
-        });
+          this._updateGroupCounts(configuredGroups);
 
-        this._getAnswerCount({
-          questionName: question.name,
-          parameters: paramValues
-        }).then(totalCount => {
-          this.setState({ totalCount });
+          this._getAnswerCount({
+            questionName: question.name,
+            parameters: defaultParamValues
+          }).then(totalCount => {
+            this.setState({ totalCount });
+          });
         });
-
       },
       error => {
         this.setState({ error });
@@ -131,25 +138,6 @@ export default class QuestionWizardController extends React.Component {
       this._handleParamValueChange(param, paramValue);
       this._updateDependedParams(param, paramValue);
     })
-  }
-
-  onSubmit() {
-    const paramFormElements = this.state.question.parameters.map(param => ({
-      name: `value(${param.name})`,
-      value: this.state.paramValues[param.name]
-    }));
-
-    // submit question form
-    createForm({
-      action: 'processQuestion.do',
-      method: 'post',
-      elements: [
-        { name: 'questionFullName', value: this.state.question.name },
-        { name: 'wizard', value: true },
-        { name: 'questionSubmit', value: 'Get Answer' },
-        ...paramFormElements
-      ]
-    }).submit();
   }
 
   _handleParamValueChange(param, paramValue) {
@@ -239,9 +227,7 @@ export default class QuestionWizardController extends React.Component {
 
     this.setState({ groupUIState });
 
-    const defaultParamValues = this.state.question.parameters.reduce(function(defaultParamValues, param) {
-      return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
-    }, {});
+    const defaultParamValues = getDefaultParamValues(this.state.question.parameters);
 
     // transform each group into an answer value promise with accumulated param
     // values of previous groups
@@ -285,7 +271,10 @@ export default class QuestionWizardController extends React.Component {
       filters,
       this.state.paramValues
     ).then(counts => {
-      this._updateParamUIState(paramName, { counts });
+      this._updateParamUIState(paramName, {
+        filteredCount: counts.filtered,
+        unfilteredCount: counts.unfiltered
+      });
     });
   }
 
@@ -337,7 +326,6 @@ export default class QuestionWizardController extends React.Component {
         onActiveGroupChange={this.onActiveGroupChange}
         onActiveOntologyTermChange={this.onActiveOntologyTermChange}
         onParamValueChange={this.onParamValueChange}
-        onSubmit={this.onSubmit}
       />
     )
   }
@@ -346,7 +334,8 @@ export default class QuestionWizardController extends React.Component {
 
 QuestionWizardController.propTypes = {
   wdkService: React.PropTypes.object.isRequired,
-  questionName: React.PropTypes.string.isRequired
+  questionName: React.PropTypes.string.isRequired,
+  paramValues: React.PropTypes.object.isRequired
 }
 
 /** format ontology term summary */
@@ -358,17 +347,11 @@ function formatSummary(summary) {
   }));
 }
 
-/** create a form element with child input elements */
-function createForm(options) {
-  const form = document.createElement('form');
-  form.action = options.action;
-  form.method = options.method;
-  options.elements.forEach(element => {
-    const input = document.createElement('input');
-    input.name = element.name;
-    input.value = element.value;
-    form.appendChild(input);
-  });
-  document.body.appendChild(form);
-  return form;
+/**
+ * Create paramValues object with default values.
+ */
+function getDefaultParamValues(parameters) {
+  return parameters.reduce(function(defaultParamValues, param) {
+    return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
+  }, {});
 }
