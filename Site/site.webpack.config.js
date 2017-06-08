@@ -35,7 +35,9 @@ module.exports = function configure(additionalConfig) {
         'lodash'       : '_',
         'react'        : 'React',
         'react-dom'    : 'ReactDOM',
-        'react-router' : 'ReactRouter'
+        'react-router' : 'ReactRouter',
+        'flux'         : 'Flux',
+        'flux/utils'   : 'FluxUtils'
       }
     ],
 
