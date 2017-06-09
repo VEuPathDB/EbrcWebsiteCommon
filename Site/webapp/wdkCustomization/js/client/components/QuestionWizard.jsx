@@ -3,7 +3,8 @@ import React from 'react';
 import FilterParamNew from './FilterParamNew';
 import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
-import { Loading } from 'wdk-client/Components';
+import { Loading, Sticky } from 'wdk-client/Components';
+import { Seq } from 'wdk-client/IterableUtils';
 
 /**
  * QuestionWizard component
@@ -21,10 +22,17 @@ export default function QuestionWizard(props) {
     onActiveOntologyTermChange,
     onParamValueChange
   } = props;
+  const finalCount = Seq.from(Object.values(groupUIState))
+    .map(state => state.accumulatedTotal)
+    .takeWhile(accumulatedTotal => accumulatedTotal != null)
+    .last();
   return (
     <div className="ebrc-QuestionWizard">
       <h1 className="ebrc-QuestionWizardHeading">{question.displayName}</h1>
-      <div className="ebrc-QuestionWizardNavigationContainer">
+      <Sticky
+        className="ebrc-QuestionWizardNavigationContainer"
+        fixedClassName="ebrc-QuestionWizardNavigationContainer__fixed"
+      >
         <div>
           <i className={'ebrc-QuestionWizardIcon ebrc-QuestionWizardIcon__' + recordClass.name}/>
           <div className="ebrc-QuestionWizardParamGroupCount">
@@ -36,11 +44,16 @@ export default function QuestionWizard(props) {
           groups={question.groups}
           groupUIState={groupUIState}
           onGroupSelect={onActiveGroupChange}
+          recordClass={recordClass}
         />
+        <div className="ebrc-QuestionWizardParamGroup">
+          <i className={'ebrc-QuestionWizardIcon ebrc-QuestionWizardIcon__' + recordClass.name}/>
+          <ParamGroupCount count={finalCount == null ? totalCount : finalCount}/>
+        </div>
         <div>
           <button className="ebrc-QuestionWizardSubmitButton" >Done</button>
         </div>
-      </div>
+      </Sticky>
       {activeGroup == null ? (
         <div className="ebrc-QuestionWizardActiveGroupContainer">
           <div className="ebrc-QuestionWizardGetStarted">
@@ -107,13 +120,14 @@ export const paramPropTypes = {
  * GroupList component
  */
 function GroupList(props) {
-  const { activeGroup, groups, groupUIState, onGroupSelect } = props;
+  const { activeGroup, groups, groupUIState, onGroupSelect, recordClass } = props;
   return (
     <div className="ebrc-QuestionWizardParamGroupContainer">
       {groups.map(group => (
         <div className="ebrc-QuestionWizardParamGroup" key={group.name}>
           <button
             type="button"
+            title={`Filter ${recordClass.displayNamePlural} by ${group.displayName}`}
             className={'ebrc-QuestionWizardParamGroupButton' +
                 (group == activeGroup ?
                   ' ebrc-QuestionWizardParamGroupButton__active' : '') +
@@ -123,11 +137,7 @@ function GroupList(props) {
           >
             {group.displayName}
           </button>
-          <div className="ebrc-QuestionWizardParamGroupCount">
-            {groupUIState[group.name].accumulatedTotal === 'loading' ? (
-              <Loading radius={2} className="ebrc-QuestionWizardParamGroupCountLoading"/>
-            ) : groupUIState[group.name].accumulatedTotal}
-          </div>
+          <ParamGroupCount count={groupUIState[group.name].accumulatedTotal}/>
         </div>
       ))}
     </div>
@@ -138,7 +148,8 @@ GroupList.propTypes = {
   activeGroup: React.PropTypes.string,
   groups: React.PropTypes.array.isRequired,
   groupUIState: React.PropTypes.object.isRequired,
-  onGroupSelect: React.PropTypes.func.isRequired
+  onGroupSelect: React.PropTypes.func.isRequired,
+  recordClass: React.PropTypes.object.isRequired
 };
 
 /**
@@ -153,6 +164,16 @@ function Param(props) {
 }
 
 Param.propTypes = paramPropTypes;
+
+function ParamGroupCount(props) {
+  return (
+    <div className="ebrc-QuestionWizardParamGroupCount">
+      {props.count === 'loading' ? (
+        <Loading radius={2} className="ebrc-QuestionWizardParamGroupCountLoading"/>
+      ) : props.count}
+    </div>
+  )
+}
 
 /**
  * Lookup Param component by param type
