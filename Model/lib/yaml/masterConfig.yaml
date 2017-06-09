@@ -138,8 +138,8 @@ default:
 #=======================================================================================================
 
 production:
-  appDb.maxIdle: 10
-  appDb.maxActive: 40
+  appDb.maxIdle: 20
+  appDb.maxActive: 80
   userDb.maxIdle: 10
   commentDb.maxIdle: 10
   adminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu, mheiges@uga.edu
