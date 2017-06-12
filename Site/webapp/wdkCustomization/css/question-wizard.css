@@ -29,7 +29,12 @@
 
 .ebrc-QuestionWizardActiveGroupContainer {
   font-size: .8rem;
-  padding: 1em;
+}
+
+.ebrc-QuestionWizardParamContainer {
+  padding: 2em 0;
+  margin: 2em 0;
+  border-top: 1px solid #ccc;
 }
 
 .ebrc-QuestionWizardIcon {

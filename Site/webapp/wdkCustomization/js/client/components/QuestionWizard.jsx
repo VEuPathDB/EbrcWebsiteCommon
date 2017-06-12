@@ -66,13 +66,15 @@ export default function QuestionWizard(props) {
       ) : (
         <div className="ebrc-QuestionWizardActiveGroupContainer">
           <p>{activeGroup.description}</p>
-          <div>
+          <div className="ebrc-QuestionWizardParamContainer">
             {activeGroup.parameters.map(paramName => {
               const param = question.parameters.find(p => p.name === paramName);
               const ParamComponent = findParamComponent(param);
               return (
                 <div key={paramName}>
-                  <label>{param.displayName}</label>
+                  {activeGroup.parameters.length > 1 && (
+                    <label>{param.displayName}</label>
+                  )}
                   <ParamComponent
                     param={param}
                     value={paramValues[param.name]}

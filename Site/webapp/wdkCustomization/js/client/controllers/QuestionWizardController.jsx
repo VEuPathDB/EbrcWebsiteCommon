@@ -261,7 +261,12 @@ export default class QuestionWizardController extends React.Component {
   }
 
   _getAnswerCount(answerSpec) {
-    return this.props.wdkService.getAnswer(answerSpec).then(answer => answer.meta.totalCount);
+    const formatting = {
+      formatConfig: {
+        pagination: { offset: 0, numRecords: 0 }
+      }
+    };
+    return this.props.wdkService.getAnswer(answerSpec, formatting).then(answer => answer.meta.totalCount);
   }
 
   _updateFilterParamCounts(paramName, filters) {
