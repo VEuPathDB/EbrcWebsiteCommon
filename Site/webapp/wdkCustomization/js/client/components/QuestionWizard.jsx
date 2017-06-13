@@ -158,7 +158,9 @@ function Navigation(props) {
       )])}
       <div className={makeClassName('SubmitContainer')}>
         <button className={makeClassName('SubmitButton')} >
-          View {finalCount} {recordClass.displayNamePlural}
+          {finalCount == null || finalCount === 'loading'
+              ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+              : `View ${finalCount} ${recordClass.displayNamePlural}`}
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>

@@ -100,6 +100,7 @@ button.ebrc-QuestionWizardSubmitButton {
   color: white;
   padding: .5em;
   margin-bottom: .5em;
+  position: relative;
 }
 
 button.ebrc-QuestionWizardSubmitButton:active,
@@ -148,6 +149,7 @@ button.ebrc-QuestionWizardParamGroupButton__active {
 
 .ebrc-QuestionWizardParamGroupCountLoading {
   position: static;
+  height: 1em;
 }
 
 .ebrc-QuestionWizardGetStarted {
