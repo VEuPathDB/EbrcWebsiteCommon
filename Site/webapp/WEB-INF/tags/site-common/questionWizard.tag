@@ -7,6 +7,12 @@
   <jsp:directive.attribute name="question" required="true" description="WDK Question"
     type="org.gusdb.wdk.model.jspwrap.QuestionBean"/>
 
+  <jsp:directive.attribute name="step" required="true" description="WDK Step"
+    type="org.gusdb.wdk.model.jspwrap.StepBean"/>
+
+  <jsp:directive.attribute name="strategy" required="true" description="WDK Strategy"
+    type="org.gusdb.wdk.model.jspwrap.StrategyBean"/>
+
   <c:set var="questionParamValues">
     {
     <c:forEach items="${question.params}" var="questionParam" varStatus="loop">
@@ -15,8 +21,11 @@
     }
   </c:set>
 
+  <c:set var="customName" value="${empty step ? '' : step.customName}"/>
+
   <div
     data-question-full-name="${question.fullName}"
+    data-custom-name="${customName}"
     data-param-values-container-selector=".param-values"
     data-controller="ebrc.controllers.wizard"
   >

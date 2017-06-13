@@ -12,6 +12,7 @@ import { Seq } from 'wdk-client/IterableUtils';
 export default function QuestionWizard(props) {
   const {
     question,
+    customName,
     paramValues,
     paramUIState,
     groupUIState,
@@ -26,6 +27,7 @@ export default function QuestionWizard(props) {
     <div className={makeClassName()}>
       <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
       <Navigation
+        customName={customName}
         totalCount={totalCount}
         activeGroup={activeGroup}
         groups={question.groups}
@@ -103,7 +105,7 @@ export const paramPropTypes = {
  * GroupList component
  */
 function Navigation(props) {
-  const { activeGroup, groups, groupUIState, onGroupSelect, recordClass, totalCount } = props;
+  const { activeGroup, customName, groups, groupUIState, onGroupSelect, recordClass, totalCount } = props;
   const finalCount = Seq.of(totalCount)
     .concat(groups.map(group => groupUIState[group.name].accumulatedTotal))
     .filter(finalCount => finalCount != null)
@@ -158,7 +160,7 @@ function Navigation(props) {
         <button className={makeClassName('SubmitButton')} >
           View {finalCount} {recordClass.displayNamePlural}
         </button>
-        <input className={makeClassName('CustomNameInput')} type="text" name="customName" placeholder="Name this search"/>
+        <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
     </Sticky>
   )

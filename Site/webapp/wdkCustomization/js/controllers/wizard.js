@@ -9,6 +9,7 @@ wdk.namespace('ebrc.controllers', ns => {
   ns.wizard = function wizard($el) {
     const { wdkService } = ebrc.context;
     const questionName = $el.data('question-full-name');
+    const customName = $el.data('custom-name');
     const paramValuesContainerSelector = $el.data('param-values-container-selector');
     const paramValues = parseJson($el.find(paramValuesContainerSelector).val().trim());
     const store = new QuestionWizardStore(new Dispatcher);
@@ -17,7 +18,8 @@ wdk.namespace('ebrc.controllers', ns => {
         store,
         wdkService,
         questionName,
-        paramValues
+        paramValues,
+        customName
       }),
       $el[0]
     );

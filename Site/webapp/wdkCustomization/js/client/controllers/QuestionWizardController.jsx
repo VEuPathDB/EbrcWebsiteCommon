@@ -364,6 +364,7 @@ export default class QuestionWizardController extends React.Component {
         )}
         {this.state.question && (
           <QuestionWizard 
+            customName={this.props.customName}
             question={this.state.question}
             recordClass={this.state.recordClass}
             activeGroup={this.state.activeGroup}
@@ -385,7 +386,8 @@ export default class QuestionWizardController extends React.Component {
 QuestionWizardController.propTypes = {
   wdkService: React.PropTypes.object.isRequired,
   questionName: React.PropTypes.string.isRequired,
-  paramValues: React.PropTypes.object.isRequired
+  paramValues: React.PropTypes.object.isRequired,
+  customName: React.PropTypes.string
 }
 
 /** format ontology term summary */

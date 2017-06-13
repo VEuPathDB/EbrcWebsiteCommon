@@ -11,7 +11,7 @@
 
 <c:choose>
   <c:when test="${useWizard eq true}">
-    <imp:questionWizard question="${wdkQuestion}"/>
+    <imp:questionWizard question="${wdkQuestion}" step="${wdkStep}" strategy="${wdkStrategy}"/>
   </c:when>
   <c:otherwise>
     <imp:question/>
