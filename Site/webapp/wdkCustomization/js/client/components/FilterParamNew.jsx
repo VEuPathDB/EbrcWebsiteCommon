@@ -26,7 +26,7 @@ export default class FilterParamNew extends React.PureComponent {
     const { filteredDataCount, dataCount } = filterListProps;
     const { displayName } = this.props.param;
     return (
-      <strong>
+      <strong style={{ lineHeight: 2 }}>
         {filteredDataCount} of {dataCount} {displayName} selected
       </strong>
     )

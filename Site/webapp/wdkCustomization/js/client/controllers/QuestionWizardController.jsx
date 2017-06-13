@@ -1,7 +1,8 @@
 import React from 'react';
 import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
-import { groupBy, isEqual, memoize } from 'lodash';
+import { Dialog } from 'wdk-client/Components';
+import { groupBy, isEqual, memoize, debounce } from 'lodash';
 
 /**
  * Controller for question wizard
@@ -20,6 +21,7 @@ export default class QuestionWizardController extends React.Component {
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
     this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
+    this._commitParamValueChange = debounce(this._commitParamValueChange, 500);
   }
 
   loadQuestion(props) {
@@ -106,12 +108,23 @@ export default class QuestionWizardController extends React.Component {
 
   onActiveGroupChange(activeGroup) {
     this.setState({ activeGroup });
-    // TODO Only update counts for groups that don't have counts
-    const groups = Seq.from(this.state.question.groups)
-      .takeWhile(group => group != activeGroup)
+
+    const leftGroups = Seq.from(this.state.question.groups)
+      .takeWhile(group => group !== activeGroup);
+
+    const groupUIState = leftGroups.reduce((groupUIState, group) => {
+      return Object.assign(groupUIState, {
+        [group.name]: Object.assign({}, groupUIState[group.name], {
+          configured: true
+        })
+      });
+    }, Object.assign({}, this.state.groupUIState));
+
+    const groupsToUpdate = leftGroups
       .concat(Seq.of(activeGroup))
       .filter(group => this.state.groupUIState[group.name].accumulatedTotal == null);
-    this._updateGroupCounts(groups);
+
+    this.setState({ groupUIState }, () => this._updateGroupCounts(groupsToUpdate));
   }
 
   onActiveOntologyTermChange(param, filters, ontologyTerm) {
@@ -124,20 +137,22 @@ export default class QuestionWizardController extends React.Component {
   }
 
   onParamValueChange(param, paramValue) {
+    this.setState({
+      paramValues: Object.assign({}, this.state.paramValues, {
+        [param.name]: paramValue
+      })
+    }, () => this._commitParamValueChange(param, paramValue));
+  }
+
+  _commitParamValueChange(param, paramValue) {
     const groups = Seq.from(this.state.question.groups);
     const currentGroup = groups.find(group => group.parameters.includes(param.name));
     const groupsToUpdate = groups
       .dropWhile(group => group !== currentGroup)
       .takeWhile(group => this.state.groupUIState[group.name].accumulatedTotal != null);
-    this.setState({
-      paramValues: Object.assign({}, this.state.paramValues, {
-        [param.name]: paramValue
-      })
-    }, () => {
-      this._updateGroupCounts(groupsToUpdate);
-      this._handleParamValueChange(param, paramValue);
-      this._updateDependedParams(param, paramValue);
-    })
+    this._updateGroupCounts(groupsToUpdate);
+    this._handleParamValueChange(param, paramValue);
+    this._updateDependedParams(param, paramValue);
   }
 
   _handleParamValueChange(param, paramValue) {
@@ -185,30 +200,35 @@ export default class QuestionWizardController extends React.Component {
       param.name,
       paramValue,
       this.state.paramValues
-    ).then(question => {
-      // for each parameter, reinitialize param state and value
-      // these are params with a vocab, so we have to check if current value is compatible
-      // if not, then reset value to default
-      const paramValues = question.parameters.reduce((paramValues, param) => {
-        if (param.type === 'FilterParamNew') {
-          const { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
-          // TODO update param value with invalid filters removed
-          const newFilters = filters.filter(filter => filter.field in param.ontology);
-          if (filters.length !== newFilters.length) {
-            console.log('Invalid filters detected', { filters, newFilters });
+    ).then(
+      question => {
+        // for each parameter, reinitialize param state and value
+        // these are params with a vocab, so we have to check if current value is compatible
+        // if not, then reset value to default
+        const paramValues = question.parameters.reduce((paramValues, param) => {
+          if (param.type === 'FilterParamNew') {
+            const { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
+            // TODO update param value with invalid filters removed
+            const newFilters = filters.filter(filter => filter.field in param.ontology);
+            if (filters.length !== newFilters.length) {
+              console.log('Invalid filters detected', { filters, newFilters });
+            }
+            this._updateFilterParamCounts(param.name, newFilters);
+            return Object.assign(paramValues, {
+              [param.name]: JSON.stringify({ filters: newFilters })
+            });
           }
-          this._updateFilterParamCounts(param.name, newFilters);
-          return Object.assign(paramValues, {
-            [param.name]: JSON.stringify({ filters: newFilters })
-          });
-        }
-        else {
-          console.warn('Unable to handle unexpected param type `%o`.', param.type);
-          return paramValues;
-        }
-      }, Object.assign({}, this.state.paramValues));
-      this.setState({ paramValues })
-    });
+          else {
+            console.warn('Unable to handle unexpected param type `%o`.', param.type);
+            return paramValues;
+          }
+        }, Object.assign({}, this.state.paramValues));
+        this.setState({ paramValues })
+      },
+      error => {
+        this.setState({ error });
+      }
+    );
   }
 
   /**
@@ -222,7 +242,7 @@ export default class QuestionWizardController extends React.Component {
 
     // set loading state for group counts
     const groupUIState = groups.reduce((state, group) => Object.assign(state, {
-      [group.name]: { accumulatedTotal: 'loading' }
+      [group.name]: Object.assign({}, state[group.name], { accumulatedTotal: 'loading' })
     }), Object.assign({}, this.state.groupUIState));
 
     this.setState({ groupUIState });
@@ -254,9 +274,11 @@ export default class QuestionWizardController extends React.Component {
 
     Promise.all(countsByGroup).then(counts => {
       const groupUIState = counts.reduce((groupUIState, [ group, accumulatedTotal ]) => {
-        return Object.assign(groupUIState, { [group.name]: { accumulatedTotal } });
-      }, {});
-      this.setState({ groupUIState: Object.assign({}, this.state.groupUIState, groupUIState) });
+        return Object.assign(groupUIState, {
+          [group.name]: Object.assign({}, groupUIState[group.name], { accumulatedTotal })
+        });
+      }, Object.assign({}, this.state.groupUIState));
+      this.setState({ groupUIState });
     });
   }
 
@@ -266,7 +288,12 @@ export default class QuestionWizardController extends React.Component {
         pagination: { offset: 0, numRecords: 0 }
       }
     };
-    return this.props.wdkService.getAnswer(answerSpec, formatting).then(answer => answer.meta.totalCount);
+    return this.props.wdkService.getAnswer(answerSpec, formatting).then(
+      answer => answer.meta.totalCount,
+      error => {
+        this.setState({ error });
+      }
+    );
   }
 
   _updateFilterParamCounts(paramName, filters) {
@@ -275,12 +302,17 @@ export default class QuestionWizardController extends React.Component {
       paramName,
       filters,
       this.state.paramValues
-    ).then(counts => {
-      this._updateParamUIState(paramName, {
-        filteredCount: counts.filtered,
-        unfilteredCount: counts.unfiltered
-      });
-    });
+    ).then(
+      counts => {
+        this._updateParamUIState(paramName, {
+          filteredCount: counts.filtered,
+          unfilteredCount: counts.unfiltered
+        });
+      },
+      error => {
+        this.setState({ error });
+      }
+    );
   }
 
   _updateOntologyTermSummary(paramName, ontologyTerm, filters) {
@@ -290,14 +322,19 @@ export default class QuestionWizardController extends React.Component {
       filters.filter(filter => filter.field !== ontologyTerm),
       ontologyTerm,
       this.state.paramValues
-    ).then(ontologyTermSummary => {
-      const { ontologyTermSummaries } = this.state.paramUIState[paramName];
-      this._updateParamUIState(paramName, {
-        ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
-          [ontologyTerm]: formatSummary(ontologyTermSummary)
-        })
-      });
-    });
+    ).then(
+      ontologyTermSummary => {
+        const { ontologyTermSummaries } = this.state.paramUIState[paramName];
+        this._updateParamUIState(paramName, {
+          ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
+            [ontologyTerm]: formatSummary(ontologyTermSummary)
+          })
+        });
+      },
+      error => {
+        this.setState({ error });
+      }
+    );
   }
 
   _updateParamUIState(paramName, newState) {
@@ -317,21 +354,29 @@ export default class QuestionWizardController extends React.Component {
   }
 
   render() {
-    if (this.state.question == null) return null;
-
     return (
-      <QuestionWizard 
-        question={this.state.question}
-        recordClass={this.state.recordClass}
-        activeGroup={this.state.activeGroup}
-        totalCount={this.state.totalCount}
-        paramValues={this.state.paramValues}
-        paramUIState={this.state.paramUIState}
-        groupUIState={this.state.groupUIState}
-        onActiveGroupChange={this.onActiveGroupChange}
-        onActiveOntologyTermChange={this.onActiveOntologyTermChange}
-        onParamValueChange={this.onParamValueChange}
-      />
+      <div>
+        {this.state.error && (
+          <Dialog open modal title="An error occurred" onClose={() => this.setState({ error: undefined })}>
+            {Seq.from(this.state.error.stack.split('\n'))
+              .flatMap(line => [ line, <br/> ])}
+          </Dialog>
+        )}
+        {this.state.question && (
+          <QuestionWizard 
+            question={this.state.question}
+            recordClass={this.state.recordClass}
+            activeGroup={this.state.activeGroup}
+            totalCount={this.state.totalCount}
+            paramValues={this.state.paramValues}
+            paramUIState={this.state.paramUIState}
+            groupUIState={this.state.groupUIState}
+            onActiveGroupChange={this.onActiveGroupChange}
+            onActiveOntologyTermChange={this.onActiveOntologyTermChange}
+            onParamValueChange={this.onParamValueChange}
+          />
+        )}
+      </div>
     )
   }
 

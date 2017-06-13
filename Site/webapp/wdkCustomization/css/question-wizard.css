@@ -7,10 +7,11 @@
   font-size: 2.4em;
 }
 
-.ebrc-QuestionWizardNavigationContainer,
-.ebrc-QuestionWizardParamGroupContainer {
+.ebrc-QuestionWizardNavigationContainer {
   display: flex;
   justify-content: flex-start;
+  width: 100%;
+  position: relative;
 }
 
 .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
@@ -32,7 +33,7 @@
 }
 
 .ebrc-QuestionWizardParamContainer {
-  padding: 2em 0;
+  padding: 1.5em 0;
   margin: 2em 0;
   border-top: 1px solid #ccc;
 }
@@ -46,48 +47,69 @@
   font-family: FontAwesome;
   content: '\f183';
   font-style: normal;
-  font-size: 1.6em;
+  font-size: 2em;
   background: #333;
   color: white;
-  padding: 5px 0;
   text-align: center;
   border-radius: 4px;
   display: block;
+  line-height: 1.5em;
 }
 
 .ebrc-QuestionWizardParamGroup {
-  margin: 0 1em;
   position: relative;
 }
 
-.ebrc-QuestionWizardParamGroup:before {
+.ebrc-QuestionWizardParamGroupArrow {
+  text-align: center;
+  padding: 0 1em;
+}
+
+.ebrc-QuestionWizardParamGroupArrow:before {
   font-family: FontAwesome;
   font-size: 2em;
   content: '\f178'; /* long-right-arrow */
-  position: absolute;
-  left: -1em;
   opacity: .6;
+  line-height: 1.5em;
+  margin-right: -1px;
 }
 
 .ebrc-QuestionWizardParamGroup:first-of-type {
   margin-left: 2em;
 }
 
-button.ebrc-QuestionWizardSubmitButton,
 button.ebrc-QuestionWizardParamGroupButton {
-  padding: .5em 1em;
+  padding: 0 1em;
+  height: 3em;
+  min-width: 4em;
+  max-width: 9em;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+.ebrc-QuestionWizardSubmitContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-left: 2em;
+  /*width: 9em;*/
 }
 
 button.ebrc-QuestionWizardSubmitButton {
   background: linear-gradient(#4289d9, #3c78d8);
   color: white;
-  margin-left: 1em;
+  padding: .5em;
+  margin-bottom: .5em;
 }
 
 button.ebrc-QuestionWizardSubmitButton:active,
 button.ebrc-QuestionWizardSubmitButton:focus,
 button.ebrc-QuestionWizardSubmitButton:hover {
   background: linear-gradient(#4270d9, #3c78d8);
+}
+
+.ebrc-QuestionWizardCustomNameInput {
+  font-size: .7em;
 }
 
 button.ebrc-QuestionWizardParamGroupButton {
@@ -112,11 +134,16 @@ button.ebrc-QuestionWizardParamGroupButton__active {
   box-shadow: 0px 0px 0px 1px #333;
 }
 
+.ebrc-QuestionWizardTotalCount {
+  font-size: .8em;
+  text-align: center;
+}
+
 .ebrc-QuestionWizardParamGroupCount {
-  height: 1em;
-  margin: .4em;
+  font-size: .8em;
   text-align: center;
   position: relative;
+  top: -1em;
 }
 
 .ebrc-QuestionWizardParamGroupCountLoading {
@@ -124,10 +151,13 @@ button.ebrc-QuestionWizardParamGroupButton__active {
 }
 
 .ebrc-QuestionWizardGetStarted {
-  position: relative;
-  top: .2em;
-  left: 6em;
+  position: absolute;
+  top: 5em;
+  left: 50%;
   font-weight: 500;
+  margin-left: -1em;
+  font-size: .9em;
+  white-space: nowrap;
 }
 
 .ebrc-QuestionWizardGetStarted:before {
@@ -140,5 +170,25 @@ button.ebrc-QuestionWizardParamGroupButton__active {
 }
 
 .ebrc-QuestionWizardHelpText {
-  padding: 1em;
+  padding: 4em 1em;
+}
+
+.ebrc-QuestionWizardParam {
+  display: flex;
+  margin: .5em 0;
+}
+
+.ebrc-QuestionWizardParamLabel {
+  flex: 1;
+  display: inline-block;
+  align-self: center;
+  text-align: right;
+  margin: 0 .5em;
+}
+
+.ebrc-QuestionWizardParamControl {
+  flex: 2;
+  display: inline-block;
+  align-self: center;
+  margin: 0 .5em;
 }
