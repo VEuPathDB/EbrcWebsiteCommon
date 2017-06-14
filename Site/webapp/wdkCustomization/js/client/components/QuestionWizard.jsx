@@ -73,11 +73,6 @@ export default function QuestionWizard(props) {
                       onParamValueChange={onParamValueChange}
                     />
                   </div>
-                  {/*
-                  <div className={makeClassName('ParamDescription')}>
-                    {param.help}
-                  </div>
-                  */}
                 </div>
               );
             })}
@@ -87,7 +82,7 @@ export default function QuestionWizard(props) {
       <input type="hidden" name="questionFullName" value={question.name}/>
       <input type="hidden" name="questionSubmit" value="Get Answer"/>
       {question.parameters.map(param => (
-        <input type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
+        <input key={param.name} type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
       ))}
     </div>
   )
@@ -95,11 +90,12 @@ export default function QuestionWizard(props) {
 
 QuestionWizard.propTypes = {
   question: React.PropTypes.object.isRequired,
+  customName: React.PropTypes.string,
   paramValues: React.PropTypes.object.isRequired,
   paramUIState: React.PropTypes.object.isRequired,
   groupUIState: React.PropTypes.object.isRequired,
   recordClass: React.PropTypes.object.isRequired,
-  activeGroup: React.PropTypes.string.isRequired,
+  activeGroup: React.PropTypes.object,
   totalCount: React.PropTypes.number,
   onActiveGroupChange: React.PropTypes.func.isRequired,
   onActiveOntologyTermChange: React.PropTypes.func.isRequired,
@@ -159,7 +155,7 @@ function Navigation(props) {
           )}
         </div>
       ), group !== groups[groups.length - 1] && (
-        <div className={makeClassName('ParamGroupSeparator')}>
+        <div key={group.name + '__sep'} className={makeClassName('ParamGroupSeparator')}>
           <div className={makeClassName('ParamGroupArrow')}/>
           {groupUIState[group.name].configured && (
             <ParamGroupCount
@@ -182,12 +178,13 @@ function Navigation(props) {
 }
 
 Navigation.propTypes = {
-  activeGroup: React.PropTypes.string,
+  activeGroup: React.PropTypes.object,
   groups: React.PropTypes.array.isRequired,
   groupUIState: React.PropTypes.object.isRequired,
   onGroupSelect: React.PropTypes.func.isRequired,
   recordClass: React.PropTypes.object.isRequired,
-  totalCount: React.PropTypes.number
+  totalCount: React.PropTypes.number,
+  customName: React.PropTypes.string
 };
 
 /**
@@ -203,6 +200,7 @@ function Param(props) {
 
 Param.propTypes = paramPropTypes;
 
+/** Render count or loading */
 function ParamGroupCount(props) {
   return (
     <div className={makeClassName('ParamGroupCount')}>
@@ -212,6 +210,10 @@ function ParamGroupCount(props) {
     </div>
   )
 }
+
+ParamGroupCount.propTypes = {
+  count: React.PropTypes.oneOfType([ React.PropTypes.oneOf([ 'loading' ]), React.PropTypes.number ])
+};
 
 /**
  * Lookup Param component by param type
@@ -225,6 +227,9 @@ function findParamComponent(param) {
   }
 }
 
+/**
+ * Make a className string
+ */
 function makeClassName(element = '', ...modifiers) {
   const className = 'ebrc-QuestionWizard' + element;
   const modifiedClassNames = modifiers.filter(modifier => modifier).map(function(modifier) {
