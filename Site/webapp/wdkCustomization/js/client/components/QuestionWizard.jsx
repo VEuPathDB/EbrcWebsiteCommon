@@ -65,6 +65,11 @@ export default function QuestionWizard(props) {
                       onParamValueChange={onParamValueChange}
                     />
                   </div>
+                  {/*
+                  <div className={makeClassName('ParamDescription')}>
+                    {param.help}
+                  </div>
+                  */}
                 </div>
               );
             })}
@@ -115,13 +120,13 @@ function Navigation(props) {
       className={makeClassName('NavigationContainer')}
       fixedClassName={makeClassName('NavigationContainer', 'fixed')}
     >
-      <div>
+      <div className={makeClassName('NavigationIconContainer')}>
         <i className={makeClassName('Icon', recordClass.name)}/>
         <div className={makeClassName('TotalCount')}>
           {totalCount}
         </div>
       </div>
-      <div>
+      <div className={makeClassName('ParamGroupSeparator')}>
         <div className={makeClassName('ParamGroupArrow')}/>
       </div>
 
@@ -146,7 +151,7 @@ function Navigation(props) {
           )}
         </div>
       ), group !== groups[groups.length - 1] && (
-        <div>
+        <div className={makeClassName('ParamGroupSeparator')}>
           <div className={makeClassName('ParamGroupArrow')}/>
           {groupUIState[group.name].configured && (
             <ParamGroupCount

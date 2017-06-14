@@ -21,7 +21,7 @@ export default class QuestionWizardController extends React.Component {
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
     this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
-    this._commitParamValueChange = debounce(this._commitParamValueChange, 500);
+    this._commitParamValueChange = debounce(this._commitParamValueChange, 1000);
   }
 
   loadQuestion(props) {
