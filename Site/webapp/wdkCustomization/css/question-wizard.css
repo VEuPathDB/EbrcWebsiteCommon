@@ -1,3 +1,7 @@
+.ebrc-QuestionWizard, .ebrc-QuestionWizard * {
+  box-sizing: border-box;
+}
+
 .ebrc-QuestionWizard {
   font-size: 1.2em;
   padding: 0 1em;
@@ -31,6 +35,13 @@
 .ebrc-QuestionWizardActiveGroupContainer {
   font-size: .8rem;
   margin-top: 2em;
+}
+
+.ebrc-QuestionWizardGroupLoading {
+  position: relative;
+  display: inline-block;
+  top: initial;
+  left: 1em;
 }
 
 .ebrc-QuestionWizardParamContainer {

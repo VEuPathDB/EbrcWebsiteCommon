@@ -23,6 +23,8 @@ export default function QuestionWizard(props) {
     onActiveOntologyTermChange,
     onParamValueChange
   } = props;
+
+  const accumulatedTotal = activeGroup && groupUIState[activeGroup.name].accumulatedTotal;
   return (
     <div className={makeClassName()}>
       <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
@@ -43,7 +45,13 @@ export default function QuestionWizard(props) {
         </div>
       ) : (
         <div className={makeClassName('ActiveGroupContainer')}>
-          <h3>{groupUIState[activeGroup.name].accumulatedTotal} {recordClass.displayNamePlural} selected</h3>
+          <h3>
+            {accumulatedTotal && accumulatedTotal !== 'loading' ? (
+              `${accumulatedTotal} ${recordClass.displayNamePlural} selected`
+            ) : (
+              <Loading radius={6} className={makeClassName('GroupLoading')}/>
+            )}
+          </h3>
           <p>{activeGroup.description}</p>
           <div className={makeClassName('ParamContainer')}>
             {activeGroup.parameters.map(paramName => {
