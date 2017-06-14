@@ -227,7 +227,7 @@ function findParamComponent(param) {
 
 function makeClassName(element = '', ...modifiers) {
   const className = 'ebrc-QuestionWizard' + element;
-  const modifiedClassNames = modifiers.map(function(modifier) {
+  const modifiedClassNames = modifiers.filter(modifier => modifier).map(function(modifier) {
     return ' ' + className + '__' + modifier;
   }).join('');
 

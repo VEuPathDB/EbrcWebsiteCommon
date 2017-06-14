@@ -136,6 +136,13 @@ input.ebrc-QuestionWizardCustomNameInput {
 button.ebrc-QuestionWizardParamGroupButton {
   border-radius: 5px;
   outline: none;
+  background: #eee;
+}
+
+button.ebrc-QuestionWizardParamGroupButton:active,
+button.ebrc-QuestionWizardParamGroupButton:focus,
+button.ebrc-QuestionWizardParamGroupButton:hover {
+  background: #f3f3f3;
 }
 
 button.ebrc-QuestionWizardParamGroupButton__configured {
