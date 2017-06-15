@@ -174,7 +174,7 @@ function QuickSearch(props) {
 
 QuickSearch.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
-  references: PropTypes.arrayOf(ReferencePropType).isRequired,
+  references: PropTypes.arrayOf(ReferencePropType),
   questions: PropTypes.objectOf(QuestionPropType)
 };
 

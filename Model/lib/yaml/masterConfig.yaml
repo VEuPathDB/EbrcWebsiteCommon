@@ -154,8 +154,8 @@ default:
 #=======================================================================================================
 
 production:
-  appDb.maxActive: 40
-  appDb.maxIdle: 10
+  appDb.maxActive: 80
+  appDb.maxIdle: 20
   userDb.maxIdle: 10
   accountDb.maxIdle: 10
   commentDb.maxIdle: 10

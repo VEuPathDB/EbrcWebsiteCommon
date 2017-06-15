@@ -14,7 +14,7 @@
   {
     "matchStrings": ["GetVocabAction.java:114"],
     "comment": "fixed - convert to WdkUserException",
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {
     "matchStrings": [
@@ -23,7 +23,7 @@
       "TranscriptSearch"
     ],
     "comment": "check isClosed() before close(). see r20098",
-    "fixed": true
+    "fixed": "6/1/17"
   },
   {
     "matchStrings": ["pool error Timeout"],
@@ -55,7 +55,8 @@
   },
   {
      "matchStrings": ["ProcessFavoriteAction.java:97"],
-     "comment": "fixed by preventing npe"
+     "comment": "fixed by preventing npe",
+     "fixed": "2/1/17"
   },
   {
      "matchStrings": ["ProcessFavoriteAction.java", "JSONObject[\"source_id\"] not found"],
@@ -77,7 +78,7 @@
   {
     "matchStrings": ["PathwaysByGeneList, Unable to insert record into cache"],
     "comment": "fixed by DD",
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {
     "matchStrings": ["Illegal repetition"],
@@ -123,7 +124,7 @@
   {"matchStrings": ["'PathwayAttributes.Bfmv' doesn't return the same number"]},
   {
     "matchStrings": ["RodMalPhenotype"],
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {"matchStrings": ["Stajich_HyphalGrowth"]},
   {
@@ -131,7 +132,7 @@
       "primaryKeyValue is mandatory for tag recordLink",
       "favorites"
     ],
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {"matchStrings": ["IllegalArgumentException: No bean specified"]},
   {
@@ -139,7 +140,7 @@
       "Unable to load class for JSP",
       "Favorite"
     ],
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {"matchStrings": ["value(single_gene_id) = [ ATGAACC"]},
   {
@@ -155,7 +156,7 @@
       "ProcessRESTAction.java:191",
       "/webservice"
     ],
-    "fixed": true
+    "fixed": "2/1/17"
   },
   {
     "matchStrings": ["\"GENE_SOURCE_ID\": invalid identifier"],
@@ -199,13 +200,15 @@
       "ORA-00376",
       "fung032s"
     ],
-    "comment": "caused by a temporary boo-boo by ana."
+    "comment": "caused by a temporary boo-boo by ana.",
+    "fixed" : "6/1/17"
   },
   {
     "matchStrings": [
       "ORA-00028: your session has been killed"
     ],
-    "comment": "a slow query that we fixed ran so long it needed to be killed"
+    "comment": "a slow query that we fixed ran so long it needed to be killed",
+    "fixed": "6/1/17"
   },
   {
     "matchStrings": [
@@ -235,7 +238,8 @@
     "matchStrings": [
       "'TranscriptAttributes.CellularLocalization' doesn't return the same number of records"
     ],
-    "comment": "fixed"
+    "comment": "data dev issue",
+    "fixed": "6/1/17"
   },
   {
     "matchStrings": [
@@ -252,9 +256,17 @@
     ],
     "comment": "possibly a bad bookmark"
   },
-  {"matchStrings": ["'gene_boolean_filter_array' doesn't exist"]},
+  {
+     "matchStrings": ["'gene_boolean_filter_array' doesn't exist"],
+     "comment": "see r20135 and r82099",
+     "fixed": "6/6/17"
+  },
   {"matchStrings": ["No item returned by the query [SharedVQ.BlastOrganismFiles]"]},
-  {"matchStrings": ["Error reading 'briefDisplay'"]},
+  {
+     "matchStrings": ["'SnpAttributes.Bfmv' doesn't return the same number of records as ID SQL"],
+     "comment": "redmine.apidb.org/issues/26315",
+     "fixed": "datadev"
+  },
   {"matchStrings": ["Record ordering in attribute query data [SnpAttributes.Bfmv.txt] does not match ID query"]},
   {
     "matchStrings": [
@@ -265,6 +277,9 @@
     "comment": "possibly a data dev issue"
   },
 
-  {"matchStrings": ["WdkModelException: The Step", "of user", "cannot be found"]}
+  {
+    "matchStrings": ["WdkModelException: The Step", "of user", "cannot be found"],
+    "comment": "a great mystery as to how a step can be deleted shortly after creation.  see, eg, lines 42 and 42 of GetFilterSummaryAction"
+  }
 ]
 
