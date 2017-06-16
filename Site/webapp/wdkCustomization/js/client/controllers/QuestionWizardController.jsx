@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
 import { Dialog } from 'wdk-client/Components';
@@ -384,10 +385,10 @@ export default class QuestionWizardController extends React.Component {
 }
 
 QuestionWizardController.propTypes = {
-  wdkService: React.PropTypes.object.isRequired,
-  questionName: React.PropTypes.string.isRequired,
-  paramValues: React.PropTypes.object.isRequired,
-  customName: React.PropTypes.string
+  wdkService: PropTypes.object.isRequired,
+  questionName: PropTypes.string.isRequired,
+  paramValues: PropTypes.object.isRequired,
+  customName: PropTypes.string
 }
 
 /** format ontology term summary */

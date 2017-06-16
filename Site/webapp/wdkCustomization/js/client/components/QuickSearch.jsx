@@ -1,5 +1,6 @@
 import { find, get, map } from 'lodash';
-import { Component, PropTypes } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import {Tooltip} from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 

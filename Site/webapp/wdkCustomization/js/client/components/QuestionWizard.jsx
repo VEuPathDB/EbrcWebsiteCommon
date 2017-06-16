@@ -1,5 +1,6 @@
 import 'eupathdb/wdkCustomization/css/question-wizard.css';
 import React from 'react';
+import PropTypes from 'prop-types';
 import FilterParamNew from './FilterParamNew';
 import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
@@ -89,25 +90,25 @@ export default function QuestionWizard(props) {
 }
 
 QuestionWizard.propTypes = {
-  question: React.PropTypes.object.isRequired,
-  customName: React.PropTypes.string,
-  paramValues: React.PropTypes.object.isRequired,
-  paramUIState: React.PropTypes.object.isRequired,
-  groupUIState: React.PropTypes.object.isRequired,
-  recordClass: React.PropTypes.object.isRequired,
-  activeGroup: React.PropTypes.object,
-  totalCount: React.PropTypes.number,
-  onActiveGroupChange: React.PropTypes.func.isRequired,
-  onActiveOntologyTermChange: React.PropTypes.func.isRequired,
-  onParamValueChange: React.PropTypes.func.isRequired
+  question: PropTypes.object.isRequired,
+  customName: PropTypes.string,
+  paramValues: PropTypes.object.isRequired,
+  paramUIState: PropTypes.object.isRequired,
+  groupUIState: PropTypes.object.isRequired,
+  recordClass: PropTypes.object.isRequired,
+  activeGroup: PropTypes.object,
+  totalCount: PropTypes.number,
+  onActiveGroupChange: PropTypes.func.isRequired,
+  onActiveOntologyTermChange: PropTypes.func.isRequired,
+  onParamValueChange: PropTypes.func.isRequired
 };
 
 export const paramPropTypes = {
-  param: React.PropTypes.object.isRequired,
-  value: React.PropTypes.string.isRequired,
-  uiState: React.PropTypes.object.isRequired,
-  onActiveOntologyTermChange: React.PropTypes.func.isRequired,
-  onParamValueChange: React.PropTypes.func.isRequired
+  param: PropTypes.object.isRequired,
+  value: PropTypes.string.isRequired,
+  uiState: PropTypes.object.isRequired,
+  onActiveOntologyTermChange: PropTypes.func.isRequired,
+  onParamValueChange: PropTypes.func.isRequired
 }
 
 /**
@@ -126,12 +127,10 @@ function Navigation(props) {
     >
       <div className={makeClassName('NavigationIconContainer')}>
         <i className={makeClassName('Icon', recordClass.name)}/>
-        <div className={makeClassName('TotalCount')}>
-          {totalCount}
-        </div>
       </div>
       <div className={makeClassName('ParamGroupSeparator')}>
         <div className={makeClassName('ParamGroupArrow')}/>
+        <ParamGroupCount title={`All ${recordClass.displayNamePlural}`} count={totalCount}/>
       </div>
 
       {Seq.from(groups).flatMap(group => [(
@@ -178,13 +177,13 @@ function Navigation(props) {
 }
 
 Navigation.propTypes = {
-  activeGroup: React.PropTypes.object,
-  groups: React.PropTypes.array.isRequired,
-  groupUIState: React.PropTypes.object.isRequired,
-  onGroupSelect: React.PropTypes.func.isRequired,
-  recordClass: React.PropTypes.object.isRequired,
-  totalCount: React.PropTypes.number,
-  customName: React.PropTypes.string
+  activeGroup: PropTypes.object,
+  groups: PropTypes.array.isRequired,
+  groupUIState: PropTypes.object.isRequired,
+  onGroupSelect: PropTypes.func.isRequired,
+  recordClass: PropTypes.object.isRequired,
+  totalCount: PropTypes.number,
+  customName: PropTypes.string
 };
 
 /**
@@ -212,7 +211,7 @@ function ParamGroupCount(props) {
 }
 
 ParamGroupCount.propTypes = {
-  count: React.PropTypes.oneOfType([ React.PropTypes.oneOf([ 'loading' ]), React.PropTypes.number ])
+  count: PropTypes.oneOfType([ PropTypes.oneOf([ 'loading' ]), PropTypes.number ])
 };
 
 /**

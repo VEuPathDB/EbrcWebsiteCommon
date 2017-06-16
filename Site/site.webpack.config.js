@@ -36,6 +36,7 @@ module.exports = function configure(additionalConfig) {
         'react'        : 'React',
         'react-dom'    : 'ReactDOM',
         'react-router' : 'ReactRouter',
+        'prop-types'   : 'ReactPropTypes',
         'flux'         : 'Flux',
         'flux/utils'   : 'FluxUtils'
       }
