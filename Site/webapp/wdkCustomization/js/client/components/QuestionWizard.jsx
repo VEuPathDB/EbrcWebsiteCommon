@@ -47,15 +47,21 @@ export default function QuestionWizard(props) {
       ) : (
         <div className={makeClassName('ActiveGroupContainer')}>
           <h3>
-            {accumulatedTotal && accumulatedTotal !== 'loading' ? (
-              `${accumulatedTotal} ${recordClass.displayNamePlural} selected`
-            ) : (
-              <Loading radius={6} className={makeClassName('GroupLoading')}/>
-            )}
+            Reduce the set of {recordClass.displayNamePlural} from {totalCount} to {
+              accumulatedTotal && accumulatedTotal !== 'loading' ?  accumulatedTotal
+                : <Loading radius={2} className={makeClassName('GroupLoading')}/>
+            }
           </h3>
           <p>{activeGroup.description}</p>
-          <div className={makeClassName('ParamContainer')}>
-            {activeGroup.parameters.map(paramName => {
+          <div
+            className={makeClassName('ParamContainer')}
+            onKeyPress={event => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+              }
+            }}
+          >
+            {activeGroup.parameters.map((paramName, index) => {
               const param = question.parameters.find(p => p.name === paramName);
               const ParamComponent = findParamComponent(param);
               return (
@@ -67,6 +73,7 @@ export default function QuestionWizard(props) {
                   )}
                   <div className={makeClassName('ParamControl')}>
                     <ParamComponent
+                      autoFocus={index === 0}
                       param={param}
                       value={paramValues[param.name]}
                       uiState={paramUIState[param.name]}
@@ -108,7 +115,8 @@ export const paramPropTypes = {
   value: PropTypes.string.isRequired,
   uiState: PropTypes.object.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
-  onParamValueChange: PropTypes.func.isRequired
+  onParamValueChange: PropTypes.func.isRequired,
+  autoFocus: PropTypes.bool
 }
 
 /**
@@ -134,13 +142,16 @@ function Navigation(props) {
       </div>
 
       {Seq.from(groups).flatMap(group => [(
-        <div className={makeClassName('ParamGroup')} key={group.name}>
+        <div
+          key={group.name}
+          className={makeClassName('ParamGroup', group === activeGroup && 'active')}
+        >
           <button
             type="button"
             title={`Filter ${recordClass.displayNamePlural} by ${group.displayName}`}
             className={makeClassName(
               'ParamGroupButton',
-              group == activeGroup ? 'active' : '',
+              group == activeGroup && 'active',
               groupUIState[group.name].accumulatedTotal != null ?  'configured' : ''
             )}
             onClick={() => onGroupSelect(group)}
@@ -156,12 +167,10 @@ function Navigation(props) {
       ), group !== groups[groups.length - 1] && (
         <div key={group.name + '__sep'} className={makeClassName('ParamGroupSeparator')}>
           <div className={makeClassName('ParamGroupArrow')}/>
-          {groupUIState[group.name].configured && (
-            <ParamGroupCount
-              title={`${groupUIState[group.name].accumulatedTotal} ${recordClass.displayNamePlural} selected from previous step.`}
-              count={groupUIState[group.name].accumulatedTotal}
-            />
-          )}
+          <ParamGroupCount
+            title={`${recordClass.displayNamePlural} selected from previous steps.`}
+            count={groupUIState[group.name].accumulatedTotal}
+          />
         </div>
       )])}
       <div className={makeClassName('SubmitContainer')}>
@@ -202,7 +211,7 @@ Param.propTypes = paramPropTypes;
 /** Render count or loading */
 function ParamGroupCount(props) {
   return (
-    <div className={makeClassName('ParamGroupCount')}>
+    <div title={props.title} className={makeClassName('ParamGroupCount')}>
       {props.count === 'loading' ? (
         <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
       ) : props.count}
@@ -211,6 +220,7 @@ function ParamGroupCount(props) {
 }
 
 ParamGroupCount.propTypes = {
+  title: PropTypes.string,
   count: PropTypes.oneOfType([ PropTypes.oneOf([ 'loading' ]), PropTypes.number ])
 };
 

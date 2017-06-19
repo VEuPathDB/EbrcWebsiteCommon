@@ -41,7 +41,9 @@
   position: relative;
   display: inline-block;
   top: initial;
-  left: 1em;
+  left: 0;
+  height: .5em;
+  width: 1em;
 }
 
 .ebrc-QuestionWizardParamContainer {
@@ -86,21 +88,12 @@
   font-family: FontAwesome;
   font-size: 2em;
   content: '\f178'; /* long-right-arrow */
-  opacity: .6;
+  color: #666;
   margin-right: -1px;
 }
 
 .ebrc-QuestionWizardParamGroup:first-of-type {
   margin-left: 2em;
-}
-
-button.ebrc-QuestionWizardParamGroupButton {
-  padding: 0 1em;
-  height: 3em;
-  min-width: 4em;
-  max-width: 9em;
-  text-overflow: ellipsis;
-  overflow-x: hidden;
 }
 
 .ebrc-QuestionWizardSubmitContainer {
@@ -134,17 +127,28 @@ input.ebrc-QuestionWizardCustomNameInput {
 }
 
 button.ebrc-QuestionWizardParamGroupButton {
-  border-radius: 5px;
-  outline: none;
   background: #eee;
+  border-color: #333;
+  border-radius: 5px;
+  color: #333;
+  height: 3em;
+  max-width: 9em;
+  min-width: 4em;
+  overflow-x: hidden;
+  padding: 0 1em;
+  text-overflow: ellipsis;
 }
+
 
 button.ebrc-QuestionWizardParamGroupButton:active,
 button.ebrc-QuestionWizardParamGroupButton:focus,
 button.ebrc-QuestionWizardParamGroupButton:hover {
   background: #f3f3f3;
+  border-color: black;
+  color: black;
 }
 
+/*
 button.ebrc-QuestionWizardParamGroupButton__configured {
   background: #b6d7a8;
   border-color: gray;
@@ -156,10 +160,35 @@ button.ebrc-QuestionWizardParamGroupButton__configured:hover {
   background: rgba(182, 215, 168, 0.95);
   border-color: #020202;
 }
+*/
 
-button.ebrc-QuestionWizardParamGroupButton__active {
-  border: 1px solid black;
+button.ebrc-QuestionWizardParamGroupButton__active,
+button.ebrc-QuestionWizardParamGroupButton__active:active,
+button.ebrc-QuestionWizardParamGroupButton__active:focus,
+button.ebrc-QuestionWizardParamGroupButton__active:hover {
+  border-color: #333;
   box-shadow: 0px 0px 0px 1px #333;
+  font-weight: 500;
+}
+
+.ebrc-QuestionWizardParamGroup__active:after {
+  content: '\f111';
+  position: absolute;
+  bottom: -2em;
+  left: calc(50% - .5em);
+  color: #3a79b8;
+  font-family: FontAwesome;
+  font-size: .5em;
+  /*text-shadow: 0px 0px 2px;*/
+  /*
+  content: '';
+  position: absolute;
+  bottom: -.5em;
+  left: 4%;
+  width: 92%;
+  border-top: 1px solid #4a4a4a;
+  box-shadow: 0px 0px 1px #4a4a4a;
+  */
 }
 
 .ebrc-QuestionWizardTotalCount {
