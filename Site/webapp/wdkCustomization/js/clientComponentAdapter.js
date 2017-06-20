@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { render} from 'react-dom';
 
 // An adaptor that allows us to reuse react client components on the legacy website.
@@ -21,8 +22,8 @@ class ClientContextProvider extends React.Component {
 }
 
 ClientContextProvider.childContextTypes = {
-  store: React.PropTypes.object.isRequired,
-  dispatchAction: React.PropTypes.func.isRequired
+  store: PropTypes.object.isRequired,
+  dispatchAction: PropTypes.func.isRequired
 }
 
 

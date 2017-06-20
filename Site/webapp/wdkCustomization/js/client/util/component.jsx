@@ -1,7 +1,7 @@
 /**
  * Created by dfalke on 8/19/16.
  */
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import { identity } from 'lodash';
 import { wrapActions, PureComponent } from 'wdk-client/ComponentUtils';
 

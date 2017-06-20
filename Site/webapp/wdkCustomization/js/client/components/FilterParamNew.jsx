@@ -40,6 +40,7 @@ export default class FilterParamNew extends React.PureComponent {
         {uiState.errorMessage && <pre style={{color: 'red'}}>{uiState.errorMessage}</pre>}
         {uiState.loading && <Loading/>}
         <ServerSideAttributeFilter
+          autoFocus={this.props.autoFocus}
           displayName={param.displayName}
           activeField={uiState.activeOntologyTerm}
           activeFieldSummary={uiState.ontologyTermSummaries[uiState.activeOntologyTerm]}

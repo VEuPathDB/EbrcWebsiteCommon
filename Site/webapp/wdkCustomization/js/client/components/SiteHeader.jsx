@@ -1,5 +1,5 @@
 import { add, reduce,keyBy } from 'lodash';
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import { getId, getDisplayName, getTargetType, isIndividual } from 'wdk-client/CategoryUtils';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { preorderSeq } from 'wdk-client/TreeUtils';
