@@ -5,7 +5,6 @@
   "repository": {},
   "license": "MIT",
   "dependencies": {
-    "extract-text-webpack-plugin": "^2.0.0-beta",
     "md5": "^2.2.1"
   }
 }

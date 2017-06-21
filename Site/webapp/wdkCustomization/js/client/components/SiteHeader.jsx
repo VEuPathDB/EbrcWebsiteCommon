@@ -1,6 +1,7 @@
 import { add, reduce,keyBy } from 'lodash';
 import PropTypes from 'prop-types';
 import { getId, getDisplayName, getTargetType, isIndividual } from 'wdk-client/CategoryUtils';
+import { Sticky } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { preorderSeq } from 'wdk-client/TreeUtils';
 import { formatReleaseDate } from '../util/formatters';
@@ -72,12 +73,14 @@ function Header(props) {
           </div>
         </div>
         {/* TODO Put items into an external JSON file. */}
-        <Menu
-          webAppUrl={webAppUrl}
-          projectId={projectId}
-          showLoginWarning={showLoginWarning}
-          isGuest={user ? user.isGuest : true}
-          items={mainMenuItems(props, menuItems)}/>
+        <Sticky className="eupathdb-MenuContainer" fixedClassName="eupathdb-MenuContainer__fixed">
+          <Menu
+            webAppUrl={webAppUrl}
+            projectId={projectId}
+            showLoginWarning={showLoginWarning}
+            isGuest={user ? user.isGuest : true}
+            items={mainMenuItems(props, menuItems)}/>
+        </Sticky>
       </div>
       <Announcements projectId={projectId} webAppUrl={webAppUrl} location={location} announcements={announcements}/>
     </div>

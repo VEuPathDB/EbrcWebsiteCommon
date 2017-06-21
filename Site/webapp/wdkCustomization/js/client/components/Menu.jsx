@@ -1,64 +1,32 @@
 import { isEmpty, identity } from 'lodash';
-import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { safeHtml } from 'wdk-client/ComponentUtils';
 
 /**
  * Site menu
  */
-export default class Menu extends Component {
-
-  constructor(props) {
-    super(props);
-    this.setPosition = this.setPosition.bind(this);
-    this.state = { position: '', top: 0 };
-  }
-
-  setPosition() {
-    let shouldFix = this.refs.trackingNode.getBoundingClientRect().top < 0;
-    if (shouldFix && this.state.position !== 'fixed') {
-      this.setState({ position: 'fixed'});
-    }
-    else if (!shouldFix && this.state.position === 'fixed') {
-      this.setState({ position: ''});
-    }
-  }
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.setPosition, { passive: true });
-    this.setPosition();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.setPosition, { passive: true });
-  }
-
-  render() {
-    let { position, top } = this.state;
-    return (
-      <div ref="trackingNode" style={{ overflow: 'visible'}}>
-        <ul className="eupathdb-Menu" style={{ position, top }}>
-          {this.props.items.filter(identity).map((item) => (
-            <MenuItem
-              key={item.id}
-              item={item}
-              webAppUrl={this.props.webAppUrl}
-              isGuest={this.props.isGuest}
-              showLoginWarning={this.props.showLoginWarning}
-              projectId={this.props.projectId}
-            />
-          ))}
-        </ul>
-      </div>
-    );
-  }
+export default function Menu(props) {
+  return (
+    <ul className="eupathdb-Menu">
+      {props.items.filter(identity).map((item, index) => (
+        <MenuItem
+          key={item.id || index}
+          item={item}
+          webAppUrl={props.webAppUrl}
+          isGuest={props.isGuest}
+          showLoginWarning={props.showLoginWarning}
+          projectId={props.projectId}
+        />
+      ))}
+    </ul>
+  );
 }
 
 Menu.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
-  showLoginWarning: PropTypes.func.isRequired,
+  showLoginWarning: PropTypes.func,
   items: PropTypes.array.isRequired,
-  isGuest: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool,
   projectId: PropTypes.string.isRequired
 };
 
@@ -95,10 +63,10 @@ function MenuItem(props) {
 
       { !isEmpty(item.children) &&
         <ul className="eupathdb-Submenu">
-          {item.children.filter(identity).map(childItem =>
+          {item.children.filter(identity).map((childItem, index) =>
             <MenuItem
               {...props}
-              key={childItem.id}
+              key={childItem.id || index}
               item={childItem}
             />
           )}
@@ -110,9 +78,9 @@ function MenuItem(props) {
 
 MenuItem.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
-  showLoginWarning: PropTypes.func.isRequired,
+  showLoginWarning: PropTypes.func,
   item: PropTypes.object.isRequired,
-  isGuest: PropTypes.bool.isRequired,
+  isGuest: PropTypes.bool,
   projectId: PropTypes.string.isRequired
 };
 
@@ -126,6 +94,9 @@ function include(item, projectId) {
     || (exclude != null && exclude.indexOf(projectId) === -1);
 }
 
+/**
+ * Returns a render compatible element
+ */
 function renderItemText(text) {
   return typeof text === 'string' ? safeHtml(text) : text;
 }
