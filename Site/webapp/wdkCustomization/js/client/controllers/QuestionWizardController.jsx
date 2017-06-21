@@ -209,12 +209,23 @@ export default class QuestionWizardController extends React.Component {
         const paramValues = question.parameters.reduce((paramValues, param) => {
           if (param.type === 'FilterParamNew') {
             const { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
+
             // TODO update param value with invalid filters removed
             const newFilters = filters.filter(filter => filter.field in param.ontology);
             if (filters.length !== newFilters.length) {
               console.log('Invalid filters detected', { filters, newFilters });
             }
             this._updateFilterParamCounts(param.name, newFilters);
+
+            // remove ontologyTermSummaries since dependent param values have changed
+            this._updateParamUIState(param.name, { ontologyTermSummaries: {} });
+
+            const activeOntologyTerm = this.state.paramUIState[param.name].activeOntologyTerm;
+
+            if (activeOntologyTerm) {
+              this._updateOntologyTermSummary(param.name, activeOntologyTerm, newFilters);
+            }
+
             return Object.assign(paramValues, {
               [param.name]: JSON.stringify({ filters: newFilters })
             });
