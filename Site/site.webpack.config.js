@@ -7,7 +7,8 @@ module.exports = function configure(additionalConfig) {
     context: process.cwd(),
     output: {
       path: path.join(process.cwd(), 'dist'),
-      filename: '[name].bundle.js'
+      filename: '[name].bundle.js',
+      chunkFilename: 'ebrc-chunk-[name].bundle.js'
     },
     resolve: {
       alias: {
