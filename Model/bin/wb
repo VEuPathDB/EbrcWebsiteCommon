@@ -50,7 +50,7 @@ my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $proj
 
 my $stopWebapp = "instance_manager manage $projectName stop $webapp";
 
-my $wdkXml = "wdkXml -model $projectName";
+my $wdkXml = "wdkXml -model $projectName > /dev/null";
 
 my $cleanGbrowseCache = "rm -rf $baseGus/html/gbrowse/tmp/*";
 
