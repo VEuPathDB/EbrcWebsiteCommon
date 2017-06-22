@@ -47,7 +47,7 @@ html {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    Create main stacking context
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-header {
+#header {
   position: relative;
   z-index: 3;
 }
@@ -802,10 +802,18 @@ span.smallTitle {
   Menu bar
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+.eupathdb-MenuContainer__fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  box-shadow: 0px 1px 5px #ddd;
+}
+
 .eupathdb-Menu {
-  height: 28px;
   line-height: 1;
-  list-type: none;
+  list-style: none;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -1406,11 +1414,6 @@ th.mythStyle {
 	background-color: #edf0ac;
 	background-image: url(../images/warnbox.jpg);
 }
-
-body.home .eupathdb-Announcement {
-  margin-left: 230px !important;
-}
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =genes Filters

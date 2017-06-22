@@ -1,5 +1,4 @@
 var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
 var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
 
@@ -8,7 +7,8 @@ module.exports = function configure(additionalConfig) {
     context: process.cwd(),
     output: {
       path: path.join(process.cwd(), 'dist'),
-      filename: 'site-[name].bundle.js'
+      filename: '[name].bundle.js',
+      chunkFilename: 'ebrc-chunk-[name].bundle.js'
     },
     resolve: {
       alias: {
@@ -40,30 +40,7 @@ module.exports = function configure(additionalConfig) {
         'flux'         : 'Flux',
         'flux/utils'   : 'FluxUtils'
       }
-    ],
-
-    // Extract CSS into a separate file for each entry
-    module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            use: {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            fallback: 'style-loader'
-          })
-        }
-      ]
-    },
-
-    plugins: [
-      new ExtractTextPlugin('site-[name].bundle.css')
     ]
-
   }, additionalConfig]);
 }
 
