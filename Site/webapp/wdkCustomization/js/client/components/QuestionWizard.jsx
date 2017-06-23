@@ -22,7 +22,8 @@ export default function QuestionWizard(props) {
     totalCount,
     onActiveGroupChange,
     onActiveOntologyTermChange,
-    onParamValueChange
+    onParamValueChange,
+    onUpdateInvalidGroupCounts
   } = props;
 
   const accumulatedTotal = activeGroup && groupUIState[activeGroup.name].accumulatedTotal;
@@ -37,6 +38,7 @@ export default function QuestionWizard(props) {
         groupUIState={groupUIState}
         onGroupSelect={onActiveGroupChange}
         recordClass={recordClass}
+        onUpdateInvalidGroupCounts={onUpdateInvalidGroupCounts}
       />
       {activeGroup == null ? (
         <div className={makeClassName('ActiveGroupContainer')}>
@@ -46,12 +48,12 @@ export default function QuestionWizard(props) {
         </div>
       ) : (
         <div className={makeClassName('ActiveGroupContainer')}>
-          <h3>
-            Reduce the set of {recordClass.displayNamePlural} from {totalCount} to {
-              accumulatedTotal && accumulatedTotal !== 'loading' ?  accumulatedTotal
+          <div className={makeClassName('ActiveGroupCount')}>
+            {
+              accumulatedTotal != null && accumulatedTotal !== 'loading' ?  accumulatedTotal
                 : <Loading radius={2} className={makeClassName('GroupLoading')}/>
-            }
-          </h3>
+            } of {totalCount} {recordClass.displayNamePlural} selected
+          </div>
           <p>{activeGroup.description}</p>
           <div
             className={makeClassName('ParamContainer')}
@@ -107,7 +109,8 @@ QuestionWizard.propTypes = {
   totalCount: PropTypes.number,
   onActiveGroupChange: PropTypes.func.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
-  onParamValueChange: PropTypes.func.isRequired
+  onParamValueChange: PropTypes.func.isRequired,
+  onUpdateInvalidGroupCounts: PropTypes.func.isRequired
 };
 
 export const paramPropTypes = {
@@ -123,11 +126,12 @@ export const paramPropTypes = {
  * GroupList component
  */
 function Navigation(props) {
-  const { activeGroup, customName, groups, groupUIState, onGroupSelect, recordClass, totalCount } = props;
+  const { activeGroup, customName, groups, groupUIState, onGroupSelect, recordClass, totalCount, onUpdateInvalidGroupCounts } = props;
   const finalCount = Seq.of(totalCount)
     .concat(groups.map(group => groupUIState[group.name].accumulatedTotal))
     .filter(finalCount => finalCount != null)
     .last();
+  const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false);
   return (
     <Sticky
       className={makeClassName('NavigationContainer')}
@@ -151,8 +155,7 @@ function Navigation(props) {
             title={`Filter ${recordClass.displayNamePlural} by ${group.displayName}`}
             className={makeClassName(
               'ParamGroupButton',
-              group == activeGroup && 'active',
-              groupUIState[group.name].accumulatedTotal != null ?  'configured' : ''
+              group == activeGroup && 'active'
             )}
             onClick={() => onGroupSelect(group)}
           >
@@ -170,17 +173,32 @@ function Navigation(props) {
           <ParamGroupCount
             title={`${recordClass.displayNamePlural} selected from previous steps.`}
             count={groupUIState[group.name].accumulatedTotal}
+            isValid={groupUIState[group.name].valid}
           />
         </div>
       )])}
       <div className={makeClassName('SubmitContainer')}>
-        <button className={makeClassName('SubmitButton')} >
+        <button
+          className={makeClassName('SubmitButton', invalid && 'invalid')}
+          title={
+            `View the results of your search for further analysis.` +
+            (invalid ?
+              ` NOTE: The final count in this button is not valid.` +
+              ` You can update the final count by clicking the link below.`
+            : ``)
+          }
+        >
           {finalCount == null || finalCount === 'loading'
               ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
               : `View ${finalCount} ${recordClass.displayNamePlural}`}
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
+      {invalid && (
+        <div className={makeClassName('InvalidCounts')}>
+          Grayed out counts are no longer valid. Click on another section above, or <button type="button" className="wdk-Link" onClick={onUpdateInvalidGroupCounts}>update counts now.</button>
+        </div>
+      )}
     </Sticky>
   )
 }
@@ -192,7 +210,8 @@ Navigation.propTypes = {
   onGroupSelect: PropTypes.func.isRequired,
   recordClass: PropTypes.object.isRequired,
   totalCount: PropTypes.number,
-  customName: PropTypes.string
+  customName: PropTypes.string,
+  onUpdateInvalidGroupCounts: PropTypes.func.isRequired
 };
 
 /**
@@ -211,7 +230,7 @@ Param.propTypes = paramPropTypes;
 /** Render count or loading */
 function ParamGroupCount(props) {
   return (
-    <div title={props.title} className={makeClassName('ParamGroupCount')}>
+    <div title={props.title} className={makeClassName('ParamGroupCount', props.isValid === false && 'invalid')}>
       {props.count === 'loading' ? (
         <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
       ) : props.count}
@@ -221,7 +240,8 @@ function ParamGroupCount(props) {
 
 ParamGroupCount.propTypes = {
   title: PropTypes.string,
-  count: PropTypes.oneOfType([ PropTypes.oneOf([ 'loading' ]), PropTypes.number ])
+  count: PropTypes.oneOfType([ PropTypes.oneOf([ 'loading' ]), PropTypes.number ]),
+  isValid: PropTypes.bool
 };
 
 /**

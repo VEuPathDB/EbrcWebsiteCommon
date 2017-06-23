@@ -10,7 +10,6 @@ export default class FilterParamNew extends React.PureComponent {
     super(props);
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
-    this._renderSelectionInfo = this._renderSelectionInfo.bind(this);
   }
 
   _handleActiveFieldChange(term) {
@@ -22,14 +21,8 @@ export default class FilterParamNew extends React.PureComponent {
     this.props.onParamValueChange(this.props.param, JSON.stringify({ filters }));
   }
 
-  _renderSelectionInfo(filterListProps) {
-    const { filteredDataCount, dataCount } = filterListProps;
-    const { displayName } = this.props.param;
-    return (
-      <strong style={{ lineHeight: 2 }}>
-        {filteredDataCount} of {dataCount} {displayName} selected
-      </strong>
-    )
+  _renderSelectionInfo() {
+    return null;
   }
 
   render() {
