@@ -2,8 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
+import { latest, synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
-import { groupBy, isEqual, memoize, debounce } from 'lodash';
+import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash';
+
+// FIXME Defer updating group counts until active group changes
+// FIXME Add callback to force updage group counts
+// FIXME Don't update param dependencies if value is empty
 
 /**
  * Controller for question wizard
@@ -21,8 +26,16 @@ export default class QuestionWizardController extends React.Component {
     this.onActiveGroupChange = this.onActiveGroupChange.bind(this);
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
+    this.onUpdateInvalidGroupCounts = this.onUpdateInvalidGroupCounts.bind(this);
     this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
     this._commitParamValueChange = debounce(this._commitParamValueChange, 1000);
+    this._updateGroupCounts = latest(this._updateGroupCounts);
+    this._handleParamValueChange = synchronized(this._handleParamValueChange);
+    this._updateDependedParams = synchronized(this._updateDependedParams);
+  }
+
+  componentDidUpdate() {
+    console.log('next state', this.state);
   }
 
   loadQuestion(props) {
@@ -84,15 +97,7 @@ export default class QuestionWizardController extends React.Component {
           recordClass,
           activeGroup: undefined
         }, () => {
-          question.parameters.forEach(param => {
-            if (param.type === 'FilterParamNew') {
-              this._updateFilterParamCounts(param.name,
-                JSON.parse(paramValues[param.name]).filters || []);
-            }
-          });
-
           this._updateGroupCounts(configuredGroups);
-
           this._getAnswerCount({
             questionName: question.name,
             parameters: defaultParamValues
@@ -110,57 +115,81 @@ export default class QuestionWizardController extends React.Component {
   onActiveGroupChange(activeGroup) {
     this.setState({ activeGroup });
 
-    const leftGroups = Seq.from(this.state.question.groups)
-      .takeWhile(group => group !== activeGroup);
-
-    const groupUIState = leftGroups.reduce((groupUIState, group) => {
-      return Object.assign(groupUIState, {
-        [group.name]: Object.assign({}, groupUIState[group.name], {
-          configured: true
-        })
-      });
-    }, Object.assign({}, this.state.groupUIState));
-
-    const groupsToUpdate = leftGroups
+    const groupUIState = Seq.from(this.state.question.groups)
+      .takeWhile(group => group !== activeGroup)
       .concat(Seq.of(activeGroup))
-      .filter(group => this.state.groupUIState[group.name].accumulatedTotal == null);
+      .reduce((groupUIState, group) => {
+        return Object.assign(groupUIState, {
+          [group.name]: Object.assign({}, groupUIState[group.name], {
+            valid: false
+          })
+        });
+      }, Object.assign({}, this.state.groupUIState));
 
-    this.setState({ groupUIState }, () => this._updateGroupCounts(groupsToUpdate));
+    // FIXME This needs to wait for any dependent param updates to finish first
+    this.setState({ groupUIState }, this.onUpdateInvalidGroupCounts);
+
+    // TODO Perform sideeffects elsewhere
+    // BEGIN_SIDE_EFFECTS
+    // remove ontologyTermSummaries since dependent param values have changed
+    activeGroup.parameters.forEach(paramName => {
+      const param = this.state.question.parameters.find(param => param.name === paramName);
+      if (param == null) throw new Error("Could not find param `" + paramName + "`.");
+      if (param.type === 'FilterParamNew') {
+        const { activeOntologyTerm } = this._getParamUIState(this.state, paramName);
+        const { filters } = JSON.parse(this.state.paramValues[param.name]);
+        this._updateFilterParamCounts(param.name, filters);
+        if (activeOntologyTerm) {
+          this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters);
+        }
+      }
+    })
+    // END_SIDE_EFFECTS
+  }
+
+  onUpdateInvalidGroupCounts() {
+    this._updateGroupCounts(
+      Seq.from(this.state.question.groups)
+        .filter(group => this.state.groupUIState[group.name].valid === false));
   }
 
   onActiveOntologyTermChange(param, filters, ontologyTerm) {
-    this._updateParamUIState(param.name, {
-      activeOntologyTerm: ontologyTerm
-    });
-    if (this.state.paramUIState[param.name].ontologyTermSummaries[ontologyTerm] == null) {
+    this.setState(updateState(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
+    if (this._getParamUIState(this.state, param.name).ontologyTermSummaries[ontologyTerm] == null) {
       this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
     }
   }
 
   onParamValueChange(param, paramValue) {
-    this.setState({
-      paramValues: Object.assign({}, this.state.paramValues, {
-        [param.name]: paramValue
-      })
-    }, () => this._commitParamValueChange(param, paramValue));
+    const prevParamValue = this.state.paramValues[param.name];
+    this.setState(updateState(['paramValues', param.name], paramValue),
+      () => this._commitParamValueChange(param, paramValue, prevParamValue));
   }
 
-  _commitParamValueChange(param, paramValue) {
+  _commitParamValueChange(param, paramValue, prevParamValue) {
     const groups = Seq.from(this.state.question.groups);
     const currentGroup = groups.find(group => group.parameters.includes(param.name));
-    const groupsToUpdate = groups
+    groups
       .dropWhile(group => group !== currentGroup)
-      .takeWhile(group => this.state.groupUIState[group.name].accumulatedTotal != null);
-    this._updateGroupCounts(groupsToUpdate);
-    this._handleParamValueChange(param, paramValue);
-    this._updateDependedParams(param, paramValue);
+      .drop(1)
+      .takeWhile(group => this.state.groupUIState[group.name].accumulatedTotal != null)
+      .forEach(group => {
+        this.setState(updateState(['groupUIState', group.name, 'valid'], false));
+      })
+
+    return Promise.all([
+      this._handleParamValueChange(param, paramValue, prevParamValue),
+      this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
+        this.setState(nextState, () => this._updateGroupCounts(Seq.of(currentGroup)));
+      })
+    ]);
   }
 
-  _handleParamValueChange(param, paramValue) {
+  _handleParamValueChange(param, paramValue, prevParamValue) {
     if (param.type === 'FilterParamNew') {
       const { filters = [] } = JSON.parse(paramValue);
-      const { filters: oldFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
-      const { activeOntologyTerm, ontologyTermSummaries } = this.state.paramUIState[param.name];
+      const { filters: oldFilters = [] } = JSON.parse(prevParamValue);
+      const { activeOntologyTerm, ontologyTermSummaries } = this._getParamUIState(this.state, param.name);
 
       // Get an array of fields whose associated filters have been modified.
       const modifiedFields = Object.entries(groupBy(filters.concat(oldFilters), 'field'))
@@ -181,65 +210,57 @@ export default class QuestionWizardController extends React.Component {
         [singleModifiedField]: ontologyTermSummaries[singleModifiedField]
       });
 
-      this._updateParamUIState(param.name, {
-        ontologyTermSummaries: newOntologyTermSummaries
-      });
+      this.setState(updateState(['paramUIState', param.name, 'ontologyTermSummaries'], newOntologyTermSummaries));
 
-      this._updateFilterParamCounts(param.name, filters);
-
-      // This only needs to be called if the modified filter value is not for
-      // the active ontology term.
-      if (shouldUpdateActiveOntologyTermSummary) {
-        this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters);
-      }
+      return Promise.all([
+        this._updateFilterParamCounts(param.name, filters),
+        // This only needs to be called if the modified filter value is not for
+        // the active ontology term.
+        shouldUpdateActiveOntologyTermSummary &&
+          this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters)
+      ]);
     }
   }
 
-  _updateDependedParams(param, paramValue) {
-    this.props.wdkService.getQuestionParamValues(
+  /**
+   * Returns a new object with updated paramValues and paramUIState
+   * @param {*} param
+   * @param {*} paramValue
+   */
+  _updateDependedParams(param, paramValue, paramValues) {
+    return this.props.wdkService.getQuestionParamValues(
       this.state.question.urlSegment,
       param.name,
       paramValue,
-      this.state.paramValues
+      paramValues
     ).then(
-      question => {
-        // for each parameter, reinitialize param state and value
-        // these are params with a vocab, so we have to check if current value is compatible
-        // if not, then reset value to default
-        const paramValues = question.parameters.reduce((paramValues, param) => {
-          if (param.type === 'FilterParamNew') {
-            const { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
+      // for each parameter, reinitialize param state and value
+      // these are params with a vocab, so we have to check if current value is compatible
+      // if not, then reset value to default
+      parameters =>
+        Seq.from(parameters)
+          .uniqBy(p => p.name)
+          .flatMap(param => {
+            if (param.type === 'FilterParamNew') {
+              // TODO update param value with invalid filters removed
+              const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
+              const filters = prevFilters.filter(filter => filter.field in param.ontology);
+              if (prevFilters.length !== filters.length) {
+                console.log('Invalid filters detected', { prevFilters, filters });
+              }
 
-            // TODO update param value with invalid filters removed
-            const newFilters = filters.filter(filter => filter.field in param.ontology);
-            if (filters.length !== newFilters.length) {
-              console.log('Invalid filters detected', { filters, newFilters });
+              // Return new state object with updates to param state and value
+              return [
+                updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
+                updateState(['paramValues', param.name], JSON.stringify({ filters }))
+              ]
             }
-            this._updateFilterParamCounts(param.name, newFilters);
-
-            // remove ontologyTermSummaries since dependent param values have changed
-            this._updateParamUIState(param.name, { ontologyTermSummaries: {} });
-
-            const activeOntologyTerm = this.state.paramUIState[param.name].activeOntologyTerm;
-
-            if (activeOntologyTerm) {
-              this._updateOntologyTermSummary(param.name, activeOntologyTerm, newFilters);
+            else {
+              console.warn('Unable to handle unexpected param type `%o`.', param.type);
+              return [identity];
             }
-
-            return Object.assign(paramValues, {
-              [param.name]: JSON.stringify({ filters: newFilters })
-            });
-          }
-          else {
-            console.warn('Unable to handle unexpected param type `%o`.', param.type);
-            return paramValues;
-          }
-        }, Object.assign({}, this.state.paramValues));
-        this.setState({ paramValues })
-      },
-      error => {
-        this.setState({ error });
-      }
+          })
+          .reduce(ary(flow, 2), identity)
     );
   }
 
@@ -284,10 +305,10 @@ export default class QuestionWizardController extends React.Component {
         return this._getAnswerCount(answerSpec).then(totalCount => [ group, totalCount ]);
       });
 
-    Promise.all(countsByGroup).then(counts => {
+    return Promise.all(countsByGroup).then(counts => {
       const groupUIState = counts.reduce((groupUIState, [ group, accumulatedTotal ]) => {
         return Object.assign(groupUIState, {
-          [group.name]: Object.assign({}, groupUIState[group.name], { accumulatedTotal })
+          [group.name]: Object.assign({}, groupUIState[group.name], { accumulatedTotal, valid: true })
         });
       }, Object.assign({}, this.state.groupUIState));
       this.setState({ groupUIState });
@@ -309,17 +330,18 @@ export default class QuestionWizardController extends React.Component {
   }
 
   _updateFilterParamCounts(paramName, filters) {
-    this.props.wdkService.getFilterParamSummaryCounts(
+    return this.props.wdkService.getFilterParamSummaryCounts(
       this.state.question.urlSegment,
       paramName,
       filters,
       this.state.paramValues
     ).then(
       counts => {
-        this._updateParamUIState(paramName, {
+        const uiState = this.state.paramUIState[paramName];
+        this.setState(updateState(['paramUIState', paramName], Object.assign({}, uiState, {
           filteredCount: counts.filtered,
           unfilteredCount: counts.unfiltered
-        });
+        })))
       },
       error => {
         this.setState({ error });
@@ -328,7 +350,7 @@ export default class QuestionWizardController extends React.Component {
   }
 
   _updateOntologyTermSummary(paramName, ontologyTerm, filters) {
-    this.props.wdkService.getOntologyTermSummary(
+    return this.props.wdkService.getOntologyTermSummary(
       this.state.question.urlSegment,
       paramName,
       filters.filter(filter => filter.field !== ontologyTerm),
@@ -337,11 +359,10 @@ export default class QuestionWizardController extends React.Component {
     ).then(
       ontologyTermSummary => {
         const { ontologyTermSummaries } = this.state.paramUIState[paramName];
-        this._updateParamUIState(paramName, {
-          ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
+        this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
+          Object.assign({}, ontologyTermSummaries, {
             [ontologyTerm]: formatSummary(ontologyTermSummary)
-          })
-        });
+          })));
       },
       error => {
         this.setState({ error });
@@ -349,12 +370,8 @@ export default class QuestionWizardController extends React.Component {
     );
   }
 
-  _updateParamUIState(paramName, newState) {
-    this.setState({
-      paramUIState: Object.assign({}, this.state.paramUIState, {
-        [paramName]: Object.assign({}, this.state.paramUIState[paramName], newState)
-      })
-    });
+  _getParamUIState(state, paramName) {
+    return state.paramUIState[paramName];
   }
 
   componentDidMount() {
@@ -375,7 +392,7 @@ export default class QuestionWizardController extends React.Component {
           </Dialog>
         )}
         {this.state.question && (
-          <QuestionWizard 
+          <QuestionWizard
             customName={this.props.customName}
             question={this.state.question}
             recordClass={this.state.recordClass}
@@ -387,6 +404,7 @@ export default class QuestionWizardController extends React.Component {
             onActiveGroupChange={this.onActiveGroupChange}
             onActiveOntologyTermChange={this.onActiveOntologyTermChange}
             onParamValueChange={this.onParamValueChange}
+            onUpdateInvalidGroupCounts={this.onUpdateInvalidGroupCounts}
           />
         )}
       </div>
@@ -418,4 +436,22 @@ function getDefaultParamValues(parameters) {
   return parameters.reduce(function(defaultParamValues, param) {
     return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
   }, {});
+}
+
+// update(['paramUIState', param.name, 'ontologyTermSummaries'], {});
+function updateState(path, value) {
+  return function update(state) {
+    return updateObjectImmutably(state, path, value);
+  }
+}
+
+function updateObjectImmutably(object, [key, ...restPath], value) {
+  const isObject = typeof object === 'object';
+  if (!isObject || (isObject && !(key in object)))
+    throw new Error("Invalid key path");
+
+  return Object.assign({}, object, {
+    [key]: restPath.length === 0 ? value
+      : updateObjectImmutably(object[key], restPath, value)
+  })
 }
