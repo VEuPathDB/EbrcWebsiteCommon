@@ -83,9 +83,9 @@ default:
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
 
   # account DB (authentication) replicated database
-  accountDb.login: ${userDb.login}
-  accountDb.password: ${userDb.password}
-  accountDb.instance: acctdbn
+  accountDb.login: ${accountDb.login}
+  accountDb.password: ${accountDb.password}
+  accountDb.instance: ${accountDb.instance}
   accountDb.platform: Oracle
   accountDb.userSchema: useraccounts.
 
