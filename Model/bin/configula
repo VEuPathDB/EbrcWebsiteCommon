@@ -62,16 +62,16 @@ my $content = <<"EOF";
 required:
  project: $wmc->{'product'}
 
- appDb.instance: $wmc->{'appDb_database'}
+ appDb.instance: $wmc->{'appDb_name'}
  appDb.login: $wmc->{'appDb_login'}
  appDb.password: $wmc->{'appDb_password'}
- appDb.userDbLink:  @{[ $wmc->dblink($wmc->{'userDb_database'}) ]}
+ appDb.userDbLink:  @{[ $wmc->dblink($wmc->{'userDb_name'}) ]}
 
- userDb.instance: $wmc->{'userDb_database'}
+ userDb.instance: $wmc->{'userDb_name'}
  userDb.login: $wmc->{'userDb_login'}
  userDb.password: $wmc->{'userDb_password'}
 
- commentDb.instance: $wmc->{'userDb_database'}
+ commentDb.instance: $wmc->{'userDb_name'}
  commentDb.login: $wmc->{'userDb_login'}
  commentDb.password: $wmc->{'userDb_password'}
  gushome: $wmc->{'gus_home'}
