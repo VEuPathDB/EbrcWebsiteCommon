@@ -24,7 +24,7 @@ required:
  commentDb.password: your_db_login
 
  # NOTE: accountDb login should probably be the same as userDb
- accountDb.login: acctDbN
+ accountDb.instance: acctDbN
  accountDb.login: your_db_login
  accountDb.password: your_db_password
 
