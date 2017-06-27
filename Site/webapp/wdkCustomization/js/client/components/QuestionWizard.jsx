@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FilterParamNew from './FilterParamNew';
 import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
-import { Loading, Sticky } from 'wdk-client/Components';
+import { Icon, Loading, Sticky } from 'wdk-client/Components';
 import { Seq } from 'wdk-client/IterableUtils';
 
 /**
@@ -20,6 +20,7 @@ export default function QuestionWizard(props) {
     recordClass,
     activeGroup,
     totalCount,
+    finalCount,
     onActiveGroupChange,
     onActiveOntologyTermChange,
     onParamValueChange,
@@ -33,6 +34,7 @@ export default function QuestionWizard(props) {
       <Navigation
         customName={customName}
         totalCount={totalCount}
+        finalCount={finalCount}
         activeGroup={activeGroup}
         groups={question.groups}
         groupUIState={groupUIState}
@@ -107,6 +109,7 @@ QuestionWizard.propTypes = {
   recordClass: PropTypes.object.isRequired,
   activeGroup: PropTypes.object,
   totalCount: PropTypes.number,
+  finalCount: PropTypes.number,
   onActiveGroupChange: PropTypes.func.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
   onParamValueChange: PropTypes.func.isRequired,
@@ -126,11 +129,17 @@ export const paramPropTypes = {
  * GroupList component
  */
 function Navigation(props) {
-  const { activeGroup, customName, groups, groupUIState, onGroupSelect, recordClass, totalCount, onUpdateInvalidGroupCounts } = props;
-  const finalCount = Seq.of(totalCount)
-    .concat(groups.map(group => groupUIState[group.name].accumulatedTotal))
-    .filter(finalCount => finalCount != null)
-    .last();
+  const {
+    activeGroup,
+    customName,
+    groups,
+    groupUIState,
+    onGroupSelect,
+    recordClass,
+    totalCount,
+    finalCount,
+    onUpdateInvalidGroupCounts
+  } = props;
   const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false);
   return (
     <Sticky
@@ -179,14 +188,8 @@ function Navigation(props) {
       )])}
       <div className={makeClassName('SubmitContainer')}>
         <button
-          className={makeClassName('SubmitButton', invalid && 'invalid')}
-          title={
-            `View the results of your search for further analysis.` +
-            (invalid ?
-              ` NOTE: The final count in this button is not valid.` +
-              ` You can update the final count by clicking the link below.`
-            : ``)
-          }
+          className={makeClassName('SubmitButton')}
+          title="View the results of your search for further analysis."
         >
           {finalCount == null || finalCount === 'loading'
               ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
@@ -196,7 +199,14 @@ function Navigation(props) {
       </div>
       {invalid && (
         <div className={makeClassName('InvalidCounts')}>
-          Grayed out counts are no longer valid. Click on another section above, or <button type="button" className="wdk-Link" onClick={onUpdateInvalidGroupCounts}>update counts now.</button>
+          <button
+            type="button"
+            className="wdk-Link"
+            onClick={onUpdateInvalidGroupCounts}
+            title="Recompute invalid counts above"
+          >
+            <Icon className="fa fa-refresh"/> Refresh counts
+          </button>
         </div>
       )}
     </Sticky>
@@ -210,6 +220,7 @@ Navigation.propTypes = {
   onGroupSelect: PropTypes.func.isRequired,
   recordClass: PropTypes.object.isRequired,
   totalCount: PropTypes.number,
+  finalCount: PropTypes.number,
   customName: PropTypes.string,
   onUpdateInvalidGroupCounts: PropTypes.func.isRequired
 };
@@ -233,7 +244,7 @@ function ParamGroupCount(props) {
     <div title={props.title} className={makeClassName('ParamGroupCount', props.isValid === false && 'invalid')}>
       {props.count === 'loading' ? (
         <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
-      ) : props.count}
+      ) : (props.isValid === false ? '?' : props.count)}
     </div>
   )
 }
