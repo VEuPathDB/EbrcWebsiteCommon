@@ -245,6 +245,10 @@ article section {
   min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
 }
 
+.wdk-PageContent__home {
+  padding: 0;
+}
+
 .wdk-PageContent__summary {
   min-height: calc(100vh - 208px); /* keeps footer at bottom of screen */
   padding: 1em;
