@@ -32,6 +32,7 @@ export default class QuestionWizardController extends React.Component {
     this._updateGroupCounts = latest(this._updateGroupCounts);
     this._handleParamValueChange = synchronized(this._handleParamValueChange);
     this._updateDependedParams = synchronized(this._updateDependedParams);
+    this._updateFinalCount = latest(this._updateFinalCount);
   }
 
   componentDidUpdate() {
@@ -98,6 +99,7 @@ export default class QuestionWizardController extends React.Component {
           activeGroup: undefined
         }, () => {
           this._updateGroupCounts(configuredGroups);
+          this._updateFinalCount();
           this._getAnswerCount({
             questionName: question.name,
             parameters: defaultParamValues
@@ -180,7 +182,10 @@ export default class QuestionWizardController extends React.Component {
     return Promise.all([
       this._handleParamValueChange(param, paramValue, prevParamValue),
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
-        this.setState(nextState, () => this._updateGroupCounts(Seq.of(currentGroup)));
+        this.setState(nextState, () => {
+          this._updateGroupCounts(Seq.of(currentGroup));
+          this._updateFinalCount();
+        });
       })
     ]);
   }
@@ -315,6 +320,13 @@ export default class QuestionWizardController extends React.Component {
     });
   }
 
+  _updateFinalCount() {
+    return this._getAnswerCount({
+      questionName: this.state.question.name,
+      parameters: this.state.paramValues
+    }).then(finalCount => this.setState({ finalCount }));
+  }
+
   _getAnswerCount(answerSpec) {
     const formatting = {
       formatConfig: {
@@ -398,6 +410,7 @@ export default class QuestionWizardController extends React.Component {
             recordClass={this.state.recordClass}
             activeGroup={this.state.activeGroup}
             totalCount={this.state.totalCount}
+            finalCount={this.state.finalCount}
             paramValues={this.state.paramValues}
             paramUIState={this.state.paramUIState}
             groupUIState={this.state.groupUIState}
