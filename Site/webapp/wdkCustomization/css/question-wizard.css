@@ -89,6 +89,7 @@
 
 .ebrc-QuestionWizardParamGroup {
   position: relative;
+  padding: 4px;
 }
 
 .ebrc-QuestionWizardParamGroupSeparator {
@@ -144,7 +145,7 @@ input.ebrc-QuestionWizardCustomNameInput {
   left: 0;
   right: 0;
   top: 120%;
-  width: 100%;
+  width: 99%;
 }
 
 button.ebrc-QuestionWizardParamGroupButton {
@@ -237,7 +238,7 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 
 .ebrc-QuestionWizardGetStarted {
   position: absolute;
-  top: 5em;
+  top: 5.5em;
   left: 50%;
   font-weight: 500;
   margin-left: -1em;

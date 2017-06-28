@@ -29,7 +29,7 @@ export default function QuestionWizard(props) {
 
   const accumulatedTotal = activeGroup && groupUIState[activeGroup.name].accumulatedTotal;
   return (
-    <div className={makeClassName()}>
+    <div className={makeClassName() + ' show-scrollbar'}>
       <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
       <Navigation
         customName={customName}
