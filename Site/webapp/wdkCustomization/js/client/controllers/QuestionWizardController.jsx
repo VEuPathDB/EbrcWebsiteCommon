@@ -6,8 +6,6 @@ import { latest, synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
 import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash';
 
-// FIXME Defer updating group counts until active group changes
-// FIXME Add callback to force updage group counts
 // FIXME Don't update param dependencies if value is empty
 
 /**
@@ -117,6 +115,9 @@ export default class QuestionWizardController extends React.Component {
   onActiveGroupChange(activeGroup) {
     this.setState({ activeGroup });
 
+    // FIXME Updating group counts and filter param counts needs to wait for
+    // any dependent param updates to finish first.
+
     const groupUIState = Seq.from(this.state.question.groups)
       .takeWhile(group => group !== activeGroup)
       .concat(Seq.of(activeGroup))
@@ -128,7 +129,6 @@ export default class QuestionWizardController extends React.Component {
         });
       }, Object.assign({}, this.state.groupUIState));
 
-    // FIXME This needs to wait for any dependent param updates to finish first
     this.setState({ groupUIState }, this.onUpdateInvalidGroupCounts);
 
     // TODO Perform sideeffects elsewhere
