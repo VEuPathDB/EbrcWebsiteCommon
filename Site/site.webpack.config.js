@@ -1,11 +1,9 @@
-import * as path from 'path';
-import { merge, webpack } from '../../WDK/View/base.webpack.config';
-
-// var path = require('path');
+var path = require('path');
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
+var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
 
-export default function configure(additionalConfig: webpack.Configuration) {
-  return merge({
+module.exports = function configure(additionalConfig) {
+  return baseConfig.merge([{
     context: process.cwd(),
     output: {
       path: path.join(process.cwd(), 'dist'),
@@ -43,7 +41,7 @@ export default function configure(additionalConfig: webpack.Configuration) {
         'flux/utils'   : 'FluxUtils'
       }
     ]
-  }, additionalConfig);
+  }, additionalConfig]);
 }
 
 /**
@@ -52,7 +50,7 @@ export default function configure(additionalConfig: webpack.Configuration) {
  *
  * See https://webpack.github.io/docs/configuration.html#externals (function bullet)
  */
-const resolveWdkClientExternal: webpack.ExternalsFunctionElement = function resolveWdkClientExternal(context, request, callback) {
+function resolveWdkClientExternal(context, request, callback) {
   var matches = /^wdk-client(\/(.*))?/.exec(request);
   if (matches != null) {
     if (matches[2]) {
@@ -62,5 +60,5 @@ const resolveWdkClientExternal: webpack.ExternalsFunctionElement = function reso
       return callback(null, 'var Wdk');
     }
   }
-  callback(null, undefined); // XXX Will this break anything?
+  callback();
 }
