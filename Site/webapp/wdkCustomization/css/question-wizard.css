@@ -55,7 +55,10 @@
 }
 
 .ebrc-QuestionWizardGroupLoading {
+  /* keep spinner contained */
   position: relative;
+  z-index: 1;
+
   display: inline-block;
   top: initial;
   left: 0;
