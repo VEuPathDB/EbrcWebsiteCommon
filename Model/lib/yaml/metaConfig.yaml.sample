@@ -59,12 +59,14 @@ required:
  myURL: http://hostdb.org/hostdb
 
 # The 'sections:' section controls which sections from the masterConfig.yaml to use to override the 'default:' section 
-# Uncomment either -apiSite/-{projectid} or -orthomcl
+# Uncomment either -apiSite and -{projectid} or one of the stand-alone sites
 sections:
  - apiSite
  - plasmodb
 
 # - orthomcl
+# - clinepidb
+# - microbiomedb
 
 
 # The 'custom:' section overrides all key/values in masterConfig.yaml.  It lets you make a non-standard configuration as needed.
