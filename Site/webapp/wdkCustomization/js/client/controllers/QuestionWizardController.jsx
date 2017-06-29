@@ -6,6 +6,18 @@ import { latest, synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
 import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash';
 
+//  type State = {
+//    question: Question;
+//    activeGroup: Group;
+//    groupUIState: Record<string, {
+//      valid?: boolean;
+//      loading?: boolean;
+//      accumulatedTotal?: boolean;
+//    }>;
+//    paramUIState: Record<string, any>;
+//    paramValues: Record<string, string>;
+//  }
+
 // FIXME Don't update param dependencies if value is empty
 
 /**
@@ -101,8 +113,8 @@ export default class QuestionWizardController extends React.Component {
           this._getAnswerCount({
             questionName: question.name,
             parameters: defaultParamValues
-          }).then(totalCount => {
-            this.setState({ totalCount });
+          }).then(initialCount => {
+            this.setState({ initialCount });
           });
         });
       },
@@ -118,18 +130,20 @@ export default class QuestionWizardController extends React.Component {
     // FIXME Updating group counts and filter param counts needs to wait for
     // any dependent param updates to finish first.
 
-    const groupUIState = Seq.from(this.state.question.groups)
+    const groupsToUpdate = Seq.from(this.state.question.groups)
       .takeWhile(group => group !== activeGroup)
-      .concat(Seq.of(activeGroup))
+      .concat(Seq.of(activeGroup));
+    const groupUIState = groupsToUpdate
       .reduce((groupUIState, group) => {
         return Object.assign(groupUIState, {
           [group.name]: Object.assign({}, groupUIState[group.name], {
-            valid: false
+            valid: groupUIState[group.name].accumulatedTotal == null ? undefined : false,
+            loading: true
           })
         });
       }, Object.assign({}, this.state.groupUIState));
 
-    this.setState({ groupUIState }, this.onUpdateInvalidGroupCounts);
+    this.setState({ groupUIState }, () => this._updateGroupCounts(groupsToUpdate));
 
     // TODO Perform sideeffects elsewhere
     // BEGIN_SIDE_EFFECTS
@@ -280,7 +294,10 @@ export default class QuestionWizardController extends React.Component {
 
     // set loading state for group counts
     const groupUIState = groups.reduce((state, group) => Object.assign(state, {
-      [group.name]: Object.assign({}, state[group.name], { accumulatedTotal: 'loading' })
+      [group.name]: Object.assign({}, state[group.name], {
+        loading: true,
+        valid: true
+      })
     }), Object.assign({}, this.state.groupUIState));
 
     this.setState({ groupUIState });
@@ -289,7 +306,7 @@ export default class QuestionWizardController extends React.Component {
 
     // transform each group into an answer value promise with accumulated param
     // values of previous groups
-    const countsByGroup = Seq.from(groups)
+    const stateByGroup = Seq.from(groups)
       .map(group => Seq.from(this.state.question.groups)
         .takeWhile(g => g !== group)
         .concat(Seq.of(group)))
@@ -307,13 +324,19 @@ export default class QuestionWizardController extends React.Component {
         }
       ])
       .map(([ group, answerSpec ]) => {
-        return this._getAnswerCount(answerSpec).then(totalCount => [ group, totalCount ]);
+        return this._getAnswerCount(answerSpec).then(
+          totalCount => [ group, { accumulatedTotal: totalCount, valid: true, loading: false} ],
+          error => {
+            console.error('Error loading group count for %o.', group, error);
+            return [ group, { valid: false, loading: false } ];
+          }
+        );
       });
 
-    return Promise.all(countsByGroup).then(counts => {
-      const groupUIState = counts.reduce((groupUIState, [ group, accumulatedTotal ]) => {
+    return Promise.all(stateByGroup).then(states => {
+      const groupUIState = states.reduce((groupUIState, [ group, state ]) => {
         return Object.assign(groupUIState, {
-          [group.name]: Object.assign({}, groupUIState[group.name], { accumulatedTotal, valid: true })
+          [group.name]: Object.assign({}, groupUIState[group.name], state)
         });
       }, Object.assign({}, this.state.groupUIState));
       this.setState({ groupUIState });
@@ -321,10 +344,11 @@ export default class QuestionWizardController extends React.Component {
   }
 
   _updateFinalCount() {
+    this.setState({ finalCountLoading: true });
     return this._getAnswerCount({
       questionName: this.state.question.name,
       parameters: this.state.paramValues
-    }).then(finalCount => this.setState({ finalCount }));
+    }).then(finalCount => this.setState({ finalCount, finalCountLoading: false }));
   }
 
   _getAnswerCount(answerSpec) {
@@ -405,15 +429,8 @@ export default class QuestionWizardController extends React.Component {
         )}
         {this.state.question && (
           <QuestionWizard
+            {...this.state}
             customName={this.props.customName}
-            question={this.state.question}
-            recordClass={this.state.recordClass}
-            activeGroup={this.state.activeGroup}
-            totalCount={this.state.totalCount}
-            finalCount={this.state.finalCount}
-            paramValues={this.state.paramValues}
-            paramUIState={this.state.paramUIState}
-            groupUIState={this.state.groupUIState}
             onActiveGroupChange={this.onActiveGroupChange}
             onActiveOntologyTermChange={this.onActiveOntologyTermChange}
             onParamValueChange={this.onParamValueChange}
