@@ -15,21 +15,17 @@ export default function QuestionWizard(props) {
     question,
     customName,
     paramValues,
-    paramUIState,
     groupUIState,
     recordClass,
     activeGroup,
     totalCount,
     finalCount,
     onActiveGroupChange,
-    onActiveOntologyTermChange,
-    onParamValueChange,
     onUpdateInvalidGroupCounts
   } = props;
 
-  const accumulatedTotal = activeGroup && groupUIState[activeGroup.name].accumulatedTotal;
   return (
-    <div className={makeClassName()}>
+    <div className={makeClassName() + ' show-scrollbar'}>
       <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
       <Navigation
         customName={customName}
@@ -49,47 +45,7 @@ export default function QuestionWizard(props) {
           </p>
         </div>
       ) : (
-        <div className={makeClassName('ActiveGroupContainer')}>
-          <div className={makeClassName('ActiveGroupCount')}>
-            {
-              accumulatedTotal != null && accumulatedTotal !== 'loading' ?  accumulatedTotal
-                : <Loading radius={2} className={makeClassName('GroupLoading')}/>
-            } of {totalCount} {recordClass.displayNamePlural} selected
-          </div>
-          <p>{activeGroup.description}</p>
-          <div
-            className={makeClassName('ParamContainer')}
-            onKeyPress={event => {
-              if (event.key === 'Enter') {
-                event.preventDefault();
-              }
-            }}
-          >
-            {activeGroup.parameters.map((paramName, index) => {
-              const param = question.parameters.find(p => p.name === paramName);
-              const ParamComponent = findParamComponent(param);
-              return (
-                <div key={paramName} className={makeClassName('Param')}>
-                  {activeGroup.parameters.length > 1 && (
-                    <div className={makeClassName('ParamLabel')}>
-                      <label>{param.displayName}</label>
-                    </div>
-                  )}
-                  <div className={makeClassName('ParamControl')}>
-                    <ParamComponent
-                      autoFocus={index === 0}
-                      param={param}
-                      value={paramValues[param.name]}
-                      uiState={paramUIState[param.name]}
-                      onActiveOntologyTermChange={onActiveOntologyTermChange}
-                      onParamValueChange={onParamValueChange}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <ActiveGroup {...props} />
       )}
       <input type="hidden" name="questionFullName" value={question.name}/>
       <input type="hidden" name="questionSubmit" value="Get Answer"/>
@@ -115,6 +71,82 @@ QuestionWizard.propTypes = {
   onParamValueChange: PropTypes.func.isRequired,
   onUpdateInvalidGroupCounts: PropTypes.func.isRequired
 };
+
+/**
+ * Parameters for the active group
+ */
+function ActiveGroup(props) {
+  if (props.activeGroup == null) return null;
+
+  const {
+    question,
+    paramValues,
+    paramUIState,
+    groupUIState,
+    recordClass,
+    activeGroup,
+    totalCount,
+    onActiveOntologyTermChange,
+    onParamValueChange
+  } = props;
+
+  const accumulatedTotal = activeGroup && groupUIState[activeGroup.name].accumulatedTotal;
+  const prevAccumulatedTotal = Seq.of(totalCount)
+    .concat(Seq.from(question.groups)
+      .takeWhile(group => group !== activeGroup)
+      .map(group => groupUIState[group.name].accumulatedTotal))
+    .last();
+  const delta = accumulatedTotal == null || accumulatedTotal === 'loading' ? 'loading'
+              : prevAccumulatedTotal == null || prevAccumulatedTotal === 'loading' ? 'loading'
+              : prevAccumulatedTotal - accumulatedTotal;
+
+  return (
+    <div className={makeClassName('ActiveGroupContainer')}>
+      <div className={makeClassName('ActiveGroupCount')}>
+        {
+          delta !== 'loading' ? delta
+          : <Loading radius={2} className={makeClassName('GroupLoading')}/>
+        } {recordClass.displayNamePlural} removed by {activeGroup.displayName}
+      </div>
+      <p>{activeGroup.description}</p>
+      <div
+        className={makeClassName('ParamContainer')}
+        onKeyPress={event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+          }
+        }}
+      >
+        {activeGroup.parameters.map((paramName, index) => {
+          const param = question.parameters.find(p => p.name === paramName);
+          const ParamComponent = findParamComponent(param);
+          return (
+            <div key={paramName} className={makeClassName('Param')}>
+              {activeGroup.parameters.length > 1 && (
+                <div className={makeClassName('ParamLabel')}>
+                  <label>{param.displayName}</label>
+                </div>
+              )}
+              <div className={makeClassName('ParamControl')}>
+                <ParamComponent
+                  autoFocus={index === 0}
+                  param={param}
+                  value={paramValues[param.name]}
+                  uiState={paramUIState[param.name]}
+                  onActiveOntologyTermChange={onActiveOntologyTermChange}
+                  onParamValueChange={onParamValueChange}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+ActiveGroup.propTypes = QuestionWizard.propTypes;
+
 
 export const paramPropTypes = {
   param: PropTypes.object.isRequired,

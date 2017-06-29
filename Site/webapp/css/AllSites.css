@@ -16,32 +16,18 @@ html {
   background-color: transparent;
 }
 .show-scrollbar *::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
-}
-.show-scrollbar *::-webkit-scrollbar-button {
-	width: 10px;
-	height:7px;
+  width: 10px;
+  height: 10px;
 }
 .show-scrollbar *::-webkit-scrollbar-track {
-	background: white;
-	border: thin solid rgba(204, 204, 204, 0.2);
-}
-.show-scrollbar *::-webkit-scrollbar-track:hover {
-	background: whitesmoke;
-  border: thin solid rgba(204, 204, 204, 0.5);
-}
-.show-scrollbar *::-webkit-scrollbar-thumb {
-	background:#bbb;
-  border-top: 1px solid #eee;
+  background: #eee;
+  border: thin solid rgba(204, 204, 204, 0.2);
   border-radius: 10px;
 }
-.show-scrollbar *::-webkit-scrollbar-thumb:vertical {
-  border: none;
-  border-left: 1px solid #eee;
-}
-.show-scrollbar *::-webkit-scrollbar-thumb:hover {
-	background:#999;
+.show-scrollbar *::-webkit-scrollbar-thumb {
+  background:#bbb;
+  border: thin solid #eee;
+  border-radius: 10px;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
