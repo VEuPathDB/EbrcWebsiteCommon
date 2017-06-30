@@ -150,6 +150,7 @@ function Navigation(props) {
     activeGroup,
     question,
     customName,
+    showHelpText,
     groupUIState,
     recordClass,
     initialCount,
@@ -189,7 +190,7 @@ function Navigation(props) {
           >
             {group.displayName}
           </button>
-          {activeGroup == null && group === groups[0] && (
+          {showHelpText && activeGroup == null && group === groups[0] && (
             <div className={makeClassName('GetStarted')}>
               Click to get started. <em>(skipping ahead is ok)</em>
             </div>
