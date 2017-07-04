@@ -74,8 +74,16 @@ export default class QuestionWizardController extends React.Component {
             case 'FilterParamNew':
               return Object.assign(uiState, {
                 [param.name]: {
+                  ontology: param.ontology,
                   activeOntologyTerm: undefined,
                   ontologyTermSummaries: {}
+                }
+              });
+
+            case 'FlatVocabParam':
+              return Object.assign(uiState, {
+                [param.name]: {
+                  vocabulary: param.vocabulary
                 }
               });
 
@@ -271,7 +279,16 @@ export default class QuestionWizardController extends React.Component {
               // Return new state object with updates to param state and value
               return [
                 updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
+                updateState(['paramUIState', param.name, 'ontology'], param.ontology),
                 updateState(['paramValues', param.name], JSON.stringify({ filters }))
+              ]
+            }
+            else if (param.type === 'FlatVocabParam') {
+              const value = this.state.paramValues[param.name];
+              return [
+                updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
+                updateState(['paramValues', param.name],
+                  param.vocabulary.includes(value) ? value : param.defaultValue)
               ]
             }
             else {
@@ -470,13 +487,20 @@ function getDefaultParamValues(parameters) {
   }, {});
 }
 
-// update(['paramUIState', param.name, 'ontologyTermSummaries'], {});
+/**
+ * Creates an updater function that returns a new state object
+ * with an updated value at the specified path.
+ */
 function updateState(path, value) {
   return function update(state) {
     return updateObjectImmutably(state, path, value);
   }
 }
 
+/**
+ * Creates a new object based on input object with an updated value
+ * a the specified path.
+ */
 function updateObjectImmutably(object, [key, ...restPath], value) {
   const isObject = typeof object === 'object';
   if (!isObject || (isObject && !(key in object)))
