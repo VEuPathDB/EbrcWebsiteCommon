@@ -274,6 +274,7 @@ function findParamComponent(param) {
   switch(param.type) {
     case 'FilterParamNew': return FilterParamNew;
     case 'StringParam': return StringParam;
+    case 'EnumParam': return FlatVocabParam;
     case 'FlatVocabParam': return FlatVocabParam;
     default: return Param;
   }

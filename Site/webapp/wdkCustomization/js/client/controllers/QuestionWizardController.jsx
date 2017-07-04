@@ -81,6 +81,7 @@ export default class QuestionWizardController extends React.Component {
               });
 
             case 'FlatVocabParam':
+            case 'EnumParam':
               return Object.assign(uiState, {
                 [param.name]: {
                   vocabulary: param.vocabulary
@@ -268,32 +269,35 @@ export default class QuestionWizardController extends React.Component {
         Seq.from(parameters)
           .uniqBy(p => p.name)
           .flatMap(param => {
-            if (param.type === 'FilterParamNew') {
-              // TODO update param value with invalid filters removed
-              const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
-              const filters = prevFilters.filter(filter => filter.field in param.ontology);
-              if (prevFilters.length !== filters.length) {
-                console.log('Invalid filters detected', { prevFilters, filters });
-              }
+            switch(param.type) {
+              case 'FilterParamNew': {
+                // TODO update param value with invalid filters removed
+                const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
+                const filters = prevFilters.filter(filter => filter.field in param.ontology);
+                if (prevFilters.length !== filters.length) {
+                  console.log('Invalid filters detected', { prevFilters, filters });
+                }
 
-              // Return new state object with updates to param state and value
-              return [
-                updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
-                updateState(['paramUIState', param.name, 'ontology'], param.ontology),
-                updateState(['paramValues', param.name], JSON.stringify({ filters }))
-              ]
-            }
-            else if (param.type === 'FlatVocabParam') {
-              const value = this.state.paramValues[param.name];
-              return [
-                updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
-                updateState(['paramValues', param.name],
-                  param.vocabulary.includes(value) ? value : param.defaultValue)
-              ]
-            }
-            else {
-              console.warn('Unable to handle unexpected param type `%o`.', param.type);
-              return [identity];
+                // Return new state object with updates to param state and value
+                return [
+                  updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
+                  updateState(['paramUIState', param.name, 'ontology'], param.ontology),
+                  updateState(['paramValues', param.name], JSON.stringify({ filters }))
+                ]
+              }
+              case 'FlatVocabParam':
+              case 'EnumParam': {
+                const value = this.state.paramValues[param.name];
+                return [
+                  updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
+                  updateState(['paramValues', param.name],
+                    param.vocabulary.includes(value) ? value : param.defaultValue)
+                ]
+              }
+              default: {
+                console.warn('Unable to handle unexpected param type `%o`.', param.type);
+                return [identity];
+              }
             }
           })
           .reduce(ary(flow, 2), identity)
