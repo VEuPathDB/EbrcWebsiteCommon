@@ -222,12 +222,11 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 }
 
 .ebrc-QuestionWizardParamGroupCount {
-  font-size: .8em;
   text-align: center;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -1em;
+  bottom: -2em;
 }
 
 .ebrc-QuestionWizardParamGroupCount__invalid {
