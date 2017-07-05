@@ -33,16 +33,17 @@ export default class QuestionWizardController extends React.Component {
     this.state = {
       paramValues: this.props.paramValues
     };
+    this.parameterMap = null;
     this.onActiveGroupChange = this.onActiveGroupChange.bind(this);
     this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
     this.onParamValueChange = this.onParamValueChange.bind(this);
     this.onUpdateInvalidGroupCounts = this.onUpdateInvalidGroupCounts.bind(this);
-    this._getAnswerCount = memoize(this._getAnswerCount, answerSpec => JSON.stringify(answerSpec));
+    this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
+    this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._commitParamValueChange = debounce(this._commitParamValueChange, 1000);
     this._updateGroupCounts = latest(this._updateGroupCounts);
     this._handleParamValueChange = synchronized(this._handleParamValueChange);
     this._updateDependedParams = synchronized(this._updateDependedParams);
-    this._updateFinalCount = latest(this._updateFinalCount);
   }
 
   componentDidUpdate() {
@@ -65,6 +66,9 @@ export default class QuestionWizardController extends React.Component {
     .then(
       ([ question, recordClass ]) => {
         document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+
+        // store <string, Parameter>Map for quick lookup
+        this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
 
         const { paramValues } = this.state;
         const defaultParamValues = getDefaultParamValues(question.parameters);
@@ -118,7 +122,6 @@ export default class QuestionWizardController extends React.Component {
           activeGroup: undefined
         }, () => {
           this._updateGroupCounts(configuredGroups);
-          this._updateFinalCount();
           this._getAnswerCount({
             questionName: question.name,
             parameters: defaultParamValues
@@ -176,7 +179,6 @@ export default class QuestionWizardController extends React.Component {
     this._updateGroupCounts(
       Seq.from(this.state.question.groups)
         .filter(group => this.state.groupUIState[group.name].valid === false));
-    this._updateFinalCount();
   }
 
   onActiveOntologyTermChange(param, filters, ontologyTerm) {
@@ -208,8 +210,6 @@ export default class QuestionWizardController extends React.Component {
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
           this._updateGroupCounts(Seq.of(currentGroup));
-          // Only update final count when we update invalid group counts
-          // this._updateFinalCount();
         });
       })
     ]);
@@ -347,7 +347,16 @@ export default class QuestionWizardController extends React.Component {
         }
       ])
       .map(([ group, answerSpec ]) => {
-        return this._getAnswerCount(answerSpec).then(
+        const params = group.parameters.map(paramName => this.parameterMap.get(paramName));
+        return (params.length === 1 && params[0].type === 'FilterParamNew'
+          ? this._getFilterCounts(
+              params[0].name,
+              JSON.parse(this.state.paramValues[params[0].name]).filters,
+              this.state.paramValues
+            ).then(counts => counts.filtered)
+
+          : this._getAnswerCount(answerSpec)
+        ).then(
           totalCount => [ group, { accumulatedTotal: totalCount, valid: true, loading: false} ],
           error => {
             console.error('Error loading group count for %o.', group, error);
@@ -366,14 +375,6 @@ export default class QuestionWizardController extends React.Component {
     });
   }
 
-  _updateFinalCount() {
-    this.setState({ finalCountLoading: true });
-    return this._getAnswerCount({
-      questionName: this.state.question.name,
-      parameters: this.state.paramValues
-    }).then(finalCount => this.setState({ finalCount, finalCountLoading: false }));
-  }
-
   _getAnswerCount(answerSpec) {
     const formatting = {
       formatConfig: {
@@ -388,13 +389,17 @@ export default class QuestionWizardController extends React.Component {
     );
   }
 
-  _updateFilterParamCounts(paramName, filters) {
+  _getFilterCounts(paramName, filters, paramValues) {
     return this.props.wdkService.getFilterParamSummaryCounts(
       this.state.question.urlSegment,
       paramName,
       filters,
-      this.state.paramValues
-    ).then(
+      paramValues
+    );
+  }
+
+  _updateFilterParamCounts(paramName, filters) {
+    return this._getFilterCounts(paramName, filters, this.state.paramValues).then(
       counts => {
         const uiState = this.state.paramUIState[paramName];
         this.setState(updateState(['paramUIState', paramName], Object.assign({}, uiState, {
