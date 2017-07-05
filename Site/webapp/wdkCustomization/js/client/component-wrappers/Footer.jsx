@@ -1,3 +1,3 @@
-import Footer from '../components/Footer';
+import SiteFooter from '../components/Footer';
 
-export default () => Footer
+export const Footer = () => SiteFooter

@@ -1,4 +1,4 @@
-// __WDK_CONFIG__ is defined in index.jsp
+// __SITE_CONFIG__ is defined in index.jsp
 export const {
   rootUrl,
   rootElement,
@@ -10,8 +10,9 @@ export const {
   webAppUrl,
   facebookUrl,
   twitterUrl,
-  youtubeUrl
+  youtubeUrl,
+  recordClassesWithProjectId
 } = window.__SITE_CONFIG__;
 
-// __EUPATHDB_ANNOUNCEMENTS__ is defined in index.jsp
+// __SITE_ANNOUNCEMENTS__ is defined in index.jsp
 export const announcements = window.__SITE_ANNOUNCEMENTS__;

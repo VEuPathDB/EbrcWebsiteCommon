@@ -1,4 +1,4 @@
-import { add, reduce,keyBy } from 'lodash';
+import { add, reduce, keyBy, noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { getId, getDisplayName, getTargetType, isIndividual } from 'wdk-client/CategoryUtils';
 import { Sticky } from 'wdk-client/Components';
@@ -14,18 +14,18 @@ import Menu from './Menu';
 /** Site header */
 function Header(props) {
   const {
-    quickSearchReferences,
     quickSearches,
     user,
     showLoginWarning,
-    location,
-    isPartOfEuPathDB,
-    mainMenuItems,
-    smallMenuItems,
+    location = window.location,
     siteConfig
   } = props;
 
   const {
+    isPartOfEuPathDB = true,
+    mainMenuItems = noop,
+    smallMenuItems = noop,
+    quickSearchReferences,
     announcements,
     buildNumber,
     projectId,
@@ -93,28 +93,13 @@ Header.propTypes = {
   ontology: PropTypes.object,
   recordClasses: PropTypes.array,
   basketCounts: PropTypes.object,
-  quickSearchReferences: PropTypes.array,
   quickSearches: PropTypes.object,
   preferences: PropTypes.object,
   location: PropTypes.object,
   showLoginForm: PropTypes.func.isRequired,
   showLoginWarning: PropTypes.func.isRequired,
   showLogoutWarning: PropTypes.func.isRequired,
-  siteConfig: PropTypes.object.isRequired,
-  includeQueryGrid: PropTypes.bool,
-  isPartOfEuPathDB: PropTypes.bool,
-  flattenSearches: PropTypes.bool,
-  mainMenuItems: PropTypes.func,
-  smallMenuItems: PropTypes.func
-};
-
-Header.defaultProps = {
-  includeQueryGrid: true,
-  isPartOfEuPathDB: true,
-  flattenSearches: false,
-  mainMenuItems: () => [],
-  smallMenuItems: () => [],
-  location: window.location
+  siteConfig: PropTypes.object.isRequired
 };
 
 export default wrappable(Header);
@@ -166,16 +151,16 @@ function makeMenuItems(props) {
     ontology,
     recordClasses,
     showLoginForm,
-    showLogoutWarning,
-    includeQueryGrid,
-    flattenSearches
+    showLogoutWarning
   } = props;
 
   const {
     facebookUrl,
     twitterUrl,
     youtubeUrl,
-    webAppUrl
+    webAppUrl,
+    includeQueryGrid = true,
+    flattenSearches = false
   } = siteConfig;
 
   const totalBasketCount = reduce(basketCounts, add, 0);

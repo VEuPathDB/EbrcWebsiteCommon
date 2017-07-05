@@ -4,8 +4,16 @@
 import { keyBy } from 'lodash';
 import { broadcast } from 'wdk-client/StaticDataUtils';
 
+export const SITE_CONFIG_LOADED = 'eupathdb/site-config-loaded';
 export const BASKETS_LOADED = 'eupathdb/basket'
 export const QUICK_SEARCH_LOADED = 'eupathdb/quick-search-loaded'
+
+export function loadSiteConfig(siteConfig) {
+  return broadcast({
+    type: SITE_CONFIG_LOADED,
+    payload: { siteConfig }
+  })
+}
 
 export function loadBasketCounts() {
   return function run(dispatch, { wdkService }) {

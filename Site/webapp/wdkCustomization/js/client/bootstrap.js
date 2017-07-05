@@ -9,13 +9,10 @@ __webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disa
 import * as siteConfig from './config';
 import { rootUrl, rootElement, endpoint } from './config';
 import { initialize as initializeWdk, wrapComponents } from 'wdk-client';
-import { debounce, mergeWith, identity, flow } from 'lodash';
-import { loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
-import makeHeaderWrapper from './component-wrappers/Header';
-import makeDownloadFormWrapper from './component-wrappers/DownloadForm';
-import Footer from './component-wrappers/Footer';
-import eupathStoreWrappers from './store-wrappers';
-import { selectReporterComponent } from './util/reporter';
+import { debounce, mergeWith, identity, flowRight } from 'lodash';
+import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
+import * as eupathComponentWrappers from './component-wrappers';
+import * as eupathStoreWrappers from './store-wrappers';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -41,32 +38,16 @@ export function initialize(options = {}) {
     storeWrappers,
     wrapRoutes
   } = options;
-  const Header = makeHeaderWrapper({
-    siteConfig,
-    quickSearchReferences: quickSearches,
-    isPartOfEuPathDB: options.isPartOfEuPathDB,
-    flattenSearches: options.flattenSearches,
-    includeQueryGrid: options.includeQueryGrid,
-    // TODO Rename this to `mainMenuEntries`
-    mainMenuItems: options.mainMenuItems,
-    smallMenuItems: options.smallMenuItems
-  });
-  const DownloadForm = makeDownloadFormWrapper(selectReporterComponent);
-  const eupathComponentWrappers = {
-    Header,
-    DownloadForm,
-    Footer
-  };
 
   unaliasWebappUrl();
   removeJsessionid();
 
-  wrapComponents(composeFunctionObjects(eupathComponentWrappers, componentWrappers));
+  wrapComponents(composeFunctionObjects(componentWrappers, eupathComponentWrappers));
 
   // initialize the application
   const context = initializeWdk({
     wrapRoutes,
-    storeWrappers: composeFunctionObjects(eupathStoreWrappers, storeWrappers),
+    storeWrappers: composeFunctionObjects(storeWrappers, eupathStoreWrappers),
     rootUrl,
     rootElement,
     endpoint,
@@ -74,6 +55,15 @@ export function initialize(options = {}) {
   });
 
   (window.ebrc || (window.ebrc = {})).context = context
+
+  context.dispatchAction(loadSiteConfig(Object.assign({}, siteConfig, {
+    quickSearchReferences: quickSearches,
+    isPartOfEuPathDB: options.isPartOfEuPathDB,
+    flattenSearches: options.flattenSearches,
+    includeQueryGrid: options.includeQueryGrid,
+    mainMenuItems: options.mainMenuItems,
+    smallMenuItems: options.smallMenuItems
+  })));
 
   // XXX Move calls to dispatchAction to controller override?
 
@@ -141,5 +131,5 @@ function makeLocationHandler() {
  * are composed.
  */
 function composeFunctionObjects(...functionObjects) {
-  return mergeWith({}, ...functionObjects, (a = identity, b = identity) => flow(a, b));
+  return mergeWith({}, ...functionObjects, (a = identity, b = identity) => flowRight(a, b));
 }
