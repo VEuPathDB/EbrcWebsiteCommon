@@ -74,8 +74,17 @@ export default class QuestionWizardController extends React.Component {
             case 'FilterParamNew':
               return Object.assign(uiState, {
                 [param.name]: {
+                  ontology: param.ontology,
                   activeOntologyTerm: undefined,
                   ontologyTermSummaries: {}
+                }
+              });
+
+            case 'FlatVocabParam':
+            case 'EnumParam':
+              return Object.assign(uiState, {
+                [param.name]: {
+                  vocabulary: param.vocabulary
                 }
               });
 
@@ -167,6 +176,7 @@ export default class QuestionWizardController extends React.Component {
     this._updateGroupCounts(
       Seq.from(this.state.question.groups)
         .filter(group => this.state.groupUIState[group.name].valid === false));
+    this._updateFinalCount();
   }
 
   onActiveOntologyTermChange(param, filters, ontologyTerm) {
@@ -198,7 +208,8 @@ export default class QuestionWizardController extends React.Component {
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
           this._updateGroupCounts(Seq.of(currentGroup));
-          this._updateFinalCount();
+          // Only update final count when we update invalid group counts
+          // this._updateFinalCount();
         });
       })
     ]);
@@ -260,23 +271,35 @@ export default class QuestionWizardController extends React.Component {
         Seq.from(parameters)
           .uniqBy(p => p.name)
           .flatMap(param => {
-            if (param.type === 'FilterParamNew') {
-              // TODO update param value with invalid filters removed
-              const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
-              const filters = prevFilters.filter(filter => filter.field in param.ontology);
-              if (prevFilters.length !== filters.length) {
-                console.log('Invalid filters detected', { prevFilters, filters });
-              }
+            switch(param.type) {
+              case 'FilterParamNew': {
+                // TODO update param value with invalid filters removed
+                const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
+                const filters = prevFilters.filter(filter => filter.field in param.ontology);
+                if (prevFilters.length !== filters.length) {
+                  console.log('Invalid filters detected', { prevFilters, filters });
+                }
 
-              // Return new state object with updates to param state and value
-              return [
-                updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
-                updateState(['paramValues', param.name], JSON.stringify({ filters }))
-              ]
-            }
-            else {
-              console.warn('Unable to handle unexpected param type `%o`.', param.type);
-              return [identity];
+                // Return new state object with updates to param state and value
+                return [
+                  updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
+                  updateState(['paramUIState', param.name, 'ontology'], param.ontology),
+                  updateState(['paramValues', param.name], JSON.stringify({ filters }))
+                ]
+              }
+              case 'FlatVocabParam':
+              case 'EnumParam': {
+                const value = this.state.paramValues[param.name];
+                return [
+                  updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
+                  updateState(['paramValues', param.name],
+                    param.vocabulary.includes(value) ? value : param.defaultValue)
+                ]
+              }
+              default: {
+                console.warn('Unable to handle unexpected param type `%o`.', param.type);
+                return [identity];
+              }
             }
           })
           .reduce(ary(flow, 2), identity)
@@ -430,6 +453,7 @@ export default class QuestionWizardController extends React.Component {
         {this.state.question && (
           <QuestionWizard
             {...this.state}
+            showHelpText={this.props.showHelpText}
             customName={this.props.customName}
             onActiveGroupChange={this.onActiveGroupChange}
             onActiveOntologyTermChange={this.onActiveOntologyTermChange}
@@ -447,6 +471,7 @@ QuestionWizardController.propTypes = {
   wdkService: PropTypes.object.isRequired,
   questionName: PropTypes.string.isRequired,
   paramValues: PropTypes.object.isRequired,
+  showHelpText: PropTypes.bool.isRequired,
   customName: PropTypes.string
 }
 
@@ -468,13 +493,20 @@ function getDefaultParamValues(parameters) {
   }, {});
 }
 
-// update(['paramUIState', param.name, 'ontologyTermSummaries'], {});
+/**
+ * Creates an updater function that returns a new state object
+ * with an updated value at the specified path.
+ */
 function updateState(path, value) {
   return function update(state) {
     return updateObjectImmutably(state, path, value);
   }
 }
 
+/**
+ * Creates a new object based on input object with an updated value
+ * a the specified path.
+ */
 function updateObjectImmutably(object, [key, ...restPath], value) {
   const isObject = typeof object === 'object';
   if (!isObject || (isObject && !(key in object)))

@@ -12,7 +12,7 @@ export default function FlatVocabParam(props) {
       value={props.value}
       multiple={props.param.multiPick}
     >
-      {props.param.vocabulary.map(entry => (
+      {props.uiState.vocabulary.map(entry => (
         <option value={entry[0]}>{entry[1]}</option>
       ))}
     </select>

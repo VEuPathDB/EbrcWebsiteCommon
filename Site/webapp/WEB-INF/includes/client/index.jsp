@@ -14,6 +14,18 @@
 <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
 <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
 
+<c:set var="recordClassesWithProjectId">
+  [
+    <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
+      <c:forEach items="${recordClass.primaryKeyColumns}" var="columnName">
+        <c:if test="${columnName eq 'project_id'}">
+          "${recordClass.urlSegment}",
+        </c:if>
+      </c:forEach>
+    </c:forEach>
+  ]
+</c:set>
+
 <!doctype html>
 <html>
   <head>
@@ -35,7 +47,8 @@
         webAppUrl: "${webAppUrl}",
         facebookUrl: "${props.FACEBOOK_URL}",
         twitterUrl: "${props.TWITTER_URL}",
-        youtubeUrl: "${props.YOUTUBE_URL}"
+        youtubeUrl: "${props.YOUTUBE_URL}",
+        recordClassesWithProjectId: ${recordClassesWithProjectId}
       };
       window.__SITE_ANNOUNCEMENTS__ = {
         information: ${information},

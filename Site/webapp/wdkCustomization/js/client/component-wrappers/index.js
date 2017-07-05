@@ -1,4 +1,4 @@
-import Header from './Header';
-import Footer from './Footer';
-
-export default { Header, Footer };
+export * from './Header';
+export * from './DownloadForm';
+export * from './Footer';
+export * from './RecordHeading';

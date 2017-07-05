@@ -10,32 +10,18 @@ const globalDataItems = [
   'basketCounts',
   'quickSearches',
   'preferences',
-  'location'
+  'location',
+  'siteConfig'
 ];
 
+const withContext = flow(
+  withActions(UserActionCreators),
+  withStore(state => pick(state.globalData, globalDataItems))
+);
+
 /**
- * Create a Wdk component wrapper with options
- *
- * @param {Object} options
- * @param {Object} options.siteConfig
- * @param {boolean} options.isPartOfEuPathDB
- * @param {boolean} options.flattenSearches
- * @param {boolean} options.includeQueryGrid
- * @param {Array} options.additionalMenuEntries
+ * Wrap Header component with state from store and configured actionCreators
  */
-export default function makeHeaderWrapper(options) {
-  if (options === undefined)
-    throw new Error("Header `options` must be defined.");
-
-  if (options.siteConfig === undefined)
-    throw new Error("Header `options.siteConfig` must be defined.");
-
-  const withContext = flow(
-    withActions(UserActionCreators),
-    withStore(state => Object.assign({}, options, pick(state.globalData, globalDataItems)))
-  );
-
-  return function HeaderWrapper() {
-    return withContext(SiteHeader)
-  }
+export function Header() {
+  return withContext(SiteHeader)
 }

@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { selectReporterComponent } from '../util/reporter';
 
-export default (selectReporterComponent) => (DefaultComponent) =>
+export function DownloadForm() {
   function EupathDownloadForm(props) {
     let Reporter = selectReporterComponent(props.selectedReporter, props.recordClass.name);
     return (
@@ -10,3 +11,4 @@ export default (selectReporterComponent) => (DefaultComponent) =>
       </div>
     );
   }
+}

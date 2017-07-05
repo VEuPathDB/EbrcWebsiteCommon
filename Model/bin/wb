@@ -27,7 +27,7 @@ my @modes;
 if ($svnPrefix eq "ApiCommon") {
   @modes = ("full", "model", "graph", "gbrowse", "ontology", "site");
 } else {
-  @modes = ("full", "model", "site");
+  @modes = ("full", "model", "site", "ontology");
 }
 
 my $isValidMode;

@@ -150,6 +150,7 @@ function Navigation(props) {
     activeGroup,
     question,
     customName,
+    showHelpText,
     groupUIState,
     recordClass,
     initialCount,
@@ -189,7 +190,7 @@ function Navigation(props) {
           >
             {group.displayName}
           </button>
-          {activeGroup == null && group === groups[0] && (
+          {showHelpText && activeGroup == null && group === groups[0] && (
             <div className={makeClassName('GetStarted')}>
               Click to get started. <em>(skipping ahead is ok)</em>
             </div>
@@ -211,9 +212,9 @@ function Navigation(props) {
           className={makeClassName('SubmitButton')}
           title="View the results of your search for further analysis."
         >
-          {finalCountLoading
-            ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-            : `View ${finalCount} ${recordClass.displayNamePlural}`}
+          { finalCountLoading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+          : Object.values(groupUIState).some(state => state.valid === false) ? `View ? ${recordClass.displayNamePlural}`
+          : `View ${finalCount} ${recordClass.displayNamePlural}` }
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
@@ -273,6 +274,7 @@ function findParamComponent(param) {
   switch(param.type) {
     case 'FilterParamNew': return FilterParamNew;
     case 'StringParam': return StringParam;
+    case 'EnumParam': return FlatVocabParam;
     case 'FlatVocabParam': return FlatVocabParam;
     default: return Param;
   }
