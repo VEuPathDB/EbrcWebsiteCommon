@@ -176,6 +176,7 @@ export default class QuestionWizardController extends React.Component {
     this._updateGroupCounts(
       Seq.from(this.state.question.groups)
         .filter(group => this.state.groupUIState[group.name].valid === false));
+    this._updateFinalCount();
   }
 
   onActiveOntologyTermChange(param, filters, ontologyTerm) {
@@ -207,7 +208,8 @@ export default class QuestionWizardController extends React.Component {
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
           this._updateGroupCounts(Seq.of(currentGroup));
-          this._updateFinalCount();
+          // Only update final count when we update invalid group counts
+          // this._updateFinalCount();
         });
       })
     ]);

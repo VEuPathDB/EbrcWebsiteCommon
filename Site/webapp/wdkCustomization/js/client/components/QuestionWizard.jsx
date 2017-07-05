@@ -212,9 +212,9 @@ function Navigation(props) {
           className={makeClassName('SubmitButton')}
           title="View the results of your search for further analysis."
         >
-          {finalCountLoading
-            ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-            : `View ${finalCount} ${recordClass.displayNamePlural}`}
+          { finalCountLoading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+          : Object.values(groupUIState).some(state => state.valid === false) ? `View ? ${recordClass.displayNamePlural}`
+          : `View ${finalCount} ${recordClass.displayNamePlural}` }
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
