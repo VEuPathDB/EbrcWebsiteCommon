@@ -214,7 +214,7 @@ function Navigation(props) {
           className={makeClassName('SubmitButton')}
           title="View the results of your search for further analysis."
         >
-          { finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+          { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
           : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
           : `View ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
         </button>
