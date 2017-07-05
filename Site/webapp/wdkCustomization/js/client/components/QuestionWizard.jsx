@@ -1,4 +1,3 @@
-import 'eupathdb/wdkCustomization/css/question-wizard.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import FilterParamNew from './FilterParamNew';
