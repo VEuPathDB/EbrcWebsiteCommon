@@ -1,4 +1,3 @@
-import 'eupathdb/wdkCustomization/css/question-wizard.css';
 import React from 'react';
 import PropTypes from 'prop-types';
 import FilterParamNew from './FilterParamNew';
@@ -48,8 +47,6 @@ QuestionWizard.propTypes = {
   recordClass: PropTypes.object.isRequired,
   activeGroup: PropTypes.object,
   initialCount: PropTypes.number,
-  finalCount: PropTypes.number,
-  finalCountLoading: PropTypes.bool,
   onActiveGroupChange: PropTypes.func.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
   onParamValueChange: PropTypes.func.isRequired,
@@ -154,13 +151,18 @@ function Navigation(props) {
     groupUIState,
     recordClass,
     initialCount,
-    finalCount,
-    finalCountLoading,
     onActiveGroupChange,
     onUpdateInvalidGroupCounts
   } = props;
   const { groups } = question;
   const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false);
+
+  const finalCountState = Seq.of({ accumulatedTotal: initialCount })
+    .concat(Seq.from(groups)
+      .map(group => groupUIState[group.name])
+      .filter(groupState => 'valid' in groupState))
+    .last();
+
   return (
     <Sticky
       className={makeClassName('NavigationContainer')}
@@ -212,9 +214,9 @@ function Navigation(props) {
           className={makeClassName('SubmitButton')}
           title="View the results of your search for further analysis."
         >
-          { finalCountLoading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-          : Object.values(groupUIState).some(state => state.valid === false) ? `View ? ${recordClass.displayNamePlural}`
-          : `View ${finalCount} ${recordClass.displayNamePlural}` }
+          { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+          : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
+          : `View ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>

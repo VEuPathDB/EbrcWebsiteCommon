@@ -39,6 +39,7 @@
 .ebrc-QuestionWizardInvalidCounts {
   position: absolute;
   bottom: .5em;
+  left: 0;
   font-size: .9em;
   text-align: center;
   width: 100%;
@@ -77,9 +78,9 @@
   width: 3em;
 }
 
-.ebrc-QuestionWizardIcon__ParticipantRecordClasses\.ParticipantRecordClass:after {
+.ebrc-QuestionWizardIcon:after {
   font-family: FontAwesome;
-  content: '\f183';
+  content: '\f1c0';
   font-style: normal;
   font-size: 2em;
   background: #333;
