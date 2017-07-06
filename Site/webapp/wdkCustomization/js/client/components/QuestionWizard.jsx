@@ -19,6 +19,10 @@ export default function QuestionWizard(props) {
   return (
     <div className={makeClassName() + ' show-scrollbar'}>
       <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
+      {/* FIXME Remove when we get this from the model */}
+      <div className={makeClassName('HackyStudyLink')}>
+        Learn about the <a href="/a/app/record/dataset/DS_c75ea37cb3" target="_blank">PRISM Study</a>
+      </div>
       <Navigation {...props} />
       {activeGroup == null ? (
         <div className={makeClassName('ActiveGroupContainer')}>
@@ -77,18 +81,15 @@ function ActiveGroup(props) {
       .takeWhile(group => group !== activeGroup)
       .map(group => groupUIState[group.name]))
     .last();
-  const delta = {
-    loading: loading || prevLoading,
-    difference: prevAccumulatedTotal - accumulatedTotal
-  };
 
   return (
     <div className={makeClassName('ActiveGroupContainer')}>
       <div className={makeClassName('ActiveGroupCount')}>
-        {
-          delta.loading ? <Loading radius={2} className={makeClassName('GroupLoading')}/>
-          : delta.difference
-        } {recordClass.displayNamePlural} eliminated based on {activeGroup.displayName}
+        Your <em>{activeGroup.displayName}</em> constraints reduce {
+          prevLoading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : prevAccumulatedTotal
+        } {recordClass.displayNamePlural} to {
+          loading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : accumulatedTotal
+        }
       </div>
       <p>{activeGroup.description}</p>
       <div
