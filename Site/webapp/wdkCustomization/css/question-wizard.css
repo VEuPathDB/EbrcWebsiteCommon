@@ -20,6 +20,7 @@
   padding-bottom: 3em;
   border-bottom: 1px solid #ccc;
   overflow: auto;
+  font-size: .9vw;
 }
 
 .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
