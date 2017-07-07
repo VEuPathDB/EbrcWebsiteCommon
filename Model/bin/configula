@@ -71,6 +71,10 @@ required:
  userDb.login: $wmc->{'userDb_login'}
  userDb.password: $wmc->{'userDb_password'}
 
+ accountDb.instance: $wmc->{'acctDb_name'}
+ accountDb.login: $wmc->{'acctDb_login'}
+ accountDb.password: $wmc->{'acctDb_password'}
+
  commentDb.instance: $wmc->{'userDb_name'}
  commentDb.login: $wmc->{'userDb_login'}
  commentDb.password: $wmc->{'userDb_password'}

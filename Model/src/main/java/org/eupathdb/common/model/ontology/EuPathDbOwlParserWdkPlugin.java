@@ -1,8 +1,8 @@
 package org.eupathdb.common.model.ontology;
 
+import static org.gusdb.wdk.model.AttributeMetaQueryHandler.getDynamicallyDefinedAttributes;
+
 import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.gusdb.fgputil.db.runner.SQLRunner;
-import org.gusdb.fgputil.db.runner.SQLRunner.ResultSetHandler;
-import org.gusdb.fgputil.db.runner.SQLRunnerException;
+import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.functional.TreeNode;
 import org.gusdb.fgputil.runtime.GusHome;
+import org.gusdb.wdk.model.AttributeMetaQueryHandler;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.ontology.OntologyAttribute;
 import org.gusdb.wdk.model.ontology.OntologyFactoryPlugin;
 import org.gusdb.wdk.model.ontology.OntologyNode;
 import org.gusdb.wdk.model.query.SqlQuery;
@@ -36,33 +36,34 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 
   private static Logger LOG = Logger.getLogger(EuPathDbOwlParserWdkPlugin.class);
+
   public static final String orderAnnotPropStr = "http://purl.obolibrary.org/obo/EUPATH_0000274"; // Display order annotation property IRI                                                                                        
   public static final String reasonerName = "hermit";
   public static final String owlFilePathParam = "owlFilePath";
   public static final String ATTRIBUTE_META_QUERY = "attributeMetaQuery";
-  
-  private TreeNode<OntologyNode> tree = null;
-  
+
+  private TreeNode<OntologyNode> _tree = null;
+
   @Override
   public TreeNode<OntologyNode> getTree(Map<String, String> parameters, String ontologyName, WdkModel wdkModel)
       throws WdkModelException {
 
-    if (tree == null) {
+    if (_tree == null) {
       synchronized (this) {
-        if (tree == null) {
-        	  tree = makeTree(parameters, ontologyName);
-        	  
-        	  // Replaces attributeMetaQueries with attributes obtained by executing those queries.
-        	  postProcessAttributeMetaQueries(tree, wdkModel);
+        if (_tree == null) {
+          _tree = makeTree(parameters);
+
+          // Replaces attributeMetaQueries with attributes obtained by executing those queries.
+          postProcessAttributeMetaQueries(_tree, wdkModel);
         }
       }
     }
-    return tree;
+    return _tree;
   }
 
-  private synchronized TreeNode<OntologyNode> makeTree(Map<String, String> parameters, String ontologyName) throws WdkModelException {
+  private synchronized TreeNode<OntologyNode> makeTree(Map<String, String> parameters) throws WdkModelException {
     String inputOwlFile = GusHome.getGusHome() + "/" + parameters.get(owlFilePathParam);
-    
+
     // load OWL format ontology
     OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     OWLOntology ont = OntologyManipulator.load(inputOwlFile, manager);
@@ -78,14 +79,14 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
     // if (contents == null) throw new WdkModelException("For ontology '" + ontologyName + "' the root node has null contents");
     if (contents == null) contents = new OntologyNode();
     TreeNode<OntologyNode> tree = new TreeNode<OntologyNode>(contents);
-  
+
     // build tree
     build(topNode, reasoner, ont, df, df.getOWLAnnotationProperty(IRI.create(orderAnnotPropStr)), tree);
-   
+
     return tree;
   }
-  
-  
+
+
   private static void build(Node<OWLClass> parentClass, OWLReasoner reasoner, OWLOntology ont, OWLDataFactory df,
       OWLAnnotationProperty orderAnnotProp, TreeNode<OntologyNode> parentTree) throws WdkModelException {
     // We don't want to print out the bottom node (containing owl:Nothing
@@ -106,8 +107,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
  
        // if (orderAnnotPropVal.length() == 0) throw new WdkModelException("No order annotation provided in node");  // how to show user which node?
         if (orderAnnotPropVal.length() == 0) orderAnnotPropVal = "0";
-        TermNode t = new TermNode(child, Integer.parseInt(orderAnnotPropVal));
-        if (t != null) childList.add(t);
+        childList.add(new TermNode(child, Integer.parseInt(orderAnnotPropVal)));
       }
     }
 
@@ -141,7 +141,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
 
     return node;
   }
-  
+
   /**
    * Weeds out attributeMetaQueries and replaces with the attributes identified by running each
    * attributeMetaQuery (attributeMetaQuery refers to a query for attributes that are loaded from
@@ -151,87 +151,80 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
    * @throws WdkModelException
    */
   protected void postProcessAttributeMetaQueries(TreeNode<OntologyNode> tree, WdkModel wdkModel) throws WdkModelException {
-	int totalAttributeMetaQueryNodes = 0;
-	int totalNodesRemoved = 0;
-	int totalNodesAdded = 0;
-	List<TreeNode<OntologyNode>> branches = tree.getNonLeafNodes();
+    int totalAttributeMetaQueryNodes = 0;
+    int totalNodesRemoved = 0;
+    int totalNodesAdded = 0;
+    List<TreeNode<OntologyNode>> branches = tree.getNonLeafNodes();
 
-	// Starting with the non-leaf nodes because we need to link the new nodes back to the parent.  So we need a
-	// handle on the parent.
-	for(TreeNode<OntologyNode> branch : branches) {
-	  List<TreeNode<OntologyNode>> childNodes = branch.getChildNodes();
-	  final List<TreeNode<OntologyNode>> newChildNodes = new ArrayList<>();
-	  Iterator<TreeNode<OntologyNode>> childNodeIterator = childNodes.iterator();
-	  while(childNodeIterator.hasNext()) {
+    // Starting with the non-leaf nodes because we need to link the new nodes back to the parent.  So we need a
+    // handle on the parent.
+    for (TreeNode<OntologyNode> branch : branches) {
+      List<TreeNode<OntologyNode>> childNodes = branch.getChildNodes();
+      List<TreeNode<OntologyNode>> newChildNodes = new ArrayList<>();
+      Iterator<TreeNode<OntologyNode>> childNodeIterator = childNodes.iterator();
+      while (childNodeIterator.hasNext()) {
         TreeNode<OntologyNode> childNode = childNodeIterator.next();
  
-		// The attribute meta query node, if present, will be a leaf node  
-		if(childNode.isLeaf()) {
-	      OntologyNode ontologyNode = childNode.getContents();
-	      
-	      // The attribute meta query node's target type will identify it as such.
-	      if(ontologyNode.get("targetType") != null && ATTRIBUTE_META_QUERY.equalsIgnoreCase(ontologyNode.get("targetType").get(0))) {
-	    	  
-	    	// The label will contain the query set and the query separated by a period.
-		    String[] queryInfo = ontologyNode.get("label").get(0).split("\\.");
-	        if(queryInfo.length != 2) {
-	          throw new WdkModelException("An attribute meta query label " + ontologyNode.get("label") + " must be in the form querySet.query");
-	        }
-	        
-	        totalAttributeMetaQueryNodes++;
-		    
-		    // Using the original attributeMetaQuery entry content for the new attributes.  Just a few modifications
-		    // needed (to label, name, and targetType).
-		    final OntologyNode templateContent = childNode.getContents();
-	        try {
-	          SqlQuery query = (SqlQuery) wdkModel.getQuerySet(queryInfo[0]).getQuery(queryInfo[1]);
-	          new SQLRunner(wdkModel.getAppDb().getDataSource(), query.getSql(), query.getFullName() + "__meta-cols")
-	            .executeQuery(new ResultSetHandler() {
-	              @Override
-	              public void handleResult(ResultSet resultSet) throws SQLException {
-	                try { 
-	            	  List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>();
-	            	  int counter = 0;
-	 	              while(resultSet.next()) {
-	 		            OntologyNode newNode = (OntologyNode)templateContent.clone();
-	 		            String name = resultSet.getString("name");
-	 		            newNode.put("name", new ArrayList<>(Arrays.asList(name)));
-	 		            newNode.put("targetType", new ArrayList<>(Arrays.asList("attribute")));
-	 		            String label = newNode.get("recordClassName").get(0) + "." + name; 
-	 		            newNode.put("label", new ArrayList<>(Arrays.asList(label)));
-	 		            newNode.put("display order", new ArrayList<>(Arrays.asList(String.valueOf(counter++))));
-	 		            substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
-	 	              }
-	 	              newChildNodes.addAll(substituteLeaves);
-	                }
-	                catch(SQLException sre) {
-	    	          throw new SQLRunnerException("Unable to replace attribute meta query references");
-	                }
-	              }
-	            });
-	        }
-	        catch(SQLRunnerException se) {
-	          throw new WdkModelException("Unable to replace attribute meta query references.", se.getCause());
-	        }
-	        childNodeIterator.remove();
-	        ++totalNodesRemoved;
-	      } // childNode is attribute meta query type inside this block
-		} // childNode is leaf inside this block 
+        // The attribute meta query node, if present, will be a leaf node  
+        if (childNode.isLeaf()) {
+          OntologyNode ontologyNode = childNode.getContents();
+
+          // The attribute meta query node's target type will identify it as such.
+          if (ontologyNode.get("targetType") != null && ATTRIBUTE_META_QUERY.equalsIgnoreCase(ontologyNode.get("targetType").get(0))) {
+
+            // The label will contain the query set and the query separated by a period.
+            String[] queryInfo = ontologyNode.get("label").get(0).split("\\.");
+            if(queryInfo.length != 2) {
+              throw new WdkModelException("An attribute meta query label " + ontologyNode.get("label") + " must be in the form querySet.query");
+            }
+
+            totalAttributeMetaQueryNodes++;
+
+            // Using the original attributeMetaQuery entry content for the new attributes.  Just a few modifications
+            // needed (to label, name, and targetType).
+            final OntologyNode templateContent = childNode.getContents();
+            SqlQuery query;
+            try {
+              query = (SqlQuery) wdkModel.getQuerySet(queryInfo[0]).getQuery(queryInfo[1]);
+            }
+            catch (WdkModelException e) {
+              // model does not contain this query; probably from another project and excluded, so skip
+              continue;
+            }
+            Timer timer = new Timer();
+            List<TreeNode<OntologyNode>> substituteLeaves = new ArrayList<>();
+            int counter = 0;
+            for (Map<String,Object> row : getDynamicallyDefinedAttributes(query.getFullName(), wdkModel)) {
+              OntologyAttribute attr = new OntologyAttribute();
+              AttributeMetaQueryHandler.populate(attr, row);
+              OntologyNode newNode = (OntologyNode)templateContent.clone();
+              newNode.put("name", new ArrayList<>(Arrays.asList(attr.getName())));
+              newNode.put("targetType", new ArrayList<>(Arrays.asList("attribute")));
+              String label = newNode.get("recordClassName").get(0) + "." + attr.getName();
+              newNode.put("label", new ArrayList<>(Arrays.asList(label)));
+              newNode.put("display order", new ArrayList<>(Arrays.asList(String.valueOf(counter++))));
+              substituteLeaves.add(new TreeNode<OntologyNode>(newNode));
+            }
+            newChildNodes.addAll(substituteLeaves);
+            LOG.debug("Took " + timer.getElapsedString() + " to resolve AttributeMetaQuery: " + query.getFullName());
+            childNodeIterator.remove();
+            ++totalNodesRemoved;
+          } // childNode is attribute meta query type inside this block
+        } // childNode is leaf inside this block 
       } // iterating over all child nodes of the branch
       if(newChildNodes.size() > 0) {
-	    branch = branch.addAllChildNodes(newChildNodes);
-	    LOG.debug("Branch " + branch.getContents().get("name"));
-	    totalNodesAdded += newChildNodes.size();
-	    LOG.debug("Total attribute nodes added " + newChildNodes.size());
+        branch = branch.addAllChildNodes(newChildNodes);
+        LOG.debug("Branch " + branch.getContents().get("name"));
+        totalNodesAdded += newChildNodes.size();
+        LOG.debug("Total attribute nodes added " + newChildNodes.size());
         LOG.debug("Running total attribute meta query nodes removed " + totalNodesRemoved);
         LOG.debug("");
-      }  
-      
+      }
     } // iterating over all branches of tree
-	LOG.debug("Total attribute meta query nodes " + totalAttributeMetaQueryNodes);
-	LOG.debug("Total nodes added overall " + totalNodesAdded);
+    LOG.debug("Total attribute meta query nodes " + totalAttributeMetaQueryNodes);
+    LOG.debug("Total nodes added overall " + totalNodesAdded);
     LOG.debug("Total nodes removed overall " + totalNodesRemoved);
-  }	
+  }
 
   @Override
   public void validateParameters(Map<String, String> parameters, String ontologyName)
@@ -246,20 +239,20 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
   private static class TermNode implements Comparable<TermNode>{
     private Node<OWLClass> node;
     private Integer order;
-    
+
     public TermNode (Node<OWLClass> node, Integer order) {
         this.node = node;
         this.order = order;
     }
-    
+
     public Node<OWLClass> getNode () {
         return node;
     }
-    
+
     public Integer getOrder() {
         return order;
     }
-    
+
     @Override
     public int compareTo(TermNode term) {
         return getOrder().compareTo(term.getOrder());

@@ -11,7 +11,6 @@ default:
   smtpServer: 127.0.0.1
   supportEmail: help@${project}.org
   adminEmail: ""
-  defaultRole: wdk_user
   secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 
   # authentication method
@@ -57,7 +56,6 @@ default:
   appDb.showConnections: false
   appDb.showConnectionsInterval: 10
   appDb.showConnectionsDuration: 600
-  # NOT NEEDED in Build21  appDb.wdkEngineSchema: wdkengine.
   appDb.maxPkColumnWidth: 150
 
   # driverInitClass allows us to:
@@ -72,7 +70,6 @@ default:
   userDb.instance: ${userDb.instance}
   userDb.platform: Oracle
   userDb.userSchema: userlogins5.
-  # NOT NEEDED in Build21 userDb.wdkEngineSchema: wdkengine.
 
   userDb.maxActive: 20
   userDb.maxIdle: 1
@@ -84,6 +81,25 @@ default:
   userDb.showConnectionsDuration: 600
 
   userDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
+
+  # account DB (authentication) replicated database
+  accountDb.login: ${accountDb.login}
+  accountDb.password: ${accountDb.password}
+  accountDb.instance: ${accountDb.instance}
+  accountDb.platform: Oracle
+  accountDb.userSchema: useraccounts.
+
+  accountDb.maxActive: 20
+  accountDb.maxIdle: 1
+  accountDb.minIdle: 1
+  accountDb.maxWait: 50
+
+  accountDb.showConnections: false
+  accountDb.showConnectionsInterval: 10
+  accountDb.showConnectionsDuration: 600
+
+  accountDb.driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
+
   cndSrcBin: /opt/cndsrc/bin
 
   webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
@@ -138,9 +154,10 @@ default:
 #=======================================================================================================
 
 production:
-  appDb.maxIdle: 20
   appDb.maxActive: 80
+  appDb.maxIdle: 20
   userDb.maxIdle: 10
+  accountDb.maxIdle: 10
   commentDb.maxIdle: 10
   adminEmail: sfischer@pcbi.upenn.edu, aurreco@uga.edu, rdoherty@upenn.edu, dfalke@uga.edu, crisl@upenn.edu, mheiges@uga.edu
 
@@ -167,8 +184,8 @@ apiSite:
   userDatasetStoreConfig: >
     <userDatasetStore implementation="org.gusdb.wdk.model.user.dataset.filesys.FilesysUserDatasetStore">
       <property name="rootPath">/var/www/Common/workspaces/users</property>
-      <typeHandler type="example" version="1.0"   implementation="org.gusdb.wdk.model.user.dataset.ExampleTypeHandler"/>
-      <typeHandler type="GeneList" version="1.0"  implementation="org.apidb.apicommon.model.userdataset.GeneListTypeHandler"/>
+      <typeHandler type="example" version="1.0" implementation="org.gusdb.wdk.model.user.dataset.ExampleTypeHandler"/>
+      <typeHandler type="GeneList" version="1.0" implementation="org.apidb.apicommon.model.userdataset.GeneListTypeHandler"/>
     </userDatasetStore>
 
 amoebadb: {}

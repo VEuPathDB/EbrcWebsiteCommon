@@ -191,7 +191,7 @@ function makeMenuItems(props) {
 
     isLoggedIn ? {
       id: 'profileOrLogin',
-      text: `${user.firstName} ${user.lastName}'s Profile`,
+      text: `${user.properties.firstName} ${user.properties.lastName}'s Profile`,
       route: 'user/profile'
     } : {
       id: 'profileOrLogin',
@@ -208,7 +208,7 @@ function makeMenuItems(props) {
     } : {
       id: 'registerOrLogout',
       text: 'Register',
-      webAppUrl: '/showRegister.do'
+      route: 'user/registration'
     },
     {
       id: 'contactUs',

@@ -10,7 +10,8 @@ import { render} from 'react-dom';
 class ClientContextProvider extends React.Component {
 
   getChildContext() {
-    const { stores: { IndexStore: store }, dispatchAction } = window.ebrc.context;
+    // get 
+    const { stores: { WdkStore: store }, dispatchAction } = window.ebrc.context;
     return { store, dispatchAction }
   }
 
