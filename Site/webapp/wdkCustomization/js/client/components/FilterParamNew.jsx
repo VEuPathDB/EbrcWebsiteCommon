@@ -37,6 +37,8 @@ export default class FilterParamNew extends React.PureComponent {
           displayName={param.displayName}
           activeField={uiState.activeOntologyTerm}
           activeFieldSummary={uiState.ontologyTermSummaries[uiState.activeOntologyTerm]}
+          hideFilterPanel={uiState.hideFilterPanel}
+          hideFieldPanel={uiState.hideFieldPanel}
           fields={uiState.ontology}
           filters={filters}
           dataCount={uiState.unfilteredCount}

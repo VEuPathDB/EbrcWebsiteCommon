@@ -50,6 +50,20 @@
   font-size: .8rem;
 }
 
+.ebrc-QuestionWizardActiveGroupHeading {
+  display: flex;
+  align-items: flex-end;
+}
+
+.ebrc-QuestionWizardActiveGroupDescription {
+  max-width: 50%;
+  margin: 1em 0 1em auto;
+  border: 1px solid #dadada;
+  padding: .5em;
+  border-radius: 4px;
+  color: #666;
+}
+
 .ebrc-QuestionWizardActiveGroupCount {
   font-weight: 500;
   font-size: 1.2em;
@@ -229,6 +243,10 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   left: 0;
   right: 0;
   bottom: -2em;
+}
+
+.ebrc-QuestionWizardParamGroupCount__active {
+  font-weight: bold;
 }
 
 .ebrc-QuestionWizardParamGroupCount__invalid {

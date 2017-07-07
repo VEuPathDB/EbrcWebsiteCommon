@@ -4,6 +4,8 @@ import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
 import { latest, synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
+import { getTree } from 'wdk-client/FilterServiceUtils';
+import { getLeaves } from 'wdk-client/TreeUtils';
 import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash';
 
 //  type State = {
@@ -75,14 +77,18 @@ export default class QuestionWizardController extends React.Component {
 
         const paramUIState = question.parameters.reduce(function(uiState, param) {
           switch(param.type) {
-            case 'FilterParamNew':
+            case 'FilterParamNew': {
+              const leaves = getLeaves(getTree(param.ontology), node => node.children);
               return Object.assign(uiState, {
                 [param.name]: {
                   ontology: param.ontology,
-                  activeOntologyTerm: undefined,
+                  activeOntologyTerm: leaves.length > 0 ? leaves[0].field.term : null,
+                  hideFilterPanel: leaves.length === 1,
+                  hideFieldPanel: leaves.length === 1,
                   ontologyTermSummaries: {}
                 }
               });
+            }
 
             case 'FlatVocabParam':
             case 'EnumParam':

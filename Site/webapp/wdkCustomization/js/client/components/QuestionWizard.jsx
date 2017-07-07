@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { zip } from 'lodash';
 import FilterParamNew from './FilterParamNew';
 import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
@@ -18,10 +19,12 @@ export default function QuestionWizard(props) {
 
   return (
     <div className={makeClassName() + ' show-scrollbar'}>
-      <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
-      {/* FIXME Remove when we get this from the model */}
-      <div className={makeClassName('HackyStudyLink')}>
-        Learn about the <a href="/a/app/record/dataset/DS_c75ea37cb3" target="_blank">PRISM Study</a>
+      <div className={makeClassName('HeadingContainer')}>
+        <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
+        {/* FIXME Remove when we get this from the model */}
+        <div className={makeClassName('HackyStudyLink')}>
+          <i className="fa fa-info-circle" aria-hidden="true"></i> Learn about the <a href="/a/app/record/dataset/DS_c75ea37cb3" target="_blank">PRISM Study</a>
+        </div>
       </div>
       <Navigation {...props} />
       {activeGroup == null ? (
@@ -75,6 +78,8 @@ function ActiveGroup(props) {
     onParamValueChange
   } = props;
 
+  const defaultValuesMap = new Map(question.parameters.map(p => [p.name, p.defaultValue]));
+  const isDefaults = activeGroup.parameters.every(pName => paramValues[pName] === defaultValuesMap.get(pName));
   const { accumulatedTotal, loading } = groupUIState[activeGroup.name];
   const { accumulatedTotal: prevAccumulatedTotal, loading: prevLoading } = Seq.of({ accumulatedTotal: initialCount })
     .concat(Seq.from(question.groups)
@@ -84,14 +89,25 @@ function ActiveGroup(props) {
 
   return (
     <div className={makeClassName('ActiveGroupContainer')}>
-      <div className={makeClassName('ActiveGroupCount')}>
-        Your <em>{activeGroup.displayName}</em> constraints reduce {
-          prevLoading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : prevAccumulatedTotal
-        } {recordClass.displayNamePlural} to {
-          loading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : accumulatedTotal
-        }
+      <div className={makeClassName('ActiveGroupHeading')}>
+        {isDefaults ? (
+          <div className={makeClassName('ActiveGroupCount')}>
+            You do not have any <em>{activeGroup.displayName}</em> constraints
+          </div>
+        ) : (
+          <div className={makeClassName('ActiveGroupCount')}>
+            Your <em>{activeGroup.displayName}</em> constraints reduce {
+              prevLoading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : prevAccumulatedTotal
+            } {recordClass.displayNamePlural} to {
+              loading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : accumulatedTotal
+            }
+          </div>
+        )}
+        {activeGroup.description && (
+          <div className={makeClassName('ActiveGroupDescription')}>{activeGroup.description}</div>
+        )}
       </div>
-      <p>{activeGroup.description}</p>
+
       <div
         className={makeClassName('ParamContainer')}
         onKeyPress={event => {
@@ -164,6 +180,9 @@ function Navigation(props) {
       .filter(groupState => 'valid' in groupState))
     .last();
 
+  // A Map from a group to its previous group
+  const prevGroupMap = new Map(zip(groups.slice(1), groups.slice(0, -1)));
+
   return (
     <Sticky
       className={makeClassName('NavigationContainer')}
@@ -174,7 +193,11 @@ function Navigation(props) {
       </div>
       <div className={makeClassName('ParamGroupSeparator')}>
         <div className={makeClassName('ParamGroupArrow')}/>
-        <ParamGroupCount title={`All ${recordClass.displayNamePlural}`} count={initialCount}/>
+        <ParamGroupCount
+          title={`All ${recordClass.displayNamePlural}`}
+          count={initialCount}
+          isActive={activeGroup == groups[0]}
+        />
       </div>
 
       {Seq.from(groups).flatMap(group => [(
@@ -207,6 +230,7 @@ function Navigation(props) {
             count={groupUIState[group.name].accumulatedTotal}
             isLoading={groupUIState[group.name].loading}
             isValid={groupUIState[group.name].valid}
+            isActive={(group === activeGroup || group === prevGroupMap.get(activeGroup)) && 'active'}
           />
         </div>
       )])}
@@ -255,7 +279,13 @@ Param.propTypes = paramPropTypes;
 /** Render count or loading */
 function ParamGroupCount(props) {
   return (
-    <div title={props.title} className={makeClassName('ParamGroupCount', props.isValid === false && 'invalid')}>
+    <div title={props.title}
+      className={makeClassName(
+        'ParamGroupCount',
+        props.isValid === false && 'invalid',
+        props.isActive && 'active'
+      )}
+    >
       {props.isLoading === true ? (
         <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
       ) : (props.isValid === false ? '?' : props.count)}
@@ -267,7 +297,8 @@ ParamGroupCount.propTypes = {
   title: PropTypes.string,
   count: PropTypes.number,
   isValid: PropTypes.bool,
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  isActive: PropTypes.bool
 };
 
 /**
