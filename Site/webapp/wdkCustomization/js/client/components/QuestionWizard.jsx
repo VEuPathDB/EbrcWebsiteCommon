@@ -120,13 +120,13 @@ function ActiveGroup(props) {
           const param = question.parameters.find(p => p.name === paramName);
           const ParamComponent = findParamComponent(param);
           return (
-            <div key={paramName} className={makeClassName('Param')}>
+            <div key={paramName} className={makeClassName('Param', param.type)}>
               {activeGroup.parameters.length > 1 && (
-                <div className={makeClassName('ParamLabel')}>
+                <div className={makeClassName('ParamLabel', param.type)}>
                   <label>{param.displayName}</label>
                 </div>
               )}
-              <div className={makeClassName('ParamControl')}>
+              <div className={makeClassName('ParamControl', param.type)}>
                 <ParamComponent
                   autoFocus={index === 0}
                   param={param}

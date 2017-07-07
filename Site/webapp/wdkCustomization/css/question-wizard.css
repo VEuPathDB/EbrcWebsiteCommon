@@ -292,6 +292,7 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   align-self: center;
   text-align: right;
   margin: 0 .5em;
+  font-weight: 500;
 }
 
 .ebrc-QuestionWizardParamControl {
@@ -299,4 +300,20 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   display: inline-block;
   align-self: center;
   margin: 0 .5em;
+}
+
+.ebrc-QuestionWizardParam__FilterParamNew {
+  flex-direction: column;
+  /*border-top: 1px solid #ccc;*/
+  margin-top: 2em;
+}
+
+.ebrc-QuestionWizardParamLabel__FilterParamNew {
+  align-self: flex-start;
+  margin: 1em 0;
+}
+
+.ebrc-QuestionWizardParamControl__FilterParamNew {
+  align-self: flex-start;
+  width: 100%;
 }
