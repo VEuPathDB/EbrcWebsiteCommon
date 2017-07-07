@@ -148,8 +148,12 @@ export default class QuestionWizardController extends React.Component {
     // FIXME Updating group counts and filter param counts needs to wait for
     // any dependent param updates to finish first.
 
-    // Only update active group
-    const groupsToUpdate = Seq.of(activeGroup);
+    // Only update active group and groups to the left without counts
+    const groupsToUpdate = Seq.from(this.state.question.groups)
+      .takeWhile(group => group !== activeGroup)
+      .filter(group => this.state.groupUIState[group.name].accumulatedTotal == null)
+      .concat(Seq.of(activeGroup));
+
     const groupUIState = groupsToUpdate
       .reduce((groupUIState, group) => {
         return Object.assign(groupUIState, {
