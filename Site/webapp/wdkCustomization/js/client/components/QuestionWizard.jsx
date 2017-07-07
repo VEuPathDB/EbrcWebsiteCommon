@@ -92,11 +92,11 @@ function ActiveGroup(props) {
       <div className={makeClassName('ActiveGroupHeading')}>
         {isDefaults ? (
           <div className={makeClassName('ActiveGroupCount')}>
-            You do not have any <em>{activeGroup.displayName}</em> constraints
+            No <em>{activeGroup.displayName}</em> filters applied yet
           </div>
         ) : (
           <div className={makeClassName('ActiveGroupCount')}>
-            Your <em>{activeGroup.displayName}</em> constraints reduce {
+            Your <em>{activeGroup.displayName}</em> filters reduce {
               prevLoading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : prevAccumulatedTotal
             } {recordClass.displayNamePlural} to {
               loading ? <Loading radius={2} className={makeClassName('GroupLoading')}/> : accumulatedTotal

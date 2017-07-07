@@ -148,9 +148,8 @@ export default class QuestionWizardController extends React.Component {
     // FIXME Updating group counts and filter param counts needs to wait for
     // any dependent param updates to finish first.
 
-    const groupsToUpdate = Seq.from(this.state.question.groups)
-      .takeWhile(group => group !== activeGroup)
-      .concat(Seq.of(activeGroup));
+    // Only update active group
+    const groupsToUpdate = Seq.of(activeGroup);
     const groupUIState = groupsToUpdate
       .reduce((groupUIState, group) => {
         return Object.assign(groupUIState, {
@@ -368,17 +367,17 @@ export default class QuestionWizardController extends React.Component {
             console.error('Error loading group count for %o.', group, error);
             return [ group, { valid: false, loading: false } ];
           }
+        ).then(
+          ([ group, state ]) => {
+            const groupUIState = Object.assign({}, this.state.groupUIState, {
+              [group.name]: Object.assign({}, this.state.groupUIState[group.name], state)
+            });
+            this.setState({ groupUIState });
+          }
         );
       });
 
-    return Promise.all(stateByGroup).then(states => {
-      const groupUIState = states.reduce((groupUIState, [ group, state ]) => {
-        return Object.assign(groupUIState, {
-          [group.name]: Object.assign({}, groupUIState[group.name], state)
-        });
-      }, Object.assign({}, this.state.groupUIState));
-      this.setState({ groupUIState });
-    });
+    return Promise.all(stateByGroup);
   }
 
   _getAnswerCount(answerSpec) {
