@@ -48,10 +48,6 @@ export default class QuestionWizardController extends React.Component {
     this._updateDependedParams = synchronized(this._updateDependedParams);
   }
 
-  componentDidUpdate() {
-    console.log('next state', this.state);
-  }
-
   loadQuestion(props) {
     const { questionName, wdkService } = props;
     const question$ = wdkService.sendRequest({
