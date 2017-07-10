@@ -280,6 +280,7 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 
 .ebrc-QuestionWizardHelpText {
   padding: 4em 1em;
+  font-size: 1.2em;
 }
 
 .ebrc-QuestionWizardParam {
