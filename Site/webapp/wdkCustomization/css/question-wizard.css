@@ -65,7 +65,7 @@
 .ebrc-QuestionWizardActiveGroupCount {
   font-weight: 500;
   font-size: 1.2em;
-  margin: 1em 0;
+  margin: .5em 0;
 }
 
 .ebrc-QuestionWizardGroupLoading {
@@ -297,13 +297,10 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   flex: 2;
   display: inline-block;
   align-self: center;
-  margin: 0 .5em;
 }
 
 .ebrc-QuestionWizardParam__FilterParamNew {
   flex-direction: column;
-  /*border-top: 1px solid #ccc;*/
-  margin-top: 2em;
 }
 
 .ebrc-QuestionWizardParamLabel__FilterParamNew {
