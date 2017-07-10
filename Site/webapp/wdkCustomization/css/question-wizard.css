@@ -89,6 +89,9 @@
 .ebrc-QuestionWizardIcon {
   display: block;
   width: 3em;
+  border: none;
+  padding: 0;
+  outline-offset: 0;
 }
 
 .ebrc-QuestionWizardIcon:after {

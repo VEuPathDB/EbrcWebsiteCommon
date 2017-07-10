@@ -189,7 +189,12 @@ function Navigation(props) {
       fixedClassName={makeClassName('NavigationContainer', 'fixed')}
     >
       <div className={makeClassName('NavigationIconContainer')}>
-        <i className={makeClassName('Icon', recordClass.name)}/>
+        <button
+          type="button"
+          title="See search overview"
+          className={makeClassName('Icon', recordClass.name)}
+          onClick={() => onActiveGroupChange(null)}
+        />
       </div>
       <div className={makeClassName('ParamGroupSeparator')}>
         <div className={makeClassName('ParamGroupArrow')}/>
