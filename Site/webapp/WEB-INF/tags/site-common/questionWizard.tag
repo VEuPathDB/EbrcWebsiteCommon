@@ -24,21 +24,10 @@
 
   <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
 
-  <div
-    data-question-full-name="${question.fullName}"
-    data-custom-name="${customName}"
-    data-param-values-container-selector=".param-values"
-    data-show-help-text="${empty step}"
-    data-controller="ebrc.controllers.wizard"
-  >
-    <textarea class="param-values" style="display: none">
-      ${fn:escapeXml(questionParamValues)}
-    </textarea>
-  </div>
-
+  <!-- Show step operations if this is a step -->
   <c:if test="${step ne null}">
     <c:if test="${step.previousStep != null || action != 'revise'}">
-      <div class="filter operators">
+      <div style="padding: 1em">
         <c:set var="newStepId">
           <c:choose>
             <c:when test="${action == 'add'}">${wdkStep.frontId + 1}</c:when>
@@ -50,7 +39,10 @@
         <c:if test="${step.previousStep ne null and action eq 'revise'}">
           <c:set var="step" value="${step.previousStep}" />
         </c:if>
-        <span class="h2center">Combine ${step.recordClass.displayNamePlural} in Step <span class="current_step_num">${currentStepId}</span> with ${wdkQuestion.recordClass.displayNamePlural} in Step <span class="new_step_num">${newStepId}</span>:</span>
+
+        <div style="font-size: 1.2em; font-weight: 500;">
+          Your Step ${currentStepId} found ${step.estimateSize} Participants.  To combine it with a new search, choose a combine operation, then specify the new search.
+        </div>
 
         <div style="text-align:center" id="operations">
           <imp:operators  allowSpan="${allowSpan}"
@@ -58,8 +50,23 @@
             spanStage="span_from_question"
           />
         </div>
+
+        <hr/>
+
       </div>
     </c:if>
   </c:if>
+
+  <div
+    data-question-full-name="${question.fullName}"
+    data-custom-name="${customName}"
+    data-param-values-container-selector=".param-values"
+    data-show-help-text="${empty step}"
+    data-controller="ebrc.controllers.wizard"
+  >
+    <textarea class="param-values" style="display: none">
+      ${fn:escapeXml(questionParamValues)}
+    </textarea>
+  </div>
 
 </jsp:root>
