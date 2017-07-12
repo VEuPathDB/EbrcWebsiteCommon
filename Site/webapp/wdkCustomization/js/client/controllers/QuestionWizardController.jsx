@@ -141,6 +141,8 @@ export default class QuestionWizardController extends React.Component {
   onActiveGroupChange(activeGroup) {
     this.setState({ activeGroup });
 
+    if (activeGroup == null) return;
+
     // FIXME Updating group counts and filter param counts needs to wait for
     // any dependent param updates to finish first.
 
