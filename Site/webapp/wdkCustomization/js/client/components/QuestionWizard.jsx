@@ -235,7 +235,7 @@ function Navigation(props) {
             count={groupUIState[group.name].accumulatedTotal}
             isLoading={groupUIState[group.name].loading}
             isValid={groupUIState[group.name].valid}
-            isActive={(group === activeGroup || group === prevGroupMap.get(activeGroup)) && 'active'}
+            isActive={(group === activeGroup || group === prevGroupMap.get(activeGroup))}
           />
         </div>
       )])}
