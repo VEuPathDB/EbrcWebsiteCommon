@@ -2,7 +2,7 @@ import * as React from 'react';
 import { selectReporterComponent } from '../util/reporter';
 
 export function DownloadForm() {
-  function EupathDownloadForm(props) {
+  return function EupathDownloadForm(props) {
     let Reporter = selectReporterComponent(props.selectedReporter, props.recordClass.name);
     return (
       <div>
