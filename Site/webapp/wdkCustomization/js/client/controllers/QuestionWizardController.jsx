@@ -166,20 +166,26 @@ export default class QuestionWizardController extends React.Component {
 
     // TODO Perform sideeffects elsewhere
     // BEGIN_SIDE_EFFECTS
-    // remove ontologyTermSummaries since dependent param values have changed
+    this._initializeActiveGroupParams(activeGroup);
+    // END_SIDE_EFFECTS
+  }
+
+  _initializeActiveGroupParams(activeGroup) {
     activeGroup.parameters.forEach(paramName => {
       const param = this.state.question.parameters.find(param => param.name === paramName);
       if (param == null) throw new Error("Could not find param `" + paramName + "`.");
       if (param.type === 'FilterParamNew') {
-        const { activeOntologyTerm } = this._getParamUIState(this.state, paramName);
+        const {
+          activeOntologyTerm,
+          ontologyTermSummaries
+        } = this._getParamUIState(this.state, paramName);
         const { filters } = JSON.parse(this.state.paramValues[param.name]);
         this._updateFilterParamCounts(param.name, filters);
-        if (activeOntologyTerm) {
+        if (activeOntologyTerm && ontologyTermSummaries[activeOntologyTerm] == null) {
           this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters);
         }
       }
     })
-    // END_SIDE_EFFECTS
   }
 
   onUpdateInvalidGroupCounts() {
@@ -217,6 +223,7 @@ export default class QuestionWizardController extends React.Component {
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
           this._updateGroupCounts(Seq.of(currentGroup));
+          this._initializeActiveGroupParams(this.state.activeGroup);
         });
       })
     ]);
