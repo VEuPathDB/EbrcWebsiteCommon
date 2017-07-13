@@ -9,6 +9,7 @@ import Gff3ReporterForm from '../components/reporters/Gff3ReporterForm';
 import FastaGeneReporterForm from '../components/reporters/FastaGeneReporterForm';
 import FastaGenomicSequenceReporterForm from '../components/reporters/FastaGenomicSequenceReporterForm';
 import FastaOrfReporterForm from '../components/reporters/FastaOrfReporterForm';
+import FastaOrthoSequenceReporterForm from '../components/reporters/FastaOrthoSequenceReporterForm';
 import TableReporterForm from '../components/reporters/TableReporterForm';
 import TranscriptTableReporterForm from '../components/reporters/TranscriptTableReporterForm';
 import TranscriptAttributesReporterForm from '../components/reporters/TranscriptAttributesReporterForm';
@@ -49,6 +50,8 @@ export function selectReporterComponent(reporterName, recordClassName) {
           console.error("Unsupported FASTA recordClass: " + recordClassName);
           return EmptyReporter;
       }
+    case 'fasta':
+      return FastaOrthoSequenceReporterForm;
     case 'gff3':
       return Gff3ReporterForm;
     case 'fullRecord':
