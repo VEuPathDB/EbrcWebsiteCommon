@@ -13,10 +13,10 @@ let FastaOrthoSequenceReporterForm = props => {
       <h3>Output options:</h3>
       <div style={{marginLeft: '2em'}}>
         <div style={{display: 'block'}}>
-          <Checkbox value={formState.includeOrganism} onChange={getUpdateHandler('includeOrganism')} /> Only include results with organisms
+          <Checkbox value={formState.includeOrganism} onChange={getUpdateHandler('includeOrganism')} /> Include organism
         </div>
         <div style={{display: 'block'}}>
-          <Checkbox value={formState.includeDescription} onChange={getUpdateHandler('includeDescription')} /> Only include results with descriptions
+          <Checkbox value={formState.includeDescription} onChange={getUpdateHandler('includeDescription')} /> Include description
         </div>
       </div>
       <hr/>
