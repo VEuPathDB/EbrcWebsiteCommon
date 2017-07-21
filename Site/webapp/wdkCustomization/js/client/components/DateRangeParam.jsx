@@ -9,9 +9,6 @@ export default class DateRangeParam extends React.PureComponent {
   constructor (props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    console.log("dateRange param props", props);
-
-    this.state = { initialRange: JSON.parse(props.value) };
   }
 
   handleChange (newValue) {
@@ -21,15 +18,15 @@ export default class DateRangeParam extends React.PureComponent {
 
   render () {
     let { param, value, uiState } = this.props;
-    let { initialRange } = this.state;
+    let { minDate, maxDate } = param;
     value = JSON.parse(value);
 
     return (
       <div className="date-range-param">
         <DateRangeSelector
           value={value}
-          start={initialRange.min}
-          end={initialRange.max}
+          start={minDate}
+          end={maxDate}
           onChange={this.handleChange}
         />
       </div>

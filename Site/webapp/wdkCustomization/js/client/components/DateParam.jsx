@@ -9,7 +9,6 @@ export default class DateParam extends React.PureComponent {
   constructor (props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    console.log("date param props", props);
   }
 
   handleChange (newValue) {
@@ -19,12 +18,18 @@ export default class DateParam extends React.PureComponent {
 
   render () {
     let { param, value } = this.props;
+    let { minDate, maxDate } = param;
+    value = JSON.parse(value);
 
     return (
-      <DateSelector
-        value={value}
-        onChange={this.handleChange}
-      />
+      <div className="date-param">
+        <DateSelector
+          value={value}
+          start={minDate}
+          end={maxDate}
+          onChange={this.handleChange}
+        />
+      </div>
     );
   }
 }
