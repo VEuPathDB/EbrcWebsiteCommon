@@ -439,7 +439,7 @@ export default class QuestionWizardController extends React.Component {
         const { ontologyTermSummaries } = this.state.paramUIState[paramName];
         this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
           Object.assign({}, ontologyTermSummaries, {
-            [ontologyTerm]: formatSummary(ontologyTermSummary)
+            [ontologyTerm]: ontologyTermSummary
           })));
       },
       error => {
@@ -492,15 +492,6 @@ QuestionWizardController.propTypes = {
   paramValues: PropTypes.object.isRequired,
   showHelpText: PropTypes.bool.isRequired,
   customName: PropTypes.string
-}
-
-/** format ontology term summary */
-function formatSummary(summary) {
-  return Object.keys(summary).map(value => ({
-    value,
-    count: summary[value].unfiltered,
-    filteredCount: summary[value].filtered
-  }));
 }
 
 /**
