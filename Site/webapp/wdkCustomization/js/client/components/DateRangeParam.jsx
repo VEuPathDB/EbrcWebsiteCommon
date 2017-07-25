@@ -13,13 +13,14 @@ export default class DateRangeParam extends React.PureComponent {
 
   handleChange (newValue) {
     let { param, onParamValueChange } = this.props;
-    onParamValueChange(param, JSON.stringify(newValue));
+    newValue = JSON.stringify(newValue).replace(/\"/g, "'");
+    onParamValueChange(param, newValue);
   }
 
   render () {
     let { param, value, uiState } = this.props;
     let { minDate, maxDate } = param;
-    value = JSON.parse(value);
+    value = JSON.parse(value.replace(/'/g, "\""))
 
     return (
       <div className="date-range-param">
