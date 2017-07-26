@@ -3,7 +3,7 @@ import { DateSelector } from 'wdk-client/Components';
 import { paramPropTypes } from './QuestionWizard';
 
 /**
- * NumberRangeParam component
+ * DateParam component
  */
 export default class DateParam extends React.PureComponent {
   constructor (props) {
