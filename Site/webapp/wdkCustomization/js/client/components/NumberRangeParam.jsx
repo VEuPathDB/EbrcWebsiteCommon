@@ -1,6 +1,6 @@
 import React from 'react';
 import { paramPropTypes } from './QuestionWizard';
-import { NumerRangeSelector } from 'wdk-client/Components';
+import { NumberRangeSelector } from 'wdk-client/Components';
 
 /**
  * NumberRangeParam component
@@ -20,15 +20,15 @@ import { NumerRangeSelector } from 'wdk-client/Components';
 
    render () {
      let { param, value } = this.props;
-     let { minValue, maxValue } = param;
+     let { min, max } = param;
      value = JSON.parse(value.replace(/'/g, "\""))
 
      return (
        <div className="number-range-param">
          <NumberRangeSelector
            value={value}
-           start={minValue}
-           end={maxValue}
+           start={min}
+           end={max}
            onChange={this.handleChange}
          />
        </div>
