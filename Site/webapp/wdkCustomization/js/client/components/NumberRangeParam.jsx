@@ -13,17 +13,25 @@ import { NumerRangeSelector } from 'wdk-client/Components';
    }
 
    handleChange (newValue) {
-     const { onParamValueChange, param } = this.props;
-     onParamValueChange(param, JSON.stringify(newValue));
+     let { param, onParamValueChange } = this.props;
+     newValue = JSON.stringify(newValue).replace(/\"/g, "'");
+     onParamValueChange(param, newValue);
    }
 
    render () {
-     let { value } = this.props;
+     let { param, value } = this.props;
+     let { minValue, maxValue } = param;
+     value = JSON.parse(value.replace(/'/g, "\""))
+
      return (
-       <NumberRangeSelector
-          value={value}
-          onChange={this.handleChange}
-       />
+       <div className="number-range-param">
+         <NumberRangeSelector
+           value={value}
+           start={minValue}
+           end={maxValue}
+           onChange={this.handleChange}
+         />
+       </div>
      );
    }
  }
