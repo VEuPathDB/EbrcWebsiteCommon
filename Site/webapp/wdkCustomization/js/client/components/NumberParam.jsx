@@ -16,8 +16,11 @@ export default class NumberParam extends React.PureComponent {
 
   render () {
     let { param, value } = this.props;
-    let { min, max } = param;
+    let { min, max, integer, step } = param;
     value = value * 1;
+
+    if (step) step = step * 1;
+    else step = (!integer || integer === 'false' ? 0.01 : 1);
 
     return (
       <div className="number-param">
@@ -25,6 +28,7 @@ export default class NumberParam extends React.PureComponent {
           value={value}
           start={min}
           end={max}
+          step={step}
           onChange={this.handleChange}
         />
       </div>
