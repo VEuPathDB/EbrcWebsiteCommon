@@ -63,7 +63,7 @@ if($mode eq 'model') {
 }
 
 if($mode eq 'graph') {
-  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld $svnPrefix\Website/View; $injectTemplates";
+  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates";
 }
 
 if($mode eq 'gbrowse') {

@@ -310,3 +310,8 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   align-self: flex-start;
   width: 100%;
 }
+
+.ebrc-QuestionWizardParamLabel__DateRangeParam {
+  padding: 0.5em 0;
+  align-self: flex-start;
+}

@@ -55,7 +55,7 @@ h4 {
 
 /* FIXME: Remove when rest of page is responsive */
 .wdk-RecordContainer {
-  max-width: calc(100vw - 8em);
+  max-width: calc(100vw - 4em);
 }
 
 .wdk-RecordSidebarToggle,
@@ -80,12 +80,13 @@ h4 {
   font-size: 1.4em;
 }
 
-.wdk-RecordSidebar__fixed {
-  left: -298px;
-}
-
 .wdk-DataTableCellExpand {
   color: #777;
+}
+
+td.wdk-DataTableCell__thumbnail {
+  vertical-align: middle;
+  height: 50px;
 }
 
 .wdk-RecordSection__collapsed {
@@ -109,7 +110,6 @@ h4 {
 .eupathdb-ReporterFormSubmit {
   text-align: center;
   width: 90vw;
-  padding: 2em 0;
 }
 
 @media all and (min-width: 800px) {
@@ -136,4 +136,125 @@ h4 {
 
 .eupathdb-ReporterFormGroup .wdk-CheckboxTree-list li label {
   white-space: initial;
+}
+
+.eupathdb-ExpressionGraphsDataTableContainerHeader {
+  font-weight: 500;
+  margin: 0;
+}
+
+.eupathdb-ExpressionGraphsDataTableContainer td:nth-child(1),
+.eupathdb-ExpressionGraphsDataTableContainer td:nth-child(2) {
+  white-space: normal;
+}
+
+.eupathdb-DatasetGraphContainer {
+  overflow: auto;
+  position: relative;
+  padding: 0 4px;
+  min-height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.eupathdb-DatasetGraphLoading {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+}
+
+.eupathdb-DatasetGraph {
+  width: 500px;
+  flex-grow: 1;
+}
+
+.eupathdb-DatasetGraphDetails {
+  width: 50%;
+  flex-grow: 1;
+}
+
+.eupathdb-DatasetGraphDescriptionHeader {
+  margin: 0;
+}
+
+/** Dataset page */
+.eupathdb-DatasetRecord {
+  padding: 0 2em;
+}
+
+.eupathdb-DatasetRecord h2,
+.eupathdb-DatasetRecord h3 {
+  margin: 22px 0 11px;
+  color: #333333;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.eupathdb-DatasetRecord-summary {
+  font-size: 1.2em;
+}
+.eupathdb-DatasetRecord ul {
+  line-height: 1.6;
+  list-style: none;
+  padding-left: 1em;
+  margin: 0;
+}
+.eupathdb-DatasetRecord-title {
+  color: black;
+}
+.eupathdb-DatasetRecord-headerTable tr th {
+  white-space: nowrap;
+  padding-right: 1em;
+  vertical-align: top;
+  text-align: right;
+  border: none;
+}
+
+.eupathdb-DatasetRecord-GraphImg {
+  width: 450px;
+}
+
+/*
+@media (min-width: 1175px) {
+  .eupathdb-DatasetRecord {
+    padding: 0 20px;
+    max-width: 1350px;
+    margin: auto;
+  }
+  .eupathdb-DatasetRecord-Main {
+    float: left;
+    max-width: 700px;
+  }
+  .eupathdb-DatasetRecord-Sidebar {
+    max-width: 375px;
+    float: right;
+    font-size: 95%;
+    color: #333333;
+  }
+  .eupathdb-DatasetRecord-Sidebar ul {
+    padding-left: 0;
+  }
+  .eupathdb-DatasetRecord-Sidebar table {
+    width: 100%;
+  }
+}
+*/
+
+@media (min-width: 1150px) {
+  .eupathdb-DatasetRecord-GraphMeta {
+    width: 58%;
+    float: right;
+  }
+  .eupathdb-DatasetRecord-GraphData {
+    width: 450px;
+  }
+}
+@media (min-width: 1300px) {
+  .eupathdb-DatasetRecord-GraphMeta {
+    width: 65%;
+  }
+}
+.eupathdb-Beta-Announcement {
+  float: right;
+  font-style: italic;
+  font-size: 1.2em;
+  padding: 4px 0;
 }

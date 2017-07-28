@@ -1,7 +1,7 @@
 import { find, get, map } from 'lodash';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Tooltip} from 'wdk-client/Components';
+import { Tooltip } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 let ParamPropType = PropTypes.shape({

@@ -4,6 +4,10 @@ import { zip } from 'lodash';
 import FilterParamNew from './FilterParamNew';
 import FlatVocabParam from './FlatVocabParam';
 import StringParam from './StringParam';
+import DateParam from './DateParam';
+import DateRangeParam from './DateRangeParam';
+import NumberParam from './NumberParam';
+import NumberRangeParam from './NumberRangeParam'
 import { Icon, Loading, Sticky } from 'wdk-client/Components';
 import { Seq } from 'wdk-client/IterableUtils';
 
@@ -315,6 +319,10 @@ function findParamComponent(param) {
     case 'StringParam': return StringParam;
     case 'EnumParam': return FlatVocabParam;
     case 'FlatVocabParam': return FlatVocabParam;
+    case 'DateParam': return DateParam;
+    case 'DateRangeParam': return DateRangeParam;
+    case 'NumberParam': return NumberParam;
+    case 'NumberRangeParam': return NumberRangeParam;
     default: return Param;
   }
 }
