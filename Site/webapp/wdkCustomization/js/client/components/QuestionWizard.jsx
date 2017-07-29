@@ -122,6 +122,9 @@ function ActiveGroup(props) {
       >
         {activeGroup.parameters.map((paramName, index) => {
           const param = question.parameters.find(p => p.name === paramName);
+
+          if (!param.isVisible) return null;
+
           const ParamComponent = findParamComponent(param);
           return (
             <div key={paramName} className={makeClassName('Param', param.type)}>
