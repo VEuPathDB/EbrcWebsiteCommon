@@ -14,6 +14,8 @@ class Database extends JolModule {
 
   protected $role;
 
+  /** see org.gusdb.wdk.model.WdkModel for
+      allowed $dbName values **/
   public function __construct($dbName) {
     parent::__construct();
     $this->role = $dbName;
