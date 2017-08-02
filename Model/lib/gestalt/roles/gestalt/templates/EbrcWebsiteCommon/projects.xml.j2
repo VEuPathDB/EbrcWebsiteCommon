@@ -23,10 +23,10 @@ site_vars file: {{ site_vars }}
   xsi:schemaLocation="http://www.eupathdb.org ../lib/rng/projects.xsd "
 >
 
-  {% if projectsxml is defined -%}
-    {% for project, url in projectsxml|dictsort -%}
-    <project name="{{ project }}" site="{{ url }}" />
-    {% endfor -%}
-  {% endif -%}
+{% if projectsxml is defined %}
+  {% for project, url in projectsxml|dictsort -%}
+  <project name="{{ project }}" site="{{ url }}" />
+  {% endfor -%}
+{% endif %}
 
 </projects>
