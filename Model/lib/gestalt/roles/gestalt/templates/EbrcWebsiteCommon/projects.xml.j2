@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Templated by Gestalt using
+{{ template_path }}
+
+Cohort: {{ cohort }}
+Project: {{ project }}
+Environment: {{ env|default() }}
+site_vars file: {{ site_vars }}
+-->
+<!--
+  THESE URLS are used to access:
+        - in portal: in ApiFedPlugin to access all sites
+        - in portal: in any result: access recordpage
+        - in all sites: in the genomic blast result: access GBrowse (red links)
+
+  Feel free to update your project.xml to point to your own sites or qa sites.
+-->
+<!-- the timeout, in seconds, of a remote call to a project. -->
+<projects timeout="0" 
+  xmlns="http://www.eupathdb.org"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.eupathdb.org ../lib/rng/projects.xsd "
+>
+
+  {% if projectsxml is defined -%}
+    {% for project, url in projectsxml|dictsort -%}
+    <project name="{{ project }}" site="{{ url }}" />
+    {% endfor -%}
+  {% endif -%}
+
+</projects>
