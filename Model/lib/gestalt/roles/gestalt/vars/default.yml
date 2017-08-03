@@ -1,4 +1,4 @@
-# $SourceFileURL$
+# $URL$
 ---
 _topleveldomain: org
 _wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
