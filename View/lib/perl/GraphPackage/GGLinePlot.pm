@@ -520,8 +520,7 @@ if ($prtcpnt_sum) {
       annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
     }
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
-    gp = gp + geom_segment(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1), size = 7);
-    #gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 5); 
+    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7); 
   }
   if (\"MICRO_POS\" %in% colnames(profile.df.full)) {
     test.df = completeDF(profile.df.full, \"MICRO_POS\");

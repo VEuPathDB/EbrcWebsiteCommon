@@ -391,12 +391,16 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
          )
       } else if (class(parent)[1]=="GeomSegment") {
         rg\$geom <-ggproto(parent, parent,
-          draw_panel = function(self, data, panel_scales, coord, width = NULL,
-                         arrow = NULL, linened = "butt", na.rm = FALSE) {
-            grob <- parent\$draw_panel(data, panel_scales, coord, arrow, linend)
-            grob <- garnishGrob(grob, onmousemove=paste("showTooltip(evt, '",
-                      data[1,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
-                      "pointer-events"="all")
+          draw_panel = function(self, data, panel_scales, coord,
+                         arrow = NULL, lineend = "butt", na.rm = FALSE) {
+            grobs <- list()
+            for (i in 1:nrow(data)) {
+              grob <- parent\$draw_panel(data[i,], panel_scales, coord, arrow, lineend)
+              grobs[[i]] <- garnishGrob(grob, onmousemove=paste("showTooltip(evt, '",
+                         data[i,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
+                         "pointer-events"="all")
+            }
+            ggplot2:::ggname("geom_tooltip", gTree(children = do.call("gList", grobs)))
           },
         required_aes = c("tooltip", parent\$required_aes)
         )
