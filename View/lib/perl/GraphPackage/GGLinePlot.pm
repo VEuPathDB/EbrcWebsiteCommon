@@ -38,10 +38,11 @@ sub setArePointsLast             { $_[0]->{'_are_points_last'               } = 
 sub getSmoothLines               { $_[0]->{'_smooth_lines'                  }}
 sub setSmoothLines               { $_[0]->{'_smooth_lines'                  } = $_[1]}
 
+sub getSmoothWithLoess           { $_[0]->{'_smooth_with_loess'             }}
+sub setSmoothWithLoess           { $_[0]->{'_smooth_with_loess'             } = $_[1]}
 
-sub getSmoothWithLoess           { $_[0]->{'_smooth_with_loess'                  }}
-sub setSmoothWithLoess           { $_[0]->{'_smooth_with_loess'                  } = $_[1]}
-
+sub getPanOut                    { $_[0]->{'_pan_out'                       }}
+sub setPanOut                    { $_[0]->{'_pan_out'                       } = $_[1]}
 
 sub getSplineApproxN             { $_[0]->{'_spline_approx_n'               }}
 sub setSplineApproxN             { $_[0]->{'_spline_approx_n'               } = $_[1]}
@@ -102,7 +103,6 @@ sub makeRPlotString {
   };
   if($@) {
     return $blankGraph;
-
   }
 
   my $profileSets = $self->getProfileSets();
@@ -124,6 +124,9 @@ sub makeRPlotString {
   if(scalar @$profileSets == $skipped) {
     return $blankGraph;
   }
+
+  my @profileFileStrings = split(/,/, $profileFiles);
+  my $numProfiles = scalar @profileFileStrings;
 
   my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
@@ -241,6 +244,8 @@ sub makeRPlotString {
   my $fillBelowLine = $self->getFillBelowLine() ? 'TRUE' : 'FALSE';
   my $removeNaN = $self->getRemoveNaN() ? 'TRUE' : 'FALSE';
 
+  my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
+
   my $hasExtraLegend = $self->getHasExtraLegend() ? 'TRUE' : 'FALSE';
   my $extraLegendSize = $self->getExtraLegendSize();
 
@@ -305,9 +310,11 @@ for(ii in 1:length(profile.files)) {
       stop(\"Element order must be numeric for aggregation\");
     }
 
-    profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
-    if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
-      skip.stderr = TRUE;
+   if (!$prtcpnt_sum) {
+      profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
+      if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
+        skip.stderr = TRUE;
+      }
     }
 
     profile.df\$LEGEND = legend.label[ii];
@@ -315,32 +322,26 @@ for(ii in 1:length(profile.files)) {
     profile.df\$PROFILE_TYPE = profile.types[ii];
   }
 
-  element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
+  if (element.names.files[ii] != \"\") {
+    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
 
-  if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
-    message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
-  } else if(length(element.names.df\$ELEMENT_ORDER) > length(profile.df\$ELEMENT_ORDER)) {
-    message(paste(\"Warning: element names file \", element.names.files[ii], \" contains more rows than profile file\", profile.files[ii], \". Additional entries will be ignored.\"));
+    if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
+      message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
+    } else if(length(element.names.df\$ELEMENT_ORDER) > length(profile.df\$ELEMENT_ORDER)) {
+      message(paste(\"Warning: element names file \", element.names.files[ii], \" contains more rows than profile file\", profile.files[ii], \". Additional entries will be ignored.\"));
+    }
+
+    profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
+
+    if (ncol(element.names.df) > 2 ){
+       profile.df\$FACET = as.factor(profile.df\$FACET)
+    }
   }
 
-  #if($removeNaN) {
-  #  profile.df = completeDF(profile.df, \"VALUE\"); 
-  #  element.names.df = element.names.df[which(element.names.df\$ELEMENT_ORDER %in% profile.df\$ELEMENT_ORDER),];
-  #}
-  profile.df =  merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
-
-  #profile.df\$ELEMENT_NAMES = as.character(element.names.df\$NAME);
   profile.df\$ELEMENT_NAMES = as.character(profile.df\$NAME);
-
-  #element.names.numeric = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", element.names.df\$NAME, perl=T));
   element.names.numeric = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df\$NAME, perl=T));
   profile.df\$ELEMENT_NAMES_NUMERIC = element.names.numeric;
 
-  if (ncol(element.names.df) > 2 ){
-  #  profile.df\$CONTXAXIS = element.names.df\$CONTXAXIS;
-  #  profile.df\$FACET = as.factor(element.names.df\$FACET);
-     profile.df\$FACET = as.factor(profile.df\$FACET)
-  }
 
   if(!skip.stderr && !is.na(stderr.files[ii]) && stderr.files[ii] != '') {
     stderr.tmp = read.table(stderr.files[ii], header=T, sep=\"\\t\");
@@ -352,7 +353,7 @@ for(ii in 1:length(profile.files)) {
 
   profile.df = profile.df[, !(names(profile.df) %in% \"NAME\")];
 
-  profile.df.full = rbind(profile.df.full, profile.df);
+  profile.df.full = rbind.fill(profile.df.full, profile.df);
 }
 
 #allow adjustments
@@ -383,8 +384,13 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
   gp = ggplot(profile.df.full, aes(x=ELEMENT_NAMES, y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
 }
 
-y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+if ($prtcpnt_sum) {
+  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
+  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 5;
+} else {
+  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+}
 
 if($isSVG) {
   useTooltips=TRUE;
@@ -396,10 +402,14 @@ if(useTooltips){
 #  if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
 #  gp = gp + geom_tooltip(aes(tooltip=paste(\"sample:\",ELEMENT_NAMES,\", x:\",CONTXAXIS)), real.geom=geom_point);
 #  } else {
-    gp = gp + geom_tooltip(aes(tooltip=ELEMENT_NAMES), real.geom=geom_point);  
+    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",ELEMENT_NAMES, \", y: \", VALUE)), real.geom=geom_point);  
 #  }
 }else{
   gp = gp + geom_point();
+}
+
+if ($numProfiles < length($colorsStringNotNamed)) {
+  message(paste(\"Too many colors provided. Please only provide the same number of colors as profile files.\"));
 }
 
 if(!$forceNoLines) {
@@ -411,9 +421,9 @@ if(!$forceNoLines) {
   }
   if($fillBelowLine) {
     if(length(unique(profile.df.full\$PROFILE_FILE)) > 1) {
-      gp = gp + geom_tooltip(aes(fill=PROFILE_FILE, tooltip=LEGEND, group=PROFILE_FILE), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=$colorsStringNotNamed);
+      gp = gp + geom_tooltip(aes(fill=PROFILE_FILE, tooltip=LEGEND, group=PROFILE_FILE), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)));
     } else {
-      gp = gp + geom_area(aes(fill=PROFILE_FILE, group=PROFILE_FILE), position=\"identity\") + scale_fill_manual(values=$colorsStringNotNamed);
+      gp = gp + geom_area(aes(fill=PROFILE_FILE, group=PROFILE_FILE), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)));
     }
   }
 
@@ -436,7 +446,7 @@ if(coord.cartesian) {
   gp = gp + coord_cartesian(xlim=c(x.min,x.max))
 }
 
-gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
 
 hideLegend=FALSE;
 if(is.null(profile.df.full\$LEGEND) || $fillBelowLine) {
@@ -502,6 +512,24 @@ if($hideXAxisLabels) {
     gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
 }
 
+if ($prtcpnt_sum) {
+  if (\"END_DATE\" %in% colnames(profile.df.full)) {
+    annotate.df = completeDF(profile.df.full, \"END_DATE\");
+    #this to appease ggplot. otherwise wont plot a single point
+    if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
+      annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
+    }
+    profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+    gp = gp + geom_segment(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1), size = 7);
+    #gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 5); 
+  }
+  if (\"MICRO_POS\" %in% colnames(profile.df.full)) {
+    test.df = completeDF(profile.df.full, \"MICRO_POS\");
+    profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+    gp = gp + geom_tooltip(data = test.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = MICRO_POS), real.geom = geom_point);
+  }
+}
+
 #postscript
 $rPostscript
 
@@ -514,6 +542,29 @@ plotlist.i = plotlist.i + 1;
 }
 
 1;
+
+#--------------------------------------------------------------------------------
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::ParticipantSummary;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot );
+use strict;
+
+sub new {
+  my $class = shift;
+  my $self = $class->SUPER::new(@_);
+  my $id = $self->getId();
+
+  $self->setPartName('prtcpnt_sum');
+  $self->setXaxisLabel('Age in Days');
+  #TODO will need to change this
+  $self->setYaxisLabel('Weight for Height Z-score');
+  $self->setPlotTitle("Participant Event Summary - $id");
+
+  return $self;
+
+}
+1;
+
 
 #--------------------------------------------------------------------------------
 

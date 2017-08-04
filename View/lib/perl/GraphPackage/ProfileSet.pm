@@ -4,27 +4,23 @@ use strict;
 
 use Data::Dumper;
 
-use ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData;
-
-use ApiCommonWebsite::Model::CannedQuery::Profile;
-use ApiCommonWebsite::Model::CannedQuery::ProfileByEC;
 
 
 # Main Profile Set Name
-sub getName                      { $_[0]->{'_name'             }}
-sub setName                      { $_[0]->{'_name'             } = $_[1]}
+sub getName                      { $_[0]->{'_name'                }}
+sub setName                      { $_[0]->{'_name'                } = $_[1]}
 
-sub getSubId                     { $_[0]->{'_sub_id'           }}
-sub setSubId                     { $_[0]->{'_sub_id'           } = $_[1]} 
+sub getSubId                     { $_[0]->{'_sub_id'              }}
+sub setSubId                     { $_[0]->{'_sub_id'              } = $_[1]} 
 
-sub getType                      { $_[0]->{'_type'             }}
-sub setType                      { $_[0]->{'_type'             } = $_[1]}
+sub getType                      { $_[0]->{'_type'                }}
+sub setType                      { $_[0]->{'_type'                } = $_[1]}
 
-sub getElementNames              { $_[0]->{'_element_names'                  }}
-sub setElementNames              { $_[0]->{'_element_names'                  } = $_[1]}
+sub getElementNames              { $_[0]->{'_element_names'       }}
+sub setElementNames              { $_[0]->{'_element_names'       } = $_[1]}
 
-sub getRelatedProfileSet         { $_[0]->{'_related_profile_set'             }}
-sub setRelatedProfileSet         { $_[0]->{'_related_profile_set'             } = $_[1]}
+sub getRelatedProfileSet         { $_[0]->{'_related_profile_set' }}
+sub setRelatedProfileSet         { $_[0]->{'_related_profile_set' } = $_[1]}
 
 sub getDisplayName    {
   my ($self) = @_;
@@ -33,29 +29,32 @@ sub getDisplayName    {
   }
   return $self->getName();
 }
-sub setDisplayName    { $_[0]->{'_display_name'         } = $_[1]}
+sub setDisplayName               { $_[0]->{'_display_name'        } = $_[1]}
 
-sub getProfileFile              { $_[0]->{'_profile_file'               }}
-sub setProfileFile              { $_[0]->{'_profile_file'               } = $_[1]}
+sub getProfileFile               { $_[0]->{'_profile_file'        }}
+sub setProfileFile               { $_[0]->{'_profile_file'        } = $_[1]}
 
-sub getElementNamesFile         { $_[0]->{'_element_names_file'           }}
-sub setElementNamesFile         { $_[0]->{'_element_names_file'           } = $_[1]}
+sub getElementNamesFile          { $_[0]->{'_element_names_file'  }}
+sub setElementNamesFile          { $_[0]->{'_element_names_file'  } = $_[1]}
 
-sub getAlternateSourceId              { $_[0]->{'_alternate_source_id'               }}
-sub setAlternateSourceId              { $_[0]->{'_alternate_source_id'               } = $_[1]}
+sub getAlternateSourceId         { $_[0]->{'_alternate_source_id' }}
+sub setAlternateSourceId         { $_[0]->{'_alternate_source_id' } = $_[1]}
 
-sub getScale              { $_[0]->{'_scale'               }}
-sub setScale              { $_[0]->{'_scale'               } = $_[1]}
+sub getScale                     { $_[0]->{'_scale'               }}
+sub setScale                     { $_[0]->{'_scale'               } = $_[1]}
 
-sub getFacet         { $_[0]->{'_facet'               }}
-sub setFacet         { $_[0]->{'_facet'               }  = $_[1]}
+sub getFacet                     { $_[0]->{'_facet'               }}
+sub setFacet                     { $_[0]->{'_facet'               }  = $_[1]}
 
-sub getContXAxis         { $_[0]->{'_cont_x_axis'               }}
-sub setContXAxis         { $_[0]->{'_cont_x_axis'               }  = $_[1]}
+sub getContXAxis                 { $_[0]->{'_cont_x_axis'         }}
+sub setContXAxis                 { $_[0]->{'_cont_x_axis'         }  = $_[1]}
 
+sub getYAxis                     { $_[0]->{'_y_axis'              }}
+sub setYAxis                     { $_[0]->{'_y_axis'              }  = $_[1]}
 
-sub logError              { push @{$_[0]->{'_errors'}}, $_[1] }
-sub errors                { $_[0]->{'_errors'               }}
+sub logError                     { push @{$_[0]->{'_errors'}}, $_[1] }
+sub errors                       { $_[0]->{'_errors'               }}
+
 
 sub new {
   my ($class, $name, $type, $elementNames, $alternateSourceId, $scale, $facet, $displayName, $subId, $contXAxis) = @_;
@@ -180,27 +179,38 @@ sub getProfileCannedQuery {
 sub makeProfileCannedQuery {
   my ($self, $suffix, $idType, $id) = @_;
 
-  my $profileSetName = $self->getName();
-  my $profileSetType = $self->getType();
-  my $scale = $self->getScale();
-  my $subId = $self->getSubId();
+  my $api = eval
+  {
+    require ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData;
+    ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData->import();
+    require ApiCommonWebsite::Model::CannedQuery::Profile;
+    ApiCommonWebsite::Model::CannedQuery::Profile->import();
+    require ApiCommonWebsite::Model::CannedQuery::ProfileByEC;
+    ApiCommonWebsite::Model::CannedQuery::ProfileByEC->import();
+    1;
+  };
 
-  my $profile;
-  if(($idType) && lc($idType) eq 'ec') {
-    $profile = ApiCommonWebsite::Model::CannedQuery::ProfileByEC->new
+
+  if ($api) {
+    my $profileSetName = $self->getName();
+    my $profileSetType = $self->getType();
+    my $scale = $self->getScale();
+    my $subId = $self->getSubId();
+
+    my $profile;
+    if(($idType) && lc($idType) eq 'ec') {
+      $profile = ApiCommonWebsite::Model::CannedQuery::ProfileByEC->new
         ( Name         => "_data_$suffix",
           Id           => $id,
           ProfileSet   => $profileSetName,
 	  ProfileType => $profileSetType,
           Scale        => $scale,
         );
-  }
-
-  else {
-    if ($subId) {
+    } else {
+      if ($subId) {
         $id = "$id|$subId";
-    }
-    $profile = ApiCommonWebsite::Model::CannedQuery::Profile->new
+      }
+      $profile = ApiCommonWebsite::Model::CannedQuery::Profile->new
         ( Name         => "_data_$suffix",
         #if there is a suffix, append suffix to id
           Id           => $id,
@@ -208,11 +218,12 @@ sub makeProfileCannedQuery {
 	  ProfileType => $profileSetType,
           Scale        => $scale,
         );
-  }
+    }
 
   $self->setProfileCannedQuery($profile);
 
   return $profile;
+  }
 }
 
 

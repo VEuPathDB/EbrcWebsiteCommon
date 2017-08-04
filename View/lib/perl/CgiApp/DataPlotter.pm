@@ -80,6 +80,11 @@ sub run {
          my $declareParts     = $Cgi->param('declareParts');
 
          my $contXAxis = $Cgi->param('contXAxis');
+         my $yAxis     = $Cgi->param('yAxis');
+         my $test      = $Cgi->param('test');
+
+         my $eventStart = $Cgi->param('eventStart');
+         my $eventDur = $Cgi->param('eventDur');
 
          my $facet = $Cgi->param('facet');
          my @facets   = split(',', $facet || '');
@@ -94,9 +99,9 @@ sub run {
 	 my @errors;
 
 	 push(@errors, 'model must be supplied') if not defined $pkg;
-	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB');
-	 push(@errors, 'type must be supplied' ) if not defined $type;
-	 push(@errors, 'id must be supplied'   ) if not defined $id;
+	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB');
+	   push(@errors, 'type must be supplied' ) if not defined $type;
+	   push(@errors, 'id must be supplied'   ) if not defined $id;
 
 	 if (@errors) {
 			die join("\n", @errors);
@@ -125,12 +130,18 @@ sub run {
 
 	 my @filesToDelete = ( $fmt_f );
 
-	 $pkg = "Templates" if($template);
-
-         my $class = "ApiCommonWebsite::View::GraphPackage::$pkg" . "::$type";
-         if($pkg eq "ClinEpiDB" || $pkg eq "MicrobiomeDB") {
-           $class = "EbrcWebsiteCommon::View::GraphPackage::$pkg" . "::$type";
+         my $core;
+         if ($pkg eq 'ClinEpiDB') {
+           $core = 'ClinEpiWebsite::View::GraphPackage::';
+         } elsif ( $pkg eq 'MicrobiomeDB') {
+           $core = 'MicrobiomeWebsite::View::GraphPackage::';
+         } else {
+           $core = 'ApiCommonWebsite::View::GraphPackage::';
          }
+
+         $pkg = "Templates" if($template);
+
+         my $class = "$core" . "$pkg" . "::$type";
 
          # dataset Need to strip the dashes from package name
          my $datasetClassName = $datasetId;
@@ -139,7 +150,10 @@ sub run {
          eval "require $class";
          eval "import $class";
 
-	 $class = $class . "::$datasetClassName" if($template);
+         if ($core =~ 'ApiCommon') {
+	   $class = $class . "::$datasetClassName" if($template);
+         }
+
          my $_gp = eval {
            $class->new({dataPlotterArg => $typeArg,
                         QueryHandle => $_qh,
@@ -159,6 +173,10 @@ sub run {
                         VisiblePartsAreFuzzy => $visiblePartsAreFuzzy,
                         Facets => \@facets,
                         ContXAxis => $contXAxis,
+                        YAxis => $yAxis,
+                        EventStart => $eventStart,
+                        EventDur => $eventDur,
+                        Test => $test,
                        });
          };
 
