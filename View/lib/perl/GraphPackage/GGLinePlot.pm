@@ -558,7 +558,9 @@ sub new {
   #TODO will need to change this
   $self->setYaxisLabel('Weight for Height Z-score');
   $self->setPlotTitle("Participant Event Summary - $id");
-
+  $self->setDefaultXMax(745);
+  $self->setDefaultXMin(0);
+ 
   return $self;
 
 }
