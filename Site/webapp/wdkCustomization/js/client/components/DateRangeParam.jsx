@@ -20,7 +20,7 @@ export default class DateRangeParam extends React.PureComponent {
   render () {
     let { param, value } = this.props;
     let { minDate, maxDate } = param;
-    value = JSON.parse(value.replace(/'/g, "\""))
+    value = JSON.parse(value.replace(/'/g, "\""));
 
     return (
       <div className="date-range-param">
