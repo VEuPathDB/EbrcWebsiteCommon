@@ -5,8 +5,21 @@ use strict;
 use Math::Round;
 
 use EbrcWebsiteCommon::View::GraphPackage::ProfileSet;
+use EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet;
 
 use Data::Dumper;
+
+sub makeNodeMetadataSet {
+  my (@arr) = @_;
+  my @rv;
+
+  foreach my $row (@arr) {
+    my $profile = EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet->new($row);
+
+    push @rv, $profile;
+  }
+  return \@rv;
+}
 
 sub makeProfileSets {
   my ($arr) = @_;

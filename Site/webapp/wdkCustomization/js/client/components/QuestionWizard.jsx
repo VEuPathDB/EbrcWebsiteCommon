@@ -27,7 +27,7 @@ export default function QuestionWizard(props) {
         <h1 className={makeClassName('Heading')}>{question.displayName}</h1>
         {/* FIXME Remove when we get this from the model */}
         <div className={makeClassName('HackyStudyLink')}>
-          <i className="fa fa-info-circle" aria-hidden="true"></i> Learn about the <a href="/a/app/record/dataset/DS_c75ea37cb3" target="_blank">PRISM Study</a>
+          <i className="fa fa-info-circle" aria-hidden="true"></i> Learn about the <a href="/a/app/record/dataset/DS_61ac5d073c" target="_blank">MAL-ED Study</a>
         </div>
       </div>
       <Navigation {...props} />
