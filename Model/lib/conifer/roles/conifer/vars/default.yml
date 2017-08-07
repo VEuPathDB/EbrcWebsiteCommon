@@ -2,6 +2,17 @@
 ---
 _topleveldomain: org
 _wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
+
+_host_frontends:
+  a1: alpha
+  a2: alpha
+  b1: beta
+  b2: beta
+  q1: qa
+  q2: qa
+  w1: ''
+  w2: ''
+
 _userdb_link_map:
   apicomms:    prods.login_comment
   apicommn:    prodn.login_comment
