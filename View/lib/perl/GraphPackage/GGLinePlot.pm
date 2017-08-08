@@ -554,9 +554,6 @@ sub new {
   my $id = $self->getId();
 
   $self->setPartName('prtcpnt_sum');
-  $self->setXaxisLabel('Age in Days');
-  #TODO will need to change this
-  $self->setYaxisLabel('Weight for Height Z-score');
   $self->setPlotTitle("Participant Event Summary - $id");
   $self->setDefaultXMax(745);
   $self->setDefaultXMin(0);
