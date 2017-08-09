@@ -473,6 +473,7 @@ export default class QuestionWizardController extends React.Component {
           <QuestionWizard
             {...this.state}
             showHelpText={this.props.showHelpText}
+            isAddingStep={this.props.isAddingStep}
             customName={this.props.customName}
             onActiveGroupChange={this.onActiveGroupChange}
             onActiveOntologyTermChange={this.onActiveOntologyTermChange}
@@ -491,6 +492,7 @@ QuestionWizardController.propTypes = {
   questionName: PropTypes.string.isRequired,
   paramValues: PropTypes.object.isRequired,
   showHelpText: PropTypes.bool.isRequired,
+  isAddingStep: PropTypes.bool.isRequired,
   customName: PropTypes.string
 }
 

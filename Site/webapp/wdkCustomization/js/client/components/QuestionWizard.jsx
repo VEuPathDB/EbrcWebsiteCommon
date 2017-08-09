@@ -52,6 +52,8 @@ export default function QuestionWizard(props) {
 QuestionWizard.propTypes = {
   question: PropTypes.object.isRequired,
   customName: PropTypes.string,
+  showHelpText: PropTypes.bool.isRequired,
+  isFirstStep: PropTypes.bool.isRequired,
   paramValues: PropTypes.object.isRequired,
   paramUIState: PropTypes.object.isRequired,
   groupUIState: PropTypes.object.isRequired,
@@ -174,6 +176,7 @@ function Navigation(props) {
     question,
     customName,
     showHelpText,
+    isAddingStep,
     groupUIState,
     recordClass,
     initialCount,
@@ -255,7 +258,7 @@ function Navigation(props) {
         >
           { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
           : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
-          : `View ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
+          : `${isAddingStep ? 'Combine' : 'View'} ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
