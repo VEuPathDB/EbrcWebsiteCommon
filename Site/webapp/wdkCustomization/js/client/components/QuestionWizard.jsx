@@ -8,7 +8,7 @@ import DateParam from './DateParam';
 import DateRangeParam from './DateRangeParam';
 import NumberParam from './NumberParam';
 import NumberRangeParam from './NumberRangeParam'
-import { Icon, Loading, Sticky } from 'wdk-client/Components';
+import { Icon, Loading, Sticky, Tooltip } from 'wdk-client/Components';
 import { Seq } from 'wdk-client/IterableUtils';
 
 /**
@@ -120,7 +120,7 @@ function ActiveGroup(props) {
           }
         }}
       >
-        {activeGroup.parameters.map((paramName, index) => {
+        {activeGroup.parameters.map(paramName => {
           const param = question.parameters.find(p => p.name === paramName);
 
           if (!param.isVisible) return null;
@@ -128,14 +128,16 @@ function ActiveGroup(props) {
           const ParamComponent = findParamComponent(param);
           return (
             <div key={paramName} className={makeClassName('Param', param.type)}>
-              {activeGroup.parameters.length > 1 && (
-                <div className={makeClassName('ParamLabel', param.type)}>
-                  <label>{param.displayName}</label>
-                </div>
-              )}
+              <div className={makeClassName('ParamLabel', param.type)}>
+                <label>{param.displayName}</label>
+              </div>
+              <div className={makeClassName('ParamHelp', param.type)}>
+                <Tooltip content={param.help}>
+                  <Icon type="help"/>
+                </Tooltip>
+              </div>
               <div className={makeClassName('ParamControl', param.type)}>
                 <ParamComponent
-                  autoFocus={index === 0}
                   param={param}
                   value={paramValues[param.name]}
                   uiState={paramUIState[param.name]}

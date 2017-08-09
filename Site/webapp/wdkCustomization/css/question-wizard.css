@@ -279,11 +279,11 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 
 .ebrc-QuestionWizardParam {
   display: flex;
-  margin: .5em 0;
+  margin: 1.5em 0;
 }
 
 .ebrc-QuestionWizardParamLabel {
-  flex: 1;
+  flex: 0 0 14em;
   display: inline-block;
   align-self: center;
   text-align: right;
@@ -291,27 +291,19 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   font-weight: 500;
 }
 
+.ebrc-QuestionWizardParamHelp {
+  align-self: center;
+  margin-right: .5em;
+}
+
 .ebrc-QuestionWizardParamControl {
   flex: 2;
   display: inline-block;
   align-self: center;
+  margin: 0 .5em;
 }
 
-.ebrc-QuestionWizardParam__FilterParamNew {
-  flex-direction: column;
-}
-
+.ebrc-QuestionWizardParamHelp__FilterParamNew,
 .ebrc-QuestionWizardParamLabel__FilterParamNew {
-  align-self: flex-start;
-  margin: 1em 0;
-}
-
-.ebrc-QuestionWizardParamControl__FilterParamNew {
-  align-self: flex-start;
-  width: 100%;
-}
-
-.ebrc-QuestionWizardParamLabel__DateRangeParam {
-  padding: 0.5em 0;
   align-self: flex-start;
 }
