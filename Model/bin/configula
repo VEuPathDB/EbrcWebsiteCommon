@@ -34,7 +34,7 @@ my $wmc = WDK::Model::Configula->new();
 # myURL for EuPathDB product needs an empty string (or just
 # leave out the property) so the portal does not recursively
 # call its own webservices.
-my $myURL = "http://$wmc->{'canonical_hostname'}/$wmc->{'webapp_nover'}/";
+my $myURL = "http://$wmc->{'canonical_hostname'}/$wmc->{'webapp'}/";
 $myURL =~ s|/$||;
 
 my %class_specific_section = (
