@@ -386,7 +386,7 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
 
 if ($prtcpnt_sum) {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 5;
+  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
 } else {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
   y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
@@ -408,8 +408,16 @@ if(useTooltips){
   gp = gp + geom_point();
 }
 
-if ($numProfiles < length($colorsStringNotNamed)) {
-  message(paste(\"Too many colors provided. Please only provide the same number of colors as profile files.\"));
+if (\"GROUP\" %in% colnames(profile.df.full)) {
+  count = length(unique(profile.df.full\$GROUP));
+  if (count < length($colorsStringNotNamed)) {
+    stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
+  }
+} else {
+  count = $numProfiles;
+  if ($numProfiles < length($colorsStringNotNamed)) {
+    stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
+  }
 }
 
 if(!$forceNoLines) {
@@ -421,9 +429,9 @@ if(!$forceNoLines) {
   }
   if($fillBelowLine) {
     if(length(unique(profile.df.full\$PROFILE_FILE)) > 1) {
-      gp = gp + geom_tooltip(aes(fill=PROFILE_FILE, tooltip=LEGEND, group=PROFILE_FILE), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)));
+      gp = gp + geom_tooltip(aes(fill=PROFILE_FILE, tooltip=LEGEND, group=PROFILE_FILE), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
     } else {
-      gp = gp + geom_area(aes(fill=PROFILE_FILE, group=PROFILE_FILE), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)));
+      gp = gp + geom_area(aes(fill=PROFILE_FILE, group=PROFILE_FILE), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
     }
   }
 
@@ -446,7 +454,7 @@ if(coord.cartesian) {
   gp = gp + coord_cartesian(xlim=c(x.min,x.max))
 }
 
-gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
 
 hideLegend=FALSE;
 if(is.null(profile.df.full\$LEGEND) || $fillBelowLine) {
@@ -513,6 +521,8 @@ if($hideXAxisLabels) {
 }
 
 if ($prtcpnt_sum) {
+  gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
+  gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
   if (\"END_DATE\" %in% colnames(profile.df.full)) {
     annotate.df = completeDF(profile.df.full, \"END_DATE\");
     #this to appease ggplot. otherwise wont plot a single point
@@ -554,9 +564,6 @@ sub new {
   my $id = $self->getId();
 
   $self->setPartName('prtcpnt_sum');
-  $self->setXaxisLabel('Age in Days');
-  #TODO will need to change this
-  $self->setYaxisLabel('Weight for Height Z-score');
   $self->setPlotTitle("Participant Event Summary - $id");
   $self->setDefaultXMax(745);
   $self->setDefaultXMin(0);

@@ -9,6 +9,7 @@ wdk.namespace('ebrc.controllers', ns => {
     const questionName = $el.data('question-full-name');
     const customName = $el.data('custom-name');
     const showHelpText = $el.data('show-help-text');
+    const isAddingStep = $el.data('is-adding-step');
     const paramValuesContainerSelector = $el.data('param-values-container-selector');
     const paramValues = parseJson($el.find(paramValuesContainerSelector).val().trim());
     ReactDOM.render(
@@ -17,7 +18,8 @@ wdk.namespace('ebrc.controllers', ns => {
         questionName,
         paramValues,
         customName,
-        showHelpText
+        showHelpText,
+        isAddingStep
       }),
       $el[0]
     );
