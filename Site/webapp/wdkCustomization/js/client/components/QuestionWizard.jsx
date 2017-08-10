@@ -53,7 +53,7 @@ QuestionWizard.propTypes = {
   question: PropTypes.object.isRequired,
   customName: PropTypes.string,
   showHelpText: PropTypes.bool.isRequired,
-  isFirstStep: PropTypes.bool.isRequired,
+  isAddingStep: PropTypes.bool.isRequired,
   paramValues: PropTypes.object.isRequired,
   paramUIState: PropTypes.object.isRequired,
   groupUIState: PropTypes.object.isRequired,
