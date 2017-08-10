@@ -49,12 +49,21 @@ export default class QuestionWizardController extends React.Component {
   }
 
   loadQuestion(props) {
-    const { questionName, wdkService } = props;
-    const question$ = wdkService.sendRequest({
-      method: 'GET',
-      path: '/question/' + questionName,
-      params: { expandParams: true }
-    });
+    const { questionName, wdkService, isRevise, paramValues } = props;
+
+    const question$ = isRevise
+      ? wdkService.sendRequest({
+        method: 'POST',
+        path: '/question/' + questionName,
+        body: JSON.stringify({
+          contextParamValues: paramValues
+        })
+      })
+      : wdkService.sendRequest({
+        method: 'GET',
+        path: '/question/' + questionName,
+        params: { expandParams: true }
+      });
 
     const recordClass$ = question$.then(question => {
       return wdkService.findRecordClass(rc => rc.name === question.recordClassName);
@@ -472,7 +481,7 @@ export default class QuestionWizardController extends React.Component {
         {this.state.question && (
           <QuestionWizard
             {...this.state}
-            showHelpText={this.props.showHelpText}
+            showHelpText={!this.props.isRevise}
             isAddingStep={this.props.isAddingStep}
             customName={this.props.customName}
             onActiveGroupChange={this.onActiveGroupChange}
@@ -491,7 +500,7 @@ QuestionWizardController.propTypes = {
   wdkService: PropTypes.object.isRequired,
   questionName: PropTypes.string.isRequired,
   paramValues: PropTypes.object.isRequired,
-  showHelpText: PropTypes.bool.isRequired,
+  isRevise: PropTypes.bool.isRequired,
   isAddingStep: PropTypes.bool.isRequired,
   customName: PropTypes.string
 }

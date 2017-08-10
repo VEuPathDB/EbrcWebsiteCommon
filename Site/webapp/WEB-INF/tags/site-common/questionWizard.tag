@@ -62,7 +62,7 @@
     data-question-full-name="${question.fullName}"
     data-custom-name="${customName}"
     data-param-values-container-selector=".param-values"
-    data-show-help-text="${empty step}"
+    data-is-revise="${action eq 'revise'}"
     data-is-adding-step="${isAddingStep}"
     data-controller="ebrc.controllers.wizard"
   >

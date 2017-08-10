@@ -8,7 +8,7 @@ wdk.namespace('ebrc.controllers', ns => {
     const { wdkService } = ebrc.context;
     const questionName = $el.data('question-full-name');
     const customName = $el.data('custom-name');
-    const showHelpText = $el.data('show-help-text');
+    const isRevise = $el.data('is-revise');
     const isAddingStep = $el.data('is-adding-step');
     const paramValuesContainerSelector = $el.data('param-values-container-selector');
     const paramValues = parseJson($el.find(paramValuesContainerSelector).val().trim());
@@ -18,7 +18,7 @@ wdk.namespace('ebrc.controllers', ns => {
         questionName,
         paramValues,
         customName,
-        showHelpText,
+        isRevise,
         isAddingStep
       }),
       $el[0]
