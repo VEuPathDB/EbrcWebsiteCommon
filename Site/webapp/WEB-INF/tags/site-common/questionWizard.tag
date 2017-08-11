@@ -23,15 +23,16 @@
   </c:set>
 
   <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
+  <c:set var="isAddingStep" value="${step ne null and (step.previousStep ne null or action ne 'revise')}"/>
 
   <!-- Show step operations if this is a step -->
   <c:if test="${step ne null}">
-    <c:if test="${step.previousStep != null || action != 'revise'}">
+    <c:if test="${isAddingStep}">
       <div style="padding: 1em">
         <c:set var="newStepId">
           <c:choose>
-            <c:when test="${action == 'add'}">${wdkStep.frontId + 1}</c:when>
-            <c:otherwise>${wdkStep.frontId}</c:otherwise>
+            <c:when test="${action == 'add'}">${step.frontId + 1}</c:when>
+            <c:otherwise>${step.frontId}</c:otherwise>
           </c:choose>
         </c:set>
         <c:set var="currentStepId" value="${newStepId - 1}" />
@@ -61,7 +62,8 @@
     data-question-full-name="${question.fullName}"
     data-custom-name="${customName}"
     data-param-values-container-selector=".param-values"
-    data-show-help-text="${empty step}"
+    data-is-revise="${action eq 'revise'}"
+    data-is-adding-step="${isAddingStep}"
     data-controller="ebrc.controllers.wizard"
   >
     <textarea class="param-values" style="display: none">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { isEmpty } from 'lodash';
 import { Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
 import { paramPropTypes } from './QuestionWizard';
 
@@ -10,6 +11,7 @@ export default class FilterParamNew extends React.PureComponent {
     super(props);
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
+    this._renderSelectionInfo = this._renderSelectionInfo.bind(this);
   }
 
   _handleActiveFieldChange(term) {
@@ -21,7 +23,10 @@ export default class FilterParamNew extends React.PureComponent {
     this.props.onParamValueChange(this.props.param, JSON.stringify({ filters }));
   }
 
-  _renderSelectionInfo() {
+  _renderSelectionInfo({ filters }) {
+    if (this.props.uiState.hideFilterPanel && isEmpty(filters)) {
+      return <em>No filters currently applied.</em>
+    }
     return null;
   }
 

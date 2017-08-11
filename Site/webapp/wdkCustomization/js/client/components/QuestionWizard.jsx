@@ -8,7 +8,7 @@ import DateParam from './DateParam';
 import DateRangeParam from './DateRangeParam';
 import NumberParam from './NumberParam';
 import NumberRangeParam from './NumberRangeParam'
-import { Icon, Loading, Sticky } from 'wdk-client/Components';
+import { Icon, Loading, Sticky, Tooltip } from 'wdk-client/Components';
 import { Seq } from 'wdk-client/IterableUtils';
 
 /**
@@ -52,6 +52,8 @@ export default function QuestionWizard(props) {
 QuestionWizard.propTypes = {
   question: PropTypes.object.isRequired,
   customName: PropTypes.string,
+  showHelpText: PropTypes.bool.isRequired,
+  isAddingStep: PropTypes.bool.isRequired,
   paramValues: PropTypes.object.isRequired,
   paramUIState: PropTypes.object.isRequired,
   groupUIState: PropTypes.object.isRequired,
@@ -120,7 +122,7 @@ function ActiveGroup(props) {
           }
         }}
       >
-        {activeGroup.parameters.map((paramName, index) => {
+        {activeGroup.parameters.map(paramName => {
           const param = question.parameters.find(p => p.name === paramName);
 
           if (!param.isVisible) return null;
@@ -128,14 +130,16 @@ function ActiveGroup(props) {
           const ParamComponent = findParamComponent(param);
           return (
             <div key={paramName} className={makeClassName('Param', param.type)}>
-              {activeGroup.parameters.length > 1 && (
-                <div className={makeClassName('ParamLabel', param.type)}>
-                  <label>{param.displayName}</label>
-                </div>
-              )}
+              <div className={makeClassName('ParamLabel', param.type)}>
+                <label>{param.displayName}</label>
+              </div>
+              <div className={makeClassName('ParamHelp', param.type)}>
+                <Tooltip content={param.help}>
+                  <Icon type="help"/>
+                </Tooltip>
+              </div>
               <div className={makeClassName('ParamControl', param.type)}>
                 <ParamComponent
-                  autoFocus={index === 0}
                   param={param}
                   value={paramValues[param.name]}
                   uiState={paramUIState[param.name]}
@@ -172,6 +176,7 @@ function Navigation(props) {
     question,
     customName,
     showHelpText,
+    isAddingStep,
     groupUIState,
     recordClass,
     initialCount,
@@ -253,7 +258,7 @@ function Navigation(props) {
         >
           { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
           : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
-          : `View ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
+          : `${isAddingStep ? 'Combine' : 'View'} ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
         </button>
         <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
       </div>
