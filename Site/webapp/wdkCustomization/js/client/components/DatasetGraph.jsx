@@ -72,6 +72,12 @@ export default class DatasetGraph extends PureComponent {
     );
   }
 
+  makeDatasetUrl({ rowData }) {
+    return (
+      '../dataset/' + rowData.dataset_id
+    );
+  }
+
   getGraphParts(props) {
     let baseUrl = this.makeBaseUrl(props);
     this.setState({ loading: true });
@@ -142,6 +148,7 @@ export default class DatasetGraph extends PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
+    let dataset_link = this.makeDatasetUrl(this.props);
 
     return (
       <div className="eupathdb-DatasetGraphContainer">
@@ -281,6 +288,8 @@ export default class DatasetGraph extends PureComponent {
               /> Show log Scale (not applicable for log(ratio) graphs, percentile graphs or data tables)
             </label>
           </div>
+
+          <h4><a href={dataset_link}>Full Dataset Description</a></h4>
 
         </div>
       </div>
