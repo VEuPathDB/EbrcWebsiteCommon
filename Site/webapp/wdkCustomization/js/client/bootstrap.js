@@ -8,11 +8,16 @@ __webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disa
 
 import * as siteConfig from './config';
 import { rootUrl, rootElement, endpoint } from './config';
-import { initialize as initializeWdk, wrapComponents } from 'wdk-client';
+import {
+  initialize as initializeWdk,
+  Components as WdkComponents,
+  Controllers as WdkControllers
+} from 'wdk-client';
 import { debounce, identity, uniq } from 'lodash';
 import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
 import * as eupathComponentWrappers from './component-wrappers';
 import * as eupathStoreWrappers from './store-wrappers';
+import * as EbrcComponents from './components';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -221,4 +226,35 @@ function composeWrappers(siteWrapper = identity, ebrcWrapper = identity) {
   return function(wdkEntity) {
     return siteWrapper(ebrcWrapper(wdkEntity));
   }
+}
+
+/**
+ * Apply component wrappers.
+ */
+function wrapComponents(wrappersByComponentName) {
+  if (wrappersByComponentName == null) return;
+  Object.entries(wrappersByComponentName).forEach(function([ componentName, componentWrapper ]) {
+    const Component = (
+      WdkComponents[componentName] ||
+      WdkControllers[componentName] ||
+      EbrcComponents[componentName]
+    );
+
+    if (Component == null) {
+      console.warn('Skipping unknown component wrapper `%s`.', componentName);
+    }
+
+    else if (typeof Component.wrapComponent !== 'function') {
+      console.warn('Warning: Component `%s` is not wrappable. Default version will be used.', componentName);
+    }
+
+    else {
+      try {
+        Component.wrapComponent(componentWrapper);
+      }
+      catch(error) {
+        console.error('Could not apply component wrapper `%s`.', componentName, error);
+      }
+    }
+  });
 }
