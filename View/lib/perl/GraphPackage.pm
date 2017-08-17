@@ -43,6 +43,10 @@ sub init {
    $Self->setQueryHandle          ( $Args->{QueryHandle          } );
    $Self->setFormat               ( $Args->{Format               } );
    $Self->setContXAxis            ( $Args->{ContXAxis            } );
+   $Self->setTest                 ( $Args->{Test                 } );
+   $Self->setYAxis                ( $Args->{YAxis                } );
+   $Self->setEventStart           ( $Args->{EventStart           } );
+   $Self->setEventDur             ( $Args->{EventDur             } );
    $Self->setOutputFile           ( $Args->{OutputFile           } );
    $Self->setId                   ( $Args->{Id                   } );
    $Self->setThumbnail            ( $Args->{Thumbnail            } );
@@ -105,6 +109,18 @@ sub setFacets                  { $_[0]->{'Facets'                      } = $_[1]
 
 sub getContXAxis               { $_[0]->{'ContXAxis'                   } }
 sub setContXAxis               { $_[0]->{'ContXAxis'                   } = $_[1]; $_[0] }
+
+sub getYAxis                   { $_[0]->{'YAxis'                       } }
+sub setYAxis                   { $_[0]->{'YAxis'                       } = $_[1]; $_[0] }
+
+sub getTest                    { $_[0]->{'Test'                        } }
+sub setTest                    { $_[0]->{'Test'                        } = $_[1]; $_[0] }
+
+sub getEventStart              { $_[0]->{'EventStart'                  } }
+sub setEventStart              { $_[0]->{'EventStart'                  } = $_[1]; $_[0] }
+
+sub getEventDur                { $_[0]->{'EventDur'                    } }
+sub setEventDur                { $_[0]->{'EventDur'                    } = $_[1]; $_[0] }
 
 sub getVisiblePartsAreFuzzy    { $_[0]->{'VisiblePartsAreFuzzy'        } }
 sub setVisiblePartsAreFuzzy    { $_[0]->{'VisiblePartsAreFuzzy'        } = $_[1]; $_[0] }

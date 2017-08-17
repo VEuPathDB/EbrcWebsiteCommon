@@ -6,13 +6,12 @@ use vars qw( @ISA );
 @ISA = qw( EbrcWebsiteCommon::View::GraphPackage );
 use EbrcWebsiteCommon::View::GraphPackage;
 
-use ApiCommonWebsite::Model::CannedQuery::ElementNames;
-use ApiCommonWebsite::Model::CannedQuery::Profile;
-use ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue;
+
 use EbrcWebsiteCommon::View::MultiScreen;
 use EbrcWebsiteCommon::View::GraphPackage::Util;
 
 use Data::Dumper;
+use FileHandle;
 
 #--------------------------------------------------------------------------------
 
@@ -304,6 +303,7 @@ library(ggplot2);
 suppressPackageStartupMessages(library(gridSVG));
 library(tools);
 library(gtools);
+library(plyr);
 
 $open_R
 
@@ -379,7 +379,7 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
     if(is.ggproto(parent)){
       #geom_area is handled differently because it relies on draw_group rather than draw panel to 
       #create the grobs that need to be garnished
-      if(class(parent)[1]=="GeomArea"){
+      if(class(parent)[1]=="GeomArea") {
         rg\$geom <-ggproto(parent, parent,
            draw_group = function(data, panel_scales, coord, na.rm = FALSE) {
              grob <- parent\$draw_group(data, panel_scales, coord, na.rm = FALSE)
@@ -389,6 +389,21 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
            },
            required_aes = c("tooltip", parent\$required_aes)
          )
+      } else if (class(parent)[1]=="GeomSegment") {
+        rg\$geom <-ggproto(parent, parent,
+          draw_panel = function(self, data, panel_scales, coord,
+                         arrow = NULL, lineend = "butt", na.rm = FALSE) {
+            grobs <- list()
+            for (i in 1:nrow(data)) {
+              grob <- parent\$draw_panel(data[i,], panel_scales, coord, arrow, lineend)
+              grobs[[i]] <- garnishGrob(grob, onmousemove=paste("showTooltip(evt, '",
+                         data[i,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
+                         "pointer-events"="all")
+            }
+            ggplot2:::ggname("geom_tooltip", gTree(children = do.call("gList", grobs)))
+          },
+        required_aes = c("tooltip", parent\$required_aes)
+        )
       } else {
         #replace ggproto object with one of our own design. overwrite draw_panel and required_aes.
         rg\$geom <-ggproto(parent, parent,
@@ -530,61 +545,76 @@ RCODE
 sub writeProfileFiles {
   my ($self, $profileSetName, $suffix, $elementOrder) = @_;
 
-  my $_qh   = $self->getQueryHandle();
-  my $_dict = {};
+  my $api = eval
+  {
+    require ApiCommonWebsite::Model::CannedQuery::ElementNames;
+    ApiCommonWebsite::Model::CannedQuery::ElementNames->import();
+    require ApiCommonWebsite::Model::CannedQuery::Profile;
+    ApiCommonWebsite::Model::CannedQuery::Profile->import();
+    require ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue;
+    ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue->import();
+    1;
+  };
 
-  my $r_fh = $self->getFileHandle();
+  #may eventually have to change this. maybe to add an else for other projects. dunno...
+  if ($api) {
+    my $_qh   = $self->getQueryHandle();
+    my $_dict = {};
 
-  my $defaultProfile;
+    my $r_fh = $self->getFileHandle();
+  
+    my $defaultProfile;
 
-  if($self->hasGraphDefault()) {
-    my $defaultValue = $self->getGraphDefaultValue();
+    if($self->hasGraphDefault()) {
+      my $defaultValue = $self->getGraphDefaultValue();
 
-    $defaultProfile = ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue->new
+      $defaultProfile = ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue->new
+        ( Name         => "_data_$suffix",
+          Id           => $self->getId(),
+          ProfileSet   => $profileSetName,
+          DefaultValue => $defaultValue,
+        );
+    }
+
+
+    my $profile = ApiCommonWebsite::Model::CannedQuery::Profile->new
       ( Name         => "_data_$suffix",
         Id           => $self->getId(),
         ProfileSet   => $profileSetName,
-        DefaultValue => $defaultValue,
-      );
-  }
-
-
-  my $profile = ApiCommonWebsite::Model::CannedQuery::Profile->new
-    ( Name         => "_data_$suffix",
-      Id           => $self->getId(),
-      ProfileSet   => $profileSetName,
-    );
-
-  my $elementNames = ApiCommonWebsite::Model::CannedQuery::ElementNames->new
-      ( Name         => "_names_$suffix",
-        Id           => $self->getId(),
-        ProfileSet   => $profileSetName,
       );
 
-  my @profileErrors;
-  my @errors;
+    my $elementNames = ApiCommonWebsite::Model::CannedQuery::ElementNames->new
+        ( Name         => "_names_$suffix",
+          Id           => $self->getId(),
+          ProfileSet   => $profileSetName,
+        );
 
-  $profile->setElementOrder($elementOrder) if($elementOrder);
-  $elementNames->setElementOrder($elementOrder) if($elementOrder);
-  my $profile_fn = eval { $profile->makeTabFile($_qh, $_dict) }; $@ && push(@profileErrors, $@);
-  my $elementNames_fn = eval { $elementNames->makeTabFile($_qh, $_dict) }; $@ && push(@errors, $@);
-#TODO: factor into PlotPart, each PlotPart must be responsible for deleting temp files 
-  $self->addTempFile($profile_fn) if($profile_fn);
-  $self->addTempFile($elementNames_fn) if($elementNames_fn);
+    my @profileErrors;
+    my @errors;
 
-  if(@profileErrors) {
-    $profile_fn = eval { $defaultProfile->makeTabFile($_qh, $_dict) }; $@ && push(@errors, $@);
-#TODO: factor into PlotPart, each PlotPart must be responsible for deleting temp files 
+    $profile->setElementOrder($elementOrder) if($elementOrder);
+    $elementNames->setElementOrder($elementOrder) if($elementOrder);
+    my $profile_fn = eval { $profile->makeTabFile($_qh, $_dict) }; $@ && push(@profileErrors, $@);
+    my $elementNames_fn = eval { $elementNames->makeTabFile($_qh, $_dict) }; $@ && push(@errors, $@);
+
+    #TODO: factor into PlotPart, each PlotPart must be responsible for deleting temp files 
     $self->addTempFile($profile_fn) if($profile_fn);
+    $self->addTempFile($elementNames_fn) if($elementNames_fn);
+
+    if(@profileErrors) {
+      $profile_fn = eval { $defaultProfile->makeTabFile($_qh, $_dict) }; $@ && push(@errors, $@);
+      #TODO: factor into PlotPart, each PlotPart must be responsible for deleting temp files 
+      $self->addTempFile($profile_fn) if($profile_fn);
+    }
+
+    my @rv = ($profile_fn, $elementNames_fn);
+
+    if (@errors) {
+      $self->reportErrorsAndBlankGraph($r_fh, (@profileErrors,@errors));
+    }
+
+    return \@rv;
   }
-
-  my @rv = ($profile_fn, $elementNames_fn);
-
-  if (@errors) {
-    $self->reportErrorsAndBlankGraph($r_fh, (@profileErrors,@errors));
-  }
-
-  return \@rv;
 }
 
 

@@ -179,6 +179,8 @@ sub getSimpleValues {
       if (defined $elementOrder) {
         $_row->{ELEMENT_ORDER} = $elementOrder->[$_row->{ELEMENT_ORDER}];
       } else {
+        #inserted line below just to get it to run. it makes no sense to multiply by something which doesnt exist.
+        $_row->{ELEMENT_ORDER} = $rows_n;
         $_row->{ELEMENT_ORDER} *= $scale;
         $_row->{ELEMENT_ORDER} += $offset;
       }

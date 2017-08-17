@@ -7,6 +7,7 @@ use vars qw( @ISA );
 use EbrcWebsiteCommon::View::GraphPackage::AbstractPlotSet;
 
 use Tie::IxHash;
+use Data::Dumper;
 
 sub setMainLegend {
   my ($self, $hash) = @_;

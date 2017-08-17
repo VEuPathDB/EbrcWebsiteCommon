@@ -7,10 +7,6 @@ use Data::Dumper;
 
 @ISA = qw( EbrcWebsiteCommon::View::GraphPackage );
 use EbrcWebsiteCommon::View::GraphPackage;
-use ApiCommonWebsite::Model::CannedQuery::ElementNames;
-use ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData;
-use ApiCommonWebsite::Model::CannedQuery::Profile;
-use ApiCommonWebsite::Model::CannedQuery::ProfileFixedValue;
 use EbrcWebsiteCommon::View::GraphPackage::Util;
 
 use File::Copy;
@@ -100,14 +96,26 @@ sub setLegendLabels              { $_[0]->{'_legend_labels'                 } = 
 sub getProfileTypes              { $_[0]->{'_profile_types'                 }}
 sub setProfileTypes              { $_[0]->{'_profile_types'                 } = $_[1]}
 
-sub getFacet              { $_[0]->{'_facet'                 }}
-sub setFacet              { $_[0]->{'_facet'                 } = $_[1]}
+sub getFacet                     { $_[0]->{'_facet'                         }}
+sub setFacet                     { $_[0]->{'_facet'                         } = $_[1]}
 
-sub getHideXAxisLabels          { $_[0]->{'_x_axis_labels'                  }}
-sub setHideXAxisLabels          { $_[0]->{'_x_axis_labels'                  } = $_[1]}
+sub getHideXAxisLabels           { $_[0]->{'_x_axis_labels'                 }}
+sub setHideXAxisLabels           { $_[0]->{'_x_axis_labels'                 } = $_[1]}
 
-sub getContXAxis              { $_[0]->{'_cont_x_axis'                 }}
-sub setContXAxis              { $_[0]->{'_cont_x_axis'                 } = $_[1]}
+sub getContXAxis                 { $_[0]->{'_cont_x_axis'                   }}
+sub setContXAxis                 { $_[0]->{'_cont_x_axis'                   } = $_[1]}
+
+sub getYAxis                     { $_[0]->{'_y_axis'                        }}
+sub setYAxis                     { $_[0]->{'_y_axis'                        } = $_[1]}
+
+sub getTest                      { $_[0]->{'_test'                          }}
+sub setTest                      { $_[0]->{'_test'                          } = $_[1]}
+
+sub getEventStart                { $_[0]->{'_event_start'                   }}
+sub setEventStart                { $_[0]->{'_event_start'                   } = $_[1]}
+
+sub getEventDur                  { $_[0]->{'_event_dur'                     }}
+sub setEventDur                  { $_[0]->{'_event_dur'                     } = $_[1]}
 
 
 #----------------------------------------------------------------------------------------------

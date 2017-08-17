@@ -781,7 +781,7 @@ sub new {
    $self->setDefaultYMin(0);
    $self->setYaxisLabel('');
 
-   $self->setPartName('sage_tags');
+   $self->setPartName('genera');
    $self->setPlotTitle("Genera - $id");
 
    $self->setMakeYAxisFoldInduction(0);

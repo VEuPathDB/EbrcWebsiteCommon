@@ -126,6 +126,13 @@
     <available file="${htdocsTargetDir}/../dashboard" type="dir" property="dashboard.present"/>
     <antcall target="dashboardDoc"/>
 
+    <replace file="${cgibinTargetDir}/dataPlotter.pl" 
+      token="@rProgram@" 
+      value="${rProgram}"/>
+    <replace file="${cgibinTargetDir}/dataPlotter.pl" 
+      token="@cgilibTargetDir@" 
+      value="${cgilibTargetDir}"/>
+
   </target>
 
   <!-- Target to be used by implementing sites -->
