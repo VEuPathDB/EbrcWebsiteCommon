@@ -385,8 +385,14 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
 }
 
 if ($prtcpnt_sum) {
-  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
+  if (all(is.na(profile.df.full\$VALUE))) {
+    #this for the case where no real y values are to be plotted (ex: timelines)
+    y.max = 2;
+    y.min = 0;
+  } else {
+    y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
+    y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
+  }
 } else {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
   y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
@@ -397,6 +403,9 @@ if($isSVG) {
 }else{
   useTooltips=FALSE;
 }
+
+#desperate times call for desperate measures. will fix this later.
+if (!all(is.na(profile.df.full\$VALUE))) {
 
 if(useTooltips){
 #  if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
@@ -520,9 +529,16 @@ if($hideXAxisLabels) {
     gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
 }
 
+}
+
 if ($prtcpnt_sum) {
-  gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
-  gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
+
+  if (!all(is.na(profile.df.full\$VALUE))) {
+    #will likely have to revisit the logic for when this should be shown.
+    gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
+    gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
+  }
+
   if (\"END_DATE\" %in% colnames(profile.df.full)) {
     annotate.df = completeDF(profile.df.full, \"END_DATE\");
     #this to appease ggplot. otherwise wont plot a single point
@@ -532,11 +548,23 @@ if ($prtcpnt_sum) {
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
     gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7); 
   }
-  if (\"MICRO_POS\" %in% colnames(profile.df.full)) {
-    test.df = completeDF(profile.df.full, \"MICRO_POS\");
+
+  if (\"STATUS\" %in% colnames(profile.df.full)) {
+    status.df = completeDF(profile.df.full, \"STATUS\");
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
-    gp = gp + geom_tooltip(data = test.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = MICRO_POS), real.geom = geom_point);
+    if (all(is.na(profile.df.full\$VALUE))) {
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = SOLID), real.geom = geom_point) + scale_shape_manual(values = 21) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"green\", \"blue\" = \"blue\")) + scale_fill_discrete(na.value=\"hollow\", guide=\"none\");
+      #desperate times
+      gp = gp + theme_bw();
+      gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=NULL);
+      gp = gp + ylim(y.min, y.max);
+      gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
+      gp = gp + theme(legend.position=\"none\");
+    } else {
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
+    }
   }
+
 }
 
 #postscript

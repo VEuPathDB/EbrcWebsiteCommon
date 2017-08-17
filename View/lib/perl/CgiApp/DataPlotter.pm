@@ -81,7 +81,8 @@ sub run {
 
          my $contXAxis = $Cgi->param('contXAxis');
          my $yAxis     = $Cgi->param('yAxis');
-         my $test      = $Cgi->param('test');
+         my $status      = $Cgi->param('status');
+         my $optStatus   = $Cgi->param('optStatus');
 
          my $eventStart = $Cgi->param('eventStart');
          my $eventDur = $Cgi->param('eventDur');
@@ -176,7 +177,8 @@ sub run {
                         YAxis => $yAxis,
                         EventStart => $eventStart,
                         EventDur => $eventDur,
-                        Test => $test,
+                        Status => $status,
+                        OptStatus => $optStatus
                        });
          };
 

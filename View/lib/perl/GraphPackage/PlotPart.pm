@@ -108,8 +108,11 @@ sub setContXAxis                 { $_[0]->{'_cont_x_axis'                   } = 
 sub getYAxis                     { $_[0]->{'_y_axis'                        }}
 sub setYAxis                     { $_[0]->{'_y_axis'                        } = $_[1]}
 
-sub getTest                      { $_[0]->{'_test'                          }}
-sub setTest                      { $_[0]->{'_test'                          } = $_[1]}
+sub getStatus                    { $_[0]->{'_status'                        }}
+sub setStatus                    { $_[0]->{'_status'                        } = $_[1]}
+
+sub getOptStatus                 { $_[0]->{'_opt_status'                    }}
+sub setOptStatus                 { $_[0]->{'_opt_status'                    } = $_[1]}
 
 sub getEventStart                { $_[0]->{'_event_start'                   }}
 sub setEventStart                { $_[0]->{'_event_start'                   } = $_[1]}

@@ -18,8 +18,11 @@ sub setEventStart                { $_[0]->{'_event_start'      } = $_[1]}
 sub getEventDur                  { $_[0]->{'_event_dur'        }}
 sub setEventDur                  { $_[0]->{'_event_dur'        } = $_[1]}
 
-sub getTest                      { $_[0]->{'_test'             }}
-sub setTest                      { $_[0]->{'_test'             } = $_[1]}
+sub getStatus                    { $_[0]->{'_status'           }}
+sub setStatus                    { $_[0]->{'_status'           } = $_[1]}
+
+sub getOptStatus                 { $_[0]->{'_opt_status'       }}
+sub setOptStatus                 { $_[0]->{'_opt_status'       } = $_[1]}
 
 sub new {
   my ( $class, $params ) = @_;
@@ -51,12 +54,15 @@ sub new {
     $self->setEventDur($params->{eventDur});
   }
 
-  if (defined $params->{test}) {
-    $self->setTest($params->{test});
+  if (defined $params->{status}) {
+    $self->setStatus($params->{status});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis."
     }
     $self->setContXAxis($params->{contXAxis});
+    if (defined $params->{optStatus}) {
+      $self->setOptStatus($params->{optStatus});
+    }
   }  
   $self->{_errors} = [];
   
@@ -108,8 +114,8 @@ sub makeNodeMetadataCannedQuery {
     ClinEpiWebsite::Model::CannedQuery::NodeMetadata->import();
     require ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur;
     ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur->import();
-    require ClinEpiWebsite::Model::CannedQuery::NodeMetadataTest;
-    ClinEpiWebsite::Model::CannedQuery::NodeMetadataTest->import();
+    require ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus;
+    ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->import();
     1;
   };
 
@@ -135,24 +141,28 @@ sub makeNodeMetadataCannedQuery {
           EventStart       => $eventStart,
           EventDur         => $eventDur,
          );
-    } elsif ($self->getTest()) {
+    } elsif ($self->getStatus()) {
       my $contXAxis = $self->getContXAxis();
-      my $test = $self->getTest();
-      $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataTest->new
-        ( Id               => $id,
-          Name             => "_data_$suffix",
-          ContXAxis        => $contXAxis,
-          Test            => $test,
-         );
-    } else {
-      #and if you pass it nothing it will default to age days against weight for height zscore
-      $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadata->new
-        ( Id               => $id,
-          Name             => "_data_$suffix",
-          ContXAxis        => 'EUPATH_0000644',
-          YAxis            => 'EUPATH_0000734',
-         );
-    }
+      my $status = $self->getStatus();
+      if ($self->getOptStatus()) {
+        my $optStatus = $self->getOptStatus();
+        $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->new
+          ( Id               => $id,
+            Name             => "_data_$suffix",
+            ContXAxis        => $contXAxis,
+            Status           => $status,
+            OptStatus        => $optStatus,
+           );
+
+      } else {
+        $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->new
+          ( Id               => $id,
+            Name             => "_data_$suffix",
+            ContXAxis        => $contXAxis,
+            Status           => $status,
+           );
+      }
+    } 
     $self->setNodeMetadataCannedQuery($profile);
   
   return $profile;
