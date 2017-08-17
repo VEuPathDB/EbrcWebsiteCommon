@@ -553,7 +553,7 @@ if ($prtcpnt_sum) {
     status.df = completeDF(profile.df.full, \"STATUS\");
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
     if (all(is.na(profile.df.full\$VALUE))) {
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = SOLID), real.geom = geom_point) + scale_shape_manual(values = 21) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"green\", \"blue\" = \"blue\")) + scale_fill_discrete(na.value=\"hollow\", guide=\"none\");
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = SOLID), size = 5, real.geom = geom_point) + scale_shape_manual(values = 21) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"green\", \"blue\" = \"blue\")) + scale_fill_discrete(na.value=\"hollow\", guide=\"none\");
       #desperate times
       gp = gp + theme_bw();
       gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=NULL);
