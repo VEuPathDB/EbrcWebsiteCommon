@@ -1,3 +1,5 @@
+env: production
+
 modelconfig_accountDb_connectionUrl: 'jdbc:oracle:oci:@{{ acctdb_shortname }}'
 modelconfig_accountDb_login: '{{ acctdb_login }}'
 modelconfig_accountDb_password: '{{ acctdb_password }}'
