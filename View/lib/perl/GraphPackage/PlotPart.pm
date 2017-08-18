@@ -53,6 +53,12 @@ sub setDefaultYMax               { $_[0]->{'_default_y_max'                 } = 
 sub getDefaultYMin               { $_[0]->{'_default_y_min'                 }}
 sub setDefaultYMin               { $_[0]->{'_default_y_min'                 } = $_[1]}
 
+sub getDefaultXMax               { $_[0]->{'_default_x_max'                 }}
+sub setDefaultXMax               { $_[0]->{'_default_x_max'                 } = $_[1]}
+
+sub getDefaultXMin               { $_[0]->{'_default_x_min'                 }}
+sub setDefaultXMin               { $_[0]->{'_default_x_min'                 } = $_[1]}
+
 sub getSampleLabels               { $_[0]->{'_sample_labels'                }}
 sub setSampleLabels               { $_[0]->{'_sample_labels'                } = $_[1]}
 

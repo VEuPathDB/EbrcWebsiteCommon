@@ -285,8 +285,9 @@ if(length(profile.files) != length(element.names.files)) {
 }
 
 
-x.min = $xMin;
-x.max = $xMax;
+x.min = \"$xMin\";
+x.max = \"$xMax\";
+ message(paste(as.Date(x.max)));
 
 y.min = $yMin;
 y.max = $yMax;  
@@ -450,7 +451,6 @@ if(!$forceNoLines) {
         gp = gp + geom_smooth(method=\"loess\");
       }
       if(length(levels(factor(profile.df.full\$PROFILE_FILE))) > 1) {
-         message(paste(\"you are here\"));
          gp = gp + geom_smooth(method=\"loess\", se=FALSE);
       }
     }
@@ -459,8 +459,15 @@ if(!$forceNoLines) {
   }
 }
 
-if(coord.cartesian) {
-  gp = gp + coord_cartesian(xlim=c(x.min,x.max))
+message(print(coord.cartesian));
+if (coord.cartesian) {
+  message(print(x.max));
+  message(print(as.Date(x.max)));
+  if (as.Date(x.max) != NA) {
+    gp = gp + coord_x_date(xlim=c(x.min,x.max));
+  } else {
+    gp = gp + coord_cartesian(xlim=c(x.min,x.max));
+  }
 }
 
 gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
@@ -553,10 +560,14 @@ if ($prtcpnt_sum) {
     status.df = completeDF(profile.df.full, \"STATUS\");
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
     if (all(is.na(profile.df.full\$VALUE))) {
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = SOLID), size = 5, real.geom = geom_point) + scale_shape_manual(values = 21) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"green\", \"blue\" = \"blue\")) + scale_fill_discrete(na.value=\"hollow\", guide=\"none\");
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 5, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
       #desperate times
       gp = gp + theme_bw();
-      gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=NULL);
+     if (is.thumbnail) {
+        gp = gp + labs(title=NULL, x=NULL, y=NULL);
+      } else {
+        gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=NULL);
+      }
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
@@ -593,8 +604,10 @@ sub new {
 
   $self->setPartName('prtcpnt_sum');
   $self->setPlotTitle("Participant Event Summary - $id");
-  $self->setDefaultXMax(745);
-  $self->setDefaultXMin(0);
+  my $xmax = $self->getDefaultXMax() ? $self->getDefaultXMax() : 745;
+  $self->setDefaultXMax($xmax);
+  my $xmin = $self->getDefaultXMin() ? $self->getDefaultXMin() : 0;
+  $self->setDefaultXMin($xmin);
  
   return $self;
 

@@ -79,6 +79,9 @@ sub run {
 
          my $declareParts     = $Cgi->param('declareParts');
 
+         my $xminOverride     = $Cgi->param('xmin');
+         my $xmaxOverride     = $Cgi->param('xmax');
+
          my $contXAxis = $Cgi->param('contXAxis');
          my $yAxis     = $Cgi->param('yAxis');
          my $status      = $Cgi->param('status');
@@ -178,7 +181,9 @@ sub run {
                         EventStart => $eventStart,
                         EventDur => $eventDur,
                         Status => $status,
-                        OptStatus => $optStatus
+                        OptStatus => $optStatus,
+                        Xmin => $xminOverride,
+                        Xmax => $xmaxOverride,
                        });
          };
 
