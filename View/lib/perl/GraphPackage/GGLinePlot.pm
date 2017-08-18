@@ -285,9 +285,8 @@ if(length(profile.files) != length(element.names.files)) {
 }
 
 
-x.min = \"$xMin\";
-x.max = \"$xMax\";
- message(paste(as.Date(x.max)));
+x.min = $xMin;
+x.max = $xMax;
 
 y.min = $yMin;
 y.max = $yMax;  
