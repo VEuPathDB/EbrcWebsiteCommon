@@ -285,8 +285,8 @@ if(length(profile.files) != length(element.names.files)) {
 }
 
 
-x.min = $xMin;
-x.max = $xMax;
+x.min = \"$xMin\";
+x.max = \"$xMax\";
 
 y.min = $yMin;
 y.max = $yMax;  
@@ -363,6 +363,8 @@ if(\"FACET\" %in% colnames(profile.df.full)) {
   profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
 }
 profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
+#will need to look again at this if ever dates come in with a different format than R's default.
+profile.is.date = all(!is.na(as.Date(profile.df.full\$ELEMENT_NAMES)));
 
 coord.cartesian = $coordCartesian
 if($removeNaN){
@@ -458,12 +460,9 @@ if(!$forceNoLines) {
   }
 }
 
-message(print(coord.cartesian));
 if (coord.cartesian) {
-  message(print(x.max));
-  message(print(as.Date(x.max)));
-  if (as.Date(x.max) != NA) {
-    gp = gp + coord_x_date(xlim=c(x.min,x.max));
+  if (!is.na(as.Date(x.max))) {
+    gp = gp + scale_x_date(limits=c(x.min,x.max));
   } else {
     gp = gp + coord_cartesian(xlim=c(x.min,x.max));
   }
@@ -559,8 +558,11 @@ if ($prtcpnt_sum) {
     status.df = completeDF(profile.df.full, \"STATUS\");
     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
     if (all(is.na(profile.df.full\$VALUE))) {
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 5, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
       #desperate times
+      if (coord.cartesian) {
+        gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
+      }
       gp = gp + theme_bw();
      if (is.thumbnail) {
         gp = gp + labs(title=NULL, x=NULL, y=NULL);
