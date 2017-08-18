@@ -5,6 +5,7 @@ package EbrcWebsiteCommon::View::GraphPackage;
 # ========================================================================
 
 use strict;
+use Data::Dumper;
 
 use constant EmailEnabled => 0;
 use Time::HiRes qw ( time );
@@ -43,7 +44,10 @@ sub init {
    $Self->setQueryHandle          ( $Args->{QueryHandle          } );
    $Self->setFormat               ( $Args->{Format               } );
    $Self->setContXAxis            ( $Args->{ContXAxis            } );
-   $Self->setTest                 ( $Args->{Test                 } );
+   $Self->setStatus               ( $Args->{Status               } );
+   $Self->setOptStatus            ( $Args->{OptStatus            } );
+   $Self->setDefaultXMin          ( $Args->{Xmin                 } );
+   $Self->setDefaultXMax          ( $Args->{Xmax                 } );
    $Self->setYAxis                ( $Args->{YAxis                } );
    $Self->setEventStart           ( $Args->{EventStart           } );
    $Self->setEventDur             ( $Args->{EventDur             } );
@@ -113,8 +117,17 @@ sub setContXAxis               { $_[0]->{'ContXAxis'                   } = $_[1]
 sub getYAxis                   { $_[0]->{'YAxis'                       } }
 sub setYAxis                   { $_[0]->{'YAxis'                       } = $_[1]; $_[0] }
 
-sub getTest                    { $_[0]->{'Test'                        } }
-sub setTest                    { $_[0]->{'Test'                        } = $_[1]; $_[0] }
+sub getDefaultXMax             { $_[0]->{'Xmax'                        } }
+sub setDefaultXMax             { $_[0]->{'Xmax'                        } = $_[1]; $_[0] }
+
+sub getDefaultXMin             { $_[0]->{'Xmin'                        } }
+sub setDefaultXMin             { $_[0]->{'Xmin'                        } = $_[1]; $_[0] }
+
+sub getStatus                  { $_[0]->{'Status'                      } }
+sub setStatus                  { $_[0]->{'Status'                      } = $_[1]; $_[0] }
+
+sub getOptStatus               { $_[0]->{'OptStatus'                   } }
+sub setOptStatus               { $_[0]->{'OptStatus'                   } = $_[1]; $_[0] }
 
 sub getEventStart              { $_[0]->{'EventStart'                  } }
 sub setEventStart              { $_[0]->{'EventStart'                  } = $_[1]; $_[0] }

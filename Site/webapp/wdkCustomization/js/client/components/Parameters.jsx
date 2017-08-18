@@ -10,19 +10,24 @@ import { makeQuestionWizardClassName as makeClassName } from '../util/classNames
  */
 function Parameters(props) {
   const { parameters, paramValues, paramUIState, onActiveOntologyTermChange, onParamValueChange } = props;
+  const showLabel = parameters.length > 1;
   return (
     <div className={makeClassName('ParamContainer')}>
       {parameters.map(param => {
         return (
           <div key={param.name} className={makeClassName('Param', param.type)}>
-            <div className={makeClassName('ParamLabel', param.type)}>
-              <label>{param.displayName}</label>
-            </div>
-            <div className={makeClassName('ParamHelp', param.type)}>
-              <Tooltip content={param.help}>
-                <Icon type="help"/>
-              </Tooltip>
-            </div>
+            {showLabel && (
+              <div className={makeClassName('ParamLabel', param.type)}>
+                <label>{param.displayName}</label>
+              </div>
+            )}
+            {showLabel && (
+              <div className={makeClassName('ParamHelp', param.type)}>
+                <Tooltip content={param.help}>
+                  <Icon type="help"/>
+                </Tooltip>
+              </div>
+            )}
             <div
               className={makeClassName('ParamControl', param.type)}
               onKeyPress={event => {

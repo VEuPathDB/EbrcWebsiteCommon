@@ -3,7 +3,6 @@
 }
 
 .ebrc-QuestionWizard {
-  font-size: 1.2em;
   padding: 0 1em;
 }
 
@@ -20,7 +19,13 @@
   padding-bottom: 3em;
   border-bottom: 1px solid #ccc;
   overflow: auto;
-  font-size: .9vw;
+  font-size: 1vw;
+}
+
+@media all and (min-width: 1200px) {
+  .ebrc-QuestionWizardNavigationContainer {
+    font-size: 1em;
+  }
 }
 
 .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
@@ -64,7 +69,7 @@
 
 .ebrc-QuestionWizardActiveGroupCount {
   font-weight: 500;
-  font-size: 1.2em;
+  font-size: 1.4em;
   margin: .5em 0;
 }
 
@@ -74,12 +79,6 @@
   width: 1em;
   padding: 0;
 }
-
-/*.ebrc-QuestionWizardParamContainer {
-  padding: 1.5em 0;
-  margin: 2em 0;
-  border-top: 1px solid #ccc;
-}*/
 
 .ebrc-QuestionWizardIcon {
   display: block;
@@ -168,7 +167,7 @@ button.ebrc-QuestionWizardParamGroupButton {
   border-color: #333;
   border-radius: 5px;
   color: #333;
-  height: 3em;
+  min-height: 3em;
   max-width: 9em;
   min-width: 4em;
   overflow-x: hidden;
@@ -185,20 +184,6 @@ button.ebrc-QuestionWizardParamGroupButton:hover {
   color: black;
 }
 
-/*
-button.ebrc-QuestionWizardParamGroupButton__configured {
-  background: #b6d7a8;
-  border-color: gray;
-}
-
-button.ebrc-QuestionWizardParamGroupButton__configured:active,
-button.ebrc-QuestionWizardParamGroupButton__configured:focus,
-button.ebrc-QuestionWizardParamGroupButton__configured:hover {
-  background: rgba(182, 215, 168, 0.95);
-  border-color: #020202;
-}
-*/
-
 button.ebrc-QuestionWizardParamGroupButton__active,
 button.ebrc-QuestionWizardParamGroupButton__active:active,
 button.ebrc-QuestionWizardParamGroupButton__active:focus,
@@ -207,18 +192,6 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   box-shadow: 0px 0px 0px 4px #7d7d7d;
   font-weight: 600;
 }
-
-/*
-.ebrc-QuestionWizardParamGroup__active:after {
-  content: ' ';
-  border-bottom: 2px solid #666;
-  width: 90%;
-  position: absolute;
-  bottom: -1em;
-  left: 5%;
-  box-shadow: 0 0 3px #999;
-}
-*/
 
 .ebrc-QuestionWizardTotalCount {
   font-size: .8em;

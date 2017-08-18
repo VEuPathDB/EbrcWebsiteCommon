@@ -100,7 +100,7 @@ modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 modelconfig_smtpServer: 127.0.0.1
 modelconfig_supportEmail: 'help@{{ project|lower }}.{{ _topleveldomain }}'
 modelconfig_wdkTempDir: /var/tmp/wdk
-modelconfig_webAppUrl: 'http://{{ hostname }}/{{ webapp_ctx }}///'
+modelconfig_webAppUrl: 'http://{{ hostname|swap_hostname(_host_frontends) }}/{{ webapp_ctx }}///'
 modelconfig_webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 modelconfig_webServiceUrl: local
 

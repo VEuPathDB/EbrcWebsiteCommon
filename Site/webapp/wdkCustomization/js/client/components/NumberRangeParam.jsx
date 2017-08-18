@@ -14,14 +14,14 @@ import { NumberRangeSelector } from 'wdk-client/Components';
 
    handleChange (newValue) {
      let { param, onParamValueChange } = this.props;
-     newValue = JSON.stringify(newValue).replace(/\"/g, "'");
+     newValue = JSON.stringify(newValue);
      onParamValueChange(param, newValue);
    }
 
    render () {
      let { param, value } = this.props;
      let { min, max, integer, step } = param;
-     value = JSON.parse(value.replace(/'/g, "\""));
+     value = JSON.parse(value);
      if (typeof value.min === 'string') value.min = value.min * 1;
      if (typeof value.max === 'string') value.max = value.max * 1;
 

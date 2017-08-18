@@ -53,6 +53,12 @@ sub setDefaultYMax               { $_[0]->{'_default_y_max'                 } = 
 sub getDefaultYMin               { $_[0]->{'_default_y_min'                 }}
 sub setDefaultYMin               { $_[0]->{'_default_y_min'                 } = $_[1]}
 
+sub getDefaultXMax               { $_[0]->{'_default_x_max'                 }}
+sub setDefaultXMax               { $_[0]->{'_default_x_max'                 } = $_[1]}
+
+sub getDefaultXMin               { $_[0]->{'_default_x_min'                 }}
+sub setDefaultXMin               { $_[0]->{'_default_x_min'                 } = $_[1]}
+
 sub getSampleLabels               { $_[0]->{'_sample_labels'                }}
 sub setSampleLabels               { $_[0]->{'_sample_labels'                } = $_[1]}
 
@@ -108,8 +114,11 @@ sub setContXAxis                 { $_[0]->{'_cont_x_axis'                   } = 
 sub getYAxis                     { $_[0]->{'_y_axis'                        }}
 sub setYAxis                     { $_[0]->{'_y_axis'                        } = $_[1]}
 
-sub getTest                      { $_[0]->{'_test'                          }}
-sub setTest                      { $_[0]->{'_test'                          } = $_[1]}
+sub getStatus                    { $_[0]->{'_status'                        }}
+sub setStatus                    { $_[0]->{'_status'                        } = $_[1]}
+
+sub getOptStatus                 { $_[0]->{'_opt_status'                    }}
+sub setOptStatus                 { $_[0]->{'_opt_status'                    } = $_[1]}
 
 sub getEventStart                { $_[0]->{'_event_start'                   }}
 sub setEventStart                { $_[0]->{'_event_start'                   } = $_[1]}
