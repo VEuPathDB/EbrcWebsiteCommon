@@ -18,6 +18,7 @@ import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncre
 import * as eupathComponentWrappers from './component-wrappers';
 import * as eupathStoreWrappers from './store-wrappers';
 import * as EbrcComponents from './components';
+import * as EbrcControllers from './controllers';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -237,7 +238,8 @@ function wrapComponents(wrappersByComponentName) {
     const Component = (
       WdkComponents[componentName] ||
       WdkControllers[componentName] ||
-      EbrcComponents[componentName]
+      EbrcComponents[componentName] ||
+      EbrcControllers[componentName]
     );
 
     if (Component == null) {

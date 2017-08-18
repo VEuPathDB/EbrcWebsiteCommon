@@ -4,9 +4,10 @@ import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
 import { latest, synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
+import { wrappable } from 'wdk-client/ComponentUtils';
 import { getTree } from 'wdk-client/FilterServiceUtils';
 import { getLeaves } from 'wdk-client/TreeUtils';
-import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash';
+import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
 
 //  type State = {
 //    question: Question;
@@ -28,7 +29,7 @@ import { groupBy, isEqual, memoize, debounce, flow, ary, identity } from 'lodash
  * FIXME Move state management into a Store. As-is, there are potential race
  * conditions due to `setState()` being async.
  */
-export default class QuestionWizardController extends React.Component {
+class QuestionWizardController extends React.Component {
 
   constructor(props) {
     super(props);
@@ -36,16 +37,23 @@ export default class QuestionWizardController extends React.Component {
       paramValues: this.props.paramValues
     };
     this.parameterMap = null;
-    this.onActiveGroupChange = this.onActiveGroupChange.bind(this);
-    this.onActiveOntologyTermChange = this.onActiveOntologyTermChange.bind(this);
-    this.onParamValueChange = this.onParamValueChange.bind(this);
-    this.onUpdateInvalidGroupCounts = this.onUpdateInvalidGroupCounts.bind(this);
+    this.eventHandlers = mapValues(this.getEventHandlers(), handler => handler.bind(this));
+
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._commitParamValueChange = debounce(this._commitParamValueChange, 1000);
     this._updateGroupCounts = latest(this._updateGroupCounts);
     this._handleParamValueChange = synchronized(this._handleParamValueChange);
     this._updateDependedParams = synchronized(this._updateDependedParams);
+  }
+
+  getEventHandlers() {
+    return pick(this, [
+      'onActiveGroupChange',
+      'onActiveOntologyTermChange',
+      'onParamValueChange',
+      'onUpdateInvalidGroupCounts'
+    ]);
   }
 
   loadQuestion(props) {
@@ -481,13 +489,10 @@ export default class QuestionWizardController extends React.Component {
         {this.state.question && (
           <QuestionWizard
             {...this.state}
+            {...this.eventHandlers}
             showHelpText={!this.props.isRevise}
             isAddingStep={this.props.isAddingStep}
             customName={this.props.customName}
-            onActiveGroupChange={this.onActiveGroupChange}
-            onActiveOntologyTermChange={this.onActiveOntologyTermChange}
-            onParamValueChange={this.onParamValueChange}
-            onUpdateInvalidGroupCounts={this.onUpdateInvalidGroupCounts}
           />
         )}
       </div>
@@ -504,6 +509,8 @@ QuestionWizardController.propTypes = {
   isAddingStep: PropTypes.bool.isRequired,
   customName: PropTypes.string
 }
+
+export default wrappable(QuestionWizardController);
 
 /**
  * Create paramValues object with default values.
