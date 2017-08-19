@@ -1,4 +1,5 @@
-env: production
+
+modelconfig_monitorBlockedThreads: 'false'
 
 modelconfig_accountDb_connectionUrl: 'jdbc:oracle:oci:@{{ acctdb_shortname }}'
 modelconfig_accountDb_login: '{{ acctdb_login }}'
