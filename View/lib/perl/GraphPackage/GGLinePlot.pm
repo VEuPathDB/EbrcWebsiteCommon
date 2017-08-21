@@ -464,7 +464,7 @@ if (coord.cartesian) {
   if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
     gp = gp + scale_x_date(limits=c(x.min,x.max));
   } else {
-    gp = gp + coord_cartesian(xlim=c(x.min,x.max));
+    gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
   }
 }
 
