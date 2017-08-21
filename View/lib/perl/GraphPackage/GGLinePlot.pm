@@ -364,7 +364,7 @@ if(\"FACET\" %in% colnames(profile.df.full)) {
 }
 profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
 #will need to look again at this if ever dates come in with a different format than R's default.
-profile.is.date = all(!is.na(as.Date(profile.df.full\$ELEMENT_NAMES)));
+profile.is.date = all(!is.na(as.Date(as.character(profile.df.full\$ELEMENT_NAMES), format='%Y-%m-%d')));
 
 coord.cartesian = $coordCartesian
 if($removeNaN){
@@ -461,7 +461,7 @@ if(!$forceNoLines) {
 }
 
 if (coord.cartesian) {
-  if (!is.na(as.Date(x.max))) {
+  if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
     gp = gp + scale_x_date(limits=c(x.min,x.max));
   } else {
     gp = gp + coord_cartesian(xlim=c(x.min,x.max));
