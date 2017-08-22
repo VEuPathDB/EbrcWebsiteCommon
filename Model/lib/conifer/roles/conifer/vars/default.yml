@@ -1,5 +1,10 @@
 # $SourceFileURL$
 ---
+project: =c= e.g. ToxoDB
+cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
+hostname: =c= FQDN or 'localhost'
+webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
+
 _topleveldomain: org
 _wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
 
