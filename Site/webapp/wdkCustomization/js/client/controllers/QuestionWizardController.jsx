@@ -281,6 +281,8 @@ class QuestionWizardController extends React.Component {
           this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters)
       ]);
     }
+
+    return Promise.resolve();
   }
 
   /**
