@@ -205,9 +205,13 @@ export default class DatasetGraph extends PureComponent {
               headerContent="Coverage"
               isCollapsed={this.state.coverageCollapsed}
               onCollapsedChange={this.handleCoverageCollapseChange}>
+
+              <div><b>NOTE</b>: This coverage plot may not correspond to the expression graph above because the bigwig file representing coverage has been normalized to compensate for differences in read counts between samples.</div>
+	
               <div>
+                <br></br>
                 <a href={covImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
-                  View in genome browser
+                  View in genome browser 
                 </a>
               </div>
 
