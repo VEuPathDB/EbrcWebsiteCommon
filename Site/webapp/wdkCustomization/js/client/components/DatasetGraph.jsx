@@ -197,6 +197,9 @@ export default class DatasetGraph extends PureComponent {
             }
 	   </select>
 
+           {assay_type == 'RNA-seq'  && covImgUrl ?
+            (<div>The expression graphs and coverage plots displayed here consider only unique reads - reads that align to only one location on the genome. Non-unique reads are available as GBrowse tracks and can be viewed by opening the coverage section below and clicking the "View in genome browser" link.</div>) : null
+           }
 
           {assay_type == 'RNA-seq' && covImgUrl ?
             <CollapsibleSection
