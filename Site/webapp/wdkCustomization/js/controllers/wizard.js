@@ -23,7 +23,7 @@ wdk.namespace('ebrc.controllers', ns => {
       }),
       $el[0]
     );
-    handleEvents($el);
+    initialize($el);
   }
 });
 
@@ -37,7 +37,7 @@ function parseJson(string) {
   }
 }
 
-function handleEvents($el) {
+function initialize($el) {
   const $form = $el.closest('form');
   $form
     .on('submit', () => {
@@ -51,5 +51,7 @@ function handleEvents($el) {
     })
     .on(wdk.addStepPopup.FORM_DESTROY_EVENT, () => {
       ReactDOM.unmountComponentAtNode($el[0]);
-    });
+    })
+    .prop('autocomplete', 'off')
+    .attr('novalidate', '');
 }
