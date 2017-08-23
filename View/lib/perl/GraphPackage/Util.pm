@@ -14,13 +14,25 @@ sub makeNodeMetadataSet {
   my @rv;
 
   foreach my $row (@arr) {
-    #check if anything was passed.
-    if (!defined $row->{yAxis} && !defined $row->{eventStart} && !defined $row->{status}) {
-      warn "An empty profile was passed to Util.pm... Was this intentional?";
-    } else {
-      my $profile = EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet->new($row);
+    if (ref($row) eq 'ARRAY') {
+      foreach my $nextProfile (@{$row}) {
+        if (!defined $nextProfile->{yAxis} && !defined $nextProfile->{eventStart} && !defined $nextProfile->{status}) {
+        warn "An empty profile was passed to Util.pm... Was this intentional?";
+      } else {
+        my $profile = EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet->new($nextProfile);
 
-      push @rv, $profile;
+        push @rv, $profile;
+      } 
+      }
+    } else {
+      #check if anything was passed.
+      if (!defined $row->{yAxis} && !defined $row->{eventStart} && !defined $row->{status}) {
+        warn "An empty profile was passed to Util.pm... Was this intentional?";
+      } else {
+        my $profile = EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet->new($row);
+
+        push @rv, $profile;
+      }
     }
   }
   return \@rv;

@@ -359,6 +359,12 @@ for(ii in 1:length(profile.files)) {
 #allow adjustments
 $rAdjustProfile
 
+if ($prtcpnt_sum) {
+  status.df = completeDF(profile.df.full, \"STATUS\");
+  annotate.df = completeDF(profile.df.full, \"END_DATE\");
+  profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+}
+
 if(\"FACET\" %in% colnames(profile.df.full)) {
   profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
 }
@@ -378,6 +384,12 @@ if($removeNaN){
   }
 }
 
+if (!all(is.na(profile.df.full\$VALUE))) {
+  if ($prtcpnt_sum) {
+    profile.df.full = profile.df.clean;
+  }
+}
+
 if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
   gp = ggplot(profile.df.full, aes(x=CONTXAXIS, y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
 }else if(profile.is.numeric && !$forceNoLines) {
@@ -393,7 +405,11 @@ if ($prtcpnt_sum) {
     y.min = 0;
   } else {
     y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-    y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
+    if (grepl(\"Z-score\",\"$yAxisLabel\")) {
+      y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
+    } else {
+      y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 25;
+    }
   }
 } else {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
@@ -462,7 +478,7 @@ if(!$forceNoLines) {
 
 if (coord.cartesian) {
   if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
-    gp = gp + scale_x_date(limits=c(x.min,x.max));
+    gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
   } else {
     gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
   }
@@ -494,8 +510,9 @@ if(is.compact) {
   } else {
     gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
   }
-
-  gp = gp + theme(legend.position=\"none\");
+  if (!$prtcpnt_sum) {
+    gp = gp + theme(legend.position=\"none\");
+  }
 } else {
   gp = gp + theme_bw();
   gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
@@ -538,25 +555,29 @@ if($hideXAxisLabels) {
 
 if ($prtcpnt_sum) {
 
-  if (!all(is.na(profile.df.full\$VALUE))) {
+  if (grepl(\"Z-score\", \"$yAxisLabel\")) {
     #will likely have to revisit the logic for when this should be shown.
     gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
   }
 
   if (\"END_DATE\" %in% colnames(profile.df.full)) {
-    annotate.df = completeDF(profile.df.full, \"END_DATE\");
+
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
       annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
     }
-    profile.df.clean = completeDF(profile.df.full, \"VALUE\");
-    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7); 
+
+    #later see if there is a smatter way to do this. maybe try to detect scale
+    if (grepl(\"Z-score\", \"$yAxisLabel\")) {
+      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7); 
+    } else {
+      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 10, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 10, tooltip = DURATION), real.geom = geom_segment, size = 7);
+    }
   }
 
   if (\"STATUS\" %in% colnames(profile.df.full)) {
-    status.df = completeDF(profile.df.full, \"STATUS\");
-    profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+
     if (all(is.na(profile.df.full\$VALUE))) {
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
       #desperate times
@@ -573,7 +594,11 @@ if ($prtcpnt_sum) {
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
     } else {
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
+      if (grepl(\"Z-score\", \"$yAxisLabel\")) {
+        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
+      } else {
+        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -20, tooltip = STATUS), real.geom = geom_point);
+      }
     }
   }
 
@@ -604,11 +629,12 @@ sub new {
   my $id = $self->getId();
 
   $self->setPartName('prtcpnt_sum');
-  $self->setPlotTitle("Participant Event Summary - $id");
+  $self->setPlotTitle("Participant Observations Summary - $id");
   my $xmax = $self->getDefaultXMax() ? $self->getDefaultXMax() : 745;
   $self->setDefaultXMax($xmax);
   my $xmin = $self->getDefaultXMin() ? $self->getDefaultXMin() : 0;
   $self->setDefaultXMin($xmin);
+  $self->setDefaultYMin(100);
  
   return $self;
 

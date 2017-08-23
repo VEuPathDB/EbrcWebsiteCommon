@@ -84,6 +84,8 @@ sub run {
 
          my $contXAxis = $Cgi->param('contXAxis');
          my $yAxis     = $Cgi->param('yAxis');
+         my @yAxis     = split(',', $yAxis || '');
+
          my $status      = $Cgi->param('status');
          my $optStatus   = $Cgi->param('optStatus');
 
@@ -177,7 +179,7 @@ sub run {
                         VisiblePartsAreFuzzy => $visiblePartsAreFuzzy,
                         Facets => \@facets,
                         ContXAxis => $contXAxis,
-                        YAxis => $yAxis,
+                        YAxis => \@yAxis,
                         EventStart => $eventStart,
                         EventDur => $eventDur,
                         Status => $status,
