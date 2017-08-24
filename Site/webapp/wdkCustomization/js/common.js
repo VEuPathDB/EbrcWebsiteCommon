@@ -3,6 +3,7 @@
 import 'eupathdb/css/AllSites.css';
 import '!!script-loader!eupathdb/js/newwindow';
 import './controllers/wizard';
+import './attributeCheckboxTree';
 
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
