@@ -360,8 +360,12 @@ for(ii in 1:length(profile.files)) {
 $rAdjustProfile
 
 if ($prtcpnt_sum) {
-  status.df = completeDF(profile.df.full, \"STATUS\");
-  annotate.df = completeDF(profile.df.full, \"END_DATE\");
+  if (\"STATUS\" %in% colnames(profile.df.full)) {
+    status.df = completeDF(profile.df.full, \"STATUS\");
+  }
+  if (\"END_DATE\" %in% colnames(profile.df.full)) {
+    annotate.df = completeDF(profile.df.full, \"END_DATE\");
+  }
   profile.df.clean = completeDF(profile.df.full, \"VALUE\");
 }
 
@@ -561,7 +565,7 @@ if ($prtcpnt_sum) {
     gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
   }
 
-  if (\"END_DATE\" %in% colnames(profile.df.full)) {
+  if (exists(\"annotate.df\") && nrow(annotate.df) > 0) {
 
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
@@ -576,7 +580,7 @@ if ($prtcpnt_sum) {
     }
   }
 
-  if (\"STATUS\" %in% colnames(profile.df.full)) {
+  if (exists(\"status.df\") && nrow(status.df) > 0) {
 
     if (all(is.na(profile.df.full\$VALUE))) {
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
