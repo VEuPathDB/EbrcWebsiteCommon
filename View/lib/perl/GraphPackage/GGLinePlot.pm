@@ -560,12 +560,17 @@ if($hideXAxisLabels) {
 if ($prtcpnt_sum) {
 
   if (grepl(\"Z-score\", \"$yAxisLabel\")) {
-    #will likely have to revisit the logic for when this should be shown.
     gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
+    subtitle = \"red lines -> +/- 2 sd\";
+  } else {
+    subtitle = \"\";
   }
 
-  if (exists(\"annotate.df\") && nrow(annotate.df) > 0) {
+  event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
+  if (event.start) {
+
+    subtitle = paste0(subtitle, \"; bars -> diarrhea\");
 
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
@@ -574,14 +579,15 @@ if ($prtcpnt_sum) {
 
     #later see if there is a smatter way to do this. maybe try to detect scale
     if (grepl(\"Z-score\", \"$yAxisLabel\")) {
-      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7); 
+      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7);
     } else {
       gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 10, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 10, tooltip = DURATION), real.geom = geom_segment, size = 7);
     }
   }
 
-  if (exists(\"status.df\") && nrow(status.df) > 0) {
-
+  status = exists(\"status.df\") && nrow(status.df) > 0;
+  if (status) {
+    #this is specific for the timeline right now. will need to look at this again later.
     if (all(is.na(profile.df.full\$VALUE))) {
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
       #desperate times
@@ -598,6 +604,7 @@ if ($prtcpnt_sum) {
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
     } else {
+      subtitle = paste0(subtitle, \"; points -> micro+\");
       if (grepl(\"Z-score\", \"$yAxisLabel\")) {
         gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
       } else {
@@ -606,6 +613,14 @@ if ($prtcpnt_sum) {
     }
   }
 
+  #TODO later pass subtitle from template like the other labels are.
+    if (is.thumbnail) {
+      gp = gp + labs(title=NULL, x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=subtitle);
+      gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+    } else {
+      gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=subtitle);
+      gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+    }
 }
 
 #postscript
