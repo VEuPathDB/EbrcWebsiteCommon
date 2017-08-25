@@ -562,7 +562,7 @@ if ($prtcpnt_sum) {
   if (grepl(\"Z-score\", \"$yAxisLabel\")) {
     gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
-    subtitle = \"red lines -> +/- 2 sd\";
+    subtitle = \"red lines = +/- 2 sd\";
   } else {
     subtitle = \"\";
   }
@@ -570,7 +570,7 @@ if ($prtcpnt_sum) {
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
 
-    subtitle = paste0(subtitle, \"; bars -> diarrhea\");
+    subtitle = paste0(subtitle, \"; bars = diarrhea\");
 
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
@@ -604,7 +604,7 @@ if ($prtcpnt_sum) {
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
     } else {
-      subtitle = paste0(subtitle, \"; points -> micro+\");
+      subtitle = paste0(subtitle, \"; points = micro+\");
       if (grepl(\"Z-score\", \"$yAxisLabel\")) {
         gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
       } else {
