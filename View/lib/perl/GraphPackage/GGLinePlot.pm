@@ -445,8 +445,12 @@ if (\"GROUP\" %in% colnames(profile.df.full)) {
     stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
   }
 } else {
+ if (!is.null(profile.df.full\$LEGEND)) {
+  count = length(unique(profile.df.full\$LEGEND));
+ } else {
   count = $numProfiles;
-  if ($numProfiles < length($colorsStringNotNamed)) {
+ }
+  if (count < length($colorsStringNotNamed)) {
     stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
   }
 }
@@ -474,9 +478,10 @@ if(!$forceNoLines) {
       if(length(levels(factor(profile.df.full\$PROFILE_FILE))) > 1) {
          gp = gp + geom_smooth(method=\"loess\", se=FALSE);
       }
+    } else {
+      df2smooth = completeDF(profile.df.full, \"ELEMENT_NAMES_NUMERIC\");
+      gp = gp + geom_smooth(data = df2smooth, method=\"loess\", se=FALSE, colour = \"black\", size = .5);
     }
-    df2smooth = completeDF(profile.df.full, \"ELEMENT_NAMES_NUMERIC\");
-    gp = gp + geom_smooth(data = df2smooth, method=\"loess\", se=FALSE, colour = \"black\", size = .5);
   }
 }
 
@@ -488,7 +493,12 @@ if (coord.cartesian) {
   }
 }
 
-gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+# i've noticed rep being a bit buggy so im only going to do this if its necessary..
+if (count/length($colorsStringNotNamed) == 1) {
+  gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+} else {
+  gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+}
 
 hideLegend=FALSE;
 if(is.null(profile.df.full\$LEGEND) || $fillBelowLine) {
