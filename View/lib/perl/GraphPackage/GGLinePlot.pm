@@ -445,7 +445,7 @@ if (\"GROUP\" %in% colnames(profile.df.full)) {
     stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
   }
 } else {
- if (!is.null(profile.df.full\$LEGEND)) {
+ if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
   count = length(unique(profile.df.full\$LEGEND));
  } else {
   count = $numProfiles;
