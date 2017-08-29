@@ -198,8 +198,18 @@ export default class DatasetGraph extends PureComponent {
 	   </select>
 */}
            {assay_type == 'RNA-seq'  && covImgUrl ?
-            (<div>The expression graphs and coverage plots displayed here consider only unique reads - reads that align to only one location on the genome. Non-unique reads are available as GBrowse tracks and can be viewed by opening the coverage section below and clicking the "View in genome browser" link.</div>) : null
+            <div><font color="red">Warning:</font> Expression graphs and coverage plots represent unique reads, i.e. those aligning to one location only. This may underrepresent abundance for sequences that are duplicated in the genome, including paralogous genes.
+                <br></br>
+             Non-unique mapping may be examined in the genome browser:
+<ul>
+<li> click on the <b>Coverage</b> heading below to display coverage plots, then click on the link to 'View in the genome browser'</li>
+<li> next, click on "Showing # of # subtracks” link in the track header, to add subtracks of interest</li>
+<li> if non-unique mappers are abundant, you may also wish to adjust Y-axis scaling, by clicking on the small red wrench icon in the genome browser track header</li>
+</ul>
+Further questions? See tutorials and YouTube videos on Genome Browser configuration, or click on the ‘Contact Us’ link.</div> : null
            }
+
+
 
           {assay_type == 'RNA-seq' && covImgUrl ?
             <CollapsibleSection
@@ -208,8 +218,6 @@ export default class DatasetGraph extends PureComponent {
               headerContent="Coverage"
               isCollapsed={this.state.coverageCollapsed}
               onCollapsedChange={this.handleCoverageCollapseChange}>
-
-              <div><b>NOTE</b>: This coverage plot may not correspond to the expression graph above because the bigwig file representing coverage has been normalized to compensate for differences in read counts between samples.</div>
 	
               <div>
                 <br></br>
