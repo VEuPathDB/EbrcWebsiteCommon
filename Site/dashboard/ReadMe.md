@@ -50,14 +50,12 @@ module implements to_xml() and to_json() methods.
 Footnotes
 
 [1]. /dashboard will use these to look up localhost port for Jolokia.
-The names of these variables are defined in /dashboard's php.config
+The names of these variables are defined in /dashboard's php.config.
 
-    ```
-    worker_env_var_name=TOMCAT_INSTANCE
-    ctx_path_env_var_name=CONTEXT_PATH
-    ```
-
-properties, respectively.
+```
+worker_env_var_name=TOMCAT_INSTANCE
+ctx_path_env_var_name=CONTEXT_PATH
+```
 
 Specifically, /dashboard uses Apache's `TOMCAT_INSTANCE` environment
 variable to look up the http port in the `workers.properties` file. For
