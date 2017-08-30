@@ -112,6 +112,16 @@ class JolReadOperation extends JolOperation {
     return TRUE;
   }
 
+  public function __toString() {
+    $a = $this->http_post_array();
+    $string = '{"type":"read","mbean":"' . $a{'mbean'} . '","attribute":"' . join(',', $a{'attribute'}) . '"';
+    if (isset($a{'path'})) {
+      $string .= ',"path":"' . $a{'path'} . '"';
+    }
+    $string .= '}';
+    return $string;
+  }
+
 }
 
 ?>
