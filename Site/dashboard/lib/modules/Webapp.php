@@ -29,14 +29,22 @@ class Webapp extends JolModule {
    */
   public function attributes() {
 
-    $req = new JolRequest($this->jol_base_url);
-
-    $loader = new JolReadOperation(array(
+    $loaders = array(
+        // Tomcat 6.x
+        new JolReadOperation(array(
                 'mbean' => $this->domain .
                 ':type=Loader,path=' . $this->context_path .
                 ',host=' . $this->engine_host,
                 'attribute' => array('loaderRepositoriesString'), // use array so we get array response
-            ));
+        )),
+        // Tomcat 8.x
+        new JolReadOperation(array(
+            'mbean' => $this->domain .
+            ':type=Loader,context=' . $this->context_path .
+            ',host=' . $this->engine_host,
+            'attribute' => array('loaderRepositoriesString'), // use array so we get array response
+        )),
+    );
 
      $app = new JolReadOperation(array(
                 'mbean' => "$this->domain:" .
@@ -53,11 +61,18 @@ class Webapp extends JolModule {
                'attribute' => array('path'),
            ));   
 
+    $response = null;
+    foreach($loaders as $loader) {
+        $req = new JolRequest($this->jol_base_url);
     $req->add_operation($loader);
     $req->add_operation($app);
     $req->add_operation($all_deployed_webmodules);
 
     $response = $req->invoke();
+        if ( ! $response->has_error()) {
+          break;
+        }
+    }
 
     if ($response->has_error()) {
       throw new Exception('invalid response: ' . $response->get_json_result());
@@ -65,6 +80,9 @@ class Webapp extends JolModule {
 
     $this->attributes = array_merge_recursive($response[0]->value(), $response[1]->value());
 
+    $this->attributes{'loaderRepositoriesString'} = str_replace(
+      'file:', '', $this->attributes{'loaderRepositoriesString'});
+    
     $this->attributes{'other_deployed_webapps'} = array();
     $all_webmodules = array_merge_recursive($response[2]->value());
     foreach ($all_webmodules as $module) {
