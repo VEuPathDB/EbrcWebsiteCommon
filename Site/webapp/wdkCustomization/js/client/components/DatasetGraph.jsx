@@ -131,6 +131,7 @@ export default class DatasetGraph extends PureComponent {
   render() {
     let { dataTable, facetMetadataTable, contXAxisMetadataTable, rowData: {
       assay_type,
+      paralog_number,
       graph_ids,
       dataset_id,
       dataset_name,
@@ -198,18 +199,20 @@ export default class DatasetGraph extends PureComponent {
 	   </select>
 */}
            {assay_type == 'RNA-seq'  && covImgUrl ?
-            <div><font color="red">Warning:</font> Expression graphs and coverage plots represent unique reads, i.e. those aligning to one location only. This may underrepresent abundance for sequences that are duplicated in the genome, including paralogous genes.
-                <br></br>
-             Non-unique mapping may be examined in the genome browser:
+            <div>Expression graphs and coverage plots represent unique reads, i.e. those aligning to one location only. This may underrepresent abundance for sequences that are duplicated in the genome, including paralogous genes.</div> 
+          : null}
+
+           {assay_type == 'RNA-seq'  && (paralog_number > 0) && covImgUrl ?
+             <div><br></br>
+             <font color="red">Warning:</font> This gene has {safeHtml(paralog_number, {}, 'b')} <b>paralogs</b>.
+<br></br>Non-unique mapping may be examined in the genome browser:
 <ul>
 <li> click on the <b>Coverage</b> heading below to display coverage plots, then click on the link to 'View in the genome browser'</li>
 <li> next, click on "Showing # of # subtracks” link in the track header, to add subtracks of interest</li>
 <li> if non-unique mappers are abundant, you may also wish to adjust Y-axis scaling, by clicking on the small red wrench icon in the genome browser track header</li>
 </ul>
-Further questions? See tutorials and YouTube videos on Genome Browser configuration, or click on the ‘Contact Us’ link.</div> : null
-           }
-
-
+Further questions? See tutorials and YouTube videos on Genome Browser configuration, or click on the ‘Contact Us’ link.</div>
+          : null}
 
           {assay_type == 'RNA-seq' && covImgUrl ?
             <CollapsibleSection
