@@ -78,6 +78,12 @@ export default class DatasetGraph extends PureComponent {
     );
   }
 
+  makeTutorialUrl({ rowData }) {
+    return (
+      '../../../../documents/FromCoverageNonuniqueReads.pdf'
+    );
+  }
+
   getGraphParts(props) {
     let baseUrl = this.makeBaseUrl(props);
     this.setState({ loading: true });
@@ -150,6 +156,7 @@ export default class DatasetGraph extends PureComponent {
     let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
     let dataset_link = this.makeDatasetUrl(this.props);
+    let tutorial_link = this.makeTutorialUrl(this.props);
 
     return (
       <div className="eupathdb-DatasetGraphContainer">
@@ -205,7 +212,7 @@ export default class DatasetGraph extends PureComponent {
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && covImgUrl ?
              <div><br></br>
              <font color="red">Warning:</font> This gene has {safeHtml(paralog_number, {}, 'b')} <b>paralogs</b>.
-<br></br>Non-unique mapping may be examined in the genome browser:
+<br></br>Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>):
 <ul>
 <li> click on the <b>Coverage</b> heading below to display coverage plots, then click on the link to 'View in the genome browser'</li>
 <li> next, click on "Showing # of # subtracks” link in the track header, to add subtracks of interest</li>
