@@ -12,49 +12,29 @@ modelconfig_userDb_login: '{{ userdb_login }}'
 modelconfig_userDb_password: '{{ userdb_password }}'
 modelconfig_userDb_connectionUrl: 'jdbc:oracle:oci:@{{ userdb_shortname }}'
 
-
-
-appdb_shortname: "{{ lookup('colfile',
+host_data: "{{ lookup('colfile',
     hostname + '
-    col=appDb_name
     src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
   ) }}"
-appdb_login: "{{ lookup('colfile',
-    hostname + '
-    col=appDb_login
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
-  ) }}"
+
+
+appdb_shortname: "{{ host_data['appDb_name'] }}"
+appdb_login: "{{ host_data['appDb_login'] }}"
 appdb_password: "{{ lookup('euparc',
   'attr=password xpath=database/user[@login=\"' + appdb_login + '\"]'
   )
 }}"
 
-acctdb_shortname: "{{ lookup('colfile',
-    hostname + '
-    col=acctDb_name
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
-  ) }}"
-acctdb_login: "{{ lookup('colfile',
-    hostname + '
-    col=acctDb_login
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
-  ) }}"
+acctdb_shortname: "{{ host_data['acctDb_name'] }}"
+acctdb_login: "{{ host_data['acctDb_login'] }}"
 acctdb_password: "{{ lookup('euparc',
   'attr=password xpath=database/user[@login=\"' + acctdb_login + '\"]'
   )
 }}"
 
 
-userdb_shortname: "{{ lookup('colfile',
-    hostname + '
-    col=userDb_name
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
-  ) }}"
-userdb_login: "{{ lookup('colfile',
-    hostname + '
-    col=userDb_login
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
-  ) }}"
+userdb_shortname: "{{ host_data['userDb_name'] }}"
+userdb_login: "{{ host_data['userDb_login'] }}"
 userdb_password: "{{ lookup('euparc',
   'attr=password xpath=database/user[@login=\"' + userdb_login + '\"]'
   )
