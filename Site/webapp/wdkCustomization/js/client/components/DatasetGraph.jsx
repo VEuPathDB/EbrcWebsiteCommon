@@ -210,8 +210,8 @@ export default class DatasetGraph extends PureComponent {
           : null}
 
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && covImgUrl ?
-             <div><br></br>
-             <font color="red">Warning:</font> This gene has {safeHtml(paralog_number, {}, 'b')} <b>paralogs</b>.
+             <div>
+             <b><font color="firebrick">Warning: This gene has {safeHtml(paralog_number, {}, 'b')} paralogs!</font></b>
 <br></br>Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>):
 <ul>
 <li> click on the <b>Coverage</b> heading below to display coverage plots, then click on the link to 'View in the genome browser'</li>
