@@ -13,30 +13,27 @@ modelconfig_userDb_password: '{{ userdb_password }}'
 modelconfig_userDb_connectionUrl: 'jdbc:oracle:oci:@{{ userdb_shortname }}'
 
 host_data: "{{ lookup('colfile',
-    hostname + '
-    src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'
+    '{} src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'.format(hostname)
   ) }}"
-
 
 appdb_shortname: "{{ host_data['appDb_name'] }}"
 appdb_login: "{{ host_data['appDb_login'] }}"
 appdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"' + appdb_login + '\"]'
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(appdb_login)
   )
 }}"
 
 acctdb_shortname: "{{ host_data['acctDb_name'] }}"
 acctdb_login: "{{ host_data['acctDb_login'] }}"
 acctdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"' + acctdb_login + '\"]'
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(acctdb_login)
   )
 }}"
-
 
 userdb_shortname: "{{ host_data['userDb_name'] }}"
 userdb_login: "{{ host_data['userDb_login'] }}"
 userdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"' + userdb_login + '\"]'
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(userdb_login)
   )
 }}"
 
