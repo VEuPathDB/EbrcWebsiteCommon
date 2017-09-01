@@ -230,7 +230,8 @@ Further questions? See tutorials and YouTube videos on Genome Browser configurat
               onCollapsedChange={this.handleCoverageCollapseChange}>
 	
               <div>
-                <br></br>
+                Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>)
+                <br></br><br></br>
                 <a href={covImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
                   View in genome browser 
                 </a>
