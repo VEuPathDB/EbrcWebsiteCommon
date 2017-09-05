@@ -16,15 +16,15 @@ import org.gusdb.wdk.model.jspwrap.WdkModelBean;
 
 public abstract class WdkTagBase extends SimpleTagSupport {
 
-    private WdkModelBean wdkModelBean;
-    private WdkModel wdkModel;
-    private int varScope;
+    private WdkModelBean _wdkModelBean;
+    private WdkModel _wdkModel;
+    private int _varScope;
 
     /**
      * Initializes base class with Page scope (see constants in PageContext)
      */
     public WdkTagBase() {
-        varScope = PageContext.PAGE_SCOPE;
+        _varScope = PageContext.PAGE_SCOPE;
     }
     
     /**
@@ -33,7 +33,7 @@ public abstract class WdkTagBase extends SimpleTagSupport {
      * @param varScope scope of this tag (see constants in PageContext)
      */
     public WdkTagBase(int varScope) {
-        this.varScope = varScope;
+        _varScope = varScope;
     }
 
     @Override
@@ -43,24 +43,24 @@ public abstract class WdkTagBase extends SimpleTagSupport {
     }
     
     public void setWdkModel() {
-        wdkModel = wdkModelBean.getModel();
+        _wdkModel = _wdkModelBean.getModel();
     }
 
     protected WdkModel getWdkModel() {
-        return wdkModel;
+        return _wdkModel;
     }
     
     public void setWdkModelBean() {
-        wdkModelBean = (WdkModelBean) this.getContext().
+        _wdkModelBean = (WdkModelBean) this.getContext().
         getAttribute(CConstants.WDK_MODEL_KEY);
     }
 
     protected WdkModelBean getWdkModelBean() {
-        return wdkModelBean;
+        return _wdkModelBean;
     }
     
     protected boolean export(String var, Object value) {
-        return export(var, value, this.varScope);
+        return export(var, value, _varScope);
     }
 
     protected boolean export(String var, Object value, int varScope) {

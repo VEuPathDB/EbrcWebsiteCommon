@@ -103,7 +103,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
         throw new WdkModelException("Node has multiple entities"); // how can we tell user which node?
  
       for (OWLClass owlClass : child.getEntities()) {
-        String orderAnnotPropVal = OBOentity.getStringAnnotProps(owlClass, df, ont, orderAnnotProp);
+        String orderAnnotPropVal = OBOentity.getStringAnnotProps(owlClass, ont, orderAnnotProp);
  
        // if (orderAnnotPropVal.length() == 0) throw new WdkModelException("No order annotation provided in node");  // how to show user which node?
         if (orderAnnotPropVal.length() == 0) orderAnnotPropVal = "0";
@@ -135,7 +135,7 @@ public class EuPathDbOwlParserWdkPlugin implements OntologyFactoryPlugin {
       OWLAnnotationProperty annotProp = currAnnot.getProperty();
       String annotPropLabel = OBOentity.getLabel(annotProp, ont, df);
       if (node.containsKey(annotPropLabel)) continue;   // apparently the class can return redundant annotation properties, with identical values.
-      ArrayList<String> annotValues = OBOentity.getStringArrayAnnotProps(cls, df, ont, annotProp);
+      ArrayList<String> annotValues = OBOentity.getStringArrayAnnotProps(cls, ont, annotProp);
       if (annotValues.size() > 0 ) node.put(annotPropLabel, annotValues);
     }
 

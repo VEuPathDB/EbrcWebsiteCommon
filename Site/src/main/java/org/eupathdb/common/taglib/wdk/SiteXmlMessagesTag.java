@@ -36,29 +36,29 @@ import org.gusdb.fgputil.db.SqlUtils;
 
 public class SiteXmlMessagesTag extends WdkTagBase {
 
-    private String var;
-    private String projectName;
-    private String messageCategory;
-    private String range;
-    private String stopDateSort = "ASC";
+    private String _var;
+    private String _projectName;
+    private String _messageCategory;
+    private String _range;
+    private String _stopDateSort = "ASC";
 
     @Override
     public void doTag() throws JspException {
         super.doTag();
         
-        String xml = xmlMessageRecordSet(projectName, messageCategory, stopDateSort, range);
+        String xml = xmlMessageRecordSet(_projectName, _messageCategory, _range);
         
-        this.getRequest().setAttribute(var, xml);
+        this.getRequest().setAttribute(_var, xml);
     }
 
     private String xmlMessageRecordSet(
                 String projectName, String messageCategory, 
-                String stopDateSort, String range) throws JspException  {
+                String range) throws JspException  {
 
         ArrayList<ArrayList<String>> messages;
         
         try {
-            messages = fetchMessages(projectName, messageCategory, stopDateSort, range);
+            messages = fetchMessages(projectName, messageCategory, range);
         } catch (SQLException sqle) {
             throw new JspException(sqle);
 		}
@@ -81,7 +81,7 @@ public class SiteXmlMessagesTag extends WdkTagBase {
 
     private ArrayList<ArrayList<String>> fetchMessages(
             String projectName, String messageCategory, 
-            String stopDateSort, String range) throws SQLException {
+            String range) throws SQLException {
 
         ArrayList<ArrayList<String>> messages = new ArrayList<ArrayList<String>>();
         ResultSet rs = null;
@@ -135,7 +135,7 @@ public class SiteXmlMessagesTag extends WdkTagBase {
         sql.append(" AND lower(m.message_category) = ?                    ");
         sql.append(" AND p.project_name = ?                               ");
         sql.append(  rangeJoin(range)                                      );
-        sql.append(" order by m.stop_date " + stopDateSort                 );
+        sql.append(" order by m.stop_date " + _stopDateSort                 );
 
         ps = SqlUtils.getPreparedStatement(dataSource, sql.toString());
         ps.setString(1, messageCategory.toLowerCase());
@@ -159,7 +159,7 @@ public class SiteXmlMessagesTag extends WdkTagBase {
         sql.append(" WHERE m.message_category = c.category_name           ");
         sql.append(" AND lower(m.message_category) = ?                    ");
         sql.append(  rangeJoin(range)                                      );
-        sql.append(" order by m.stop_date " + stopDateSort                 );
+        sql.append(" order by m.stop_date " + _stopDateSort                 );
         
         ps = SqlUtils.getPreparedStatement(dataSource, sql.toString());
         ps.setString(1, messageCategory.toLowerCase());
@@ -183,25 +183,25 @@ public class SiteXmlMessagesTag extends WdkTagBase {
     }    
 
     public void setVar(String var) {
-        this.var = var;
+        _var = var;
     }
 
     public void setProjectName(String projectName) {
-        this.projectName = projectName;
+        _projectName = projectName;
     }
 
     public void setMessageCategory(String messageCategory) {
-        this.messageCategory = messageCategory;
+        _messageCategory = messageCategory;
     }
 
     public void setRange(String range) {
         // todo: validate allowed values 'all' or 'expired'
-        this.range = range;
+        _range = range;
     }
 
     public void setStopDateSort(String stopDateSort) {
         // todo: validate allowed values 'ASC' or 'DESC'
-        this.stopDateSort = stopDateSort;
+        _stopDateSort = stopDateSort;
     }
 
 }

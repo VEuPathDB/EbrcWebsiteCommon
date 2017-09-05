@@ -27,21 +27,21 @@ import org.json.JSONArray;
 
 public class SiteMessagesTag extends WdkTagBase {
 
-    private String var;
-    private String projectName;
-    private String messageCategory;
-    public ArrayList<String> messages;
+    private String _var;
+    private String _projectName;
+    private String _messageCategory;
+    public ArrayList<String> _messages;
 
     @Override
     public void doTag() throws JspException {
         super.doTag();
 
-        fetchMessages(projectName, messageCategory);
-        this.getRequest().setAttribute(var, new JSONArray(messages).toString());
+        fetchMessages(_projectName, _messageCategory);
+        this.getRequest().setAttribute(_var, new JSONArray(_messages).toString());
     }
 
     private void fetchMessages(String projectName, String messageCategory) throws JspException {
-        messages = new ArrayList<String>();
+        _messages = new ArrayList<String>();
         ResultSet rs = null;
         PreparedStatement ps = null;
         StringBuffer sql = new StringBuffer();
@@ -64,7 +64,7 @@ public class SiteMessagesTag extends WdkTagBase {
             ps.setString(2, messageCategory.toLowerCase());
             rs = ps.executeQuery();
             while (rs.next()) {
-                messages.add(rs.getString(1) );
+                _messages.add(rs.getString(1) );
             }
         } catch (SQLException sqle) {
             throw new JspException(sqle);
@@ -75,15 +75,15 @@ public class SiteMessagesTag extends WdkTagBase {
     }
     
     public void setVar(String var) {
-        this.var = var;
+        _var = var;
     }
 
     public void setProjectName(String projectName) {
-        this.projectName = projectName;
+        _projectName = projectName;
     }
 
     public void setMessageCategory(String messageCategory) {
-        this.messageCategory = messageCategory;
+        _messageCategory = messageCategory;
     }
 
 
