@@ -39,7 +39,7 @@ export default class FilterParamNew extends React.PureComponent {
         {uiState.loading && <Loading/>}
         <ServerSideAttributeFilter
           autoFocus={this.props.autoFocus}
-          displayName={param.displayName}
+          displayName={param.filterDataType || param.displayName}
           activeField={uiState.activeOntologyTerm}
           activeFieldSummary={uiState.ontologyTermSummaries[uiState.activeOntologyTerm]}
           hideFilterPanel={uiState.hideFilterPanel}
