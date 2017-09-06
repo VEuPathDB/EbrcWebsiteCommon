@@ -31,7 +31,18 @@ function Parameters(props) {
             <div
               className={makeClassName('ParamControl', param.type)}
               onKeyPress={event => {
-                if (event.key === 'Enter') {
+                // Prevent form submission of ENTER is pressed while an input
+                // field has focus. This is a hack and may bite us in the future
+                // if we have param widgets that depend on the user agent's
+                // default handling of the event.
+                //
+                // FIXME Handle this in a more robust manner.
+                // The reason we do it this way is that the question wizard is
+                // embedded inside of the classic WDK question form, which may
+                // or may not use an inline submit handler, depending on the
+                // context. The question wizard needs more control over the form
+                // element in order to do the following in a more robust manner.
+                if (event.target instanceof HTMLInputElement && event.key === 'Enter') {
                   event.preventDefault();
                 }
               }}
