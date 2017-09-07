@@ -75,7 +75,7 @@ sub run {
           my $template = $table->{template};
           my $defaultGraphId = $table->{default_graph_id};
 
-          push @urls, "/cgi-bin/dataPlotter.pl?project_id=$projectId&id=$defaultGraphId&type=$module&fmt=png&template=$template&datasetId=$datasetId";
+          push @urls, "/cgi-bin/dataPlotter.pl?project_id=$projectId&id=$defaultGraphId&type=$module&fmt=svg&template=$template&datasetId=$datasetId";
         }
       }
     }

@@ -23,6 +23,12 @@ sub setPartName                  { $_[0]->{'_part_name'                     } = 
 sub getYaxisLabel                { $_[0]->{'_y_axis_label'                  }}
 sub setYaxisLabel                { $_[0]->{'_y_axis_label'                  } = $_[1]}
 
+sub getXaxisLabel                { $_[0]->{'_x_axis_label'                  }}
+sub setXaxisLabel                { $_[0]->{'_x_axis_label'                  } = $_[1]}
+
+sub getSubtitle                  { $_[0]->{'_subtitle'                      }}
+sub setSubtitle                  { $_[0]->{'_subtitle'                      } = $_[1]}
+
 sub getColors                    { $_[0]->{'_colors'                        }}
 sub setColors                    { $_[0]->{'_colors'                        } = $_[1]}
 

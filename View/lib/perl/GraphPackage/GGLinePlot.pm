@@ -29,9 +29,6 @@ sub setDefaultXMax               { $_[0]->{'_default_x_max'                 } = 
 sub getDefaultXMin               { $_[0]->{'_default_x_min'                 }}
 sub setDefaultXMin               { $_[0]->{'_default_x_min'                 } = $_[1]}
 
-sub getXaxisLabel                { $_[0]->{'_x_axis_label'                  }}
-sub setXaxisLabel                { $_[0]->{'_x_axis_label'                  } = $_[1]}
-
 sub getArePointsLast             { $_[0]->{'_are_points_last'               }}
 sub setArePointsLast             { $_[0]->{'_are_points_last'               } = $_[1]}
 
@@ -50,11 +47,14 @@ sub setSplineApproxN             { $_[0]->{'_spline_approx_n'               } = 
 sub getSplineDF                  { $_[0]->{'_spline_degrees_of_freedom'     }}
 sub setSplineDF                  { $_[0]->{'_spline_degrees_of_freedom'     } = $_[1]}
 
-sub getHasMetaData              { $_[0]->{'_has_meta_data'                 }}
-sub setHasMetaData              { $_[0]->{'_has_meta_data'                 } = $_[1]}
+sub getHasMetaData               { $_[0]->{'_has_meta_data'                 }}
+sub setHasMetaData               { $_[0]->{'_has_meta_data'                 } = $_[1]}
 
-sub getForceConnectPoints              { $_[0]->{'_force_connect_points'                 }}
-sub setForceConnectPoints              { $_[0]->{'_force_connect_points'                 } = $_[1]}
+sub getForceConnectPoints        { $_[0]->{'_force_connect_points'          }}
+sub setForceConnectPoints        { $_[0]->{'_force_connect_points'          } = $_[1]}
+
+sub getTimeline                  { $_[0]->{'_time_line'                     }}
+sub setTimeline                  { $_[0]->{'_time_line'                     } = $_[1]}
 
 sub blankPlotPart {
   my ($self) = @_;
@@ -139,6 +139,7 @@ sub makeRPlotString {
   my $yAxisLabel = $self->getYaxisLabel();
   my $xAxisLabel = $self->getXaxisLabel();
   my $plotTitle = $self->getPlotTitle();
+  my $subtitle = $self->getSubtitle();
 
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
@@ -157,6 +158,9 @@ sub makeRPlotString {
   my $smoothWithLoess = $self->getSmoothWithLoess();
 
   my $splineApproxN = $self->getSplineApproxN();
+
+  my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
+  my $prtcpnt_timeline = $self->getTimeline() ? 'TRUE' : 'FALSE';
 
   $yMax = $yMax ? $yMax : "-Inf";
   $yMin = defined($yMin) ? $yMin : "Inf";
@@ -243,8 +247,6 @@ sub makeRPlotString {
 
   my $fillBelowLine = $self->getFillBelowLine() ? 'TRUE' : 'FALSE';
   my $removeNaN = $self->getRemoveNaN() ? 'TRUE' : 'FALSE';
-
-  my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
 
   my $hasExtraLegend = $self->getHasExtraLegend() ? 'TRUE' : 'FALSE';
   my $extraLegendSize = $self->getExtraLegendSize();
@@ -407,13 +409,17 @@ if ($prtcpnt_sum) {
     #this for the case where no real y values are to be plotted (ex: timelines)
     y.max = 2;
     y.min = 0;
+    y.scale = 1;
   } else {
+    #may have to change this from determining scale, to determine the order of magnitude of the scale
+    #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
     y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-    if (grepl(\"Z-score\",\"$yAxisLabel\")) {
-      y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 2.5;
-    } else {
-      y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) - 25;
+    y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+    y.scale = abs(round((y.max - y.temp) / 3));
+    if (y.scale < 1) {
+      y.scale = 1;
     }
+    y.min = y.temp - (2.25 * y.scale);
   }
 } else {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
@@ -427,14 +433,10 @@ if($isSVG) {
 }
 
 #desperate times call for desperate measures. will fix this later.
-if (!all(is.na(profile.df.full\$VALUE))) {
+if (!$prtcpnt_timeline) {
 
 if(useTooltips){
-#  if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
-#  gp = gp + geom_tooltip(aes(tooltip=paste(\"sample:\",ELEMENT_NAMES,\", x:\",CONTXAXIS)), real.geom=geom_point);
-#  } else {
-    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",ELEMENT_NAMES, \", y: \", VALUE)), real.geom=geom_point);  
-#  }
+  gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",ELEMENT_NAMES, \", y: \", VALUE)), real.geom=geom_point);  
 }else{
   gp = gp + geom_point();
 }
@@ -458,9 +460,17 @@ if (\"GROUP\" %in% colnames(profile.df.full)) {
 if(!$forceNoLines) {
   #override earlier group setting if group column exists
   if (\"GROUP\" %in% colnames(profile.df.full)) {
-    gp = gp + geom_line(aes(group=GROUP));
+    if (useTooltips && !all(is.null(profile.df.full\$LEGEND))) {
+      gp = gp + geom_tooltip(aes(group=GROUP, tooltip=LEGEND), real.geom=geom_line);
+    } else {
+      gp = gp + geom_line(aes(group=GROUP));
+    }
   } else {
-    gp = gp + geom_line();
+    if (useTooltips && !all(is.null(profile.df.full\$LEGEND))) {
+      gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+    } else {
+      gp = gp + geom_line();
+    }
   }
   if($fillBelowLine) {
     if(length(unique(profile.df.full\$PROFILE_FILE)) > 1) {
@@ -493,7 +503,8 @@ if (coord.cartesian) {
   }
 }
 
-# i've noticed rep being a bit buggy so im only going to do this if its necessary..
+# TODO actually fix this by setting count in perl rather than R, or figure something else out. 
+# then wont need the if statement. cause though fine now, this still may eventually cause problems.
 if (count/length($colorsStringNotNamed) == 1) {
   gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
 } else {
@@ -524,9 +535,7 @@ if(is.compact) {
   } else {
     gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
   }
-  if (!$prtcpnt_sum) {
-    gp = gp + theme(legend.position=\"none\");
-  }
+  gp = gp + theme(legend.position=\"none\");
 } else {
   gp = gp + theme_bw();
   gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
@@ -572,34 +581,29 @@ if ($prtcpnt_sum) {
   if (grepl(\"Z-score\", \"$yAxisLabel\")) {
     gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
-    subtitle = \"red lines = +/- 2 sd\";
-  } else {
-    subtitle = \"\";
-  }
+    #subtitle = \"red lines = +/- 2 sd\";
+  } 
 
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
-
-    subtitle = paste0(subtitle, \"; bars = diarrhea\");
 
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
       annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
     }
 
-    #later see if there is a smatter way to do this. maybe try to detect scale
-    if (grepl(\"Z-score\", \"$yAxisLabel\")) {
-      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 1, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 1, tooltip = DURATION), real.geom = geom_segment, size = 7);
-    } else {
-      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - 10, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - 10, tooltip = DURATION), real.geom = geom_segment, size = 7);
-    }
+    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - y.scale, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = DURATION), real.geom = geom_segment, size = 7);
   }
 
   status = exists(\"status.df\") && nrow(status.df) > 0;
+
   if (status) {
-    #this is specific for the timeline right now. will need to look at this again later.
-    if (all(is.na(profile.df.full\$VALUE))) {
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point) + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\")) + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+
+    if ($prtcpnt_timeline) {
+
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
+      gp = gp + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+      gp = gp + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
       #desperate times
       if (coord.cartesian) {
         gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
@@ -613,23 +617,30 @@ if ($prtcpnt_sum) {
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
+
     } else {
-      subtitle = paste0(subtitle, \"; points = micro+\");
-      if (grepl(\"Z-score\", \"$yAxisLabel\")) {
-        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -2, tooltip = STATUS), real.geom = geom_point);
+      status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
+      numColors = length(unique(status.df\$COLOR))
+      if (numColors > 1) {
+        myColors = palette(rainbow(numColors));
       } else {
-        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) -20, tooltip = STATUS), real.geom = geom_point);
+        myColors = \"cyan\";
       }
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = STATUS, color=COLOR), real.geom = geom_point);
+
+      #gp = gp + scale_color_manual(values=myColors, name=status.df\$COLOR);
+      gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(profile.df.full\$LEGEND, status.df\$COLOR), name=\"Legend\");
     }
   }
 
-  #TODO later pass subtitle from template like the other labels are.
-    if (is.thumbnail) {
-      gp = gp + labs(title=NULL, x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=subtitle);
-      gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
-    } else {
-      gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=subtitle);
-      gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+    if (!$prtcpnt_timeline) {
+      if (is.thumbnail) {
+        gp = gp + labs(title=NULL, x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=\"$subtitle\");
+        gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+      } else {
+        gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=\"$subtitle\");
+        gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+      }
     }
 }
 

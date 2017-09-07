@@ -371,15 +371,29 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
                           position = "identity", real.geom = NULL, ...) {
 
-    #store the original ggproto object to inherit from as var parent 
-    rg <- real.geom(mapping = mapping, data = data, stat = stat,
+    #this because geom_histogram is just an alias for geom_bar with stat_bin
+    #currently only possible override of stat_bin is stat_count. otherwise, 
+    #you should be using geom_bar anyhow.
+    if (typeof(real.geom) == "character" && real.geom == "geom_histogram") {
+      if (stat == "count") {
+        rg <- geom_bar(mapping = mapping, data = data, stat = "count",
+                      position = position, ...)
+      } else {
+        rg <- geom_bar(mapping = mapping, data = data, stat = "bin",
+                      position = position, ...)
+      }
+    } else {
+      rg <- real.geom(mapping = mapping, data = data, stat = stat,
                     position = position, ...)
+    }
+    
+    #store the original ggproto object to inherit from as var parent 
     parent=rg\$geom
 
     if(is.ggproto(parent)){
       #geom_area is handled differently because it relies on draw_group rather than draw panel to 
       #create the grobs that need to be garnished
-      if(class(parent)[1]=="GeomArea") {
+      if(class(parent)[1]=="GeomArea" || class(parent)[1]=="GeomDensity") {
         rg\$geom <-ggproto(parent, parent,
            draw_group = function(data, panel_scales, coord, na.rm = FALSE) {
              grob <- parent\$draw_group(data, panel_scales, coord, na.rm = FALSE)
@@ -389,6 +403,28 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
            },
            required_aes = c("tooltip", parent\$required_aes)
          )
+      #geom line is handled seperate from segment in order to get the tooltips to match the groups.
+      #we must force it to draw each line/ group seperately rather than as one grob
+      } else if (class(parent)[1]=="GeomLine") {
+        rg\$geom <-ggproto(parent, parent,
+          draw_panel = function(self, data, panel_scales, coord,
+                         arrow = NULL, lineend = "butt", na.rm = FALSE) {
+            groups = unique(data\$group)
+            grobs <- list()
+            for (i in 1:length(groups)) {
+              currGroup = groups[[i]]
+              currData = subset(data, data\$group == currGroup)
+              grob <- parent\$draw_panel(currData, panel_scales, coord, arrow, lineend)
+              grobs[[i]] <- garnishGrob(grob, onmousemove=paste("showTooltip(evt, '",
+                       currData[1,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
+                       "pointer-events"="all")
+            }
+            ggplot2:::ggname("geom_tooltip", gTree(children = do.call("gList", grobs)))
+          },
+          required_aes = c("tooltip", parent\$required_aes)
+         )
+      #segment is handled seperately from the standard because the params passed to draw_panel are
+      #different
       } else if (class(parent)[1]=="GeomSegment") {
         rg\$geom <-ggproto(parent, parent,
           draw_panel = function(self, data, panel_scales, coord,
@@ -418,6 +454,7 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
                               data[i,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
                               "pointer-events"="all")
             }
+            #adding our grobs to gtree to be rendered
             ggplot2:::ggname("geom_tooltip", gTree(children = do.call("gList", grobs)))
           },
           #add tooltip to the aesthetics for our ggproto object
