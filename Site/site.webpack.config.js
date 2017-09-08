@@ -38,7 +38,7 @@ module.exports = function configure(additionalConfig) {
     externals: [
       resolveWdkClientExternal,
       {
-        'jquery'       : 'jQuery',
+        'jquery'       : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
         'lodash'       : '_',
         'react'        : 'React',
         'react-dom'    : 'ReactDOM',
@@ -54,6 +54,8 @@ module.exports = function configure(additionalConfig) {
 /**
  * Resolves modules IDs that begin with 'wdk-client' to properties
  * of the global `Wdk` object.
+ *
+ *   E.g., import { DataTable } from 'wdk-client/Components';
  *
  * See https://webpack.github.io/docs/configuration.html#externals (function bullet)
  */
