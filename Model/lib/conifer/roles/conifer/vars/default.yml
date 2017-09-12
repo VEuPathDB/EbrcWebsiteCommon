@@ -3,7 +3,9 @@
 project: =c= e.g. ToxoDB
 cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
 hostname: =c= FQDN or 'localhost'
+_hostname: '{{ hostname|swap_hostname(_host_frontends) }}'
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
+_webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 
 _topleveldomain: org
 _wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
@@ -105,7 +107,7 @@ modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 modelconfig_smtpServer: 127.0.0.1
 modelconfig_supportEmail: 'help@{{ project|lower }}.{{ _topleveldomain }}'
 modelconfig_wdkTempDir: /var/tmp/wdk
-modelconfig_webAppUrl: 'http://{{ hostname|swap_hostname(_host_frontends) }}/{{ webapp_ctx }}///'
+modelconfig_webAppUrl: 'http://{{ _hostname }}/{{ _webapp_ctx }}///'
 modelconfig_webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 modelconfig_webServiceUrl: local
 
