@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { render} from 'react-dom';
+import { WdkStore } from 'wdk-client/Stores';
 
 // An adaptor that allows us to reuse react client components on the legacy website.
 // This currently only works with components that are not view-specific
@@ -10,8 +11,9 @@ import { render} from 'react-dom';
 class ClientContextProvider extends React.Component {
 
   getChildContext() {
-    // get 
-    const { stores: { WdkStore: store }, dispatchAction } = window.ebrc.context;
+    // get store
+    const { stores, dispatchAction } = window.ebrc.context;
+    const store = stores.get(WdkStore);
     return { store, dispatchAction }
   }
 
@@ -22,7 +24,7 @@ class ClientContextProvider extends React.Component {
 }
 
 ClientContextProvider.childContextTypes = {
-  store: PropTypes.object.isRequired,
+  store: PropTypes.instanceOf(Map).isRequired,
   dispatchAction: PropTypes.func.isRequired
 }
 
