@@ -101,8 +101,7 @@ td.wdk-DataTableCell__thumbnail {
 }
 
 .wdk-RecordTableContainer,
-.wdk-RecordAttributeSectionItem,
-.eupathdb-GbrowseContext {
+.wdk-RecordAttributeSectionItem {
   padding-top: 32px;
   margin-top: -32px;
 }
