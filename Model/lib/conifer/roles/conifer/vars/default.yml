@@ -81,7 +81,7 @@ modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
 modelconfig_appDb_userDbLink: '{{ _userdb_link_map[modelconfig_userDb_connectionUrl|jdbc2shortName|lower] }}'
-modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_acctDb_connectionUrl|jdbc2shortName|lower] }}'
+modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_accountDb_connectionUrl|jdbc2shortName|lower] }}'
 
 modelconfig_userDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@apicommDevN
 modelconfig_userDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
