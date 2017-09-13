@@ -53,35 +53,40 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
   public void closeConnection(Connection connection, ConnectionPoolConfig dbConfig) throws SQLException {
     boolean incomingAutoCommit = connection.getAutoCommit();
     if (dbConfig instanceof ModelConfigAppDB) {
-      ModelConfigAppDB appDbConfig = (ModelConfigAppDB)dbConfig;
-      String dbLinkName = appDbConfig.getUserDbLink().substring(1); // remove leading '@'
-      String preCloseSql = "alter session close database link " + dbLinkName;
       connection.setAutoCommit(true);
-      try {
-        LOG.trace("Attempting to close DB link '" + dbLinkName + "' on connection before returning it to the pool.");
-        new SQLRunner(connection, preCloseSql, "close-db-link").executeStatement();
-        LOG.info("Successfully closed DB link '" + dbLinkName + "' before returning connection to pool.");
-      }
-      catch (SQLRunnerException exceptionWrapper) {
-        String message = "Unable to execute pre-close SQL <" + preCloseSql + ">";
-        Throwable e = exceptionWrapper.getCause();
-        // ignore exception but log at different levels depending on which exception is thrown
-        if (e.getMessage().contains("ORA-02081")) {
-          // ORA-01081 (database link is not open) is highly likely since the vast majority of connections
-          //   will not open DB links; log at trace in case anyone wants to see how often this happens
-          LOG.trace(message, e);
-        }
-        else {
-          // if this is an unexpected exception, log at error level; ideally we would throw an ErrorEvent here
-          //   (to generate an email) but we have very little context here (TODO: do the work to send anyway??)
-          LOG.error(message, e);
-        }
-      }
+      ModelConfigAppDB appDbConfig = (ModelConfigAppDB)dbConfig;
+      closeDbLink(connection, appDbConfig.getUserDbLink());
+      closeDbLink(connection, appDbConfig.getAcctDbLink());
     }
     // set auto-commit back to what it was
     connection.setAutoCommit(incomingAutoCommit);
     // always try to close connection
     connection.close();
+  }
+
+  private static void closeDbLink(Connection connection, String dbLinkName) {
+    dbLinkName = dbLinkName.substring(1); // remove leading '@'
+    String preCloseSql = "alter session close database link " + dbLinkName;
+    try {
+      LOG.trace("Attempting to close DB link '" + dbLinkName + "' on connection before returning it to the pool.");
+      new SQLRunner(connection, preCloseSql, "close-db-link").executeStatement();
+      LOG.debug("Successfully closed DB link '" + dbLinkName + "' before returning connection to pool.");
+    }
+    catch (SQLRunnerException exceptionWrapper) {
+      String message = "Unable to execute pre-close SQL <" + preCloseSql + ">";
+      Throwable e = exceptionWrapper.getCause();
+      // ignore exception but log at different levels depending on which exception is thrown
+      if (e.getMessage().contains("ORA-02081")) {
+        // ORA-01081 (database link is not open) is highly likely since the vast majority of connections
+        //   will not open DB links; log at trace in case anyone wants to see how often this happens
+        LOG.trace(message, e);
+      }
+      else {
+        // if this is an unexpected exception, log at error level; ideally we would throw an ErrorEvent here
+        //   (to generate an email) but we have very little context here (TODO: do the work to send anyway??)
+        LOG.error(message, e);
+      }
+    }
   }
 
 }
