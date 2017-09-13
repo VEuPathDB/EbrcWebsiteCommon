@@ -39,7 +39,7 @@ default:
   appDb.password: ${appDb.password}
   appDb.instance: ${appDb.instance}
   appDb.userDbLink: ${appDb.userDbLink}
-  appDb.acctDbLink: ${appDb.acctDbLink}
+  appDb.acctDbLink: ${accountDb.instance}.profile
   appDb.platform: Oracle
 
   # we should use 10 for live sites, and 1 for all dev, integrate, and qa
