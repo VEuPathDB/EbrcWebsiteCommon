@@ -24,7 +24,7 @@ class ClientContextProvider extends React.Component {
 }
 
 ClientContextProvider.childContextTypes = {
-  store: PropTypes.instanceOf(Map).isRequired,
+  store: PropTypes.instanceOf(WdkStore).isRequired,
   dispatchAction: PropTypes.func.isRequired
 }
 
