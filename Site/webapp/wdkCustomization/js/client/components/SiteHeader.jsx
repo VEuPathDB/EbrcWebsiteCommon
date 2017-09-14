@@ -93,7 +93,7 @@ Header.propTypes = {
   ontology: PropTypes.object,
   recordClasses: PropTypes.array,
   basketCounts: PropTypes.object,
-  quickSearches: PropTypes.object,
+  quickSearches: QuickSearch.propTypes.questions,
   preferences: PropTypes.object,
   location: PropTypes.object,
   showLoginForm: PropTypes.func.isRequired,

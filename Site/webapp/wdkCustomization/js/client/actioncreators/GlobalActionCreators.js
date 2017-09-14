@@ -51,11 +51,14 @@ export function loadQuickSearches(questions) {
         useCache: true
       });
     });
-    return Promise.all(requests).then(questions => {
-      return dispatch(broadcast({
+    return Promise.all(requests).then(
+      questions => keyBy(questions, 'name'),
+      error => error
+    ).then(questions =>
+      dispatch(broadcast({
         type: QUICK_SEARCH_LOADED,
-        payload: { questions: keyBy(questions, 'name') }
-      }));
-    });
+        payload: { questions: questions }
+      }))
+    );
   }
 }

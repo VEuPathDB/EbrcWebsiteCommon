@@ -161,7 +161,9 @@ function QuickSearch(props) {
 
   return (
     <div id="quick-search" style={{display: 'flex', marginBottom: '12px', marginTop: '16px', height: '26px'}}>
-      {map(references, reference => (
+      {questions instanceof Error ? (
+        <div style={{ color: 'darkred', marginLeft: 'auto' }}>Error: search temporarily unavailable</div>
+      ) : map(references, reference => (
         <QuickSearchItem
           key={reference.name}
           question={questions[reference.name]}
@@ -176,7 +178,10 @@ function QuickSearch(props) {
 QuickSearch.propTypes = {
   webAppUrl: PropTypes.string.isRequired,
   references: PropTypes.arrayOf(ReferencePropType),
-  questions: PropTypes.objectOf(QuestionPropType)
+  questions: PropTypes.oneOfType([
+    PropTypes.objectOf(QuestionPropType),
+    PropTypes.instanceOf(Error)
+  ]),
 };
 
 export default wrappable(QuickSearch);
