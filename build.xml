@@ -185,8 +185,12 @@
       failonerror="true"
       failifexecutionfails="true">
       <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
-      <arg line="--output-path ${webappTargetDir} ${webpack.env}"/>
+      <arg line="${webpack.env}"/>
     </exec>
+
+    <copy todir="${webappTargetDir}">
+      <fileset dir="${projectsDir}/${project}/${component}/dist" />
+    </copy>
   </target>
 
   <target name="eupath-merge-tags">
