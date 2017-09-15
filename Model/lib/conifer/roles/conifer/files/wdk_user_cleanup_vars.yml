@@ -1,0 +1,46 @@
+---
+# Conifer site configuration for UserDB cleanup routines.
+# https://ci.apidb.org/job/wdk_user_cleanup/
+# 
+
+webapp_ctx: ''
+
+modelconfig_accountDb_connectionUrl: 'jdbc:oracle:oci:@{{ acctdb_shortname }}'
+modelconfig_accountDb_login: '{{ acctdb_login }}'
+modelconfig_accountDb_password: '{{ acctdb_password }}'
+
+modelconfig_appDb_connectionUrl: 'jdbc:oracle:oci:@{{ appdb_shortname }}'
+modelconfig_appDb_login: '{{ appdb_login }}'
+modelconfig_appDb_password: '{{ appdb_password }}'
+
+modelconfig_userDb_login: '{{ userdb_login }}'
+modelconfig_userDb_password: '{{ userdb_password }}'
+modelconfig_userDb_connectionUrl: 'jdbc:oracle:oci:@{{ userdb_shortname }}'
+
+host_data: "{{ lookup('colfile',
+    '{} src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'.format(hostname)
+  ) }}"
+
+
+appdb_shortname: "{{ host_data['appDb_name'] }}"
+appdb_login: "{{ host_data['appDb_login'] }}"
+appdb_password: "{{ lookup('euparc',
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(appdb_login)
+  )
+}}"
+
+acctdb_shortname: "{{ host_data['acctDb_name'] }}"
+acctdb_login: "{{ host_data['acctDb_login'] }}"
+acctdb_password: "{{ lookup('euparc',
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(acctdb_login)
+  )
+}}"
+
+
+userdb_shortname: "{{ host_data['userDb_name'] }}"
+userdb_login: "{{ host_data['userDb_login'] }}"
+userdb_password: "{{ lookup('euparc',
+  'attr=password xpath=database/user[@login=\"{}\"]'.format(userdb_login)
+  )
+}}"
+
