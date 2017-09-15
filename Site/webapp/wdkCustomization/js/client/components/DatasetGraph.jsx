@@ -1,5 +1,4 @@
 import { httpGet } from '../util/http';
-import { adjustScrollOnLoad } from '../util/domUtils';
 import { CollapsibleSection, Loading } from 'wdk-client/Components';
 import { PureComponent, safeHtml } from 'wdk-client/ComponentUtils';
 
@@ -166,7 +165,6 @@ export default class DatasetGraph extends PureComponent {
         <div className="eupathdb-DatasetGraph">
           {visibleParts && (
 	  <object
-              ref={adjustScrollOnLoad}
               data={imgUrl}
               type='image/svg+xml'
               onLoad={() => {
