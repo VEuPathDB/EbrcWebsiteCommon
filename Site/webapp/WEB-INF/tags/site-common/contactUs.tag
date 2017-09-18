@@ -59,7 +59,7 @@
         </tr>
         <tr>
           <td><b>Your email address:</b></td>
-          <td><input type="text" name="reply" size="81"/></td>
+          <td><input type="text" name="reply" size="81" value="${ wdkUser.guest ? '' : wdkUser.email }"/></td>
         </tr>
         <tr>
           <td><b>Cc addresses:</b></td>
