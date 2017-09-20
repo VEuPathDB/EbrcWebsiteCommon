@@ -164,15 +164,16 @@ export default class DatasetGraph extends PureComponent {
 
         <div className="eupathdb-DatasetGraph">
           {visibleParts && (
-	  <object
-              data={imgUrl}
-              type='image/svg+xml'
-              onLoad={() => {
-                this.setState({loading: false});
-              }}
-              onError={() => this.setState({ loading: false, imgError: true })}>
-              <img src={pngUrl}/>
-            </object>)}
+          <object
+            style={{ height: 220 }}
+            data={imgUrl}
+            type='image/svg+xml'
+            onLoad={() => {
+              this.setState({loading: false});
+            }}
+            onError={() => this.setState({ loading: false, imgError: true })}>
+            <img src={pngUrl}/>
+          </object>)}
           {this.renderImgError()}	   
 
 {/*	  <h4 hidden={this.props.contXAxisMetadataTable ? false : true}>
