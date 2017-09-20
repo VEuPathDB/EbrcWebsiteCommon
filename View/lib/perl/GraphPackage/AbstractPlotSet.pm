@@ -320,7 +320,16 @@ ticks <- function() {
 }
 
   customAbbreviate <- function(x) {
-    x.1 = gsub("a|e|i|o|u", "", x);
+#    x.1 = gsub("a|e|i|o|u", "", x);
+
+    if(sum(as.logical(grep("(?<=\\\\b)([a-z])", x, perl=T))) > 0) {
+      x.1 = gsub("a|e|i|o|u", "", gsub("(?<=\\\\b)([a-z])", "\\\\U\\\\1", x, perl =T));
+    }
+    else {
+      x.1 = gsub("a|e|i|o|u", "", x);
+    }
+
+
     if(sum(duplicated(x.1)) > 0) {
       return(abbreviate(x));
     }
