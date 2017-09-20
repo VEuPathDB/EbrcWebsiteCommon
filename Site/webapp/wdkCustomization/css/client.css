@@ -97,13 +97,25 @@ td.wdk-DataTableCell__thumbnail {
 .wdk-RecordSection,
 .wdk-RecordSubsection {
   padding-top: 32px;
+}
+
+.wdk-RecordSection:after,
+.wdk-RecordSubsection:after {
   margin-top: -42px;
+  content: '';
+  display: block;
 }
 
 .wdk-RecordTableContainer,
 .wdk-RecordAttributeSectionItem {
   padding-top: 32px;
+}
+
+.wdk-RecordTableContainer:after,
+.wdk-RecordAttributeSectionItem:after {
   margin-top: -32px;
+  content: '';
+  display: block;
 }
 
 .eupathdb-ReporterFormSubmit {
