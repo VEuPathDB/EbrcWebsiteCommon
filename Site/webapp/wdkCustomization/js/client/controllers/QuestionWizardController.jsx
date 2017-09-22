@@ -287,13 +287,13 @@ class QuestionWizardController extends React.Component {
 
   /**
    * Returns a new object with updated paramValues and paramUIState
-   * @param {*} param
+   * @param {*} rootParam
    * @param {*} paramValue
    */
-  _updateDependedParams(param, paramValue, paramValues) {
+  _updateDependedParams(rootParam, paramValue, paramValues) {
     return this.props.wdkService.getQuestionParamValues(
       this.state.question.urlSegment,
-      param.name,
+      rootParam.name,
       paramValue,
       paramValues
     ).then(
@@ -307,8 +307,9 @@ class QuestionWizardController extends React.Component {
             switch(param.type) {
               case 'FilterParamNew': {
                 // TODO update param value with invalid filters removed
+                const terms = new Set(param.ontology.map(entry => entry.term));
                 const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
-                const filters = prevFilters.filter(filter => filter.field in param.ontology);
+                const filters = prevFilters.filter(filter => terms.has(filter.field));
                 if (prevFilters.length !== filters.length) {
                   console.log('Invalid filters detected', { prevFilters, filters });
                 }
@@ -352,6 +353,7 @@ class QuestionWizardController extends React.Component {
     const groupUIState = groups.reduce((state, group) => Object.assign(state, {
       [group.name]: Object.assign({}, state[group.name], {
         loading: true,
+        // XXX Why are we setting valid true here?
         valid: true
       })
     }), Object.assign({}, this.state.groupUIState));
