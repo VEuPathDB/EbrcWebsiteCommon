@@ -32,6 +32,14 @@ sub setSubtitle                  { $_[0]->{'_subtitle'                      } = 
 sub getColors                    { $_[0]->{'_colors'                        }}
 sub setColors                    { $_[0]->{'_colors'                        } = $_[1]}
 
+sub forceAutoColors              { 
+  my ($self, $f) = @_;
+  if($f) {
+    $self->{'_force_auto_colors'} = 1;
+  }
+  return $self->{'_force_auto_colors'};
+}
+
 sub getIsLogged                  { $_[0]->{'_is_logged'                     }}
 sub setIsLogged                  { $_[0]->{'_is_logged'                     } = $_[1]}
 
