@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import QuestionWizard from '../components/QuestionWizard';
 import { Seq } from 'wdk-client/IterableUtils';
-import { latest, synchronized } from 'wdk-client/PromiseUtils';
+import { synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { getTree } from 'wdk-client/FilterServiceUtils';
@@ -41,10 +41,10 @@ class QuestionWizardController extends React.Component {
 
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
-    this._commitParamValueChange = debounce(this._commitParamValueChange, 1000);
-    this._updateGroupCounts = latest(this._updateGroupCounts);
-    this._handleParamValueChange = synchronized(this._handleParamValueChange);
-    this._updateDependedParams = synchronized(this._updateDependedParams);
+    this._updateGroupCounts = synchronized(this._updateGroupCounts);
+    // this._handleParamValueChange = synchronized(this._handleParamValueChange);
+    // this._updateDependedParams = synchronized(this._updateDependedParams);
+    this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange, 1000));
   }
 
   getEventHandlers() {
@@ -155,6 +155,13 @@ class QuestionWizardController extends React.Component {
     );
   }
 
+  // Top level action creator methods
+  // --------------------------------
+
+
+  /**
+   * Update selected group and its count.
+   */
   onActiveGroupChange(activeGroup) {
     this.setState({ activeGroup });
 
@@ -163,28 +170,56 @@ class QuestionWizardController extends React.Component {
     // FIXME Updating group counts and filter param counts needs to wait for
     // any dependent param updates to finish first.
 
-    // Only update active group and groups to the left without counts
+    // Update counts for active group, upstream groups, and any downstream immediate groups with defaults
     const groupsToUpdate = Seq.from(this.state.question.groups)
       .takeWhile(group => group !== activeGroup)
-      .filter(group => this.state.groupUIState[group.name].accumulatedTotal == null)
-      .concat(Seq.of(activeGroup));
+      // FIXME filter out groups with defaults
+      .filter(group => !this._groupHasCount(group))
+      .concat(
+        Seq.from(this.state.question.groups)
+          .dropWhile(group => group !== activeGroup)
+          .takeWhile(group =>
+            group === activeGroup ||
+            (this._groupHasCount(group) &&
+              this._groupParamValuesAreDefault(group))
+          )
+      );
 
-    const groupUIState = groupsToUpdate
-      .reduce((groupUIState, group) => {
-        return Object.assign(groupUIState, {
-          [group.name]: Object.assign({}, groupUIState[group.name], {
-            valid: groupUIState[group.name].accumulatedTotal == null ? undefined : false,
-            loading: true
-          })
-        });
-      }, Object.assign({}, this.state.groupUIState));
-
-    this.setState({ groupUIState }, () => this._updateGroupCounts(groupsToUpdate));
+    this._updateGroupCounts(groupsToUpdate);
 
     // TODO Perform sideeffects elsewhere
     // BEGIN_SIDE_EFFECTS
     this._initializeActiveGroupParams(activeGroup);
     // END_SIDE_EFFECTS
+  }
+
+  /**
+   * Force stale counts to be updated.
+   */
+  onUpdateInvalidGroupCounts() {
+    this._updateGroupCounts(
+      Seq.from(this.state.question.groups)
+        .filter(group => this.state.groupUIState[group.name].valid === false));
+  }
+
+  /**
+   * Update paramUI state based on ontology term.
+   */
+  onActiveOntologyTermChange(param, filters, ontologyTerm) {
+    this.setState(updateState(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
+    if (this._getParamUIState(this.state, param.name).ontologyTermSummaries[ontologyTerm] == null) {
+      this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
+    }
+  }
+
+  /**
+   * Update parameter value, update dependent parameter vocabularies and
+   * ontologies, and update counts.
+   */
+  onParamValueChange(param, paramValue) {
+    const prevParamValue = this.state.paramValues[param.name];
+    this.setState(updateState(['paramValues', param.name], paramValue),
+      () => this._commitParamValueChange(param, paramValue, prevParamValue));
   }
 
   _initializeActiveGroupParams(activeGroup) {
@@ -205,32 +240,14 @@ class QuestionWizardController extends React.Component {
     })
   }
 
-  onUpdateInvalidGroupCounts() {
-    this._updateGroupCounts(
-      Seq.from(this.state.question.groups)
-        .filter(group => this.state.groupUIState[group.name].valid === false));
-  }
-
-  onActiveOntologyTermChange(param, filters, ontologyTerm) {
-    this.setState(updateState(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
-    if (this._getParamUIState(this.state, param.name).ontologyTermSummaries[ontologyTerm] == null) {
-      this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
-    }
-  }
-
-  onParamValueChange(param, paramValue) {
-    const prevParamValue = this.state.paramValues[param.name];
-    this.setState(updateState(['paramValues', param.name], paramValue),
-      () => this._commitParamValueChange(param, paramValue, prevParamValue));
-  }
-
   _commitParamValueChange(param, paramValue, prevParamValue) {
+    console.log('committing param value change', param, paramValue, prevParamValue);
     const groups = Seq.from(this.state.question.groups);
     const currentGroup = groups.find(group => group.parameters.includes(param.name));
     groups
       .dropWhile(group => group !== currentGroup)
       .drop(1)
-      .takeWhile(group => this.state.groupUIState[group.name].accumulatedTotal != null)
+      .takeWhile(group => this._groupHasCount(group))
       .forEach(group => {
         this.setState(updateState(['groupUIState', group.name, 'valid'], false));
       })
@@ -387,7 +404,7 @@ class QuestionWizardController extends React.Component {
           ? this._getFilterCounts(
               params[0].name,
               JSON.parse(this.state.paramValues[params[0].name]).filters,
-              this.state.paramValues
+              answerSpec.parameters
             ).then(counts => counts.filtered)
 
           : this._getAnswerCount(answerSpec)
@@ -471,6 +488,16 @@ class QuestionWizardController extends React.Component {
 
   _getParamUIState(state, paramName) {
     return state.paramUIState[paramName];
+  }
+
+  _groupParamValuesAreDefault(group) {
+    const defaultValues = getDefaultParamValues(this.state.question.parameters);
+    return group.parameters.every(paramName =>
+      this.state.paramValues[paramName] === defaultValues[paramName]);
+  }
+
+  _groupHasCount(group) {
+    return this.state.groupUIState[group.name].accumulatedTotal != null;
   }
 
   componentDidMount() {

@@ -82,7 +82,7 @@ function Navigation(props) {
     onUpdateInvalidGroupCounts
   } = props;
   const { groups } = question;
-  const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false);
+  const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false && uiState.loading !== true);
 
   const finalCountState = Seq.of({ accumulatedTotal: initialCount })
     .concat(Seq.from(groups)
