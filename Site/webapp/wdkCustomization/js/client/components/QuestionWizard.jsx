@@ -295,7 +295,7 @@ function FilterSummary(props) {
         </button>
         &nbsp;
         &nbsp;
-        <label>
+        <label title="Prevent summary popup from closing when clicking on filters.">
           <input
             type="checkbox"
             value={props.wizardState.filterPopupState.pinned}
@@ -304,7 +304,7 @@ function FilterSummary(props) {
         </label>
 
         {filterSummary.isEmpty() ? (
-          <div>No filters applied</div>
+          <p>No filters applied</p>
         ) : (
           filterSummary
         )}
