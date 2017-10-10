@@ -167,7 +167,11 @@ td.wdk-DataTableCell__thumbnail {
   display: flex;
   flex-wrap: wrap;
 }
-
+.eupathdb-DatasetGraphContainer2 > h4 {
+  position: absolute;
+  right: 0;
+  margin-right: 1em;
+}
 .eupathdb-DatasetGraphLoading {
   position: absolute;
   top: 1em;
