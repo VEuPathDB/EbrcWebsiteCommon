@@ -159,6 +159,8 @@ export default class DatasetGraph extends PureComponent {
     let tutorial_link = this.makeTutorialUrl(this.props);
 
     return (
+      <div className="eupathdb-DatasetGraphContainer2">
+      <h4><a href={dataset_link}>Full Dataset Description</a></h4>
       <div className="eupathdb-DatasetGraphContainer">
 
         {this.renderLoading()}
@@ -317,9 +319,8 @@ Further questions? See tutorials and YouTube videos on Genome Browser configurat
             </label>
           </div>
 
-          <h4><a href={dataset_link}>Full Dataset Description</a></h4>
-
         </div>
+      </div>
       </div>
     );
   }
