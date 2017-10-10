@@ -1,12 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import QuestionWizard from '../components/QuestionWizard';
+import {
+  createInitialState,
+  getDefaultParamValues,
+  setFilterPopupVisiblity,
+  setFilterPopupPinned,
+  resetParamValues
+} from '../util/QuestionWizardState';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
-import { getTree } from 'wdk-client/FilterServiceUtils';
-import { getLeaves } from 'wdk-client/TreeUtils';
 import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
 
 //  type State = {
@@ -33,9 +38,7 @@ class QuestionWizardController extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      paramValues: this.props.paramValues
-    };
+    this.state = { };
     this.parameterMap = null;
     this.eventHandlers = mapValues(this.getEventHandlers(), handler => handler.bind(this));
 
@@ -49,10 +52,13 @@ class QuestionWizardController extends React.Component {
 
   getEventHandlers() {
     return pick(this, [
-      'onActiveGroupChange',
-      'onActiveOntologyTermChange',
-      'onParamValueChange',
-      'onUpdateInvalidGroupCounts'
+      'setActiveGroup',
+      'setActiveOntologyTerm',
+      'setParamValue',
+      'updateInvalidGroupCounts',
+      'setFilterPopupVisiblity',
+      'setFilterPopupPinned',
+      'resetParamValues'
     ]);
   }
 
@@ -77,69 +83,22 @@ class QuestionWizardController extends React.Component {
       return wdkService.findRecordClass(rc => rc.name === question.recordClassName);
     });
 
-    Promise.all([ question$, recordClass$ ])
-    .then(
+    Promise.all([ question$, recordClass$ ]).then(
       ([ question, recordClass ]) => {
-        document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+        this.setState(createInitialState(question, recordClass, paramValues), () => {
+          document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+          // store <string, Parameter>Map for quick lookup
+          this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
 
-        // store <string, Parameter>Map for quick lookup
-        this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
+          const defaultParamValues = getDefaultParamValues(this.state);
+          const lastConfiguredGroup = Seq.from(question.groups)
+            .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
+            .last();
+          const configuredGroups = lastConfiguredGroup == null ? []
+            : Seq.from(question.groups)
+                .takeWhile(group => group !== lastConfiguredGroup)
+                .concat(Seq.of(lastConfiguredGroup));
 
-        const { paramValues } = this.state;
-        const defaultParamValues = getDefaultParamValues(question.parameters);
-
-        const paramUIState = question.parameters.reduce(function(uiState, param) {
-          switch(param.type) {
-            case 'FilterParamNew': {
-              const leaves = getLeaves(getTree(param.ontology), node => node.children);
-              return Object.assign(uiState, {
-                [param.name]: {
-                  ontology: param.ontology,
-                  activeOntologyTerm: leaves.length > 0 ? leaves[0].field.term : null,
-                  hideFilterPanel: leaves.length === 1,
-                  hideFieldPanel: leaves.length === 1,
-                  ontologyTermSummaries: {}
-                }
-              });
-            }
-
-            case 'FlatVocabParam':
-            case 'EnumParam':
-              return Object.assign(uiState, {
-                [param.name]: {
-                  vocabulary: param.vocabulary
-                }
-              });
-
-            default:
-              return Object.assign(uiState, {
-                [param.name]: {}
-              });
-          }
-        }, {});
-
-        const groupUIState = question.groups.reduce(function(groupUIState, group) {
-          return Object.assign(groupUIState, {
-            [group.name]: { accumulatedTotal: undefined }
-          });
-        }, {});
-
-        const lastConfiguredGroup = Seq.from(question.groups)
-          .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
-          .last();
-
-        const configuredGroups = lastConfiguredGroup == null ? []
-          : Seq.from(question.groups)
-              .takeWhile(group => group !== lastConfiguredGroup)
-              .concat(Seq.of(lastConfiguredGroup));
-
-        this.setState({
-          question,
-          paramUIState,
-          groupUIState,
-          recordClass,
-          activeGroup: undefined
-        }, () => {
           this._updateGroupCounts(configuredGroups);
           this._getAnswerCount({
             questionName: question.name,
@@ -162,7 +121,7 @@ class QuestionWizardController extends React.Component {
   /**
    * Update selected group and its count.
    */
-  onActiveGroupChange(activeGroup) {
+  setActiveGroup(activeGroup) {
     this.setState({ activeGroup });
 
     if (activeGroup == null) return;
@@ -184,9 +143,30 @@ class QuestionWizardController extends React.Component {
   }
 
   /**
+   * Set filter popup visiblity
+   */
+  setFilterPopupVisiblity(show) {
+    this.setState(state => setFilterPopupVisiblity(state, show));
+  }
+
+  /**
+   * Set filter popup stickyness
+   */
+  setFilterPopupPinned(pinned) {
+    this.setState(state => setFilterPopupPinned(state, pinned));
+  }
+
+  /**
+   * Set all params to default values
+   */
+  resetParamValues() {
+    this.setState(resetParamValues)
+  }
+
+  /**
    * Force stale counts to be updated.
    */
-  onUpdateInvalidGroupCounts() {
+  updateInvalidGroupCounts() {
     this._updateGroupCounts(
       Seq.from(this.state.question.groups)
         .filter(group => this.state.groupUIState[group.name].valid === false));
@@ -195,7 +175,7 @@ class QuestionWizardController extends React.Component {
   /**
    * Update paramUI state based on ontology term.
    */
-  onActiveOntologyTermChange(param, filters, ontologyTerm) {
+  setActiveOntologyTerm(param, filters, ontologyTerm) {
     this.setState(updateState(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
     if (this._getParamUIState(this.state, param.name).ontologyTermSummaries[ontologyTerm] == null) {
       this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
@@ -206,7 +186,7 @@ class QuestionWizardController extends React.Component {
    * Update parameter value, update dependent parameter vocabularies and
    * ontologies, and update counts.
    */
-  onParamValueChange(param, paramValue) {
+  setParamValue(param, paramValue) {
     const prevParamValue = this.state.paramValues[param.name];
     this.setState(updateState(['paramValues', param.name], paramValue),
       () => this._commitParamValueChange(param, paramValue, prevParamValue));
@@ -367,7 +347,7 @@ class QuestionWizardController extends React.Component {
 
     this.setState({ groupUIState });
 
-    const defaultParamValues = getDefaultParamValues(this.state.question.parameters);
+    const defaultParamValues = getDefaultParamValues(this.state);
 
     // transform each group into an answer value promise with accumulated param
     // values of previous groups
@@ -480,12 +460,6 @@ class QuestionWizardController extends React.Component {
     return state.paramUIState[paramName];
   }
 
-  _groupParamValuesAreDefault(group) {
-    const defaultValues = getDefaultParamValues(this.state.question.parameters);
-    return group.parameters.every(paramName =>
-      this.state.paramValues[paramName] === defaultValues[paramName]);
-  }
-
   _groupHasCount(group) {
     return this.state.groupUIState[group.name].accumulatedTotal != null;
   }
@@ -509,11 +483,11 @@ class QuestionWizardController extends React.Component {
         )}
         {this.state.question && (
           <QuestionWizard
-            {...this.state}
-            {...this.eventHandlers}
-            showHelpText={!this.props.isRevise}
-            isAddingStep={this.props.isAddingStep}
+            eventHandlers={this.eventHandlers}
+            wizardState={this.state}
             customName={this.props.customName}
+            isAddingStep={this.props.isAddingStep}
+            showHelpText={!this.props.isRevise}
           />
         )}
       </div>
@@ -532,15 +506,6 @@ QuestionWizardController.propTypes = {
 }
 
 export default wrappable(QuestionWizardController);
-
-/**
- * Create paramValues object with default values.
- */
-function getDefaultParamValues(parameters) {
-  return parameters.reduce(function(defaultParamValues, param) {
-    return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
-  }, {});
-}
 
 /**
  * Creates an updater function that returns a new state object

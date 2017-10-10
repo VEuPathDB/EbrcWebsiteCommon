@@ -3,28 +3,32 @@ import { Loading } from 'wdk-client/Components';
 import { propTypes } from './QuestionWizard';
 import Parameters from './Parameters';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
+import { groupParamsValuesAreDefault } from '../util/QuestionWizardState';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 /**
  * Active group section. Includes heading, help text, summary counts, and parameters.
  */
 function ActiveGroup(props) {
-  if (props.activeGroup == null) return null;
+  if (props.wizardState.activeGroup == null) return null;
 
   const {
-    question,
-    paramValues,
-    paramUIState,
-    groupUIState,
-    recordClass,
-    activeGroup,
-    initialCount,
-    onActiveOntologyTermChange,
-    onParamValueChange
+    wizardState: {
+      question,
+      paramValues,
+      paramUIState,
+      groupUIState,
+      recordClass,
+      activeGroup,
+      initialCount
+    },
+    eventHandlers: {
+      setActiveOntologyTerm,
+      setParamValue
+    }
   } = props;
 
   const paramMap = new Map(question.parameters.map(p => [p.name, p]));
-  const isDefaults = activeGroup.parameters.every(pName => paramValues[pName] === paramMap.get(pName).defaultValue);
   const { accumulatedTotal, loading } = groupUIState[activeGroup.name];
   const { accumulatedTotal: prevAccumulatedTotal, loading: prevLoading } = Seq.of({ accumulatedTotal: initialCount })
     .concat(Seq.from(question.groups)
@@ -40,7 +44,7 @@ function ActiveGroup(props) {
   return (
     <div className={makeClassName('ActiveGroupContainer')}>
       <div className={makeClassName('ActiveGroupHeading')}>
-        {isDefaults ? (
+        {groupParamsValuesAreDefault(props.wizardState, activeGroup) ? (
           <div className={makeClassName('ActiveGroupCount')}>
             No <em>{activeGroup.displayName}</em> filters applied yet
           </div>
@@ -62,8 +66,8 @@ function ActiveGroup(props) {
         parameters={parameters}
         paramValues={paramValues}
         paramUIState={paramUIState}
-        onActiveOntologyTermChange={onActiveOntologyTermChange}
-        onParamValueChange={onParamValueChange}
+        onActiveOntologyTermChange={setActiveOntologyTerm}
+        onParamValueChange={setParamValue}
       />
     </div>
   );

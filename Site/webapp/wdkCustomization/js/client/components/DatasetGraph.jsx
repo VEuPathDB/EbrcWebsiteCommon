@@ -135,6 +135,7 @@ export default class DatasetGraph extends PureComponent {
 
   render() {
     let { dataTable, facetMetadataTable, contXAxisMetadataTable, rowData: {
+      source_id,
       assay_type,
       paralog_number,
       graph_ids,
@@ -204,6 +205,9 @@ export default class DatasetGraph extends PureComponent {
             }
 	   </select>
 */}
+     	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene from the reference strain for this species ({graphId}). This may or may NOT accurately represent the gene you are interested in. </div>
+           : null} 
+
            {assay_type == 'RNA-seq'  && covImgUrl ?
             <div>Expression graphs and coverage plots represent unique reads, i.e. those aligning to one location only. This may underrepresent abundance for sequences that are duplicated in the genome, including paralogous genes.</div> 
           : null}
@@ -243,7 +247,6 @@ Further questions? See tutorials and YouTube videos on Genome Browser configurat
 
         </div>
         <div className="eupathdb-DatasetGraphDetails">
-
           {this.props.dataTable &&
             <CollapsibleSection
               className={"eupathdb-" + this.props.dataTable.table.name + "Container"}

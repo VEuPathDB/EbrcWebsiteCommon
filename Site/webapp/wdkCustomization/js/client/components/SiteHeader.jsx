@@ -73,13 +73,18 @@ function Header(props) {
           </div>
         </div>
         {/* TODO Put items into an external JSON file. */}
-        <Sticky className="eupathdb-MenuContainer" fixedClassName="eupathdb-MenuContainer__fixed">
-          <Menu
-            webAppUrl={webAppUrl}
-            projectId={projectId}
-            showLoginWarning={showLoginWarning}
-            isGuest={user ? user.isGuest : true}
-            items={mainMenuItems(props, menuItems)}/>
+        <Sticky>
+          {({isFixed}) => (
+            <div className={'eupathdb-MenuContainer' + (
+              isFixed ? ' eupathdb-MenuContainer__fixed' : '')}>
+              <Menu
+                webAppUrl={webAppUrl}
+                projectId={projectId}
+                showLoginWarning={showLoginWarning}
+                isGuest={user ? user.isGuest : true}
+                items={mainMenuItems(props, menuItems)}/>
+            </div>
+          )}
         </Sticky>
       </div>
       <Announcements projectId={projectId} webAppUrl={webAppUrl} location={location} announcements={announcements}/>
