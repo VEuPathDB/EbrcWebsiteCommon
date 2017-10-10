@@ -119,9 +119,19 @@ reports to funding agencies.
 ## Third-Party Websites and Applications
 
 Third-party websites and applications are not exclusively operated or
-controlled by EuPathDB. 
+controlled by EuPathDB. By using these third-party websites, individuals
+may be providing nongovernmental third-parties with access to personally
+identifying information.
 
 ### Twitter
+
+EuPathDB maintains a presence on Twitter in the form of a [EuPathDB
+branded page](https://twitter.com/EuPathDB). This page allows for a
+direct connection with end users to promote information related EuPathDB
+services and to disseminate educational information on research
+publications, news and events related to the biology of eukaryotic
+pathogens. Postings may also include information about planned service
+maintenance and outages.
 
 Twitter collects profile information such as name and email address
 about users who register to use this third party website. Depending on
@@ -140,10 +150,18 @@ information outside of Twitter's site.
 Twitter is hosted and maintained by a third party which may use browser
 tracking and related technologies to collect information about visitors
 to twitter.com and its affiliates. Refer to Twitter's privacy statement,
-https://twitter.com/en/privacy, for more information.
+[https://twitter.com/en/privacy](https://twitter.com/en/privacy), for more information.
 
 
 ### Facebook
+
+EuPathDB maintains a presence on Facebook in the form of a [EuPathDB
+branded page](https://facebook.com/EuPathDB). This page allows for a
+direct connection with end users to promote information related EuPathDB
+services and to disseminate educational information on research
+publications, news and events related to the biology of eukaryotic
+pathogens. Postings may also include information about planned service
+maintenance and outages.
 
 Like Twitter, Facebook collects profile information, including name and
 email address, from its users. Depending on the user’s privacy settings,
@@ -155,6 +173,10 @@ page. To understand how Facebook collects and uses personal information,
 refer to their data policy page, https://www.facebook.com/policy.php.  
 
 ### YouTube
+
+EuPathDB maintains a presence on YouTube in the form of a [EuPathDB
+branded page](https://www.youtube.com/user/EuPathDB). This page provides
+tutorials on the use of our websites.
 
 YouTube also requires some information when users create an account,
 including an email address, and users may choose to provide a name and
@@ -169,6 +191,15 @@ Google’s privacy policy, which can be viewed at
 https://www.google.co.uk/intl/en-GB/policies/privacy/. 
 
 ### Globus Genomics
+
+The EuPathDB Galaxy Data Analysis Service is a workspace for large-scale
+data analyses. Developed in partnership with Globus Genomics, workspaces
+offer a private analysis platform with published workflows and
+pre-loaded annotated genomes. The workspace is accessed through the
+"Analyze My Experiment" tab on the home page of any EuPathDB resource
+and can be used to upload your own data, compose and run custom
+workflows, retrieve results and share workflows and data analyses with
+colleagues.
 
 The EuPathDB Galaxy Data Analysis Service is hosted by Globus Genomics,
 an affiliate of Globus. The first time you visit EuPathDB Galaxy you
