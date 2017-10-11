@@ -190,7 +190,7 @@ function makeMenuItems(props) {
     {
       id: 'favorites',
       text: 'My Favorites',
-      webAppUrl: '/showFavorite.do',
+      webAppUrl: '/app/favorites',
       loginRequired: true
     },
 
