@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { zip } from 'lodash';
 import ActiveGroup from './ActiveGroup';
 import {
+  getFilterValueDisplay
+} from 'wdk-client/FilterServiceUtils';
+import {
   Dialog,
+  Popup,
   IconAlt as Icon,
   Loading,
   Sticky
@@ -257,60 +261,70 @@ ParamGroupCount.propTypes = {
 /**
  * Show a summary of active filters
  */
-function FilterSummary(props) {
-  const filterSummary = Seq.from(props.wizardState.question.groups)
-    .filter(group => !groupParamsValuesAreDefault(props.wizardState, group))
-    .map(group => (
-      <div key={group.name}>
-        <h4><Icon fa="filter" className={makeClassName('GroupFilterIcon')}/> {group.displayName}</h4>
-        {groupParamsValuesAreDefault(props.wizardState, group)
-          ? <em>No filters applied</em>
-          : Object.entries(getParameterValuesForGroup(props.wizardState, group.name))
-            .filter(([paramName, paramValue]) => getParameter(props.wizardState, paramName).defaultValue !== paramValue)
-            .map(([paramName, paramValue]) =>
-              getParamSummaryElements({
-                group,
-                paramValue,
-                wizardState: props.wizardState,
-                eventHandlers: props.eventHandlers,
-                parameter: getParameter(props.wizardState, paramName),
-              }))}
-      </div>
-    ));
+class FilterSummary extends React.Component {
+  render () {
+    const { wizardState, eventHandlers } = this.props;
 
-  return (
-    <Dialog
-      draggable
-      resizable
-      modal={false}
-      open={props.wizardState.filterPopupState.visible}
-      title="Summary of Filters"
-      onClose={() => props.eventHandlers.setFilterPopupVisiblity(false)}
-      height={350}
-      width={600}
-    >
-      <div>
-        <button type="button" className="wdk-Link" onClick={() => props.eventHandlers.resetParamValues()}>
-          Remove all filters
-        </button>
-        &nbsp;
-        &nbsp;
-        <label title="Prevent summary popup from closing when clicking on filters.">
-          <input
-            type="checkbox"
-            value={props.wizardState.filterPopupState.pinned}
-            onClick={e => props.eventHandlers.setFilterPopupPinned(e.target.checked)}
-          /> Keep summary open
-        </label>
+    const filterSummary = Seq.from(wizardState.question.groups)
+      .filter(group => !groupParamsValuesAreDefault(wizardState, group))
+      .map(group => (
+        <div key={group.name}>
+          <h4><Icon fa="filter" className={makeClassName('GroupFilterIcon')}/> {group.displayName}</h4>
+          {groupParamsValuesAreDefault(wizardState, group)
+            ? <em>No filters applied</em>
+            : Object.entries(getParameterValuesForGroup(wizardState, group.name))
+              .filter(([paramName, paramValue]) => getParameter(wizardState, paramName).defaultValue !== paramValue)
+              .map(([paramName, paramValue]) =>
+                getParamSummaryElements({
+                  group,
+                  paramValue,
+                  wizardState: wizardState,
+                  eventHandlers: eventHandlers,
+                  parameter: getParameter(wizardState, paramName),
+                }))}
+        </div>
+      ));
 
-        {filterSummary.isEmpty() ? (
-          <p>No filters applied</p>
-        ) : (
-          filterSummary
-        )}
-      </div>
-    </Dialog>
-  );
+    return (
+      <Dialog
+        resizable
+        draggable
+        open={wizardState.filterPopupState.visible}
+        title="Active Filters"
+        buttons={[
+          <button
+            key="pin"
+            type="button"
+            title="Prevent summary popup from closing when clicking on filters."
+            className={makeClassName('FilterPopupTitleButton')}
+            onClick={() => eventHandlers.setFilterPopupPinned(!wizardState.filterPopupState.pinned)}
+          >
+            <Icon fa={wizardState.filterPopupState.pinned ? 'circle' : 'thumb-tack'} />
+          </button>,
+          <button
+            type="button"
+            key="close"
+            className={makeClassName('FilterPopupTitleButton')}
+            onClick={() => eventHandlers.setFilterPopupVisiblity(false)}
+          >
+            <Icon fa="close"/>
+          </button>
+        ]}
+      >
+        <div className={makeClassName('FilterSummary')}>
+          <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
+            Remove all filters
+          </button>
+
+          {filterSummary.isEmpty() ? (
+            <p>No filters applied</p>
+          ) : (
+            filterSummary
+          )}
+        </div>
+      </Dialog>
+    );
+  }
 }
 
 FilterSummary.propTypes = propTypes;
@@ -348,7 +362,7 @@ function getFilterParamSummaryElements(data) {
   return filters.map(filter => {
     const field = data.parameter.ontology.find(field => field.term === filter.field)
     return (
-      <div key={data.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} title={filter.value}>
+      <div key={data.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} title={getFilterValueDisplay(field, filter)}>
         <a
           href={'#' + field.term}
           onClick={e => {

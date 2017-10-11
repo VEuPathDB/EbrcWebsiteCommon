@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+.ebrc-QuestionWizardFilterSummary {
+  width: 600px;
+  height: 300px;
+}
+
 .ebrc-QuestionWizard {
   padding: 0 1em;
 }
