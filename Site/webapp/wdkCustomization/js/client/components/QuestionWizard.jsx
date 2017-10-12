@@ -267,7 +267,7 @@ class FilterSummary extends React.Component {
     const filterSummary = Seq.from(wizardState.question.groups)
       .filter(group => !groupParamsValuesAreDefault(wizardState, group))
       .map(group => (
-        <div key={group.name}>
+        <div key={group.name} className={makeClassName('FilterSummaryGroup')}>
           <h4><Icon fa="filter" className={makeClassName('GroupFilterIcon')}/> {group.displayName}</h4>
           {groupParamsValuesAreDefault(wizardState, group)
             ? <em>No filters applied</em>
@@ -288,6 +288,7 @@ class FilterSummary extends React.Component {
       <Dialog
         resizable
         draggable
+        className={makeClassName('FilterSummary')}
         open={wizardState.filterPopupState.visible}
         title="Active Filters"
         className={makeClassName('FilterSummary')}
@@ -312,15 +313,16 @@ class FilterSummary extends React.Component {
         ]}
       >
         <div>
-          <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
-            Remove all filters
-          </button>
-
           {filterSummary.isEmpty() ? (
             <p>No filters applied</p>
           ) : (
             filterSummary
           )}
+          <div className={makeClassName('FilterSummaryRemoveAll')}>
+            <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
+              Remove all
+            </button>
+          </div>
         </div>
       </Dialog>
     );

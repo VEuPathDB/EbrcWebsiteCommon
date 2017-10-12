@@ -7,6 +7,20 @@
   height: 300px;
 }
 
+.ebrc-QuestionWizardFilterSummaryGroup {
+  padding-bottom: .5em;
+}
+
+.ebrc-QuestionWizardFilterSummaryRemoveAll {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fcfcfc;
+  border-top: 1px solid #eee;
+  padding: .2em .8em;
+}
+
 .ebrc-QuestionWizard {
   padding: 0 1em;
 }
