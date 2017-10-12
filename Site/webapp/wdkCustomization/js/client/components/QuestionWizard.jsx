@@ -7,7 +7,6 @@ import {
 } from 'wdk-client/FilterServiceUtils';
 import {
   Dialog,
-  Popup,
   IconAlt as Icon,
   Loading,
   Sticky
@@ -291,6 +290,7 @@ class FilterSummary extends React.Component {
         draggable
         open={wizardState.filterPopupState.visible}
         title="Active Filters"
+        className={makeClassName('FilterSummary')}
         buttons={[
           <button
             key="pin"
@@ -311,7 +311,7 @@ class FilterSummary extends React.Component {
           </button>
         ]}
       >
-        <div className={makeClassName('FilterSummary')}>
+        <div>
           <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
             Remove all filters
           </button>
