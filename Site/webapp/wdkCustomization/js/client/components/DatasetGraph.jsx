@@ -160,9 +160,8 @@ export default class DatasetGraph extends PureComponent {
 
     return (
       <div className="eupathdb-DatasetGraphContainer2">
-      <h4><a href={dataset_link}>Full Dataset Description</a></h4>
-      <div className="eupathdb-DatasetGraphContainer">
 
+      <div className="eupathdb-DatasetGraphContainer">
         {this.renderLoading()}
 
         <div className="eupathdb-DatasetGraph">
@@ -207,6 +206,9 @@ export default class DatasetGraph extends PureComponent {
             }
 	   </select>
 */}
+
+          <h4><a href={dataset_link}>Full Dataset Description</a></h4>
+
      	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene from the reference strain for this species ({graphId}). This may or may NOT accurately represent the gene you are interested in. </div>
            : null} 
 
