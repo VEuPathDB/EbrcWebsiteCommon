@@ -1,4 +1,4 @@
-<!--#include virtual="/a/header.jsp" -->
+<!--#include virtual="/a/header.jsp?ftype=Privacy%20Policy" -->
 <h1 id="eupathdb-website-privacy-policy">EuPathDB Website Privacy Policy</h1>
 <h2 id="introduction">Introduction</h2>
 <p>The purpose of this page is to provide information to users of EuPathDB websites about the types of information collected from our users and how that information is shared. We do not use or share any of your personal information for any purpose unrelated to the functionality of the websites; however, we do collect some information to help us understand how our sites are being used and to improve community support.</p>
