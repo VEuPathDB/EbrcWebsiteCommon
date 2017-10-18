@@ -1,3 +1,5 @@
+<!--#include virtual="/a/header.jsp?ftype=Privacy%20Policy" -->
+
 # EuPathDB Website Privacy Policy
 
 ## Introduction
@@ -218,3 +220,6 @@ Georgia, the University of Pennsylvania, the University of Liverpool, and Amazon
 Cloud Services do not take any responsibility and are not liable for the
 loss and/or release of any data you analyze via the EuPathDB Galaxy
 platform.
+
+<!--#include virtual="/a/footer.jsp" -->
+
