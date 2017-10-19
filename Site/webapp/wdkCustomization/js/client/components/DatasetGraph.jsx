@@ -173,7 +173,6 @@ export default class DatasetGraph extends PureComponent {
                 this.setState({loading: false});
               }}
               onError={() => this.setState({ loading: false, imgError: true })}>
-              <img src={pngUrl}/>
             </object>)}
           {this.renderImgError()}	   
 
