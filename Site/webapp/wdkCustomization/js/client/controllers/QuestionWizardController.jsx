@@ -68,14 +68,14 @@ class QuestionWizardController extends React.Component {
     const question$ = isRevise
       ? wdkService.sendRequest({
         method: 'POST',
-        path: '/question/' + questionName,
+        path: '/questions/' + questionName,
         body: JSON.stringify({
           contextParamValues: paramValues
         })
       })
       : wdkService.sendRequest({
         method: 'GET',
-        path: '/question/' + questionName,
+        path: '/questions/' + questionName,
         params: { expandParams: true }
       });
 
