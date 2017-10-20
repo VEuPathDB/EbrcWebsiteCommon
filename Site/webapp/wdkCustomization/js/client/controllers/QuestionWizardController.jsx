@@ -47,13 +47,14 @@ class QuestionWizardController extends React.Component {
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     // this._handleParamValueChange = synchronized(this._handleParamValueChange);
     // this._updateDependedParams = synchronized(this._updateDependedParams);
-    this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange, 1000));
+    this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
   }
 
   getEventHandlers() {
     return pick(this, [
       'setActiveGroup',
       'setActiveOntologyTerm',
+      'setParamState',
       'setParamValue',
       'updateInvalidGroupCounts',
       'setFilterPopupVisiblity',
@@ -140,6 +141,32 @@ class QuestionWizardController extends React.Component {
     // BEGIN_SIDE_EFFECTS
     this._initializeActiveGroupParams(activeGroup);
     // END_SIDE_EFFECTS
+  }
+
+  setParamState(param, state) {
+    // Update global default sort to most recent sort specification
+    // if (param.type === 'FilterParamNew') {
+    //   let match = Object.entries(state.fieldStates)
+    //     .find(([fieldName, fieldState]) =>
+    //       this.state.paramUIState[param.name].fieldStates[fieldName] !== fieldState);
+    //   if (match) {
+    //     let newState = this.state.question.parameters
+    //       .filter(param => param.type === 'FilterParamNew')
+    //       .reduce((prevState, param) => {
+    //         return updateObjectImmutably(
+    //           prevState,
+    //           [
+    //             'paramUIState',
+    //             param.name,
+    //             'defaultMemberFieldState'
+    //           ],
+    //           state.fieldStates[match[0]]
+    //         );
+    //       }, this.state);
+    //     this.setState(newState);
+    //   }
+    // }
+    this.setState(updateState(['paramUIState', param.name], state));
   }
 
   /**

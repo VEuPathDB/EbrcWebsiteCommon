@@ -24,7 +24,8 @@ function ActiveGroup(props) {
     },
     eventHandlers: {
       setActiveOntologyTerm,
-      setParamValue
+      setParamValue,
+      setParamState
     }
   } = props;
 
@@ -68,6 +69,7 @@ function ActiveGroup(props) {
         paramUIState={paramUIState}
         onActiveOntologyTermChange={setActiveOntologyTerm}
         onParamValueChange={setParamValue}
+        onParamStateChange={setParamState}
       />
     </div>
   );

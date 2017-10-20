@@ -321,14 +321,13 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 
 .ebrc-QuestionWizardParamHelp {
   align-self: center;
-  margin-right: .5em;
+  margin-right: 1em;
 }
 
 .ebrc-QuestionWizardParamControl {
   flex: 2;
   display: inline-block;
   align-self: center;
-  margin: 0 .5em;
 }
 
 .ebrc-QuestionWizardParamHelp__FilterParamNew,
