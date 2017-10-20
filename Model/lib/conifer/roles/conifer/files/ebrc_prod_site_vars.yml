@@ -1,39 +1,34 @@
 env: production
 
-modelconfig_accountDb_connectionUrl: 'jdbc:oracle:oci:@{{ acctdb_shortname }}'
-modelconfig_accountDb_login: '{{ acctdb_login }}'
-modelconfig_accountDb_password: '{{ acctdb_password }}'
+modelconfig_monitorBlockedThreads: 'false'
 
-modelconfig_appDb_connectionUrl: 'jdbc:oracle:oci:@{{ appdb_shortname }}'
-modelconfig_appDb_login: '{{ appdb_login }}'
-modelconfig_appDb_password: '{{ appdb_password }}'
+accountDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['acctDb_name'] }}"
+accountDb_login: "{{ host_data['acctDb_login'] }}"
+accountDb_password: "{{ password['acctdb'] }}"
 
-modelconfig_userDb_login: '{{ userdb_login }}'
-modelconfig_userDb_password: '{{ userdb_password }}'
-modelconfig_userDb_connectionUrl: 'jdbc:oracle:oci:@{{ userdb_shortname }}'
+appDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['appDb_name'] }}"
+appDb_login: "{{ host_data['appDb_login'] }}"
+appDb_password: "{{ password['appdb'] }}"
+
+userDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['userDb_name'] }}"
+userDb_login: "{{ host_data['userDb_login'] }}"
+userDb_password: "{{ password['userdb'] }}"
 
 host_data: "{{ lookup('colfile',
     '{} src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'.format(hostname)
   ) }}"
 
-appdb_shortname: "{{ host_data['appDb_name'] }}"
-appdb_login: "{{ host_data['appDb_login'] }}"
-appdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"{}\"]'.format(appdb_login)
-  )
-}}"
-
-acctdb_shortname: "{{ host_data['acctDb_name'] }}"
-acctdb_login: "{{ host_data['acctDb_login'] }}"
-acctdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"{}\"]'.format(acctdb_login)
-  )
-}}"
-
-userdb_shortname: "{{ host_data['userDb_name'] }}"
-userdb_login: "{{ host_data['userDb_login'] }}"
-userdb_password: "{{ lookup('euparc',
-  'attr=password xpath=database/user[@login=\"{}\"]'.format(userdb_login)
-  )
-}}"
+password:
+  appdb: "{{ lookup('euparc',
+      'attr=password xpath=database/user[@login=\"{}\"]'.format(appDb_login)
+      )
+    }}"
+  acctdb: "{{ lookup('euparc',
+      'attr=password xpath=database/user[@login=\"{}\"]'.format(accountDb_login)
+      )
+    }}"
+  userdb: "{{ lookup('euparc',
+      'attr=password xpath=database/user[@login=\"{}\"]'.format(userDb_login)
+      )
+    }}"
 

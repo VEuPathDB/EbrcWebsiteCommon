@@ -7,6 +7,18 @@ _hostname: '{{ hostname|swap_hostname(_host_frontends) }}'
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 
+# short convenience names for most common user-defined vars
+accountDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@acctDbS
+accountDb_login: =c= username for account database
+accountDb_password: =c= password for account database
+appDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@toxo-inc
+appDb_login: =c= username for application database, e.g.
+appDb_password: =c= password for application database
+userDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@apicommDevN
+userDb_login: =c= username for user database
+userDb_password: =c= password for user database
+
+
 _topleveldomain: org
 _wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
 
@@ -55,28 +67,28 @@ _acctdb_link_map:
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
 modelconfig_accountDb_accountSchema: useraccounts
-modelconfig_accountDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@acctDbS
+modelconfig_accountDb_connectionUrl: '{{ accountDb_connectionUrl }}'
 modelconfig_accountDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
-modelconfig_accountDb_login: =c= username for account database
+modelconfig_accountDb_login: '{{ accountDb_login }}'
 modelconfig_accountDb_maxActive: 20
 modelconfig_accountDb_maxIdle: 1
 modelconfig_accountDb_maxWait: 50
 modelconfig_accountDb_minIdle: 1
-modelconfig_accountDb_password: =c= password for account database
+modelconfig_accountDb_password: '{{ accountDb_password }}'
 modelconfig_accountDb_platform: Oracle
 modelconfig_accountDb_showConnections: 'false'
 modelconfig_accountDb_showConnectionsDuration: 600
 modelconfig_accountDb_showConnectionsInterval: 10
 
-modelconfig_appDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@toxo-inc
+modelconfig_appDb_connectionUrl: '{{ appDb_connectionUrl }}'
 modelconfig_appDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
-modelconfig_appDb_login: =c= username for application database, e.g.
+modelconfig_appDb_login: '{{ appDb_login }}'
 modelconfig_appDb_maxActive: 20
 modelconfig_appDb_maxIdle: 1
 modelconfig_appDb_maxPkColumnWidth: 150
 modelconfig_appDb_maxWait: 50
 modelconfig_appDb_minIdle: 1
-modelconfig_appDb_password: =c= password for application database
+modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_platform: Oracle
 modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
@@ -84,14 +96,14 @@ modelconfig_appDb_showConnectionsInterval: 10
 modelconfig_appDb_userDbLink: '{{ _userdb_link_map[modelconfig_userDb_connectionUrl|jdbc2shortName|lower] }}'
 modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_accountDb_connectionUrl|jdbc2shortName|lower] }}'
 
-modelconfig_userDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@apicommDevN
+modelconfig_userDb_connectionUrl: '{{ userDb_connectionUrl }}'
 modelconfig_userDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
-modelconfig_userDb_login: =c= username for user database
+modelconfig_userDb_login: '{{ userDb_login }}'
 modelconfig_userDb_maxActive: 20
 modelconfig_userDb_maxIdle: 1
 modelconfig_userDb_maxWait: 50
 modelconfig_userDb_minIdle: 1
-modelconfig_userDb_password: =c= password for user database
+modelconfig_userDb_password: '{{ userDb_password }}'
 modelconfig_userDb_platform: Oracle
 modelconfig_userDb_showConnections: 'false'
 modelconfig_userDb_showConnectionsDuration: 600
