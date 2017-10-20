@@ -45,7 +45,8 @@ module.exports = function configure(additionalConfig) {
         'react-router' : 'ReactRouter',
         'prop-types'   : 'ReactPropTypes',
         'flux'         : 'Flux',
-        'flux/utils'   : 'FluxUtils'
+        'flux/utils'   : 'FluxUtils',
+        'natural-sort' : 'NaturalSort'
       }
     ]
   }, additionalConfig]);
