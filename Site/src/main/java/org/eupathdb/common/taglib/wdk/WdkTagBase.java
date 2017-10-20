@@ -9,7 +9,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import org.gusdb.wdk.controller.CConstants;
+import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.jspwrap.WdkModelBean;
 
@@ -52,7 +52,7 @@ public abstract class WdkTagBase extends SimpleTagSupport {
     
     public void setWdkModelBean() {
         _wdkModelBean = (WdkModelBean) this.getContext().
-        getAttribute(CConstants.WDK_MODEL_KEY);
+        getAttribute(Utilities.WDK_MODEL_KEY);
     }
 
     protected WdkModelBean getWdkModelBean() {

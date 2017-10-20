@@ -17,6 +17,7 @@
   <c:set var="model" value="${applicationScope.wdkModel.model}"/>
   <c:set var="props" value="${model.properties}"/>
   <c:set var="webAppUrl" value="${pageContext.request.contextPath}"/>
+  <c:set var="wdkServiceUrl" value ="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 
   <!-- only show information on home page. this jsp never gets loaded on home page -->
   <!-- FIXME Add logic to show information messages on homepage if this gets used for homepage -->
@@ -34,7 +35,7 @@
   <script>
     // used for header and footer
     window.__SITE_CONFIG__ = {
-      endpoint: "${webAppUrl}/service",
+      endpoint: "${wdkServiceUrl}",
       displayName: "${model.displayName}",
       projectId: "${model.projectId}",
       buildNumber: "${model.buildNumber}",

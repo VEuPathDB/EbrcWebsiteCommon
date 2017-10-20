@@ -46,7 +46,7 @@ export function loadQuickSearches(questions) {
     let requests = questions.map((reference) => {
       return wdkService.sendRequest({
         method: 'GET',
-        path: '/question/' + reference.name,
+        path: '/questions/' + reference.name,
         params: { expandParams: true },
         useCache: true
       });

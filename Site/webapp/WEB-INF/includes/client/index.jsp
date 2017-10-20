@@ -6,6 +6,7 @@
 <c:set var="model" value="${applicationScope.wdkModel.model}"/>
 <c:set var="props" value="${model.properties}"/>
 <c:set var="webAppUrl" value="${pageContext.request.contextPath}"/>
+<c:set var="wdkServiceUrl" value="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
 
 <%-- only show information on home page. this jsp never gets loaded on home page --%>
@@ -39,7 +40,7 @@
       window.__SITE_CONFIG__ = {
         rootElement: "#wdk-container",
         rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
-        endpoint: "${webAppUrl}/service",
+        endpoint: "${wdkServiceUrl}",
         displayName: "${model.displayName}",
         projectId: "${model.projectId}",
         buildNumber: "${model.buildNumber}",
