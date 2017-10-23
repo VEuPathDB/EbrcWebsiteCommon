@@ -43,14 +43,8 @@ export function loadBasketCounts() {
  */
 export function loadQuickSearches(questions) {
   return function run(dispatch, { wdkService }) {
-    let requests = questions.map((reference) => {
-      return wdkService.sendRequest({
-        method: 'GET',
-        path: '/questions/' + reference.name,
-        params: { expandParams: true },
-        useCache: true
-      });
-    });
+    let requests = questions.map(reference =>
+      wdkService.getQuestionAndParameters(reference.name));
     return Promise.all(requests).then(
       questions => keyBy(questions, 'name'),
       error => error

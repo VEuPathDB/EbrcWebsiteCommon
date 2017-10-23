@@ -3,14 +3,13 @@ import CheckboxTreeController from './checkboxTreeController';
 import { trimBooleanQuestionAttribs } from './client/util/modelSpecificUtil';
 import { getTree } from 'wdk-client/OntologyUtils';
 import { isQualifying, addSearchSpecificSubtree } from 'wdk-client/CategoryUtils';
-import WdkService from 'wdk-client/WdkService';
 
 wdk.namespace("eupathdb.attributeCheckboxTree", function(ns) {
   "use strict";
 
   // will map from summary views to attribute tree controller for that view
   let controllerMap = {};
-  let wdkService = WdkService.getInstance(wdk.webappUrl('/service'));
+  let wdkService = wdk.getWdkService();
 
   /**
    * Entry into a custom attribute selector pop-up, which appears when the user

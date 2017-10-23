@@ -66,19 +66,9 @@ class QuestionWizardController extends React.Component {
   loadQuestion(props) {
     const { questionName, wdkService, isRevise, paramValues } = props;
 
-    const question$ = isRevise
-      ? wdkService.sendRequest({
-        method: 'POST',
-        path: '/questions/' + questionName,
-        body: JSON.stringify({
-          contextParamValues: paramValues
-        })
-      })
-      : wdkService.sendRequest({
-        method: 'GET',
-        path: '/questions/' + questionName,
-        params: { expandParams: true }
-      });
+    const question$ = isRevise ?
+      wdkService.getQuestionGivenParameters(questionName, paramValues) :
+      wdkService.getQuestionAndParameters(questionName);
 
     const recordClass$ = question$.then(question => {
       return wdkService.findRecordClass(rc => rc.name === question.recordClassName);
