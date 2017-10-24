@@ -97,6 +97,8 @@ class QuestionWizardController extends React.Component {
           }).then(initialCount => {
             this.setState({ initialCount });
           });
+
+          this.setActiveGroup(question.groups[0]);
         });
       },
       error => {
