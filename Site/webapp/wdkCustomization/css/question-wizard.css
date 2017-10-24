@@ -332,5 +332,5 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 
 .ebrc-QuestionWizardParamHelp__FilterParamNew,
 .ebrc-QuestionWizardParamLabel__FilterParamNew {
-  align-self: flex-start;
+  display: none;
 }
