@@ -16,6 +16,8 @@ import org.apache.struts.Globals;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 import org.apache.struts.taglib.TagUtils;
+import org.gusdb.fgputil.FormatUtil;
+import org.gusdb.fgputil.FormatUtil.Style;
 import org.gusdb.fgputil.events.Events;
 import org.gusdb.fgputil.web.HttpRequestData;
 import org.gusdb.wdk.controller.CConstants;
@@ -27,7 +29,6 @@ import org.gusdb.wdk.errors.ValueMaps.RequestAttributeValueMap;
 import org.gusdb.wdk.errors.ValueMaps.ServletContextValueMap;
 import org.gusdb.wdk.errors.ValueMaps.SessionAttributeValueMap;
 import org.gusdb.wdk.events.ErrorEvent;
-import org.gusdb.wdk.model.WdkException;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkUserException;
 
@@ -197,8 +198,11 @@ public class ErrorsTag extends WdkTagBase {
         if (!actionErrors.isEmpty()) {
             out.println("<br/>\n<em><b>Please correct the following error(s): </b></em><br/>\n" + actionErrors);
         }
-        else if (wdkException != null && wdkException instanceof WdkException) {
-            out.println("<br>\n<pre style=\"margin:0\">" + ((WdkException)wdkException).formatErrors().trim() + "</pre>\n\n");
+        else if (wdkException != null && wdkException instanceof WdkUserException) {
+            out.println("<br>\n" +
+                "<pre style=\"margin:0\">" +
+                FormatUtil.prettyPrint(((WdkUserException)wdkException).getParamErrors(), Style.MULTI_LINE) +
+                "</pre>\n\n");
         }
 
         if (showStacktrace && !(wdkException instanceof WdkUserException)) {
