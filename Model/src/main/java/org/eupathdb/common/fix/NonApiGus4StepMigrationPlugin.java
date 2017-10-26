@@ -2,7 +2,6 @@ package org.eupathdb.common.fix;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -10,6 +9,7 @@ import org.gusdb.fgputil.ListBuilder;
 import org.gusdb.fgputil.json.JsonIterators;
 import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonType.ValueType;
+import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
@@ -161,8 +161,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     Map<String, Param> qParams = question.getParamMap();
     boolean stepCountedAsInvalid = false;
     int invalidStepsByParam = invalidStepCountByParams.get();
-    Set<String> paramNames = params.keySet();
-    for (String paramName : paramNames) {
+    for (String paramName : JsonUtil.getKeys(params)) {
       if (!qParams.containsKey(paramName)) {
         if (!stepCountedAsInvalid) {
           // only increment invalid step count once for this step (not once for each bad param)
