@@ -13,7 +13,7 @@ import {
   Components as WdkComponents,
   Controllers as WdkControllers
 } from 'wdk-client';
-import { debounce, identity, uniq } from 'lodash';
+import { debounce, identity, omit, uniq } from 'lodash';
 import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
 import * as eupathComponentWrappers from './component-wrappers';
 import * as eupathStoreWrappers from './store-wrappers';
@@ -106,8 +106,15 @@ export function initialize(options = {}) {
     quickSearches,
     componentWrappers,
     storeWrappers,
-    wrapRoutes
+    wrapRoutes,
   } = options;
+
+  const restOptions = omit(options, [
+    'quickSearches',
+    'componentWrappers',
+    'storeWrappers',
+    'wrapRoutes',
+  ]);
 
   unaliasWebappUrl();
   removeJsessionid();
@@ -126,13 +133,8 @@ export function initialize(options = {}) {
 
   (window.ebrc || (window.ebrc = {})).context = context
 
-  context.dispatchAction(loadSiteConfig(Object.assign({}, siteConfig, {
+  context.dispatchAction(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
     quickSearchReferences: quickSearches,
-    isPartOfEuPathDB: options.isPartOfEuPathDB,
-    flattenSearches: options.flattenSearches,
-    includeQueryGrid: options.includeQueryGrid,
-    mainMenuItems: options.mainMenuItems,
-    smallMenuItems: options.smallMenuItems
   })));
 
   // XXX Move calls to dispatchAction to controller override?

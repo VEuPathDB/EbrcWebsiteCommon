@@ -38,13 +38,7 @@
   padding-bottom: 3em;
   border-bottom: 1px solid #ccc;
   overflow: auto;
-  font-size: 1vw;
-}
-
-@media all and (min-width: 1200px) {
-  .ebrc-QuestionWizardNavigationContainer {
-    font-size: 1em;
-  }
+  font-size: 1em;
 }
 
 .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
@@ -55,8 +49,37 @@
   background: white;
   padding: 1em 2em 3.5em 2em;
   width: 100%;
-  justify-content: center;
-  box-shadow: 0 1px 2px lightgray;
+  box-shadow: 0 1px 12px #cecece;
+  border-bottom: 1px solid #cccccc;
+  font-size: .8em;
+  transition: 250ms font-size;
+}
+
+@media all and (max-width: 980px) {
+  .ebrc-QuestionWizardNavigationContainer {
+    font-size: .8em;
+  }
+  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
+    font-size: .7em;
+  }
+}
+
+@media all and (min-width: 980px) {
+  .ebrc-QuestionWizardNavigationContainer {
+    font-size: 1vw;
+  }
+  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
+    font-size: .9vw;
+  }
+}
+
+@media all and (min-width: 1200px) {
+  .ebrc-QuestionWizardNavigationContainer {
+    font-size: 1em;
+  }
+  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
+    font-size: .8em;
+  }
 }
 
 .ebrc-QuestionWizardInvalidCounts {

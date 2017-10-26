@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import QuestionWizardController from '../client/controllers/QuestionWizardController';
+import { renderWithContext } from '../clientComponentAdapter';
 
 wdk.namespace('ebrc.controllers', ns => {
   ns.wizard = function wizard($el) {
@@ -12,7 +13,7 @@ wdk.namespace('ebrc.controllers', ns => {
     const isAddingStep = $el.data('is-adding-step');
     const paramValuesContainerSelector = $el.data('param-values-container-selector');
     const paramValues = parseJson($el.find(paramValuesContainerSelector).val().trim());
-    ReactDOM.render(
+    renderWithContext(
       React.createElement(QuestionWizardController, {
         wdkService,
         questionName,
