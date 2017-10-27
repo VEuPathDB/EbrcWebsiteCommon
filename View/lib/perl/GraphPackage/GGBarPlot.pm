@@ -308,7 +308,7 @@ if(is.null(profile.df.full\$LEGEND)) {
   expandColors = TRUE;
   hideLegend = TRUE;
 } else {
-  profile.df.full\$LEGEND = factor(profile.df.full\$LEGEND, levels=legend.label);
+  profile.df.full\$LEGEND = factor(profile.df.full\$LEGEND, levels=unique(legend.label));
 }
 
 if ($isStack) {
