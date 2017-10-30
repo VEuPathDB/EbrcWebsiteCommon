@@ -526,7 +526,7 @@ sub new {
 
   $self->setPartName('fpkm');
   $self->setYaxisLabel('FPKM');
-  $self->setIsStacked(0);
+  $self->setIsStacked(1);
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(10);
   $self->setPlotTitle("FPKM - $id");
