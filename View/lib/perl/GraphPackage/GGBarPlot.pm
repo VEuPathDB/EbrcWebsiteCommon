@@ -319,7 +319,7 @@ if ($isStack) {
 $rAdjustProfile
 
 if ($isStack) {
-  temp.df = aggregate(VALUE ~ STACK, profile.df.full, sum)
+  temp.df = aggregate(VALUE ~ NAME, profile.df.full, sum)
   y.max = max(y.max, temp.df\$VALUE)
   y.min = min(y.min, temp.df\$VALUE) 
 } else {
