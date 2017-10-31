@@ -312,7 +312,7 @@ if(is.null(profile.df.full\$LEGEND)) {
 }
 
 if ($isStack) {
-    profile.df.full\$STACK = profile.df.full\$PROFILE_FILE;
+    profile.df.full\$STACK = profile.df.full\$LEGEND;
 }
 
 # allow minor adjustments to profile
