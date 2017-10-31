@@ -304,7 +304,7 @@ if($numProfiles > length($colorsStringNotNamed)) {
 }
 
 if(is.null(profile.df.full\$LEGEND)) {
-  profile.df.full\$LEGEND = profile.df.full\$NAME
+  profile.df.full\$LEGEND = as.factor(profile.df.full\$NAME)
   expandColors = TRUE;
   hideLegend = TRUE;
 } else {
@@ -356,15 +356,15 @@ if(expandColors) {
 } else {
   if($forceAutoColors) {
 #    numColors = length(levels(as.factor(profile.df.full\$LEGEND)));
-#    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);  
-#    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);
+#    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);  
+#    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);
 
      gp = gp + scale_fill_brewer(palette=\"Set1\");
      gp = gp + scale_colour_brewer(palette=\"Set1\");
   }
   else {
-    gp = gp + scale_fill_manual(values=$colorsStringNotNamed, breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);  
-    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);
+    gp = gp + scale_fill_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);  
+    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);
   }
 }
 
