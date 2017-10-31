@@ -308,7 +308,7 @@ if(is.null(profile.df.full\$LEGEND)) {
   expandColors = TRUE;
   hideLegend = TRUE;
 } else {
-  profile.df.full\$LEGEND = factor(profile.df.full\$LEGEND, levels=unique(legend.label));
+  profile.df.full\$LEGEND = factor(profile.df.full\$LEGEND, levels=legend.label);
 }
 
 if ($isStack) {
@@ -318,8 +318,14 @@ if ($isStack) {
 # allow minor adjustments to profile
 $rAdjustProfile
 
-y.max = max(c(y.max, profile.df.full\$VALUE, profile.df.full\$MAX_ERR), na.rm=TRUE);
-y.min = min(c(y.min, profile.df.full\$VALUE, profile.df.full\$MIN_ERR), na.rm=TRUE);
+if ($isStack) {
+  temp.df = aggregate(VALUE ~ STACK, profile.df.full, sum)
+  y.max = max(y.max, temp.df\$VALUE)
+  y.min = min(y.min, temp.df\$VALUE) 
+} else {
+  y.max = max(c(y.max, profile.df.full\$VALUE, profile.df.full\$MAX_ERR), na.rm=TRUE);
+  y.min = min(c(y.min, profile.df.full\$VALUE, profile.df.full\$MIN_ERR), na.rm=TRUE);
+}
 
 gp = ggplot(profile.df.full, aes(x=NAME, y=VALUE, fill=LEGEND, colour=LEGEND));
 
@@ -349,16 +355,16 @@ if(expandColors) {
   gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
 } else {
   if($forceAutoColors) {
-#    numColors = length(levels(profile.df.full\$LEGEND));
-#    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);  
-#    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);
+#    numColors = length(levels(as.factor(profile.df.full\$LEGEND)));
+#    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);  
+#    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);
 
      gp = gp + scale_fill_brewer(palette=\"Set1\");
      gp = gp + scale_colour_brewer(palette=\"Set1\");
   }
   else {
-    gp = gp + scale_fill_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);  
-    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);
+    gp = gp + scale_fill_manual(values=$colorsStringNotNamed, breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);  
+    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=levels(as.factor(profile.df.full\$LEGEND)), name=NULL);
   }
 }
 
