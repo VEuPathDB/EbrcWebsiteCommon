@@ -1,3 +1,4 @@
+import { result } from 'lodash';
 import { Seq } from 'wdk-client/IterableUtils';
 import { Loading } from 'wdk-client/Components';
 import { propTypes } from './QuestionWizard';
@@ -52,9 +53,9 @@ function ActiveGroup(props) {
         ) : (
           <div className={makeClassName('ActiveGroupCount')}>
             Your <em>{activeGroup.displayName}</em> filters reduce {
-              (prevLoading ? loadingEl : prevAccumulatedTotal)
+              (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
             } {recordClass.displayNamePlural} to {
-              (loading ? loadingEl : accumulatedTotal)
+              (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
             }
           </div>
         )}

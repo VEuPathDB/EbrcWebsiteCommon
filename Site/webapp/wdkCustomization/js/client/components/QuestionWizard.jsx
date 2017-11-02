@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { zip } from 'lodash';
+import { result, zip } from 'lodash';
 import ActiveGroup from './ActiveGroup';
 import {
   getFilterValueDisplay
@@ -204,7 +204,7 @@ function Navigation(props) {
               >
                 { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
                 : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
-                : `${isAddingStep ? 'Combine' : 'View'} ${finalCountState.accumulatedTotal} ${recordClass.displayNamePlural}` }
+                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordClass.displayNamePlural}` }
               </button>
               <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
             </div>
@@ -240,7 +240,7 @@ function ParamGroupCount(props) {
     >
       {props.isLoading === true ? (
         <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
-      ) : (props.isValid === false ? '?' : props.count)}
+      ) : (props.isValid === false ? '?' : result(props.count, 'toLocaleString'))}
     </div>
   )
 }
