@@ -30,30 +30,32 @@ import org.json.JSONObject;
 
 /**
  * Provides service in conformance with the BRC Use Case 4 specification as of Apr 2017.
+ * 
  * @author crisl-adm
- *
  */
 @Path("/hpi")
 public class BrcService extends WdkService {
-	
+
   private static Logger LOG = Logger.getLogger(BrcService.class);
   private NewCookie authCookie;
   private NewCookie sessionCookie;
   private final String EXPERIMENT_ID_PATH_PARAM = "experimentId";
   private final String ID_LIST_ID_PATH_PARAM = "idListId";
   private final String INCLUDE_ORTHOLOGS_QUERY_PARAM = "includeOrthologs";
-  
+
   /**
-   * Utility method to return the initial portion of the request uri so we can make internal REST calls
-   * using that same base uri.  The scheme is assumed to be http.
+   * Utility method to return the initial portion of the request uri so we can make internal REST calls using
+   * that same base uri. The scheme is assumed to be http.
+   * 
    * @return - uri string up to app name and service path
    */
   protected String getBaseUri() {
     return getUriInfo().getBaseUri().toString();
   }
-  
+
   /**
    * REST service version of the DatasetQuestions.DatasetsByGeneList question
+   * 
    * @param body
    * @return
    */
@@ -74,14 +76,15 @@ public class BrcService extends WdkService {
       Set<BrcBean> brcBeans = BrcBean.parseAnswerJson(answerJson, getBaseUri());
       return Response.ok(BrcFormatter.getJson(brcBeans).toString()).build();
     }
-    catch(WdkModelException | RequestMisformatException e) {
+    catch (WdkModelException | RequestMisformatException e) {
       throw new BadRequestException(e);
     }
   }
-  
+
   /**
-   * Gets a set of experiment (WDK term is dataset) attributes for the experiement (a.k.a. dataset) as given by its
-   * WDK based id.
+   * Gets a set of experiment (WDK term is dataset) attributes for the experiement (a.k.a. dataset) as given
+   * by its WDK based id.
+   * 
    * @param experimentId
    * @return
    */
@@ -89,7 +92,7 @@ public class BrcService extends WdkService {
   @Path("/experiment/{experimentId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getExperiment(@PathParam(EXPERIMENT_ID_PATH_PARAM) String experimentId) {
-	try {
+    try {
       ExperimentRequest experimentRequest = new ExperimentRequest();
       experimentRequest.setExperimentId(experimentId);
       LOG.info("JSON to DatasetRecordService: " + experimentRequest.getDatasetRecordJson().toString(2));
@@ -97,16 +100,17 @@ public class BrcService extends WdkService {
       LOG.info("Dataset Record Service to JSON: " + datasetRecordJson.toString(2));
       BrcBean brcBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false);
       return Response.ok(BrcFormatter.getBrcJson(brcBean, false).toString()).build();
-	}
-	catch(WdkModelException e) {
-	  throw new BadRequestException(e);
-	}
+    }
+    catch (WdkModelException e) {
+      throw new BadRequestException(e);
+    }
   }
-  
+
   /**
-   * Gets only the gene list attributes associated with a given experiment (a.k.a. dataset).  Note that, for now, since
-   * there is only one gene list per dataset and since the gene list has no identifier, the same identifier is applied
-   * for both the gene list and the dataset.
+   * Gets only the gene list attributes associated with a given experiment (a.k.a. dataset). Note that, for
+   * now, since there is only one gene list per dataset and since the gene list has no identifier, the same
+   * identifier is applied for both the gene list and the dataset.
+   * 
    * @param experimentId
    * @param idListId
    * @return
@@ -115,21 +119,22 @@ public class BrcService extends WdkService {
   @Path("/experiment/{experimentId}/gene-list/{idListId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getIdList(@PathParam(EXPERIMENT_ID_PATH_PARAM) String experimentId,
-		  @PathParam(ID_LIST_ID_PATH_PARAM) String idListId) {
-  try {
-    ExperimentRequest experimentRequest = new ExperimentRequest();
-    experimentRequest.setExperimentId(experimentId);
-    JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
-    BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false).getIdLists();
-    return Response.ok(BrcFormatter.getGeneListJson(brcGeneListBean, false).toString()).build();
-	}
-	catch(WdkModelException e) {
-	  throw new BadRequestException(e);
-	}
+      @PathParam(ID_LIST_ID_PATH_PARAM) String idListId) {
+    try {
+      ExperimentRequest experimentRequest = new ExperimentRequest();
+      experimentRequest.setExperimentId(experimentId);
+      JSONObject datasetRecordJson = callDatasetRecordService(experimentRequest.getDatasetRecordJson());
+      BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false).getIdLists();
+      return Response.ok(BrcFormatter.getGeneListJson(brcGeneListBean, false).toString()).build();
+    }
+    catch (WdkModelException e) {
+      throw new BadRequestException(e);
+    }
   }
-  
+
   /**
    * Provides a list of gene ids for the given experiment and id list.
+   * 
    * @param experimentId
    * @param idListId
    * @return
@@ -138,8 +143,8 @@ public class BrcService extends WdkService {
   @Path("/experiment/{experimentId}/gene-list/{idListId}/ids")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getIds(@PathParam(EXPERIMENT_ID_PATH_PARAM) String experimentId,
-		  @PathParam(ID_LIST_ID_PATH_PARAM) String idListId,
-		  @QueryParam(INCLUDE_ORTHOLOGS_QUERY_PARAM) String includeOrthologs) {
+      @PathParam(ID_LIST_ID_PATH_PARAM) String idListId,
+      @QueryParam(INCLUDE_ORTHOLOGS_QUERY_PARAM) String includeOrthologs) {
     try {
       ExperimentRequest experimentRequest = new ExperimentRequest();
       experimentRequest.setExperimentId(experimentId);
@@ -150,13 +155,14 @@ public class BrcService extends WdkService {
       BrcGeneListBean brcGeneListBean = BrcBean.parseRecordJson(datasetRecordJson, getBaseUri(), false).getIdLists();
       return Response.ok(BrcFormatter.getGeneListIdsJson(brcGeneListBean).toString()).build();
     }
-    catch(WdkModelException e) {
-  	  throw new BadRequestException(e);
-  	}
+    catch (WdkModelException e) {
+      throw new BadRequestException(e);
+    }
   }
-  
+
   /**
    * Provides an API for the gene list search detailing the input types
+   * 
    * @return
    */
   @GET
@@ -165,27 +171,26 @@ public class BrcService extends WdkService {
   public Response getApi() {
     return Response.ok(ApiFormatter.getJson().toString()).build();
   }
-  
+
   /**
-   * Calls the WDK answer service to obtain the results of the gene list search.  
+   * Calls the WDK answer service to obtain the results of the gene list search.
+   * 
    * @param brcRequest
    * @return
    * @throws WdkModelException
    */
-  protected JSONObject callAnswerService(JSONObject answerJson) throws WdkModelException {  
-    Client client = ClientBuilder
-      .newBuilder()
-      .build();
+  protected JSONObject callAnswerService(JSONObject answerJson) throws WdkModelException {
+    Client client = ClientBuilder.newBuilder().build();
     Response response = client
-      .target(getBaseUri() + "answer")
-      .property("Content-Type", MediaType.APPLICATION_JSON)
-      .request(MediaType.APPLICATION_JSON)
-      .cookie(authCookie)
-      .cookie(sessionCookie)
-      .post(Entity.entity(answerJson.toString(), MediaType.APPLICATION_JSON));
+        .target(getBaseUri() + "answer")
+        .property("Content-Type", MediaType.APPLICATION_JSON)
+        .request(MediaType.APPLICATION_JSON)
+        .cookie(authCookie)
+        .cookie(sessionCookie)
+        .post(Entity.entity(answerJson.toString(), MediaType.APPLICATION_JSON));
     try {
       if (response.getStatus() == 200) {
-        InputStream resultStream = (InputStream)response.getEntity();
+        InputStream resultStream = (InputStream) response.getEntity();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         return new JSONObject(new String(buffer.toByteArray()));
@@ -194,7 +199,7 @@ public class BrcService extends WdkService {
         throw new WdkModelException("Bad status - " + response.getStatus());
       }
     }
-    catch(IOException ioe) {
+    catch (IOException ioe) {
       throw new WdkModelException(ioe);
     }
     finally {
@@ -202,27 +207,23 @@ public class BrcService extends WdkService {
       client.close();
     }
   }
-  
+
   /**
-   * Obtains the id of the user making this request.  The authentication and session cookies are save in
+   * Obtains the id of the user making this request. The authentication and session cookies are save in
    * anticipation of use in additional follow-up REST service calls.
+   * 
    * @return
    * @throws WdkModelException
    */
   protected String callUserService() throws WdkModelException {
-    Client client = ClientBuilder
-      .newBuilder()
-      .build();
-	Response response = client
-      .target(getBaseUri() + "user/current")
-      .request(MediaType.APPLICATION_JSON)
-      .get();
+    Client client = ClientBuilder.newBuilder().build();
+    Response response = client.target(getBaseUri() + "user/current").request(MediaType.APPLICATION_JSON).get();
     try {
       if (response.getStatus() == 200) {
         Map<String, NewCookie> cookies = response.getCookies();
         authCookie = cookies.get("wdk_check_auth");
         sessionCookie = cookies.get("JSESSIONID");
-        InputStream resultStream = (InputStream)response.getEntity();
+        InputStream resultStream = (InputStream) response.getEntity();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         JSONObject json = new JSONObject(new String(buffer.toByteArray()));
@@ -232,7 +233,7 @@ public class BrcService extends WdkService {
         throw new WdkModelException("Bad status - " + response.getStatus());
       }
     }
-    catch(IOException ioe) {
+    catch (IOException ioe) {
       throw new WdkModelException(ioe);
     }
     finally {
@@ -240,28 +241,27 @@ public class BrcService extends WdkService {
       client.close();
     }
   }
-  
+
   /**
-   * Applies the user's id and the set of gene ids from the BRC request to object a dataset parameter id.  Note that
-   * the auth and session cookies are set previously by the call to retrieve the user id.
+   * Applies the user's id and the set of gene ids from the BRC request to object a dataset parameter id. Note
+   * that the auth and session cookies are set previously by the call to retrieve the user id.
+   * 
    * @param userId
    * @param brcRequest
    * @throws WdkModelException
    */
   protected void callDatasetService(String userId, BrcRequest brcRequest) throws WdkModelException {
-    Client client = ClientBuilder
-      .newBuilder()
-      .build();
+    Client client = ClientBuilder.newBuilder().build();
     Response response = client
-      .target(getBaseUri() + "user/" + userId + "/dataset")
-	  .property("Content-Type", MediaType.APPLICATION_JSON)
-      .request(MediaType.APPLICATION_JSON)
-      .cookie(authCookie)
-      .cookie(sessionCookie)
-      .post(Entity.entity(brcRequest.getDatasetJson().toString(), MediaType.APPLICATION_JSON));
-   try {
+        .target(getBaseUri() + "user/" + userId + "/dataset")
+        .property("Content-Type", MediaType.APPLICATION_JSON)
+        .request(MediaType.APPLICATION_JSON)
+        .cookie(authCookie)
+        .cookie(sessionCookie)
+        .post(Entity.entity(brcRequest.getDatasetJson().toString(), MediaType.APPLICATION_JSON));
+    try {
       if (response.getStatus() == 200) {
-        InputStream resultStream = (InputStream)response.getEntity();
+        InputStream resultStream = (InputStream) response.getEntity();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         JSONObject json = new JSONObject(new String(buffer.toByteArray()));
@@ -271,7 +271,7 @@ public class BrcService extends WdkService {
         throw new WdkModelException("Bad status - " + response.getStatus());
       }
     }
-    catch(IOException ioe) {
+    catch (IOException ioe) {
       throw new WdkModelException(ioe);
     }
     finally {
@@ -279,25 +279,24 @@ public class BrcService extends WdkService {
       client.close();
     }
   }
-  
+
   /**
    * Gets the dataset based upon a dataset id.
+   * 
    * @param experimentRequest
    * @return
    * @throws WdkModelException
    */
   protected JSONObject callDatasetRecordService(JSONObject datasetRecordJson) throws WdkModelException {
-	Client client = ClientBuilder
-      .newBuilder()
-      .build();
+    Client client = ClientBuilder.newBuilder().build();
     Response response = client
-      .target(getBaseUri() + "record/DatasetRecordClasses.DatasetRecordClass/instance")
-      .property("Content-Type", MediaType.APPLICATION_JSON)
-      .request(MediaType.APPLICATION_JSON)
-	  .post(Entity.entity(datasetRecordJson.toString(), MediaType.APPLICATION_JSON));
+        .target(getBaseUri() + "record/DatasetRecordClasses.DatasetRecordClass/instance")
+        .property("Content-Type", MediaType.APPLICATION_JSON)
+        .request(MediaType.APPLICATION_JSON)
+        .post(Entity.entity(datasetRecordJson.toString(), MediaType.APPLICATION_JSON));
     try {
       if (response.getStatus() == 200) {
-        InputStream resultStream = (InputStream)response.getEntity();
+        InputStream resultStream = (InputStream) response.getEntity();
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         return new JSONObject(new String(buffer.toByteArray()));
@@ -306,7 +305,7 @@ public class BrcService extends WdkService {
         throw new WdkModelException("Bad status - " + response.getStatus());
       }
     }
-    catch(IOException ioe) {
+    catch (IOException ioe) {
       throw new WdkModelException(ioe);
     }
     finally {
