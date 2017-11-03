@@ -217,7 +217,7 @@ public class BrcService extends WdkService {
    */
   protected String callUserService() throws WdkModelException {
     Client client = ClientBuilder.newBuilder().build();
-    Response response = client.target(getBaseUri() + "user/current").request(MediaType.APPLICATION_JSON).get();
+    Response response = client.target(getBaseUri() + "users/current").request(MediaType.APPLICATION_JSON).get();
     try {
       if (response.getStatus() == 200) {
         Map<String, NewCookie> cookies = response.getCookies();
@@ -253,7 +253,7 @@ public class BrcService extends WdkService {
   protected void callDatasetService(String userId, BrcRequest brcRequest) throws WdkModelException {
     Client client = ClientBuilder.newBuilder().build();
     Response response = client
-        .target(getBaseUri() + "user/" + userId + "/dataset")
+        .target(getBaseUri() + "users/" + userId + "/datasets")
         .property("Content-Type", MediaType.APPLICATION_JSON)
         .request(MediaType.APPLICATION_JSON)
         .cookie(authCookie)
@@ -290,7 +290,7 @@ public class BrcService extends WdkService {
   protected JSONObject callDatasetRecordService(JSONObject datasetRecordJson) throws WdkModelException {
     Client client = ClientBuilder.newBuilder().build();
     Response response = client
-        .target(getBaseUri() + "record/DatasetRecordClasses.DatasetRecordClass/instance")
+        .target(getBaseUri() + "records/DatasetRecordClasses.DatasetRecordClass/instance")
         .property("Content-Type", MediaType.APPLICATION_JSON)
         .request(MediaType.APPLICATION_JSON)
         .post(Entity.entity(datasetRecordJson.toString(), MediaType.APPLICATION_JSON));
