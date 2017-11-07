@@ -2,15 +2,11 @@
 // import css files
 import 'eupathdb/css/AllSites.css';
 import '!!script-loader!eupathdb/js/newwindow';
-import './controllers/wizard';
 import './attributeCheckboxTree';
+import './controllerResolver';
 
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
-
-import { createElement } from 'react';
-import { renderWithContext } from './clientComponentAdapter';
-import { Header, Footer } from 'wdk-client/Components';
 
 wdk.namespace("eupath.setup", function(ns, $) {
 
@@ -178,17 +174,7 @@ wdk.namespace("eupath.setup", function(ns, $) {
     });
   }
 
-  function header($el) {
-    renderWithContext(createElement(Header), $el[0]);
-  }
-
-  function footer($el) {
-    renderWithContext(createElement(Footer), $el[0]);
-  }
-
   ns.setUpContactUsLogic = setUpContactUsLogic;
   ns.configureSidebar = configureSidebar;
-  ns.header = header;
-  ns.footer = footer;
 
 });

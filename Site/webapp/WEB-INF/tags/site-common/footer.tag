@@ -7,7 +7,11 @@
   <jsp:directive.attribute name="refer" required="false" 
     description="Page calling this tag"/>
 
-  <footer data-controller="eupath.setup.footer">
+  <footer
+    data-controller="wdk.clientAdapter"
+    data-name="FooterController"
+    data-resolver="ebrc.controllerResolver"
+  >
     <div id="fixed-footer"><jsp:text/></div>
   </footer>
 

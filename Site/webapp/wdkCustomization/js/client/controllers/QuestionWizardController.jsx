@@ -1,4 +1,7 @@
+/*global wdk*/
+import $ from 'jquery';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import QuestionWizard from '../components/QuestionWizard';
 import {
@@ -10,6 +13,8 @@ import {
 } from '../util/QuestionWizardState';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
+import { WdkStore } from 'wdk-client/Stores';
+import { AbstractViewController } from 'wdk-client/Controllers';
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
@@ -34,7 +39,7 @@ import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identi
  * FIXME Move state management into a Store. As-is, there are potential race
  * conditions due to `setState()` being async.
  */
-class QuestionWizardController extends React.Component {
+class QuestionWizardController extends AbstractViewController {
 
   constructor(props) {
     super(props);
@@ -48,6 +53,14 @@ class QuestionWizardController extends React.Component {
     // this._handleParamValueChange = synchronized(this._handleParamValueChange);
     // this._updateDependedParams = synchronized(this._updateDependedParams);
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
+  }
+
+  getStoreClass() {
+    return WdkStore;
+  }
+
+  getStateFromStore() {
+    return {};
   }
 
   getEventHandlers() {
@@ -485,6 +498,21 @@ class QuestionWizardController extends React.Component {
 
   componentDidMount() {
     this.loadQuestion(this.props);
+
+    // FIXME Figure out to render form element in `QuestionWizard` component
+    const $form = $(ReactDOM.findDOMNode(this)).closest('form');
+    $form
+      .on('submit', () => {
+        $form.block()
+      })
+      .on(wdk.addStepPopup.SUBMIT_EVENT, () => {
+        $form.block()
+      })
+      .on(wdk.addStepPopup.CANCEL_EVENT, () => {
+        $form.unblock()
+      })
+      .prop('autocomplete', 'off')
+      .attr('novalidate', '');
   }
 
   componentDidWillReceiveProps(nextProps) {
@@ -522,6 +550,12 @@ QuestionWizardController.propTypes = {
   isRevise: PropTypes.bool.isRequired,
   isAddingStep: PropTypes.bool.isRequired,
   customName: PropTypes.string
+}
+
+QuestionWizardController.defaultProps = {
+  get wdkService() {
+    return window.ebrc.context.wdkService;
+  }
 }
 
 export default wrappable(QuestionWizardController);

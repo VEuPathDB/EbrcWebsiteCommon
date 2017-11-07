@@ -8,7 +8,11 @@
   <jsp:directive.attribute name="title" required="false" 
     description="Title of page"/>
 
-  <header data-controller="eupath.setup.header">
+  <header
+    data-controller="wdk.clientAdapter"
+    data-name="HeaderController"
+    data-resolver="ebrc.controllerResolver"
+  >
     <div id="header"><jsp:text/></div>
   </header>
 

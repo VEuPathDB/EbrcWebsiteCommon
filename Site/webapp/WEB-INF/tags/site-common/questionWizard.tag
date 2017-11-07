@@ -14,17 +14,6 @@
   <jsp:directive.attribute name="strategy" required="true" description="WDK Strategy"
     type="org.gusdb.wdk.model.jspwrap.StrategyBean"/>
 
-  <c:set var="questionParamValues">
-    {
-    <c:forEach items="${question.params}" var="questionParam" varStatus="loop">
-      "${questionParam.name}": "${fn:replace(questionParam.stableValue, '"', '\\"')}" <c:if test="${loop.last eq false}">,</c:if>
-    </c:forEach>
-    }
-  </c:set>
-
-  <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
-  <c:set var="isAddingStep" value="${step ne null and (step.previousStep ne null or action ne 'revise')}"/>
-
   <!-- Show step operations if this is a step -->
   <c:if test="${step ne null}">
     <c:if test="${isAddingStep}">
@@ -58,17 +47,34 @@
     </c:if>
   </c:if>
 
+  <c:set var="questionParamValues">
+    {
+    <c:forEach items="${question.params}" var="questionParam" varStatus="loop">
+      "${questionParam.name}": "${fn:replace(questionParam.stableValue, '"', '\\"')}" <c:if test="${loop.last eq false}">,</c:if>
+    </c:forEach>
+    }
+  </c:set>
+
+  <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
+  <c:set var="isAddingStep" value="${step ne null and (step.previousStep ne null or action ne 'revise')}"/>
+
+  <c:set var="propsJson">
+    <![CDATA[{
+      "questionName": "${question.fullName}",
+      "customName": "${fn:replace(customName, '"', '\\"')}",
+      "paramValues": ${questionParamValues},
+      "isRevise": ${action eq 'revise'},
+      "isAddingStep": ${isAddingStep}
+    }]]>
+  </c:set>
+
   <div
-    data-question-full-name="${question.fullName}"
-    data-custom-name="${customName}"
-    data-param-values-container-selector=".param-values"
-    data-is-revise="${action eq 'revise'}"
-    data-is-adding-step="${isAddingStep}"
-    data-controller="ebrc.controllers.wizard"
+    data-controller="wdk.clientAdapter"
+    data-resolver="ebrc.controllerResolver"
+    data-name="QuestionWizardController"
+    data-props="${fn:escapeXml(propsJson)}"
   >
-    <textarea class="param-values" style="display: none">
-      ${fn:escapeXml(questionParamValues)}
-    </textarea>
+    <jsp:text/>
   </div>
 
 </jsp:root>
