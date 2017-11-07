@@ -1,5 +1,6 @@
 import { find, get, map } from 'lodash';
 import { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { Tooltip } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
@@ -36,6 +37,7 @@ class QuickSearchItem extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTooltipHide = this.handleTooltipHide.bind(this);
     this.state = { value: '' };
   }
 
@@ -72,6 +74,14 @@ class QuickSearchItem extends Component {
     window.localStorage.setItem(this.getStorageKey(this.props), this.state.value);
   }
 
+  // prevent tootip from hiding if target or a descendant has focus
+  handleTooltipHide(event) {
+    let thisNode = ReactDOM.findDOMNode(this);
+    if (thisNode.contains(document.activeElement)) {
+      event.preventDefault();
+    }
+  }
+
   render() {
     let { question, reference, webAppUrl } = this.props;
     let { displayName } = reference;
@@ -82,10 +92,23 @@ class QuickSearchItem extends Component {
     // placeholder search box, otherwise render functioning search box
     return (
       <div className="quick-search-item" style={{margin: '0 .4em'}} key={reference.name}>
-        <Tooltip content={reference.help} position={tooltipPosition}>
-          { question == null ? (
-            <div>
-              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>
+        <Tooltip
+          content={reference.help}
+          position={tooltipPosition}
+          showEvent="mouseenter focusin"
+          showDelay={0}
+          hideEvent="mouseleave focusout"
+          hideDelay={250}
+          onHide={this.handleTooltipHide}
+        >
+          <form
+            name="questionForm"
+            method="post"
+            action={webAppUrl + '/processQuestionSetsFlat.do'}
+            onSubmit={this.handleSubmit}
+          >
+            { question == null ? [
+              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>,
               <input
                 type="text"
                 className="search-box"
@@ -93,7 +116,7 @@ class QuickSearchItem extends Component {
                 onChange={this.handleChange}
                 name=""
                 disabled
-              />
+              />,
               <input
                 name="go"
                 value="go"
@@ -105,32 +128,25 @@ class QuickSearchItem extends Component {
                 className="img_align_middle"
                 disabled
               />
-            </div>
-          ) : (
-            <form
-              name="questionForm"
-              method="post"
-              action={webAppUrl + '/processQuestionSetsFlat.do'}
-              onSubmit={this.handleSubmit}
-            >
-              <input type="hidden" name="questionFullName" value={question.name}/>
-              <input type="hidden" name="questionSubmit" value="Get Answer"/>
-              {question.parameters.map(parameter => {
+            ] : [
+              <input type="hidden" name="questionFullName" value={question.name}/>,
+              <input type="hidden" name="questionSubmit" value="Get Answer"/>,
+              question.parameters.map(parameter => {
                 if (parameter === searchParam) return null;
                 let { defaultValue, type, name } = parameter;
                 let typeTag = isStringParam(type) ? 'value' : 'array';
                 return (
                   <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
                 );
-              })}
-              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>
+              }),
+              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>,
               <input
                 type="text"
                 className="search-box"
                 value={this.state.value}
                 onChange={this.handleChange}
                 name={'value(' + searchParam.name + ')'}
-              />
+              />,
               <input
                 name="go"
                 value="go"
@@ -141,8 +157,8 @@ class QuickSearchItem extends Component {
                 height="23"
                 className="img_align_middle"
               />
-            </form>
-          )}
+            ]}
+          </form>
         </Tooltip>
       </div>
     );
