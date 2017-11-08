@@ -308,7 +308,7 @@ if(is.null(profile.df.full\$LEGEND)) {
   expandColors = TRUE;
   hideLegend = TRUE;
 } else {
-  profile.df.full\$LEGEND = factor(profile.df.full\$LEGEND, levels=legend.label);
+  profile.df.full\$LEGEND = as.factor(profile.df.full\$LEGEND);
 }
 
 if ($isStack) {
@@ -320,8 +320,10 @@ $rAdjustProfile
 
 if ($isStack) {
   temp.df = aggregate(VALUE ~ NAME, profile.df.full, sum)
-  y.max = max(y.max, temp.df\$VALUE)
-  y.min = min(y.min, temp.df\$VALUE) 
+  y.max = max(y.max, temp.df\$VALUE);
+  y.max = max(y.max, profile.df.full\$MAX_ERR, na.rm = TRUE);
+  y.min = min(y.min, temp.df\$VALUE);
+  y.min = min(y.min, profile.df.full\$MAX_ERR, na.rm = TRUE);
 } else {
   y.max = max(c(y.max, profile.df.full\$VALUE, profile.df.full\$MAX_ERR), na.rm=TRUE);
   y.min = min(c(y.min, profile.df.full\$VALUE, profile.df.full\$MIN_ERR), na.rm=TRUE);
