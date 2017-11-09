@@ -212,10 +212,6 @@ export default class DatasetGraph extends PureComponent {
      	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene from the reference strain for this species ({graphId}). This may or may NOT accurately represent the gene you are interested in. </div>
            : null} 
 
-           {assay_type == 'RNA-seq'  && module !== 'SpliceSites' && covImgUrl ?
-            <div>Expression graphs and coverage plots represent unique reads, i.e. those aligning to one location only. This may underrepresent abundance for sequences that are duplicated in the genome, including paralogous genes.</div> 
-          : null}
-
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl ?
              <div>
              <b><font color="firebrick">Warning: This gene has {safeHtml(paralog_number, {}, 'b')} paralogs!</font></b>
