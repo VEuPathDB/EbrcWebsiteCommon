@@ -168,7 +168,7 @@ export default class DatasetGraph extends PureComponent {
         <div className="eupathdb-DatasetGraph">
           {visibleParts && (
           <object
-            style={{ height: 220 }}
+            style={{ minHeight: 220 }}
             data={imgUrl}
             type='image/svg+xml'
             onLoad={() => {
