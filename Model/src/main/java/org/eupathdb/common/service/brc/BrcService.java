@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.service.formatter.Keys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
 import org.gusdb.wdk.service.service.WdkService;
 import org.json.JSONObject;
@@ -217,7 +218,10 @@ public class BrcService extends WdkService {
    */
   protected String callUserService() throws WdkModelException {
     Client client = ClientBuilder.newBuilder().build();
-    Response response = client.target(getBaseUri() + "users/current").request(MediaType.APPLICATION_JSON).get();
+    Response response = client
+        .target(getBaseUri() + "users/current")
+        .request(MediaType.APPLICATION_JSON)
+        .get();
     try {
       if (response.getStatus() == 200) {
         Map<String, NewCookie> cookies = response.getCookies();
@@ -265,7 +269,7 @@ public class BrcService extends WdkService {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         JSONObject json = new JSONObject(new String(buffer.toByteArray()));
-        brcRequest.setDatasetId(String.valueOf(json.getInt("id")));
+        brcRequest.setDatasetId(json.getLong(Keys.ID));
       }
       else {
         throw new WdkModelException("Bad status - " + response.getStatus());
