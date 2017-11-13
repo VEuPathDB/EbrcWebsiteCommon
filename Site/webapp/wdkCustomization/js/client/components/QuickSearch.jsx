@@ -107,57 +107,65 @@ class QuickSearchItem extends Component {
             action={webAppUrl + '/processQuestionSetsFlat.do'}
             onSubmit={this.handleSubmit}
           >
-            { question == null ? [
-              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>,
-              <input
-                type="text"
-                className="search-box"
-                value={this.state.value}
-                onChange={this.handleChange}
-                name=""
-                disabled
-              />,
-              <input
-                name="go"
-                value="go"
-                type="image"
-                src={webAppUrl + '/images/mag_glass.png'}
-                alt="Click to search"
-                width="23"
-                height="23"
-                className="img_align_middle"
-                disabled
-              />
-            ] : [
-              <input type="hidden" name="questionFullName" value={question.name}/>,
-              <input type="hidden" name="questionSubmit" value="Get Answer"/>,
-              question.parameters.map(parameter => {
-                if (parameter === searchParam) return null;
-                let { defaultValue, type, name } = parameter;
-                let typeTag = isStringParam(type) ? 'value' : 'array';
-                return (
-                  <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
-                );
-              }),
-              <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>,
-              <input
-                type="text"
-                className="search-box"
-                value={this.state.value}
-                onChange={this.handleChange}
-                name={'value(' + searchParam.name + ')'}
-              />,
-              <input
-                name="go"
-                value="go"
-                type="image"
-                src={webAppUrl + '/images/mag_glass.png'}
-                alt="Click to search"
-                width="23"
-                height="23"
-                className="img_align_middle"
-              />
-            ]}
+            {question == null ? (
+              <fieldset>
+                <b key="name">
+                  <a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a>
+                </b>
+                <input
+                  type="text"
+                  key="input"
+                  className="search-box"
+                  value={this.state.value}
+                  onChange={this.handleChange}
+                  name=""
+                  disabled
+                />
+                <input
+                  name="go"
+                  value="go"
+                  type="image"
+                  key="submit"
+                  src={webAppUrl + '/images/mag_glass.png'}
+                  alt="Click to search"
+                  width="23"
+                  height="23"
+                  className="img_align_middle"
+                  disabled
+                />
+              </fieldset>
+            ) : (
+              <fieldset>
+                <input type="hidden" name="questionFullName" value={question.name}/>
+                <input type="hidden" name="questionSubmit" value="Get Answer"/>
+                {question.parameters.map(parameter => {
+                  if (parameter === searchParam) return null;
+                  let { defaultValue, type, name } = parameter;
+                  let typeTag = isStringParam(type) ? 'value' : 'array';
+                  return (
+                    <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
+                  );
+                })}
+                <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>
+                <input
+                  type="text"
+                  className="search-box"
+                  value={this.state.value}
+                  onChange={this.handleChange}
+                  name={'value(' + searchParam.name + ')'}
+                />
+                <input
+                  name="go"
+                  value="go"
+                  type="image"
+                  src={webAppUrl + '/images/mag_glass.png'}
+                  alt="Click to search"
+                  width="23"
+                  height="23"
+                  className="img_align_middle"
+                />
+              </fieldset>
+            )}
           </form>
         </Tooltip>
       </div>

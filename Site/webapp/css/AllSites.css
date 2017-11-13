@@ -684,6 +684,12 @@ ul.cirbulletlist {
   height: 26px;
 }
 
+#quick-search fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
 div#quick-search td {
   white-space: nowrap;
 }
