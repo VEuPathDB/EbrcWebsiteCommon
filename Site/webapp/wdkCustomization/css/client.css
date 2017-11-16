@@ -23,6 +23,11 @@ h4 {
   font-weight: 500;
 }
 
+.TableAsTree .wdk-CheckboxTreeItem__leaf .wdk-CheckboxTreeNodeContent span {
+  background: yellow;
+  font-weight: bold;
+}
+
 .form-group {
   margin: .6em 0;
 }
