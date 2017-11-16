@@ -151,7 +151,7 @@ sub new {
   my $id = $self->getId();
 
   #Setting Defaults
-  $self->setScreenSize(250);
+  $self->setScreenSize(300);
   $self->setElementNameMarginSize(3);
   $self->setYaxisLabel('Please Fill in Y-Axis Label');
   $self->setDefaultYMax(10);

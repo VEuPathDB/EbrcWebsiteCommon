@@ -78,7 +78,7 @@ sub init {
   $self->setFileHandle($r_fh);
 
   # Default 
-  $self->setPlotWidth(425);
+  $self->setPlotWidth(500);
   $self->setLegendSize(40);
 
   $self->setTempFiles([]);
@@ -319,7 +319,20 @@ ticks <- function() {
   axis(1);
 }
 
-  customAbbreviate <- function(x) {
+
+  customAbbreviate <- function(labels, allowedLength=20) {
+
+    x.1 = as.vector(sapply(labels, function(x) { ifelse(nchar(x) > allowedLength, internalCustomAbbreviate(x), x)}));
+
+    if(sum(duplicated(x.1)) > 0) {
+      return(customAbbreviate(labels));
+    }
+    return(x.1);
+
+  }
+
+
+  internalCustomAbbreviate <- function(x) {
 #    x.1 = gsub("a|e|i|o|u", "", x);
 
     if(sum(as.logical(grep("(?<=\\\\b)([a-z])", x, perl=T))) > 0) {
@@ -329,7 +342,7 @@ ticks <- function() {
       x.1 = gsub("a|e|i|o|u", "", x);
     }
 
-
+    # this can never be true when called per word... only applicable after the sapply above
     if(sum(duplicated(x.1)) > 0) {
       return(abbreviate(x));
     }
