@@ -215,13 +215,7 @@ export default class DatasetGraph extends PureComponent {
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl ?
              <div>
              <b><font color="firebrick">Warning: This gene has {safeHtml(paralog_number, {}, 'b')} paralogs!</font></b>
-<br></br>Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>):
-<ul>
-<li> click on the <b>Coverage</b> heading below to display coverage plots, then click on the link to 'View in the genome browser'</li>
-<li> next, click on "Showing # of # subtracks” link in the track header, to add subtracks of interest</li>
-<li> if non-unique mappers are abundant, you may also wish to adjust Y-axis scaling, by clicking on the small red wrench icon in the genome browser track header</li>
-</ul>
-Further questions? See tutorials and YouTube videos on Genome Browser configuration, or click on the ‘Contact Us’ link.</div>
+<br></br>Please consider non-unique aligned reads in the expression graph and coverage plots in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>).</div>
           : null}
 
           {assay_type == 'RNA-seq' && module !== 'SpliceSites' && covImgUrl ?
