@@ -83,7 +83,7 @@ public class DetailTableLoader extends BaseCLI {
         " should match the directory name under $GUS_HOME, where " + "model-config.xml is stored.");
 
     addSingleValueOption(ARG_SQL_FILE, true, null,
-        "The file that contains" + " a sql that returns the primary key columns of the records");
+        "The file that contains" + " an SQL statement that returns the primary key columns of the records");
 
     addSingleValueOption(ARG_RECORD, true, null, "The full name of the " + "record class to be dumped.");
 
@@ -155,7 +155,7 @@ public class DetailTableLoader extends BaseCLI {
   }
 
   /**
-   * for a given table, it will generate a SQL by joining the original table query with the input idSql, and
+   * for a given table, it will generate an SQL statement by joining the original table query with the input idSql, and
    * collapse rows of one record into a clob.
    * 
    * @param table
