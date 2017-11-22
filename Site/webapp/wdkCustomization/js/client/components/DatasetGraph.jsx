@@ -209,7 +209,7 @@ export default class DatasetGraph extends PureComponent {
 
           <h4><a href={dataset_link}>Full Dataset Description</a></h4>
 
-     	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene from the reference strain for this species ({graphId}). This may or may NOT accurately represent the gene you are interested in. </div>
+     	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene(s) from the reference strain for this species. This may or may NOT accurately represent the gene you are interested in. </div>
            : null} 
 
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl ?
