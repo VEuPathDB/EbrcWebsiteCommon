@@ -1,8 +1,17 @@
 /*global wdk*/
 import $ from 'jquery';
+import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
+
+import { Dialog } from 'wdk-client/Components';
+import { wrappable } from 'wdk-client/ComponentUtils';
+import { AbstractViewController } from 'wdk-client/Controllers';
+import { Seq } from 'wdk-client/IterableUtils';
+import { synchronized } from 'wdk-client/PromiseUtils';
+import { WdkStore } from 'wdk-client/Stores';
+
 import QuestionWizard from '../components/QuestionWizard';
 import {
   createInitialState,
@@ -11,13 +20,6 @@ import {
   setFilterPopupPinned,
   resetParamValues
 } from '../util/QuestionWizardState';
-import { Seq } from 'wdk-client/IterableUtils';
-import { synchronized } from 'wdk-client/PromiseUtils';
-import { WdkStore } from 'wdk-client/Stores';
-import { AbstractViewController } from 'wdk-client/Controllers';
-import { Dialog } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
-import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
 
 //  type State = {
 //    question: Question;
@@ -50,8 +52,6 @@ class QuestionWizardController extends AbstractViewController {
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
-    // this._handleParamValueChange = synchronized(this._handleParamValueChange);
-    // this._updateDependedParams = synchronized(this._updateDependedParams);
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
   }
 
