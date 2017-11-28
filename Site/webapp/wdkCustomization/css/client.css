@@ -184,7 +184,7 @@ td.wdk-DataTableCell__thumbnail {
 }
 
 .eupathdb-DatasetGraph {
-  width: 500px;
+  min-width: 500px;
   flex-grow: 1;
 }
 
