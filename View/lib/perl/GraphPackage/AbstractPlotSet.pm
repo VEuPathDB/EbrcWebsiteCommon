@@ -319,35 +319,57 @@ ticks <- function() {
   axis(1);
 }
 
-
   customAbbreviate <- function(labels, allowedLength=20) {
 
-    x.1 = as.vector(sapply(labels, function(x) { ifelse(nchar(x) > allowedLength, internalCustomAbbreviate(x), x)}));
-
-    if(sum(duplicated(x.1)) > 0) {
-      return(customAbbreviate(labels));
+    if(sum(as.logical(unlist(sapply(labels, nchar)) > allowedLength)) < 1) {
+      return(labels);
     }
-    return(x.1);
 
+    r = list();
+    r[["wild type"]] = "WT";
+    r[["wild.type"]] = "WT";
+    r[["knock out"]] = "KO";
+    r[["knockout"]] = "KO";
+    r[["treatment"]] = "Trtd";
+    r[["treated"]] = "Trtd";
+    r[["control"]] = "Ctrl";
+    r[["with"]] = "";
+    r[["hours"]] = "hr";
+    r[["hour"]] = "hr";
+    r[["trophozoite"]] = "troph";
+    r[["background"]] = "bkgrd";
+    r[["procyclic form"]] = "PCF";
+    r[["bloodstream form"]] = "BSF";
+    r[["bloodstream"]] = "BS";
+    r[["infection"]] = "infec";
+    r[["infected"]] = "infec";
+    r[["intracellular"]] = "intracell";
+    r[["extracellular"]] = "extracell";
+    r[["stressed"]] = "stress";
+    r[["unstressed"]] = "unstress";
+    r[["minutes"]] = "min";
+    r[["minute"]] = "min";
+    r[["minutes"]] = "min";
+    r[["amastigotes"]] = "Amas";
+    r[["promastigotes"]] = "Promas";
+    r[["epimastigotes"]] = "Epimas";
+    r[["amastigote"]] = "Amas";
+    r[["promastigote"]] = "Promas";
+    r[["epimastigote"]] = "Epimas";
+    r[["sporozoite"]] = "Spzt";
+    r[["samples"]] = "smpl";
+
+    for(old in names(r)) {
+      new = r[[old]];
+
+      labels = gsub(paste("^", old, "(\\\\W|_)", sep=""), paste(new, " ", sep=""), labels, ignore.case=T);
+      labels = gsub(paste("(\\\\W|_)", old, "\$", sep=""), paste(" ", new, sep=""), labels, ignore.case=T);
+      labels = gsub(paste("(\\\\W|_)", old, "(\\\\W|_)", sep=""), paste(" ", new, " ", sep=""), labels, ignore.case=T);
   }
 
+  return(labels)
+}
 
-  internalCustomAbbreviate <- function(x) {
-#    x.1 = gsub("a|e|i|o|u", "", x);
-
-    if(sum(as.logical(grep("(?<=\\\\b)([a-z])", x, perl=T))) > 0) {
-      x.1 = gsub("a|e|i|o|u", "", gsub("(?<=\\\\b)([a-z])", "\\\\U\\\\1", x, perl =T));
-    }
-    else {
-      x.1 = gsub("a|e|i|o|u", "", x);
-    }
-
-    # this can never be true when called per word... only applicable after the sapply above
-    if(sum(duplicated(x.1)) > 0) {
-      return(abbreviate(x));
-    }
-    return(x.1);
-  }
 
 # multiplot only used for ggplot
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
