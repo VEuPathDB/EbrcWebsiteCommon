@@ -12,7 +12,7 @@
   <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
   <c:set var="urlBase" value="${scheme}://${serverName}:${serverPort}${contextPath}"/>
   <c:url var="downloadUrl" value="${urlBase}/stepAnalysisResource.do?analysisId=${analysisId}&amp;path=${viewModel.downloadPath}"/>
-  <c:url var="propertiesUrl" value="${urlBase}${initParam.wdkServiceEndpoint}/users/current/steps/${stepId}/analyses/${analysisId}/properties?accessToken=${accessToken}"/>
+  <c:url var="propertiesUrl" value="${urlBase}${initParam.wdkServiceEndpoint}/users/${userId}/steps/${stepId}/analyses/${analysisId}/properties?accessToken=${accessToken}"/>
 
   <!--
     Add query params to iframe URL to be passed to external analysis tool,  This customization
