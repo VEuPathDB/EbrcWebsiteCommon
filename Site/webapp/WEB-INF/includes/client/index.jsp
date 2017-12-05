@@ -5,7 +5,7 @@
 
 <c:set var="model" value="${applicationScope.wdkModel.model}"/>
 <c:set var="props" value="${model.properties}"/>
-<c:set var="webAppUrl" value="${pageContext.request.contextPath}"/>
+<c:set var="webAppUrl" value="${model.modelConfig.webAppUrl}"/>
 <c:set var="wdkServiceUrl" value="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
 
@@ -39,7 +39,7 @@
       // used by EbrcWebsiteCommon to initialize wdk
       window.__SITE_CONFIG__ = {
         rootElement: "#wdk-container",
-        rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
+        rootUrl: "${pageContext.request.contextPath}${pageContext.request.servletPath}",
         endpoint: "${wdkServiceUrl}",
         displayName: "${model.displayName}",
         projectId: "${model.projectId}",

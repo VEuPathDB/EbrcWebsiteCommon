@@ -6,7 +6,7 @@
     xmlns:wdk="urn:jsptagdir:/WEB-INF/tags/wdk"
     xmlns:imp="urn:jsptagdir:/WEB-INF/tags/imp">
 
-  <jsp:directive.attribute name="refer" required="false" 
+  <jsp:directive.attribute name="refer" required="false"
               description="Page calling this tag"/>
 
   <c:set var="base" value="${pageContext.request.contextPath}"/>
@@ -16,7 +16,7 @@
 
   <c:set var="model" value="${applicationScope.wdkModel.model}"/>
   <c:set var="props" value="${model.properties}"/>
-  <c:set var="webAppUrl" value="${pageContext.request.contextPath}"/>
+  <c:set var="webAppUrl" value="${model.modelConfig.webAppUrl}"/>
   <c:set var="wdkServiceUrl" value ="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 
   <!-- only show information on home page. this jsp never gets loaded on home page -->
