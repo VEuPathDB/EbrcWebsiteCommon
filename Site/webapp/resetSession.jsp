@@ -55,19 +55,11 @@
 
       $resetButton
         .on('click', function() {
-          var spinner = new Spinner({
-            lines: 9,
-            length: 2,
-            width: 2,
-            radius: 3
-          }).spin();
-
+          $.blockUI({
+            message: '<div style="font-weight: 400; font-size: 2em; font-family: Helvetica Neue;">Resetting Session...</div>'
+          });
           $resetButton.prop('disabled', true);
           $understandCheckbox.prop('disabled', true);
-
-          $('<div class="spin-wrapper"/>')
-            .append(spinner.el)
-            .insertAfter($resetButton);
         })
         .on('reset.session', function() {
           window.location = wdk.webappUrl();
