@@ -67,11 +67,15 @@ $body .= "/*\n";
 &sendMail($body,$email, $listAddress) unless $suppressUpdate;
 
 sub getSQL {
-  return "select u.email,u.first_name || ' ' || u.last_name as name, p.preference_name
-from userlogins5.preferences p, userlogins5.users u 
-where u.last_active is not null
+  return "select u.email, first.value || ' ' || last.value as name, p.preference_name
+from userlogins5.preferences@prodn.login_comment p, useraccounts.accounts@acctdbs.profile u, useraccounts.account_properties@acctdbs.profile first, useraccounts.account_properties@acctdbs.profile last 
+where u.last_login is not null
 and u.user_id = p.user_id
-and p.preference_name like '%email%'";
+and p.preference_name like '%email%'
+and first.user_id = u.user_id
+and first.key = 'first_name'
+and last.user_id = u.user_id
+and last.key = 'last_name'";
 }
 
 sub getDbHandle {
