@@ -177,7 +177,7 @@ function makeMenuItems(props) {
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
       children: getSearchItems(ontology, recordClasses, flattenSearches).concat(
         includeQueryGrid ? [
-          { id: 'query-grid', text: 'View all available searches', route: 'query-grid' }
+          { id: 'query-grid', text: 'View all available searches', route: '/query-grid' }
         ] : [])
     },
     { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
@@ -197,7 +197,7 @@ function makeMenuItems(props) {
     isLoggedIn ? {
       id: 'profileOrLogin',
       text: `${user.properties.firstName} ${user.properties.lastName}'s Profile`,
-      route: 'user/profile'
+      route: '/user/profile'
     } : {
       id: 'profileOrLogin',
       text: 'Login',
@@ -213,7 +213,7 @@ function makeMenuItems(props) {
     } : {
       id: 'registerOrLogout',
       text: 'Register',
-      route: 'user/registration'
+      route: '/user/registration'
     },
     {
       id: 'contactUs',

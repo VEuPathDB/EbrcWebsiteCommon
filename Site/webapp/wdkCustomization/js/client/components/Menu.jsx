@@ -58,7 +58,7 @@ function MenuItem(props) {
 
       { item.url ? <a onClick={handleClick} className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
       : item.webAppUrl ? <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + item.webAppUrl}>{renderItemText(item.text)}</a>
-      : item.route ?  <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + '/app/' + item.route}>{renderItemText(item.text)}</a>
+      : item.route ?  <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + '/app' + item.route}>{renderItemText(item.text)}</a>
       : <div className={className} title={item.tooltip}>{renderItemText(item.text)}</div> }
 
       { !isEmpty(item.children) &&
