@@ -62,6 +62,7 @@
           $understandCheckbox.prop('disabled', true);
         })
         .on('reset.session', function() {
+          window.alert("Your session has been reset. After clicking \"OK\", you will be redirected to the home page.");
           window.location = wdk.webappUrl();
         });
 
