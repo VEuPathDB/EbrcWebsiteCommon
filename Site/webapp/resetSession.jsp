@@ -54,15 +54,13 @@
       });
 
       $resetButton
-        .on('click', function() {
-          $.blockUI({
-            message: '<div style="font-weight: 400; font-size: 2em; font-family: Helvetica Neue;">Resetting Session...</div>'
-          });
-          $resetButton.prop('disabled', true);
-          $understandCheckbox.prop('disabled', true);
-        })
         .on('reset.session', function() {
-          window.location = wdk.webappUrl();
+          Wdk.Platform.alert(
+            "Your session has been reset",
+            "You will now be redirected to the home page."
+          ).then(function() {
+            window.location = wdk.webappUrl();
+          });
         });
 
       $resetButton.prop('disabled', !$understandCheckbox.prop('checked'));
