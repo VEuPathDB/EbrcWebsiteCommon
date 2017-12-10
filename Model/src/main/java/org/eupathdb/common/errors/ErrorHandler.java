@@ -104,7 +104,7 @@ public class ErrorHandler {
     RequestData requestData = context.getRequestData();
     String errorUrl = getErrorUrl(requestData);
     WdkModel model = context.getWdkModel();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat(FormatUtil.STANDARD_DATETIME_FORMAT_SLASH);
 
     return new StringBuilder()
 
