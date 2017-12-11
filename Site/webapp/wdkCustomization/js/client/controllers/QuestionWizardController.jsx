@@ -243,7 +243,6 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   _commitParamValueChange(param, paramValue, prevParamValue) {
-    console.log('committing param value change', param, paramValue, prevParamValue);
     const groups = Seq.from(this.state.question.groups);
     const currentGroup = groups.find(group => group.parameters.includes(param.name));
     groups
@@ -316,37 +315,24 @@ class QuestionWizardController extends AbstractViewController {
       paramValue,
       paramValues
     ).then(
-      // for each parameter, reinitialize param state and value
-      // these are params with a vocab, so we have to check if current value is compatible
-      // if not, then reset value to default
+      // for each parameter returned, reset vocab/ontology and param value
       parameters =>
         Seq.from(parameters)
           .uniqBy(p => p.name)
           .flatMap(param => {
             switch(param.type) {
               case 'FilterParamNew': {
-                // TODO update param value with invalid filters removed
-                const terms = new Set(param.ontology.map(entry => entry.term));
-                const { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
-                const filters = prevFilters.filter(filter => terms.has(filter.field));
-                if (prevFilters.length !== filters.length) {
-                  console.log('Invalid filters detected', { prevFilters, filters });
-                }
-
                 // Return new state object with updates to param state and value
                 return [
-                  updateState(['paramUIState', param.name, 'ontologyTermSummaries'], {}),
                   updateState(['paramUIState', param.name, 'ontology'], param.ontology),
-                  updateState(['paramValues', param.name], JSON.stringify({ filters }))
+                  updateState(['paramValues', param.name], param.defaultValue)
                 ]
               }
               case 'FlatVocabParam':
               case 'EnumParam': {
-                const value = this.state.paramValues[param.name];
                 return [
                   updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
-                  updateState(['paramValues', param.name],
-                    param.vocabulary.includes(value) ? value : param.defaultValue)
+                  updateState(['paramValues', param.name], param.defaultValue)
                 ]
               }
               default: {
@@ -356,7 +342,20 @@ class QuestionWizardController extends AbstractViewController {
             }
           })
           .reduce(ary(flow, 2), identity)
-    );
+    ).then(updater =>
+      // Then, clear ontologyTermSummaries for dependent FilterParamNew params
+      Seq.from(this._getDeepParameterDependencies(rootParam))
+        .filter(parameter => parameter.type === 'FilterParamNew')
+        .map(parameter => updateState(['paramUIState', parameter.name, 'ontologyTermSummaries'], {}))
+        .reduce(ary(flow, 2), updater)
+    )
+
+  }
+
+  _getDeepParameterDependencies(rootParameter) {
+    return Seq.from(rootParameter.dependentParams)
+      .map(paramName => this.parameterMap.get(paramName))
+      .flatMap(parameter => Seq.of(parameter).concat(this._getDeepParameterDependencies(parameter)));
   }
 
   /**

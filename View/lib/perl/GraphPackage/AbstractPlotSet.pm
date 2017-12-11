@@ -319,35 +319,57 @@ ticks <- function() {
   axis(1);
 }
 
-
   customAbbreviate <- function(labels, allowedLength=20) {
 
-    x.1 = as.vector(sapply(labels, function(x) { ifelse(nchar(x) > allowedLength, internalCustomAbbreviate(x), x)}));
-
-    if(sum(duplicated(x.1)) > 0) {
-      return(customAbbreviate(labels));
+    if(sum(as.logical(unlist(sapply(labels, nchar)) > allowedLength)) < 1) {
+      return(labels);
     }
-    return(x.1);
 
+    r = list();
+    r[["wild type"]] = "WT";
+    r[["wild.type"]] = "WT";
+    r[["knock out"]] = "KO";
+    r[["knockout"]] = "KO";
+    r[["treatment"]] = "Trtd";
+    r[["treated"]] = "Trtd";
+    r[["control"]] = "Ctrl";
+    r[["with"]] = "";
+    r[["hours"]] = "hr";
+    r[["hour"]] = "hr";
+    r[["trophozoite"]] = "troph";
+    r[["background"]] = "bkgrd";
+    r[["procyclic form"]] = "PCF";
+    r[["bloodstream form"]] = "BSF";
+    r[["bloodstream"]] = "BS";
+    r[["infection"]] = "infec";
+    r[["infected"]] = "infec";
+    r[["intracellular"]] = "intracell";
+    r[["extracellular"]] = "extracell";
+    r[["stressed"]] = "stress";
+    r[["unstressed"]] = "unstress";
+    r[["minutes"]] = "min";
+    r[["minute"]] = "min";
+    r[["minutes"]] = "min";
+    r[["amastigotes"]] = "Amas";
+    r[["promastigotes"]] = "Promas";
+    r[["epimastigotes"]] = "Epimas";
+    r[["amastigote"]] = "Amas";
+    r[["promastigote"]] = "Promas";
+    r[["epimastigote"]] = "Epimas";
+    r[["sporozoite"]] = "Spzt";
+    r[["samples"]] = "smpl";
+
+    for(old in names(r)) {
+      new = r[[old]];
+
+      labels = gsub(paste("^", old, "(\\\\W|_)", sep=""), paste(new, " ", sep=""), labels, ignore.case=T);
+      labels = gsub(paste("(\\\\W|_)", old, "\$", sep=""), paste(" ", new, sep=""), labels, ignore.case=T);
+      labels = gsub(paste("(\\\\W|_)", old, "(\\\\W|_)", sep=""), paste(" ", new, " ", sep=""), labels, ignore.case=T);
   }
 
+  return(labels)
+}
 
-  internalCustomAbbreviate <- function(x) {
-#    x.1 = gsub("a|e|i|o|u", "", x);
-
-    if(sum(as.logical(grep("(?<=\\\\b)([a-z])", x, perl=T))) > 0) {
-      x.1 = gsub("a|e|i|o|u", "", gsub("(?<=\\\\b)([a-z])", "\\\\U\\\\1", x, perl =T));
-    }
-    else {
-      x.1 = gsub("a|e|i|o|u", "", x);
-    }
-
-    # this can never be true when called per word... only applicable after the sapply above
-    if(sum(duplicated(x.1)) > 0) {
-      return(abbreviate(x));
-    }
-    return(x.1);
-  }
 
 # multiplot only used for ggplot
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -512,20 +534,29 @@ $splitScreenFinish
 #add some javascript to the svg to make the tooltips functional.
 if (grepl(file_ext(\"$out_f\"), \"svg\")) {
     grid.script('var showTooltip = function(evt, label) {
-	// Getting rid of any existing tooltips
+    // Getting rid of any existing tooltips
         hideTooltip();
         var svgNS = "http://www.w3.org/2000/svg";
         var target = evt.currentTarget;
         // Create new text node, rect and text for the tooltip
-        var content = document.createTextNode(label);
         var text = document.createElementNS(svgNS, "text");
+        var strs = label.split(";");
+        var arrayLength = strs.length;
+        for (var i = 0; i < arrayLength; i++) {
+          // create tspan for each child of text
+          var currentText = strs[i];
+          var currentElem = document.createElementNS(svgNS, "tspan");
+          currentElem.setAttribute("x", "0");
+          currentElem.setAttribute("dy", "1.2em");
+          currentElem.appendChild(document.createTextNode(currentText));
+          text.appendChild(currentElem);
+        }
         text.setAttribute("id", "tooltipText");
         // Resetting some style attributes
         text.setAttribute("font-size", "14px");
         text.setAttribute("font-family", "Helvetica, Arial, FreeSans, Liberation Sans, Nimbus Sans L, sans-serif");
         text.setAttribute("fill", "black");
         text.setAttribute("stroke-width", "0");
-        text.appendChild(content);
         var rect = document.createElementNS(svgNS, "rect");
         rect.setAttribute("id", "tooltipRect");
         // Add rect and text to the bottom of the document.
@@ -547,14 +578,15 @@ if (grepl(file_ext(\"$out_f\"), \"svg\")) {
         // Currently the tooltip is offset by (3, 3)
         var svgWidth = document.getElementById("gridSVG").getBBox().width;
         var toolWidth = text.getBBox().width;
-        var maxX = svgWidth - toolWidth;
-	var tooltipx = p.x + 3;
-	if (tooltipx > maxX) {
-                tooltipx = maxX - 20;
+        var maxX = svgWidth - toolWidth - 35;
+        var tooltipx = p.x + 3;
+        if (tooltipx > maxX) {
+                tooltipx = maxX - 35;
         }
         var tooltiplabx = tooltipx + 5;
         var tooltipy = p.y + 3;
-        var tooltiplaby = tooltipy + 5;
+        var offset = arrayLength * 17 + 5;
+        var tooltiplaby = tooltipy + offset;
         // Position tooltip rect and text
         text.setAttribute("transform",
                 "translate(" + tooltiplabx + ", " + tooltiplaby + ") " +
@@ -565,7 +597,7 @@ if (grepl(file_ext(\"$out_f\"), \"svg\")) {
         rect.setAttribute("height", text.getBBox().height + 5);
         rect.setAttribute("stroke", "black");
         rect.setAttribute("fill", "ghostwhite");
-	rect.setAttribute("rx", "5");
+        rect.setAttribute("rx", "5");
         rect.setAttribute("ry", "5");
         //rect.setAttribute("fill-opacity", "0.5");
 };
@@ -576,7 +608,7 @@ var hideTooltip = function() {
         if (text && rect) {
                 text.parentNode.removeChild(text);
                 rect.parentNode.removeChild(rect);
-        }	
+        }
 	};');
 }
 

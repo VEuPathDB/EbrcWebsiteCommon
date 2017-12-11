@@ -58,7 +58,9 @@ export default class FilterParamNew extends React.PureComponent {
     let filter = filters.find(f => f.field === field.term);
     let newState = Object.assign({}, this.props.uiState, {
       ontologyTermSummaries: Object.assign({}, this.props.uiState.ontologyTermSummaries, {
-        [field.term]: sortDistribution(this.props.uiState.ontologyTermSummaries[field.term], sort, filter)
+        [field.term]: Object.assign({}, this.props.uiState.ontologyTermSummaries[field.term], {
+          valueCounts: sortDistribution(this.props.uiState.ontologyTermSummaries[field.term].valueCounts, sort, filter)
+        })
       }),
       fieldStates: Object.assign({}, this.props.uiState.fieldStates, {
         [field.term]: Object.assign({}, this.props.uiState.fieldStates[field.term], {
@@ -80,11 +82,12 @@ export default class FilterParamNew extends React.PureComponent {
     let { param, uiState } = this.props;
     let filters = this._getFiltersFromValue(this.props.value);
     let activeFieldState = uiState.fieldStates[uiState.activeOntologyTerm];
-    let activeFieldSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm];
+    let ontologyTermSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm] || {};
+    let activeFieldDistribution = ontologyTermSummary.valueCounts;
 
     if (activeFieldState == null) {
       activeFieldState = uiState.defaultMemberFieldState;
-      activeFieldSummary = activeFieldSummary && sortDistribution(activeFieldSummary, activeFieldState.sort);
+      activeFieldDistribution = activeFieldDistribution && sortDistribution(activeFieldDistribution, activeFieldState.sort);
     }
 
     return (
@@ -96,7 +99,9 @@ export default class FilterParamNew extends React.PureComponent {
           displayName={param.filterDataTypeDisplayName || param.displayName}
 
           activeField={uiState.activeOntologyTerm}
-          activeFieldSummary={activeFieldSummary}
+          activeFieldDistribution={activeFieldDistribution}
+          activeFieldDataCount={ontologyTermSummary.internalsCount}
+          activeFieldFilteredDataCount={ontologyTermSummary.internalsFilteredCount}
           activeFieldState={activeFieldState}
           fields={new Map(uiState.ontology.map(o => [ o.term, o]))}
           filters={filters}

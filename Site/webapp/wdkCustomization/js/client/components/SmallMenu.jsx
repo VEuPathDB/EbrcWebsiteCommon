@@ -46,7 +46,7 @@ const ItemWebAppUrl = ({ item, webAppUrl }) => (
   <a
     className={item.className}
     title={item.tooltip}
-    href={`${webAppUrl}/${item.webAppUrl}`}
+    href={`${webAppUrl}${item.webAppUrl}`}
     onClick={item.onClick}
     target={item.target}
   >{safeHtml(item.text)}</a>
@@ -56,7 +56,7 @@ const ItemRoute = ({ item, webAppUrl }) => (
   <a
     className={item.className}
     title={item.tooltip}
-    href={webAppUrl + '/app/' + item.route}
+    href={webAppUrl + '/app' + item.route}
     onClick={item.onClick}
     target={item.target}
   >{safeHtml(item.text)}</a>

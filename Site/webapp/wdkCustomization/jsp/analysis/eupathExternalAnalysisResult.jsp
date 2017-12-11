@@ -10,7 +10,9 @@
   <c:set var="serverName" value="${pageContext.request.serverName}"/>
   <c:set var="serverPort" value="${pageContext.request.serverPort}"/>
   <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-  <c:url var="downloadUrl" value="${scheme}://${serverName}:${serverPort}${contextPath}/stepAnalysisResource.do?analysisId=${analysisId}&amp;path=${viewModel.downloadPath}"/>
+  <c:set var="urlBase" value="${scheme}://${serverName}:${serverPort}${contextPath}"/>
+  <c:url var="downloadUrl" value="${urlBase}/stepAnalysisResource.do?analysisId=${analysisId}&amp;path=${viewModel.downloadPath}"/>
+  <c:url var="propertiesUrl" value="${urlBase}${initParam.wdkServiceEndpoint}/users/${userId}/steps/${stepId}/analyses/${analysisId}/properties?accessToken=${accessToken}"/>
 
   <!--
     Add query params to iframe URL to be passed to external analysis tool,  This customization
@@ -18,8 +20,9 @@
    -->
   <c:url var="iframeUrl" context="/" value="${viewModel.iframeBaseUrl}">
     <c:param name="contextHash" value="${contextHash}"/>
-    <c:param name="projectFolder" value="${viewModel.projectFolder}"/>
     <c:param name="dataUrl" value="${downloadUrl}"/>
+    <c:param name="propertiesUrl" value="${propertiesUrl}"/>
+    <c:param name="projectFolder" value="${viewModel.projectFolder}"/>
   </c:url>
 
   <html>

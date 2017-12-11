@@ -54,23 +54,13 @@
       });
 
       $resetButton
-        .on('click', function() {
-          var spinner = new Spinner({
-            lines: 9,
-            length: 2,
-            width: 2,
-            radius: 3
-          }).spin();
-
-          $resetButton.prop('disabled', true);
-          $understandCheckbox.prop('disabled', true);
-
-          $('<div class="spin-wrapper"/>')
-            .append(spinner.el)
-            .insertAfter($resetButton);
-        })
         .on('reset.session', function() {
-          window.location = wdk.webappUrl();
+          Wdk.Platform.alert(
+            "Your session has been reset",
+            "You will now be redirected to the home page."
+          ).then(function() {
+            window.location = wdk.webappUrl();
+          });
         });
 
       $resetButton.prop('disabled', !$understandCheckbox.prop('checked'));
