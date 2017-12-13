@@ -83,14 +83,16 @@ sub getDbHandle {
   my ($dbh, $dsn, $login, $passwd);
   
     
-  require EbrcWebsiteCommon::Model::CommentConfig;
-  my $c = new EbrcWebsiteCommon::Model::CommentConfig($projectId);
-  
-  $dsn    = $c->getDbiDsn();
-  $login  = $c->getLogin();
-  $passwd = $c->getPassword();
+  require WDK::Model::ModelConfig;
+  my $c = new WDK::Model::ModelConfig($projectId);
 
-  die "You must run this on apicomm(n|s), not an apicommdev instance\n" if $dsn =~ /dev/i;
+  my $cfg = new WDK::Model::ModelConfig($projectId);
+  
+  $dsn    = $cfg->getAppDb->getDbiDsn;
+  $login  = $cfg->getAppDb->getLogin;
+  $passwd = $cfg->getAppDb->getPassword;
+
+##  die "You must run this on apicomm(n|s), not an apicommdev instance\n" if $dsn =~ /dev/i;
   
   $dbh = DBI->connect(
                       $dsn, 
