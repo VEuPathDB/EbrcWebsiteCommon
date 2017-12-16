@@ -304,6 +304,7 @@ suppressPackageStartupMessages(library(gridSVG));
 library(tools);
 library(gtools);
 library(plyr);
+library(scales);
 
 $open_R
 
@@ -540,7 +541,7 @@ if (grepl(file_ext(\"$out_f\"), \"svg\")) {
         var target = evt.currentTarget;
         // Create new text node, rect and text for the tooltip
         var text = document.createElementNS(svgNS, "text");
-        var strs = label.split(";");
+        var strs = label.split("|");
         var arrayLength = strs.length;
         for (var i = 0; i < arrayLength; i++) {
           // create tspan for each child of text

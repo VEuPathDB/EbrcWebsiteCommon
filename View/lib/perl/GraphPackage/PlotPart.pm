@@ -54,7 +54,7 @@ sub setAdjustProfile             { $_[0]->{'_r_adjust_profile'              } = 
 sub addAdjustProfile {
   my ($self, $ap) = @_;
 
-  my $existing = $self->getAdjustProfile();
+  my $existing = $self->getAdjustProfile() || '';
 
   if($ap) {
     $self->setAdjustProfile($existing . $ap);
