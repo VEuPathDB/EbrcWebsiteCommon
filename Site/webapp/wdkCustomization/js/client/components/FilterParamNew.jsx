@@ -100,8 +100,8 @@ export default class FilterParamNew extends React.PureComponent {
 
           activeField={uiState.activeOntologyTerm}
           activeFieldDistribution={activeFieldDistribution}
-          activeFieldDataCount={ontologyTermSummary.internalsCount}
-          activeFieldFilteredDataCount={ontologyTermSummary.internalsFilteredCount}
+          activeFieldDistinctKnownCount={ontologyTermSummary.internalsCount}
+          activeFieldFilteredDistinctKnownCount={ontologyTermSummary.internalsFilteredCount}
           activeFieldState={activeFieldState}
           fields={new Map(uiState.ontology.map(o => [ o.term, o]))}
           filters={filters}
