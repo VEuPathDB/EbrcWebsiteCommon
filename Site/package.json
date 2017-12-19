@@ -5,6 +5,7 @@
   "repository": {},
   "license": "MIT",
   "dependencies": {
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "mesa": "https://github.com/austinbillings/mesa.git"
   }
 }
