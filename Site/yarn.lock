@@ -83,7 +83,7 @@ md5@^2.2.1:
 
 "mesa@https://github.com/austinbillings/mesa.git":
   version "1.0.1"
-  resolved "https://github.com/austinbillings/mesa.git#22cbb16aaa226971afced7e6950ddc4f87266971"
+  resolved "https://github.com/austinbillings/mesa.git#56394f58f2df99cf42ebad8e4610d71b9b01a781"
   dependencies:
     prop-types ">=15.6.0"
     react "15.6"
