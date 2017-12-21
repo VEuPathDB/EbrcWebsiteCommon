@@ -122,7 +122,7 @@
   padding: 0;
 }
 
-.ebrc-QuestionWizardIcon {
+.ebrc-QuestionWizardIconButton {
   display: block;
   width: 3em;
   border: none;
@@ -130,14 +130,10 @@
   outline-offset: 0;
 }
 
-.ebrc-QuestionWizardIcon:after {
-  font-family: FontAwesome;
-  content: '\f1c0';
-  font-style: normal;
+.ebrc-QuestionWizardIcon {
   font-size: 2em;
   background: #333;
   color: white;
-  text-align: center;
   border-radius: 4px;
   display: block;
   line-height: 1.5em;
