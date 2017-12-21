@@ -16,6 +16,7 @@ export default class FilterParamNew extends React.PureComponent {
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleMemberSort = this._handleMemberSort.bind(this);
+    this._handleRangeScaleChange = this._handleRangeScaleChange.bind(this);
     this._renderSelectionInfo = this._renderSelectionInfo.bind(this);
   }
 
@@ -71,6 +72,15 @@ export default class FilterParamNew extends React.PureComponent {
     this.props.onParamStateChange(this.props.param, newState);
   }
 
+  _handleRangeScaleChange(field, state) {
+    let newState = Object.assign({}, this.props.uiState, {
+      fieldStates: Object.assign({}, this.props.uiState.fieldStates, {
+        [field.term]: state
+      })
+    });
+    this.props.onParamStateChange(this.props.param, newState);
+  }
+
   _renderSelectionInfo({ filters }) {
     if (this.props.uiState.hideFilterPanel && isEmpty(filters)) {
       return <em>No filters currently applied.</em>
@@ -114,6 +124,7 @@ export default class FilterParamNew extends React.PureComponent {
           onFiltersChange={this._handleFilterChange}
           onActiveFieldChange={this._handleActiveFieldChange}
           onMemberSort={this._handleMemberSort}
+          onRangeScaleChange={this._handleRangeScaleChange}
           renderSelectionInfo={this._renderSelectionInfo}
         />
       </div>
