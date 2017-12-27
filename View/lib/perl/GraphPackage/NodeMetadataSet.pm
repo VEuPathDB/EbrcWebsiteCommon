@@ -24,6 +24,9 @@ sub setStatus                    { $_[0]->{'_status'           } = $_[1]}
 sub getOptStatus                 { $_[0]->{'_opt_status'       }}
 sub setOptStatus                 { $_[0]->{'_opt_status'       } = $_[1]}
 
+sub getTblPrefix                 { $_[0]->{'_tbl_prefix'       }}
+sub setTblPrefix                 { $_[0]->{'_tbl_prefix'       } = $_[1]}
+
 sub new {
   my ( $class, $params ) = @_;
 
@@ -37,6 +40,9 @@ sub new {
  
  #this below to appease cannedquery.pm
   $self->setName($params->{Id});
+ #this so we know which metadata table to query for various ClinEpi datasets
+  $self->setTblPrefix($params->{tblPrefix});
+
   #this later is checked to know which query to run.
   if (defined $params->{yAxis}) {
     $self->setYAxis($params->{yAxis});
@@ -123,6 +129,7 @@ sub makeNodeMetadataCannedQuery {
     my $profile;
     #this means if you try to pass it both the params for nodemetadata and nodemetadataevent
     #at the same time it will just do the first.
+    my $tblPrefix = $self->getTblPrefix();
     if ($self->getYAxis()) {
       my $contXAxis = $self->getContXAxis();
       my $yAxis = $self->getYAxis();
@@ -131,6 +138,7 @@ sub makeNodeMetadataCannedQuery {
           Name             => "_data_$suffix",
           ContXAxis        => $contXAxis,
           YAxis            => $yAxis,
+          TblPrefix        => $tblPrefix,
          );
     } elsif ($self->getEventStart()) {
       my $eventStart = $self->getEventStart();
@@ -140,6 +148,7 @@ sub makeNodeMetadataCannedQuery {
           Name             => "_data_$suffix",
           EventStart       => $eventStart,
           EventDur         => $eventDur,
+          TblPrefix        => $tblPrefix,
          );
     } elsif ($self->getStatus()) {
       my $contXAxis = $self->getContXAxis();
@@ -152,6 +161,7 @@ sub makeNodeMetadataCannedQuery {
             ContXAxis        => $contXAxis,
             Status           => $status,
             OptStatus        => $optStatus,
+            TblPrefix        => $tblPrefix,
            );
 
       } else {
@@ -160,6 +170,7 @@ sub makeNodeMetadataCannedQuery {
             Name             => "_data_$suffix",
             ContXAxis        => $contXAxis,
             Status           => $status,
+            TblPrefix        => $tblPrefix,
            );
       }
     } 

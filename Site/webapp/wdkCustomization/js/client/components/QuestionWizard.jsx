@@ -130,6 +130,9 @@ function Navigation(props) {
   // A Map from a group to its previous group
   const prevGroupMap = new Map(zip(groups.slice(1), groups.slice(0, -1)));
 
+  // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
+  const iconName = recordClass.iconName || 'database';
+
   return (
     <Sticky>
       {({isFixed}) => (
@@ -138,8 +141,11 @@ function Navigation(props) {
               <button
                 type="button"
                 title="See search overview"
-                className={makeClassName('Icon', recordClass.name)}
-                onClick={() => setActiveGroup(null)} />
+                className={makeClassName('IconButton')}
+                onClick={() => setActiveGroup(null)}
+              >
+                <Icon fa={iconName} className={makeClassName('Icon')}/>
+              </button>
             </div>
             <div className={makeClassName('ParamGroupSeparator')}>
               <div className={makeClassName('ParamGroupArrow')}/>

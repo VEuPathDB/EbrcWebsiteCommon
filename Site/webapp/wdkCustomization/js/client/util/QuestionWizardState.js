@@ -13,9 +13,18 @@ export function createInitialState(question, recordClass, paramValues) {
     switch(param.type) {
       case 'FilterParamNew': {
         const leaves = getLeaves(getTree(param.ontology), node => node.children);
+        const ontology = param.values == null
+          ? param.ontology
+          : param.ontology.map(entry =>
+            param.values[entry.term] == null
+              ? entry
+              : Object.assign(entry, {
+                values: param.values[entry.term].join(' ')
+              })
+          );
         return Object.assign(uiState, {
           [param.name]: {
-            ontology: param.ontology,
+            ontology: ontology,
             activeOntologyTerm: leaves.length > 0 ? leaves[0].field.term : null,
             hideFilterPanel: leaves.length === 1,
             hideFieldPanel: leaves.length === 1,

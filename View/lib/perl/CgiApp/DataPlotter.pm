@@ -156,9 +156,9 @@ sub run {
          eval "require $class";
          eval "import $class";
 
-         if ($core =~ 'ApiCommon') {
+         #if ($core =~ 'ApiCommon') {
 	   $class = $class . "::$datasetClassName" if($template);
-         }
+         #}
 
          my $_gp = eval {
            $class->new({dataPlotterArg => $typeArg,

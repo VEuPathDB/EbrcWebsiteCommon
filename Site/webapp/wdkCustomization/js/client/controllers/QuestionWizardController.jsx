@@ -323,8 +323,17 @@ class QuestionWizardController extends AbstractViewController {
             switch(param.type) {
               case 'FilterParamNew': {
                 // Return new state object with updates to param state and value
+                const ontology = param.values == null
+                  ? param.ontology
+                  : param.ontology.map(entry =>
+                    param.values[entry.term] == null
+                      ? entry
+                      : Object.assign(entry, {
+                        values: param.values[entry.term].join(' ')
+                      })
+                  );
                 return [
-                  updateState(['paramUIState', param.name, 'ontology'], param.ontology),
+                  updateState(['paramUIState', param.name, 'ontology'], ontology),
                   updateState(['paramValues', param.name], param.defaultValue)
                 ]
               }

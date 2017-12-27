@@ -1,8 +1,7 @@
 import { find, get, map } from 'lodash';
 import { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'wdk-client/Components';
+import { Tooltip, Events } from 'mesa';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 let ParamPropType = PropTypes.shape({
@@ -23,11 +22,6 @@ let QuestionPropType = PropTypes.shape({
   parameters: PropTypes.arrayOf(ParamPropType)
 });
 
-let tooltipPosition = {
-  my: 'top center',
-  at: 'bottom center'
-};
-
 /**
  * Quick search boxes that appear in header
  */
@@ -37,12 +31,31 @@ class QuickSearchItem extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleTooltipHide = this.handleTooltipHide.bind(this);
-    this.state = { value: '' };
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
+    this.updateTooltipPosition = this.updateTooltipPosition.bind(this);
+    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
+    this.state = { value: '', tooltipPosition: {} };
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setStateFromProps(this.props);
+    this.updateTooltipPosition();
+    this.resizeListener = Events.add('resize', this.updateTooltipPosition);
+    this.scrollListener = Events.add('scroll', this.updateTooltipPosition);
+  }
+
+  componentWillUnmount () {
+    Events.remove(this.resizeListener);
+    Events.remove(this.scrollListener);
+  }
+
+  updateTooltipPosition () {
+    if (!this.inputElement) return;
+    const { top, left } = Tooltip.getOffset(this.inputElement);
+    const right = window.innerWidth - left;
+    const tooltipPosition = { top: top - 2, right: right + 6 };
+    this.setState({ tooltipPosition });
   }
 
   componentWillReceiveProps(props) {
@@ -54,8 +67,7 @@ class QuickSearchItem extends Component {
   }
 
   getSearchParam(props) {
-    return find(get(props, 'question.parameters'),
-      p => p.name === props.reference.paramName);
+    return find(get(props, 'question.parameters'), ({ name }) => name === props.reference.paramName);
   }
 
   setStateFromProps(props) {
@@ -74,39 +86,29 @@ class QuickSearchItem extends Component {
     window.localStorage.setItem(this.getStorageKey(this.props), this.state.value);
   }
 
-  // prevent tootip from hiding if target or a descendant has focus
-  handleTooltipHide(event) {
-    let thisNode = ReactDOM.findDOMNode(this);
-    if (thisNode.contains(document.activeElement)) {
-      event.preventDefault();
-    }
-  }
-
   render() {
-    let { question, reference, webAppUrl } = this.props;
-    let { displayName } = reference;
-    let linkName = reference.alternate || reference.name;
-    let searchParam = this.getSearchParam(this.props);
+    const { tooltipPosition } = this.state;
+    const { question, reference, webAppUrl } = this.props;
+    const { displayName } = reference;
+    const linkName = reference.alternate || reference.name;
+    const searchParam = this.getSearchParam(this.props);
 
     // if searchParam is null, assume not loaded and render non-functioning
     // placeholder search box, otherwise render functioning search box
     return (
-      <div className="quick-search-item" style={{margin: '0 .4em'}} key={reference.name}>
-        <Tooltip
-          content={reference.help}
-          position={tooltipPosition}
-          showEvent="mouseenter focusin"
-          showDelay={0}
-          hideEvent="mouseleave focusout"
-          hideDelay={250}
-          onHide={this.handleTooltipHide}
+      <div className="quick-search-item" style={{ margin: '0 .4em' }} key={reference.name}>
+        <form
+          name="questionForm"
+          method="post"
+          action={webAppUrl + '/processQuestionSetsFlat.do'}
+          onSubmit={this.handleSubmit}
         >
-          <form
-            name="questionForm"
-            method="post"
-            action={webAppUrl + '/processQuestionSetsFlat.do'}
-            onSubmit={this.handleSubmit}
-          >
+          <Tooltip
+            corner="right-top"
+            position={tooltipPosition}
+            style={{ maxWidth: '275px', boxSizing: 'border-box' }}
+            renderHtml={true}
+            content={reference.help}>
             {question == null ? (
               <fieldset>
                 <b key="name">
@@ -118,6 +120,7 @@ class QuickSearchItem extends Component {
                   className="search-box"
                   value={this.state.value}
                   onChange={this.handleChange}
+                  ref={(el) => this.inputElement = el}
                   name=""
                   disabled
                 />
@@ -153,6 +156,7 @@ class QuickSearchItem extends Component {
                   value={this.state.value}
                   onChange={this.handleChange}
                   name={'value(' + searchParam.name + ')'}
+                  ref={(el) => this.inputElement = el}
                 />
                 <input
                   name="go"
@@ -166,12 +170,11 @@ class QuickSearchItem extends Component {
                 />
               </fieldset>
             )}
-          </form>
-        </Tooltip>
+          </Tooltip>
+        </form>
       </div>
     );
   }
-
 }
 
 QuickSearchItem.propTypes = {
@@ -180,7 +183,7 @@ QuickSearchItem.propTypes = {
   reference: ReferencePropType.isRequired,
 };
 
-function QuickSearch(props) {
+function QuickSearch (props) {
   let { references, questions = {}, webAppUrl } = props;
 
   return (

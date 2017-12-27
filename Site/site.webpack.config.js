@@ -46,7 +46,8 @@ module.exports = function configure(additionalConfig) {
         'prop-types'   : 'ReactPropTypes',
         'flux'         : 'Flux',
         'flux/utils'   : 'FluxUtils',
-        'natural-sort' : 'NaturalSort'
+        'natural-sort' : 'NaturalSort',
+        'mesa'         : 'Mesa'
       }
     ]
   }, additionalConfig]);
