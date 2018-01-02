@@ -64,7 +64,7 @@
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
       ga('create', '${gaId}', 'auto');
     </script>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="wdk-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="css/${model.projectId}.css"/>
