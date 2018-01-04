@@ -35,7 +35,10 @@ export function createInitialState(question, recordClass, paramValues) {
                 columnKey: 'value',
                 direction: 'asc',
                 groupBySelected: false
-              }
+              },
+              searchTerm: ''
+            },
+            defaultRangeFieldState: {
             }
           }
         });

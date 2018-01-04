@@ -17,6 +17,7 @@ export default class FilterParamNew extends React.PureComponent {
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleMemberSort = this._handleMemberSort.bind(this);
+    this._handleMemberSearch = this._handleMemberSearch.bind(this);
     this._handleRangeScaleChange = this._handleRangeScaleChange.bind(this);
     this._renderSelectionInfo = this._renderSelectionInfo.bind(this);
   }
@@ -66,17 +67,30 @@ export default class FilterParamNew extends React.PureComponent {
   }
 
   _handleMemberSort(field, sort) {
+    let { ontologyTermSummaries, fieldStates, defaultMemberFieldState } = this.props.uiState;
     let filters = this._getFiltersFromValue(this.props.value);
     let filter = filters.find(f => f.field === field.term);
     let newState = Object.assign({}, this.props.uiState, {
-      ontologyTermSummaries: Object.assign({}, this.props.uiState.ontologyTermSummaries, {
-        [field.term]: Object.assign({}, this.props.uiState.ontologyTermSummaries[field.term], {
-          valueCounts: sortDistribution(this.props.uiState.ontologyTermSummaries[field.term].valueCounts, sort, filter)
+      ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
+        [field.term]: Object.assign({}, ontologyTermSummaries[field.term], {
+          valueCounts: sortDistribution(ontologyTermSummaries[field.term].valueCounts, sort, filter)
         })
       }),
-      fieldStates: Object.assign({}, this.props.uiState.fieldStates, {
-        [field.term]: Object.assign({}, this.props.uiState.fieldStates[field.term], {
-          sort: sort
+      fieldStates: Object.assign({}, fieldStates, {
+        [field.term]: Object.assign({}, fieldStates[field.term] || defaultMemberFieldState, {
+          sort
+        })
+      })
+    });
+    this.props.onParamStateChange(this.props.param, newState);
+  }
+
+  _handleMemberSearch(field, searchTerm) {
+    let { fieldStates, defaultMemberFieldState } = this.props.uiState;
+    let newState = Object.assign({}, this.props.uiState, {
+      fieldStates: Object.assign({}, fieldStates, {
+        [field.term]: Object.assign({}, fieldStates[field.term] || defaultMemberFieldState, {
+          searchTerm
         })
       })
     });
@@ -108,8 +122,10 @@ export default class FilterParamNew extends React.PureComponent {
     let activeFieldSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm];
 
     if (activeFieldState == null) {
-      activeFieldState = uiState.defaultMemberFieldState;
-      if (activeFieldSummary != null) {
+      activeFieldState = activeField.isRange
+        ? uiState.defaultRangeFieldState
+        : uiState.defaultMemberFieldState;
+      if (activeFieldSummary != null && !activeField.isRange) {
         activeFieldSummary = Object.assign({}, activeFieldSummary, {
           valueCounts: sortDistribution(activeFieldSummary.valueCounts, activeFieldState.sort)
         });
@@ -140,6 +156,7 @@ export default class FilterParamNew extends React.PureComponent {
           onFiltersChange={this._handleFilterChange}
           onActiveFieldChange={this._handleActiveFieldChange}
           onMemberSort={this._handleMemberSort}
+          onMemberSearch={this._handleMemberSearch}
           onRangeScaleChange={this._handleRangeScaleChange}
           renderSelectionInfo={this._renderSelectionInfo}
         />
