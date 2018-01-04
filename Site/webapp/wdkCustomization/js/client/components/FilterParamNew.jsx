@@ -13,6 +13,7 @@ export default class FilterParamNew extends React.PureComponent {
   constructor(props) {
     super(props);
     this._getFiltersFromValue = memoize(this._getFiltersFromValue);
+    this._getFieldMap = memoize(this._getFieldMap);
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleMemberSort = this._handleMemberSort.bind(this);
@@ -25,33 +26,43 @@ export default class FilterParamNew extends React.PureComponent {
     return filters;
   }
 
+  _getFieldMap(ontology) {
+    return new Map(ontology.map(o => [
+      o.term,
+      // FIXME remove hardcoded mod when ontology query is updated
+      o.term === 'EUPATH_0010399' // "Drinking water retrieval method"
+        ? Object.assign({}, o , {
+          isMulti: true,
+          type: 'string'
+        })
+        : o
+    ]));
+  }
+
   _handleActiveFieldChange(term) {
     let filters = this._getFiltersFromValue(this.props.value);
     this.props.onActiveOntologyTermChange(this.props.param, filters, term);
   }
 
   _handleFilterChange(filters) {
-    // for each changed member filter, remove sort spec from state
-    let prevFilters = this._getFiltersFromValue(this.props.value);
-    let filtersByField = keyBy(filters, 'field');
-    let prevFiltersByField = keyBy(prevFilters, 'field');
-    let nextFieldStates =
-      mapValues(this.props.uiState.fieldStates, (fieldState, fieldTerm) => {
-        if (
-          filtersByField[fieldTerm] !== prevFiltersByField[fieldTerm] &&
-          fieldState.sort.groupBySelected
-        ) {
-          return Object.assign({}, fieldState, {
-            sort: Object.assign({}, fieldState.sort, { groupBySelected: false })
-          });
-        }
-        return fieldState;
-      })
-    let nextState = Object.assign({}, this.props.uiState, {
-      fieldStates: nextFieldStates
-    });
-    this.props.onParamStateChange(this.props.param, nextState);
     this.props.onParamValueChange(this.props.param, JSON.stringify({ filters }));
+
+    // for each changed member updated member field, resort
+    let prevFiltersByTerm = keyBy(this._getFiltersFromValue(this.props.value), 'field');
+    let filtersByTerm = keyBy(filters, 'field');
+    let fieldMap = this._getFieldMap(this.props.uiState.ontology);
+    let ontologyTermSummaries = mapValues(this.props.uiState.ontologyTermSummaries, (summary, term) =>
+      fieldMap.get(term).isRange || filtersByTerm[term] === prevFiltersByTerm[term]
+      ? summary
+      : Object.assign({}, summary, {
+        valueCounts: sortDistribution(
+          summary.valueCounts,
+          (this.props.uiState.fieldStates[term] || this.props.uiState.defaultMemberFieldState).sort,
+          filtersByTerm[term]
+        )
+      })
+    );
+    this.props.onParamStateChange(this.props.param, Object.assign({}, this.props.uiState, { ontologyTermSummaries }));
   }
 
   _handleMemberSort(field, sort) {
@@ -90,14 +101,19 @@ export default class FilterParamNew extends React.PureComponent {
 
   render() {
     let { param, uiState } = this.props;
+    let fields = this._getFieldMap(uiState.ontology);
     let filters = this._getFiltersFromValue(this.props.value);
+    let activeField = fields.get(uiState.activeOntologyTerm);
     let activeFieldState = uiState.fieldStates[uiState.activeOntologyTerm];
-    let ontologyTermSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm] || {};
-    let activeFieldDistribution = ontologyTermSummary.valueCounts;
+    let activeFieldSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm];
 
     if (activeFieldState == null) {
       activeFieldState = uiState.defaultMemberFieldState;
-      activeFieldDistribution = activeFieldDistribution && sortDistribution(activeFieldDistribution, activeFieldState.sort);
+      if (activeFieldSummary != null) {
+        activeFieldSummary = Object.assign({}, activeFieldSummary, {
+          valueCounts: sortDistribution(activeFieldSummary.valueCounts, activeFieldState.sort)
+        });
+      }
     }
 
     return (
@@ -105,18 +121,18 @@ export default class FilterParamNew extends React.PureComponent {
         {uiState.errorMessage && <pre style={{color: 'red'}}>{uiState.errorMessage}</pre>}
         {uiState.loading && <Loading/>}
         <ServerSideAttributeFilter
+          selectByDefault={true}
           autoFocus={this.props.autoFocus}
           displayName={param.filterDataTypeDisplayName || param.displayName}
 
-          activeField={uiState.activeOntologyTerm}
-          activeFieldDistribution={activeFieldDistribution}
-          activeFieldDistinctKnownCount={ontologyTermSummary.internalsCount}
-          activeFieldFilteredDistinctKnownCount={ontologyTermSummary.internalsFilteredCount}
-          activeFieldState={activeFieldState}
-          fields={new Map(uiState.ontology.map(o => [ o.term, o]))}
+          fields={fields}
           filters={filters}
           dataCount={uiState.unfilteredCount}
           filteredDataCount={uiState.filteredCount}
+
+          activeField={activeField}
+          activeFieldState={activeFieldState}
+          activeFieldSummary={activeFieldSummary}
 
           hideFilterPanel={uiState.hideFilterPanel}
           hideFieldPanel={uiState.hideFieldPanel}
@@ -146,6 +162,9 @@ function compareDistributionValues(valueA, valueB) {
   );
 }
 
+/**
+ * Compare values based on inclusion in array.
+ */
 function makeSelectionComparator(values) {
   let set = new Set(values);
   return function compareValuesBySelection(a, b) {
