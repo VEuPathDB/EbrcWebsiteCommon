@@ -137,7 +137,6 @@ export default class FilterParamNew extends React.PureComponent {
         {uiState.errorMessage && <pre style={{color: 'red'}}>{uiState.errorMessage}</pre>}
         {uiState.loading && <Loading/>}
         <ServerSideAttributeFilter
-          selectByDefault={true}
           autoFocus={this.props.autoFocus}
           displayName={param.filterDataTypeDisplayName || param.displayName}
 
