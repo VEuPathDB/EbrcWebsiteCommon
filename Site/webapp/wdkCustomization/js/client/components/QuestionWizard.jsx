@@ -80,6 +80,8 @@ const wizardPropTypes = {
 const eventHandlerPropTypes = {
   setActiveGroup: PropTypes.func.isRequired,
   setActiveOntologyTerm: PropTypes.func.isRequired,
+  setOntologyTermSort: PropTypes.func.isRequired,
+  setOntologyTermSearch: PropTypes.func.isRequired,
   setParamValue: PropTypes.func.isRequired,
   updateInvalidGroupCounts: PropTypes.func.isRequired,
   setFilterPopupVisiblity: PropTypes.func.isRequired,

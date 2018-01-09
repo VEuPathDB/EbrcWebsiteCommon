@@ -1,6 +1,18 @@
 /*global wdk*/
 import $ from 'jquery';
-import { groupBy, isEqual, memoize, pick, mapValues, debounce, flow, ary, identity } from 'lodash';
+import {
+  ary,
+  debounce,
+  flow,
+  groupBy,
+  identity,
+  isEqual,
+  keyBy,
+  mapValues,
+  memoize,
+  pick
+} from 'lodash';
+import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -20,6 +32,8 @@ import {
   setFilterPopupPinned,
   resetParamValues
 } from '../util/QuestionWizardState';
+
+const natSortComparator = natsort();
 
 //  type State = {
 //    question: Question;
@@ -67,6 +81,8 @@ class QuestionWizardController extends AbstractViewController {
     return pick(this, [
       'setActiveGroup',
       'setActiveOntologyTerm',
+      'setOntologyTermSort',
+      'setOntologyTermSearch',
       'setParamState',
       'setParamValue',
       'updateInvalidGroupCounts',
@@ -214,14 +230,70 @@ class QuestionWizardController extends AbstractViewController {
     }
   }
 
+  setOntologyTermSort(param, term, sort) {
+    let uiState = this.state.paramUIState[param.name];
+    let { ontologyTermSummaries, fieldStates, defaultMemberFieldState } = uiState;
+    let { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
+    let filter = filters.find(f => f.field === term);
+    let newState = Object.assign({}, uiState, {
+      ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
+        [term]: Object.assign({}, ontologyTermSummaries[term], {
+          valueCounts: sortDistribution(ontologyTermSummaries[term].valueCounts, sort, filter)
+        })
+      }),
+      fieldStates: Object.assign({}, fieldStates, {
+        [term]: Object.assign({}, fieldStates[term] || defaultMemberFieldState, {
+          sort
+        })
+      })
+    });
+    this.setParamState(param, newState);
+  }
+
+  setOntologyTermSearch(param, term, searchTerm) {
+    let uiState = this.state.paramUIState[param.name];
+    let { fieldStates, defaultMemberFieldState } = uiState;
+    let newState = Object.assign({}, uiState, {
+      fieldStates: Object.assign({}, fieldStates, {
+        [term]: Object.assign({}, fieldStates[term] || defaultMemberFieldState, {
+          searchTerm
+        })
+      })
+    });
+    this.setParamState(param, newState);
+  }
+
   /**
    * Update parameter value, update dependent parameter vocabularies and
    * ontologies, and update counts.
    */
   setParamValue(param, paramValue) {
     const prevParamValue = this.state.paramValues[param.name];
+
     this.setState(updateState(['paramValues', param.name], paramValue),
       () => this._commitParamValueChange(param, paramValue, prevParamValue));
+
+    if (param.type === 'FilterParamNew') {
+      // for each changed member updated member field, resort
+      let paramState = this.state.paramUIState[param.name];
+      let { filters = [] } = JSON.parse(paramValue);
+      let { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
+      let filtersByTerm = keyBy(filters, 'field');
+      let prevFiltersByTerm = keyBy(prevFilters, 'field');
+      let fieldMap = new Map(param.ontology.map(entry => [ entry.term, entry ]));
+      let ontologyTermSummaries = mapValues(paramState.ontologyTermSummaries, (summary, term) =>
+        fieldMap.get(term).isRange || filtersByTerm[term] === prevFiltersByTerm[term]
+        ? summary
+        : Object.assign({}, summary, {
+          valueCounts: sortDistribution(
+            summary.valueCounts,
+            (paramState.fieldStates[term] || paramState.defaultMemberFieldState).sort,
+            filtersByTerm[term]
+          )
+        })
+      );
+      this.setParamState(param, Object.assign({}, paramState, { ontologyTermSummaries }));
+    }
   }
 
   _initializeActiveGroupParams(activeGroup) {
@@ -484,7 +556,20 @@ class QuestionWizardController extends AbstractViewController {
       this.state.paramValues
     ).then(
       ontologyTermSummary => {
-        const { ontologyTermSummaries } = this.state.paramUIState[paramName];
+        const { defaultMemberFieldState, fieldStates, ontologyTermSummaries } = this.state.paramUIState[paramName];
+        const fieldState = fieldStates[ontologyTerm] || defaultMemberFieldState;
+
+        ontologyTermSummary.valueCounts = sortDistribution(
+          ontologyTermSummary.valueCounts,
+          fieldState.sort,
+          filters
+        );
+
+        this.setState(updateState(['paramUIState', paramName, 'fieldStates'],
+          Object.assign({}, fieldStates, {
+            [ontologyTerm]: fieldState
+          })));
+
         this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
           Object.assign({}, ontologyTermSummaries, {
             [ontologyTerm]: ontologyTermSummary
@@ -591,4 +676,52 @@ function updateObjectImmutably(object, [key, ...restPath], value) {
     [key]: restPath.length === 0 ? value
       : updateObjectImmutably(object[key], restPath, value)
   })
+}
+
+/**
+ * Compare distribution values using a natural comparison algorithm.
+ * @param {string|null} valueA
+ * @param {string|null} valueB
+ */
+function compareDistributionValues(valueA, valueB) {
+  return natSortComparator(
+    valueA == null ? '' : valueA,
+    valueB == null ? '' : valueB
+  );
+}
+
+/**
+ * Compare values based on inclusion in array.
+ */
+function makeSelectionComparator(values) {
+  let set = new Set(values);
+  return function compareValuesBySelection(a, b) {
+    return set.has(a.value) && !set.has(b.value) ? -1
+      : set.has(b.value) && !set.has(a.value) ? 1
+      : 0;
+  }
+}
+
+/**
+ * Sort distribution based on sort spec. `SortSpec` is an object with two
+ * properties: `columnKey` (the distribution property to sort by), and
+ * `direction` (one of 'asc' or 'desc').
+ * @param {Distribution} distribution
+ * @param {SortSpec} sort
+ */
+export function sortDistribution(distribution, sort, filter) {
+  let { columnKey, direction, groupBySelected } = sort;
+
+  let sortedDist = distribution.slice().sort(function compare(a, b) {
+    let order =
+      // if a and b are equal, fall back to comparing `value`
+      columnKey === 'value' || a[columnKey] === b[columnKey]
+        ? compareDistributionValues(a.value, b.value)
+        : a[columnKey] > b[columnKey] ? 1 : -1;
+    return direction === 'desc' ? -order : order;
+  });
+
+  return groupBySelected && filter && filter.value && filter.value.length > 0
+    ? sortedDist.sort(makeSelectionComparator(filter.value))
+    : sortedDist;
 }
