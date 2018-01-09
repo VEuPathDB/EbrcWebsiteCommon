@@ -272,6 +272,7 @@ class QuestionWizardController extends AbstractViewController {
 
     this.setState(updateState(['paramValues', param.name], paramValue),
       () => this._commitParamValueChange(param, paramValue, prevParamValue));
+    this.setState(updateState(['groupUIState', param.group, 'loading'], true));
 
     if (param.type === 'FilterParamNew') {
       // for each changed member updated member field, resort
