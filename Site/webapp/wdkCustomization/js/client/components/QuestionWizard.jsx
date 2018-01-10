@@ -126,7 +126,7 @@ function Navigation(props) {
   const finalCountState = Seq.of({ accumulatedTotal: initialCount })
     .concat(Seq.from(groups)
       .map(group => groupUIState[group.name])
-      .filter(groupState => groupState.value !== undefined))
+      .filter(groupState => groupState.valid !== undefined))
     .last();
 
   // A Map from a group to its previous group
