@@ -357,3 +357,9 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 .ebrc-QuestionWizardParamLabel__FilterParamNew {
   display: none;
 }
+
+.ebrc-QuestionWizardParamHelp__DateRangeParam,
+.ebrc-QuestionWizardParamLabel__DateRangeParam {
+  margin-top: 18px;
+  align-self: flex-start;
+}
