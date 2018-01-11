@@ -338,7 +338,7 @@ FilterSummary.propTypes = propTypes;
 function getParamSummaryElements(data) {
   return data.parameter.type === 'FilterParamNew' ? getFilterParamSummaryElements(data)
     : [
-      <div key={data.parameter.name} className={makeClassName('Chicklet')} title={data.paramValue}>
+      <div key={data.parameter.name} className={makeClassName('Chicklet')} >
         <a
           href={'#' + data.parameter.name}
           onClick={e => {
@@ -357,6 +357,8 @@ function getParamSummaryElements(data) {
           className={makeClassName('RemoveFilterButton')}
           onClick={() => data.eventHandlers.setParamValue(data.parameter, data.parameter.defaultValue)}
         ><Icon fa="close"/></button>
+        <hr/>
+        <small>{prettyPrint(data.parameter, data.paramValue)}</small>
       </div>
     ];
 }
@@ -368,7 +370,7 @@ function getFilterParamSummaryElements(data) {
   return filters.map(filter => {
     const field = data.parameter.ontology.find(field => field.term === filter.field)
     return (
-      <div key={data.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} title={getFilterValueDisplay(field, filter)}>
+      <div key={data.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} >
         <a
           href={'#' + field.term}
           onClick={e => {
@@ -396,7 +398,23 @@ function getFilterParamSummaryElements(data) {
         >
           <Icon fa="close"/>
         </button>
+        <hr/>
+        <small>{getFilterValueDisplay(field, filter)}</small>
       </div>
     );
   });
+}
+
+function prettyPrint(param, value) {
+  switch(param.type) {
+    case 'DateRangeParam':
+    case 'NumberRangeParam':
+      return prettyPrintRange(JSON.parse(value));
+    default:
+      return value;
+  }
+}
+
+function prettyPrintRange(range) {
+  return `between ${range.min} and ${range.max}`;
 }
