@@ -23,12 +23,14 @@
     <!--~~~~~~~ HEAD of HTML doc ~~~~~~~-->
     <imp:head title="${title}" refer="${refer}" banner="${banner}" scaleMobile="${scaleMobile}"/>
     <body class="${refer}">
-      <imp:header refer="${refer}" title= "${title}" />
-      <a name="skip" id="skip"><jsp:text/></a>
-      <div class="wdk-PageContent wdk-PageContent__${refer}">
-        <jsp:doBody/>
+      <div class="main-stack">
+        <imp:header refer="${refer}" title= "${title}" />
+        <a name="skip" id="skip"><jsp:text/></a>
+        <div class="wdk-PageContent wdk-PageContent__${refer}">
+          <jsp:doBody/>
+        </div>
+        <imp:footer refer="${refer}"/>
       </div>
-      <imp:footer refer="${refer}"/>
       <common:IEWarning version="8"/>
       <imp:dialogs/>
     </body>

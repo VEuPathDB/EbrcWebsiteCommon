@@ -33,18 +33,23 @@ html {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    Create main stacking context
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.main-stack {
+  position: relative;
+  z-index: 1;
+}
 /* only do this on hover so modals can block */
-#header:hover {
+.main-stack #header:hover {
   position: relative;
   z-index: 3;
 }
 
-.wdk-PageContent {
+.main-stack .wdk-PageContent {
   position: relative;
   z-index: 2;
 }
 
-footer {
+.main-stack footer {
   position: relative;
   z-index: 1;
 }
