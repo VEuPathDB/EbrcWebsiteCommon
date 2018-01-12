@@ -1,7 +1,7 @@
 import { find, get, map } from 'lodash';
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip, Events } from 'mesa';
+import { AnchoredTooltip, Tooltip, Events } from 'mesa';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 let ParamPropType = PropTypes.shape({
@@ -87,7 +87,7 @@ class QuickSearchItem extends Component {
   }
 
   render() {
-    const { tooltipPosition } = this.state;
+    // const { tooltipPosition } = this.state;
     const { question, reference, webAppUrl } = this.props;
     const { displayName } = reference;
     const linkName = reference.alternate || reference.name;
@@ -103,9 +103,9 @@ class QuickSearchItem extends Component {
           action={webAppUrl + '/processQuestionSetsFlat.do'}
           onSubmit={this.handleSubmit}
         >
-          <Tooltip
-            corner="right-top"
-            position={tooltipPosition}
+          <AnchoredTooltip
+            // corner="right-top"
+            // position={tooltipPosition}
             style={{ maxWidth: '275px', boxSizing: 'border-box' }}
             renderHtml={true}
             content={reference.help}>
@@ -170,7 +170,7 @@ class QuickSearchItem extends Component {
                 />
               </fieldset>
             )}
-          </Tooltip>
+          </AnchoredTooltip>
         </form>
       </div>
     );
