@@ -14,6 +14,10 @@
   <jsp:directive.attribute name="strategy" required="true" description="WDK Strategy"
     type="org.gusdb.wdk.model.jspwrap.StrategyBean"/>
 
+  <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
+  <c:set var="isAddingStep" value="${step ne null and (step.previousStep ne null or action ne 'revise')}"/>
+
+
   <!-- Show step operations if this is a step -->
   <c:if test="${step ne null}">
     <c:if test="${isAddingStep}">
@@ -54,9 +58,6 @@
     </c:forEach>
     }
   </c:set>
-
-  <c:set var="customName" value="${empty step or step.customName eq step.shortDisplayName ? '' : step.customName}"/>
-  <c:set var="isAddingStep" value="${step ne null and (step.previousStep ne null or action ne 'revise')}"/>
 
   <c:set var="propsJson">
     <![CDATA[{

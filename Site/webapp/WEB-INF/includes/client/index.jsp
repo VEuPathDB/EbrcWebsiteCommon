@@ -72,6 +72,8 @@
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
   </head>
   <body>
-    <div id="wdk-container">Loading...</div>
+    <div class="main-stack">
+      <div id="wdk-container">Loading...</div>
+    </div>
   </body>
 </html>

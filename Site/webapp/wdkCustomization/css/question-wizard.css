@@ -329,6 +329,10 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   margin: 1em 0;
 }
 
+.ebrc-QuestionWizardParam + .ebrc-QuestionWizardParam__FilterParamNew {
+  margin-top: 3em;
+}
+
 .ebrc-QuestionWizardParamLabel {
   flex: 0 0 14em;
   display: inline-block;
@@ -352,4 +356,10 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 .ebrc-QuestionWizardParamHelp__FilterParamNew,
 .ebrc-QuestionWizardParamLabel__FilterParamNew {
   display: none;
+}
+
+.ebrc-QuestionWizardParamHelp__DateRangeParam,
+.ebrc-QuestionWizardParamLabel__DateRangeParam {
+  margin-top: 18px;
+  align-self: flex-start;
 }

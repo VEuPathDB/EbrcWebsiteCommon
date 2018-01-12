@@ -9,7 +9,16 @@ import { makeQuestionWizardClassName as makeClassName } from '../util/classNames
  * Parameters that belong to a Paramter group
  */
 function Parameters(props) {
-  const { parameters, paramValues, paramUIState, onActiveOntologyTermChange, onParamValueChange, onParamStateChange } = props;
+  const {
+    parameters,
+    paramValues,
+    paramUIState,
+    onActiveOntologyTermChange,
+    onOntologyTermSort,
+    onOntologyTermSearch,
+    onParamValueChange,
+    onParamStateChange
+  } = props;
   const showLabel = parameters.length > 1;
   return (
     <div className={makeClassName('ParamContainer')}>
@@ -52,6 +61,8 @@ function Parameters(props) {
                 value={paramValues[param.name]}
                 uiState={paramUIState[param.name]}
                 onActiveOntologyTermChange={onActiveOntologyTermChange}
+                onOntologyTermSort={onOntologyTermSort}
+                onOntologyTermSearch={onOntologyTermSearch}
                 onParamValueChange={onParamValueChange}
                 onParamStateChange={onParamStateChange}
               />
@@ -69,6 +80,8 @@ Parameters.propTypes = {
   paramValues: PropTypes.object.isRequired,
   paramUIState: PropTypes.object.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
+  onOntologyTermSort: PropTypes.func.isRequired,
+  onOntologyTermSearch: PropTypes.func.isRequired,
   onParamValueChange: PropTypes.func.isRequired,
   onParamStateChange: PropTypes.func.isRequired
 }

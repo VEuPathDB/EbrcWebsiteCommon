@@ -3,6 +3,6 @@ import { Header } from 'wdk-client/Components';
 
 export default class HeaderController extends WdkViewController {
   renderView() {
-    return <Header/>
+    return <Header/>;
   }
 }

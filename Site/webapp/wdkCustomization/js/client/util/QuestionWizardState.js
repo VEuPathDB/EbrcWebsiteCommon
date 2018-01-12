@@ -35,7 +35,10 @@ export function createInitialState(question, recordClass, paramValues) {
                 columnKey: 'value',
                 direction: 'asc',
                 groupBySelected: false
-              }
+              },
+              searchTerm: ''
+            },
+            defaultRangeFieldState: {
             }
           }
         });
@@ -59,7 +62,9 @@ export function createInitialState(question, recordClass, paramValues) {
   const groupUIState = question.groups.reduce(function(groupUIState, group) {
     return Object.assign(groupUIState, {
       [group.name]: {
-        accumulatedTotal: undefined
+        accumulatedTotal: undefined,
+        valid: undefined,
+        loading: false
       }
     });
   }, {});
