@@ -51,3 +51,14 @@ getWdkDatasetFile <- function(filename, session, expectHeader, dataStorageDir=""
   print(paste0("Will read from: ", dataFile), stderr())
   dataFile
 }
+
+#this to get propertiesURL from query param
+
+getPropertiesUrl <- function(session) {
+
+  query = parseQueryString(session$clientData$url_search)
+
+  fetchUrl = get("propertiesUrl", query)
+  
+  fetchUrl
+}
