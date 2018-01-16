@@ -14,16 +14,27 @@ import { NumberRangeSelector } from 'wdk-client/Components';
 
    handleChange (newValue) {
      let { param, onParamValueChange } = this.props;
-     newValue = JSON.stringify(newValue);
-     onParamValueChange(param, newValue);
+     onParamValueChange(param, JSON.stringify({
+       min: String(newValue.min),
+       max: String(newValue.max)
+     }));
+   }
+
+   parseValue(value) {
+     let { min, max } = JSON.parse(value);
+     return {
+       min: Number(min),
+       max: Number(max)
+     }
    }
 
    render () {
      let { param, value } = this.props;
      let { min, max, integer, step } = param;
-     value = JSON.parse(value);
-     if (typeof value.min === 'string') value.min = value.min * 1;
-     if (typeof value.max === 'string') value.max = value.max * 1;
+     let parsedValue = this.parseValue(value);
+     let stepValue = step != null
+      ? Number(step)
+      : (integer !== 'false' ? 1 : 0.01);
 
      if (step) step = step * 1;
      else step = (!integer || integer === 'false' ? 0.01 : 1);
@@ -31,10 +42,10 @@ import { NumberRangeSelector } from 'wdk-client/Components';
      return (
        <div className="number-range-param">
          <NumberRangeSelector
-           value={value}
+           value={parsedValue}
            start={min}
            end={max}
-           step={step}
+           step={stepValue}
            onChange={this.handleChange}
          />
        </div>
