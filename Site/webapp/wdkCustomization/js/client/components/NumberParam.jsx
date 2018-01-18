@@ -1,7 +1,11 @@
 import React from 'react';
 import { paramPropTypes } from './QuestionWizard';
+
 import { NumberSelector } from 'wdk-client/Components';
 
+/**
+ * Number parameters
+ */
 export default class NumberParam extends React.PureComponent {
   constructor (props) {
     super(props);
@@ -10,28 +14,29 @@ export default class NumberParam extends React.PureComponent {
 
   handleChange (newValue) {
     let { param, onParamValueChange } = this.props;
-    newValue = newValue * 1;
-    onParamValueChange(param, newValue);
+    onParamValueChange(param, String(newValue));
   }
 
   render () {
     let { param, value } = this.props;
     let { min, max, integer, step } = param;
-    value = value * 1;
-
-    if (step) step = step * 1;
-    else step = (!integer || integer === 'false' ? 0.01 : 1);
+    let numberValue = Number(value);
+    let stepValue = step != null
+      ? Number(step)
+      : (integer !== 'false' ? 1 : 0.01);
 
     return (
       <div className="number-param">
         <NumberSelector
-          value={value}
+          value={numberValue}
           start={min}
           end={max}
-          step={step}
+          step={stepValue}
           onChange={this.handleChange}
         />
       </div>
     )
   }
-};
+}
+
+NumberParam.propTypes = paramPropTypes;
