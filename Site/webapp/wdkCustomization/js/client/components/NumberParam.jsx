@@ -1,4 +1,6 @@
 import React from 'react';
+import { paramPropTypes } from './QuestionWizard';
+
 import { NumberSelector } from 'wdk-client/Components';
 
 /**
@@ -35,4 +37,6 @@ export default class NumberParam extends React.PureComponent {
       </div>
     )
   }
-};
+}
+
+NumberParam.propTypes = paramPropTypes;
