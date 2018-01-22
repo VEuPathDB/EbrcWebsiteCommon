@@ -601,9 +601,16 @@ if ($prtcpnt_sum) {
 
     if ($prtcpnt_timeline) {
 
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
-      gp = gp + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
-      gp = gp + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = paste0(STATUS, \"| Febrile: \", OPT_STATUS), color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
+#      gp = gp + scale_color_manual(values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+#      gp = gp + scale_fill_manual(na.value=NA, values=c(\"red\" = \"red\", \"green\" = \"#43c130\", \"blue\" = \"blue\"));
+
+      #gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = STATUS, color = COLOR, fill = COLOR, shape = SHAPE), size = 5, real.geom = geom_point);
+      #figure how to map specific shapes to values in SHAPE col.
+      gp = gp + scale_color_manual(values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1]));
+      gp = gp + scale_fill_manual(na.value=NA, values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1]));
+      #gp = gp + scale_shape_manual(values=c(\"half\" = 1, \"full\" = 16))
+
       #desperate times
       if (coord.cartesian) {
         gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
