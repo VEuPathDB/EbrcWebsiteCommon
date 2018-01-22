@@ -1,4 +1,9 @@
 
+setroworder <- function(x, neworder) {
+    .Call(data.table:::Creorder, x, as.integer(neworder), PACKAGE = "data.table")
+    invisible(x)
+}
+
 #this encloses another ui widget inside a dropdown
 dropdownButton <- function(label = "", status = c("default", "primary", "success", "info", "warning", "danger"), ..., width = NULL) {
   
