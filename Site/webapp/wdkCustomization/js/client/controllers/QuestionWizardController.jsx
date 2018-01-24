@@ -483,6 +483,7 @@ class QuestionWizardController extends AbstractViewController {
       ])
       .map(([ group, answerSpec ]) => {
         const params = group.parameters.map(paramName => this.parameterMap.get(paramName));
+        // TODO Use countPredictsAnswerCount FilterParamNew property
         return (params.length === 1 && params[0].type === 'FilterParamNew'
           ? this._getFilterCounts(
               params[0].name,

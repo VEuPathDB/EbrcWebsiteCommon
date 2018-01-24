@@ -66,9 +66,9 @@ html {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      = Used to be in PlasmoDB.css
+      = Global rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-a:link, a:visited, div.divlink, .link, .wdk-Link {
+a:link, a:visited, div.divlink, .link, .wdk-Link, .HelpTrigger .fa {
 	color: #069;
 }
 
@@ -89,17 +89,19 @@ h2 {
 }
 
 h3 {
+  color: #222;
   margin: 0;
   padding: 22px 0 8px 0;
 }
 
 h4 {
+  color: #222;
   margin: 0;
   padding: 10px 0 8px 0;
 }
 
 .h2center, .h3left,.h3center, .h4left {
-  color:  #444;
+  color: #222;
 }
 
 a[name] {
@@ -201,13 +203,20 @@ input.link, button.link, button.wdk-Link {
 
 /* Search boxes */
 textarea,
-input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]) {
+input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]):not([class~="wdk-RealTimeSearchBoxInput"]) {
   border: 1px solid #888;
   background: #fafaf9;
 }
 textarea,
 input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]):not([class~="wdk-RealTimeSearchBoxInput"]):not([class~="wdk-Answer-filterInput"]) {
   padding: 4px;
+}
+
+/* Filtering input */
+.wdk-RealTimeSearchBoxInput {
+  border: 1px solid #888;
+  border-radius: 16px;
+  padding: 0.2em 1.5em .2em 1em;
 }
 
 ::-webkit-input-placeholder { color: #888; }
@@ -1495,6 +1504,31 @@ table#geneFilters th.genus {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =some custom QUESTION PAGES, also blast.js
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.question-content {
+  margin: auto;
+}
+
+.question-content__default-width {
+  max-width: 1000px;
+}
+
+.question-content__wide-width {
+  max-width: 1300px;
+}
+
+/* min width for Add Step question form */
+#query_form {
+  min-width: 825px;
+  max-width: 1300px;
+  margin: 0 5em;
+}
+
+#query_form .filter.params,
+#query_form .search-section {
+  padding: 0 1em;
+}
+
 div.usererror {
   color:red;
 }
@@ -1592,11 +1626,6 @@ tr.headerrow th {
 /* In sites.css we have as background image an image that is narrow for some cases where the th needs to stretch to hold 5 or 6 lines of text; this size forces the image to stretch with the container
 	it does not work on IE7/8 (do not support css3) but it does not hurt either. */
 
-
-/* min width for Add Step question form */
-#query_form {
-  min-width: 825px;
-}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     = RESULT PAGE: motif

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Tooltip } from 'wdk-client/Components';
+import { HelpIcon } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import Param from './Param';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
@@ -32,9 +32,9 @@ function Parameters(props) {
             )}
             {showLabel && (
               <div className={makeClassName('ParamHelp', param.type)}>
-                <Tooltip content={param.help}>
-                  <Icon type="help"/>
-                </Tooltip>
+                <HelpIcon>
+                  {param.help}
+                </HelpIcon>
               </div>
             )}
             <div
