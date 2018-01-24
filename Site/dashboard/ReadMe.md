@@ -37,6 +37,13 @@ Requirements for /dashboard
   - PHP 5
     - PECL json PHP module (available in the RPM php-pecl-json)
 
+  - Oracle database permissions
+    - These are technically required by the JMX MBean, `org.gusdb.wdk.jmx.mbeans.dbms`.
+    - `dbf_gb_on_disk` attribute requires `select from dba_data_files, dba_temp_files`
+    - `server_name` attribute requires `UTL_INADDR` ACL, to run the query,
+      - `select UTL_INADDR.get_host_name as server_name, UTL_INADDR.get_host_address as server_ip from dual;`
+
+
 Development
 
 A php module (`dashboard/lib/modules`) is a class that fetches data from
