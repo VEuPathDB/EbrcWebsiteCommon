@@ -43,12 +43,12 @@
 <!--
 <div class="truncate" style="color:black;padding:0.5em 1em 0em 1em;margin:0.5em;" id="${descripId}">
 -->
-<div class="content-pane notcollapsible" id="${descripId}">
+<div class="search-section" id="${descripId}">
         <div class="group-title h3left" style="padding-bottom: .4em;">Description</div>
 <!--
     <div>
 -->
-    <div class="group-detail" style="display:block"> 
+    <div class="group-detail" style="display:block">
       ${wdkQuestion.description}
     </div>
 </div>
@@ -67,7 +67,7 @@
         <div class="content-pane snippet" style="color:black;padding:0.5em 1em;" id="${attrId}">
           <div>
 -->
-				<div class="content-pane notcollapsible" id="${attrId}">
+				<div class="search-section" id="${attrId}">
             <imp:attributions attributions="${attributions}" caption="Data Sets used by this search" />
           </div>
 <!--        </div>
@@ -80,7 +80,7 @@
 <!--
       <div class="content-pane snippet" style="color:black;padding:0.5em 1em;" id="${attrId}">
 -->
-      <div class="content-pane notcollapsible" id="${attrId}">
+      <div class="search-section" id="${attrId}">
 <!--
        <div>
 -->
@@ -95,7 +95,7 @@
               <c:set var="ds_display" value="${ds_attributes['display_name']}" />
               <c:set var="ds_tables" value="${dsRecord.tables}" />
               <c:set var="ds_publications" value="${ds_tables['Publications']}" />
-              <a class="title" 
+              <a class="title"
                 href="${appUrl}/record/dataset/${ds_id}">${ds_display}</a>
               <div class="detail">
                 <div class="summary">${ds_attributes['summary']}</div>

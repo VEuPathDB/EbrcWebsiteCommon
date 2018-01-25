@@ -6,7 +6,8 @@ import StringParam from './StringParam';
 import DateParam from './DateParam';
 import DateRangeParam from './DateRangeParam';
 import NumberParam from './NumberParam';
-import NumberRangeParam from './NumberRangeParam'
+import NumberRangeParam from './NumberRangeParam';
+import { paramPropTypes } from '../util/paramUtil';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 /**
@@ -22,16 +23,6 @@ function Param(props) {
     )
   }
   return <ParamComponent {...props}/>
-}
-
-Param.propTypes = {
-  param: PropTypes.object.isRequired,
-  value: PropTypes.string.isRequired,
-  uiState: PropTypes.object.isRequired,
-  onActiveOntologyTermChange: PropTypes.func.isRequired,
-  onParamValueChange: PropTypes.func.isRequired,
-  autoFocus: PropTypes.bool,
-  findParamComponent: PropTypes.func
 }
 
 Param.defaultProps = {
@@ -54,5 +45,7 @@ function findParamComponent(param) {
     default: return null;
   }
 }
+
+Param.propTypes = paramPropTypes;
 
 export default wrappable(Param);

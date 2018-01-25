@@ -1,7 +1,7 @@
 import React from 'react';
 import { isEmpty, memoize } from 'lodash';
 import { Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
-import { paramPropTypes } from './QuestionWizard';
+import { paramPropTypes } from '../util/paramUtil';
 
 /**
  * FilterParamNew component

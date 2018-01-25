@@ -8,7 +8,7 @@
   <jsp:directive.attribute name="title" required="false"
               description="Value to appear in page's title"/>
 
-  <jsp:directive.attribute name="refer" required="false" 
+  <jsp:directive.attribute name="refer" required="false"
               description="Page calling this tag"/>
 
   <jsp:directive.attribute name="banner" required="false"

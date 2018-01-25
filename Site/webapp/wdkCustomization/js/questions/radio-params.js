@@ -47,8 +47,8 @@
     var wildcardValue = wildcardWrapper.find('input[name="value(' +
       wildcardName + ')"]').val();
 
-    termWrapper.find('.param-control').prepend(radioStr);
-    wildcardWrapper.find('.param-control').prepend(radioStr);
+    termWrapper.find('label').prepend(radioStr);
+    wildcardWrapper.find('label').prepend(radioStr);
 
     var nonsenseValueR = new RegExp('^(nil|' + nonsenseValue + ')$', 'i');
 

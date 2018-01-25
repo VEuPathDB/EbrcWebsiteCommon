@@ -1,5 +1,5 @@
 import React from 'react';
-import { paramPropTypes } from './QuestionWizard';
+import { paramPropTypes } from '../util/paramUtil';
 import { DateRangeSelector } from 'wdk-client/Components';
 
 /**

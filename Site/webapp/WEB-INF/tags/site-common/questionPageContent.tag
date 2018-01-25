@@ -26,44 +26,68 @@
   </c:choose>
 </c:forEach>
 
-<!-- questionFeature adds icons and tutorials -->
-<!-- having questionFeature as part of the title means it cannot be used for banners; use the extraBanner tag for that -->
-<c:if test="${hideTitle == false}">
-  <h1 class="ui-helper-clearfix">Identify ${recordName} based on ${wdkQuestion.displayName}
-    <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/>
-  </h1>
-</c:if>
+<%-- Determine width class --%>
+<c:set var="width" value="default"/>
+<c:choose>
+  <c:when test="${fn:startsWith(q.questionSetName, 'Internal')}">
+    <c:set var="width" value="wide"/>
+  </c:when>
+  <c:otherwise>
+    <c:forEach items="${q.params}" var="parameter">
+      <c:if test="${(
+        parameter.type eq 'FilterParam' or
+        parameter.type eq 'FilterParamNew'
+      )}">
+        <c:set var="width" value="wide"/>
+      </c:if>
+    </c:forEach>
+  </c:otherwise>
+</c:choose>
 
-<c:if test="fn:containsIgnoreCase(q.questionSetName,'Internal')}">
-<br><center style="position:relative;bottom:20px;font-size:120%;font-family:Verdana">
-  <a href="#query-description-section">[Description]</a> | 
-  <a href="#attributions-section">[Data Sets]</a> 
-</center>
-</c:if>
 
-<a name="query-search-form"></a>
+<%-- Wrap in div to control width --%>
+<div class="question-content question-content__${width}-width">
 
-<div id="query-search-form">
-  <html:form method="post" enctype='multipart/form-data' action="/processQuestion.do">
+  <!-- questionFeature adds icons and tutorials -->
+  <!-- having questionFeature as part of the title means it cannot be used for banners; use the extraBanner tag for that -->
+  <c:if test="${hideTitle == false}">
+    <h1 class="ui-helper-clearfix">Identify ${recordName} based on ${wdkQuestion.displayName}
+      <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/>
+    </h1>
+  </c:if>
 
-    <imp:questionForm />
+  <c:if test="fn:containsIgnoreCase(q.questionSetName,'Internal')}">
+  <br><center style="position:relative;bottom:20px;font-size:120%;font-family:Verdana">
+    <a href="#query-description-section">[Description]</a> |
+    <a href="#attributions-section">[Data Sets]</a>
+  </center>
+  </c:if>
 
-    <c:if test="${hideOperation == false}">
-        <div title="Click to run a search and generate the first step of a new strategy." class="filter-button">
-					<html:submit property="questionSubmit" 
-												value="Get Answer" 
-												title="Click to run a search and generate the first step of a new strategy."  />
-				</div>	
-				<imp:nameStep/>
-    </c:if>
+  <a name="query-search-form"></a>
 
-  </html:form>
-</div>
+  <div id="query-search-form">
+    <html:form method="post" enctype='multipart/form-data' action="/processQuestion.do">
 
-<%-- displays question description, can be overridden by the custom question form --%>
-<c:if test="${hideAttrDescr == false}">
-  <hr/>
-  <!-- <div class="content-pane snippet" style="padding:1em 2em"> -->
-    <div><imp:questionDescription /></div>
+      <imp:questionForm />
+
+      <c:if test="${hideOperation == false}">
+          <div title="Click to run a search and generate the first step of a new strategy." class="filter-button">
+            <html:submit property="questionSubmit"
+                          value="Get Answer"
+                          title="Click to run a search and generate the first step of a new strategy."  />
+          </div>
+          <imp:nameStep/>
+      </c:if>
+
+    </html:form>
+  </div>
+
+  <%-- displays question description, can be overridden by the custom question form --%>
+  <c:if test="${hideAttrDescr == false}">
+    <hr/>
+    <!-- <div class="content-pane snippet" style="padding:1em 2em"> -->
+      <div><imp:questionDescription /></div>
     <!-- </div> -->
-</c:if>
+  </c:if>
+
+</div>

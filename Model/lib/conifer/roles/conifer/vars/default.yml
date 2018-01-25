@@ -4,6 +4,7 @@ project: =c= e.g. ToxoDB
 cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
 hostname: =c= FQDN or 'localhost'
 _hostname: '{{ hostname|swap_hostname(_host_frontends) }}'
+_self_url_scheme: http
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
@@ -126,7 +127,7 @@ modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 modelconfig_smtpServer: 127.0.0.1
 modelconfig_supportEmail: 'help@{{ product|lower }}.{{ _topleveldomain }}'
 modelconfig_wdkTempDir: /var/tmp/wdk
-modelconfig_webAppUrl: 'http://{{ _hostname }}/{{ _webapp_ctx }}///'
+modelconfig_webAppUrl: '{{ _self_url_scheme }}://{{ _hostname }}/{{ _webapp_ctx }}///'
 modelconfig_webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 modelconfig_webServiceUrl: local
 
@@ -139,7 +140,7 @@ modelconfig_emailContent: >
   <![CDATA[
     <p>Thank you for registering at {{ product }}.{{ _topleveldomain }}, a member site of the EuPathDB Bioinformatics Resource Center.</p>
     <p>Your temporary password is: $$PASSWORD$$</p>
-    <p>You may now login to <a href="http://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other EuPathDB member site.</p>
+    <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other EuPathDB member site.</p>
   ]]>
 
 

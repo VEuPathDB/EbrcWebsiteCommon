@@ -1,6 +1,6 @@
 import React from 'react';
 import { DateSelector } from 'wdk-client/Components';
-import { paramPropTypes } from './QuestionWizard';
+import { paramPropTypes } from '../util/paramUtil';
 
 /**
  * DateParam component

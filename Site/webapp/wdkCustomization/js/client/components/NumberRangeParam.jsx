@@ -1,5 +1,5 @@
 import React from 'react';
-import { paramPropTypes } from './QuestionWizard';
+import { paramPropTypes } from '../util/paramUtil';
 import { NumberRangeSelector } from 'wdk-client/Components';
 
 /**

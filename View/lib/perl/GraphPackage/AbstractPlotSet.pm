@@ -305,6 +305,7 @@ library(tools);
 library(gtools);
 library(plyr);
 library(scales);
+library(viridisLite);
 
 $open_R
 
@@ -587,6 +588,13 @@ if (grepl(file_ext(\"$out_f\"), \"svg\")) {
         var tooltiplabx = tooltipx + 5;
         var tooltipy = p.y + 3;
         var offset = arrayLength * 17 + 5;
+        var svgHeight = document.getElementById("gridSVG").getBBox().height;
+        var toolHeight = text.getBBox().height;
+        var maxY = svgHeight - toolHeight - 10;
+        var tooltipy = p.y + 3;
+        if (tooltipy > maxY) {
+                tooltipy = maxY - 10;
+        }
         var tooltiplaby = tooltipy + offset;
         // Position tooltip rect and text
         text.setAttribute("transform",
