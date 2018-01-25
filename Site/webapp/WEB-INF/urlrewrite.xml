@@ -22,5 +22,14 @@
     <set type="response-header" name="Vary">Accept-Encoding</set>
   </rule>
 
+  <rule>
+    <name>Webpack asset header</name>
+    <note>Add far-future cache-related headers</note>
+    <from>^(.*)bundle-.{20}\.(js|css|jpeg|jpg|gif|png)$</from>
+    <set type="expires">1 year</set>
+    <set type="response-header" name="Cache-Control">public, max-age=31536000</set>
+    <set type="response-header" name="Vary">Accept-Encoding</set>
+  </rule>
+
 </urlrewrite>
 
