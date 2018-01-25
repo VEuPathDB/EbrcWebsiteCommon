@@ -68,8 +68,8 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
           params.put(paramName, newValue.toString());
           valueChanged = true;
         }
-        _counts[(valueChanged ? ResultType.VALUE_CHANGED : ResultType.NO_CHANGE).ordinal()]++;
       }
+      _counts[(valueChanged ? ResultType.VALUE_CHANGED : ResultType.NO_CHANGE).ordinal()]++;
       return result.setShouldWrite(valueChanged);
     }
     catch (Exception e) {
@@ -92,5 +92,4 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
       LOG.info("  " + type.toString() + ": " + _counts[type.ordinal()]);
     }
   }
-
 }
