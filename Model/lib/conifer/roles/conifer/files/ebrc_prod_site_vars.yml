@@ -1,6 +1,7 @@
 env: production
 
 _ssl_enabled_hosts:
+  - integrate.clinepidb.org
   - q1.clinepidb.org
   - q2.clinepidb.org
 
