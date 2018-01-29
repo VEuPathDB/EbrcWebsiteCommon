@@ -31,17 +31,21 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
   }
 
   private WdkModel _wdkModel;
+  private boolean _writeToDb;
   private int[] _counts = { 0, 0, 0, 0 };
 
   @Override
   public void configure(WdkModel wdkModel, List<String> additionalArgs) throws Exception {
     _wdkModel = wdkModel;
+    _writeToDb = !additionalArgs.isEmpty() && additionalArgs.get(0).equals("-write");
   }
 
   @Override
   public TableRowUpdater<StepData> getTableRowUpdater(WdkModel wdkModel) {
-    return new TableRowUpdater<StepData>(new StepDataFactory(false),
-        ListBuilder.asList(new StepDataWriter()), this, wdkModel);
+    return new TableRowUpdater<StepData>(
+        new StepDataFactory(false),
+        ListBuilder.asList(new StepDataWriter()),
+        this, wdkModel);
   }
 
   @Override
@@ -72,7 +76,7 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
         }
       }
       _counts[(valueChanged ? ResultType.VALUE_CHANGED : ResultType.NO_CHANGE).ordinal()]++;
-      return result.setShouldWrite(valueChanged);
+      return result.setShouldWrite(valueChanged && _writeToDb);
     }
     catch (Exception e) {
       _counts[ResultType.ERROR.ordinal()]++;
