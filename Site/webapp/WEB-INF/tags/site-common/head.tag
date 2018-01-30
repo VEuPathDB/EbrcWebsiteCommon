@@ -27,7 +27,7 @@
     <title>
       <jsp:text>${empty title ? banner : title}</jsp:text>
     </title>
-    <link rel="shortcut icon" type="image/x-icon" href="${pageContext.servletContext.contextPath}/images/${project}/favicon.ico"/> <!-- for IE7 -->
+    <imp:stylesheet rel="shortcut icon" type="image/x-icon" href="images/${project}/favicon.ico"/> <!-- for IE7 -->
     <!-- StyleSheets provided by Site -->
     <imp:stylesheets refer="${refer}" /> 
 
