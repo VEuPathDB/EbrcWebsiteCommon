@@ -206,8 +206,7 @@ button.ebrc-QuestionWizardParamGroupButton {
   border-radius: 5px;
   color: #333;
   min-height: 3em;
-  max-width: 9em;
-  min-width: 4em;
+  width: 9em;
   overflow-x: hidden;
   padding: 0 1em;
   text-overflow: ellipsis;
