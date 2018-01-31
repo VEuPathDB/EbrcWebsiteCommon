@@ -73,7 +73,6 @@ TableReporterForm.getInitialState = (downloadFormStoreState) => {
   let firstLeafName = util.findFirstLeafId(tableTree);
   return {
     formState: {
-      stepId: downloadFormStoreState.step.id.toString(),
       tables: [ firstLeafName ],
       includeHeader: true,
       attachmentType: "plain"

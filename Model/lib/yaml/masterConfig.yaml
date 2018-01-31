@@ -229,7 +229,7 @@ clinepidb:
   twitterWidgetId: ''
   twitterUrl: ''
   youtubeUrl: ''
-  facebookUrl: ''
+  facebookUrl: https://www.facebook.com/ClinEpiDB
 
 orthomcl:
   modelName: OrthoMCL

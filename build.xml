@@ -243,6 +243,7 @@
            output="${webappTargetDir}/assets-manifest.json">
       <arg line="${projectsDir}/EbrcWebsiteCommon/Site/scripts/generateAssetsManifest.js"/>
       <fileset dir="${webappTargetDir}" casesensitive="false">
+        <include name="**/*.ico"/>
         <include name="**/*.js"/>
         <include name="**/*.css"/>
         <include name="**/*.jpg"/>

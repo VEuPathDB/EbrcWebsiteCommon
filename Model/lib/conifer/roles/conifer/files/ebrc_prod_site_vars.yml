@@ -1,5 +1,13 @@
 env: production
 
+_ssl_enabled_hosts:
+  - integrate.clinepidb.org
+  - q1.clinepidb.org
+  - q2.clinepidb.org
+
+_self_url_scheme: "{{ 'https' if (hostname in _ssl_enabled_hosts) else 'http' }}"
+
+
 accountDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['acctDb_name'] }}"
 accountDb_login: "{{ host_data['acctDb_login'] }}"
 accountDb_password: "{{ password['acctdb'] }}"

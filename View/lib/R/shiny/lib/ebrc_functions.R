@@ -1,4 +1,17 @@
 
+isDate <- function(mydate, date.format = "%Y-%m-%d") {
+  # Check if field is a date using as.Date that looks for unambiguous dates
+  #   Assumes date format so NA returned not Character error. 
+  #   Why? with no date format, R tries two defaults then gives error. 
+  #   BUT With a dateformat R returns NA
+  # Args
+  #   Suspected date and optional date format string
+  # Returns
+  #   TRUE if thinbks it is a date
+  tryCatch(!is.na(as.Date(mydate, date.format)),  
+           error = function(err) {FALSE})  
+}
+
 setroworder <- function(x, neworder) {
     .Call(data.table:::Creorder, x, as.integer(neworder), PACKAGE = "data.table")
     invisible(x)
