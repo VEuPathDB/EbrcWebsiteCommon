@@ -20,7 +20,7 @@ import org.gusdb.wdk.model.fix.table.steps.StepData;
 import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
 import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
 import org.gusdb.wdk.model.fix.table.steps.StepQuestionUpdater;
-import org.gusdb.wdk.model.query.param.FilterParam;
+import org.gusdb.wdk.model.query.param.FilterParamNew;
 import org.gusdb.wdk.model.query.param.Param;
 import org.gusdb.wdk.model.question.Question;
 import org.gusdb.wdk.model.user.Step;
@@ -178,7 +178,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
         continue;
       }
       Param param = qParams.get(paramName);
-      if (!(param instanceof FilterParam)) {
+      if (!(param instanceof FilterParamNew)) {
         // this fix only applies to filter params
         continue;
       }
