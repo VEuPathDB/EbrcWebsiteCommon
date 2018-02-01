@@ -397,12 +397,14 @@ if (!all(is.na(profile.df.full\$VALUE))) {
 }
 
 if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
-  gp = ggplot(profile.df.full, aes(x=CONTXAXIS, y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
-}else if(profile.is.numeric && !$forceNoLines) {
-  gp = ggplot(profile.df.full, aes(x=ELEMENT_NAMES_NUMERIC, y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
+  myX <- \"CONTXAXIS\"
+} else if (profile.is.numeric && !$forceNoLines) {
+  myX <- \"ELEMENT_NAMES_NUMERIC\"
 } else {
-  gp = ggplot(profile.df.full, aes(x=ELEMENT_NAMES, y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
+  myX <- \"ELEMENT_NAMES\"
 }
+
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -436,7 +438,7 @@ if($isSVG) {
 if (!$prtcpnt_timeline) {
 
 if(useTooltips){
-  gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",ELEMENT_NAMES, \", y: \", VALUE)), real.geom=geom_point);  
+  gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
 }else{
   gp = gp + geom_point();
 }
@@ -542,12 +544,18 @@ if(is.compact) {
   gp = gp + ylim(y.min, y.max);
   gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
 
-  if(!profile.is.numeric) {
-    gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-    if(xAxisCount > 3) {
-      gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
-    } else {
-      gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+  if (myX == \"CONTXAXIS\") {
+    if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df[[myX]], perl=T))))) {
+      gp = gp + theme(axis.text.x = element_blank())    
+    }
+  } else {
+    if(!profile.is.numeric) {
+      gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
+      if(xAxisCount > 3) {
+        gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
+      } else {
+        gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+      }
     }
   }
 
