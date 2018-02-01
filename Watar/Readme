@@ -38,15 +38,16 @@ java -cp "$PROJECT_HOME/test_home/lib/java/*"   \
 !! testbynames; where testnames are defined in 
 !! config/smoketest_ng.xml.
 ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
-    -Dcomp=Watar \
     -Dproj=EbrcWebsiteCommon \
-    -DprojectsDir=$PROJECT_HOME \
+    -Dcomp=Watar \
     -DtargetDir=$PROJECT_HOME/test_home \
-    -Dbaseurl='http://integrate.toxodb.org' \
-    -Dwebappname='toxo.integrate' \
-    -Dtestnames="Integration" \
-    -DmsTimeout='30000' \
-    install cleantestresults testbynames 
+    -DprojectsDir=$PROJECT_HOME \
+    -Dbaseurl=http://integrate.toxodb.org \
+    -Dwebappname=toxo.integrate \
+    -Dtestnames="QA" \
+    -DmsTimeout=30000 \
+    cleantestresults cleaninstall testbynames 
+
 
 
 !! testnames (when using testbynames ant target) are
