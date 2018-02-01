@@ -4,6 +4,7 @@ _ssl_enabled_hosts:
   - integrate.clinepidb.org
   - q1.clinepidb.org
   - q2.clinepidb.org
+  - qa.gates.clinepidb.org
 
 _self_url_scheme: "{{ 'https' if (hostname in _ssl_enabled_hosts) else 'http' }}"
 
