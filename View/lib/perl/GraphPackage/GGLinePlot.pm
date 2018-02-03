@@ -336,7 +336,10 @@ for(ii in 1:length(profile.files)) {
     profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
 
     if (ncol(element.names.df) > 2 ){
-       profile.df\$FACET = as.factor(profile.df\$FACET)
+      profile.df\$FACET <- as.character(profile.df\$FACET)
+      profile.df\$FACET[is.na(profile.df\$FACET)] <- \"Unknown\"
+      profile.df\$FACET[profile.df\$FACET == \"\"] <- \"Unknown\"
+      profile.df\$FACET = as.factor(profile.df\$FACET)
     }
   }
 
@@ -438,7 +441,11 @@ if($isSVG) {
 if (!$prtcpnt_timeline) {
 
 if(useTooltips){
-  gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+  if (myX == \"CONTXAXIS\") {
+    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
+  } else {
+    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+  }
 }else{
   gp = gp + geom_point();
 }
@@ -545,13 +552,15 @@ if(is.compact) {
   gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
 
   if (myX == \"CONTXAXIS\") {
-    if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df[[myX]], perl=T))))) {
+    if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
       gp = gp + theme(axis.text.x = element_blank())    
     }
   } else {
     if(!profile.is.numeric) {
       gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-      if(xAxisCount > 3) {
+      if (xAxisCount > 50) {
+        gp = gp + theme(axis.text.x = element_blank())
+      } else if(xAxisCount > 3) {
         gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
       } else {
         gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
@@ -565,7 +574,7 @@ if(is.compact) {
 }
 
 if(\"FACET\" %in% colnames(profile.df.full)) {
-  if(!all(is.na(profile.df.full\$FACET_ns))){
+  if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
     numLevels=nlevels(profile.df.full\$FACET_ns);
     numCols=ceiling(numLevels / 2);
     if (numLevels > 3) {

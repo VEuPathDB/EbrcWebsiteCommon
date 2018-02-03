@@ -10,7 +10,9 @@ import {
   keyBy,
   mapValues,
   memoize,
-  pick
+  pick,
+  sortBy,
+  stubTrue as T
 } from 'lodash';
 import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
@@ -165,28 +167,6 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   setParamState(param, state) {
-    // Update global default sort to most recent sort specification
-    // if (param.type === 'FilterParamNew') {
-    //   let match = Object.entries(state.fieldStates)
-    //     .find(([fieldName, fieldState]) =>
-    //       this.state.paramUIState[param.name].fieldStates[fieldName] !== fieldState);
-    //   if (match) {
-    //     let newState = this.state.question.parameters
-    //       .filter(param => param.type === 'FilterParamNew')
-    //       .reduce((prevState, param) => {
-    //         return updateObjectImmutably(
-    //           prevState,
-    //           [
-    //             'paramUIState',
-    //             param.name,
-    //             'defaultMemberFieldState'
-    //           ],
-    //           state.fieldStates[match[0]]
-    //         );
-    //       }, this.state);
-    //     this.setState(newState);
-    //   }
-    // }
     this.setState(updateState(['paramUIState', param.name], state));
   }
 
@@ -205,10 +185,30 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   /**
-   * Set all params to default values
+   * Set all params to default values, then update group counts and ontology term summaries
    */
   resetParamValues() {
-    this.setState(resetParamValues)
+    // reset values
+    this.setState(resetParamValues, () => {
+      this._updateGroupCounts(
+        Seq.from(this.state.question.groups)
+          .filter(group => this.state.groupUIState[group.name].accumulatedTotal != null));
+    })
+
+    // clear ontology term summaries
+    const paramUIState = mapValues(this.state.paramUIState, state =>
+      Object.assign({}, state, {
+        ontologyTermSummaries: state.ontologyTermSummaries && {}
+      }));
+
+    this.setState({ paramUIState }, () => {
+      Seq.from(this.state.activeGroup.parameters)
+        .map(paramName => this.parameterMap.get(paramName))
+        .filter(param => param.type === 'FilterParamNew')
+        .forEach(param => {
+          this.setActiveOntologyTerm(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
+        })
+    })
   }
 
   /**
@@ -330,7 +330,9 @@ class QuestionWizardController extends AbstractViewController {
       this._handleParamValueChange(param, paramValue, prevParamValue),
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
-          this._updateGroupCounts(Seq.of(currentGroup));
+          this._updateGroupCounts(groups
+            .takeWhile(group => group !== this.state.activeGroup)
+            .concat(Seq.of(this.state.activeGroup)));
           this._initializeActiveGroupParams(this.state.activeGroup);
         });
       })
@@ -454,7 +456,7 @@ class QuestionWizardController extends AbstractViewController {
       [group.name]: Object.assign({}, state[group.name], {
         loading: true,
         // XXX Why are we setting valid true here?
-        valid: true
+        valid: false
       })
     }), Object.assign({}, this.state.groupUIState));
 
@@ -692,16 +694,8 @@ function compareDistributionValues(valueA, valueB) {
   );
 }
 
-/**
- * Compare values based on inclusion in array.
- */
-function makeSelectionComparator(values) {
-  let set = new Set(values);
-  return function compareValuesBySelection(a, b) {
-    return set.has(a.value) && !set.has(b.value) ? -1
-      : set.has(b.value) && !set.has(a.value) ? 1
-      : 0;
-  }
+function filteredCountIsZero(entry) {
+  return entry.filteredCount === 0;
 }
 
 /**
@@ -713,7 +707,12 @@ function makeSelectionComparator(values) {
  */
 export function sortDistribution(distribution, sort, filter) {
   let { columnKey, direction, groupBySelected } = sort;
+  let selectedSet = new Set(filter ? filter.value : []);
+  let selectionPred = groupBySelected
+    ? (a) => !selectedSet.has(a.value)
+    : T
 
+  // first sort by specified column
   let sortedDist = distribution.slice().sort(function compare(a, b) {
     let order =
       // if a and b are equal, fall back to comparing `value`
@@ -723,7 +722,6 @@ export function sortDistribution(distribution, sort, filter) {
     return direction === 'desc' ? -order : order;
   });
 
-  return groupBySelected && filter && filter.value && filter.value.length > 0
-    ? sortedDist.sort(makeSelectionComparator(filter.value))
-    : sortedDist;
+  // then perform secondary sort based on filtered count and selection
+  return sortBy(sortedDist, [ filteredCountIsZero, selectionPred ])
 }
