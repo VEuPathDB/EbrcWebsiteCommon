@@ -54,7 +54,7 @@ let TableReporterForm = props => {
         </div>
       </div>
       <div className="eupathdb-ReporterFormSubmit">
-        <input type="submit" value="Submit" onClick={onSubmit}/>
+        <button className="btn" type="submit" onClick={onSubmit}>Get {recordClass.displayNamePlural}</button>
       </div>
       <hr/>
       <div style={{margin:'0.5em 2em'}}>

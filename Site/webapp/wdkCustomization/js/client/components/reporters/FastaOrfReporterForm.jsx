@@ -68,7 +68,7 @@ let FastaOrfReporterForm = props => {
           onChange={getUpdateHandler('attachmentType')} items={util.attachmentTypes}/>
       </div>
       <div style={{margin:'0.8em'}}>
-        <input type="submit" value="Get Sequences" onClick={onSubmit}/>
+        <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
       </div>
       <SrtHelp/>
     </div>
