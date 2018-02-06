@@ -159,8 +159,8 @@ public class ErrorHandler {
         .append(errors.getActionErrorsAsText()).append(NL)
 
         .append(SECTION_DIV)
-        .append("Exception Stack Trace").append(doubleNewline)
-        .append(valueOrDefault(errors.getStackTraceAsText(), "")).append(NL)
+        .append("Detailed Description").append(doubleNewline)
+        .append(valueOrDefault(errors.getDetailedDescription(), "")).append(NL)
 
         .toString();
   }

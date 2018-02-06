@@ -21,6 +21,7 @@ import org.gusdb.fgputil.FormatUtil.Style;
 import org.gusdb.fgputil.events.Events;
 import org.gusdb.fgputil.web.HttpRequestData;
 import org.gusdb.wdk.controller.CConstants;
+import org.gusdb.wdk.errors.JavaErrorBundle;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
 import org.gusdb.wdk.errors.ErrorContext.RequestType;
@@ -105,7 +106,7 @@ public class ErrorsTag extends WdkTagBase {
     }
 
     private static void logException(ErrorBundle errors, ErrorContext context) {
-      String exceptionText = errors.getStackTraceAsText();
+      String exceptionText = errors.getDetailedDescription();
       if (exceptionText != null)
           LOG.error(exceptionText);
       LOG.error("log4j marker: " + context.getLogMarker());
@@ -132,7 +133,7 @@ public class ErrorsTag extends WdkTagBase {
      * @throws JspException if error occurs fetching action messages
      */
     private static ErrorBundle getErrorBundle(PageContext pageContext, HttpServletRequest request) throws JspException {
-        return new ErrorBundle(
+        return new JavaErrorBundle(
             (Exception)request.getAttribute(Globals.EXCEPTION_KEY),    // exceptions caught by Struts (e.g. thrown by Actions)
             pageContext.getException(),                                // exceptions during page processing (e.g. JSTL syntax errors)
             (Exception)request.getAttribute(CConstants.WDK_EXCEPTION), // exceptions explicitly passed (e.g. from question form or to showErrorPage.do)
@@ -206,7 +207,7 @@ public class ErrorsTag extends WdkTagBase {
         }
 
         if (showStacktrace && !(wdkException instanceof WdkUserException)) {
-            String st = errors.getStackTraceAsText();
+            String st = errors.getDetailedDescription();
             if (st != null) {
                 out.println("<br>\n<pre>\n\n" + st + "\n</pre>\n");
             }
