@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, memoize } from 'lodash';
+import { memoize } from 'lodash';
 import { Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
 import { paramPropTypes } from '../util/paramUtil';
 
@@ -16,7 +16,6 @@ export default class FilterParamNew extends React.PureComponent {
     this._handleMemberSort = this._handleMemberSort.bind(this);
     this._handleMemberSearch = this._handleMemberSearch.bind(this);
     this._handleRangeScaleChange = this._handleRangeScaleChange.bind(this);
-    this._renderSelectionInfo = this._renderSelectionInfo.bind(this);
   }
 
   _getFiltersFromValue(value) {
@@ -54,13 +53,6 @@ export default class FilterParamNew extends React.PureComponent {
     this.props.onParamStateChange(this.props.param, newState);
   }
 
-  _renderSelectionInfo({ filters }) {
-    if (this.props.uiState.hideFilterPanel && isEmpty(filters)) {
-      return <em>No filters currently applied.</em>
-    }
-    return null;
-  }
-
   render() {
     let { param, uiState } = this.props;
     let fields = this._getFieldMap(uiState.ontology);
@@ -94,7 +86,7 @@ export default class FilterParamNew extends React.PureComponent {
           onMemberSort={this._handleMemberSort}
           onMemberSearch={this._handleMemberSearch}
           onRangeScaleChange={this._handleRangeScaleChange}
-          renderSelectionInfo={this._renderSelectionInfo}
+          hideGlobalCounts={true}
         />
       </div>
     )
