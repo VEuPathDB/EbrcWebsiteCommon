@@ -115,6 +115,13 @@ sub makeRPlotString {
     if(scalar @{$profileSet->errors()} > 0) {
       $skipProfileSets[$i] = "TRUE";
       $skipped++;
+      if ($skipped == 1) {
+        splice @$colors, $i, 1;
+      } else {
+        #this because the size/ indexing of $colors shrinks as values removed.
+        my $j = $i - $skipped + 1;
+        splice @$colors, $j, 1;
+      }
       next;
     }
 
