@@ -1517,6 +1517,44 @@ table#geneFilters th.genus {
   max-width: 1300px;
 }
 
+.question-description-link {
+  font-size: 1.2em;
+  text-align: right;
+  margin-bottom: -0.5em;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: none;
+  }
+
+  30% {
+    box-shadow: 0 0 0px 3px #4278bdb3;
+  }
+
+  60% {
+    box-shadow: 0 0 0px 3px #4278bdb3;
+  }
+
+  100% {
+    box-shadow: none;
+  }
+}
+
+.search-section:target .group-title {
+  animation-duration: 2s;
+  animation-name: glow;
+  padding: .4em .5em;
+  margin-left: -.5em;
+  margin-right: -.5em;
+  border-radius: 10px;
+}
+
+.search-section {
+  padding: 7em 0 2em;
+  margin-top: -5em;
+}
+
 /* min width for Add Step question form */
 #query_form {
   min-width: 825px;

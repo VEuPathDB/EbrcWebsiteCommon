@@ -51,9 +51,15 @@
   <!-- questionFeature adds icons and tutorials -->
   <!-- having questionFeature as part of the title means it cannot be used for banners; use the extraBanner tag for that -->
   <c:if test="${hideTitle == false}">
-    <h1 class="ui-helper-clearfix">Identify ${recordName} based on ${wdkQuestion.displayName}
-      <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/>
-    </h1>
+    <div class="question-title-container">
+      <div class="question-description-link">
+        <i class="fa fa-info-circle"></i>
+        <a title="Read more about this search below" href="#query-description-section">Learn more about this search</a>
+      </div>
+      <h1 class="ui-helper-clearfix">Identify ${recordName} based on ${wdkQuestion.displayName}
+        <imp:questionFeature question="${wdkQuestion}" refer="questionPage"/>
+      </h1>
+    </div>
   </c:if>
 
   <c:if test="fn:containsIgnoreCase(q.questionSetName,'Internal')}">
