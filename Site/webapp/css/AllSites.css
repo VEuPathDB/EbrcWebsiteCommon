@@ -1544,15 +1544,18 @@ table#geneFilters th.genus {
 .search-section:target .group-title {
   animation-duration: 2s;
   animation-name: glow;
-  padding: .4em .5em;
-  margin-left: -.5em;
-  margin-right: -.5em;
-  border-radius: 10px;
 }
 
 .search-section {
   padding: 7em 0 2em;
   margin-top: -5em;
+}
+
+.search-section .group-title {
+  padding: .4em .5em;
+  margin-left: -.5em;
+  margin-right: -.5em;
+  border-radius: 10px;
 }
 
 /* min width for Add Step question form */
