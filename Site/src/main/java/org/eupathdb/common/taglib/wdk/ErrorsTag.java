@@ -24,7 +24,7 @@ import org.gusdb.wdk.controller.CConstants;
 import org.gusdb.wdk.errors.ServerErrorBundle;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
-import org.gusdb.wdk.errors.ErrorContext.RequestType;
+import org.gusdb.wdk.errors.ErrorContext.ErrorLocation;
 import org.gusdb.wdk.errors.ValueMaps;
 import org.gusdb.wdk.errors.ValueMaps.RequestAttributeValueMap;
 import org.gusdb.wdk.errors.ValueMaps.ServletContextValueMap;
@@ -178,7 +178,7 @@ public class ErrorsTag extends WdkTagBase {
             ValueMaps.toMap(new ServletContextValueMap(servletContext)),
             ValueMaps.toMap(new RequestAttributeValueMap(request)),
             ValueMaps.toMap(new SessionAttributeValueMap(request.getSession())),
-            RequestType.WDK_SITE);
+            ErrorLocation.WDK_SITE);
     }
 
     /**

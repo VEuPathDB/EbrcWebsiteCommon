@@ -78,6 +78,34 @@
     </filter>
   </appender>
 
+  <appender name="errors-client-ignored"
+            class="org.apache.log4j.RollingFileAppender">
+    <param name="maxFileSize" value="100MB" />
+    <param name="maxBackupIndex" value="1" />
+    <param name="File" value="${catalina.base}/logs/@WEBAPP@/errors-client-ignored.log" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m%n" />
+    </layout>
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+      <param name="LevelMin" value="trace" />
+      <param name="LevelMax" value="fatal" />
+    </filter>
+  </appender>
+
+  <appender name="errors-client-retained"
+            class="org.apache.log4j.RollingFileAppender">
+    <param name="maxFileSize" value="100MB" />
+    <param name="maxBackupIndex" value="1" />
+    <param name="File" value="${catalina.base}/logs/@WEBAPP@/errors-client-retained.log" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m%n" />
+    </layout>
+    <filter class="org.apache.log4j.varia.LevelRangeFilter">
+      <param name="LevelMin" value="trace" />
+      <param name="LevelMax" value="fatal" />
+    </filter>
+  </appender>
+
   <appender name="example-sql-log"
             class="org.apache.log4j.RollingFileAppender">
     <param name="maxFileSize" value="5MB" />
@@ -165,6 +193,8 @@
   <logger name="org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger" additivity="false"><level value="info"/><appender-ref ref="http-response-log" /></logger>
   <logger name="org.eupathdb.common.errors.ErrorHandler.IgnoredErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-ignored" /></logger>
   <logger name="org.eupathdb.common.errors.ErrorHandler.RetainedErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-retained" /></logger>
+  <logger name="org.eupathdb.common.errors.ErrorHandler.IgnoredClientErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-client-ignored" /></logger>
+  <logger name="org.eupathdb.common.errors.ErrorHandler.RetainedClientErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-client-retained" /></logger>
   <logger name="org.apache"><level value="warn"/></logger>
   <logger name="org.apache.catalina.core">
     <level value="info"/><!-- info level required to log stdout/stderr -->
