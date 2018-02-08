@@ -1523,27 +1523,19 @@ table#geneFilters th.genus {
   margin-bottom: -0.5em;
 }
 
-@keyframes glow {
-  0% {
-    box-shadow: none;
-  }
-
+@keyframes highlight {
   30% {
-    box-shadow: 0 0 0px 3px #4278bdb3;
+    border-color: red;
   }
 
   60% {
-    box-shadow: 0 0 0px 3px #4278bdb3;
-  }
-
-  100% {
-    box-shadow: none;
+    border-color: red;
   }
 }
 
 .search-section:target .group-title {
   animation-duration: 2s;
-  animation-name: glow;
+  animation-name: highlight;
 }
 
 .search-section {
@@ -1553,9 +1545,9 @@ table#geneFilters th.genus {
 
 .search-section .group-title {
   padding: .4em .5em;
-  margin-left: -.5em;
+  margin-left: -1em;
   margin-right: -.5em;
-  border-radius: 10px;
+  border-left: .5em solid transparent;
 }
 
 /* min width for Add Step question form */
