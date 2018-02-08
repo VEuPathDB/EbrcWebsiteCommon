@@ -107,7 +107,7 @@ export function initialize(options = {}) {
     quickSearches,
     componentWrappers,
     storeWrappers,
-    wrapRoutes,
+    wrapRoutes = identity,
   } = options;
 
   const restOptions = omit(options, [
