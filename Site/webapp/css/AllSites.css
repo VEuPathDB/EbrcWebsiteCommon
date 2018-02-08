@@ -1523,24 +1523,24 @@ table#geneFilters th.genus {
   margin-bottom: -0.5em;
 }
 
-@keyframes highlight {
-  30% {
-    border-color: red;
-  }
-
-  60% {
-    border-color: red;
-  }
-}
-
-.search-section:target .group-title {
-  animation-duration: 2s;
-  animation-name: highlight;
-}
-
 .search-section {
   padding: 7em 0 2em;
   margin-top: -5em;
+}
+
+@keyframes fade-in-out {
+  50% { opacity: 1; }
+}
+
+.search-section:target:before {
+  animation: fade-in-out ease-in 3s;
+  opacity: 0;
+  content: "\f0da";
+  position: absolute;
+  margin-left: -.6em;
+  color: #046599;
+  font-family: FontAwesome;
+  font-size: 2.5em;
 }
 
 .search-section .group-title {
