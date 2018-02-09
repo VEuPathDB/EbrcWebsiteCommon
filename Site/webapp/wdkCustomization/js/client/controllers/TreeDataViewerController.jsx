@@ -46,7 +46,7 @@ class TreeDataViewer extends Component {
         display = <CheckboxTree
           tree={parsedTree}
           getNodeId={node => node.id}
-          getNodeChildren={node => node.children}
+          getNodeChildren={node => node.children ? node.children : []}
           onExpansionChange={this.onExpansionChange}
           showRoot={true}
           nodeComponent={props => <span>{props.node.display}</span>}
