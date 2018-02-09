@@ -1,10 +1,7 @@
 import { Component } from 'react';
+import { bindAll } from 'lodash';
 import { WdkPageController } from 'wdk-client/Controllers';
 import { CheckboxTree } from 'wdk-client/Components';
-
-function isNodeInSearch(node, terms) {
-  return terms.some(term => (node.id.includes(term) || node.display.includes(term)));
-}
 
 class TreeDataViewer extends Component {
 
@@ -15,28 +12,13 @@ class TreeDataViewer extends Component {
       expandedNodes: [],
       searchTerm: ""
     };
-    this.onTextChange = this.onTextChange.bind(this);
-    this.onExpansionChange = this.onExpansionChange.bind(this);
-    this.onSearchTermChange = this.onSearchTermChange.bind(this);
+    bindAll(this, [ 'onTextChange', 'onExpansionChange', 'onSearchTermChange' ]);
   }
 
-  onTextChange(event) {
-    this.setState(Object.assign(this.state, {
-      text: event.target.value
-    }));
-  }
-
-  onExpansionChange(expandedNodeNamesArray) {
-    this.setState(Object.assign(this.state, {
-      expandedNodes: expandedNodeNamesArray
-    }));
-  }
-
-  onSearchTermChange(searchTerm) {
-    this.setState(Object.assign(this.state, {
-      searchTerm: searchTerm
-    }));
-  }
+  // event handlers update individual state values
+  onTextChange(event)              { update(this, { text: event.target.value }); }
+  onExpansionChange(expandedNodes) { update(this, { expandedNodes: expandedNodes}); }
+  onSearchTermChange(searchTerm)   { update(this, { searchTerm: searchTerm }); }
 
   render() {
     let display = "";
@@ -79,6 +61,18 @@ class TreeDataViewer extends Component {
       </div>
     );
   }
+}
+
+function isNodeInSearch(node, terms) {
+  return terms
+    .map(term => term.toLowerCase())
+    .some(term => (
+      node.id.toLowerCase().includes(term) ||
+      node.display.toLowerCase().includes(term)));
+}
+
+function update(stateContainer, changedState) {
+  stateContainer.setState(Object.assign(stateContainer.state, changedState));
 }
 
 export default class TreeDataViewerController extends WdkPageController {
