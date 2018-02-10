@@ -153,7 +153,6 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
     if (!oldValue.has("filters")) oldValue.put("filters", new JSONArray());
 
     JSONArray filtersJson = oldValue.getJSONArray("filters");
-
     JSONArray newFiltersJson = new JSONArray();
 
     for (int i = 0; i < filtersJson.length(); i++ ) {
@@ -165,6 +164,15 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
       Object value;
       Boolean isRange;
       Boolean includeUnknown = false;
+
+      // If filter has `type` property, it will have the rest of these values.
+      // `type` was added after these other props
+      if (filterJson.has("type")) {
+        type = filterJson.getString("type");
+        value = filterJson.get("value");
+        isRange = filterJson.getBoolean("isRange");
+        includeUnknown = filterJson.getBoolean("includeUnknown");
+      }
 
       try {
         JSONArray memberValueJson = filterJson.getJSONArray("value");
