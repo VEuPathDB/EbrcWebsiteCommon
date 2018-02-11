@@ -1559,7 +1559,8 @@ table#geneFilters th.genus {
 
 #query_form .filter.params,
 #query_form .search-section {
-  padding: 0 1em;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 div.usererror {
