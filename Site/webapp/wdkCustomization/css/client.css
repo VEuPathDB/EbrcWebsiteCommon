@@ -167,7 +167,7 @@ td.wdk-DataTableCell__thumbnail {
 .eupathdb-DatasetGraphContainer {
   overflow: auto;
   position: relative;
-  padding: 0 4px;
+  padding: 0 1rem;
   min-height: 100px;
   display: flex;
   flex-wrap: wrap;
