@@ -33,7 +33,13 @@ export default class FilterParamNew extends React.PureComponent {
   }
 
   _handleFilterChange(filters) {
-    this.props.onParamValueChange(this.props.param, JSON.stringify({ filters }));
+    const fieldMap = this._getFieldMap(this.props.param.ontology);
+    const filtersWithDisplay = filters.map(filter => {
+      const field = fieldMap.get(filter.field);
+      const fieldDisplayName = field ? field.display : undefined;
+      return { ...filter, fieldDisplayName };
+    });
+    this.props.onParamValueChange(this.props.param, JSON.stringify({ filters: filtersWithDisplay }));
   }
 
   _handleMemberSort(field, sort) {
