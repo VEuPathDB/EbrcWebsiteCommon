@@ -159,10 +159,10 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
       JSONObject filterJson = filtersJson.getJSONObject(i);
       String field = filterJson.getString("field");
 
-      // Need to infer `type` from `value`
-      String type;
-      Object value;
-      Boolean isRange;
+      // Default values... we will attempt to infer below
+      String type = "string";
+      Object value = null;
+      Boolean isRange = false;
       Boolean includeUnknown = false;
 
       // If filter has `type` property, it will have the rest of these values.
@@ -174,64 +174,63 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
         includeUnknown = filterJson.getBoolean("includeUnknown");
       }
 
-      try {
-        JSONArray memberValueJson = filterJson.getJSONArray("value");
-        isRange = false;
-        for (int j = 0; j < memberValueJson.length(); j++) {
-          if (memberValueJson.isNull(j) || memberValueJson.get(j).equals("unknown")) {
-            includeUnknown = true;
-            memberValueJson.remove(j);
-            j--;
+      else if (filterJson.has("value")) {
+        try {
+          JSONArray memberValueJson = filterJson.getJSONArray("value");
+          isRange = false;
+          for (int j = 0; j < memberValueJson.length(); j++) {
+            if (memberValueJson.isNull(j) || memberValueJson.get(j).equals("unknown")) {
+              includeUnknown = true;
+              memberValueJson.remove(j);
+              j--;
+            }
+          }
+          if (memberValueJson.length() == 0) {
+            type = "string";
+          } else {
+            JsonType jsonType = new JsonType(memberValueJson.get(0));
+            switch (jsonType.getType()) {
+              case STRING:
+                type = "string";
+                break;
+
+              case NUMBER:
+                type = "number";
+                break;
+
+              default:
+                throw new Exception("Unknown value type: " + jsonType.getType() + "\n" + memberValueJson.toString(4));
+            }
+          }
+          value = memberValueJson;
+        } catch (JSONException memberEx) {
+          try {
+            JSONObject rangeValueJSON = filterJson.getJSONObject("value");
+            isRange = true;
+            JsonType minType = new JsonType(rangeValueJSON.has("min") ? rangeValueJSON.get("min") : JSONObject.NULL);
+            JsonType maxType = new JsonType(rangeValueJSON.has("max") ? rangeValueJSON.get("max") : JSONObject.NULL);
+            JsonType sampleType = minType.isNull() ? maxType : minType;
+
+            switch (sampleType.getType()) {
+              case STRING:
+                if (!minType.isNull()) rangeValueJSON.put("min", Double.parseDouble(rangeValueJSON.getString("min")));
+                if (!maxType.isNull()) rangeValueJSON.put("max", Double.parseDouble(rangeValueJSON.getString("max")));
+                type = "number";
+                break;
+
+              case NUMBER:
+              case NULL:
+                type = "number";
+                break;
+
+              default:
+                throw new Exception("Unknown range type: " + sampleType.getType());
+            }
+            value = rangeValueJSON;
+          } catch (JSONException rangeEx) {
+            throw new Exception("Unexpected `value` property in filter JSON:\n" + filterJson.toString(4));
           }
         }
-        if (memberValueJson.length() == 0) {
-          type = "string";
-        }
-        else {
-          JsonType jsonType = new JsonType(memberValueJson.get(0));
-          switch (jsonType.getType()) {
-            case STRING:
-              type = "string";
-              break;
-
-            case NUMBER:
-              type = "number";
-              break;
-
-            default:
-              throw new Exception("Unknown value type: " + jsonType.getType() + "\n" + memberValueJson.toString(4));
-          }
-        }
-        value = memberValueJson;
-      }
-      catch (JSONException memberEx) {
-       try {
-         JSONObject rangeValueJSON = filterJson.getJSONObject("value");
-         isRange = true;
-         JsonType minType = new JsonType(rangeValueJSON.has("min") ? rangeValueJSON.get("min") : JSONObject.NULL);
-         JsonType maxType = new JsonType(rangeValueJSON.has("max") ? rangeValueJSON.get("max") : JSONObject.NULL);
-         JsonType sampleType = minType.isNull() ? maxType : minType;
-
-         switch(sampleType.getType()) {
-           case STRING:
-             if (!minType.isNull()) rangeValueJSON.put("min", Double.parseDouble(rangeValueJSON.getString("min")));
-             if (!maxType.isNull()) rangeValueJSON.put("max", Double.parseDouble(rangeValueJSON.getString("max")));
-             type = "number";
-             break;
-
-           case NUMBER:
-           case NULL:
-             type = "number";
-             break;
-
-           default:
-             throw new Exception("Unknown range type: " + sampleType.getType());
-         }
-         value = rangeValueJSON;
-       }
-       catch(JSONException rangeEx) {
-         throw new Exception("Unexpected `value` property in filter JSON:\n" + filterJson.toString(4));
-       }
       }
 
       newFiltersJson.put(i, new JSONObject()
