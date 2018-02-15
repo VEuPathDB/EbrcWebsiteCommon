@@ -178,7 +178,10 @@ export default class DatasetGraph extends PureComponent {
           </object>)}
           {this.renderImgError()}	   
 
-{/*	  <h4 hidden={this.props.contXAxisMetadataTable ? false : true}>
+{/*
+hook: HostResponseGraphs
+*/}
+	  <h4 hidden={this.props.contXAxisMetadataTable ? false : true}>
 	    Choose metadata category for X-axis:  
 	  </h4>
            <select value={this.state.contXAxis} hidden={this.props.contXAxisMetadataTable ? false : true} onChange={event => this.setContXAxis(event.target.value)}>
@@ -205,7 +208,7 @@ export default class DatasetGraph extends PureComponent {
 		})
             }
 	   </select>
-*/}
+
 
           <h4><a href={dataset_link}>Full Dataset Description</a></h4>
 

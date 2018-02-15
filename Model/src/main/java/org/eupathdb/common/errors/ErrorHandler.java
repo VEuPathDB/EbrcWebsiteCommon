@@ -31,6 +31,7 @@ import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
 import org.gusdb.fgputil.web.RequestData;
+import org.gusdb.wdk.errors.ClientErrorBundle;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
 import org.gusdb.wdk.model.WdkModel;
@@ -42,24 +43,6 @@ public class ErrorHandler {
   private static final String ERROR_START = "##ERROR_START##";
   private static final String ERROR_END = "##ERROR_END##";
   private static final String SECTION_DIV = "************************************************" + NL;
-
-  /**
-   * Contains errors that matched filters
-   */
-  private static final class IgnoredErrorLog {
-    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(IgnoredErrorLog.class));
-    private IgnoredErrorLog() {}
-    public static Logger getLogger() { return _logger; }
-  }
-
-  /**
-   * Contains errors that didn't match filters
-   */
-  private static final class RetainedErrorLog {
-    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(RetainedErrorLog.class));
-    private RetainedErrorLog() {}
-    public static Logger getLogger() { return _logger; }
-  }
 
   private final Properties _filters;
   private final List<ErrorCategory> _categories;
@@ -85,8 +68,15 @@ public class ErrorHandler {
         .append(searchText).append(NL).append(ERROR_END).append(NL).toString();
 
     // determine where to log this error based on context and filter match
-    Logger errorLog = (matchedFilterKey != null ? IgnoredErrorLog.getLogger() : RetainedErrorLog.getLogger());
-    errorLog.error(fullErrorText);
+    Logger errorLog =
+        errors instanceof ClientErrorBundle ?
+            (matchedFilterKey != null ?
+                IgnoredErrorLog.getLogger() :
+                RetainedErrorLog.getLogger()) :
+            (matchedFilterKey != null ?
+                IgnoredClientErrorLog.getLogger() :
+                RetainedClientErrorLog.getLogger());
+              errorLog.error(fullErrorText);
 
     if (matchedFilterKey == null && context.isSiteMonitored()) {
       // error passes through filters; email if it doesn't fall into an existing category
@@ -159,8 +149,8 @@ public class ErrorHandler {
         .append(errors.getActionErrorsAsText()).append(NL)
 
         .append(SECTION_DIV)
-        .append("Exception Stack Trace").append(doubleNewline)
-        .append(valueOrDefault(errors.getStackTraceAsText(), "")).append(NL)
+        .append("Detailed Description").append(doubleNewline)
+        .append(valueOrDefault(errors.getDetailedDescription(), "")).append(NL)
 
         .toString();
   }
@@ -281,7 +271,7 @@ public class ErrorHandler {
 
     String from = "tomcat@" + context.getRequestData().getServerName();
     List<String> recipients = context.getAdminEmails();
-    String subject = context.getWdkModel().getProjectId() + " " + context.getRequestType().getLabel() +
+    String subject = context.getWdkModel().getProjectId() + " " + context.getErrorLocation().getLabel() +
         " Error - " + context.getRequestData().getRemoteHost();
 
     if (recipients.isEmpty()) {
@@ -321,5 +311,41 @@ public class ErrorHandler {
     catch (MessagingException me) {
       LOG.error(me);
     }
+  }
+
+  /**
+   * Contains server errors that matched filters
+   */
+  private static final class IgnoredErrorLog {
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(IgnoredErrorLog.class));
+    private IgnoredErrorLog() {}
+    public static Logger getLogger() { return _logger; }
+  }
+
+  /**
+   * Contains server errors that didn't match filters
+   */
+  private static final class RetainedErrorLog {
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(RetainedErrorLog.class));
+    private RetainedErrorLog() {}
+    public static Logger getLogger() { return _logger; }
+  }
+
+  /**
+   * Contains client errors that matched filters
+   */
+  private static final class IgnoredClientErrorLog {
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(IgnoredClientErrorLog.class));
+    private IgnoredClientErrorLog() {}
+    public static Logger getLogger() { return _logger; }
+  }
+
+  /**
+   * Contains client errors that didn't match filters
+   */
+  private static final class RetainedClientErrorLog {
+    private static final Logger _logger = Logger.getLogger(getInnerClassLog4jName(RetainedClientErrorLog.class));
+    private RetainedClientErrorLog() {}
+    public static Logger getLogger() { return _logger; }
   }
 }

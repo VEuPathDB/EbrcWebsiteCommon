@@ -13,12 +13,13 @@ import {
   Components as WdkComponents,
   Controllers as WdkControllers
 } from 'wdk-client';
-import { debounce, identity, omit, uniq } from 'lodash';
+import { debounce, identity, omit, uniq, flow } from 'lodash';
 import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
 import * as eupathComponentWrappers from './component-wrappers';
 import * as eupathStoreWrappers from './store-wrappers';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
+import * as EbrcRoutes from './routes';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -106,7 +107,7 @@ export function initialize(options = {}) {
     quickSearches,
     componentWrappers,
     storeWrappers,
-    wrapRoutes,
+    wrapRoutes = identity,
   } = options;
 
   const restOptions = omit(options, [
@@ -123,7 +124,7 @@ export function initialize(options = {}) {
 
   // initialize the application
   const context = initializeWdk({
-    wrapRoutes,
+    wrapRoutes: flow(EbrcRoutes.wrapRoutes, wrapRoutes),
     storeWrappers: mergeWrapperObjects(storeWrappers, eupathStoreWrappers),
     rootUrl,
     rootElement,

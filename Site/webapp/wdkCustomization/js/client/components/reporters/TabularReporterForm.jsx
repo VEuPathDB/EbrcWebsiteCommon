@@ -26,7 +26,7 @@ let TabularReporterForm = props => {
               selectedLeaves={formState.attributes}
               expandedBranches={formUiState.expandedAttributeNodes}
               searchTerm={formUiState.attributeSearchText}
-          
+
               // change handlers for each state element controlled by the tree
               onChange={util.getAttributesChangeHandler('attributes', updateFormState, formState, recordClass)}
               onUiChange={getUiUpdateHandler('expandedAttributeNodes')}
@@ -51,7 +51,7 @@ let TabularReporterForm = props => {
             </div>
           </div>
           <div style={{margin:'2em 0'}}>
-            <input type="submit" value="Submit" onClick={onSubmit}/>
+            <button className="btn" type="submit" onClick={onSubmit}>Get {recordClass.displayNamePlural}</button>
           </div>
         </div>
       </div>

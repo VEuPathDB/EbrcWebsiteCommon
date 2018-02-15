@@ -70,7 +70,7 @@ let TranscriptAttributesReporterForm = props => {
       </div>
 
       <div className="eupathdb-ReporterFormSubmit">
-        <input type="submit" value="Submit" onClick={onSubmit}/>
+        <button className="btn" type="submit" onClick={onSubmit}>Get Genes</button>
       </div>
 
       <hr/>

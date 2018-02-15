@@ -7,7 +7,7 @@ import org.gusdb.fgputil.SetBuilder;
 import org.gusdb.wdk.service.WdkServiceApplication;
 
 public class EuPathServiceApplication extends WdkServiceApplication {
-	
+
   @Override
   public Set<Class<?>> getClasses() {
     return new SetBuilder<Class<?>>()

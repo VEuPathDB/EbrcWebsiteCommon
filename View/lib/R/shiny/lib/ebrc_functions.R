@@ -1,4 +1,16 @@
 
+#override ggplot cut_number function recursively decrease num bins until it works.
+rcut_number <- function(data = c(), n = 4){
+  hold <- try(ggplot2::cut_number(data, n), silent = TRUE)
+  if (!grepl("Error", hold[1])){
+    returnData <- hold
+  } else {
+    returnData <- rcut_number(data, n = n-1)
+  }
+  
+  returnData
+}
+
 isDate <- function(mydate, date.format = "%Y-%m-%d") {
   # Check if field is a date using as.Date that looks for unambiguous dates
   #   Assumes date format so NA returned not Character error. 
@@ -67,5 +79,14 @@ naToZero = function(DT, col = NULL) {
       set(DT,which(is.na(DT[[j]])),j,0)
   } else {
     set(DT, which(is.na(DT[[col]])), col, 0)
+  }
+}
+
+naToUnknown = function(DT, col = NULL) {
+  if (is.null(col)) {
+    for (j in seq_len(ncol(DT)))
+      set(DT,which(is.na(DT[[j]])),j,"Unknown")
+  } else {
+    set(DT, which(is.na(DT[[col]])), col, "Unknown")
   }
 }

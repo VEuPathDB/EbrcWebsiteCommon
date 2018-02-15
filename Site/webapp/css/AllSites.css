@@ -1517,6 +1517,39 @@ table#geneFilters th.genus {
   max-width: 1300px;
 }
 
+.question-description-link {
+  font-size: 1.2em;
+  text-align: right;
+  margin-bottom: -0.5em;
+}
+
+.search-section {
+  padding: 7em 0 2em;
+  margin-top: -5em;
+}
+
+@keyframes fade-in-out {
+  50% { opacity: 1; }
+}
+
+.search-section:target:before {
+  animation: fade-in-out ease-in 3s;
+  opacity: 0;
+  content: "\f0da";
+  position: absolute;
+  margin-left: -.6em;
+  color: #046599;
+  font-family: FontAwesome;
+  font-size: 2.5em;
+}
+
+.search-section .group-title {
+  padding: .4em .5em;
+  margin-left: -1em;
+  margin-right: -.5em;
+  border-left: .5em solid transparent;
+}
+
 /* min width for Add Step question form */
 #query_form {
   min-width: 825px;
@@ -1526,7 +1559,8 @@ table#geneFilters th.genus {
 
 #query_form .filter.params,
 #query_form .search-section {
-  padding: 0 1em;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 div.usererror {

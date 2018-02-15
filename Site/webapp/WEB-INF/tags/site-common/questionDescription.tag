@@ -44,7 +44,7 @@
 <div class="truncate" style="color:black;padding:0.5em 1em 0em 1em;margin:0.5em;" id="${descripId}">
 -->
 <div class="search-section" id="${descripId}">
-        <div class="group-title h3left" style="padding-bottom: .4em;">Description</div>
+        <div class="group-title h3left" >Description</div>
 <!--
     <div>
 -->
@@ -84,7 +84,7 @@
 <!--
        <div>
 -->
-        <div class="group-title h3left" style="padding-bottom: .4em;">Data Sets used by this search</div>
+        <div class="group-title h3left" >Data Sets used by this search</div>
 
         <div class="group-detail" style="display:block">
           <ul>

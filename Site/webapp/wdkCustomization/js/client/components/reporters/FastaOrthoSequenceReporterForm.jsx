@@ -26,7 +26,7 @@ let FastaOrthoSequenceReporterForm = props => {
             onChange={getUpdateHandler('attachmentType')}/>
       </div>
       <div style={{margin:'0.8em'}}>
-        <input type="submit" value="Download" onClick={onSubmit}/>
+        <button className="btn" type="submit" onClick={onSubmit}>Download</button>
       </div>
     </div>
   );

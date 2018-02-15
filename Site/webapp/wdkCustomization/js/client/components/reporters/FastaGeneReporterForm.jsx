@@ -127,7 +127,7 @@ let FastaGeneReporterForm = props => {
           onChange={getUpdateHandler('attachmentType')} items={util.attachmentTypes}/>
       </div>
       <div style={{margin:'0.8em'}}>
-        <input type="button" value="Get Sequences" onClick={onSubmit}/>
+        <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
       </div>
       <div>
         <hr/>
@@ -157,7 +157,7 @@ FastaGeneReporterForm.getInitialState = () => ({
     downstreamAnchor: 'End',
     downstreamSign: 'plus',
     downstreamOffset: 0,
-  
+
     // sequence region inputs for 'protein'
     startAnchor3: 'Start',
     startOffset3: 0,

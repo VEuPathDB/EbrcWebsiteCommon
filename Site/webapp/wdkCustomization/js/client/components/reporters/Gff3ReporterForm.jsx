@@ -38,7 +38,7 @@ let Gff3ReporterForm = props => {
         </div>
       </div>
       <div className="eupathdb-ReporterFormSubmit">
-        <input type="submit" value="Submit" onClick={onSubmit}/>
+      <button className="btn" type="submit" onClick={onSubmit}>Get GFF3 file</button>
       </div>
     </div>
   );
