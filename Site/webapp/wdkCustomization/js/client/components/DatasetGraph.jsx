@@ -1,6 +1,7 @@
+import React from 'react';
 import { httpGet } from '../util/http';
 import { CollapsibleSection, Loading } from 'wdk-client/Components';
-import { PureComponent, safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/ComponentUtils';
 
 /**
  * Renders an Dataset graph with the provided rowData.
@@ -12,7 +13,7 @@ import { PureComponent, safeHtml } from 'wdk-client/ComponentUtils';
  * the available parts, and then we can update the state of the Component. This
  * flow will ensure that we have a consistent state when rendering.
  */
-export default class DatasetGraph extends PureComponent {
+export default class DatasetGraph extends React.PureComponent {
 
   constructor(...args) {
     super(...args);
