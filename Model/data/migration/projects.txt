@@ -17,6 +17,7 @@ schi	SchistoDB			not_component
 toxo	ToxoDB
 tryp	TriTrypDB
 tvag	TrichDB
+mbio	MicrobiomeDB			not_component
 #orth	OrthoMCL	501n	not_apisite	not_component
 # put portal last so that model and maint sites are likely to be ok by the time we get there.
 eupa	EuPathDB			not_component
