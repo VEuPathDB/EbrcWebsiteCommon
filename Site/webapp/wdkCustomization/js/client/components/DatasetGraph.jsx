@@ -49,7 +49,7 @@ export default class DatasetGraph extends React.PureComponent {
 
   componentWillUnmount() {
     this.request.abort();
-    console.trace('DatasetGraph is unmounting');
+    // console.trace('DatasetGraph is unmounting');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -190,7 +190,7 @@ hook: HostResponseGraphs
              {this.props.contXAxisMetadataTable &&
                 contXAxisMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(xAxisRow => {
                   return (
-                    <option value={xAxisRow.property_id}>{xAxisRow.property}</option>
+                    <option key={xAxisRow.property_id} value={xAxisRow.property_id}>{xAxisRow.property}</option>
                   );
                 })
             }
@@ -204,7 +204,7 @@ hook: HostResponseGraphs
 	     {this.props.facetMetadataTable &&
 		facetMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(facetRow => {
 		  return (
-		    <option value={facetRow.property_id}>{facetRow.property}</option>
+		    <option key={facetRow.property_id} value={facetRow.property_id}>{facetRow.property}</option>
 		  ); 
 		})
             }
