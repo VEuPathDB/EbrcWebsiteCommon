@@ -169,7 +169,7 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
       // `type` was added after these other props
       if (filterJson.has("type")) {
         type = filterJson.getString("type");
-        value = filterJson.get("value");
+        value = filterJson.has("value") ? filterJson.get("value") : null;
         isRange = filterJson.getBoolean("isRange");
         includeUnknown = filterJson.getBoolean("includeUnknown");
       }
