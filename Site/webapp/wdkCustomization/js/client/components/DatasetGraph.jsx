@@ -104,15 +104,15 @@ export default class DatasetGraph extends React.PureComponent {
 
   setFacet(myfacet) {
     if (this.state.facet !== myfacet) {
-      this.setState({loading: true, 
-		     facet: myfacet});
+      this.setState({loading: true,
+         facet: myfacet});
     }
-  }  
+  }
 
   setContXAxis(myXAxis) {
     if (this.state.contXAxis !== myXAxis) {
       this.setState({loading: true,
-      		     contXAxis: myXAxis});
+               contXAxis: myXAxis});
     }
   }
 
@@ -177,16 +177,16 @@ export default class DatasetGraph extends React.PureComponent {
             }}
             onError={() => this.setState({ loading: false, imgError: true })}>
           </object>)}
-          {this.renderImgError()}	   
+          {this.renderImgError()}
 
 {/*
 hook: HostResponseGraphs
 */}
-	  <h4 hidden={this.props.contXAxisMetadataTable ? false : true}>
-	    Choose metadata category for X-axis:  
-	  </h4>
+    <h4 hidden={this.props.contXAxisMetadataTable ? false : true}>
+      Choose metadata category for X-axis:
+    </h4>
            <select value={this.state.contXAxis} hidden={this.props.contXAxisMetadataTable ? false : true} onChange={event => this.setContXAxis(event.target.value)}>
-	     <option value='none'>None</option>
+       <option value='none'>None</option>
              {this.props.contXAxisMetadataTable &&
                 contXAxisMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(xAxisRow => {
                   return (
@@ -196,25 +196,25 @@ hook: HostResponseGraphs
             }
            </select>
 
-	   <h4 hidden={this.props.facetMetadataTable ? false : true}>
-	     Choose metadata category to facet graph on:
-	   </h4>
-	   <select value={this.state.facet} hidden={this.props.facetMetadataTable ? false : true} onChange={event => this.setFacet(event.target.value)}>
-	     <option value='none'>None</option>
-	     {this.props.facetMetadataTable &&
-		facetMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(facetRow => {
-		  return (
-		    <option key={facetRow.property_id} value={facetRow.property_id}>{facetRow.property}</option>
-		  ); 
-		})
+     <h4 hidden={this.props.facetMetadataTable ? false : true}>
+       Choose metadata category to facet graph on:
+     </h4>
+     <select value={this.state.facet} hidden={this.props.facetMetadataTable ? false : true} onChange={event => this.setFacet(event.target.value)}>
+       <option value='none'>None</option>
+       {this.props.facetMetadataTable &&
+    facetMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(facetRow => {
+      return (
+        <option key={facetRow.property_id} value={facetRow.property_id}>{facetRow.property}</option>
+      );
+    })
             }
-	   </select>
+     </select>
 
 
           <h4><a href={dataset_link}>Full Dataset Description</a></h4>
 
-     	  {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene(s) from the reference strain for this species. This may or may NOT accurately represent the gene you are interested in. </div>
-           : null} 
+         {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene(s) from the reference strain for this species. This may or may NOT accurately represent the gene you are interested in. </div>
+           : null}
 
            {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl ?
              <div>
@@ -229,12 +229,12 @@ hook: HostResponseGraphs
               headerContent="Coverage"
               isCollapsed={this.state.coverageCollapsed}
               onCollapsedChange={this.handleCoverageCollapseChange}>
-	
+
               <div>
                 Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>)
                 <br></br><br></br>
                 <a href={covImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
-                  View in genome browser 
+                  View in genome browser
                 </a>
               </div>
 
