@@ -247,15 +247,19 @@ DummyR
 }
 
 sub blankGGPlotPart {
-my ($self)= @_;
+my ($self, $idType)= @_;
 my $plotTitle = $self->getPlotTitle();
 
 my $text = "\"None\"";
 my $textSize = 10;
 
-if($self->isCompact()) {
-  $text = "\"" . $self->getId() . "\"";
-  $textSize = 4;
+my $idType = $self->getIdType();
+
+if(($idType) && lc($idType) eq 'ec') {
+  if($self->isCompact()) {
+    $text = "\"" . $self->getId() . "\"";
+    $textSize = 4;
+  }
 }
 
 return <<DummyR
