@@ -269,7 +269,7 @@ for(ii in 1:length(profile.files)) {
 
   if(!skip.stderr && !is.na(stderr.files[ii]) && stderr.files[ii] != '') {
     stderr.df = read.table(stderr.files[ii], header=T, sep=\"\\t\");
-    colnames(stderr.df) = c(\"ELEMENT_ORDER\", \"STDERR\");
+    names(stderr.df)[names(stderr.df) == \"VALUE\"] <- \"STDERR\"
 
     profile.df = merge(profile.df, stderr.df[, c(\"ELEMENT_ORDER\", \"STDERR\")], by=\"ELEMENT_ORDER\");
   } else {
