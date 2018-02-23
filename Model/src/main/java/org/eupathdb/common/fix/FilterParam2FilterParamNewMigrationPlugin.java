@@ -1,6 +1,5 @@
 package org.eupathdb.common.fix;
 
-import java.text.DateFormat;
 import java.util.List;
 import java.util.Map;
 
