@@ -247,20 +247,26 @@ DummyR
 }
 
 sub blankGGPlotPart {
-my ($self)= @_;
+my ($self, $idType)= @_;
 my $plotTitle = $self->getPlotTitle();
 
-my $text = "None";
+my $text = "\"None\"";
+my $textSize = 10;
 
-if($self->isCompact()) {
-  $text = $self->getId();
+my $idType = $self->getIdType();
+
+if(($idType) && lc($idType) eq 'ec') {
+  if($self->isCompact()) {
+    $text = "\"" . $self->getId() . "\"";
+    $textSize = 4;
+  }
 }
 
 return <<DummyR
 
-d=data.frame(VALUE=0.5, LABEL="None")
+d=data.frame(VALUE=0.5, LABEL=$text)
 
-gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
+gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=$textSize) + theme_void() + theme(legend.position=\"none\");
 
 plotlist[[plotlist.i]] = gp;
 plotlist.i = plotlist.i + 1;
