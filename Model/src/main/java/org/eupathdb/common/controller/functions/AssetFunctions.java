@@ -6,35 +6,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
+
 public class AssetFunctions {
 
   private static final String MANIFEST_FILE = "assets-manifest.json";
   private static final Logger logger = Logger.getLogger(AssetFunctions.class);
   private static JSONObject manifestJSON;
   private static boolean didAttemptToLoad = false;
+  private static long lastLoaded = 0L;
 
-  private static void loadChecksums(ServletContext svc) {
-    if (!didAttemptToLoad) {
-      try {
-        JSONTokener jt = new JSONTokener(svc.getResourceAsStream(MANIFEST_FILE));
-        manifestJSON = new JSONObject(jt);
+  // TODO Always read when in dev mode?
+  private static synchronized void loadChecksums(ServletContext svc) {
+    try {
+      long lastModified = new File(svc.getRealPath(MANIFEST_FILE)).lastModified();
+      if (!didAttemptToLoad || lastModified > lastLoaded) {
+        logger.debug("Loading manifest file \"" + MANIFEST_FILE + "\": " +
+            (!didAttemptToLoad ? "First access" : "Modified"));
+        manifestJSON = new JSONObject(new JSONTokener(svc.getResourceAsStream(MANIFEST_FILE)));
+        lastLoaded = lastModified;
       }
-      catch (JSONException je) {
-        logger.error(MANIFEST_FILE + " contains a syntax error.");
-        logger.debug(je);
-      }
-      catch (NullPointerException npe) {
-        logger.warn(MANIFEST_FILE + " not found. No URLs will be rewritten.");
-      }
-      finally {
-        didAttemptToLoad = true;
-      }
+    }
+    catch (JSONException je) {
+      logger.error(MANIFEST_FILE + " contains a syntax error.");
+      logger.debug(je);
+    }
+    catch (NullPointerException npe) {
+      logger.warn(MANIFEST_FILE + " not found. No URLs will be rewritten.");
+    }
+    finally {
+      didAttemptToLoad = true;
     }
   }
 
   public static String doFingerprint(String url, ServletContext svc) {
-    loadChecksums(svc);
     try {
+      loadChecksums(svc);
       if (manifestJSON != null) {
         String qs = "";
         if (url != null) {
