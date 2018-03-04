@@ -69,7 +69,7 @@ public class ErrorHandler {
 
     // determine where to log this error based on context and filter match
     Logger errorLog =
-        errors instanceof ClientErrorBundle ?
+        !(errors instanceof ClientErrorBundle) ?
             (matchedFilterKey != null ?
                 IgnoredErrorLog.getLogger() :
                 RetainedErrorLog.getLogger()) :
