@@ -39,6 +39,13 @@ export function createInitialState(question, recordClass, paramValues) {
               searchTerm: ''
             },
             defaultRangeFieldState: {
+            },
+            defaultMultiFieldState: {
+              sort: {
+                columnKey: 'display',
+                direction: 'asc'
+              },
+              searchTerm: ''
             }
           }
         });

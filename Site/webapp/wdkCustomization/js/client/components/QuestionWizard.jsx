@@ -31,7 +31,7 @@ function QuestionWizard(props) {
   } = props.wizardState;
 
   return (
-    <div className={makeClassName() + ' show-scrollbar'}>
+    <div className={makeClassName()}>
       <div className={makeClassName('HeadingContainer')}>
         <h1 className={makeClassName('Heading')}>
           {question.displayName} &nbsp;
@@ -295,7 +295,6 @@ class FilterSummary extends React.Component {
         className={makeClassName('FilterSummary')}
         open={wizardState.filterPopupState.visible}
         title="Active Filters"
-        className={makeClassName('FilterSummary')}
         buttons={[
           <button
             key="pin"
