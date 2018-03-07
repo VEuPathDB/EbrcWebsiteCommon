@@ -10,13 +10,17 @@ const globalDataItems = [
   'basketCounts',
   'quickSearches',
   'preferences',
+  'userDatasetsEnabled',
   'location',
-  'siteConfig'
+  'siteConfig',
+  'config'
 ];
 
 const withContext = flow(
   withActions(UserActionCreators),
-  withStore(state => pick(state.globalData, globalDataItems))
+  withStore(state => {
+    return pick(state.globalData, globalDataItems)
+  })
 );
 
 /**

@@ -4,6 +4,7 @@ import {
   ary,
   debounce,
   flow,
+  get,
   groupBy,
   identity,
   isEqual,
@@ -11,6 +12,7 @@ import {
   mapValues,
   memoize,
   pick,
+  reverse,
   sortBy,
   stubTrue as T
 } from 'lodash';
@@ -109,8 +111,41 @@ class QuestionWizardController extends AbstractViewController {
       ([ question, recordClass ]) => {
         this.setState(createInitialState(question, recordClass, paramValues), () => {
           document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+
           // store <string, Parameter>Map for quick lookup
           this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
+
+
+          // FIXME Remove when testing is complete
+          // inject a multi filter for testing
+          if (questionName === 'ParticipantQuestions.ParticipantsByRelativeVisits_prism') {
+            const fakeMultiTerm = '@@MULTI_FILTER_TEST@@';
+            const multiChildRe = /HP_0002027|SYMP_0000523|SYMP_0000614|SYMP_0019177|EUPATH_0000097|HP_0002315|HP_0000952|SYMP_0000064|EUPATH_0000252|SYMP_0000124|HP_0002013/;
+            const uiState = this.state.paramUIState.visits_prism;
+            uiState.ontology = [{
+              display: 'Symptoms and signs (multi)',
+              isMulti: true,
+              isRange: false,
+              parent: 'EUPATH_0000328',
+              term: fakeMultiTerm,
+              type: 'string',
+              values: ['Yes', 'No', 'Unable to assess'],
+            }].concat( uiState.ontology.map(o => multiChildRe.test(o.term) ? {...o, parent: fakeMultiTerm } : o));
+          }
+
+          // FIXME Remove when testing is complete
+          // Presence of pathogens - EUPATH_0010984
+          if (questionName === 'ParticipantQuestions.ParticipantsByRelativeVisits_maled') {
+            for (let paramName of [ 'visits_maled', 'relative_visits_maled' ]) {
+              const ontology = get(this.state.paramUIState, [ paramName, 'ontology' ], []);
+              const multiField = ontology.find(item => item.term === 'EUPATH_0010984');
+              if (multiField) Object.assign(multiField, {
+                isMulti: true,
+                type: 'string',
+                values: [ 'Yes', 'No' ]
+              });
+            }
+          }
 
           const defaultParamValues = getDefaultParamValues(this.state);
           const lastConfiguredGroup = Seq.from(question.groups)
@@ -232,14 +267,20 @@ class QuestionWizardController extends AbstractViewController {
 
   setOntologyTermSort(param, term, sort) {
     let uiState = this.state.paramUIState[param.name];
+    let field = uiState.ontology.find(field => field.term === term);
+    if (field == null || field.isRange) return;
+
     let { ontologyTermSummaries, fieldStates, defaultMemberFieldState } = uiState;
     let { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
     let filter = filters.find(f => f.field === term);
+
     let newState = Object.assign({}, uiState, {
       ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
-        [term]: Object.assign({}, ontologyTermSummaries[term], {
-          valueCounts: sortDistribution(ontologyTermSummaries[term].valueCounts, sort, filter)
-        })
+        [term]: field.isMulti
+          ? sortMultiFieldSummary(ontologyTermSummaries[term], uiState.ontology, sort)
+          : Object.assign({}, ontologyTermSummaries[term], {
+            valueCounts: sortDistribution(ontologyTermSummaries[term].valueCounts, sort, filter)
+          })
       }),
       fieldStates: Object.assign({}, fieldStates, {
         [term]: Object.assign({}, fieldStates[term] || defaultMemberFieldState, {
@@ -281,17 +322,23 @@ class QuestionWizardController extends AbstractViewController {
       let { filters: prevFilters = [] } = JSON.parse(this.state.paramValues[param.name]);
       let filtersByTerm = keyBy(filters, 'field');
       let prevFiltersByTerm = keyBy(prevFilters, 'field');
-      let fieldMap = new Map(param.ontology.map(entry => [ entry.term, entry ]));
+      let fieldMap = new Map(paramState.ontology.map(entry => [ entry.term, entry ]));
       let ontologyTermSummaries = mapValues(paramState.ontologyTermSummaries, (summary, term) =>
         fieldMap.get(term).isRange || filtersByTerm[term] === prevFiltersByTerm[term]
         ? summary
-        : Object.assign({}, summary, {
-          valueCounts: sortDistribution(
-            summary.valueCounts,
-            (paramState.fieldStates[term] || paramState.defaultMemberFieldState).sort,
-            filtersByTerm[term]
+        : Object.assign({}, summary, fieldMap.get(term).isMulti
+          ? sortMultiFieldSummary(
+            summary,
+            paramState.ontology,
+            paramState.fieldStates[term] || paramState.defaultMultiFieldState
           )
-        })
+          : {
+            valueCounts: sortDistribution(
+              summary.valueCounts,
+              (paramState.fieldStates[term] || paramState.defaultMemberFieldState).sort,
+              filtersByTerm[term]
+            )
+          })
       );
       this.setParamState(param, Object.assign({}, paramState, { ontologyTermSummaries }));
     }
@@ -343,7 +390,8 @@ class QuestionWizardController extends AbstractViewController {
     if (param.type === 'FilterParamNew') {
       const { filters = [] } = JSON.parse(paramValue);
       const { filters: oldFilters = [] } = JSON.parse(prevParamValue);
-      const { activeOntologyTerm, ontologyTermSummaries } = this._getParamUIState(this.state, param.name);
+      const { activeOntologyTerm, ontologyTermSummaries, ontology } = this._getParamUIState(this.state, param.name);
+      const ontologyByTerm = keyBy(ontology, 'term');
 
       // Get an array of fields whose associated filters have been modified.
       const modifiedFields = Object.entries(groupBy(filters.concat(oldFilters), 'field'))
@@ -351,8 +399,15 @@ class QuestionWizardController extends AbstractViewController {
         .map(([ field ]) => field);
 
       const singleModifiedField = modifiedFields.length === 1 ? modifiedFields[0] : null;
+      const singleModifiedOntologyTerm = ontologyByTerm[singleModifiedField];
+      const singleModifiedOntologyParent = singleModifiedOntologyTerm && ontologyByTerm[singleModifiedOntologyTerm.parent]
 
-      const shouldUpdateActiveOntologyTermSummary = singleModifiedField !== activeOntologyTerm;
+      const shouldUpdateActiveOntologyTermSummary = (
+        singleModifiedField !== activeOntologyTerm &&
+        // FIXME When we support ANY for multi filter, change this to reflect that.
+        ( singleModifiedOntologyParent == null ||
+          !singleModifiedOntologyParent.isMulti )
+      );
 
       // Ontology term summaries we want to keep. We definitely want to keep the
       // active ontology summary to prevent an empty panel while it's loading.
@@ -360,7 +415,7 @@ class QuestionWizardController extends AbstractViewController {
       // need to update the associated ontologyTermSummary.
       const newOntologyTermSummaries = Object.assign({
         [activeOntologyTerm]: ontologyTermSummaries[activeOntologyTerm]
-      }, singleModifiedField && {
+      }, singleModifiedField && ontologyTermSummaries[singleModifiedField] && {
         [singleModifiedField]: ontologyTermSummaries[singleModifiedField]
       });
 
@@ -552,6 +607,48 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   _updateOntologyTermSummary(paramName, ontologyTerm, filters) {
+    const { ontology } = this.state.paramUIState[paramName];
+    const ontologyItem = ontology.find(item => item.term === ontologyTerm);
+
+    if (ontologyItem && ontologyItem.isMulti) {
+      // find children
+      const childTerms = ontology
+        .filter(item => item.parent === ontologyItem.term)
+        .map(item => item.term);
+
+      const childSummaryPromises = childTerms
+        .map(childTerm =>
+          this.props.wdkService.getOntologyTermSummary(
+            this.state.question.urlSegment,
+            paramName,
+            // If ANY, don't include any childTerms; if AND don't include current childTerm.
+            // We currently only support AND. Support for ANY will most likely require
+            // more changes than just this line.
+            //
+            // FIXME Change the live code to the commented code to update child filters for ALL
+            //     filters.filter(filter => filter.field != childTerm),
+            filters.filter(filter => !childTerms.includes(filter.field)),
+            childTerm,
+            this.state.paramValues
+          )
+          .then(summary => ({ ...summary, term: childTerm }))
+        );
+
+      return Promise.all(childSummaryPromises).then(
+        childSummaries => {
+          const { defaultMultiFieldState, fieldStates, ontology, ontologyTermSummaries } = this.state.paramUIState[paramName];
+          const fieldState = fieldStates[ontologyTerm] || defaultMultiFieldState;
+          this.setState(updateState(['paramUIState', paramName, 'fieldStates'],
+            { ...fieldStates, [ontologyTerm]: fieldState }));
+          this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
+            { ...ontologyTermSummaries, [ontologyTerm]: sortMultiFieldSummary( childSummaries, ontology, fieldState.sort )}));
+        },
+        error => {
+          this.setState({ error });
+        }
+      );
+    }
+
     return this.props.wdkService.getOntologyTermSummary(
       this.state.question.urlSegment,
       paramName,
@@ -724,4 +821,13 @@ export function sortDistribution(distribution, sort, filter) {
 
   // then perform secondary sort based on filtered count and selection
   return sortBy(sortedDist, [ filteredCountIsZero, selectionPred ])
+}
+
+function sortMultiFieldSummary(summaries, ontology, sort) {
+  const fields = new Map(ontology.map(o => [o.term, o]));
+  const sortedSummaries = sortBy(summaries, entry => sort.columnKey === 'display'
+    ? fields.get(entry.term).display
+    : entry[sort.columnKey]
+  );
+  return sort.direction === 'asc' ? sortedSummaries : reverse(sortedSummaries);
 }

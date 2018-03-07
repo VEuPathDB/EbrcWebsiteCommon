@@ -5,7 +5,7 @@ import { getSearchMenuCategoryTree } from '../util/category';
 
 /**
  * Map search tree to menu items. If flatten is true, return a flat
- * list of search items. Otherwise, return the full tree of search
+ * list of search items. Otherwise, return the full tree of search®rouer®EOURW
  * items.
  */
 function getSearchItems(ontology, recordClasses, flatten = false) {
@@ -47,6 +47,7 @@ export function makeMenuItems(props) {
     user,
     siteConfig,
     ontology,
+    config,
     recordClasses,
     showLoginForm,
     showLogoutWarning
@@ -61,6 +62,11 @@ export function makeMenuItems(props) {
     flattenSearches = false
   } = siteConfig;
 
+
+  const userDatasetsEnabled = config && 'userDatasetsEnabled' in config
+    ? config.userDatasetsEnabled
+    : false;
+
   const totalBasketCount = reduce(basketCounts, add, 0);
 
   const isLoggedIn = user && !user.isGuest;
@@ -74,6 +80,13 @@ export function makeMenuItems(props) {
         ] : [])
     },
     { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
+    userDatasetsEnabled ? {
+      id: 'workspace',
+      text: 'Workspace',
+      children: [
+        { id: 'userDatasets', text: 'User Datasets', webAppUrl: '/app/workspace/datasets'}
+      ]
+    } : null,
     {
       id: 'basket',
       text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
