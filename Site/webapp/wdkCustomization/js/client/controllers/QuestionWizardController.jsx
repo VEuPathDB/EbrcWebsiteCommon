@@ -4,6 +4,7 @@ import {
   ary,
   debounce,
   flow,
+  get,
   groupBy,
   identity,
   isEqual,
@@ -132,15 +133,18 @@ class QuestionWizardController extends AbstractViewController {
             }].concat( uiState.ontology.map(o => multiChildRe.test(o.term) ? {...o, parent: fakeMultiTerm } : o));
           }
 
+          // FIXME Remove when testing is complete
           // Presence of pathogens - EUPATH_0010984
           if (questionName === 'ParticipantQuestions.ParticipantsByRelativeVisits_maled') {
-            const multiField = this.state.paramUIState.visits_maled.ontology.find(item =>
-              item.term === 'EUPATH_0010984');
-            if (multiField) Object.assign(multiField, {
-              isMulti: true,
-              type: 'string',
-              values: [ 'Yes', 'No' ]
-            });
+            for (let paramName of [ 'visits_maled', 'relative_visits_maled' ]) {
+              const ontology = get(this.state.paramUIState, [ paramName, 'ontology' ], []);
+              const multiField = ontology.find(item => item.term === 'EUPATH_0010984');
+              if (multiField) Object.assign(multiField, {
+                isMulti: true,
+                type: 'string',
+                values: [ 'Yes', 'No' ]
+              });
+            }
           }
 
           const defaultParamValues = getDefaultParamValues(this.state);
