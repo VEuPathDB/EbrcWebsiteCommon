@@ -70,7 +70,6 @@ public class ProjectMapper {
 
   private final WdkModel wdkModel;
   private final String myProjectId;
-  private final String myWebAppUrl;
   private final String myWebSvcUrl;
 
   /**
@@ -91,11 +90,14 @@ public class ProjectMapper {
   protected ProjectMapper(WdkModel wdkModel)  {
     this.wdkModel = wdkModel;
     myProjectId = wdkModel.getProjectId();
-    myWebAppUrl = addSlash(wdkModel.getModelConfig().getWebAppUrl());
     myWebSvcUrl = wdkModel.getModelConfig().getWebServiceUrl();
     federatedProjects = new LinkedHashMap<>();
     organisms = new HashMap<>();
     timeout = 0;
+  }
+
+  public boolean isSelf(String projectId) {
+    return projectId != null && projectId.equals(myProjectId);
   }
 
   protected void initialize() throws WdkModelException, SAXException,
@@ -165,26 +167,28 @@ public class ProjectMapper {
   }
 
 
-  public String getWebServiceUrl(String projectId) {
+  public String getWebServiceUrl(String projectId) throws WdkModelException {
     if (projectId.equals(myProjectId)) return myWebSvcUrl;
     String site = getWebAppUrl(projectId);
     return (site == null ? myWebSvcUrl : site + "services/WsfService");
   }
 
-  public String getWebAppUrl(String projectId) {
+  public String getWebAppUrl(String projectId) throws WdkModelException {
     // get the site. if site doesn't exist, use the current site
-    if (projectId.equals(myProjectId)) return myWebAppUrl;
     String site = federatedProjects.get(projectId);
-    return (site == null ? myWebAppUrl : site);
+    if (site == null) {
+      throw new WdkModelException("Project cannot be found in projects.xml: " + projectId);
+    }
+    return site;
   }
 
-  public String getBaseUrl(String projectId) {
+  public String getBaseUrl(String projectId) throws WdkModelException {
     String site = getWebAppUrl(projectId);
     // remove the webapp from the url
     return site.substring(0, site.lastIndexOf("/", site.length() - 2));
   }
 
-  public String getWebAppName(String projectId) {
+  public String getWebAppName(String projectId) throws WdkModelException {
     String site = getWebAppUrl(projectId);
     // remove the webapp from the url
     if (site.endsWith("/")) site = site.substring(0, site.length() -1);

@@ -127,7 +127,6 @@ modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 modelconfig_smtpServer: 127.0.0.1
 modelconfig_supportEmail: 'help@{{ product|lower }}.{{ _topleveldomain }}'
 modelconfig_wdkTempDir: /var/tmp/wdk
-modelconfig_webAppUrl: '{{ _self_url_scheme }}://{{ _hostname }}/{{ _webapp_ctx }}///'
 modelconfig_webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 modelconfig_webServiceUrl: local
 
@@ -146,8 +145,10 @@ modelconfig_emailContent: >
 
 modelprop:
   PROJECT_ID: '{{ project }}'
-  LEGACY_WEBAPP_BASE_URL: "{{ modelconfig_webAppUrl|regex_replace('/+$', '') }}"
-  WEBAPP_BASE_URL: "{{ modelconfig_webAppUrl|regex_replace('/+$', '') }}/app"
+  LEGACY_WEBAPP_BASE_URL: "/{{ webapp_ctx }}"
+  WEBAPP_BASE_URL: "/{{ webapp_ctx }}/app"
   WEBSERVICEMIRROR: /var/www/Common/apiSiteFilesMirror/webServices/
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
+  LOCALHOST: '{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}'
+  GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
 

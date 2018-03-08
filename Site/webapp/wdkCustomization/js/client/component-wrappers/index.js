@@ -3,3 +3,4 @@ export * from './Footer';
 export * from './Header';
 export * from './RecordHeading';
 export * from './RecordMainSection';
+export * from './UserMessageController';
