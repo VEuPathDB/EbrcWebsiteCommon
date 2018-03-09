@@ -3,7 +3,6 @@
 project: =c= e.g. ToxoDB
 cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
 hostname: =c= FQDN or 'localhost'
-_hostname: '{{ hostname|swap_hostname(_host_frontends) }}'
 _self_url_scheme: http
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
@@ -149,6 +148,6 @@ modelprop:
   WEBAPP_BASE_URL: "/{{ webapp_ctx }}/app"
   WEBSERVICEMIRROR: /var/www/Common/apiSiteFilesMirror/webServices/
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
-  LOCALHOST: '{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}'
+  LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
 
