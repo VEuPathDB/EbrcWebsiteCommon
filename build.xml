@@ -186,6 +186,7 @@
       failifexecutionfails="true">
       <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
       <arg line="${webpack.env}"/>
+      <arg line="--hide-modules"/>
     </exec>
 
     <copy todir="${webappTargetDir}">
