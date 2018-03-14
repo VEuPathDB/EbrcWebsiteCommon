@@ -35,6 +35,7 @@
   <script>
     // used for header and footer
     window.__SITE_CONFIG__ = {
+      rootUrl: "${webAppUrl}/app",
       endpoint: "${wdkServiceUrl}",
       displayName: "${model.displayName}",
       projectId: "${model.projectId}",
