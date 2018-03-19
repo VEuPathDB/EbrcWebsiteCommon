@@ -3,6 +3,7 @@
  */
 import { keyBy } from 'lodash';
 import { broadcast } from 'wdk-client/StaticDataUtils';
+import { emptyAction } from 'wdk-client/ActionCreatorUtils';
 
 export const SITE_CONFIG_LOADED = 'eupathdb/site-config-loaded';
 export const BASKETS_LOADED = 'eupathdb/basket'
@@ -16,21 +17,15 @@ export function loadSiteConfig(siteConfig) {
 }
 
 export function loadBasketCounts() {
-  return function run(dispatch, { wdkService }) {
-    wdkService.getCurrentUser().then(user => {
-      if (user.isGuest) return;
-      wdkService.getBasketCounts().then(basketCounts => {
-        dispatch(broadcast({
+  return function run({ wdkService }) {
+    return wdkService.getCurrentUser().then(user => {
+      return user.isGuest
+        ? emptyAction
+        : wdkService.getBasketCounts().then(basketCounts => broadcast({
           type: BASKETS_LOADED,
           payload: { basketCounts }
         }));
-      })
-      .catch(error => {
-        if (error.status !== 403) {
-          console.error('Unexpected error while attempting to retrieve basket counts.', error);
-        }
-      });
-    });
+    })
   };
 }
 
@@ -42,17 +37,17 @@ export function loadBasketCounts() {
  * @return {run}
  */
 export function loadQuickSearches(questions) {
-  return function run(dispatch, { wdkService }) {
+  return function run({ wdkService }) {
     let requests = questions.map(reference =>
       wdkService.getQuestionAndParameters(reference.name));
     return Promise.all(requests).then(
       questions => keyBy(questions, 'name'),
       error => error
     ).then(questions =>
-      dispatch(broadcast({
+      broadcast({
         type: QUICK_SEARCH_LOADED,
         payload: { questions: questions }
-      }))
+      })
     );
   }
 }
