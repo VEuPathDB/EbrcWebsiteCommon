@@ -28,7 +28,7 @@ my @tests = (
                                               and u.is_guest = 1"]
 );
 
-my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+my @dsn = split(/\:/, $modelConfig->getUserDbDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 my $northUserDbName;
 my $southUserDbName;
 if ($dsn[2] =~ /(.*)[sS]$/) {

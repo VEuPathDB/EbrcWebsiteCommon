@@ -22,7 +22,7 @@ my @tests = (["users count", "select count(*) from $schema.users", "a very nice 
 	    );
 
 my $modelConfig = WDK::Model::ModelConfig->new($primaryModel);
-my @dsn = split(/\:/, $modelConfig->getUserDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
+my @dsn = split(/\:/, $modelConfig->getUserDbDbiDsn());  # dbi:Oracle:NAME_OF_DATABASE
 $dsn[2] = $userDbName;
 my $userDbiDsn = join(':', @dsn);
 my $userDbh = &getDbh($userDbiDsn, $modelConfig->getUserDbLogin(), $modelConfig->getUserDbPassword());
