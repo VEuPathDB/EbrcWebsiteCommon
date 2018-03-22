@@ -1,11 +1,11 @@
 import { find, get, map } from 'lodash';
-import { Component } from 'react';
+import { AnchoredTooltip } from 'mesa';
 import PropTypes from 'prop-types';
-import { AnchoredTooltip, Events } from 'mesa';
+import { Component } from 'react';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 let ParamPropType = PropTypes.shape({
-  defaultValue: PropTypes.string.isRequired,
+  defaultValue: PropTypes.string,
   help: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   alternate: PropTypes.string
@@ -42,7 +42,7 @@ class QuickSearchItem extends Component {
   }
 
   componentWillUnmount () {
-    
+
   }
 
   componentWillReceiveProps(props) {
@@ -127,7 +127,7 @@ class QuickSearchItem extends Component {
                 <input type="hidden" name="questionSubmit" value="Get Answer"/>
                 {question.parameters.map(parameter => {
                   if (parameter === searchParam) return null;
-                  let { defaultValue, type, name } = parameter;
+                  let { defaultValue = '', type, name } = parameter;
                   let typeTag = isStringParam(type) ? 'value' : 'array';
                   return (
                     <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
