@@ -1,6 +1,4 @@
 /* global wdk */
-// import css files
-import 'eupathdb/css/AllSites.css';
 import '!!script-loader!eupathdb/js/newwindow';
 import './attributeCheckboxTree';
 import './controllerResolver';
