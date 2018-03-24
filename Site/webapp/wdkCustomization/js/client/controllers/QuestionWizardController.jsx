@@ -510,7 +510,6 @@ class QuestionWizardController extends AbstractViewController {
     const groupUIState = groups.reduce((state, group) => Object.assign(state, {
       [group.name]: Object.assign({}, state[group.name], {
         loading: true,
-        // XXX Why are we setting valid true here?
         valid: false
       })
     }), Object.assign({}, this.state.groupUIState));
@@ -596,8 +595,8 @@ class QuestionWizardController extends AbstractViewController {
       counts => {
         const uiState = this.state.paramUIState[paramName];
         this.setState(updateState(['paramUIState', paramName], Object.assign({}, uiState, {
-          filteredCount: counts.filtered,
-          unfilteredCount: counts.unfiltered
+          filteredCount: counts.nativeFiltered,
+          unfilteredCount: counts.nativeUnfiltered
         })))
       },
       error => {
