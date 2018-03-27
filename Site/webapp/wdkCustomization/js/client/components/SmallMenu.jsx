@@ -1,5 +1,6 @@
 import { isEmpty, identity } from 'lodash';
 import PropTypes from 'prop-types';
+import { Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/ComponentUtils';
 
 /**
@@ -53,11 +54,11 @@ const ItemWebAppUrl = ({ item, webAppUrl }) => (
 )
 
 const ItemRoute = ({ item, webAppUrl }) => (
-  <a
+  <Link
     className={item.className}
     title={item.tooltip}
-    href={webAppUrl + '/app' + item.route}
+    to={item.route}
     onClick={item.onClick}
     target={item.target}
-  >{safeHtml(item.text)}</a>
+  >{safeHtml(item.text)}</Link>
 )

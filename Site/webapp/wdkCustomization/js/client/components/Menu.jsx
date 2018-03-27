@@ -1,5 +1,6 @@
 import { isEmpty, identity } from 'lodash';
 import PropTypes from 'prop-types';
+import { Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/ComponentUtils';
 
 /**
@@ -58,7 +59,7 @@ function MenuItem(props) {
 
       { item.url ? <a onClick={handleClick} className={className} title={item.tooltip} href={item.url} target={item.target}>{renderItemText(item.text)}</a>
       : item.webAppUrl ? <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + item.webAppUrl}>{renderItemText(item.text)}</a>
-      : item.route ?  <a onClick={handleClick} className={className} title={item.tooltip} href={webAppUrl + '/app' + item.route}>{renderItemText(item.text)}</a>
+      : item.route ?  <Link onClick={handleClick} className={className} title={item.tooltip} to={item.route}>{renderItemText(item.text)}</Link>
       : <div className={className} title={item.tooltip}>{renderItemText(item.text)}</div> }
 
       { !isEmpty(item.children) &&
