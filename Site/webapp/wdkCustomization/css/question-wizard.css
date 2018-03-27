@@ -17,6 +17,11 @@
   padding-bottom: .5em;
 }
 
+.ebrc-QuestionWizardParameterSummary {
+  margin: .2rem 0;
+  font-style: italic;
+}
+
 .ebrc-QuestionWizardFilterSummaryRemoveAll {
   position: absolute;
   bottom: 0;

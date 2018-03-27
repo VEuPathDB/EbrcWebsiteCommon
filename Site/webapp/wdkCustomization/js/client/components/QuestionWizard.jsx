@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 import { result, zip } from 'lodash';
 import ActiveGroup from './ActiveGroup';
 import {
-  getFilterValueDisplay
-} from 'wdk-client/FilterServiceUtils';
-import {
-  Dialog,
   IconAlt as Icon,
   Loading,
   Sticky
@@ -15,10 +11,10 @@ import { wrappable } from 'wdk-client/ComponentUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import {
-  getParameter,
-  getParameterValuesForGroup,
   groupParamsValuesAreDefault
 } from '../util/QuestionWizardState';
+
+import FilterSummary from './FilterSummary';
 
 /**
  * QuestionWizard component
@@ -260,160 +256,3 @@ ParamGroupCount.propTypes = {
   isLoading: PropTypes.bool,
   isActive: PropTypes.bool
 };
-
-/**
- * Show a summary of active filters
- */
-class FilterSummary extends React.Component {
-  render () {
-    const { wizardState, eventHandlers } = this.props;
-
-    const filterSummary = Seq.from(wizardState.question.groups)
-      .filter(group => !groupParamsValuesAreDefault(wizardState, group))
-      .map(group => (
-        <div key={group.name} className={makeClassName('FilterSummaryGroup')}>
-          <h4><Icon fa="filter" className={makeClassName('GroupFilterIcon')}/> {group.displayName}</h4>
-          {groupParamsValuesAreDefault(wizardState, group)
-            ? <em>No filters applied</em>
-            : Object.entries(getParameterValuesForGroup(wizardState, group.name))
-              .filter(([paramName, paramValue]) => getParameter(wizardState, paramName).defaultValue !== paramValue)
-              .map(([paramName, paramValue]) =>
-                getParamSummaryElements({
-                  group,
-                  paramValue,
-                  wizardState: wizardState,
-                  eventHandlers: eventHandlers,
-                  parameter: getParameter(wizardState, paramName),
-                }))}
-        </div>
-      ));
-
-    return (
-      <Dialog
-        resizable
-        draggable
-        className={makeClassName('FilterSummary')}
-        open={wizardState.filterPopupState.visible}
-        title="Active Filters"
-        buttons={[
-          <button
-            key="pin"
-            type="button"
-            title="Prevent summary popup from closing when clicking on filters."
-            className={makeClassName('FilterPopupTitleButton')}
-            onClick={() => eventHandlers.setFilterPopupPinned(!wizardState.filterPopupState.pinned)}
-          >
-            <Icon fa={wizardState.filterPopupState.pinned ? 'circle' : 'thumb-tack'} />
-          </button>,
-          <button
-            type="button"
-            key="close"
-            className={makeClassName('FilterPopupTitleButton')}
-            onClick={() => eventHandlers.setFilterPopupVisiblity(false)}
-          >
-            <Icon fa="close"/>
-          </button>
-        ]}
-      >
-        <div>
-          {filterSummary.isEmpty() ? (
-            <p>No filters applied</p>
-          ) : (
-            filterSummary
-          )}
-          <div className={makeClassName('FilterSummaryRemoveAll')}>
-            <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
-              Remove all
-            </button>
-          </div>
-        </div>
-      </Dialog>
-    );
-  }
-}
-
-FilterSummary.propTypes = propTypes;
-
-function getParamSummaryElements(data) {
-  return data.parameter.type === 'FilterParamNew' ? getFilterParamSummaryElements(data)
-    : [
-      <div key={data.parameter.name} className={makeClassName('Chicklet')} >
-        <a
-          href={'#' + data.parameter.name}
-          onClick={e => {
-            e.preventDefault();
-            data.eventHandlers.setActiveGroup(data.group);
-            if (!data.wizardState.filterPopupState.pinned) {
-              data.eventHandlers.setFilterPopupVisiblity(false);
-            }
-          }}
-        >
-          {data.parameter.displayName}
-        </a>
-        &nbsp;
-        <button
-          type="button"
-          className={makeClassName('RemoveFilterButton')}
-          onClick={() => data.eventHandlers.setParamValue(data.parameter, data.parameter.defaultValue)}
-        ><Icon fa="close"/></button>
-        <hr/>
-        <small>{prettyPrint(data.parameter, data.paramValue)}</small>
-      </div>
-    ];
-}
-
-function getFilterParamSummaryElements(data) {
-  const { filters } = JSON.parse(data.paramValue);
-  if (filters == null) return null;
-
-  return filters.map(filter => {
-    const field = data.parameter.ontology.find(field => field.term === filter.field)
-    return (
-      <div key={data.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} >
-        <a
-          href={'#' + field.term}
-          onClick={e => {
-            e.preventDefault();
-            data.eventHandlers.setActiveGroup(data.group);
-            data.eventHandlers.setActiveOntologyTerm(
-              data.parameter,
-              filters,
-              field.term
-            );
-            if (!data.wizardState.filterPopupState.pinned) {
-              data.eventHandlers.setFilterPopupVisiblity(false);
-            }
-          }}
-        >
-          {field.display}
-        </a>
-        &nbsp;
-        <button
-          type="button"
-          className={makeClassName('RemoveFilterButton')}
-          onClick={() => data.eventHandlers.setParamValue(data.parameter, JSON.stringify({
-            filters: filters.filter(f => f !== filter)
-          }))}
-        >
-          <Icon fa="close"/>
-        </button>
-        <hr/>
-        <small>{getFilterValueDisplay(field, filter)}</small>
-      </div>
-    );
-  });
-}
-
-function prettyPrint(param, value) {
-  switch(param.type) {
-    case 'DateRangeParam':
-    case 'NumberRangeParam':
-      return prettyPrintRange(JSON.parse(value));
-    default:
-      return value;
-  }
-}
-
-function prettyPrintRange(range) {
-  return `between ${range.min} and ${range.max}`;
-}
