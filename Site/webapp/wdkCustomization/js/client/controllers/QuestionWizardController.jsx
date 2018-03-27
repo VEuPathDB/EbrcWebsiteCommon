@@ -689,6 +689,10 @@ class QuestionWizardController extends AbstractViewController {
     return this.state.groupUIState[group.name].accumulatedTotal != null;
   }
 
+  isRenderDataLoaded() {
+    return this.state.question != null;
+  }
+
   componentDidMount() {
     this.loadQuestion(this.props);
 
@@ -712,7 +716,7 @@ class QuestionWizardController extends AbstractViewController {
     this.loadQuestion(nextProps);
   }
 
-  render() {
+  renderView() {
     return (
       <div>
         {this.state.error && (
