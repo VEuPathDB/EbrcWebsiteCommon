@@ -88,8 +88,10 @@ export default class DatasetGraph extends React.PureComponent {
     let baseUrl = this.makeBaseUrl(props);
     this.setState({ loading: true });
     this.request = httpGet(baseUrl + '&declareParts=1');
-    this.request.promise().then(partsString => {
-      let parts = partsString.split(/\s*,\s*/);
+    this.request.promise().then(graphParts => {
+        // [{width:200, height:300, visible_part: "somepart"}, ...]
+        let parts = graphParts.map(x => x.visible_part)
+//      let parts = partsString.split(/\s*,\s*/);
       let visibleParts = parts.slice(0, 1);
       this.setState({ parts, visibleParts, loading: false })
     });

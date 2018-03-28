@@ -21,10 +21,31 @@ sub setMainLegend {
 sub declareParts {
   my ($self) = @_;
 
+  my @rv;
+
   my $graphObjects = $self->getGraphObjects();
   my @parts = map {$_->getPartName()} @$graphObjects;
 
-  return join(",", @parts);
+  my $scale       = $self->getScalingFactor();
+
+#  my $heightOverride = $self->getHeightOverride(); # this is total height
+#  my $widthOverride = $self->getWidthOverride();
+
+  foreach(@$graphObjects) {
+    my $part = $_->getPartName();
+
+    my $width       = $self->getPlotWidth();
+    my $height = $_->getScreenSize();
+
+    $width *= $scale;
+    $height *= $scale;
+
+    my $hash = { height => $height, width => $width, visible_part => $part };
+
+    push @rv, $hash;
+  }
+
+  return \@rv;
 }
 
 #--------------------------------------------------------------------------------

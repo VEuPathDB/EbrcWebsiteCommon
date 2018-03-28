@@ -1,6 +1,8 @@
 
 package EbrcWebsiteCommon::View::CgiApp::DataPlotter;
 
+
+
 =pod
 
 =head1 Purpose
@@ -46,6 +48,8 @@ use vars qw( @ISA );
 @ISA = qw( EbrcWebsiteCommon::View::CgiApp );
 
 use EbrcWebsiteCommon::View::CgiApp;
+
+use JSON;
 
 # ========================================================================
 # --------------------------- Required Methods ---------------------------
@@ -194,8 +198,9 @@ sub run {
 	 }
 
          if($declareParts) {
-			print $Cgi->header(-Content_type => "text/plain");
-           print $_gp->declareParts();
+			print $Cgi->header(-Content_type => "application/json");
+           my $parts = $_gp->declareParts();
+           print STDOUT encode_json($parts);
            return;
          }
 
