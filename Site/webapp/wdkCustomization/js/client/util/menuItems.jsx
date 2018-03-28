@@ -62,10 +62,11 @@ export function makeMenuItems(props) {
     flattenSearches = false
   } = siteConfig;
 
-
+{/* in apicommon
   const userDatasetsEnabled = config && 'userDatasetsEnabled' in config
     ? config.userDatasetsEnabled
     : false;
+*/}
 
   const totalBasketCount = reduce(basketCounts, add, 0);
 
@@ -80,6 +81,7 @@ export function makeMenuItems(props) {
         ] : [])
     },
     { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
+{/* in apicommon
     userDatasetsEnabled ? {
       id: 'workspace',
       text: 'Workspace',
@@ -87,6 +89,7 @@ export function makeMenuItems(props) {
         { id: 'userDatasets', text: 'User Datasets', webAppUrl: '/app/workspace/datasets'}
       ]
     } : null,
+*/},
     {
       id: 'basket',
       text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,

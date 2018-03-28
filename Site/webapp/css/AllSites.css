@@ -941,11 +941,6 @@ a.eupathdb-MenuItemText {
   top: 0;
 }
 
-.eupathdb-MenuItemText__new:after {
-  content: url('~wdk/images/new-feature.png');
-  top: 4px;
-}
-
 .eupathdb-MenuItemText__parent:after {
   content: '\f0d7';
   font-family: FontAwesome;
@@ -957,6 +952,10 @@ a.eupathdb-MenuItemText {
   content: '\f0da';
 }
 
+.eupathdb-MenuItemText__new:after {
+  content: url('~wdk/images/new-feature.png');
+  top: 4px;
+}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
