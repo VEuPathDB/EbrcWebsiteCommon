@@ -951,11 +951,15 @@ a.eupathdb-MenuItemText {
 .eupathdb-Submenu .eupathdb-MenuItemText__parent:after {
   content: '\f0da';
 }
-
 .eupathdb-MenuItemText__new:after {
   content: url('~wdk/images/new-feature.png');
   top: 4px;
 }
+.eupathdb-MenuItemText__beta:after {
+  content: url('~wdk/images/beta2-30.png');
+  top: 0;
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =SOCIALMEDIA (about, help, etc.)
