@@ -86,7 +86,7 @@ export function makeMenuItems(props) {
       id: 'workspace',
       text: 'Workspace',
       children: [
-        { id: 'userDatasets', text: 'User Datasets', webAppUrl: '/app/workspace/datasets'}
+        { id: 'userDatasets', text: 'User Datasets', route: '/workspace/datasets'}
       ]
     } : null,
 */},
@@ -99,7 +99,7 @@ export function makeMenuItems(props) {
     {
       id: 'favorites',
       text: 'My Favorites',
-      webAppUrl: '/app/favorites',
+      route: '/favorites',
       loginRequired: true
     },
 

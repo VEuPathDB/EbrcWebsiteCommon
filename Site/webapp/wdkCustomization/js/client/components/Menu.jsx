@@ -45,6 +45,7 @@ function MenuItem(props) {
     }
     if (item.loginRequired && isGuest) {
       e.preventDefault();
+      e.stopPropagation();
       showLoginWarning('use this feature', e.currentTarget.href);
     }
   }
