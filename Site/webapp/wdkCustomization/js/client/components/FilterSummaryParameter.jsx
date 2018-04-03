@@ -13,9 +13,7 @@ function FilterSummaryParameter(props) {
     ? <FilterParamSummary {...props} />
     : (
       <div className={makeClassName('ParameterSummary')}>
-        <strong>{props.parameter.displayName}</strong>
-        &nbsp;
-        {prettyPrint(props.parameter, props.paramValue)}
+        <strong>{props.parameter.displayName}</strong> {prettyPrint(props.parameter, props.paramValue)}
       </div>
     );
 }
@@ -29,11 +27,12 @@ function FilterParamSummary(props) {
   return filters.map(filter => {
     const field = props.parameter.ontology.find(field => field.term === filter.field)
     return (
-      <div key={props.parameter.name + '::' + field.term} className={makeClassName('Chicklet')} >
-        <a
-          href={'#' + field.term}
-          onClick={e => {
-            e.preventDefault();
+      <div key={props.parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
+        <button
+          type="button"
+          title="Clear selection"
+          className={makeClassName('ChicletTitle') + ' wdk-Link'}
+          onClick={() => {
             props.eventHandlers.setActiveGroup(props.group);
             props.eventHandlers.setActiveOntologyTerm(
               props.parameter,
@@ -46,7 +45,7 @@ function FilterParamSummary(props) {
           }}
         >
           {field.display}
-        </a>
+        </button>
         &nbsp;
         <button
           type="button"
@@ -58,7 +57,7 @@ function FilterParamSummary(props) {
           <Icon fa="close"/>
         </button>
         <hr/>
-        <small>{getFilterValueDisplay(field, filter)}</small>
+        <div>{getFilterValueDisplay(field, filter)}</div>
       </div>
     );
   });

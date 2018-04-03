@@ -18,8 +18,7 @@
 }
 
 .ebrc-QuestionWizardParameterSummary {
-  margin: .2rem 0;
-  font-style: italic;
+  margin: .2rem 0 .2rem 0;
 }
 
 .ebrc-QuestionWizardFilterSummaryRemoveAll {
@@ -261,15 +260,27 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   */
 }
 
-.ebrc-QuestionWizardChicklet {
+.ebrc-QuestionWizardChiclet {
+  position: relative;
   border: 1px solid #aaa;
   background: #f0f0f0;
   padding: .2em .4em;
+  padding-right: 2em;
   margin: 1px 0;
-  font-size: .8rem;
+  font-size: .9em;
   display: inline-block;
   border-radius: 4px;
   line-height: 1.2;
+}
+
+.ebrc-QuestionWizardChiclet__parameters {
+  background: transparent;
+}
+
+.ebrc-QuestionWizardParameterSummary,
+.ebrc-QuestionWizardChicletTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ebrc-QuestionWizardRemoveFilterButton {
@@ -277,6 +288,15 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   padding: 0;
   border: none;
   padding-left: .5em;
+  position: absolute;
+  right: .5em;
+  opacity: .5;
+  line-height: 1.5;
+}
+
+.ebrc-QuestionWizardRemoveFilterButton:hover {
+  background: transparent;
+  opacity: 1;
 }
 
 .ebrc-QuestionWizardTotalCount {

@@ -31,17 +31,64 @@ class FilterSummary extends React.Component {
           {groupParamsValuesAreDefault(wizardState, group)
             ? <em>No filters applied</em>
             : Object.entries(getParameterValuesForGroup(wizardState, group.name))
-             .filter(([paramName]) => getParameter(wizardState, paramName).isVisible)
-              .map(([paramName, paramValue]) =>
-                <FilterSummaryParameter
-                  key={paramName}
-                  group={group}
-                  paramValue={paramValue}
-                  wizardState={wizardState}
-                  eventHandlers={eventHandlers}
-                  parameter={getParameter(wizardState, paramName)}
-                />
-              )}
+              .filter(([paramName]) => getParameter(wizardState, paramName).isVisible)
+              // separate filter params from other params
+              .reduce(([partitions], entry) => {
+                const param = getParameter(wizardState, entry[0]);
+                if (param.type === 'FilterParamNew') {
+                  partitions[0].push(entry);
+                }
+                else {
+                  partitions[1].push(entry);
+                }
+                return [partitions];
+              }, [[ [], [] ]])
+              .map(([ fpns, others ]) => [
+                ...(
+                  others.length === 0 ||
+                  others.every(([paramName, paramValue]) =>
+                    getParameter(wizardState, paramName).defaultValue === paramValue)
+                ) ? []
+                  : [
+                    <div key="others" className={makeClassName('Chiclet', 'parameters')}>
+                      <button
+                        type="button"
+                        title="Clear selection"
+                        className={makeClassName('RemoveFilterButton')}
+                        onClick={() =>
+                          others.forEach(entry => {
+                            const param = getParameter(wizardState, entry[0]);
+                            eventHandlers.setParamValue(param, param.defaultValue);
+                          })
+                        }>
+                        <Icon fa="close" />
+                      </button>
+                      {others.map(([paramName, paramValue]) =>
+                        <FilterSummaryParameter
+                          key={paramName}
+                          group={group}
+                          paramValue={paramValue}
+                          wizardState={wizardState}
+                          eventHandlers={eventHandlers}
+                          parameter={getParameter(wizardState, paramName)}
+                        />
+                      )}
+                    </div>,
+                    <br/>
+                  ],
+                <React.Fragment key="fpns">
+                  {fpns.map(([paramName, paramValue]) =>
+                    <FilterSummaryParameter
+                      key={paramName}
+                      group={group}
+                      paramValue={paramValue}
+                      wizardState={wizardState}
+                      eventHandlers={eventHandlers}
+                      parameter={getParameter(wizardState, paramName)}
+                    />
+                  )}
+                </React.Fragment>
+              ])}
         </div>
       ));
 
