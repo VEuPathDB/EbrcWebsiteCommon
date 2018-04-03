@@ -1,5 +1,5 @@
+import { isNull, negate } from 'lodash';
 import React from 'react';
-
 import { Seq } from 'wdk-client/IterableUtils';
 import {
   Dialog,
@@ -8,13 +8,8 @@ import {
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
-import {
-  getParameter,
-  getParameterValuesForGroup,
-  groupParamsValuesAreDefault
-} from '../util/QuestionWizardState';
 
-import FilterSummaryParameter from './FilterSummaryParameter';
+import FilterSummaryGroup from './FilterSummaryGroup';
 
 /**
  * Show a summary of active filters
@@ -24,73 +19,10 @@ class FilterSummary extends React.Component {
     const { wizardState, eventHandlers } = this.props;
 
     const filterSummary = Seq.from(wizardState.question.groups)
-      .filter(group => !groupParamsValuesAreDefault(wizardState, group))
       .map(group => (
-        <div key={group.name} className={makeClassName('FilterSummaryGroup')}>
-          <h4><Icon fa="filter" className={makeClassName('GroupFilterIcon')}/> {group.displayName}</h4>
-          {groupParamsValuesAreDefault(wizardState, group)
-            ? <em>No filters applied</em>
-            : Object.entries(getParameterValuesForGroup(wizardState, group.name))
-              .filter(([paramName]) => getParameter(wizardState, paramName).isVisible)
-              // separate filter params from other params
-              .reduce(([partitions], entry) => {
-                const param = getParameter(wizardState, entry[0]);
-                if (param.type === 'FilterParamNew') {
-                  partitions[0].push(entry);
-                }
-                else {
-                  partitions[1].push(entry);
-                }
-                return [partitions];
-              }, [[ [], [] ]])
-              .map(([ fpns, others ]) => [
-                ...(
-                  others.length === 0 ||
-                  others.every(([paramName, paramValue]) =>
-                    getParameter(wizardState, paramName).defaultValue === paramValue)
-                ) ? []
-                  : [
-                    <div key="others" className={makeClassName('Chiclet', 'parameters')}>
-                      <button
-                        type="button"
-                        title="Clear selection"
-                        className={makeClassName('RemoveFilterButton')}
-                        onClick={() =>
-                          others.forEach(entry => {
-                            const param = getParameter(wizardState, entry[0]);
-                            eventHandlers.setParamValue(param, param.defaultValue);
-                          })
-                        }>
-                        <Icon fa="close" />
-                      </button>
-                      {others.map(([paramName, paramValue]) =>
-                        <FilterSummaryParameter
-                          key={paramName}
-                          group={group}
-                          paramValue={paramValue}
-                          wizardState={wizardState}
-                          eventHandlers={eventHandlers}
-                          parameter={getParameter(wizardState, paramName)}
-                        />
-                      )}
-                    </div>,
-                    <br/>
-                  ],
-                <React.Fragment key="fpns">
-                  {fpns.map(([paramName, paramValue]) =>
-                    <FilterSummaryParameter
-                      key={paramName}
-                      group={group}
-                      paramValue={paramValue}
-                      wizardState={wizardState}
-                      eventHandlers={eventHandlers}
-                      parameter={getParameter(wizardState, paramName)}
-                    />
-                  )}
-                </React.Fragment>
-              ])}
-        </div>
-      ));
+        <FilterSummaryGroup key={group.name} group={group} {...this.props}/>
+      ))
+      .filter(negate(isNull));
 
     return (
       <Dialog
