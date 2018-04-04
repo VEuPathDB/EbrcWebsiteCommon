@@ -16,8 +16,11 @@ $meta = new WdkMeta();
 $meta_data = $meta->attributes();
 
 ?>
+
 <h2>Model</h2>
-<b>Name: </b><?php print $meta_data{'DisplayName'};?><br>
+<p/><i>Data provided by org.gusdb.wdk.model.WdkModel</i><p/>
+<b>Display Name: </b><?php print $meta_data{'DisplayName'};?><br>
+<b>Project ID/Name: </b><?php print $meta_data{'ProjectId'};?><br>
 <b>Model Version: </b><?php print $meta_data{'ModelVersion'};?><br>
 <b>Build Number: </b><?php print $meta_data{'BuildNumber'};?><br>
 <b>Release Date: </b><?php print $meta_data{'ReleaseDate'};?><br>

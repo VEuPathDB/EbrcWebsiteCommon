@@ -78,9 +78,11 @@ class PrivateAPI {
             'upstreamhost' => $proxy_attr{'upstream_server'},
         ),
         'wdk' => array(
-            'modelname' => $wdk_meta_attr{'DisplayName'},
-            'modelversion' => $wdk_meta_attr{'ModelVersion'},
-            'buildnumber' => $wdk_meta_attr{'BuildNumber'},
+            'displayname'  => $wdk_meta_attr{'DisplayName'},       # wdkModel.getDisplayName()
+            'modelname'    => $wdk_meta_attr{'ProjectId'},         # wdkModel.getProjectId()
+            'projectid'    => $wdk_meta_attr{'ProjectId'},         # wdkModel.getProjectId()
+            'modelversion' => $wdk_meta_attr{'ModelVersion'},      # wdkModel.getVersion()
+            'buildnumber'  => $wdk_meta_attr{'BuildNumber'},       # wdkModel.getBuildNumber()
             'databases' => array(
                 'appdb' => array(
                     'servicename' => $adb_attr{'service_name'},
