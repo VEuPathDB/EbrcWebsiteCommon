@@ -177,11 +177,6 @@ td.wdk-DataTableCell__thumbnail {
   right: 0;
   margin-right: 1em;
 }
-.eupathdb-DatasetGraphLoading {
-  position: absolute;
-  top: 1em;
-  left: 1em;
-}
 
 .eupathdb-DatasetGraph {
   min-width: 500px;

@@ -10,7 +10,7 @@ import { safeHtml } from 'wdk-client/ComponentUtils';
  * rowData will include the available gene ids (graph_ids), but the available
  * graphs for the dataset (visible_parts) has to be fetched from dataPlotter.pl.
  * This means that when we get new rowData, we first have to make a request for
- * the available parts, and then we can update the state of the Component. This
+ * the available graphs, and then we can update the state of the Component. This
  * flow will ensure that we have a consistent state when rendering.
  */
 export default class DatasetGraph extends React.PureComponent {
@@ -21,8 +21,10 @@ export default class DatasetGraph extends React.PureComponent {
     this.state = {
       loading: true,
       imgError: false,
-      parts: null,
-      visibleParts: null,
+      // array of graph info: [{width:200, height:300, visible_part: "somepart"}, ...]
+      graphs: null,
+      // array of indexes of graphs to display
+      visibleGraphs: [],
       descriptionCollapsed: true,
       dataTableCollapsed: true,
       coverageCollapsed: true,
@@ -49,7 +51,6 @@ export default class DatasetGraph extends React.PureComponent {
 
   componentWillUnmount() {
     this.request.abort();
-    // console.trace('DatasetGraph is unmounting');
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,7 +79,7 @@ export default class DatasetGraph extends React.PureComponent {
     );
   }
 
-  makeTutorialUrl({ rowData }) {
+  makeTutorialUrl(/* { rowData } */) {
     return (
       '../../../../documents/FromCoverageNonuniqueReads.pdf'
     );
@@ -88,12 +89,8 @@ export default class DatasetGraph extends React.PureComponent {
     let baseUrl = this.makeBaseUrl(props);
     this.setState({ loading: true });
     this.request = httpGet(baseUrl + '&declareParts=1');
-    this.request.promise().then(graphParts => {
-        // [{width:200, height:300, visible_part: "somepart"}, ...]
-        let parts = graphParts.map(x => x.visible_part)
-//      let parts = partsString.split(/\s*,\s*/);
-      let visibleParts = parts.slice(0, 1);
-      this.setState({ parts, visibleParts, loading: false })
+    this.request.promise().then(graphs => {
+      this.setState({ graphs, visibleGraphs: [0], loading: false })
     });
   }
 
@@ -121,7 +118,7 @@ export default class DatasetGraph extends React.PureComponent {
   renderLoading() {
     if (this.state.loading) {
       return (
-        <Loading radius={4} className="eupathdb-DatasetGraphLoading"/>
+        <div><Loading radius={4}/></div>
       );
     }
   }
@@ -151,13 +148,13 @@ export default class DatasetGraph extends React.PureComponent {
     } } = this.props;
 
     let graphIds = graph_ids.split(/\s*,\s*/);
-    let { parts, visibleParts, showLogScale, graphId, facet, contXAxis } = this.state;
+    let { graphs, visibleGraphs, showLogScale, graphId, facet, contXAxis } = this.state;
 
     let baseUrl = this.makeBaseUrl(this.props);
-    let baseUrlWithState = `${baseUrl}&id=${graphId}&vp=${visibleParts}&wl=${showLogScale ? '1' : '0'}`;
+    let baseUrlWithState = `${baseUrl}&id=${graphId}&wl=${showLogScale ? '1' : '0'}`;
     let baseUrlWithMetadata = `${baseUrlWithState}&facet=${facet}&contXAxis=${contXAxis}`;
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
-    let pngUrl = baseUrlWithMetadata + '&fmt=png';
+    // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
     let dataset_link = this.makeDatasetUrl(this.props);
     let tutorial_link = this.makeTutorialUrl(this.props);
@@ -166,19 +163,21 @@ export default class DatasetGraph extends React.PureComponent {
       <div className="eupathdb-DatasetGraphContainer2">
 
       <div className="eupathdb-DatasetGraphContainer">
-        {this.renderLoading()}
 
         <div className="eupathdb-DatasetGraph">
-          {visibleParts && (
-          <object
-            style={{ minHeight: 220 }}
-            data={imgUrl}
-            type='image/svg+xml'
-            onLoad={() => {
-              this.setState({loading: false});
-            }}
-            onError={() => this.setState({ loading: false, imgError: true })}>
-          </object>)}
+          {visibleGraphs.map(index => {
+            let { height, width, visible_part } = graphs[index];
+            return (
+              <object
+                style={{ height, width }}
+                data={`${imgUrl}&vp=${visible_part}`}
+                type='image/svg+xml'
+                onLoad={() => this.setState({ loading: false })}
+                onError={() => this.setState({ loading: false, imgError: true })}
+              />
+            );
+          })}
+          {this.renderLoading()}
           {this.renderImgError()}
 
 {/*
@@ -290,19 +289,19 @@ hook: HostResponseGraphs
           })}
 
           <h4>Choose graph(s) to display</h4>
-          {parts && visibleParts && parts.map(part => {
+          {graphs && visibleGraphs && graphs.map((graph, index) => {
             return (
-              <label key={part}>
+              <label key={graph.visible_part}>
                 <input
                   type="checkbox"
-                  checked={visibleParts.indexOf(part) > -1}
+                  checked={visibleGraphs.includes(index)}
                   onChange={e => this.setState({
-                    loading: true,
-                    visibleParts: e.target.checked
-                      ? visibleParts.concat(part)
-                      : visibleParts.filter(p => p !== part)
+                    loading: e.target.checked,
+                    visibleGraphs: e.target.checked
+                      ? visibleGraphs.concat(index)
+                      : visibleGraphs.filter(i => i !== index)
                   })}
-                /> {part} </label>
+                /> {graph.visible_part} </label>
             );
           })}
 
