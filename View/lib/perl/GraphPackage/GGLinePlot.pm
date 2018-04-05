@@ -147,6 +147,8 @@ sub makeRPlotString {
   my $xAxisLabel = $self->getXaxisLabel();
   my $plotTitle = $self->getPlotTitle();
   my $subtitle = $self->getSubtitle();
+  my $statusLegend = $self->getStatusLegend();
+  my $eventDurLegend = $self->getEventDurLegend();
 
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
@@ -375,8 +377,8 @@ if ($prtcpnt_sum) {
   if (\"STATUS\" %in% colnames(profile.df.full)) {
     status.df = completeDF(profile.df.full, \"STATUS\");
   }
-  if (\"END_DATE\" %in% colnames(profile.df.full)) {
-    annotate.df = completeDF(profile.df.full, \"END_DATE\");
+  if (\"DURATION\" %in% colnames(profile.df.full)) {
+    annotate.df = completeDF(profile.df.full, \"DURATION\");
   }
   profile.df.clean = completeDF(profile.df.full, \"VALUE\");
 }
@@ -603,10 +605,11 @@ if($hideXAxisLabels) {
 if ($prtcpnt_sum) {
 
   if (grepl(\"Z-score\", \"$yAxisLabel\")) {
-    gp = gp + geom_hline(aes(yintercept=2), colour = \"red\");
-    gp = gp + geom_hline(aes(yintercept=-2), colour = \"red\");
-    #subtitle = \"red lines = +/- 2 sd\";
-  } 
+    gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
+    gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
+ 
+    gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
+ } 
 
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
@@ -615,8 +618,19 @@ if ($prtcpnt_sum) {
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
       annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
     }
+ 
+    #this to remove consecutive rows, only need start date and duration
+    annotate.df\$DIFF <- c(0, abs(diff(annotate.df\$START_DATE)) == 1)
+    annotate.df <- annotate.df[annotate.df\$DIFF == 0,]
 
-    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - y.scale, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = DURATION), real.geom = geom_segment, size = 7);
+    annotate.df\$TOOLTIP <- paste0(\"Start: \", annotate.df\$START_DATE, \"|Duration: \", annotate.df\$DURATION)
+    annotate.df\$TOOLTIP[is.na(annotate.df\$DURATION)] <- NA
+    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - y.scale, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = TOOLTIP, size = as.factor(7)), real.geom = geom_segment)
+
+    #custom legend
+    gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
+    gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
+
   }
 
   status = exists(\"status.df\") && nrow(status.df) > 0;
@@ -648,14 +662,20 @@ if ($prtcpnt_sum) {
       status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
       numColors = length(unique(status.df\$COLOR))
       if (numColors > 1) {
-        myColors = palette(rainbow(numColors));
+        myColors = rainbow(numColors);
       } else {
         myColors = \"cyan\";
       }
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = STATUS, color=COLOR), real.geom = geom_point);
+
+      status.df\$TOOLTIP <- paste0(\"Day: \", status.df\$ELEMENT_NAMES_NUMERIC, \"|Status: \", status.df\$STATUS)
+      status.df\$TOOLTIP[is.na(status.df\$STATUS)] <- NA      
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
 
       #gp = gp + scale_color_manual(values=myColors, name=status.df\$COLOR);
       gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(profile.df.full\$LEGEND, status.df\$COLOR), name=\"Legend\");
+
+      #create custom legend
+      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"))
     }
   }
 
@@ -668,6 +688,8 @@ if ($prtcpnt_sum) {
         gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
       }
     }
+
+  gp = gp + guides(color = guide_legend(order=1))
 }
 
 #postscript

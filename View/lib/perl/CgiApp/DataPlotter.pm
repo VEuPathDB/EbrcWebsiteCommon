@@ -93,6 +93,9 @@ sub run {
          my $status      = $Cgi->param('status');
          my $optStatus   = $Cgi->param('optStatus');
 
+         my $sampleInfo = $Cgi->param('sampleInfo');
+         my @sampleInfo = split(',', $sampleInfo || '');
+
          my $eventStart = $Cgi->param('eventStart');
          my $eventDur = $Cgi->param('eventDur');
 
@@ -188,6 +191,7 @@ sub run {
                         EventDur => $eventDur,
                         Status => $status,
                         OptStatus => $optStatus,
+                        SampleInfo => \@sampleInfo,
                         Xmin => $xminOverride,
                         Xmax => $xmaxOverride,
                        });

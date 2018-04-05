@@ -46,6 +46,7 @@ sub init {
    $Self->setContXAxis            ( $Args->{ContXAxis            } );
    $Self->setStatus               ( $Args->{Status               } );
    $Self->setOptStatus            ( $Args->{OptStatus            } );
+   $Self->setSampleInfo           ( $Args->{SampleInfo           } );
    $Self->setDefaultXMin          ( $Args->{Xmin                 } );
    $Self->setDefaultXMax          ( $Args->{Xmax                 } );
    $Self->setYAxis                ( $Args->{YAxis                } );
@@ -128,6 +129,9 @@ sub setStatus                  { $_[0]->{'Status'                      } = $_[1]
 
 sub getOptStatus               { $_[0]->{'OptStatus'                   } }
 sub setOptStatus               { $_[0]->{'OptStatus'                   } = $_[1]; $_[0] }
+
+sub getSampleInfo              { $_[0]->{'SampleInfo'                  } }
+sub setSampleInfo              { $_[0]->{'SampleInfo'                  } = $_[1]; $_[0] }
 
 sub getEventStart              { $_[0]->{'EventStart'                  } }
 sub setEventStart              { $_[0]->{'EventStart'                  } = $_[1]; $_[0] }

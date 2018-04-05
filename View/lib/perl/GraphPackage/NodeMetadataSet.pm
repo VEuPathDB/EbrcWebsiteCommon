@@ -27,6 +27,9 @@ sub setOptStatus                 { $_[0]->{'_opt_status'       } = $_[1]}
 sub getTblPrefix                 { $_[0]->{'_tbl_prefix'       }}
 sub setTblPrefix                 { $_[0]->{'_tbl_prefix'       } = $_[1]}
 
+sub getSampleInfo                { $_[0]->{'_sample_info'      }}
+sub setSampleInfo                { $_[0]->{'_sample_info'      } = $_[1]}
+
 sub new {
   my ( $class, $params ) = @_;
 
@@ -46,6 +49,7 @@ sub new {
   #this later is checked to know which query to run.
   if (defined $params->{yAxis}) {
     $self->setYAxis($params->{yAxis});
+    print STDERR Dumper($params->{yAxis});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis.";
     }
@@ -54,6 +58,7 @@ sub new {
   #later, if this is defined then a second query will be called
   if (defined $params->{eventStart}) {
     $self->setEventStart($params->{eventStart});
+    print STDERR Dumper($params->{eventStart});
     unless ($params->{eventDur}) {
       die "Must provide source_id for event duration.";
     }
@@ -62,6 +67,7 @@ sub new {
 
   if (defined $params->{status}) {
     $self->setStatus($params->{status});
+    print STDERR Dumper($params->{status});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis."
     }
@@ -69,7 +75,16 @@ sub new {
     if (defined $params->{optStatus}) {
       $self->setOptStatus($params->{optStatus});
     }
-  }  
+  }
+ 
+  if (defined $params->{sampleInfo}) {
+    $self->setSampleInfo($params->{sampleInfo});
+    print STDERR Dumper($params->{sampleInfo});
+    unless ($params->{contXAxis}) {
+      die "Must provide source_id for x-axis."
+    }
+    $self->setContXAxis($params->{contXAxis});
+  } 
   $self->{_errors} = [];
   
   return $self;
@@ -122,6 +137,8 @@ sub makeNodeMetadataCannedQuery {
     ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur->import();
     require ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus;
     ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->import();
+    require ClinEpiWebsite::Model::CannedQuery::NodeMetadataSampleInfo;
+    ClinEpiWebsite::Model::CannedQuery::NodeMetadataSampleInfo->import();
     1;
   };
 
@@ -173,6 +190,18 @@ sub makeNodeMetadataCannedQuery {
             TblPrefix        => $tblPrefix,
            );
       }
+    } elsif ($self->getSampleInfo()) {
+      print STDERR "running nodemetadatasampleinfo";
+      my $contXAxis = $self->getContXAxis();
+      my $sampleInfo = $self->getSampleInfo();
+      $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataSampleInfo->new
+          ( Id               => $id,
+            Name             => "_data_$suffix",
+            ContXAxis        => $contXAxis,
+            SampleInfo       => $sampleInfo,
+            TblPrefix        => $tblPrefix,
+           );
+      print STDERR Dumper($profile);
     } 
     $self->setNodeMetadataCannedQuery($profile);
   

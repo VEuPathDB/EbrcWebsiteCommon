@@ -29,6 +29,12 @@ sub setXaxisLabel                { $_[0]->{'_x_axis_label'                  } = 
 sub getSubtitle                  { $_[0]->{'_subtitle'                      }}
 sub setSubtitle                  { $_[0]->{'_subtitle'                      } = $_[1]}
 
+sub getStatusLegend              { $_[0]->{'_status_legend'                 }}
+sub setStatusLegend              { $_[0]->{'_status_legend'                 } = $_[1]}
+
+sub getEventDurLegend            { $_[0]->{'_event_dur_legend'              }}
+sub setEventDurLegend            { $_[0]->{'_event_dur_legend'              } = $_[1]}
+
 sub getColors                    { $_[0]->{'_colors'                        }}
 sub setColors                    { $_[0]->{'_colors'                        } = $_[1]}
 
@@ -140,6 +146,8 @@ sub setEventStart                { $_[0]->{'_event_start'                   } = 
 sub getEventDur                  { $_[0]->{'_event_dur'                     }}
 sub setEventDur                  { $_[0]->{'_event_dur'                     } = $_[1]}
 
+sub getSampleInfo                { $_[0]->{'_sample_info'                   }}
+sub setSampleInfo                { $_[0]->{'_sample_info'                   } = $_[1]}
 
 #----------------------------------------------------------------------------------------------
 
