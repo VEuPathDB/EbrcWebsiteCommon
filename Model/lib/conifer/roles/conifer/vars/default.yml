@@ -144,8 +144,8 @@ modelconfig_emailContent: >
 
 modelprop:
   PROJECT_ID: '{{ project }}'
-  LEGACY_WEBAPP_BASE_URL: "/{{ webapp_ctx }}"
-  WEBAPP_BASE_URL: "/{{ webapp_ctx }}/app"
+  LEGACY_WEBAPP_BASE_URL: "/{{ _webapp_ctx }}"
+  WEBAPP_BASE_URL: "/{{ _webapp_ctx }}/app"
   WEBSERVICEMIRROR: /var/www/Common/apiSiteFilesMirror/webServices/
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
   LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
