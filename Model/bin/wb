@@ -61,19 +61,19 @@ if($mode eq 'full') {
 }
 
 if($mode eq 'model') {
-  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
 }
 
 if($mode eq 'graph') {
-  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates";
+  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates";
 }
 
 if($mode eq 'gbrowse') {
-  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
 }
 
 if($mode eq 'ontology') {
-  $cmd = "$dieOnError; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
+  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
 }
 
 if($mode eq 'site') {
