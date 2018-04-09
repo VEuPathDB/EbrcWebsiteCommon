@@ -56,6 +56,12 @@ sub setForceConnectPoints        { $_[0]->{'_force_connect_points'          } = 
 sub getTimeline                  { $_[0]->{'_time_line'                     }}
 sub setTimeline                  { $_[0]->{'_time_line'                     } = $_[1]}
 
+sub getColorVals                 { $_[0]->{'_color_vals'                    }}
+sub setColorVals                 { $_[0]->{'_color_vals'                    } = $_[1]}
+
+sub getCustomBreaks              { $_[0]->{'_custom_breaks'                 }}
+sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = $_[1]}
+
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -170,6 +176,12 @@ sub makeRPlotString {
 
   my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
   my $prtcpnt_timeline = $self->getTimeline() ? 'TRUE' : 'FALSE';
+
+  my $colorVals = $self->getColorVals();
+  $colorVals = $colorVals ? $colorVals : '';
+  my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
+  my $customBreaks = $self->getCustomBreaks();
+  $customBreaks = $customBreaks ? $customBreaks : '';
 
   $yMax = $yMax ? $yMax : "-Inf";
   $yMin = defined($yMin) ? $yMin : "Inf";
@@ -328,7 +340,9 @@ for(ii in 1:length(profile.files)) {
       }
     }
 
-    profile.df\$LEGEND = legend.label[ii];
+    if (!is.null(legend.label)) {
+      profile.df\$LEGEND = legend.label[ii];
+    }
     profile.df\$PROFILE_FILE = profile.files[ii];
     profile.df\$PROFILE_TYPE = profile.types[ii];
   }
@@ -416,7 +430,7 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
   myX <- \"ELEMENT_NAMES\"
 }
 
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, colour=PROFILE_FILE));
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=LEGEND, colour=LEGEND));
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -604,12 +618,32 @@ if($hideXAxisLabels) {
 
 if ($prtcpnt_sum) {
 
-  if (grepl(\"Z-score\", \"$yAxisLabel\")) {
+  if (\"YLABEL\" %in% colnames(profile.df.full)) {
+    if (length(unique(profile.df.full\$YLABEL)) > 1) {
+      myYLab <- \"Z-score\" 
+    } else {
+      myYLab <- unique(profile.df.full\$YLABEL)[1]
+    }
+  } else {
+    myYLab <- \"$yAxisLabel\"
+  }
+
+  if (\"XLABEL\" %in% colnames(profile.df.full)) {
+    if (length(unique(profile.df.full\$XLABEL)) > 1) {
+      myXLab <- \"$xAxisLabel\"
+    } else {
+      myXLab <- unique(profile.df.full\$XLABEL)[1]
+    }
+  } else {
+    myXLab <- \"$xAxisLabel\"
+  }
+
+  if (grepl(\"z-score\", myYLab)) {
     gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
  
     gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
- } 
+  } 
 
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
@@ -629,8 +663,12 @@ if ($prtcpnt_sum) {
 
     #custom legend
     gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
-    gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
-
+    if ($hasColorVals) {
+      colorVector <- $colorVals
+      gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(annotate.df\$LEGEND)[1]])))))
+    } else {
+      gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
+    }
   }
 
   status = exists(\"status.df\") && nrow(status.df) > 0;
@@ -652,7 +690,7 @@ if ($prtcpnt_sum) {
      if (is.thumbnail) {
         gp = gp + labs(title=NULL, x=NULL, y=NULL);
       } else {
-        gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=NULL);
+        gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=NULL);
       }
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
@@ -666,13 +704,15 @@ if ($prtcpnt_sum) {
       } else {
         myColors = \"cyan\";
       }
-
       status.df\$TOOLTIP <- paste0(\"Day: \", status.df\$ELEMENT_NAMES_NUMERIC, \"|Status: \", status.df\$STATUS)
       status.df\$TOOLTIP[is.na(status.df\$STATUS)] <- NA      
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
 
-      #gp = gp + scale_color_manual(values=myColors, name=status.df\$COLOR);
-      gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(profile.df.full\$LEGEND, status.df\$COLOR), name=\"Legend\");
+      if ($hasColorVals) {
+        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\")
+      } else {
+        gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
+      }
 
       #create custom legend
       gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"))
@@ -681,15 +721,16 @@ if ($prtcpnt_sum) {
 
     if (!$prtcpnt_timeline) {
       if (is.thumbnail) {
-        gp = gp + labs(title=NULL, x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=\"$subtitle\");
+        gp = gp + labs(title=NULL, x=myXLab, y=myYLab, subtitle=\"$subtitle\");
         gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
       } else {
-        gp = gp + labs(title=\"$plotTitle\", x=\"$xAxisLabel\", y=\"$yAxisLabel\", subtitle=\"$subtitle\");
+        gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=myYLab, subtitle=\"$subtitle\");
         gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
       }
     }
 
   gp = gp + guides(color = guide_legend(order=1))
+
 }
 
 #postscript

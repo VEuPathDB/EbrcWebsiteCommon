@@ -49,7 +49,7 @@ sub new {
   #this later is checked to know which query to run.
   if (defined $params->{yAxis}) {
     $self->setYAxis($params->{yAxis});
-    print STDERR Dumper($params->{yAxis});
+    #print STDERR Dumper($params->{yAxis});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis.";
     }
@@ -58,7 +58,7 @@ sub new {
   #later, if this is defined then a second query will be called
   if (defined $params->{eventStart}) {
     $self->setEventStart($params->{eventStart});
-    print STDERR Dumper($params->{eventStart});
+    #print STDERR Dumper($params->{eventStart});
     unless ($params->{eventDur}) {
       die "Must provide source_id for event duration.";
     }
@@ -67,7 +67,7 @@ sub new {
 
   if (defined $params->{status}) {
     $self->setStatus($params->{status});
-    print STDERR Dumper($params->{status});
+    #print STDERR Dumper($params->{status});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis."
     }
@@ -79,7 +79,7 @@ sub new {
  
   if (defined $params->{sampleInfo}) {
     $self->setSampleInfo($params->{sampleInfo});
-    print STDERR Dumper($params->{sampleInfo});
+    #print STDERR Dumper($params->{sampleInfo});
     unless ($params->{contXAxis}) {
       die "Must provide source_id for x-axis."
     }
@@ -157,6 +157,7 @@ sub makeNodeMetadataCannedQuery {
           YAxis            => $yAxis,
           TblPrefix        => $tblPrefix,
          );
+      #print STDERR Dumper($profile);
     } elsif ($self->getEventStart()) {
       my $eventStart = $self->getEventStart();
       my $eventDur = $self->getEventDur();
@@ -191,7 +192,7 @@ sub makeNodeMetadataCannedQuery {
            );
       }
     } elsif ($self->getSampleInfo()) {
-      print STDERR "running nodemetadatasampleinfo";
+      #print STDERR "running nodemetadatasampleinfo";
       my $contXAxis = $self->getContXAxis();
       my $sampleInfo = $self->getSampleInfo();
       $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataSampleInfo->new
@@ -201,7 +202,7 @@ sub makeNodeMetadataCannedQuery {
             SampleInfo       => $sampleInfo,
             TblPrefix        => $tblPrefix,
            );
-      print STDERR Dumper($profile);
+      #print STDERR Dumper($profile);
     } 
     $self->setNodeMetadataCannedQuery($profile);
   

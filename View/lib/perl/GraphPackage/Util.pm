@@ -16,7 +16,7 @@ sub makeNodeMetadataSet {
   foreach my $row (@arr) {
     if (ref($row) eq 'ARRAY') {
       foreach my $nextProfile (@{$row}) {
-        print STDERR Dumper($nextProfile);
+        #print STDERR Dumper($nextProfile);
         if (!defined $nextProfile->{yAxis} && !defined $nextProfile->{eventStart} && !defined $nextProfile->{status} && !defined $nextProfile->{sampleInfo}) {
         warn "An empty profile was passed to Util.pm... Was this intentional?";
       } else {
@@ -27,7 +27,7 @@ sub makeNodeMetadataSet {
       }
     } else {
       #check if anything was passed.
-      print STDERR Dumper($row);
+      #print STDERR Dumper($row);
       if (!defined $row->{yAxis} && !defined $row->{eventStart} && !defined $row->{status} && !defined $row->{sampleInfo}) {
         warn "An empty profile was passed to Util.pm... Was this intentional?";
       } else {

@@ -84,6 +84,15 @@ sub setSampleLabels               { $_[0]->{'_sample_labels'                } = 
 
 sub getRPostscript               { $_[0]->{'_r_postscript'                  }}
 sub setRPostscript               { $_[0]->{'_r_postscript'                  } = $_[1]}
+sub addRPostscript {
+  my ($self, $ps) = @_;
+
+  my $existing = $self->getRPostscript() || '';
+
+  if($ps) {
+    $self->setRPostscript($existing . $ps);
+  }
+}
 
 sub getFillBelowLine	 	 { $_[0]->{'_fill_below_line'		    }}
 sub setFillBelowLine		 { $_[0]->{'_fill_below_line'		    } = $_[1]}
