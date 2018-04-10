@@ -29,7 +29,7 @@ my @modes;
 if ($svnPrefix eq "ApiCommon") {
   @modes = ("full", "model", "graph", "gbrowse", "ontology", "site");
 } else {
-  @modes = ("full", "model", "site", "ontology");
+  @modes = ("full", "model", "site", "ontology", "graph");
 }
 
 my $isValidMode;
@@ -65,7 +65,7 @@ if($mode eq 'model') {
 }
 
 if($mode eq 'graph') {
-  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates";
+  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld EbrcWebsiteCommon/Model; bld $svnPrefix\Website/Model; $injectTemplates";
 }
 
 if($mode eq 'gbrowse') {
