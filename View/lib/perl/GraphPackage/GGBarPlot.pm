@@ -1,3 +1,4 @@
+
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot;
 
 use strict;
@@ -37,6 +38,15 @@ sub setLas                      { $_[0]->{'_las'                             } =
 
 sub getSkipStdErr                 { $_[0]->{'_skip_std_err'                      }}
 sub setSkipStdErr                 { $_[0]->{'_skip_std_err'                      } = $_[1]}
+
+sub getColorVals                 { $_[0]->{'_color_vals'                    }}
+sub setColorVals                 { $_[0]->{'_color_vals'                    } = $_[1]}
+
+sub getCustomBreaks              { $_[0]->{'_custom_breaks'                 }}
+sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = $_[1]}
+
+sub getFacetNumCols              { $_[0]->{'_facet_num_cols'                }}
+sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = $_[1]}
 
 sub blankPlotPart {
   my ($self) = @_;

@@ -57,11 +57,12 @@ sub makeProfileSets {
     my $mainProfileSetDisplayName = $row->[8];
     my $subId = $row->[9];
     my $contXAxis = $row->[10];
+    my $idOverride = $row->[11];
 
-    my $profileSet = EbrcWebsiteCommon::View::GraphPackage::ProfileSet->new($mainProfileSet, $mainProfileType, $elementNames, $alternateSourceId, $scale, $facet, $mainProfileSetDisplayName, $subId, $contXAxis);
+    my $profileSet = EbrcWebsiteCommon::View::GraphPackage::ProfileSet->new($mainProfileSet, $mainProfileType, $elementNames, $alternateSourceId, $scale, $facet, $mainProfileSetDisplayName, $subId, $contXAxis, $idOverride);
 
     if($relatedProfileSet) {
-      my $relatedSet = EbrcWebsiteCommon::View::GraphPackage::ProfileSet->new($relatedProfileSet, $relatedProfileType, $elementNames, $alternateSourceId, $scale, $facet, '', $subId, $contXAxis);
+      my $relatedSet = EbrcWebsiteCommon::View::GraphPackage::ProfileSet->new($relatedProfileSet, $relatedProfileType, $elementNames, $alternateSourceId, $scale, $facet, '', $subId, $contXAxis, $idOverride);
       $profileSet->setRelatedProfileSet($relatedSet);
     }
     push @rv, $profileSet;

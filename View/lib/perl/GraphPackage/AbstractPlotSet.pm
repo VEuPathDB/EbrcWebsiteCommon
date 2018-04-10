@@ -306,6 +306,7 @@ library(gtools);
 library(plyr);
 library(scales);
 library(viridisLite);
+library(tidyr)
 
 $open_R
 

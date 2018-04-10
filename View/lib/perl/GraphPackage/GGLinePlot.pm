@@ -62,6 +62,9 @@ sub setColorVals                 { $_[0]->{'_color_vals'                    } = 
 sub getCustomBreaks              { $_[0]->{'_custom_breaks'                 }}
 sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = $_[1]}
 
+sub getFacetNumCols              { $_[0]->{'_facet_num_cols'                }}
+sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = $_[1]}
+
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -154,7 +157,9 @@ sub makeRPlotString {
   my $plotTitle = $self->getPlotTitle();
   my $subtitle = $self->getSubtitle();
   my $statusLegend = $self->getStatusLegend();
+  $statusLegend = $statusLegend ? $statusLegend : '';
   my $eventDurLegend = $self->getEventDurLegend();
+  $eventDurLegend = $eventDurLegend ? $eventDurLegend : '';
 
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
@@ -265,6 +270,9 @@ sub makeRPlotString {
       }
     }
   }
+
+  my $facetNumCols = $self->getFacetNumCols();
+  $facetNumCols = $facetNumCols ? $facetNumCols : 0;
 
   my $fillBelowLine = $self->getFillBelowLine() ? 'TRUE' : 'FALSE';
   my $removeNaN = $self->getRemoveNaN() ? 'TRUE' : 'FALSE';
@@ -430,7 +438,13 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
   myX <- \"ELEMENT_NAMES\"
 }
 
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=LEGEND, colour=LEGEND));
+hideLegend = FALSE
+if (is.null(profile.df.full\$LEGEND)) {
+  profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
+  hideLegend = TRUE
+}
+
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, colour=LEGEND));
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -464,10 +478,19 @@ if($isSVG) {
 if (!$prtcpnt_timeline) {
 
 if(useTooltips){
-  if (myX == \"CONTXAXIS\") {
-    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
+  if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
+    gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
   } else {
-    gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+    if (myX == \"CONTXAXIS\") {
+      gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
+    } else {
+      if (\"SIZE\" %in% colnames(profile.df.full)) {
+        gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \", get(myX), \", y: \", VALUE), size=SIZE), real.geom=geom_point);
+        gp = gp + scale_size_manual(values=seq(length(unique(profile.df.full\$SIZE))), breaks=unique(profile.df.full\$SIZE), labels=unique(profile.df.full\$SIZE))
+      } else {
+        gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+      }
+    }
   }
 }else{
   gp = gp + geom_point();
@@ -492,23 +515,25 @@ if (\"GROUP\" %in% colnames(profile.df.full)) {
 if(!$forceNoLines) {
   #override earlier group setting if group column exists
   if (\"GROUP\" %in% colnames(profile.df.full)) {
-    if (useTooltips && !all(is.null(profile.df.full\$LEGEND))) {
-      gp = gp + geom_tooltip(aes(group=GROUP, tooltip=LEGEND), real.geom=geom_line);
+    if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
+      gp = gp + aes(group=GROUP)
+      gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
     } else {
-      gp = gp + geom_line(aes(group=GROUP));
+      gp = gp + aes(group=GROUP)
+      gp = gp + geom_line();
     }
   } else {
-    if (useTooltips && !all(is.null(profile.df.full\$LEGEND))) {
+    if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
       gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
     } else {
       gp = gp + geom_line();
     }
   }
   if($fillBelowLine) {
-    if(length(unique(profile.df.full\$PROFILE_FILE)) > 1) {
-      gp = gp + geom_tooltip(aes(fill=PROFILE_FILE, tooltip=LEGEND, group=PROFILE_FILE), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
+    if(length(unique(profile.df.full\$LEGEND)) > 1) {
+      gp = gp + geom_tooltip(aes(fill=LEGEND, tooltip=LEGEND, group=LEGEND), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
     } else {
-      gp = gp + geom_area(aes(fill=PROFILE_FILE, group=PROFILE_FILE), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
+      gp = gp + geom_area(aes(fill=LEGEND, group=LEGEND), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
     }
   }
 
@@ -538,13 +563,12 @@ if (coord.cartesian) {
 # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
 # then wont need the if statement. cause though fine now, this still may eventually cause problems.
 if (count/length($colorsStringNotNamed) == 1) {
-  gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+  gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
 } else {
-  gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$PROFILE_FILE, labels=profile.df.full\$LEGEND, name=\"Legend\");
+  gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
 }
 
-hideLegend=FALSE;
-if(is.null(profile.df.full\$LEGEND) || $fillBelowLine) {
+if( $fillBelowLine) {
   hideLegend=TRUE;
 }
 
@@ -599,7 +623,11 @@ if(is.compact) {
 if(\"FACET\" %in% colnames(profile.df.full)) {
   if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
     numLevels=nlevels(profile.df.full\$FACET_ns);
-    numCols=ceiling(numLevels / 2);
+    if ($facetNumCols != 0) {
+      numCols = $facetNumCols
+    } else {
+      numCols=ceiling(numLevels / 2);
+    }
     if (numLevels > 3) {
       gp = gp + facet_wrap( ~ FACET_ns, ncol=numCols);
     } else {
@@ -1039,4 +1067,4 @@ sub new {
    return $self;
 }
 
-1;
+1

@@ -52,12 +52,15 @@ sub setContXAxis                 { $_[0]->{'_cont_x_axis'         }  = $_[1]}
 sub getYAxis                     { $_[0]->{'_y_axis'              }}
 sub setYAxis                     { $_[0]->{'_y_axis'              }  = $_[1]}
 
+sub getIdOverride                { $_[0]->{'_id_override'         }}
+sub setIdOverride                { $_[0]->{'_id_override'         }  = $_[1]}
+
 sub logError                     { push @{$_[0]->{'_errors'}}, $_[1] }
 sub errors                       { $_[0]->{'_errors'               }}
 
 
 sub new {
-  my ($class, $name, $type, $elementNames, $alternateSourceId, $scale, $facet, $displayName, $subId, $contXAxis) = @_;
+  my ($class, $name, $type, $elementNames, $alternateSourceId, $scale, $facet, $displayName, $subId, $contXAxis, $idOverride) = @_;
 
   unless($name) {
     die "ProfileSet Name missing: $!";
@@ -82,6 +85,9 @@ sub new {
 
   if (defined $contXAxis) {
     $self->setContXAxis($contXAxis);
+  }
+  if (defined $idOverride) {
+    $self->setIdOverride($idOverride);
   }
 
 
@@ -131,7 +137,7 @@ sub writeProfileFile{
       }
     }
   }
-
+#print STDERR Dumper(\@elementOrder);
   $profile->setElementOrder(\@elementOrder) if(scalar @$elementNames > 0);
 
   my $profile_fn = eval { $profile->makeTabFile($qh, $_dict) }; $@ && $self->logError($@);
@@ -196,6 +202,11 @@ sub makeProfileCannedQuery {
     my $profileSetType = $self->getType();
     my $scale = $self->getScale();
     my $subId = $self->getSubId();
+    my $idOverride = $self->getIdOverride();
+
+    if ($idOverride) {
+      $id = $idOverride;
+    }
 
     my $profile;
     if(($idType) && lc($idType) eq 'ec') {
@@ -247,6 +258,11 @@ sub makeProfileNamesCannedQuery {
   my $profileSetType = $self->getType();
   my $facet = $self->getFacet();
   my $contXAxis = $self->getContXAxis();
+#  my $idOverride = $self->getIdOverride();
+
+#  if ($idOverride) {
+#    $id = $idOverride;
+#  }
 
   my $elementNamesProfile;
    if($facet || $contXAxis) {
