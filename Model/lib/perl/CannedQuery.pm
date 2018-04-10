@@ -145,32 +145,46 @@ sub getSimpleValues {
     if (grep { $_ eq 'PROFILE_AS_STRING' } @keys) {
       #print STDERR Dumper($_row->{'PROFILE_AS_STRING'});
       my @profile = split /\t/, $_row->{'PROFILE_AS_STRING'};
-
       delete $_row->{'PROFILE_AS_STRING'};
+      if (scalar @profile > 1) {
 
-      if(defined $elementOrder) {
-        foreach my $eo (@$elementOrder) {
-          my $pseudo_row = { %$_row,
-                             VALUE         => $Self->_treatValue($profile[$eo - 1]),
-                             ELEMENT_ORDER => $eo,
-                           };
+        if(defined $elementOrder) {
+          foreach my $eo (@$elementOrder) {
+            my $pseudo_row = { %$_row,
+                               VALUE         => $Self->_treatValue($profile[$eo - 1]),
+                               ELEMENT_ORDER => $eo,
+                             };
 
-          push(@Rv, $pseudo_row);
+            push(@Rv, $pseudo_row);
+          }
+        } else {
+
+          for (my $i = 0; $i < @profile; $i++) {
+            my $pseudo_row = { %$_row,
+                               VALUE         => $Self->_treatValue($profile[$i]),
+                               ELEMENT_ORDER => $i + 1,
+            };
+
+            push(@Rv, $pseudo_row);
+          }
         }
+      } else {
+         $_row->{VALUE}          = $Self->_treatValue($profile[0]);
+
+         if (defined $elementOrder) {
+           #print STDERR Dumper(@$elementOrder[$rows_n]);
+           $_row->{ELEMENT_ORDER} = @$elementOrder[$rows_n-1];
+         } else {
+           #inserted line below just to get it to run. it makes no sense to multiply by something which doesnt exist.
+           $_row->{ELEMENT_ORDER} = $rows_n;
+           $_row->{ELEMENT_ORDER} *= $scale;
+           $_row->{ELEMENT_ORDER} += $offset;
+         }
+        
+         push(@Rv, $_row);
       }
-      else {
 
-        for (my $i = 0; $i < @profile; $i++) {
-          my $pseudo_row = { %$_row,
-                             VALUE         => $Self->_treatValue($profile[$i]),
-                             ELEMENT_ORDER => $i + 1,
-          };
-
-          push(@Rv, $pseudo_row);
-        }
-      }
-
-    }
+    } 
 
     # just add to list.
     else {
