@@ -25,6 +25,7 @@ function ActiveGroup(props) {
     },
     eventHandlers: {
       setActiveOntologyTerm,
+      updateOntologyTermSummary,
       setOntologyTermSort,
       setOntologyTermSearch,
       setParamValue,
@@ -71,6 +72,7 @@ function ActiveGroup(props) {
         paramValues={paramValues}
         paramUIState={paramUIState}
         onActiveOntologyTermChange={setActiveOntologyTerm}
+        onOntologyTermSummaryUpdateRequest={updateOntologyTermSummary}
         onOntologyTermSort={setOntologyTermSort}
         onOntologyTermSearch={setOntologyTermSearch}
         onParamValueChange={setParamValue}

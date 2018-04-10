@@ -14,6 +14,7 @@ function Parameters(props) {
     paramValues,
     paramUIState,
     onActiveOntologyTermChange,
+    onOntologyTermSummaryUpdateRequest,
     onOntologyTermSort,
     onOntologyTermSearch,
     onParamValueChange,
@@ -61,6 +62,7 @@ function Parameters(props) {
                 value={paramValues[param.name]}
                 uiState={paramUIState[param.name]}
                 onActiveOntologyTermChange={onActiveOntologyTermChange}
+                onOntologyTermSummaryUpdateRequest={onOntologyTermSummaryUpdateRequest}
                 onOntologyTermSort={onOntologyTermSort}
                 onOntologyTermSearch={onOntologyTermSearch}
                 onParamValueChange={onParamValueChange}
@@ -80,6 +82,7 @@ Parameters.propTypes = {
   paramValues: PropTypes.object.isRequired,
   paramUIState: PropTypes.object.isRequired,
   onActiveOntologyTermChange: PropTypes.func.isRequired,
+  onOntologyTermSummaryUpdateRequest: PropTypes.func.isRequired,
   onOntologyTermSort: PropTypes.func.isRequired,
   onOntologyTermSearch: PropTypes.func.isRequired,
   onParamValueChange: PropTypes.func.isRequired,

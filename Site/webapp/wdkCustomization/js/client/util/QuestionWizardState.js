@@ -28,7 +28,6 @@ export function createInitialState(question, recordClass, paramValues) {
             activeOntologyTerm: leaves.length > 0 ? leaves[0].field.term : null,
             hideFilterPanel: leaves.length === 1,
             hideFieldPanel: leaves.length === 1,
-            ontologyTermSummaries: {},
             fieldStates: {},
             defaultMemberFieldState: {
               sort: {

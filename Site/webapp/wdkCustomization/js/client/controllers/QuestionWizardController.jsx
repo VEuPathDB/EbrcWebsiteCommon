@@ -1,4 +1,19 @@
 /*global wdk*/
+
+/*
+
+TODOs:
+  - Update ontologyTermSummaries to this:
+    {
+      loading: boolean;
+      isExpired: boolean;
+      summary: SummaryData | null;
+    }
+  - Use loading and isExpired for UI
+  - Use replace ontology invalidation logic with updateOntologyTermSummary(). In other words, have the UI event handlers call updateOntologyTermSummary instead of trying to figure out if counts need to be updated when filters change.
+
+*/
+
 import $ from 'jquery';
 import {
   ary,
@@ -90,6 +105,7 @@ class QuestionWizardController extends AbstractViewController {
       'setParamState',
       'setParamValue',
       'updateInvalidGroupCounts',
+      'updateOntologyTermSummary',
       'setFilterPopupVisiblity',
       'setFilterPopupPinned',
       'resetParamValues'
@@ -202,7 +218,7 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   setParamState(param, state) {
-    this.setState(updateState(['paramUIState', param.name], state));
+    this.setState(set(['paramUIState', param.name], state));
   }
 
   /**
@@ -231,10 +247,13 @@ class QuestionWizardController extends AbstractViewController {
     })
 
     // clear ontology term summaries
-    const paramUIState = mapValues(this.state.paramUIState, state =>
-      Object.assign({}, state, {
-        ontologyTermSummaries: state.ontologyTermSummaries && {}
-      }));
+    const paramUIState = mapValues(this.state.paramUIState, state => ({
+      ...state,
+      fieldStates: mapValues(state.fieldStates, fieldState => ({
+        ...fieldState,
+        summary: null
+      }))
+    }));
 
     this.setState({ paramUIState }, () => {
       Seq.from(this.state.activeGroup.parameters)
@@ -244,6 +263,15 @@ class QuestionWizardController extends AbstractViewController {
           this.setActiveOntologyTerm(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
         })
     })
+  }
+
+  /**
+   * Force an update of ontology term counts. If `ontologyTerm` isMulti, then
+   * update all of it's children's counts.
+   */
+  updateOntologyTermSummary(paramName, ontologyTerm) {
+    const { filters } = JSON.parse(this.state.paramValues[paramName]);
+    this._updateOntologyTermSummary(paramName, ontologyTerm, filters);
   }
 
   /**
@@ -259,10 +287,11 @@ class QuestionWizardController extends AbstractViewController {
    * Update paramUI state based on ontology term.
    */
   setActiveOntologyTerm(param, filters, ontologyTerm) {
-    this.setState(updateState(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
-    if (this._getParamUIState(this.state, param.name).ontologyTermSummaries[ontologyTerm] == null) {
+    const { summary, loading = false, invalid = false } = get(this.state, [ 'paramUIState', param.name, 'fieldStates', ontologyTerm ], {});
+    if ((summary == null || invalid) && !loading) {
       this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
     }
+    this.setState(set(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
   }
 
   setOntologyTermSort(param, term, sort) {
@@ -270,25 +299,31 @@ class QuestionWizardController extends AbstractViewController {
     let field = uiState.ontology.find(field => field.term === term);
     if (field == null || field.isRange) return;
 
-    let { ontologyTermSummaries, fieldStates, defaultMemberFieldState } = uiState;
-    let { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
-    let filter = filters.find(f => f.field === term);
+    this.setState(update(
+      ['paramUIState', param.name],
+      uiState => {
+        let { fieldStates, defaultMemberFieldState, defaultMultiFieldState } = uiState;
+        let { filters = [] } = JSON.parse(this.state.paramValues[param.name]);
+        let filter = filters.find(f => f.field === term);
 
-    let newState = Object.assign({}, uiState, {
-      ontologyTermSummaries: Object.assign({}, ontologyTermSummaries, {
-        [term]: field.isMulti
-          ? sortMultiFieldSummary(ontologyTermSummaries[term], uiState.ontology, sort)
-          : Object.assign({}, ontologyTermSummaries[term], {
-            valueCounts: sortDistribution(ontologyTermSummaries[term].valueCounts, sort, filter)
-          })
-      }),
-      fieldStates: Object.assign({}, fieldStates, {
-        [term]: Object.assign({}, fieldStates[term] || defaultMemberFieldState, {
-          sort
-        })
-      })
-    });
-    this.setParamState(param, newState);
+        return {
+          ...uiState,
+          fieldStates: {
+            ...fieldStates,
+            [term]: {
+              ...(fieldStates[term] || field.isMulti ? defaultMultiFieldState : defaultMemberFieldState),
+              sort,
+              summary: field.isMulti
+                ? sortMultiFieldSummary(fieldStates[term].summary, uiState.ontology, sort)
+                : {
+                  ...fieldStates[term].summary,
+                  valueCounts: sortDistribution(fieldStates[term].summary.valueCounts, sort, filter)
+                }
+            }
+          }
+        };
+      }
+    ));
   }
 
   setOntologyTermSearch(param, term, searchTerm) {
@@ -311,9 +346,9 @@ class QuestionWizardController extends AbstractViewController {
   setParamValue(param, paramValue) {
     const prevParamValue = this.state.paramValues[param.name];
 
-    this.setState(updateState(['paramValues', param.name], paramValue),
+    this.setState(set(['paramValues', param.name], paramValue),
       () => this._commitParamValueChange(param, paramValue, prevParamValue));
-    this.setState(updateState(['groupUIState', param.group, 'loading'], true));
+    this.setState(set(['groupUIState', param.group, 'loading'], true));
 
     if (param.type === 'FilterParamNew') {
       // for each changed member updated member field, resort
@@ -323,24 +358,32 @@ class QuestionWizardController extends AbstractViewController {
       let filtersByTerm = keyBy(filters, 'field');
       let prevFiltersByTerm = keyBy(prevFilters, 'field');
       let fieldMap = new Map(paramState.ontology.map(entry => [ entry.term, entry ]));
-      let ontologyTermSummaries = mapValues(paramState.ontologyTermSummaries, (summary, term) =>
+      let fieldStates = mapValues(paramState.fieldStates, (fieldState, term) =>
         fieldMap.get(term).isRange || filtersByTerm[term] === prevFiltersByTerm[term]
-        ? summary
-        : Object.assign({}, summary, fieldMap.get(term).isMulti
-          ? sortMultiFieldSummary(
-            summary,
-            paramState.ontology,
-            paramState.fieldStates[term] || paramState.defaultMultiFieldState
-          )
+        ? fieldState
+        : { ...fieldState, ...fieldMap.get(term).isMulti
+          ? {
+              ...fieldState,
+              summary: sortMultiFieldSummary(
+                fieldState.summary,
+                paramState.ontology,
+                paramState.fieldStates[term] || paramState.defaultMultiFieldState
+              )
+            }
           : {
-            valueCounts: sortDistribution(
-              summary.valueCounts,
-              (paramState.fieldStates[term] || paramState.defaultMemberFieldState).sort,
-              filtersByTerm[term]
-            )
-          })
+            ...fieldState,
+            summary: {
+              ...fieldState.summary,
+              valueCounts: sortDistribution(
+                fieldState.summary.valueCounts,
+                (paramState.fieldStates[term] || paramState.defaultMemberFieldState).sort,
+                filtersByTerm[term]
+              )
+            }
+          }
+        }
       );
-      this.setParamState(param, Object.assign({}, paramState, { ontologyTermSummaries }));
+      this.setParamState(param, Object.assign({}, paramState, { fieldStates }));
     }
   }
 
@@ -351,11 +394,17 @@ class QuestionWizardController extends AbstractViewController {
       if (param.type === 'FilterParamNew') {
         const {
           activeOntologyTerm,
-          ontologyTermSummaries
+          fieldStates,
+          ontology
         } = this._getParamUIState(this.state, paramName);
         const { filters } = JSON.parse(this.state.paramValues[param.name]);
+        const activeOntologyItem = ontology.find(item => item.term === activeOntologyTerm);
         this._updateFilterParamCounts(param.name, filters);
-        if (activeOntologyTerm && ontologyTermSummaries[activeOntologyTerm] == null) {
+        if (activeOntologyItem && !activeOntologyItem.isMulti && (
+          fieldStates[activeOntologyTerm] == null ||
+          fieldStates[activeOntologyTerm].summary == null ||
+          fieldStates[activeOntologyTerm].invalid
+        )) {
           this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters);
         }
       }
@@ -370,7 +419,7 @@ class QuestionWizardController extends AbstractViewController {
       .drop(1)
       .takeWhile(group => this._groupHasCount(group))
       .forEach(group => {
-        this.setState(updateState(['groupUIState', group.name, 'valid'], false));
+        this.setState(set(['groupUIState', group.name, 'valid'], false));
       })
 
     return Promise.all([
@@ -380,6 +429,7 @@ class QuestionWizardController extends AbstractViewController {
           this._updateGroupCounts(groups
             .takeWhile(group => group !== this.state.activeGroup)
             .concat(Seq.of(this.state.activeGroup)));
+          // If an upstream group has changed, update active group's params
           this._initializeActiveGroupParams(this.state.activeGroup);
         });
       })
@@ -390,44 +440,36 @@ class QuestionWizardController extends AbstractViewController {
     if (param.type === 'FilterParamNew') {
       const { filters = [] } = JSON.parse(paramValue);
       const { filters: oldFilters = [] } = JSON.parse(prevParamValue);
-      const { activeOntologyTerm, ontologyTermSummaries, ontology } = this._getParamUIState(this.state, param.name);
-      const ontologyByTerm = keyBy(ontology, 'term');
+      const { ontology } = this.state.paramUIState[param.name];
 
       // Get an array of fields whose associated filters have been modified.
       const modifiedFields = Object.entries(groupBy(filters.concat(oldFilters), 'field'))
-        .filter(([, filters]) => filters.length === 1 || !isEqual(filters[0], filters[1]))
-        .map(([ field ]) => field);
+        .filter(([, filters]) => (
+          // filter was added or removed
+          filters.length === 1 ||
+          // filter was modified
+          !isEqual(filters[0], filters[1])
+        ))
+        .map(([ field ]) => ontology.find(entry => entry.term === field));
 
-      const singleModifiedField = modifiedFields.length === 1 ? modifiedFields[0] : null;
-      const singleModifiedOntologyTerm = ontologyByTerm[singleModifiedField];
-      const singleModifiedOntologyParent = singleModifiedOntologyTerm && ontologyByTerm[singleModifiedOntologyTerm.parent]
+      if (modifiedFields.length > 0) {
+        const firstModifiedField = modifiedFields[0];
+        const firstModifiedFieldParent = ontology.find(entry => entry.term === firstModifiedField.parent);
+        this.setState(update(
+          ['paramUIState', param.name, 'fieldStates'],
+          fieldStates => mapValues(fieldStates, (fieldState, term) => ({
+            ...fieldState,
+            invalid: Boolean(
+              modifiedFields.length > 1 ||
+              firstModifiedField.term !== term ||
+              // FIXME Remove when multi filter JSON is updated so that filter.term IS the multi field
+              ( firstModifiedFieldParent.isMulti && firstModifiedFieldParent.term !== term )
+            )
+          }))
+        ));
+      }
 
-      const shouldUpdateActiveOntologyTermSummary = (
-        singleModifiedField !== activeOntologyTerm &&
-        // FIXME When we support ANY for multi filter, change this to reflect that.
-        ( singleModifiedOntologyParent == null ||
-          !singleModifiedOntologyParent.isMulti )
-      );
-
-      // Ontology term summaries we want to keep. We definitely want to keep the
-      // active ontology summary to prevent an empty panel while it's loading.
-      // Also, in the case that only a single filter has been modified, we don't
-      // need to update the associated ontologyTermSummary.
-      const newOntologyTermSummaries = Object.assign({
-        [activeOntologyTerm]: ontologyTermSummaries[activeOntologyTerm]
-      }, singleModifiedField && ontologyTermSummaries[singleModifiedField] && {
-        [singleModifiedField]: ontologyTermSummaries[singleModifiedField]
-      });
-
-      this.setState(updateState(['paramUIState', param.name, 'ontologyTermSummaries'], newOntologyTermSummaries));
-
-      return Promise.all([
-        this._updateFilterParamCounts(param.name, filters),
-        // This only needs to be called if the modified filter value is not for
-        // the active ontology term.
-        shouldUpdateActiveOntologyTermSummary &&
-          this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters)
-      ]);
+      return this._updateFilterParamCounts(param.name, filters)
     }
 
     return Promise.resolve();
@@ -463,15 +505,15 @@ class QuestionWizardController extends AbstractViewController {
                       })
                   );
                 return [
-                  updateState(['paramUIState', param.name, 'ontology'], ontology),
-                  updateState(['paramValues', param.name], param.defaultValue)
+                  set(['paramUIState', param.name, 'ontology'], ontology),
+                  set(['paramValues', param.name], param.defaultValue)
                 ]
               }
               case 'FlatVocabParam':
               case 'EnumParam': {
                 return [
-                  updateState(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
-                  updateState(['paramValues', param.name], param.defaultValue)
+                  set(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
+                  set(['paramValues', param.name], param.defaultValue)
                 ]
               }
               default: {
@@ -482,10 +524,15 @@ class QuestionWizardController extends AbstractViewController {
           })
           .reduce(ary(flow, 2), identity)
     ).then(updater =>
-      // Then, clear ontologyTermSummaries for dependent FilterParamNew params
+      // Then, invalidate ontologyTermSummaries for dependent FilterParamNew params
       Seq.from(this._getDeepParameterDependencies(rootParam))
         .filter(parameter => parameter.type === 'FilterParamNew')
-        .map(parameter => updateState(['paramUIState', parameter.name, 'ontologyTermSummaries'], {}))
+        .map(parameter =>
+          update(
+            ['paramUIState', parameter.name, 'fieldStates'],
+            fieldStates => mapValues(fieldStates, fieldState => ({ ...fieldState, invalid: true }))
+          )
+        )
         .reduce(ary(flow, 2), updater)
     )
 
@@ -593,11 +640,14 @@ class QuestionWizardController extends AbstractViewController {
   _updateFilterParamCounts(paramName, filters) {
     return this._getFilterCounts(paramName, filters, this.state.paramValues).then(
       counts => {
-        const uiState = this.state.paramUIState[paramName];
-        this.setState(updateState(['paramUIState', paramName], Object.assign({}, uiState, {
-          filteredCount: counts.nativeFiltered,
-          unfilteredCount: counts.nativeUnfiltered
-        })))
+        this.setState(update(
+          ['paramUIState', paramName],
+          uiState => ({
+            ...uiState,
+            filteredCount: counts.nativeFiltered,
+            unfilteredCount: counts.nativeUnfiltered
+          })
+        ));
       },
       error => {
         this.setState({ error });
@@ -608,6 +658,19 @@ class QuestionWizardController extends AbstractViewController {
   _updateOntologyTermSummary(paramName, ontologyTerm, filters) {
     const { ontology } = this.state.paramUIState[paramName];
     const ontologyItem = ontology.find(item => item.term === ontologyTerm);
+
+    const { defaultMultiFieldState, defaultMemberFieldState, defaultRangeFieldState } = this.state.paramUIState[paramName];
+
+    this.setState(update(
+      ['paramUIState', paramName, 'fieldStates'],
+      fieldStates => {
+        const fieldState = fieldStates[ontologyTerm] ||
+          ( ontologyItem.isMulti ? defaultMultiFieldState
+          : ontologyItem.isRange ? defaultRangeFieldState
+          : defaultMemberFieldState );
+        return { ...fieldStates, [ontologyTerm]: { ...fieldState, loading: true } };
+      }
+    ));
 
     if (ontologyItem && ontologyItem.isMulti) {
       // find children
@@ -624,9 +687,9 @@ class QuestionWizardController extends AbstractViewController {
             // We currently only support AND. Support for ANY will most likely require
             // more changes than just this line.
             //
-            // FIXME Change the live code to the commented code to update child filters for ALL
-            //     filters.filter(filter => filter.field != childTerm),
-            filters.filter(filter => !childTerms.includes(filter.field)),
+            // XXX The next line will all filters for children of the multi parent
+            // filters.filter(filter => !childTerms.includes(filter.field)),
+            filters.filter(filter => filter.field != childTerm),
             childTerm,
             this.state.paramValues
           )
@@ -635,15 +698,26 @@ class QuestionWizardController extends AbstractViewController {
 
       return Promise.all(childSummaryPromises).then(
         childSummaries => {
-          const { defaultMultiFieldState, fieldStates, ontology, ontologyTermSummaries } = this.state.paramUIState[paramName];
-          const fieldState = fieldStates[ontologyTerm] || defaultMultiFieldState;
-          this.setState(updateState(['paramUIState', paramName, 'fieldStates'],
-            { ...fieldStates, [ontologyTerm]: fieldState }));
-          this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
-            { ...ontologyTermSummaries, [ontologyTerm]: sortMultiFieldSummary( childSummaries, ontology, fieldState.sort )}));
+          const { ontology } = this.state.paramUIState[paramName];
+          this.setState(update(
+            ['paramUIState', paramName, 'fieldStates', ontologyTerm],
+            fieldState => ({
+              ...fieldState,
+              loading: false,
+              invalid: false,
+              summary: sortMultiFieldSummary(childSummaries, ontology, fieldState.sort)
+            })
+          ));
         },
         error => {
           this.setState({ error });
+          this.setState(update(
+            ['paramUIState', paramName, 'fieldStates', ontologyTerm],
+            fieldState => ({
+              ...fieldState,
+              loading: false
+            })
+          ));
         }
       );
     }
@@ -655,28 +729,32 @@ class QuestionWizardController extends AbstractViewController {
       ontologyTerm,
       this.state.paramValues
     ).then(
-      ontologyTermSummary => {
-        const { defaultMemberFieldState, fieldStates, ontologyTermSummaries } = this.state.paramUIState[paramName];
-        const fieldState = fieldStates[ontologyTerm] || defaultMemberFieldState;
-
-        ontologyTermSummary.valueCounts = sortDistribution(
-          ontologyTermSummary.valueCounts,
-          fieldState.sort,
-          filters
-        );
-
-        this.setState(updateState(['paramUIState', paramName, 'fieldStates'],
-          Object.assign({}, fieldStates, {
-            [ontologyTerm]: fieldState
-          })));
-
-        this.setState(updateState(['paramUIState', paramName, 'ontologyTermSummaries'],
-          Object.assign({}, ontologyTermSummaries, {
-            [ontologyTerm]: ontologyTermSummary
-          })));
+      summary => {
+        this.setState(update(
+          ['paramUIState', paramName, 'fieldStates', ontologyTerm],
+          fieldState => {
+            if (!ontologyItem.isRange) {
+              summary.valueCounts = sortDistribution(
+                summary.valueCounts,
+                fieldState.sort,
+                filters
+              );
+            }
+            return {
+              ...fieldState,
+              loading: false,
+              invalid: false,
+              summary
+          };
+          }
+        ));
       },
       error => {
         this.setState({ error });
+        this.setState(update(
+          ['paramUIState', paramName, 'fieldStates', ontologyTerm],
+          fieldState => ({ ...fieldState, loading: false })
+        ))
       }
     );
   }
@@ -757,28 +835,43 @@ QuestionWizardController.defaultProps = {
 
 export default wrappable(QuestionWizardController);
 
+
 /**
  * Creates an updater function that returns a new state object
- * with an updated value at the specified path.
+ * with an updated value returns by fn at the specified path, replacing the
+ * previous value.
  */
-function updateState(path, value) {
-  return function update(state) {
-    return updateObjectImmutably(state, path, value);
+function update(path, fn) {
+  return function updateState(state) {
+    return updateObjectImmutably(state, path, fn);
   }
+}
+
+/**
+ * Creates an updater function that returns a new state object
+ * with an updated value at the specified path, replacing the previous value.
+ */
+function set(path, value) {
+  return update(path, () => value);
 }
 
 /**
  * Creates a new object based on input object with an updated value
  * a the specified path.
  */
-function updateObjectImmutably(object, [key, ...restPath], value) {
+function updateObjectImmutably(object, [key, ...restPath], updateFn) {
   const isObject = typeof object === 'object';
   if (!isObject || (isObject && !(key in object)))
     throw new Error("Invalid key path");
 
+  if (typeof updateFn !== 'function') {
+    throw new Error("updateFn should be a function.");
+  }
+
   return Object.assign({}, object, {
-    [key]: restPath.length === 0 ? value
-      : updateObjectImmutably(object[key], restPath, value)
+    [key]: restPath.length === 0
+      ? updateFn(object[key])
+      : updateObjectImmutably(object[key], restPath, updateFn)
   })
 }
 

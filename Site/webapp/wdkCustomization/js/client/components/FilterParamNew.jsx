@@ -12,6 +12,7 @@ export default class FilterParamNew extends React.PureComponent {
     this._getFiltersFromValue = memoize(this._getFiltersFromValue);
     this._getFieldMap = memoize(this._getFieldMap);
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
+    this._handleFieldCountUpdateRequest = this._handleFieldCountUpdateRequest.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
     this._handleMemberSort = this._handleMemberSort.bind(this);
     this._handleMemberSearch = this._handleMemberSearch.bind(this);
@@ -30,6 +31,10 @@ export default class FilterParamNew extends React.PureComponent {
   _handleActiveFieldChange(term) {
     let filters = this._getFiltersFromValue(this.props.value);
     this.props.onActiveOntologyTermChange(this.props.param, filters, term);
+  }
+
+  _handleFieldCountUpdateRequest(term) {
+    this.props.onOntologyTermSummaryUpdateRequest(this.props.param.name, term);
   }
 
   _handleFilterChange(filters) {
@@ -65,7 +70,6 @@ export default class FilterParamNew extends React.PureComponent {
     let filters = this._getFiltersFromValue(this.props.value);
     let activeField = fields.get(uiState.activeOntologyTerm);
     let activeFieldState = uiState.fieldStates[uiState.activeOntologyTerm];
-    let activeFieldSummary = uiState.ontologyTermSummaries[uiState.activeOntologyTerm];
 
     return (
       <div className="filter-param">
@@ -82,13 +86,13 @@ export default class FilterParamNew extends React.PureComponent {
 
           activeField={activeField}
           activeFieldState={activeFieldState}
-          activeFieldSummary={activeFieldSummary}
 
           hideFilterPanel={uiState.hideFilterPanel}
           hideFieldPanel={uiState.hideFieldPanel}
 
           onFiltersChange={this._handleFilterChange}
           onActiveFieldChange={this._handleActiveFieldChange}
+          onFieldCountUpdateRequest={this._handleFieldCountUpdateRequest}
           onMemberSort={this._handleMemberSort}
           onMemberSearch={this._handleMemberSearch}
           onRangeScaleChange={this._handleRangeScaleChange}
