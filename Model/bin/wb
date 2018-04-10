@@ -77,7 +77,7 @@ if($mode eq 'ontology') {
 }
 
 if($mode eq 'site') {
-  $cmd = "$dieOnError; bldw EbrcWebsiteCommon/Site; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop";
+  $cmd = "$dieOnError; bldw EbrcWebsiteCommon/Site $baseGus/etc/webapp.prop; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop";
 }
 
 
