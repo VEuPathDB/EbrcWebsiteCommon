@@ -39,6 +39,7 @@ import ReactDOM from 'react-dom';
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { AbstractViewController } from 'wdk-client/Controllers';
+import { isMulti, isRange } from 'wdk-client/FilterServiceUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
 import { WdkStore } from 'wdk-client/Stores';
@@ -140,12 +141,11 @@ class QuestionWizardController extends AbstractViewController {
             const uiState = this.state.paramUIState.visits_prism;
             uiState.ontology = [{
               display: 'Symptoms and signs (multi)',
-              isMulti: true,
               isRange: false,
               parent: 'EUPATH_0000328',
               term: fakeMultiTerm,
-              type: 'string',
-              values: ['Yes', 'No', 'Unable to assess'],
+              type: 'multiFilter',
+              // values: ['Yes', 'No', 'Unable to assess'],
             }].concat( uiState.ontology.map(o => multiChildRe.test(o.term) ? {...o, parent: fakeMultiTerm } : o));
           }
 
@@ -156,9 +156,8 @@ class QuestionWizardController extends AbstractViewController {
               const ontology = get(this.state.paramUIState, [ paramName, 'ontology' ], []);
               const multiField = ontology.find(item => item.term === 'EUPATH_0010984');
               if (multiField) Object.assign(multiField, {
-                isMulti: true,
-                type: 'string',
-                values: [ 'Yes', 'No' ]
+                type: 'multiFilter',
+                // values: [ 'Yes', 'No' ]
               });
             }
           }
@@ -297,7 +296,7 @@ class QuestionWizardController extends AbstractViewController {
   setOntologyTermSort(param, term, sort) {
     let uiState = this.state.paramUIState[param.name];
     let field = uiState.ontology.find(field => field.term === term);
-    if (field == null || field.isRange) return;
+    if (field == null || isRange(field)) return;
 
     this.setState(update(
       ['paramUIState', param.name],
@@ -311,9 +310,9 @@ class QuestionWizardController extends AbstractViewController {
           fieldStates: {
             ...fieldStates,
             [term]: {
-              ...(fieldStates[term] || field.isMulti ? defaultMultiFieldState : defaultMemberFieldState),
+              ...(fieldStates[term] || isMulti(field) ? defaultMultiFieldState : defaultMemberFieldState),
               sort,
-              summary: field.isMulti
+              summary: isMulti(field)
                 ? sortMultiFieldSummary(fieldStates[term].summary, uiState.ontology, sort)
                 : {
                   ...fieldStates[term].summary,
@@ -359,9 +358,9 @@ class QuestionWizardController extends AbstractViewController {
       let prevFiltersByTerm = keyBy(prevFilters, 'field');
       let fieldMap = new Map(paramState.ontology.map(entry => [ entry.term, entry ]));
       let fieldStates = mapValues(paramState.fieldStates, (fieldState, term) =>
-        fieldMap.get(term).isRange || filtersByTerm[term] === prevFiltersByTerm[term]
+        isRange(fieldMap.get(term)) || filtersByTerm[term] === prevFiltersByTerm[term]
         ? fieldState
-        : { ...fieldState, ...fieldMap.get(term).isMulti
+        : { ...fieldState, ...isMulti(fieldMap.get(term))
           ? {
               ...fieldState,
               summary: sortMultiFieldSummary(
@@ -400,7 +399,7 @@ class QuestionWizardController extends AbstractViewController {
         const { filters } = JSON.parse(this.state.paramValues[param.name]);
         const activeOntologyItem = ontology.find(item => item.term === activeOntologyTerm);
         this._updateFilterParamCounts(param.name, filters);
-        if (activeOntologyItem && !activeOntologyItem.isMulti && (
+        if (activeOntologyItem && !isMulti(activeOntologyItem) && (
           fieldStates[activeOntologyTerm] == null ||
           fieldStates[activeOntologyTerm].summary == null ||
           fieldStates[activeOntologyTerm].invalid
@@ -463,7 +462,7 @@ class QuestionWizardController extends AbstractViewController {
               modifiedFields.length > 1 ||
               firstModifiedField.term !== term ||
               // FIXME Remove when multi filter JSON is updated so that filter.term IS the multi field
-              ( firstModifiedFieldParent.isMulti && firstModifiedFieldParent.term !== term )
+              ( isMulti(firstModifiedFieldParent) && firstModifiedFieldParent.term !== term )
             )
           }))
         ));
@@ -665,14 +664,14 @@ class QuestionWizardController extends AbstractViewController {
       ['paramUIState', paramName, 'fieldStates'],
       fieldStates => {
         const fieldState = fieldStates[ontologyTerm] ||
-          ( ontologyItem.isMulti ? defaultMultiFieldState
-          : ontologyItem.isRange ? defaultRangeFieldState
+          ( isMulti(ontologyItem) ? defaultMultiFieldState
+          : isRange(ontologyItem) ? defaultRangeFieldState
           : defaultMemberFieldState );
         return { ...fieldStates, [ontologyTerm]: { ...fieldState, loading: true } };
       }
     ));
 
-    if (ontologyItem && ontologyItem.isMulti) {
+    if (ontologyItem && isMulti(ontologyItem)) {
       // find children
       const childTerms = ontology
         .filter(item => item.parent === ontologyItem.term)
@@ -733,7 +732,7 @@ class QuestionWizardController extends AbstractViewController {
         this.setState(update(
           ['paramUIState', paramName, 'fieldStates', ontologyTerm],
           fieldState => {
-            if (!ontologyItem.isRange) {
+            if (!isRange(ontologyItem)) {
               summary.valueCounts = sortDistribution(
                 summary.valueCounts,
                 fieldState.sort,
