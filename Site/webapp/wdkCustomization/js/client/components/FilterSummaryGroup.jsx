@@ -40,19 +40,7 @@ function FilterSummaryGroup(props) {
                 getParameter(wizardState, paramName).defaultValue === paramValue)
             ) ? []
               : [
-                <div key="others" className={makeClassName('Chiclet', 'parameters')}>
-                  <button
-                    type="button"
-                    title="Clear selection"
-                    className={makeClassName('RemoveFilterButton')}
-                    onClick={() =>
-                      others.forEach(entry => {
-                        const param = getParameter(wizardState, entry[0]);
-                        eventHandlers.setParamValue(param, param.defaultValue);
-                      })
-                    }>
-                    <Icon fa="close" />
-                  </button>
+                <div key="others">
                   {others.map(([paramName, paramValue]) =>
                     <FilterSummaryParameter
                       key={paramName}

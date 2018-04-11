@@ -13,7 +13,13 @@ function FilterSummaryParameter(props) {
     ? <FilterParamSummary {...props} />
     : (
       <div className={makeClassName('ParameterSummary')}>
-        <strong>{props.parameter.displayName}</strong> {prettyPrint(props.parameter, props.paramValue)}
+        <strong>
+          <button type="button" className="wdk-Link" onClick={() => {
+            navigateToGroup(props);
+          }}>
+            {props.parameter.displayName}
+          </button> 
+        </strong> {prettyPrint(props.parameter, props.paramValue)}
       </div>
     );
 }
@@ -33,15 +39,12 @@ function FilterParamSummary(props) {
           title="Clear selection"
           className={makeClassName('ChicletTitle') + ' wdk-Link'}
           onClick={() => {
-            props.eventHandlers.setActiveGroup(props.group);
+            navigateToGroup(props);
             props.eventHandlers.setActiveOntologyTerm(
               props.parameter,
               filters,
               field.term
             );
-            if (!props.wizardState.filterPopupState.pinned) {
-              props.eventHandlers.setFilterPopupVisiblity(false);
-            }
           }}
         >
           {field.display}
@@ -75,4 +78,11 @@ function prettyPrint(param, value) {
 
 function prettyPrintRange(range) {
   return `from ${range.min} to ${range.max}`;
+}
+
+function navigateToGroup(props) {
+  props.eventHandlers.setActiveGroup(props.group);
+  if (!props.wizardState.filterPopupState.pinned) {
+    props.eventHandlers.setFilterPopupVisiblity(false);
+  }
 }
