@@ -244,6 +244,9 @@ profile.df.full = data.frame();
 
 for(ii in 1:length(profile.files)) {
   skip.stderr = FALSE;
+  if ($skipStdErr) {
+    skip.stderr = TRUE
+  }
 
   profile.df = read.table(profile.files[ii], header=T, sep=\"\\t\");
   profile.df\$Group.1=NULL
@@ -550,7 +553,7 @@ sub new {
   $self->setPlotTitle("FPKM - $id");
 
   if($wantLogged) {
-    $self->setAdjustProfile('profile.df.full$VALUE = log2(profile.df.full$VALUE + 1);');
+    $self->addAdjustProfile('profile.df.full$VALUE = log2(profile.df.full$VALUE + 1);');
     $self->setYaxisLabel('FPKM (log2)');
     $self->setIsLogged(1);
     $self->setDefaultYMax(4);

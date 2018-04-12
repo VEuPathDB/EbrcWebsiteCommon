@@ -924,6 +924,13 @@ sub new {
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(20);
 
+  my $wantLogged = $self->getWantLogged();
+  if(defined($wantLogged) && $wantLogged eq '1') {
+    $self->addAdjustProfile('profile.df.full$VALUE <- log2(profile.df.full$VALUE + 1);');
+    $self->setYaxisLabel("FPKM (log2)");
+    $self->setDefaultYMax(4);
+    $self->setIsLogged(1);
+  }
 
   $self->setPointsPch(['NA']);
 
