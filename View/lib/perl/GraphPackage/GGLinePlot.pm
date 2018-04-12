@@ -117,7 +117,8 @@ sub makeRPlotString {
   my $profileSets = $self->getProfileSets();
   my @skipProfileSets;
   my $skipped = 0;
-
+  #print STDERR Dumper($colors);
+  #print STDERR Dumper(\@skipProfileSets);
   for(my $i = 0; $i < scalar @$profileSets; $i++) {
     my $profileSet = $profileSets->[$i];
 
@@ -136,7 +137,7 @@ sub makeRPlotString {
 
     $skipProfileSets[$i] = "FALSE";
   }
-
+  #print STDERR Dumper($colors);
   if(scalar @$profileSets == $skipped) {
     return $blankGraph;
   }
@@ -150,7 +151,9 @@ sub makeRPlotString {
 
   my $pointsPchString = EbrcWebsiteCommon::View::GraphPackage::Util::rNumericVectorFromArray($pointsPch, 'points.pch');
 
-  
+  my $wantLogged = $self->getWantLogged();
+  $wantLogged = $wantLogged == 1 ? 'TRUE' : 'FALSE';
+
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
   my $xAxisLabel = $self->getXaxisLabel();
@@ -438,6 +441,11 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
   myX <- \"ELEMENT_NAMES\"
 }
 
+if ($wantLogged) {
+  message($wantLogged)
+  profile.df.full\$VALUE <- log(profile.df.full\$VALUE)
+}
+
 hideLegend = FALSE
 if (is.null(profile.df.full\$LEGEND)) {
   profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
@@ -496,19 +504,21 @@ if(useTooltips){
   gp = gp + geom_point();
 }
 
-if (\"GROUP\" %in% colnames(profile.df.full)) {
-  count = length(unique(profile.df.full\$GROUP));
-  if (count < length($colorsStringNotNamed)) {
-    stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
-  }
-} else {
- if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
-  count = length(unique(profile.df.full\$LEGEND));
- } else {
-  count = $numProfiles;
- }
-  if (count < length($colorsStringNotNamed)) {
-    stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
+if (!$hasColorVals) {
+  if (\"GROUP\" %in% colnames(profile.df.full)) {
+    count = length(unique(profile.df.full\$GROUP));
+    if (count < length($colorsStringNotNamed)) {
+      stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
+    }
+  } else {
+   if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
+    count = length(unique(profile.df.full\$LEGEND));
+   } else {
+    count = $numProfiles;
+   }
+    if (count < length($colorsStringNotNamed)) {
+      stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
+    }
   }
 }
 
@@ -562,10 +572,14 @@ if (coord.cartesian) {
 
 # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
 # then wont need the if statement. cause though fine now, this still may eventually cause problems.
-if (count/length($colorsStringNotNamed) == 1) {
-  gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+if ($hasColorVals) {
+  gp = gp + scale_color_manual(values = $colorVals)
 } else {
-  gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+  if (count/length($colorsStringNotNamed) == 1) {
+    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+  } else {
+    gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+  }
 }
 
 if( $fillBelowLine) {
