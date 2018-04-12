@@ -151,9 +151,6 @@ sub makeRPlotString {
 
   my $pointsPchString = EbrcWebsiteCommon::View::GraphPackage::Util::rNumericVectorFromArray($pointsPch, 'points.pch');
 
-  my $wantLogged = $self->getWantLogged();
-  $wantLogged = $wantLogged == 1 ? 'TRUE' : 'FALSE';
-
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
   my $xAxisLabel = $self->getXaxisLabel();
@@ -439,11 +436,6 @@ if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$C
   myX <- \"ELEMENT_NAMES_NUMERIC\"
 } else {
   myX <- \"ELEMENT_NAMES\"
-}
-
-if ($wantLogged) {
-  message($wantLogged)
-  profile.df.full\$VALUE <- log(profile.df.full\$VALUE)
 }
 
 hideLegend = FALSE
