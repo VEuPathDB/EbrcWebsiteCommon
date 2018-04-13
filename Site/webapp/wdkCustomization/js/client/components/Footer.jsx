@@ -2,6 +2,21 @@ import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
 import { buildNumber, releaseDate, displayName, projectId, webAppUrl } from '../config';
 
+const projects = [
+  'EuPathDB',
+  'AmoebaDB',
+  'CryptoDB',
+  'FungiDB',
+  'GiardiaDB',
+  'MicrosporidiaDB',
+  'PiroplasmaDB',
+  'PlasmoDB',
+  'ToxoDB',
+  'TrichDB',
+  'TriTrypDB',
+  'OrthoMCL',
+];
+
 /** Application footer */
 export default function Footer() {
   return (
@@ -15,7 +30,7 @@ export default function Footer() {
           <br/>
         </div>
         <div className="copyright">©{new Date().getFullYear()} The EuPathDB Project Team</div>
-        <div className="twitter-footer">Follow us on 
+        <div className="twitter-footer">Follow us on
           <a className="eupathdb-SocialMedia eupathdb-SocialMedia__twitter" href="https://twitter.com/MicrobiomeDB" target="_blank"></a>
         </div>
       </div>
@@ -33,66 +48,13 @@ export default function Footer() {
       </div>
       <div className="bottom">
         <ul className="site-icons">
-          <li title="EuPathDB.org">
-            <a href="http://www.eupathdb.org">
-              <img alt="Link to EuPathDB homepage" src={webAppUrl + '/images/eupathdblink.png'}/>
+          {projects.map(project =>
+            <li title={`${project}.org`}>
+              <a href={`https://www.${project.toLowerCase()}.org`} className={project}>
+                https://www.{project.toLowerCase()}.org
             </a>
-          </li>
-          <li title="AmoebaDB.org" className="short-space">
-            <a href="http://amoebadb.org">
-              <img src={webAppUrl + '/images/AmoebaDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="CryptoDB.org" className="short-space">
-            <a href="http://cryptodb.org">
-              <img src={webAppUrl + '/images/CryptoDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="FungiDB.org" className="short-space">
-            <a href="http://fungidb.org">
-              <img src={webAppUrl + '/images/FungiDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="GiardiaDB.org" className="short-space">
-            <a href="http://giardiadb.org">
-              <img src={webAppUrl + '/images/GiardiaDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="MicrosporidiaDB.org" className="long-space">
-            <a href="http://microsporidiadb.org">
-              <img src={webAppUrl + '/images/MicrosporidiaDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="PiroplasmaDB.org" className="short-space">
-            <a href="http://piroplasmadb.org">
-              <img src={webAppUrl + '/images/PiroplasmaDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="PlasmoDB.org" className="long-space">
-            <a href="http://plasmodb.org">
-              <img src={webAppUrl + '/images/PlasmoDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="ToxoDB.org" className="long-space">
-            <a href="http://toxodb.org">
-              <img src={webAppUrl + '/images/ToxoDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="TrichDB.org" className="short-space">
-            <a href="http://trichdb.org">
-              <img src={webAppUrl + '/images/TrichDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="TriTrypDB.org" className="short-space">
-            <a href="http://tritrypdb.org">
-              <img src={webAppUrl + '/images/TriTrypDB/footer-logo.png'}/>
-            </a>
-          </li>
-          <li title="OrthoMCL.org" className="short-space">
-            <a href="http://orthomcl.org">
-              <img src={webAppUrl + '/images/OrthoMCL/footer-logo.png'}/>
-            </a>
-          </li>
+            </li>
+          )}
         </ul>
       </div>
     </div>
