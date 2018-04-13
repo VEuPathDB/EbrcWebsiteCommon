@@ -49,7 +49,7 @@ export default function Footer() {
       <div className="bottom">
         <ul className="site-icons">
           {projects.map(project =>
-            <li title={`${project}.org`}>
+            <li title={`${project}.org`} key={project}>
               <a href={`https://www.${project.toLowerCase()}.org`} className={project}>
                 https://www.{project.toLowerCase()}.org
             </a>
