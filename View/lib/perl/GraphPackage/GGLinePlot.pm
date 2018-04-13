@@ -65,6 +65,9 @@ sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = 
 sub getFacetNumCols              { $_[0]->{'_facet_num_cols'                }}
 sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = $_[1]}
 
+sub getColorPointsOnly           { $_[0]->{'_color_points_only'             }}
+sub setColorPointsOnly           { $_[0]->{'_color_points_only'             } = $_[1]}
+
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -187,6 +190,7 @@ sub makeRPlotString {
   my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
   my $customBreaks = $self->getCustomBreaks();
   $customBreaks = $customBreaks ? $customBreaks : '';
+  my $colorPointsOnly = $self->getColorPointsOnly() ? 'TRUE' : 'FALSE';
 
   $yMax = $yMax ? $yMax : "-Inf";
   $yMin = defined($yMin) ? $yMin : "Inf";
@@ -518,17 +522,35 @@ if(!$forceNoLines) {
   #override earlier group setting if group column exists
   if (\"GROUP\" %in% colnames(profile.df.full)) {
     if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-      gp = gp + aes(group=GROUP)
-      gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+      if ($colorPointsOnly) {
+        gp = gp + aes(group=GROUP)
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+      } else {
+        gp = gp + aes(group=GROUP)
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+      }
     } else {
-      gp = gp + aes(group=GROUP)
-      gp = gp + geom_line();
+      if ($colorPointsOnly) {
+        gp = gp + aes(group=GROUP)
+        gp = gp + geom_line(color=\"black\")
+      } else {
+        gp = gp + aes(group=GROUP)
+        gp = gp + geom_line();
+      }
     }
   } else {
     if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-      gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+      if ($colorPointsOnly) {
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+      } else {
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+      }
     } else {
-      gp = gp + geom_line();
+      if ($colorPointsOnly) {
+        gp = gp + geom_line(color=\"black\")
+      } else {
+        gp = gp + geom_line();
+      }
     }
   }
   if($fillBelowLine) {
