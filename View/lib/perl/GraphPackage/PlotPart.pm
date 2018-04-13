@@ -270,7 +270,7 @@ my $plotTitle = $self->getPlotTitle();
 my $text = "\"None\"";
 my $textSize = 10;
 
-my $idType = $self->getIdType();
+$idType = $self->getIdType();
 
 if(($idType) && lc($idType) eq 'ec') {
   if($self->isCompact()) {
