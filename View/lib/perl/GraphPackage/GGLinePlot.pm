@@ -436,7 +436,7 @@ if (!all(is.na(profile.df.full\$VALUE))) {
 
 if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
   myX <- \"CONTXAXIS\"
-} else if (profile.is.numeric && !$forceNoLines) {
+} else if (profile.is.numeric) {
   myX <- \"ELEMENT_NAMES_NUMERIC\"
 } else {
   myX <- \"ELEMENT_NAMES\"
