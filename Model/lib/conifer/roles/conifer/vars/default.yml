@@ -151,3 +151,6 @@ modelprop:
   LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
 
+contextxml_path: "/{{ _webapp_ctx }}"
+contextxml_docBase: "/var/www/{{ hostname}}/webapp"
+contextxml_model: "{{ project }}"
