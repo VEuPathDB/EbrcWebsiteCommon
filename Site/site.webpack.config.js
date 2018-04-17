@@ -47,7 +47,6 @@ module.exports = function configure(additionalConfig) {
         'flux'         : 'Flux',
         'flux/utils'   : 'FluxUtils',
         'natural-sort' : 'NaturalSort',
-        'mesa'         : 'Mesa',
         'rxjs'         : 'Rx'
       }
     ]

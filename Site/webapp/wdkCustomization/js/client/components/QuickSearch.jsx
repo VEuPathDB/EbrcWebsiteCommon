@@ -1,7 +1,7 @@
 import { find, get, map } from 'lodash';
-import { AnchoredTooltip } from 'mesa';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { Mesa } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 
 let ParamPropType = PropTypes.shape({
@@ -89,7 +89,7 @@ class QuickSearchItem extends Component {
           action={webAppUrl + '/processQuestionSetsFlat.do'}
           onSubmit={this.handleSubmit}
         >
-          <AnchoredTooltip
+          <Mesa.AnchoredTooltip
             style={{ maxWidth: '275px', boxSizing: 'border-box' }}
             renderHtml={true}
             content={reference.help}>
@@ -154,7 +154,7 @@ class QuickSearchItem extends Component {
                 />
               </fieldset>
             )}
-          </AnchoredTooltip>
+          </Mesa.AnchoredTooltip>
         </form>
       </div>
     );
