@@ -1,19 +1,5 @@
 /*global wdk*/
 
-/*
-
-TODOs:
-  - Update ontologyTermSummaries to this:
-    {
-      loading: boolean;
-      isExpired: boolean;
-      summary: SummaryData | null;
-    }
-  - Use loading and isExpired for UI
-  - Use replace ontology invalidation logic with updateOntologyTermSummary(). In other words, have the UI event handlers call updateOntologyTermSummary instead of trying to figure out if counts need to be updated when filters change.
-
-*/
-
 import $ from 'jquery';
 import {
   ary,
@@ -131,36 +117,6 @@ class QuestionWizardController extends AbstractViewController {
 
           // store <string, Parameter>Map for quick lookup
           this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
-
-
-          // FIXME Remove when testing is complete
-          // inject a multi filter for testing
-          if (questionName === 'ParticipantQuestions.ParticipantsByRelativeVisits_prism') {
-            const fakeMultiTerm = '@@MULTI_FILTER_TEST@@';
-            const multiChildRe = /HP_0002027|SYMP_0000523|SYMP_0000614|SYMP_0019177|EUPATH_0000097|HP_0002315|HP_0000952|SYMP_0000064|EUPATH_0000252|SYMP_0000124|HP_0002013/;
-            const uiState = this.state.paramUIState.visits_prism;
-            uiState.ontology = [{
-              display: 'Symptoms and signs (multi)',
-              isRange: false,
-              parent: 'EUPATH_0000328',
-              term: fakeMultiTerm,
-              type: 'multiFilter',
-              // values: ['Yes', 'No', 'Unable to assess'],
-            }].concat( uiState.ontology.map(o => multiChildRe.test(o.term) ? {...o, parent: fakeMultiTerm } : o));
-          }
-
-          // FIXME Remove when testing is complete
-          // Presence of pathogens - EUPATH_0010984
-          if (questionName === 'ParticipantQuestions.ParticipantsByRelativeVisits_maled') {
-            for (let paramName of [ 'visits_maled', 'relative_visits_maled' ]) {
-              const ontology = get(this.state.paramUIState, [ paramName, 'ontology' ], []);
-              const multiField = ontology.find(item => item.term === 'EUPATH_0010984');
-              if (multiField) Object.assign(multiField, {
-                type: 'multiFilter',
-                // values: [ 'Yes', 'No' ]
-              });
-            }
-          }
 
           const defaultParamValues = getDefaultParamValues(this.state);
           const lastConfiguredGroup = Seq.from(question.groups)
