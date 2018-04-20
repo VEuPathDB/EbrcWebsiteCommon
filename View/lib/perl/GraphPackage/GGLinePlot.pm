@@ -412,7 +412,10 @@ if ($prtcpnt_sum) {
 if(\"FACET\" %in% colnames(profile.df.full)) {
   profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
 }
-profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
+if (!exists(\"profile.is.numeric\")) {
+  profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
+}
+
 #will need to look again at this if ever dates come in with a different format than R's default.
 profile.is.date = all(!is.na(as.Date(as.character(profile.df.full\$ELEMENT_NAMES), format='%Y-%m-%d')));
 
