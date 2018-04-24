@@ -3,24 +3,9 @@ import { withStore, withActions } from '../util/component';
 import { UserActionCreators } from 'wdk-client/ActionCreators';
 import SiteHeader from '../components/SiteHeader';
 
-const globalDataItems = [
-  'user',
-  'ontology',
-  'recordClasses',
-  'basketCounts',
-  'quickSearches',
-  'preferences',
-  'userDatasetsEnabled',
-  'location',
-  'siteConfig',
-  'config'
-];
-
 const withContext = flow(
   withActions(UserActionCreators),
-  withStore(state => {
-    return pick(state.globalData, globalDataItems)
-  })
+  withStore(state => state.globalData)
 );
 
 /**
