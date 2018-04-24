@@ -28,6 +28,7 @@ import { AbstractViewController } from 'wdk-client/Controllers';
 import { isMulti, isRange } from 'wdk-client/FilterServiceUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
+import { preorder } from 'wdk-client/TreeUtils';
 import { WdkStore } from 'wdk-client/Stores';
 
 import QuestionWizard from '../components/QuestionWizard';
@@ -628,31 +629,33 @@ class QuestionWizardController extends AbstractViewController {
     ));
 
     if (ontologyItem && isMulti(ontologyItem)) {
-      // find children
-      const childTerms = ontology
-        .filter(item => item.parent === ontologyItem.term)
-        .map(item => item.term);
+      // find all leaves
+      const leafTerms = Seq.of(groupBy(ontology, 'parent'))
+        .flatMap(parentMap =>
+          Seq.from(preorder(ontologyItem, item => parentMap[item.term] || []))
+            .filter(item => parentMap[item.term] == null)
+            .map(item => item.term));
 
-      const childSummaryPromises = childTerms
-        .map(childTerm =>
+      const leafSummaryPromises = leafTerms
+        .map(leafTerm =>
           this.props.wdkService.getOntologyTermSummary(
             this.state.question.urlSegment,
             paramName,
-            // If ANY, don't include any childTerms; if AND don't include current childTerm.
+            // If ANY, don't include any leafTerms; if AND don't include current childTerm.
             // We currently only support AND. Support for ANY will most likely require
             // more changes than just this line.
             //
             // XXX The next line will all filters for children of the multi parent
-            // filters.filter(filter => !childTerms.includes(filter.field)),
-            filters.filter(filter => filter.field != childTerm),
-            childTerm,
+            // filters.filter(filter => !leafTerms.includes(filter.field)),
+            filters.filter(filter => filter.field != leafTerm),
+            leafTerm,
             this.state.paramValues
           )
-          .then(summary => ({ ...summary, term: childTerm }))
+          .then(summary => ({ ...summary, term: leafTerm }))
         );
 
-      return Promise.all(childSummaryPromises).then(
-        childSummaries => {
+      return Promise.all(leafSummaryPromises).then(
+        leafSummaries => {
           const { ontology } = this.state.paramUIState[paramName];
           this.setState(update(
             ['paramUIState', paramName, 'fieldStates', ontologyTerm],
@@ -660,7 +663,7 @@ class QuestionWizardController extends AbstractViewController {
               ...fieldState,
               loading: false,
               invalid: false,
-              summary: sortMultiFieldSummary(childSummaries, ontology, fieldState.sort)
+              summary: sortMultiFieldSummary(leafSummaries, ontology, fieldState.sort)
             })
           ));
         },
