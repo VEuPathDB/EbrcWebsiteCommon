@@ -65,3 +65,4 @@ ant -file $PROJECT_HOME/EbrcWebsiteCommon/Watar/build.xml \
                 <class name="org.apidb.eupathsitecommon.watar.SmokeTests"/>
             </classes>
         </test>
+
