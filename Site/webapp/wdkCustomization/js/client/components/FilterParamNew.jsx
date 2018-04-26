@@ -58,7 +58,7 @@ export default class FilterParamNew extends React.PureComponent {
   _handleRangeScaleChange(field, state) {
     let newState = Object.assign({}, this.props.uiState, {
       fieldStates: Object.assign({}, this.props.uiState.fieldStates, {
-        [field.term]: state
+        [field.term]: { ...this.props.uiState.fieldStates[field.term], ...state }
       })
     });
     this.props.onParamStateChange(this.props.param, newState);
