@@ -1,7 +1,7 @@
 // Wizard state utility functions
 
 import { memoize, pick } from 'lodash';
-import { getTree } from 'wdk-client/FilterServiceUtils';
+import { getTree } from 'wdk-client/AttributeFilterUtils';
 import { getLeaves } from 'wdk-client/TreeUtils';
 
 /**

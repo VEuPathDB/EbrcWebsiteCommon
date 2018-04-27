@@ -25,7 +25,7 @@ import ReactDOM from 'react-dom';
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { AbstractViewController } from 'wdk-client/Controllers';
-import { isMulti, isRange } from 'wdk-client/FilterServiceUtils';
+import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
 import { preorder } from 'wdk-client/TreeUtils';

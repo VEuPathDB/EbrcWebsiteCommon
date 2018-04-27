@@ -2,7 +2,7 @@ import React from 'react';
 
 import { IconAlt as Icon, } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
-import { getFilterValueDisplay } from 'wdk-client/FilterServiceUtils';
+import { getFilterValueDisplay } from 'wdk-client/AttributeFilterUtils';
 
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 
@@ -18,7 +18,7 @@ function FilterSummaryParameter(props) {
             navigateToGroup(props);
           }}>
             {props.parameter.displayName}
-          </button> 
+          </button>
         </strong> {prettyPrint(props.parameter, props.paramValue)}
       </div>
     );
@@ -60,7 +60,7 @@ function FilterParamSummary(props) {
           <Icon fa="close"/>
         </button>
         <hr/>
-        <div>{getFilterValueDisplay(field, filter)}</div>
+        <div>{getFilterValueDisplay(filter)}</div>
       </div>
     );
   });
