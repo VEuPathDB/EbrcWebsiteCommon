@@ -247,15 +247,15 @@ class PrivateAPI {
   }
 
   /**
-   * bash shell variable assignments to aid virtual machine setup
-   */
-/**U=abarreto
-PRODUCT=PlasmoDB
-WEBAPP=plasmo.b19
-HOST=sa.plasmodb.org
-RELEASE_NUMBER=10.0
-LOGIN=plasmodbwww
-BUILD_NO=19
+   * bash shell variable assignments to aid virtual machine setup, e.g.
+
+        PRODUCT=ClinEpiDB
+        PROJECT=ICEMR
+        WEBAPP=ce.b2
+        HOST=sa.clinenpidb.org
+        RELEASE_NUMBER=2
+        LOGIN=webwww
+        BUILD_NO=2
 **/
   private function virtual_machine_environment_settings(
         $wdk_meta_attr, $wdk_properties_attr, $webapp_attr, $adb_attr) {
@@ -272,7 +272,8 @@ BUILD_NO=19
     $tld = @$matches[0];
 
     $env = '';
-    $env .= 'PRODUCT=' . $wdk_properties_attr{'PROJECT_ID'} . "\n";
+    $env .= 'PRODUCT=' . $wdk_meta_attr{'DisplayName'} . "\n";
+    $env .= 'PROJECT=' . $wdk_meta_attr{'ProjectId'} . "\n";
     $env .= 'HOST=' . 'sa.' . $tld . "\n";
     $env .= 'WEBAPP=' . $webapp_for_vm . "\n";
     $env .= 'RELEASE_NUMBER=' . $wdk_meta_attr{'ModelVersion'} . "\n";
