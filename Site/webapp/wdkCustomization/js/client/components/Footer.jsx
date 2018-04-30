@@ -3,18 +3,18 @@ import { formatReleaseDate } from '../util/formatters';
 import { buildNumber, releaseDate, displayName, projectId, webAppUrl } from '../config';
 
 const projects = [
-  'EuPathDB',
-  'AmoebaDB',
-  'CryptoDB',
-  'FungiDB',
-  'GiardiaDB',
-  'MicrosporidiaDB',
-  'PiroplasmaDB',
-  'PlasmoDB',
-  'ToxoDB',
-  'TrichDB',
-  'TriTrypDB',
-  'OrthoMCL',
+  [ 'https', 'EuPathDB' ],
+  [ 'http', 'AmoebaDB' ],
+  [ 'http', 'CryptoDB' ],
+  [ 'http', 'FungiDB' ],
+  [ 'http', 'GiardiaDB' ],
+  [ 'http', 'MicrosporidiaDB' ],
+  [ 'http', 'PiroplasmaDB' ],
+  [ 'http', 'PlasmoDB' ],
+  [ 'http', 'ToxoDB' ],
+  [ 'http', 'TrichDB' ],
+  [ 'http', 'TriTrypDB' ],
+  [ 'http', 'OrthoMCL' ],
 ];
 
 /** Application footer */
@@ -48,10 +48,10 @@ export default function Footer() {
       </div>
       <div className="bottom">
         <ul className="site-icons">
-          {projects.map(project =>
+          {projects.map(([ protocol, project ]) =>
             <li title={`${project}.org`} key={project}>
-              <a href={`https://www.${project.toLowerCase()}.org`} className={project}>
-                https://www.{project.toLowerCase()}.org
+              <a href={`${protocol}://${project.toLowerCase()}.org`} className={project}>
+                {protocol}://{project.toLowerCase()}.org
             </a>
             </li>
           )}
