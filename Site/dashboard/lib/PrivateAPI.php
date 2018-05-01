@@ -79,6 +79,7 @@ class PrivateAPI {
         ),
         'wdk' => array(
             'displayname'  => $wdk_meta_attr{'DisplayName'},       # wdkModel.getDisplayName()
+            'product'      => $wdk_meta_attr{'DisplayName'},       # wdkModel.getDisplayName()
             'modelname'    => $wdk_meta_attr{'ProjectId'},         # wdkModel.getProjectId()
             'projectid'    => $wdk_meta_attr{'ProjectId'},         # wdkModel.getProjectId()
             'modelversion' => $wdk_meta_attr{'ModelVersion'},      # wdkModel.getVersion()
