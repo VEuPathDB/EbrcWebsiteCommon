@@ -1,4 +1,5 @@
 import * as Wdk from 'wdk-client';
+import TabularReporterFormSubmitButtons from './TabularReporterFormSubmitButtons';
 import ExcelNote from './ExcelNote';
 
 let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils, Wdk.CategoryUtils);
@@ -51,7 +52,7 @@ let TabularReporterForm = props => {
             </div>
           </div>
           <div style={{margin:'2em 0'}}>
-            <button className="btn" type="submit" onClick={onSubmit}>Get {recordClass.displayNamePlural}</button>
+            <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
           </div>
         </div>
       </div>

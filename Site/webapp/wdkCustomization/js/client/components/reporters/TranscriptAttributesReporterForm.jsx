@@ -1,4 +1,5 @@
 import * as Wdk from 'wdk-client';
+import TabularReporterFormSubmitButtons from './TabularReporterFormSubmitButtons';
 import ExcelNote from './ExcelNote';
 
 let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils, Wdk.CategoryUtils);
@@ -70,7 +71,7 @@ let TranscriptAttributesReporterForm = props => {
       </div>
 
       <div className="eupathdb-ReporterFormSubmit">
-        <button className="btn" type="submit" onClick={onSubmit}>Get Genes</button>
+        <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
       </div>
 
       <hr/>
