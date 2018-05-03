@@ -481,7 +481,6 @@ if($isSVG) {
   useTooltips=FALSE;
 }
 
-#desperate times call for desperate measures. will fix this later.
 if (!$prtcpnt_timeline) {
 
 if(useTooltips){
@@ -736,17 +735,21 @@ if ($prtcpnt_sum) {
 
     if ($prtcpnt_timeline) {
 
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = paste0(STATUS, \"| Febrile: \", OPT_STATUS), color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
+      #TODO tooltip should be set via the tooltip column and have some generic default here if we want
+      #gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = paste0(STATUS, \"| Febrile: \", OPT_STATUS), color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
+      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
 
-      gp = gp + scale_color_manual(values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
-      gp = gp + scale_fill_manual(na.value=NA, values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
+      #TODO force use of colomap here
+      #gp = gp + scale_color_manual(values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
+      gp = gp + scale_color_manual(values=$colorVals)
+      #gp = gp + scale_fill_manual(na.value=NA, values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
+      gp = gp + scale_fill_manual(na.value = NA, values = $colorVals)
 
-      #desperate times
       if (coord.cartesian) {
         gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
       }
       gp = gp + theme_bw();
-     if (is.thumbnail) {
+      if (is.thumbnail) {
         gp = gp + labs(title=NULL, x=NULL, y=NULL);
       } else {
         gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=NULL);
