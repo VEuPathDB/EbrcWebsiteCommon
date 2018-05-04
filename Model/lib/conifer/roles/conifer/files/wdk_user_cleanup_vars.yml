@@ -5,6 +5,9 @@
 
 webapp_ctx: ''
 
+#needed to run jenkins job to override the lookup() requirement
+modelconfig_oauthClientSecret: pepe
+
 accountDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['acctDb_name'] }}"
 accountDb_login: "{{ host_data['acctDb_login'] }}"
 accountDb_password: "{{ password['acctdb'] }}"
