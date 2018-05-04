@@ -8,3 +8,6 @@
 # site_vars file: {{ site_vars }}
 
 export PROJECT={{ project }}
+{% if yarn_cache_folder is defined %}
+export YARN_CACHE_FOLDER={{ yarn_cache_folder }}
+{% endif %}
