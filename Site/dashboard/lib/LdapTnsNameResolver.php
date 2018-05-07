@@ -29,6 +29,7 @@ class LdapTnsNameResolver {
     $filter = "(orclNetDescString=*" . $this->service_name . "*)";
 
     $conn = ldap_connect($this->ldap_url, 389);
+    ldap_set_option($conn, LDAP_OPT_NETWORK_TIMEOUT, 1);
     $r = @ldap_bind($conn);
     if ( ! $r ) { 
         error_log( "unable to bind to directory server");
