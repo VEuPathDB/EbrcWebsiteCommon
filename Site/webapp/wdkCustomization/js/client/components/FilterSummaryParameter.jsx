@@ -2,6 +2,7 @@ import React from 'react';
 
 import { IconAlt as Icon, } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
+import { Seq } from 'wdk-client/IterableUtils';
 import { getFilterValueDisplay } from 'wdk-client/AttributeFilterUtils';
 
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
@@ -30,8 +31,14 @@ function FilterParamSummary(props) {
     return null;
   }
 
-  return filters.map(filter => {
+  return Seq.from(filters)
+    .flatMap(filter => filter.type === 'multiFilter'
+      ? filter.value.filters.map(leafFilter => [ leafFilter, filter ])
+      : [ filter ]
+    )
+    .map(( [ filter, containerFilter ] ) => {
     const field = props.parameter.ontology.find(field => field.term === filter.field)
+    const containerField = props.parameter.ontology.find(field => field.term === containerFilter.field);
     return (
       <div key={props.parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
         <button
@@ -43,11 +50,11 @@ function FilterParamSummary(props) {
             props.eventHandlers.setActiveOntologyTerm(
               props.parameter,
               filters,
-              field.term
+              containerField ? containerField.term : field.term
             );
           }}
         >
-          {field.display}
+          {containerField ? `${containerField.display} > ${field.display}` : field.display}
         </button>
         &nbsp;
         <button

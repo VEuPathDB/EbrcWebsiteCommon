@@ -12,6 +12,7 @@ import {
   keyBy,
   mapValues,
   memoize,
+  partition,
   pick,
   reverse,
   sortBy,
@@ -323,7 +324,7 @@ class QuestionWizardController extends AbstractViewController {
               summary: sortMultiFieldSummary(
                 fieldState.summary,
                 paramState.ontology,
-                paramState.fieldStates[term] || paramState.defaultMultiFieldState
+                (paramState.fieldStates[term] || paramState.defaultMultiFieldState).sort
               )
             }
           : {
@@ -410,7 +411,6 @@ class QuestionWizardController extends AbstractViewController {
 
       if (modifiedFields.length > 0) {
         const firstModifiedField = modifiedFields[0];
-        const firstModifiedFieldParent = ontology.find(entry => entry.term === firstModifiedField.parent);
         this.setState(update(
           ['paramUIState', param.name, 'fieldStates'],
           fieldStates => mapValues(fieldStates, (fieldState, term) => ({
@@ -418,8 +418,7 @@ class QuestionWizardController extends AbstractViewController {
             invalid: Boolean(
               modifiedFields.length > 1 ||
               firstModifiedField.term !== term ||
-              // FIXME Remove when multi filter JSON is updated so that filter.term IS the multi field
-              ( isMulti(firstModifiedFieldParent) && firstModifiedFieldParent.term !== term )
+              isMulti(firstModifiedField)
             )
           }))
         ));
@@ -636,18 +635,18 @@ class QuestionWizardController extends AbstractViewController {
             .filter(item => parentMap[item.term] == null)
             .map(item => item.term));
 
+      const [ [ multiFilter ], otherFilters ] = partition(filters, filter => filter.field === ontologyTerm);
+
       const leafSummaryPromises = leafTerms
         .map(leafTerm =>
           this.props.wdkService.getOntologyTermSummary(
             this.state.question.urlSegment,
             paramName,
-            // If ANY, don't include any leafTerms; if AND don't include current childTerm.
-            // We currently only support AND. Support for ANY will most likely require
-            // more changes than just this line.
-            //
-            // XXX The next line will all filters for children of the multi parent
-            // filters.filter(filter => !leafTerms.includes(filter.field)),
-            filters.filter(filter => filter.field != leafTerm),
+            // If UNION, don't include any leafTerms; if INTERSECT don't include current childTerm.
+            otherFilters.concat(
+              multiFilter == null || multiFilter.value.operation === 'union' ? []
+              : updateObjectImmutably(multiFilter, [ 'value', 'filters' ], filters => filters.filter(filter => filter.field !== leafTerm))
+            ),
             leafTerm,
             this.state.paramValues
           )
