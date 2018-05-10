@@ -34,11 +34,11 @@ function FilterParamSummary(props) {
   return Seq.from(filters)
     .flatMap(filter => filter.type === 'multiFilter'
       ? filter.value.filters.map(leafFilter => [ leafFilter, filter ])
-      : [ filter ]
+      : [[ filter ]]
     )
     .map(( [ filter, containerFilter ] ) => {
     const field = props.parameter.ontology.find(field => field.term === filter.field)
-    const containerField = props.parameter.ontology.find(field => field.term === containerFilter.field);
+    const containerField = containerFilter && props.parameter.ontology.find(field => field.term === containerFilter.field);
     return (
       <div key={props.parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
         <button
