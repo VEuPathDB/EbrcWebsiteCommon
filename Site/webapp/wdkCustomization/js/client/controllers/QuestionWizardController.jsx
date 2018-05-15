@@ -418,7 +418,11 @@ class QuestionWizardController extends AbstractViewController {
               modifiedFields.length > 1 ||
               firstModifiedField.term !== term ||
               // FIXME Remove when multi filter JSON is updated so that filter.term IS the multi field
-              ( isMulti(firstModifiedFieldParent) && firstModifiedFieldParent.term !== term )
+              (
+                firstModifiedFieldParent != null &&
+                isMulti(firstModifiedFieldParent) &&
+                firstModifiedFieldParent.term !== term
+              )
             )
           }))
         ));
