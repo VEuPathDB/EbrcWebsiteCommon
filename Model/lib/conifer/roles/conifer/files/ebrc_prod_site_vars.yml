@@ -1,5 +1,7 @@
 env: production
 
+yarn_cache_folder: "{{ '{}/../project_home/.cache/yarn'.format(gus_home) | realpath }}"
+
 _hostname_project_map:
   qa.gates.clinepidb.org: Gates
   gems.clinepidb.org: Gates
