@@ -1231,6 +1231,10 @@ a.eupathdb-MenuItemText {
   background-image: url(../images/eupathdblink.png);
   width: 116px;
 }
+.site-icons a.UniDB {
+  background-image: url(../images/eupathdblink.png);
+  width: 116px;
+}
 .site-icons a.AmoebaDB {
   background-image: url(../images/AmoebaDB/footer-logo.png);
 }
