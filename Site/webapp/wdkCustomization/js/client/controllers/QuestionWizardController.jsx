@@ -244,8 +244,13 @@ class QuestionWizardController extends AbstractViewController {
    * Update paramUI state based on ontology term.
    */
   setActiveOntologyTerm(param, filters, ontologyTerm) {
-    const { summary, loading = false, invalid = false } = get(this.state, [ 'paramUIState', param.name, 'fieldStates', ontologyTerm ], {});
-    if ((summary == null || invalid) && !loading) {
+    const {
+      summary,
+      loading = false,
+      invalid = false,
+      multiLeafInvalid = false
+    } = get(this.state, ['paramUIState', param.name, 'fieldStates', ontologyTerm], {});
+    if ((summary == null || invalid || multiLeafInvalid) && !loading) {
       this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
     }
     this.setState(set(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
@@ -357,7 +362,7 @@ class QuestionWizardController extends AbstractViewController {
         const { filters } = JSON.parse(this.state.paramValues[param.name]);
         const activeOntologyItem = ontology.find(item => item.term === activeOntologyTerm);
         this._updateFilterParamCounts(param.name, filters);
-        if (activeOntologyItem && !isMulti(activeOntologyItem) && (
+        if (activeOntologyItem && (
           fieldStates[activeOntologyTerm] == null ||
           fieldStates[activeOntologyTerm].summary == null ||
           fieldStates[activeOntologyTerm].invalid
@@ -415,11 +420,8 @@ class QuestionWizardController extends AbstractViewController {
           ['paramUIState', param.name, 'fieldStates'],
           fieldStates => mapValues(fieldStates, (fieldState, term) => ({
             ...fieldState,
-            invalid: Boolean(
-              modifiedFields.length > 1 ||
-              firstModifiedField.term !== term ||
-              isMulti(firstModifiedField)
-            )
+            invalid: modifiedFields.length > 1 || firstModifiedField.term !== term,
+            multiLeafInvalid: isMulti(firstModifiedField)
           }))
         ));
       }
@@ -662,6 +664,7 @@ class QuestionWizardController extends AbstractViewController {
               ...fieldState,
               loading: false,
               invalid: false,
+              multiLeafInvalid: false,
               summary: sortMultiFieldSummary(leafSummaries, ontology, fieldState.sort)
             })
           ));
