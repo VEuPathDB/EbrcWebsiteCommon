@@ -1,0 +1,13 @@
+# {# $SourceFileURL: EbrcWebsiteCommon/branches/gestalt/Model/lib/conifer/roles/conifer/templates/EbrcWebsiteCommon/projects.xml.j2 $ #}
+# Templated by Conifer using
+# {{ template_path }}
+# with vars from
+# Cohort: {{ cohort }}
+# Project: {{ project }}
+# Environment: {{ env|default() }}
+# site_vars file: {{ site_vars }}
+
+export PROJECT={{ project }}
+{% if yarn_cache_folder is defined %}
+export YARN_CACHE_FOLDER={{ yarn_cache_folder }}
+{% endif %}
