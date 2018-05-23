@@ -69,16 +69,16 @@ export default class CookieBanner extends React.Component {
     return loading || userAgreed ? null : (
       <div style={bannerStyle}>
         <div>
-          This website requires cookies, and the limited processing of your
-          personal data in order to function. By using the site you are agreeing
-          to this as outlined in our <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">Privacy Notice</a>.
+          This website requires cookies &amp; limited processing of your
+          personal data in order to function properly. By clicking any link on
+          this page you are giving your consent to this as outlined in our <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">Privacy Notice</a>.
         </div>
         <div>
           <div>
-            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree, dismiss this banner.</button>
+            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree &amp; close this banner.</button>
           </div>
           <div style={{ marginTop: '.5em' }}>
-            <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">More information.</a>
+            <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">More info.</a>
           </div>
         </div>
       </div>
