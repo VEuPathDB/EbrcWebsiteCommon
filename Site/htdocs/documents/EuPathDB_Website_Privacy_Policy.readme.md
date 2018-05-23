@@ -3,10 +3,10 @@
 The EuPathDB Website Privacy Policy is served at the url,
 [https://eupathdb.org/documents/EuPathDB_Website_Privacy_Policy.shtml](https://eupathdb.org/documents/EuPathDB_Website_Privacy_Policy.shtml)
 
-The source file is the Markdown-formated file,
+The source file is the Markdown-formated file in our svn repository,
 [`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md`](https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md).
 
-This Markdown file is converted to the HTML formated file,
+This Markdown file is converted to the HTML formated file in our svn repository,
 [`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml`](https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml),
 using the `pandoc` command.
 
