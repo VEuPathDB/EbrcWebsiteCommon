@@ -2,14 +2,20 @@
 
 # EuPathDB Website Privacy Policy
 
+UPDATED: May 23, 2018
+
 ## Introduction
 
-The purpose of this page is to provide information to users of EuPathDB
-websites about the types of information collected from our users and how
-that information is shared. We do not use or share any of your personal
-information for any purpose unrelated to the functionality of the
-websites; however, we do collect some information to help us understand
-how our sites are being used and to improve community support.
+EuPathDB (also referred to as 'we' throughout this document) is committed to
+protecting its users' data and privacy. The purpose of this page is to provide you
+with information about how the data we collect from users of EuPathDB websites is used
+or shared. We may update this Privacy Notice from time to time. We encourage you to
+visit this page frequently and take note of the date updated field above.
+
+We do not use or share any of your personal information for any purpose unrelated to
+the functionality of the websites; however, we do collect some information to help us
+understand how our sites are being used in order to improve community support and to
+enhance the EuPathDB community's experience when visiting our sites.
 
 
 ## Information Automatically Collected
