@@ -20,7 +20,8 @@ const bannerStyle = {
   left: 0,
   right: 0,
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'space-around',
+  alignItems: 'center',
   padding: '2em',
   fontSize: '1.2em',
   background: 'black',
@@ -31,7 +32,8 @@ const bannerStyle = {
 
 const linkStyle = {
   color: '#96b1e9',
-  textDecoration: 'underline'
+  textDecoration: 'underline',
+  whiteSpace: 'nowrap'
 };
 
 
@@ -72,7 +74,12 @@ export default class CookieBanner extends React.Component {
           to this as outlined in our <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">Privacy Notice</a>.
         </div>
         <div>
-          <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree, dismiss this banner.</button>
+          <div>
+            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree, dismiss this banner.</button>
+          </div>
+          <div style={{ marginTop: '.5em' }}>
+            <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">More information.</a>
+          </div>
         </div>
       </div>
     );
