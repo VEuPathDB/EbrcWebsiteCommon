@@ -8,7 +8,7 @@ The source file is the Markdown-formated file in our svn repository,
 
 This Markdown file is converted to the HTML formated file in our svn repository,
 [`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml`](https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml),
-using the `pandoc` command.
+by manually running the `pandoc` command (this is not currently part of the website build).
 
 ```
 $ pandoc EuPathDB_Website_Privacy_Policy.md  -o EuPathDB_Website_Privacy_Policy.shtml
