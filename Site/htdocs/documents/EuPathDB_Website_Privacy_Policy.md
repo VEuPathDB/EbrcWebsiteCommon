@@ -201,7 +201,7 @@ https://www.google.co.uk/intl/en-GB/policies/privacy/.
 ### Globus Genomics
 
 The EuPathDB Galaxy Data Analysis Service is a workspace for large-scale
-data analyses. Developed in partnership with Globus Genomics, workspaces
+data analyses. Developed in partnership with [Globus Genomics] (http://globusgenomics.org/genomics/), workspaces
 offer a private analysis platform with published workflows and
 pre-loaded annotated genomes. The workspace is accessed through the
 "Analyze My Experiment" tab on the home page of any EuPathDB resource
@@ -225,7 +225,10 @@ files you analyze. EuPathDB, Globus and affiliates, the University of
 Georgia, the University of Pennsylvania, the University of Liverpool, and Amazon
 Cloud Services do not take any responsibility and are not liable for the
 loss and/or release of any data you analyze via the EuPathDB Galaxy
-platform.
+platform. We encourage you to review Globus' privacy policy at https://www.globus.org/legal/privacy
+
+### Your Rights
+
 
 <!--#include virtual="/a/footer.jsp" -->
 
