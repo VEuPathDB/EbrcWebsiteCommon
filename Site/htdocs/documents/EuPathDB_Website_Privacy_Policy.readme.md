@@ -27,4 +27,4 @@ documentation site). There's nothing special about the format or host
 location.
 
 If you do change location of the file, be sure to update links to it on
-our Facebook, Twitter and Globus Galaxy pages.
+our third-party sites such as Facebook, Twitter and Globus Galaxy pages.
