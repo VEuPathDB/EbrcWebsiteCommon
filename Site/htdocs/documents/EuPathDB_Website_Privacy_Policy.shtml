@@ -45,5 +45,19 @@
 <h3 id="globus-genomics">Globus Genomics</h3>
 <p>The EuPathDB Galaxy Data Analysis Service is a workspace for large-scale data analyses. Developed in partnership with <a href="#globus-genomics">Globus Genomics</a> (http://globusgenomics.org/genomics/), workspaces offer a private analysis platform with published workflows and pre-loaded annotated genomes. The workspace is accessed through the “Analyze My Experiment” tab on the home page of any EuPathDB resource and can be used to upload your own data, compose and run custom workflows, retrieve results and share workflows and data analyses with colleagues.</p>
 <p>The EuPathDB Galaxy Data Analysis Service is hosted by Globus Genomics, an affiliate of Globus. The first time you visit EuPathDB Galaxy you will be asked to sign up with Globus in order to set up your private Galaxy workspace. Linking your Globus account with your EuPathDB account is necessary so that input data and analysis results can be transferred between the two systems. We encrypt data transfers and storage, but ultimately we cannot guarantee the security of data transmissions among EuPathDB, Globus and affiliates, Amazon Cloud Services, and the user. It is your responsibility to backup your data and obtain any required permissions from your study and/or institution prior to uploading data for analyses on the EuPathDB Galaxy platform. Do not use, transmit, upload or share any human identifiable information in the files you analyze. EuPathDB, Globus and affiliates, the University of Georgia, the University of Pennsylvania, the University of Liverpool, and Amazon Cloud Services do not take any responsibility and are not liable for the loss and/or release of any data you analyze via the EuPathDB Galaxy platform. We encourage you to review Globus’ privacy policy at https://www.globus.org/legal/privacy</p>
-<h3 id="your-rights">Your Rights</h3>
+<h2 id="your-rights-based-on-the-general-data-protection-regulation-gdpr">Your Rights based on the General Data Protection Regulation (GDPR)</h2>
+<p>To read more about GDPR you are welcome to follow this link: https://gdpr-info.eu</p>
+<ol type="1">
+<li>The right of transparency and modalities. The privacy policy should be clear and easy to follow in explaining what data we collect and how we use it.</li>
+<li>The right to be informed about when data is gathered. This is described in the privacy policy, during the registration process (if you choose to register), site banner and an email sent out to all registered users on May 25, 2018.</li>
+<li>The right of access. You can ask for what sepcific data we have about you and how we use it.</li>
+<li>The right to rectification. We will correct any errors in your personal data that you point out to us.</li>
+<li>The right to be forgotten. We are happy to delete you account and info when you make such a request.</li>
+<li>The right to restrict processing. You have the right to request that we restrict the use of your data.</li>
+<li>The right for notification obligation regarding rectification/erasure/restriction.</li>
+<li>The right to data portability.</li>
+<li>The right to object to the processing of your personal data at anytime.</li>
+<li>The right in relation to automated decision making and profiling. Basically, you have the right not to be subject to decisions based solely on automated processing which significantly affect you.</li>
+</ol>
+<p>To make any of the above stated requests or if you have any questions please email us at at help@eupathdb.org</p>
 <!--#include virtual="/a/footer.jsp" -->

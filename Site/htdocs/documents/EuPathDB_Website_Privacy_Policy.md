@@ -227,7 +227,22 @@ Cloud Services do not take any responsibility and are not liable for the
 loss and/or release of any data you analyze via the EuPathDB Galaxy
 platform. We encourage you to review Globus' privacy policy at https://www.globus.org/legal/privacy
 
-### Your Rights
+## Your Rights based on the General Data Protection Regulation (GDPR)
+
+To read more about GDPR you are welcome to follow this link: https://gdpr-info.eu
+	
+1. 	The right of transparency and modalities. The privacy policy should be clear and easy to follow in explaining what data we collect and how we use it.
+2. 	The right to be informed about when data is gathered. This is described in the privacy policy, during the registration process (if you choose to register), site banner and an email sent out to all registered users on May 25, 2018.
+3. 	The right of access. You can ask for what sepcific data we have about you and how we use it.
+4. 	The right to rectification. We will correct any errors in your personal data that you point out to us. 
+5. 	The right to be forgotten. We are happy to delete you account and info when you make such a request.
+6. 	The right to restrict processing. You have the right to request that we restrict the use of your data. 
+7. 	The right for notification obligation regarding rectification/erasure/restriction.
+8. 	The right to data portability.
+9. 	The right to object to the processing of your personal data at anytime.
+10. The right in relation to automated decision making and profiling. Basically, you have the right not to be subject to decisions based solely on automated processing which significantly affect you.
+
+To make any of the above stated requests or if you have any questions please email us at at help@eupathdb.org
 
 
 <!--#include virtual="/a/footer.jsp" -->
