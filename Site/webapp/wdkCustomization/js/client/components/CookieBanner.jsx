@@ -23,7 +23,8 @@ const bannerStyle = {
   left: 0,
   right: 0,
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'space-around',
+  alignItems: 'center',
   padding: '2em',
   fontSize: '1.2em',
   background: 'black',
@@ -34,7 +35,8 @@ const bannerStyle = {
 
 const linkStyle = {
   color: '#96b1e9',
-  textDecoration: 'underline'
+  textDecoration: 'underline',
+  whiteSpace: 'nowrap'
 };
 
 
