@@ -28,7 +28,8 @@ const bannerStyle = {
   fontSize: '1.2em',
   background: 'black',
   color: 'white',
-  boxShadow: 'rgb(114, 114, 114) 0px -1px 1px'
+  boxShadow: 'rgb(114, 114, 114) 0px -1px 1px',
+  zIndex: 1000
 };
 
 const linkStyle = {
