@@ -71,7 +71,7 @@ export default class CookieBanner extends React.Component {
         <div>
           This website requires cookies &amp; limited processing of your
           personal data in order to function properly. By clicking any link on
-          this page you are giving your consent to this as outlined in our <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">Privacy Notice</a>.
+          this page you are giving your consent to this as outlined in our <a style={linkStyle} target="_blank" href="/documents/EuPathDB_Website_Privacy_Policy.shtml">Privacy Policy</a>.
         </div>
         <div>
           <div>
