@@ -2,14 +2,20 @@
 
 # EuPathDB Website Privacy Policy
 
+UPDATED: May 23, 2018
+
 ## Introduction
 
-The purpose of this page is to provide information to users of EuPathDB
-websites about the types of information collected from our users and how
-that information is shared. We do not use or share any of your personal
-information for any purpose unrelated to the functionality of the
-websites; however, we do collect some information to help us understand
-how our sites are being used and to improve community support.
+EuPathDB (also referred to as 'we' throughout this document) is committed to
+protecting its users' data and privacy. The purpose of this page is to provide you
+with information about how the data we collect from users of EuPathDB websites is used
+or shared. We may update this Privacy Notice from time to time. We encourage you to
+visit this page frequently and take note of the date updated field above.
+
+We do not use or share any of your personal information for any purpose unrelated to
+the functionality of the websites; however, we do collect some information to help us
+understand how our sites are being used in order to improve community support and to
+enhance the EuPathDB community's experience when visiting our sites.
 
 
 ## Information Automatically Collected
@@ -30,7 +36,7 @@ that of a firewall or proxy your internet provider manages.
 
 - The address of a referring page. If you click a link on a website that directs you to a EuPathDB page,
  the address of that originating web page will be collected. This
-"referer" information is transmitted as part of the browser and server 
+"referrer" information is transmitted as part of the browser and server 
 communications; it is not based on any marketing or partnering
 agreements with the referring site.
 
@@ -38,7 +44,7 @@ This automatically collected information does not identify you
 personally unless you include personally identifying information in a
 support form request; see the "Contact Us" policy below for details. We
 use this information to measure the number of visitors to our site. The
-aggregate data  may be included in prospectuses and reports to funding
+aggregate data may be included in prospectuses and reports to funding
 agencies.
 
 ## Information You Directly Provide
@@ -79,7 +85,7 @@ EuPathDB staff.
 The form includes a field for an email address. If the email address
 identifies you personally, say if you use your institutional email, then
 your correspondence with us will likewise be linked to you. A valid
-email is not strictly required, although we can not reply to you without
+email is not strictly required, although we cannot reply to you without
 one.
 
 When you submit the form, your IP address and browser version will be
@@ -136,15 +142,15 @@ pathogens. Postings may also include information about planned service
 maintenance and outages.
 
 Twitter collects profile information such as name and email address
-about users who register to use this third party website. Depending on
-the user's privacy settings, this information maybe displayed on the
+about users who register to use this third-party website. Depending on
+the user's privacy settings, this information may be displayed on the
 user's profile page or in the user's tweets which may be retweeted on
 EuPathDB's page. The EuPathDB Twitter account may post the authors and
 institutions of publicly published scientific papers and news articles.
 EuPathDB does not actively collect or maintain personally identifying
 information through its use of Twitter. EuPathDB will redact or refrain
 from retweeting a posting that contains obviously identifiable personal
-information . A Twitter account is not required to read EuPathDB
+information. A Twitter account is not required to read EuPathDB
 postings on Twitter. EuPathDB does not collect or use personal
 information outside of Twitter's site.
 
@@ -184,7 +190,7 @@ YouTube also requires some information when users create an account,
 including an email address, and users may choose to provide a name and
 other identifying information in their public profile. Depending on
 their individual privacy settings, some personally identifiable
-information may be available to other users, including EuPathDB. However
+information may be available to other users, including EuPathDB. However,
 EuPathDB does not collect or use any of that information outside of its
 YouTube interactions. You can view videos without signing in to an
 account, but you must be a registered user in order to comment.  As
@@ -195,7 +201,7 @@ https://www.google.co.uk/intl/en-GB/policies/privacy/.
 ### Globus Genomics
 
 The EuPathDB Galaxy Data Analysis Service is a workspace for large-scale
-data analyses. Developed in partnership with Globus Genomics, workspaces
+data analyses. Developed in partnership with [Globus Genomics] (http://globusgenomics.org/genomics/), workspaces
 offer a private analysis platform with published workflows and
 pre-loaded annotated genomes. The workspace is accessed through the
 "Analyze My Experiment" tab on the home page of any EuPathDB resource
@@ -209,9 +215,9 @@ will be asked to sign up with Globus in order to set up your private
 Galaxy workspace. Linking your Globus account with your EuPathDB account
 is necessary so that input data and analysis results can be transferred
 between the two systems.  We encrypt data transfers and storage, but
-ultimately we cannot guarantee the security of data transmissions
+ultimately, we cannot guarantee the security of data transmissions
 among EuPathDB, Globus and affiliates, Amazon Cloud Services, and the
-user. It is your responsibility to backup your data and obtain any
+user. It is your responsibility to back up your data and obtain any
 required permissions from your study and/or institution prior to
 uploading data for analyses on the EuPathDB Galaxy platform. Do not use,
 transmit, upload or share any human identifiable information in the
@@ -219,7 +225,25 @@ files you analyze. EuPathDB, Globus and affiliates, the University of
 Georgia, the University of Pennsylvania, the University of Liverpool, and Amazon
 Cloud Services do not take any responsibility and are not liable for the
 loss and/or release of any data you analyze via the EuPathDB Galaxy
-platform.
+platform. We encourage you to review Globus' privacy policy at https://www.globus.org/legal/privacy
+
+## Your Rights based on the General Data Protection Regulation (GDPR)
+
+To read more about GDPR you are welcome to follow this link: https://gdpr-info.eu
+	
+1. 	The right of transparency and modalities. The privacy policy should be clear and easy to follow in explaining what data we collect and how we use it.
+2. 	The right to be informed about when data is gathered. This is described in the privacy policy, during the registration process (if you choose to register), site banner and an email sent out to all registered users on May 25, 2018.
+3. 	The right of access. You can ask for what sepecific data we have about you and how we use it.
+4. 	The right to rectification. We will correct any errors in your personal data that you point out to us. 
+5. 	The right to be forgotten. We are happy to delete your account and info when you make such a request.
+6. 	The right to restrict processing. You have the right to request that we restrict the use of your data. 
+7. 	The right for notification obligation regarding rectification/erasure/restriction.
+8. 	The right to data portability.
+9. 	The right to object to the processing of your personal data at any time.
+10. The right in relation to automated decision making and profiling. Basically, you have the right not to be subject to decisions based solely on automated processing which significantly affect you.
+
+To make any of the above stated requests or if you have any questions please email us at help@eupathdb.org
+
 
 <!--#include virtual="/a/footer.jsp" -->
 
