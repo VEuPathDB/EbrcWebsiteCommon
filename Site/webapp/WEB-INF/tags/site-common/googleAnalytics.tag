@@ -20,6 +20,7 @@
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', '${gaId}', '${domain}');
+    ga('set', 'anonymizeIp', true);
     ga('send', 'pageview');
   </script>
 
