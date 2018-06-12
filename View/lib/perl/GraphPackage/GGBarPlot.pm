@@ -88,12 +88,40 @@ sub makeRPlotString {
     return $blankGraph;
   }
 
-  foreach(@{$self->getProfileSets()}) {
-    if(scalar @{$_->errors()} > 0) {
-      return $blankGraph;
-   
+  my $profileSets = $self->getProfileSets();
+  my @skipProfileSets;
+  my $skipped = 0;
+
+  my $colors = $self->getColors();
+
+  for(my $i = 0; $i < scalar @$profileSets; $i++) {
+    my $profileSet = $profileSets->[$i];
+
+    if(scalar @{$profileSet->errors()} > 0) {
+      $skipProfileSets[$i] = "TRUE";
+      $skipped++;
+      if ($skipped == 1) {
+        splice @$colors, $i, 1;
+      } else {
+        #this because the size/ indexing of $colors shrinks as values removed.
+        my $j = $i - $skipped + 1;
+        splice @$colors, $j, 1;
+      }
+      next;
     }
+    $skipProfileSets[$i] = "FALSE";
   }
+  #print STDERR Dumper($colors);
+  if(scalar @$profileSets == $skipped) {
+    return $blankGraph;
+  }
+
+  #foreach(@{$self->getProfileSets()}) {
+  #  if(scalar @{$_->errors()} > 0) {
+  #    return $blankGraph;
+  # 
+  #  }
+  #}
 
   #count number of profiles for current plot part
   my @elemFileStrings = split(/,/, $elementNamesFiles);
@@ -109,8 +137,7 @@ sub makeRPlotString {
   }
   my $numProfiles = $lines;
 
-  my $colors = $self->getColors();
-
+  my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
   my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
 
@@ -227,6 +254,7 @@ $sampleLabelsString
 $legendLabelsString
 $legendColorsString
 $profileTypesString
+$skipProfilesString
 
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
@@ -247,6 +275,10 @@ for(ii in 1:length(profile.files)) {
   if ($skipStdErr) {
     skip.stderr = TRUE
   }
+
+  if(skip.profiles[ii]) {
+    next;
+  };
 
   profile.df = read.table(profile.files[ii], header=T, sep=\"\\t\");
   profile.df\$Group.1=NULL
