@@ -31,46 +31,76 @@ function FilterParamSummary(props) {
     return null;
   }
 
-  return Seq.from(filters)
-    .flatMap(filter => filter.type === 'multiFilter'
-      ? filter.value.filters.map(leafFilter => [ leafFilter, filter ])
-      : [[ filter ]]
-    )
-    .map(( [ filter, containerFilter ] ) => {
-    const field = props.parameter.ontology.find(field => field.term === filter.field)
-    const containerField = containerFilter && props.parameter.ontology.find(field => field.term === containerFilter.field);
-    return (
-      <div key={props.parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
-        <button
-          type="button"
-          title="Clear selection"
-          className={makeClassName('ChicletTitle') + ' wdk-Link'}
-          onClick={() => {
-            navigateToGroup(props);
-            props.eventHandlers.setActiveOntologyTerm(
-              props.parameter,
-              filters,
-              containerField ? containerField.term : field.term
+  return (
+    <div className="filter-param">
+      <ul className="filter-items" style={{ fontSize: '1em' }}>
+        {Seq.from(filters)
+          .map(filter => {
+            if (filter.type === 'multiFilter') {
+              const field = props.parameter.ontology.find(field => field.term === filter.field);
+              return (
+                <li className="multiFilter">
+                  <sup className="multiFilter-operation">{filter.value.operation === 'union' ? 'Any' : 'All'} of these {field.display}</sup>
+                  <ul className="filter-items">
+                    {filter.value.filters.map(leafFilter => (
+                      <li>
+                        <FilterParamFilter filter={leafFilter} containerFilter={filter} filters={filters} {...props} />
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            }
+            return (
+              <li>
+                <FilterParamFilter filter={filter} filters={filters} {...props} />
+              </li>
             );
-          }}
-        >
-          {containerField ? `${containerField.display} > ${field.display}` : field.display}
-        </button>
-        &nbsp;
-        <button
-          type="button"
-          className={makeClassName('RemoveFilterButton')}
-          onClick={() => props.eventHandlers.setParamValue(props.parameter, JSON.stringify({
-            filters: filters.filter(f => f !== filter)
-          }))}
-        >
-          <Icon fa="close"/>
-        </button>
-        <hr/>
-        <div>{getFilterValueDisplay(filter)}</div>
-      </div>
-    );
-  });
+          })}
+      </ul>
+    </div>
+  );
+}
+
+function FilterParamFilter(props) {
+  const { containerFilter, eventHandlers, filter, filters, parameter } = props;
+  const field = parameter.ontology.find(field => field.term === filter.field)
+  return (
+    <div key={parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
+      <button
+        type="button"
+        title="Clear selection"
+        className={makeClassName('ChicletTitle') + ' wdk-Link'}
+        onClick={() => {
+          navigateToGroup(props);
+          eventHandlers.setActiveOntologyTerm(
+            parameter,
+            filters,
+            containerFilter ? containerFilter.field : filter.field
+          );
+        }}
+      >
+        {field.display}
+      </button>
+      &nbsp;
+      <button
+        type="button"
+        className={makeClassName('RemoveFilterButton')}
+        onClick={() => eventHandlers.setParamValue(props.parameter, JSON.stringify({
+          filters: containerFilter
+            ? filters.map(f => f === containerFilter
+              ? { ...f, value: { ...f.value, filters: f.value.filters.filter(cf => cf !== filter) } }
+              : f
+            )
+            : filters.filter(f => f !== filter)
+        }))}
+      >
+        <Icon fa="close"/>
+      </button>
+      <hr/>
+      <div>{getFilterValueDisplay(filter)}</div>
+    </div>
+  );
 }
 
 function prettyPrint(param, value) {
