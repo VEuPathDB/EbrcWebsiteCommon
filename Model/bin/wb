@@ -27,9 +27,9 @@ my $mode = $ARGV[0];
 
 my @modes;
 if ($svnPrefix eq "ApiCommon") {
-  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site");
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny");
 } else {
-  @modes = ("full", "model", "site", "ontology", "graph");
+  @modes = ("full", "model", "site", "ontology", "graph", "shiny");
 }
 
 my $isValidMode;
@@ -80,6 +80,14 @@ if($mode eq 'site') {
   $cmd = "$dieOnError; bldw EbrcWebsiteCommon/Site $baseGus/etc/webapp.prop; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop";
 }
 
+if($mode eq 'shiny') {
+  my @procList = `/usr/sbin/lsof -t -c R -a +D "$gusHome"`;
+  if (scalar @procList > 0) {
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; kill \$(/usr/sbin/lsof -t -c R -a +D \"$gusHome\");";
+  } else {
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View;";
+  }
+}
 
 print STDERR "Running Command:  $cmd\n";
 
