@@ -40,7 +40,7 @@ function FilterParamSummary(props) {
               const field = props.parameter.ontology.find(field => field.term === filter.field);
               return (
                 <li className="multiFilter">
-                  <sup className="multiFilter-operation">{filter.value.operation === 'union' ? 'Any' : 'All'} of these {field.display}</sup>
+                  <sup className="multiFilter-operation">{filter.value.operation === 'union' ? 'ANY' : 'ALL'} {field.display} filters</sup>
                   <ul className="filter-items">
                     {filter.value.filters.map(leafFilter => (
                       <li>
