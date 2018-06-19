@@ -27,9 +27,9 @@ my $mode = $ARGV[0];
 
 my @modes;
 if ($svnPrefix eq "ApiCommon") {
-  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny");
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi");
 } else {
-  @modes = ("full", "model", "site", "ontology", "graph", "shiny");
+  @modes = ("full", "model", "site", "ontology", "graph", "shiny", "cgi");
 }
 
 my $isValidMode;
@@ -62,6 +62,10 @@ if($mode eq 'full') {
 
 if($mode eq 'model') {
   $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+}
+
+if($mode eq 'cgi') {
+  $cmd = "$dieOnError;  bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View";
 }
 
 if($mode eq 'graph') {
