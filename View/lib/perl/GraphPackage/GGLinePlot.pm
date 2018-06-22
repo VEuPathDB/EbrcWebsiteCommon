@@ -284,6 +284,8 @@ sub makeRPlotString {
   my $hasExtraLegend = $self->getHasExtraLegend() ? 'TRUE' : 'FALSE';
   my $extraLegendSize = $self->getExtraLegendSize();
 
+  #my $horizontalLegend = $self->getHorizontalLegend() ? 'TRUE' : 'FALSE';
+
   my $hasMetaData = $self->getHasMetaData() ? 'TRUE' : 'FALSE';
 
   my $titleLine = $self->getTitleLine();
@@ -647,7 +649,10 @@ if(is.compact) {
 
   if(hideLegend) {
     gp = gp + theme(legend.position=\"none\");
-  }
+  #} else if($horizontalLegend) {
+  #  gp = gp + theme(legend.position=\"bottom\");
+  } 
+
 }
 
 if(\"FACET\" %in% colnames(profile.df.full)) {
@@ -696,7 +701,7 @@ if ($prtcpnt_sum) {
     myXLab <- \"$xAxisLabel\"
   }
 
-  if (grepl(\"z-score\", myYLab)) {
+  if (grepl(\"z-score\", myYLab) | grepl(\"Z-score\", myYLab)) {
     gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
  
@@ -735,14 +740,9 @@ if ($prtcpnt_sum) {
 
     if ($prtcpnt_timeline) {
 
-      #TODO tooltip should be set via the tooltip column and have some generic default here if we want
-      #gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = paste0(STATUS, \"| Febrile: \", OPT_STATUS), color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point);
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
 
-      #TODO force use of colomap here
-      #gp = gp + scale_color_manual(values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
       gp = gp + scale_color_manual(values=$colorVals)
-      #gp = gp + scale_fill_manual(na.value=NA, values=c(\"3\" = colors[3], \"2\" = colors[2], \"1\" = colors[1], \"0\" = \"black\"));
       gp = gp + scale_fill_manual(na.value = NA, values = $colorVals)
 
       if (coord.cartesian) {
@@ -757,7 +757,7 @@ if ($prtcpnt_sum) {
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
       gp = gp + theme(legend.position=\"none\");
-
+      
     } else {
       status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
       numColors = length(unique(status.df\$COLOR))
