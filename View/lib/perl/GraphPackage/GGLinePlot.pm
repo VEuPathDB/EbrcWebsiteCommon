@@ -649,7 +649,7 @@ if(is.compact) {
 
   if(hideLegend) {
     gp = gp + theme(legend.position=\"none\");
-  #} else if($horizontalLegend) {
+  #} else if(\$horizontalLegend) {
   #  gp = gp + theme(legend.position=\"bottom\");
   } 
 
