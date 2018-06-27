@@ -7,11 +7,12 @@ my $projectHome = $ENV{PROJECT_HOME};
 my $gusHome = $ENV{GUS_HOME};
 
 my ($projectName, $webapp) = $baseGus =~ /\/(\w+)\/([\w\.]+)\/?$/;
+my $tomcatName = $projectName;
 
 ##deal with change Mark made so that Gates and ICEMR sites are run out of the ClinEpiDB tomcat
 ##requires developer to set a PROJECT_NAME environment variable appropriately ... best in the etc/setenv file that is sourced
 
-$projectName = $ENV{PROJECT_NAME} ? $ENV{PROJECT_NAME} : $projectName;
+$projectName = ($projectName eq 'ClinEpiDB' && $ENV{PROJECT_NAME}) ? $ENV{PROJECT_NAME} : $projectName;
 
 unless($baseGus && $projectHome && $gusHome) {
   die "WHOOPS!  Did you forgot to source your setenv file?";
@@ -53,9 +54,9 @@ my $dieOnError = "set -e";
 
 my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $projectHome/$svnPrefix\Model/Model/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
 
-my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $projectName reload $webapp";
+my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $tomcatName reload $webapp";
 
-my $stopWebapp = "instance_manager manage $projectName stop $webapp";
+my $stopWebapp = "instance_manager manage $tomcatName stop $webapp";
 
 my $wdkXml = "wdkXml -model $projectName > /dev/null";
 
