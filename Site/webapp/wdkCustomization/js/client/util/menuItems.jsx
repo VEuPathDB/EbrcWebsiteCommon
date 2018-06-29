@@ -1,18 +1,10 @@
 import { add, reduce, keyBy } from 'lodash';
-import { getId, getDisplayName, getTargetType, isIndividual } from 'wdk-client/CategoryUtils';
-import { preorderSeq } from 'wdk-client/TreeUtils';
-import { getSearchMenuCategoryTree } from '../util/category';
+import { getId, getDisplayName, getTargetType } from 'wdk-client/CategoryUtils';
 
-/**
- * Map search tree to menu items. If flatten is true, return a flat
- * list of search items. Otherwise, return the full tree of search®rouer®EOURW
- * items.
- */
-function getSearchItems(ontology, recordClasses, flatten = false) {
-  if (ontology == null || recordClasses == null) return [];
-  let tree = getSearchMenuCategoryTree(ontology, recordClasses, {});
-  return flatten ? preorderSeq(tree).filter(isIndividual).map(createMenuItem)
-                 : tree.children.map(createMenuItem);
+/** Map search tree to menu items.  */
+function getSearchItems(searchTree) {
+  if (searchTree == null) return [];
+  return searchTree.children.map(createMenuItem);
 }
 
 /** Map a search node to a meny entry */
@@ -46,11 +38,8 @@ export function makeMenuItems(props) {
     basketCounts,
     user,
     siteConfig,
-    ontology,
-    config,
-    recordClasses,
     showLoginForm,
-    showLogoutWarning
+    showLogoutWarning,
   } = props;
 
   const {
@@ -58,8 +47,7 @@ export function makeMenuItems(props) {
     twitterUrl,
     youtubeUrl,
     webAppUrl,
-    includeQueryGrid = true,
-    flattenSearches = false
+    includeQueryGrid = true
   } = siteConfig;
 
 {/* in apicommon
@@ -75,7 +63,7 @@ export function makeMenuItems(props) {
   return keyBy( [
     { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
-      children: getSearchItems(ontology, recordClasses, flattenSearches).concat(
+      children: getSearchItems(props.searchTree).concat(
         includeQueryGrid ? [
           { id: 'query-grid', text: 'View all available searches', route: '/query-grid' }
         ] : [])

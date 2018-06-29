@@ -54,9 +54,6 @@ import '../../../js/scroll-to-top';
  *    and returns a new Routes object. Use this as an opportunity alter routes.
  * @param {boolean} [options.isPartOfEuPathDB = false] Controls if the EuPathDB
  *    logo is displayed. Defaults to `false`.
- * @param {boolean} [options.flattenSearches = false] Controls if the search
- *    menu searches is displayed nested according to the ontology, or as a flat
- *    list.
  * @param {boolean} [options.includeQueryGrid = false] Controls if a link to
  *    the query grid page is included in the search menu.
  * @param {Function} [options.mainMenuItems] A funtion that returns an Array of

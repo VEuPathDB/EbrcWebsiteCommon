@@ -1,2 +1,2 @@
-export * from './GlobalDataStoreWrapper';
 export * from './DownloadFormStoreWrapper';
+export * from './GlobalDataStoreWrapper';

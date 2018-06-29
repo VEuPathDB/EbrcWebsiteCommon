@@ -1,4 +1,5 @@
 import { SITE_CONFIG_LOADED, BASKETS_LOADED, QUICK_SEARCH_LOADED } from '../actioncreators/GlobalActionCreators';
+import {getSearchMenuCategoryTree} from '../util/category';
 
 export const GlobalDataStore = (GlobalDataStore) => class EuPathDBGlobalDataStore extends GlobalDataStore {
   handleAction(state, { type, payload }) {
@@ -15,6 +16,11 @@ export const GlobalDataStore = (GlobalDataStore) => class EuPathDBGlobalDataStor
         quickSearches: payload.questions,
         quickSearchesLoading: false
       });
+
+      case 'static/all-data-loaded': return {
+        ...state,
+        searchTree: getSearchMenuCategoryTree(state.ontology, state.recordClasses)
+      };
 
       default: return state;
     }
