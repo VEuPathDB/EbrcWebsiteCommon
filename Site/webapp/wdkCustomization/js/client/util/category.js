@@ -53,8 +53,6 @@ function getRecordClassTree(categoryTree) {
         label: [recordClass.name],
         'EuPathDB alternative term': [recordClass.displayNamePlural]
       },
-      // Flatten search tree for record class if retained in not null and does
-      // not include record class.
       children: tree.children
     };
   }
