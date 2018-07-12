@@ -67,7 +67,11 @@ if($mode eq 'full') {
 }
 
 if($mode eq 'model') {
-  $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  if ($svnPrefix eq 'Microbiome') {
+    $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $wdkXml; $reloadWebapp";
+  } else {
+    $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  }
 }
 
 if($mode eq 'cgi') {
