@@ -59,6 +59,15 @@ sub setTimeline                  { $_[0]->{'_time_line'                     } = 
 sub getColorVals                 { $_[0]->{'_color_vals'                    }}
 sub setColorVals                 { $_[0]->{'_color_vals'                    } = $_[1]}
 
+sub getColorLabels               { $_[0]->{'_color_labs'                    }}
+sub setColorLabels               { $_[0]->{'_color_labs'                    } = $_[1]}
+
+sub getFillVals                  { $_[0]->{'_fill_vals'                     }}
+sub setFillVals                  { $_[0]->{'_fill_vals'                     } = $_[1]}
+
+sub getFillLabels                { $_[0]->{'_fill_labs'                     }}
+sub setFillLabels                { $_[0]->{'_fill_labs'                     } = $_[1]}
+
 sub getCustomBreaks              { $_[0]->{'_custom_breaks'                 }}
 sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = $_[1]}
 
@@ -188,9 +197,22 @@ sub makeRPlotString {
   my $colorVals = $self->getColorVals();
   $colorVals = $colorVals ? $colorVals : '';
   my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
+
+  my $colorLabels = $self->getColorLabels();
+  $colorLabels = $colorLabels ? $colorLabels : '';
+  my $hasColorLabels = $colorLabels ? 'TRUE' : 'FALSE';
+
   my $customBreaks = $self->getCustomBreaks();
   $customBreaks = $customBreaks ? $customBreaks : '';
   my $colorPointsOnly = $self->getColorPointsOnly() ? 'TRUE' : 'FALSE';
+
+  my $fillVals = $self->getFillVals();
+  $fillVals = $fillVals ? $fillVals : '';
+  my $hasFillVals = $fillVals ? 'TRUE' : 'FALSE';
+
+  my $fillLabels = $self->getFillLabels();
+  $fillLabels = $fillLabels ? $fillLabels : '';
+  my $hasFillLabels = $fillLabels ? 'TRUE' : 'FALSE';
 
   $yMax = $yMax ? $yMax : "-Inf";
   $yMin = defined($yMin) ? $yMin : "Inf";
@@ -453,7 +475,7 @@ if (is.null(profile.df.full\$LEGEND)) {
   hideLegend = TRUE
 }
 
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, colour=LEGEND));
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND));
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -742,8 +764,8 @@ if ($prtcpnt_sum) {
 
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
 
-      gp = gp + scale_color_manual(values=$colorVals)
-      gp = gp + scale_fill_manual(na.value = NA, values = $colorVals)
+      gp = gp + scale_color_manual(name=\"Border\", breaks = $customBreaks, values=$colorVals)
+      gp = gp + scale_fill_manual(name=\"Center\", breaks = $customBreaks, na.value = NA, values = $fillVals)
 
       if (coord.cartesian) {
         gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
@@ -751,13 +773,15 @@ if ($prtcpnt_sum) {
       gp = gp + theme_bw();
       if (is.thumbnail) {
         gp = gp + labs(title=NULL, x=NULL, y=NULL);
+        gp = gp + theme(legend.position = \"none\")
       } else {
         gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=NULL);
+        gp = gp + guides(fill = guide_legend(override.aes = list(color =\"white\" )))
+        gp = gp + theme(legend.position=\"bottom\"); 
       }
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
-      gp = gp + theme(legend.position=\"none\");
-      
+
     } else {
       status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
       numColors = length(unique(status.df\$COLOR))
