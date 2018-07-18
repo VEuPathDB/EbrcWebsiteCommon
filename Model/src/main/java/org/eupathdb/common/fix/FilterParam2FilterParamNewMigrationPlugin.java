@@ -9,6 +9,7 @@ import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.answer.spec.ParamFiltersClobFormat;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
 import org.gusdb.wdk.model.fix.table.TableRowUpdater;
@@ -17,7 +18,6 @@ import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
 import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
 import org.gusdb.wdk.model.query.param.FilterParamNew;
 import org.gusdb.wdk.model.query.param.Param;
-import org.gusdb.wdk.model.user.Step;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +65,7 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
         return result;
       }
       JSONObject json = nextRow.getParamFilters();
-      JSONObject params = json.getJSONObject(Step.KEY_PARAMS);
+      JSONObject params = json.getJSONObject(ParamFiltersClobFormat.KEY_PARAMS);
       boolean valueChanged = false;
       for (String paramName : JsonUtil.getKeys(params)) {
         if (questionParams.get(paramName) instanceof FilterParamNew) {
