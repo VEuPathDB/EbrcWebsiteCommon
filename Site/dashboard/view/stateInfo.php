@@ -7,6 +7,7 @@
 require_once dirname(__FILE__) . "/../lib/modules/WdkCache.php";
 require_once dirname(__FILE__) . "/../lib/modules/ModelConfig.php";
 require_once dirname(__FILE__) . "/../lib/modules/WdkMeta.php";
+require_once dirname(__FILE__) . "/../lib/modules/Webapp.php";
 
 $cache = new WdkCache();
 $model_config = new ModelConfig();
@@ -14,6 +15,7 @@ $cattr = $cache->attributes();
 $model_data_tree = $model_config->attributes();
 $meta = new WdkMeta();
 $meta_data = $meta->attributes();
+$webapp = new Webapp();
 
 ?>
 
@@ -33,12 +35,10 @@ $meta_data = $meta->attributes();
 <p>
 <h4>Reset WDK Cache</h4>
 <button type="submit" id="reset_cache" value="reset_cache" onclick="resetWdkCache()">Reset Cache</button>
+<em>This will cause the webapp to reload as well</em>
 <p>
 This is equivalent to the command,<br>
-<code>wdkCache -model <?php print $model_data_tree['global']['projectId'] ?> -reset</code>
-<p>
-Some cached data may be resident in memory, so reloading the webapp may also be required.
-See the <a href='?p=Tomcat'>Tomcat tab</a> for webapp reloading.
+<code>wdkCache -model <?php print $model_data_tree['global']['projectId'] ?> -reset && instance_manager manage <?php print $model_data_tree['global']['projectId'] ?> reload <?php print $webapp->context_path ?> </code>
 
 <hr>
 

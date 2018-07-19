@@ -78,7 +78,7 @@ function resetWdkCache() {
         "Cancel": function() {
           $(this).dialog( "close" );
         },
-        "Reset Cache": function() {
+        "Reset Cache and Reload Webapp": function() {
           $(this).dialog( "close" );
           $("body").loading("show");
           $("#cache_table_count").load("view/wdkCacheTableCount.php", { 'reset': '1' }, 
@@ -86,8 +86,18 @@ function resetWdkCache() {
               if (status == "error") {
                 var msg = "<span class='fatal'>Ajax Error: " + xhr.status + " " + xhr.statusText + "</span>";
                 $("#cache_table_count").html(msg);
+                $("body").loading("hide");
               }
-              $("body").loading("hide");
+              else {
+                $.post("view/reloadWebapp.php", { 'reload': '1' }, 
+                  function(response, status, xhr) {
+                    $("body").loading("hide");
+                    if (status == "error") {
+                      var msg = "<span class='fatal'>Ajax Error: " + xhr.status + " " + xhr.statusText + "</span>";
+                      $("#webapp_uptime").html(msg);
+                    }
+                })
+              }
           })
         }
       }
