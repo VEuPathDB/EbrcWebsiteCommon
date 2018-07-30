@@ -8,6 +8,7 @@ __webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disa
 
 import * as siteConfig from './config';
 import { rootUrl, rootElement, endpoint } from './config';
+import pluginConfig from './pluginConfig';
 import {
   initialize as initializeWdk,
   Components as WdkComponents,
@@ -98,12 +99,14 @@ import '../../../js/scroll-to-top';
  *    The function is called with two arguments: props passed to `SiteHeader`,
  *    and on object containing preconfigured menu items.
  * @param {Function} [options.smallMenuItems] See `mainMenuItems`.
+ * @param {ClientPluing[]} [options.pluginConfig] TODO - docs
  */
 export function initialize(options = {}) {
   const {
     quickSearches,
     componentWrappers,
     storeWrappers,
+    pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
   } = options;
 
@@ -126,7 +129,8 @@ export function initialize(options = {}) {
     rootUrl,
     rootElement,
     endpoint,
-    onLocationChange: makeLocationHandler()
+    onLocationChange: makeLocationHandler(),
+    pluginConfig: sitePluginConfig.concat(pluginConfig)
   });
 
   (window.ebrc || (window.ebrc = {})).context = context
