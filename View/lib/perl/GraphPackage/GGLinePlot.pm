@@ -334,6 +334,7 @@ $legendLabelsString
 $skipProfilesString
 $profileTypesString
 
+
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
 
@@ -430,7 +431,17 @@ if ($prtcpnt_sum) {
   if (\"DURATION\" %in% colnames(profile.df.full)) {
     annotate.df = completeDF(profile.df.full, \"DURATION\");
   }
-  profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+  if (any(grepl(\"WHO Standards\", unique(profile.df.full\$LEGEND)))){
+     generic.df = completeDF(profile.df.full, \"VALUE\")
+
+     who.df = generic.df[grepl(\"WHO Standards\", generic.df\$LEGEND),]
+     profile.df.clean = generic.df[!(grepl(\"WHO Standards\", generic.df\$LEGEND)),]
+     
+  }else{
+
+     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+  }
+
 }
 
 if(\"FACET\" %in% colnames(profile.df.full)) {
@@ -569,7 +580,9 @@ if(!$forceNoLines) {
       if ($colorPointsOnly) {
         gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
       } else {
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+         
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line);
+
       }
     } else {
       if ($colorPointsOnly) {
@@ -613,7 +626,7 @@ if (coord.cartesian) {
 # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
 # then wont need the if statement. cause though fine now, this still may eventually cause problems.
 if ($hasColorVals) {
-  gp = gp + scale_color_manual(values = $colorVals)
+   gp = gp + scale_color_manual(values = $colorVals)
 } else {
   if (count/length($colorsStringNotNamed) == 1) {
     gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
@@ -704,11 +717,11 @@ if($hideXAxisLabels) {
 if ($prtcpnt_sum) {
 
   if (\"YLABEL\" %in% colnames(profile.df.full)) {
-    if (length(unique(profile.df.full\$YLABEL)) > 1) {
-      myYLab <- \"Z-score\" 
-    } else {
+    #if (length(unique(profile.df.full\$YLABEL)) > 1) {
+     # myYLab <- \"Z-score\" 
+   # } else {
       myYLab <- unique(profile.df.full\$YLABEL)[1]
-    }
+    #}
   } else {
     myYLab <- \"$yAxisLabel\"
   }
@@ -723,12 +736,14 @@ if ($prtcpnt_sum) {
     myXLab <- \"$xAxisLabel\"
   }
 
+
   if (grepl(\"z-score\", myYLab) | grepl(\"Z-score\", myYLab)) {
     gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
  
     gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
-  } 
+  }
+
 
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
@@ -755,6 +770,15 @@ if ($prtcpnt_sum) {
       gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
     }
   }
+
+
+  who_standards = exists(\"who.df\") && nrow(who.df)>0;
+
+  if (who_standards){
+     gp = gp + geom_tooltip(data=who.df,aes(x=get(myX), y=VALUE, tooltip=LEGEND),real.geom = geom_line)
+  
+   }
+
 
   status = exists(\"status.df\") && nrow(status.df) > 0;
 
@@ -784,6 +808,7 @@ if ($prtcpnt_sum) {
 
     } else {
       status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
+      status.df\$COLOR = as.character(status.df\$COLOR)
       numColors = length(unique(status.df\$COLOR))
       if (numColors > 1) {
         myColors = rainbow(numColors);
