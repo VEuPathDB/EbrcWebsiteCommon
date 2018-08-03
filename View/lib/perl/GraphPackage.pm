@@ -232,7 +232,7 @@ sub pushIds {
 	 foreach my $key (keys %$Self) {
 			my $_attr = $Self->{$key};
 			if (ref $_attr &&
-					UNIVERSAL::isa($_attr, 'ApiCommonWebsite::Model::CannedQuery'))
+					UNIVERSAL::isa($_attr, 'EbrcWebsiteCommon::Model::CannedQuery'))
       {
          if ($_attr->can('setId')) {
             $_attr->setId($Self->getId());

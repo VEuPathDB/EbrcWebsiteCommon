@@ -187,12 +187,12 @@ sub makeProfileCannedQuery {
 
   my $api = eval
   {
-    require ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData;
-    ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData->import();
-    require ApiCommonWebsite::Model::CannedQuery::Profile;
-    ApiCommonWebsite::Model::CannedQuery::Profile->import();
-    require ApiCommonWebsite::Model::CannedQuery::ProfileByEC;
-    ApiCommonWebsite::Model::CannedQuery::ProfileByEC->import();
+    require EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithMetaData;
+    EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithMetaData->import();
+    require EbrcWebsiteCommon::Model::CannedQuery::Profile;
+    EbrcWebsiteCommon::Model::CannedQuery::Profile->import();
+    require EbrcWebsiteCommon::Model::CannedQuery::ProfileByEC;
+    EbrcWebsiteCommon::Model::CannedQuery::ProfileByEC->import();
     1;
   };
 
@@ -210,7 +210,7 @@ sub makeProfileCannedQuery {
 
     my $profile;
     if(($idType) && lc($idType) eq 'ec') {
-      $profile = ApiCommonWebsite::Model::CannedQuery::ProfileByEC->new
+      $profile = EbrcWebsiteCommon::Model::CannedQuery::ProfileByEC->new
         ( Name         => "_data_$suffix",
           Id           => $id,
           ProfileSet   => $profileSetName,
@@ -221,7 +221,7 @@ sub makeProfileCannedQuery {
       if ($subId) {
         $id = "$id|$subId";
       }
-      $profile = ApiCommonWebsite::Model::CannedQuery::Profile->new
+      $profile = EbrcWebsiteCommon::Model::CannedQuery::Profile->new
         ( Name         => "_data_$suffix",
         #if there is a suffix, append suffix to id
           Id           => $id,
@@ -266,7 +266,7 @@ sub makeProfileNamesCannedQuery {
 
   my $elementNamesProfile;
    if($facet || $contXAxis) {
-     $elementNamesProfile = ApiCommonWebsite::Model::CannedQuery::ElementNamesWithMetaData->new
+     $elementNamesProfile = EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithMetaData->new
        ( Name         => "_names_$suffix",
          Id           => $id,
          ProfileSet   => $profileSetName,
@@ -276,7 +276,7 @@ sub makeProfileNamesCannedQuery {
        );
    }
    else {
-     $elementNamesProfile = ApiCommonWebsite::Model::CannedQuery::ElementNames->new
+     $elementNamesProfile = EbrcWebsiteCommon::Model::CannedQuery::ElementNames->new
       ( Name         => "_names_$suffix",
         Id           => $id,
         ProfileSet   => $profileSetName,
