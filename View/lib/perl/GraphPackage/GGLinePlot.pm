@@ -717,11 +717,11 @@ if($hideXAxisLabels) {
 if ($prtcpnt_sum) {
 
   if (\"YLABEL\" %in% colnames(profile.df.full)) {
-    #if (length(unique(profile.df.full\$YLABEL)) > 1) {
-     # myYLab <- \"Z-score\" 
-   # } else {
+    if (length(unique(profile.df.full\$YLABEL)) > 1 & all(grepl(\"z-score\", unique(profile.df.full\$YLABEL)))) {
+      myYLab <- \"Z-score\" 
+    } else {
       myYLab <- unique(profile.df.full\$YLABEL)[1]
-    #}
+    }
   } else {
     myYLab <- \"$yAxisLabel\"
   }
