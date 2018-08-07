@@ -77,6 +77,8 @@ sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = 
 sub getColorPointsOnly           { $_[0]->{'_color_points_only'             }}
 sub setColorPointsOnly           { $_[0]->{'_color_points_only'             } = $_[1]}
 
+
+
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -86,83 +88,82 @@ sub blankPlotPart {
 
 sub new {
   my $class = shift;
-
-   my $self = $class->SUPER::new(@_);
-
-   $self->setXaxisLabel("Whoops! Object forgot to call setXaxisLabel");
-   $self->setDefaultYMax(1);
-   $self->setDefaultYMin(-1);
-   return $self;
+    
+  my $self = $class->SUPER::new(@_);
+    
+  $self->setXaxisLabel("Whoops! Object forgot to call setXaxisLabel");
+  $self->setDefaultYMax(1);
+  $self->setDefaultYMin(-1);
+  return $self;
 }
 
 #--------------------------------------------------------------------------------
 
 sub makeRPlotString {
   my ($self, $idType) = @_;
-
+    
   my $sampleLabels = $self->getSampleLabels();
-
+    
   my $sampleLabelsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($sampleLabels, 'x.axis.label');
-
+    
   my $overrideXAxisLabels = scalar @$sampleLabels > 0 ? "TRUE" : "FALSE";
-
+    
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE';
-
+    
   my $colors = $self->getColors();
-
+        
   my $defaultPch = [ '15', '16', '17', '18', '7:10', '0:6'];
-
+    
   my $pointsPch = $self->getPointsPch();
   $pointsPch = $defaultPch unless $pointsPch;
-
+    
   my ($profileFiles, $elementNamesFiles, $stderrFiles);
-
+    
   my $blankGraph = $self->blankPlotPart();
-
+    
   eval{
-   ($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
-  };
+	($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
+    };
   if($@) {
-    return $blankGraph;
-  }
-
+	return $blankGraph;
+    }
+    
   my $profileSets = $self->getProfileSets();
   my @skipProfileSets;
   my $skipped = 0;
-  #print STDERR Dumper($colors);
-  #print STDERR Dumper(\@skipProfileSets);
+  
   for(my $i = 0; $i < scalar @$profileSets; $i++) {
-    my $profileSet = $profileSets->[$i];
-
-    if(scalar @{$profileSet->errors()} > 0) {
-      $skipProfileSets[$i] = "TRUE";
-      $skipped++;
-      if ($skipped == 1) {
-        splice @$colors, $i, 1;
-      } else {
-        #this because the size/ indexing of $colors shrinks as values removed.
-        my $j = $i - $skipped + 1;
-        splice @$colors, $j, 1;
-      }
-      next;
-    }
-
-    $skipProfileSets[$i] = "FALSE";
-  }
+      my $profileSet = $profileSets->[$i];
+	
+      if(scalar @{$profileSet->errors()} > 0) {
+	  $skipProfileSets[$i] = "TRUE";
+	  $skipped++;
+	  if ($skipped == 1) {
+	      splice @$colors, $i, 1;
+	   } else {
+		#this because the size/ indexing of $colors shrinks as values removed.
+	       my $j = $i - $skipped + 1;
+	       splice @$colors, $j, 1;
+	   }
+	   next;
+	}
+	
+	$skipProfileSets[$i] = "FALSE";
+   }
   #print STDERR Dumper($colors);
   if(scalar @$profileSets == $skipped) {
-    return $blankGraph;
+      return $blankGraph;
   }
-
+    
   my @profileFileStrings = split(/,/, $profileFiles);
   my $numProfiles = scalar @profileFileStrings;
-
+    
   my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
   my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
-
+    
   my $pointsPchString = EbrcWebsiteCommon::View::GraphPackage::Util::rNumericVectorFromArray($pointsPch, 'points.pch');
-
+    
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
   my $xAxisLabel = $self->getXaxisLabel();
@@ -172,31 +173,32 @@ sub makeRPlotString {
   $statusLegend = $statusLegend ? $statusLegend : '';
   my $eventDurLegend = $self->getEventDurLegend();
   $eventDurLegend = $eventDurLegend ? $eventDurLegend : '';
-
+    
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
   my $hideXAxisLabels = $self->getHideXAxisLabels() ? 'TRUE' : 'FALSE';
-
+    
   my $xMax = $self->getDefaultXMax();
   my $xMin = $self->getDefaultXMin();
-
+    
   my $yAxisFoldInductionFromM = $self->getMakeYAxisFoldInduction();
-  
+    
   my $df = $self->getSplineDF;
   my $pointsLast = $self->getArePointsLast();
   my $rPostscript = $self->getRPostscript();
-
+    
   my $smoothLines = $self->getSmoothLines();
   my $smoothWithLoess = $self->getSmoothWithLoess();
-
+    
   my $splineApproxN = $self->getSplineApproxN();
-
+    
   my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
   my $prtcpnt_timeline = $self->getTimeline() ? 'TRUE' : 'FALSE';
-
+    
   my $colorVals = $self->getColorVals();
   $colorVals = $colorVals ? $colorVals : '';
   my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
+    
 
   my $colorLabels = $self->getColorLabels();
   $colorLabels = $colorLabels ? $colorLabels : '';
@@ -435,6 +437,7 @@ if ($prtcpnt_sum) {
      generic.df = completeDF(profile.df.full, \"VALUE\")
 
      who.df = generic.df[grepl(\"WHO Standards\", generic.df\$LEGEND),]
+
      profile.df.clean = generic.df[!(grepl(\"WHO Standards\", generic.df\$LEGEND)),]
      
   }else{
@@ -486,7 +489,7 @@ if (is.null(profile.df.full\$LEGEND)) {
   hideLegend = TRUE
 }
 
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND));
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -495,19 +498,20 @@ if ($prtcpnt_sum) {
     y.min = 0;
     y.scale = 1;
   } else {
-    #may have to change this from determining scale, to determine the order of magnitude of the scale
-    #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
-    y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-    y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-    y.scale = abs(round((y.max - y.temp) / 3));
-    if (y.scale < 1) {
-      y.scale = 1;
-    }
-    y.min = y.temp - (2.25 * y.scale);
-  }
+     #may have to change this from determining scale, to determine the order of magnitude of the scale
+     #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
+     y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
+     y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+     y.scale = abs(round((y.max - y.temp) / 3));
+     if (y.scale < 1) {
+       y.scale = 1;
+     }
+   y.min = y.temp - (2.25 * y.scale);
+ }
 } else {
   y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
   y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+  
 }
 
 if($isSVG) {
@@ -581,7 +585,7 @@ if(!$forceNoLines) {
         gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
       } else {
          
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line);
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
 
       }
     } else {
@@ -634,6 +638,9 @@ if ($hasColorVals) {
     gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
   }
 }
+
+
+
 
 if( $fillBelowLine) {
   hideLegend=TRUE;
@@ -772,11 +779,15 @@ if ($prtcpnt_sum) {
   }
 
 
+
+
   who_standards = exists(\"who.df\") && nrow(who.df)>0;
 
+
   if (who_standards){
+   
      gp = gp + geom_tooltip(data=who.df,aes(x=get(myX), y=VALUE, tooltip=LEGEND),real.geom = geom_line)
-  
+   
    }
 
 
@@ -820,13 +831,13 @@ if ($prtcpnt_sum) {
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
 
       if ($hasColorVals) {
-        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\")
+        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\");
       } else {
         gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
       }
 
       #create custom legend
-      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"))
+      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"));
     }
   }
 
@@ -840,7 +851,7 @@ if ($prtcpnt_sum) {
       }
     }
 
-  gp = gp + guides(color = guide_legend(order=1))
+    gp = gp + guides(color = guide_legend(order=1));
 
 }
 
@@ -1157,4 +1168,4 @@ sub new {
    return $self;
 }
 
-1
+1;
