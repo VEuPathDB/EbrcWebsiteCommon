@@ -77,8 +77,6 @@ sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = 
 sub getColorPointsOnly           { $_[0]->{'_color_points_only'             }}
 sub setColorPointsOnly           { $_[0]->{'_color_points_only'             } = $_[1]}
 
-
-
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -198,7 +196,7 @@ sub makeRPlotString {
   my $colorVals = $self->getColorVals();
   $colorVals = $colorVals ? $colorVals : '';
   my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
-    
+
 
   my $colorLabels = $self->getColorLabels();
   $colorLabels = $colorLabels ? $colorLabels : '';
