@@ -38,16 +38,17 @@ module.exports = function configure(additionalConfig) {
     externals: [
       resolveWdkClientExternal,
       {
-        'jquery'       : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'lodash'       : '_',
-        'react'        : 'React',
-        'react-dom'    : 'ReactDOM',
-        'react-router' : 'ReactRouter',
-        'prop-types'   : 'ReactPropTypes',
-        'flux'         : 'Flux',
-        'flux/utils'   : 'FluxUtils',
-        'natural-sort' : 'NaturalSort',
-        'rxjs'         : 'Rx'
+        'jquery'         : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
+        'lodash'         : '_',
+        'react'          : 'React',
+        'react-dom'      : 'ReactDOM',
+        'react-router'   : 'ReactRouter',
+        'prop-types'     : 'ReactPropTypes',
+        'flux'           : 'Flux',
+        'flux/utils'     : 'FluxUtils',
+        'natural-sort'   : 'NaturalSort',
+        'rxjs'           : 'Rx',
+        'rxjs/operators' : 'RxOperators',
       }
     ]
   }, additionalConfig]);
