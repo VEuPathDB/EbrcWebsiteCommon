@@ -75,6 +75,8 @@ class QuestionWizardController extends AbstractViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
+
+    this.childRef = React.createRef();
   }
 
   getStoreClass() {
@@ -735,7 +737,7 @@ class QuestionWizardController extends AbstractViewController {
     this.loadQuestion(this.props);
 
     // FIXME Figure out to render form element in `QuestionWizard` component
-    const $form = $(ReactDOM.findDOMNode(this)).closest('form');
+    const $form = $(this.childRef.current).closest('form');
     $form
       .on('submit', () => {
         $form.block()
@@ -756,7 +758,7 @@ class QuestionWizardController extends AbstractViewController {
 
   renderView() {
     return (
-      <div>
+      <React.Fragment>
         {this.state.error && (
           <Dialog open modal title="An error occurred" onClose={() => this.setState({ error: undefined })}>
             {Seq.from(this.state.error.stack.split('\n'))
@@ -772,6 +774,18 @@ class QuestionWizardController extends AbstractViewController {
             showHelpText={!this.props.isRevise}
           />
         )}
+      </React.Fragment>
+    )
+  }
+
+  render() {
+    return (
+      <div ref={this.childRef}>
+        {
+          this.isRenderDataLoaded()
+            ? this.renderView()
+            : this.renderDataLoading()
+         }
       </div>
     )
   }
