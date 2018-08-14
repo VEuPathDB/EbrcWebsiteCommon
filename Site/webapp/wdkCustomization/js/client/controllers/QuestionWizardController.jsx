@@ -781,11 +781,7 @@ class QuestionWizardController extends AbstractViewController {
   render() {
     return (
       <div ref={this.childRef}>
-        {
-          this.isRenderDataLoaded()
-            ? this.renderView()
-            : this.renderDataLoading()
-         }
+        {super.render()}
       </div>
     )
   }
