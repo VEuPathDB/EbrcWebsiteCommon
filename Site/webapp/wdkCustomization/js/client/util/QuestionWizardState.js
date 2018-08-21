@@ -1,8 +1,7 @@
 // Wizard state utility functions
 
 import { memoize, pick } from 'lodash';
-import { getTree } from 'wdk-client/AttributeFilterUtils';
-import { getLeaves } from 'wdk-client/TreeUtils';
+import { getFilterFieldsFromOntology } from 'wdk-client/AttributeFilterUtils';
 
 /**
  * Create initial wizard state object
@@ -12,7 +11,7 @@ export function createInitialState(question, recordClass, paramValues) {
   const paramUIState = question.parameters.reduce(function(uiState, param) {
     switch(param.type) {
       case 'FilterParamNew': {
-        const leaves = getLeaves(getTree(param.ontology), node => node.children);
+        const filterFields = getFilterFieldsFromOntology(param.ontology);
         const ontology = param.values == null
           ? param.ontology
           : param.ontology.map(entry =>
@@ -25,9 +24,9 @@ export function createInitialState(question, recordClass, paramValues) {
         return Object.assign(uiState, {
           [param.name]: {
             ontology: ontology,
-            activeOntologyTerm: leaves.length > 0 ? leaves[0].field.term : null,
-            hideFilterPanel: leaves.length === 1,
-            hideFieldPanel: leaves.length === 1,
+            activeOntologyTerm: filterFields.length > 0 ? filterFields[0].term : null,
+            hideFilterPanel: filterFields.length === 1,
+            hideFieldPanel: filterFields.length === 1,
             fieldStates: {},
             defaultMemberFieldState: {
               sort: {
