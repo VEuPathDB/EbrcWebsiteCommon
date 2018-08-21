@@ -405,8 +405,8 @@ if(useTooltips) {
 }
 
 if($hasColorVals) {
-  gp = gp + scale_fill_manual(values = $colorVals, breaks = names($colorVals))
-  gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals))
+  gp = gp + scale_fill_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
+  gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
 } else if (expandColors) {
  #!!!!!!!!!!!!!!!!! i believe the below will only work when length(NAME)/length(colorstring) divides evenly
   gp = gp + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
