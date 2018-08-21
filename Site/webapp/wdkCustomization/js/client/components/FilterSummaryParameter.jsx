@@ -39,11 +39,11 @@ function FilterParamSummary(props) {
             if (filter.type === 'multiFilter') {
               const field = props.parameter.ontology.find(field => field.term === filter.field);
               return (
-                <li className="multiFilter">
+                <li key={filter.field} className="multiFilter">
                   <sup className="multiFilter-operation">{filter.value.operation === 'union' ? 'ANY' : 'ALL'} {field.display} filters</sup>
                   <ul className="filter-items">
                     {filter.value.filters.map(leafFilter => (
-                      <li>
+                      <li key={leafFilter.field}>
                         <FilterParamFilter filter={leafFilter} containerFilter={filter} filters={filters} {...props} />
                       </li>
                     ))}
@@ -52,7 +52,7 @@ function FilterParamSummary(props) {
               );
             }
             return (
-              <li>
+              <li key={filter.field}>
                 <FilterParamFilter filter={filter} filters={filters} {...props} />
               </li>
             );
