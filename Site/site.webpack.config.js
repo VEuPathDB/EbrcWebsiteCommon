@@ -1,8 +1,6 @@
 var path = require('path');
-var projectHome = path.resolve(__dirname, '../..');
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
 var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
-var devtoolPathPrefixRe = new RegExp('^' + projectHome + '/([^/]+/){2}');
 
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
@@ -11,10 +9,6 @@ module.exports = function configure(additionalConfig) {
       path: path.join(process.cwd(), 'dist'),
       filename: '[name].bundle.js',
       chunkFilename: 'ebrc-chunk-[name].bundle.js',
-      devtoolModuleFilenameTemplate: function(info) {
-        // strip prefix from absolute path
-        return 'webpack:///' + info.absoluteResourcePath.replace(devtoolPathPrefixRe, './');
-      }
     },
     resolve: {
       alias: {
