@@ -1854,6 +1854,10 @@ form[name="questionForm"] .filter-param-tabs {
   /*margin-left: -20em;*/
 }
 
+/* STEP ANALYSIS USER NOTES */
+div.step-analysis-usernotes {
+  display:none;
+}
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
