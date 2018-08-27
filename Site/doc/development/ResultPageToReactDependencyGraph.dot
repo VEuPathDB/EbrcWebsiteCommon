@@ -95,6 +95,7 @@ digraph "Results Page React Transition Dependency Graph" {
   "Add Columns Pop-Up" -> "Checkbox Tree - DONE!"
   "Question Forms" -> "Strategy/Step Services"
   "Question Forms" -> "Basic Question Form"
+  "Question Forms" -> "Search Wizard"
   "Question Forms" -> "Custom Question Forms"
   "Custom Question Forms" -> "GenesByOrthologPattern"
   "Custom Question Forms" -> "Multi-Question Selector"
