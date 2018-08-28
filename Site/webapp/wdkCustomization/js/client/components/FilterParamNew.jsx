@@ -1,10 +1,11 @@
 import React from 'react';
 import { memoize } from 'lodash';
-import { Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
+import { IconAlt, Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
 import { paramPropTypes } from '../util/paramUtil';
 
 /**
- * FilterParamNew component
+ * FilterParamNew component, with some implementation details specific to a
+ * wizard interface.
  */
 export default class FilterParamNew extends React.PureComponent {
   constructor(props) {
@@ -66,6 +67,16 @@ export default class FilterParamNew extends React.PureComponent {
 
   render() {
     let { param, uiState } = this.props;
+    let displayName = param.filterDataTypeDisplayName || param.displayName;
+
+    if (this.props.uiState.ontology.length === 0) {
+      return (
+        <div style={{ fontSize: '1.4em', textAlign: 'center', margin: '1em' }}>
+          <IconAlt fa="warning"/> Data is not available for <strong>{displayName}</strong>. Previous selections may need to be adjusted to see data.
+        </div>
+      )
+    }
+
     let fields = this._getFieldMap(uiState.ontology);
     let filters = this._getFiltersFromValue(this.props.value);
     let activeField = fields.get(uiState.activeOntologyTerm);
@@ -77,7 +88,7 @@ export default class FilterParamNew extends React.PureComponent {
         {uiState.loading && <Loading/>}
         <ServerSideAttributeFilter
           autoFocus={this.props.autoFocus}
-          displayName={param.filterDataTypeDisplayName || param.displayName}
+          displayName={displayName}
 
           fields={fields}
           filters={filters}

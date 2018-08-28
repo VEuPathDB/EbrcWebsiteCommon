@@ -29,6 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       dataTableCollapsed: true,
       coverageCollapsed: true,
       showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
+      showSpecialGraph: this.props.rowData.has_special_gbrowse,
       graphId: graphIds[0],
       contXAxis: 'none',
       facet: 'none'
@@ -148,7 +149,7 @@ export default class DatasetGraph extends React.PureComponent {
     } } = this.props;
 
     let graphIds = graph_ids.split(/\s*,\s*/);
-    let { graphs, visibleGraphs, showLogScale, graphId, facet, contXAxis } = this.state;
+    let { graphs, visibleGraphs, showLogScale, graphId, facet, contXAxis, showSpecialGraph } = this.state;
 
     let baseUrl = this.makeBaseUrl(this.props);
     let baseUrlWithState = `${baseUrl}&id=${graphId}&wl=${showLogScale ? '1' : '0'}`;
@@ -156,6 +157,7 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
+    let specialImgUrl = dataTable.record.attributes.specialGbrowseUrl + '%1E';
     let dataset_link = this.makeDatasetUrl(this.props);
     let tutorial_link = this.makeTutorialUrl(this.props);
 
@@ -243,8 +245,27 @@ hook: HostResponseGraphs
             </CollapsibleSection>
           : null}
 
+	 {assay_type == 'Phenotype' && showSpecialGraph == 'true' ?
+            <CollapsibleSection
+              id={"Special"}
+              className="eupathdb-GbrowseContext"
+              headerContent="View in GBrowse"
+              isCollapsed={this.state.coverageCollapsed}
+              onCollapsedChange={this.handleCoverageCollapseChange}>
 
+              <div>
+                <a href={specialImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
+                  View in genome browser
+                </a>
+              </div>
+
+              <img width="700" src={specialImgUrl}/>
+              <br></br><br></br>
+            </CollapsibleSection>
+          : null}
         </div>
+
+
         <div className="eupathdb-DatasetGraphDetails">
           {this.props.dataTable &&
             <CollapsibleSection

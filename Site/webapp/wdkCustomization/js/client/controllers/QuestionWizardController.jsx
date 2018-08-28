@@ -21,7 +21,6 @@ import {
 import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
@@ -35,6 +34,7 @@ import { WdkStore } from 'wdk-client/Stores';
 import QuestionWizard from '../components/QuestionWizard';
 import {
   createInitialState,
+  createInitialParamState,
   getDefaultParamValues,
   setFilterPopupVisiblity,
   setFilterPopupPinned,
@@ -446,41 +446,14 @@ class QuestionWizardController extends AbstractViewController {
       paramValue,
       paramValues
     ).then(
-      // for each parameter returned, reset vocab/ontology and param value
+      // for each parameter returned, reset param value and state
       parameters =>
         Seq.from(parameters)
           .uniqBy(p => p.name)
-          .flatMap(param => {
-            switch(param.type) {
-              case 'FilterParamNew': {
-                // Return new state object with updates to param state and value
-                const ontology = param.values == null
-                  ? param.ontology
-                  : param.ontology.map(entry =>
-                    param.values[entry.term] == null
-                      ? entry
-                      : Object.assign(entry, {
-                        values: param.values[entry.term].join(' ')
-                      })
-                  );
-                return [
-                  set(['paramUIState', param.name, 'ontology'], ontology),
-                  set(['paramValues', param.name], param.defaultValue)
-                ]
-              }
-              case 'FlatVocabParam':
-              case 'EnumParam': {
-                return [
-                  set(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
-                  set(['paramValues', param.name], param.defaultValue)
-                ]
-              }
-              default: {
-                console.warn('Unable to handle unexpected param type `%o`.', param.type);
-                return [identity];
-              }
-            }
-          })
+          .flatMap(param => [
+            set(['paramUIState', param.name], createInitialParamState(param)),
+            set(['paramValues', param.name], param.defaultValue)
+          ])
           .reduce(ary(flow, 2), identity)
     ).then(updater =>
       // Then, invalidate ontologyTermSummaries for dependent FilterParamNew params

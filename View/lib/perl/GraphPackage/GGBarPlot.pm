@@ -229,6 +229,10 @@ sub makeRPlotString {
     }
   }
 
+  my $colorVals = $self->getColorVals();
+  $colorVals = $colorVals ? $colorVals : '';
+  my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
+
   if ($hasExtraLegend ) {
       $legendLabelsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($legendLabels, 'legend.label');
 
@@ -316,7 +320,7 @@ for(ii in 1:length(profile.files)) {
     stderr.df = read.table(stderr.files[ii], header=T, sep=\"\\t\");
     names(stderr.df)[names(stderr.df) == \"VALUE\"] <- \"STDERR\"
 
-    profile.df = merge(profile.df, stderr.df[, c(\"ELEMENT_ORDER\", \"STDERR\")], by=\"ELEMENT_ORDER\");
+    profile.df = merge(profile.df, stderr.df[, c(\"ELEMENT_ORDER\", \"STDERR\")], by=\"ELEMENT_ORDER\", all=TRUE);
   } else {
     profile.df\$STDERR = NA;
   }
@@ -354,6 +358,10 @@ if(is.null(profile.df.full\$LEGEND)) {
   hideLegend = TRUE;
 } else {
   profile.df.full\$LEGEND = as.factor(profile.df.full\$LEGEND);
+}
+
+if ($hasColorVals) {
+  hideLegend = FALSE
 }
 
 if ($isStack) {
@@ -396,7 +404,10 @@ if(useTooltips) {
    }
 }
 
-if(expandColors) {
+if($hasColorVals) {
+  gp = gp + scale_fill_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
+  gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
+} else if (expandColors) {
  #!!!!!!!!!!!!!!!!! i believe the below will only work when length(NAME)/length(colorstring) divides evenly
   gp = gp + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
   gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
