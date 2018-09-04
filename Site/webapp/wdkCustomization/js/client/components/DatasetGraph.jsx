@@ -157,7 +157,7 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
-    let specialImgUrl = dataTable.record.attributes.specialGbrowseUrl + '%1E';
+    let specialImgUrl = dataTable && dataTable.record.attributes.specialGbrowseUrl + '%1E';
     let dataset_link = this.makeDatasetUrl(this.props);
     let tutorial_link = this.makeTutorialUrl(this.props);
 
@@ -245,7 +245,7 @@ hook: HostResponseGraphs
             </CollapsibleSection>
           : null}
 
-	 {assay_type == 'Phenotype' && showSpecialGraph == 'true' ?
+          {assay_type == 'Phenotype' && showSpecialGraph == 'true' && specialImgUrl ?
             <CollapsibleSection
               id={"Special"}
               className="eupathdb-GbrowseContext"
