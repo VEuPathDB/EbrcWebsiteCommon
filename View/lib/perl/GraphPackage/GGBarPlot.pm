@@ -1,4 +1,3 @@
-
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot;
 
 use strict;
@@ -48,6 +47,8 @@ sub setCustomBreaks              { $_[0]->{'_custom_breaks'                 } = 
 sub getFacetNumCols              { $_[0]->{'_facet_num_cols'                }}
 sub setFacetNumCols              { $_[0]->{'_facet_num_cols'                } = $_[1]}
 
+sub getStrandDictionaryHash      { $_[0]->{'_strand_dictionary_hash'        }}
+
 sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
@@ -55,11 +56,11 @@ sub blankPlotPart {
 #--------------------------------------------------------------------------------
 
 sub new {
-  my $class = shift;
+  my ($class,$args,$profileSets) = @_;
 
-   my $self = $class->SUPER::new(@_);
+  my $self = $class->SUPER::new($args,$profileSets);
 
-   $self->setSpaceBetweenBars(0.3);
+  $self->setSpaceBetweenBars(0.3);
   $self->setAxisPadding(1.1);
   $self->setSkipStdErr(0);
    return $self;
@@ -426,7 +427,12 @@ if($hasColorVals) {
   }
 }
 
-gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1);
+if($isStack) {
+    gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1);
+} else {
+    gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1,position = position_dodge(.9));
+}
+
 
 barCount = length(profile.df.full\$NAME);
 
@@ -582,12 +588,13 @@ use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot );
 use strict;
 
 sub new {
-  my $class = shift; 
-  my $self = $class->SUPER::new(@_);
+  my ($class,$args,$profileSets) = @_;
+
+  my $self = $class->SUPER::new($args,$profileSets);
 
   my $id = $self->getId();
   my $wantLogged = $self->getWantLogged();
-
+  
   $self->setPartName('fpkm');
   $self->setYaxisLabel('FPKM');
   $self->setIsStacked(1);
@@ -605,6 +612,46 @@ sub new {
 
   return $self;
 }
+
+package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeqSenseAntisense;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeq );
+use strict;
+use Data::Dumper;
+
+sub new {
+    my ($class,$args,$profileSets) = @_;
+    my $self = $class->SUPER::new($args,$profileSets);
+
+    my $strandDictionaryHash = $self->getStrandDictionaryHash();
+    my @legendNames=();
+    for(my $i = 0; $i < scalar @$profileSets; $i++) {
+       my $profileSet = $profileSets->[$i];
+       my $profileSetName = $profileSet->getName();
+       my $strandType = "";
+       if ($profileSetName =~ /(\w*strande?d?)/) {
+	   $strandType = $1;
+       }
+       my $sample = $strandDictionaryHash->{$strandType};
+       if ($sample eq "sense") {
+	   $sample="  sense";
+	   if ($i == 1) {
+	       my $newProfileSets=[];
+	       $newProfileSets->[0] = $profileSets->[1];
+	       $newProfileSets->[1] = $profileSets->[0];
+	       $self->setProfileSets($newProfileSets);
+	   }
+       }
+       push @legendNames, $sample; 
+
+    }
+    
+    @legendNames = sort {$a cmp $b} @legendNames;
+    $self->setLegendLabels(\@legendNames);
+    $self->setIsStacked(0);
+
+    return $self;
+}
+
 
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::PairedEndRNASeqStacked;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeq);

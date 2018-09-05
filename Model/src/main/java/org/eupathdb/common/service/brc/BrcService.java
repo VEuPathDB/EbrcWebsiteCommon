@@ -26,7 +26,7 @@ import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.service.formatter.Keys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
-import org.gusdb.wdk.service.service.WdkService;
+import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
 /**
@@ -35,7 +35,7 @@ import org.json.JSONObject;
  * @author crisl-adm
  */
 @Path("/hpi")
-public class BrcService extends WdkService {
+public class BrcService extends AbstractWdkService {
 
   private static Logger LOG = Logger.getLogger(BrcService.class);
   private NewCookie authCookie;

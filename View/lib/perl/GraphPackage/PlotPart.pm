@@ -161,9 +161,12 @@ sub setSampleInfo                { $_[0]->{'_sample_info'                   } = 
 #----------------------------------------------------------------------------------------------
 
 sub new {
-  my $class = shift;
+  
+  my ($class,$args,$profileSets) = @_;
 
-  my $self = $class->SUPER::new(@_);
+  my $self = $class->SUPER::new($args);
+
+  $self->setProfileSets($profileSets);
 
   my $id = $self->getId();
 
