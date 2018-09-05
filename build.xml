@@ -180,7 +180,7 @@
       <isset property="optimizeWebAssets"/>
     </condition>
 
-    <exec executable="${projectsDir}/WDK/View/node_modules/.bin/webpack"
+    <exec executable="${projectsDir}/WDKClient/Build/node_modules/.bin/webpack"
       dir="${projectsDir}/${project}/${component}"
       failonerror="true"
       failifexecutionfails="true">

@@ -1,6 +1,6 @@
 var path = require('path');
 var wdkRoot = path.resolve(__dirname, '../../WDK/View');
-var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
+var baseConfig = require('../../WDKClient/Build/base.webpack.config');
 
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
@@ -17,9 +17,6 @@ module.exports = function configure(additionalConfig) {
         site: process.cwd() + '/webapp',
         'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client'
       }
-    },
-    resolveLoader: {
-      modules: [ 'node_modules', path.join(wdkRoot, 'node_modules') ]
     },
 
     // Map external libraries Wdk exposes so we can do things like:
