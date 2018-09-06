@@ -1,5 +1,7 @@
 package org.eupathdb.common.controller.action;
 
+import static org.gusdb.fgputil.FormatUtil.escapeHtml;
+
 import java.util.ArrayList;
 import java.util.Map;
 

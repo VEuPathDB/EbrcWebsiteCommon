@@ -111,7 +111,21 @@
       <groupId>org.semanticweb</groupId>
       <artifactId>HermiT</artifactId>
     </dependency>
-
+    
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>    
+     
   </dependencies>
+
+  <repositories>
+  
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  
+  </repositories>
 
 </project>
