@@ -81,13 +81,13 @@ public class ContactUsService extends AbstractWdkService {
     LOG.info("Handling 'contact us' request...");
         
     try {
-      final User user = this.getSessionUser();
-      final RequestData requestData = new HttpRequestData(request);
-      final WdkModel wdkModel = this.getWdkModel();
-      final String displayName = wdkModel.getDisplayName();
+      User user = this.getSessionUser();
+      RequestData requestData = new HttpRequestData(request);
+      WdkModel wdkModel = this.getWdkModel();
+      String displayName = wdkModel.getDisplayName();
             
-      final JSONObject jsonBody = new JSONObject(body);
-      final ContactUsParams contactUsParams = parseContactParams(jsonBody);
+      JSONObject jsonBody = new JSONObject(body);
+      ContactUsParams contactUsParams = parseContactParams(jsonBody);
       
       createAndSendEmail(
           contactUsParams,
@@ -109,25 +109,25 @@ public class ContactUsService extends AbstractWdkService {
   }
   
   public static ContactUsParams parseContactParams(JSONObject jsonBody) {
-    final String message = jsonBody.getString("message");
+    String message = jsonBody.getString("message");
     
-    final String subject = getStringOrDefault(jsonBody, "subject", "");
-    final String reporterEmail = getStringOrDefault(jsonBody, "reporterEmail", "");
+    String subject = getStringOrDefault(jsonBody, "subject", "");
+    String reporterEmail = getStringOrDefault(jsonBody, "reporterEmail", "");
     
-    final JSONArray ccEmailsJson = getJsonArrayOrDefault(
+    JSONArray ccEmailsJson = getJsonArrayOrDefault(
         jsonBody, 
         "ccEmails", 
         new JSONArray()
     );
-    final String[] ccEmails = toStringArray(ccEmailsJson);
+    String[] ccEmails = toStringArray(ccEmailsJson);
         
-    final JSONArray attachmentIdsJson = getJsonArrayOrDefault(
+    JSONArray attachmentIdsJson = getJsonArrayOrDefault(
         jsonBody, 
         "ccEmails", 
         new JSONArray()
     );
-    final String[] attachmentIds = toStringArray(attachmentIdsJson);
-    final DataHandler[] attachments = fetchAttachments(attachmentIds);
+    String[] attachmentIds = toStringArray(attachmentIdsJson);
+    DataHandler[] attachments = fetchAttachments(attachmentIds);
     
     return new ContactUsParams(
         subject,

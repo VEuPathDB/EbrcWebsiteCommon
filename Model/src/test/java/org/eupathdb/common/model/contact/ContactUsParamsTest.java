@@ -10,13 +10,13 @@ public class ContactUsParamsTest {
 
   @Test
   public void testConstructor() {
-    final String subject = "My brain hurts!";
-    final String reporterEmail = "johndoe@aol.com";
-    final String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
-    final String message = "If you could make my brain stop hurting, that'd be greeeeat.";
-    final DataHandler[] attachments = new DataHandler[] {};
+    String subject = "My brain hurts!";
+    String reporterEmail = "johndoe@aol.com";
+    String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
+    String message = "If you could make my brain stop hurting, that'd be greeeeat.";
+    DataHandler[] attachments = new DataHandler[] {};
     
-    final ContactUsParams params = new ContactUsParams(
+    ContactUsParams params = new ContactUsParams(
         subject,
         reporterEmail,
         ccEmails,

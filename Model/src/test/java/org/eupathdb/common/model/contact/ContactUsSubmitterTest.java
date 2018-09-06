@@ -18,13 +18,13 @@ public class ContactUsSubmitterTest {
 
   @Test
   public void testCreateAndSendEmail() throws WdkModelException {
-    final String subject = "My brain hurts!";
-    final String reporterEmail = "johndoe@aol.com";
-    final String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
-    final String message = "If you could make my brain stop hurting, that'd be greeeeat.";
-    final DataHandler[] attachments = new DataHandler[] {};
+    String subject = "My brain hurts!";
+    String reporterEmail = "johndoe@aol.com";
+    String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
+    String message = "If you could make my brain stop hurting, that'd be greeeeat.";
+    DataHandler[] attachments = new DataHandler[] {};
     
-    final ContactUsParams params = new ContactUsParams(
+    ContactUsParams params = new ContactUsParams(
         subject,
         reporterEmail,
         ccEmails,
@@ -32,12 +32,12 @@ public class ContactUsSubmitterTest {
         attachments
     );
     
-    final User user = mock(User.class);
-    final RequestData requestData = mock(RequestData.class);
-    final WdkModel wdkModel = mock(WdkModel.class);
-    final ModelConfig modelConfig = mock(ModelConfig.class);
-    final Map<String, String> wdkModelProperties = new HashMap<String, String>();
-    final EmailSender emailSender = mock(EmailSender.class);
+    User user = mock(User.class);
+    RequestData requestData = mock(RequestData.class);
+    WdkModel wdkModel = mock(WdkModel.class);
+    ModelConfig modelConfig = mock(ModelConfig.class);
+    Map<String, String> wdkModelProperties = new HashMap<String, String>();
+    EmailSender emailSender = mock(EmailSender.class);
         
     when(user.getUserId()).thenReturn(42l);
     

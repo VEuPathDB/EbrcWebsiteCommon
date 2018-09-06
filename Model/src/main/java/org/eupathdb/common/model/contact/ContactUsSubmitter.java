@@ -19,19 +19,19 @@ public class ContactUsSubmitter {
       RequestData requestData,
       WdkModel wdkModel,
       EmailSender emailSender) throws WdkModelException {
-    final ModelConfig modelConfig = wdkModel.getModelConfig();
+    ModelConfig modelConfig = wdkModel.getModelConfig();
         
-    final String supportEmail = modelConfig.getSupportEmail();
-    final String uid = Long.toString(user.getUserId());
-    final String version = wdkModel.getBuildNumber();
-    final String website = wdkModel.getDisplayName();
+    String supportEmail = modelConfig.getSupportEmail();
+    String uid = Long.toString(user.getUserId());
+    String version = wdkModel.getBuildNumber();
+    String website = wdkModel.getDisplayName();
     
-    final String replyEmail = params.reporterEmail.isEmpty() 
+    String replyEmail = params.reporterEmail.isEmpty() 
         ? supportEmail 
         : params.reporterEmail;
-    final String ccField = join(params.ccEmails, ", ");
+    String ccField = join(params.ccEmails, ", ");
     
-    final String metaInfo =
+    String metaInfo =
         "ReplyTo: " + replyEmail + "\n" +
         "CC: " + ccField + "\n" +
         "Privacy preferences: " + "\n" +
@@ -40,20 +40,20 @@ public class ContactUsSubmitter {
         "Referrer page: " + requestData.getReferrer() + "\n" +
         "WDK Model version: " + version;
 
-    final String redmineContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
+    String redmineContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
         " response, that includes your message for your records, to let you" +
         " know that we have received your email and will get back to you as" +
         " soon as possible. Thanks so much for contacting us!\n\nThis was" +
         " your message:\n\n---------------------\n" + params.message + 
         "\n---------------------";
 
-    final String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + 
+    String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + 
         website + "\n" + "\n" +
         metaInfo + "\n" + 
         "Client IP Address: " + requestData.getIpAddress() + "\n" +
         "WDK Host: " + requestData.getAppHostName() + " (" + requestData.getAppHostAddress() + ")\n";
     
-    final String smtpServer = modelConfig.getSmtpServer();
+    String smtpServer = modelConfig.getSmtpServer();
     
     // Send auto-reply
     emailSender.sendEmail(
