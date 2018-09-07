@@ -61,11 +61,11 @@ export let withStore = (getStateFromStore = identity) => (TargetComponent) => {
     }
 
     getStateFromStore(props) {
-      return getStateFromStore(this.context.store.getState(), props);
+      return getStateFromStore(this.context.viewStore.getState(), props);
     }
 
     componentDidMount() {
-      this.subscription = this.context.store.addListener(() => {
+      this.subscription = this.context.viewStore.addListener(() => {
         this.setState(this.getStateFromStore(this.props));
       })
     }
@@ -88,7 +88,7 @@ export let withStore = (getStateFromStore = identity) => (TargetComponent) => {
   }
 
   StoreProvider.contextTypes = {
-    store: PropTypes.object.isRequired
+    viewStore: PropTypes.object.isRequired
   };
 
   return StoreProvider;
