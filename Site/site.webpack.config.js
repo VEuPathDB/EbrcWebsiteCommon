@@ -29,17 +29,22 @@ module.exports = function configure(additionalConfig) {
     externals: [
       resolveWdkClientExternal,
       {
-        'jquery'         : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'lodash'         : '_',
-        'react'          : 'React',
-        'react-dom'      : 'ReactDOM',
-        'react-router'   : 'ReactRouter',
-        'prop-types'     : 'ReactPropTypes',
-        'flux'           : 'Flux',
-        'flux/utils'     : 'FluxUtils',
-        'natural-sort'   : 'NaturalSort',
-        'rxjs'           : 'Rx',
-        'rxjs/operators' : 'RxOperators',
+        'jquery'           : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
+        'flux'             : 'Flux',
+        'flux/utils'       : 'FluxUtils',
+        'history'          : 'HistoryJS',
+        'lodash'           : '_',
+        'lodash/fp'        : '_fp',
+        'natural-sort'     : 'NaturalSort',
+        'prop-types'       : 'ReactPropTypes',
+        'react'            : 'React',
+        'react-dom'        : 'ReactDOM',
+        'react-redux'      : 'ReactRedux',
+        'react-router'     : 'ReactRouter',
+        'redux'            : 'Redux',
+        'redux-observable' : 'ReduxObservable',
+        'rxjs'             : 'Rx',
+        'rxjs/operators'   : 'RxOperators',
       }
     ]
   }, additionalConfig]);
