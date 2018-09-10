@@ -1,6 +1,8 @@
 import { compose, curryN, update } from 'lodash/fp';
 import { SITE_CONFIG_LOADED, BASKETS_LOADED, QUICK_SEARCH_LOADED } from './actioncreators/GlobalActionCreators';
 import {getSearchMenuCategoryTree} from './util/category';
+import { selectReporterComponent } from './util/reporter';
+
 
 /** Compose reducer functions from right to left */
 const composeReducers = (...reducers) => (state, action) =>
@@ -9,7 +11,8 @@ const composeReducers = (...reducers) => (state, action) =>
 const composeReducerWith = curryN(2, composeReducers);
 
 export default compose(
-  update('globalData.reduce', composeReducerWith(ebrcGlobalData))
+  update('globalData.reduce', composeReducerWith(ebrcGlobalData)),
+  update('downloadForm', module => ({ ...module, reduce: module.makeReducer(selectReporterComponent) }))
 );
 
 function ebrcGlobalData(state, { type, payload }) {
