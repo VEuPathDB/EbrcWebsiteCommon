@@ -21,6 +21,7 @@ import * as eupathStoreWrappers from './store-wrappers';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
 import * as EbrcRoutes from './routes';
+import ebrcWrapStoreModules from './wrapStoreModules';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -108,6 +109,7 @@ export function initialize(options = {}) {
     storeWrappers,
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
+    wrapStoreModules = identity,
   } = options;
 
   const restOptions = omit(options, [
@@ -126,6 +128,7 @@ export function initialize(options = {}) {
   const context = initializeWdk({
     wrapRoutes: flow(EbrcRoutes.wrapRoutes, wrapRoutes),
     storeWrappers: mergeWrapperObjects(storeWrappers, eupathStoreWrappers),
+    wrapStoreModules: flow(ebrcWrapStoreModules, wrapStoreModules),
     rootUrl,
     rootElement,
     endpoint,
@@ -138,15 +141,20 @@ export function initialize(options = {}) {
   context.dispatchAction(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
     quickSearchReferences: quickSearches,
   })));
+  context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
+    quickSearchReferences: quickSearches,
+  })));
 
   // XXX Move calls to dispatchAction to controller override?
 
   // load quick search data
   if (quickSearches) {
     context.dispatchAction(loadQuickSearches(quickSearches));
+    context.store.dispatch(loadQuickSearches(quickSearches));
   }
 
   context.dispatchAction(loadBasketCounts());
+  context.store.dispatch(loadBasketCounts());
 
   return context;
 }
