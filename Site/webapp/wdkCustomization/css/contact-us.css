@@ -1,0 +1,20 @@
+.contact-us-base {
+  float: left;
+  width: 100%;
+  padding: 12px 0;
+  position: relative;
+  min-width: 900px;
+  margin: 6px 11px 6px 12px;
+}
+
+.contact-us-contents {
+  padding: 1em;
+}
+
+.contact-us .instructions {
+  text-align: left;
+}
+
+.contact-us .field td {
+  vertical-align: top;
+}

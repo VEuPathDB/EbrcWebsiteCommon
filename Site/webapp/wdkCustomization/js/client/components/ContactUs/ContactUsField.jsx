@@ -1,6 +1,6 @@
 const ContactUsField = ({ label, inputElement }) => (
-  <tr>
-    <td style={{ verticalAlign: 'top' }}>
+  <tr className="field">
+    <td>
       <b>{label}</b>
     </td>
     <td>

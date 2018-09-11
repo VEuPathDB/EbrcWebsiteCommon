@@ -1,5 +1,5 @@
 const ContactUsInstructions = () => (
-  <div style={{ textAlign: 'left' }}>
+  <div className="instructions">
     <em>If you are reporting a problem,</em> please include the following if possible:
     <ul>
       <li>The URL of the offending page.</li>

@@ -97,14 +97,11 @@ public class ContactUsService extends AbstractWdkService {
           Utilities::sendEmail
       );  
       
-      return Response.ok(
-          "Your message has been sent to the " + displayName + " team.\n" +
-          "For your records, a copy has been sent to your email." 
-      ).build();
+      return Response.ok().build();
     } 
     catch (Exception ex) {
       LOG.error("Error while emailing 'contact us' message", ex);
-      throw new InternalServerErrorException("There was an error, and your message may not have been sent.\nPlease try resubmitting.");      
+      throw new InternalServerErrorException(ex);      
     }
   }
   

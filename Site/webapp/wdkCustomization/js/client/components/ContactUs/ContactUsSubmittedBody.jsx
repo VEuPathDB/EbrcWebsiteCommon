@@ -1,7 +1,7 @@
-const ContactUsSubmittedBody = ({ responseMessage }) => (
-  <div style={{ marginTop: '1em' }}>
+const ContactUsSubmittedBody = ({ message }) => (
+  <div className="submitted-body">
     {
-      responseMessage
+      message
         .split('\n')
         .map(line => <p key={line}>{line}</p>)
     }
