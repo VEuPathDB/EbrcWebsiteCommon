@@ -1,6 +1,5 @@
 import { merge } from 'rxjs';
 import { filter, mergeMap } from 'rxjs/operators';
-import { formFields } from '../selectors/ContactUsSelectors';
 
 import { WdkStore } from 'wdk-client/Stores';
 
@@ -12,6 +11,8 @@ import {
   SUBMIT_DETAILS,
   FINISH_REQUEST
 } from '../actioncreators/ContactUsActionCreators';
+
+import { parsedFormFields } from '../selectors/ContactUsSelectors';
 
 const CONTACT_US_ENDPOINT = '/contact-us';
 
@@ -90,7 +91,7 @@ export default class ContactUsStore extends WdkStore {
         const response = await jsonPostRequest(
           services.wdkService.serviceUrl,
           CONTACT_US_ENDPOINT,
-          formFields(services.getState())
+          parsedFormFields(services.getState())
         );
   
         return { 

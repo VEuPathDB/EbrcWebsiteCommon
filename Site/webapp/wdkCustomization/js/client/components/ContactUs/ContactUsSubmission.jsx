@@ -2,9 +2,9 @@ import { Fragment } from 'react';
 
 import {
   ContactUsSubmissionHeader,
-  ContactUsSubmissionBody,
   ContactUsPreamble,
-  ContactUsForm
+  ContactUsForm,
+  SupportFormBody
 } from '../../components';
 
 const ContactUsSubmission = ({
@@ -25,7 +25,7 @@ const ContactUsSubmission = ({
 }) => (
   <Fragment>
     <ContactUsSubmissionHeader />
-    <ContactUsSubmissionBody>
+    <SupportFormBody>
       <ContactUsPreamble />
       <ContactUsForm
         submissionFailed={submissionFailed}
@@ -43,7 +43,7 @@ const ContactUsSubmission = ({
         messageValidity={messageValidity}
         submitDetails={submitDetails}
       />
-    </ContactUsSubmissionBody>
+    </SupportFormBody>
   </Fragment>
 );
 

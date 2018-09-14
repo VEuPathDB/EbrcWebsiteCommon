@@ -1,5 +1,5 @@
 const ContactUsSubmittedBody = ({ message }) => (
-  <div className="submitted-body">
+  <div>
     {
       message
         .split('\n')
