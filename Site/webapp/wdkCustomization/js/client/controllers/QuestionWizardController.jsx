@@ -24,7 +24,7 @@ import React from 'react';
 
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
-import { AbstractViewController } from 'wdk-client/Controllers';
+import { ViewController } from 'wdk-client/Controllers';
 import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
@@ -63,7 +63,7 @@ const natSortComparator = natsort();
  * FIXME Move state management into a Store. As-is, there are potential race
  * conditions due to `setState()` being async.
  */
-class QuestionWizardController extends AbstractViewController {
+class QuestionWizardController extends ViewController {
 
   constructor(props) {
     super(props);
