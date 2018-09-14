@@ -8,8 +8,12 @@ import {
 } from '../../components';
 
 const ContactUsSubmission = ({
-  submissionStatus,
+  submissionFailed,
   responseMessage,
+  subjectValue,
+  reporterEmailValue,
+  ccEmailsValue,
+  messageValue,
   updateSubject,
   updateReporterEmail,
   updateCcEmails,
@@ -24,8 +28,12 @@ const ContactUsSubmission = ({
     <ContactUsSubmissionBody>
       <ContactUsPreamble />
       <ContactUsForm
-        submissionStatus={submissionStatus}
+        submissionFailed={submissionFailed}
         responseMessage={responseMessage}
+        subjectValue={subjectValue}
+        reporterEmailValue={reporterEmailValue}
+        ccEmailsValue={ccEmailsValue}
+        messageValue={messageValue}
         updateSubject={updateSubject}
         updateReporterEmail={updateReporterEmail}
         updateCcEmails={updateCcEmails}

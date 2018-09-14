@@ -22,7 +22,7 @@ export const SUBMISSION_FAILED = 'SUBMISSION_FAILED';
 const stateShape = {
   subject: '',
   reporterEmail: '',
-  ccEmails: [],
+  ccEmails: '',
   message: '',
   attachmentIds: [],
   submissionStatus: SUBMISSION_PENDING,

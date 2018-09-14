@@ -1,11 +1,7 @@
 const ContactUsBase = ({ children }) => (
-  <div id="contentwrapper">
-    <div id="contentcolumn2">
-      <div className="innertube">
-        <div style={{ padding: '1em' }}>
-          {children}
-        </div>
-      </div>
+  <div className="contact-us-base">
+    <div className="contact-us-contents">
+      {children}
     </div>
   </div>
 );

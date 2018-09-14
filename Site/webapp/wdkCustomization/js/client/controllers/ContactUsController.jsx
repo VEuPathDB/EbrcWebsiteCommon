@@ -14,17 +14,21 @@ import {
 } from '../components';
 
 import {
-  submissionStatus, 
+  submissionFailed,
+  submissionSuccessful, 
   responseMessage, 
+  subjectValue,
+  reporterEmailValue,
+  ccEmailsValue,
+  messageValue,
   messageValidity,
   reporterEmailValidity,
   ccEmailsValidity,
+  displayName,
   title
 } from '../selectors/ContactUsSelectors';
 
-import ContactUsStore, {
-  SUBMISSION_SUCCESSFUL
-} from '../stores/ContactUsStore';
+import ContactUsStore from '../stores/ContactUsStore';
 
 export default class ContactUsController extends WdkPageController {
   getStoreClass() {
@@ -35,7 +39,7 @@ export default class ContactUsController extends WdkPageController {
     return {
       updateSubject: flow(targetValue, updateField('subject')),
       updateReporterEmail: flow(targetValue, updateField('reporterEmail')),
-      updateCcEmails: flow(targetValue, parseCcField, updateField('ccEmails')),
+      updateCcEmails: flow(targetValue, updateField('ccEmails')),
       updateMessage: flow(targetValue, updateField('message')),
       submitDetails
     };
@@ -45,11 +49,17 @@ export default class ContactUsController extends WdkPageController {
     const state = this.store.getState();
 
     return {
-      submissionStatus: submissionStatus(state),
+      displayName: displayName(state),
+      submissionFailed: submissionFailed(state),
+      submissionSuccessful: submissionSuccessful(state),
       responseMessage: responseMessage(state),
-      messageValidity: messageValidity(state),
+      subjectValue: subjectValue(state),
+      reporterEmailValue: reporterEmailValue(state),
+      ccEmailsValue: ccEmailsValue(state),
+      messageValue: messageValue(state),
       reporterEmailValidity: reporterEmailValidity(state),
-      ccEmailsValidity: ccEmailsValidity(state)
+      ccEmailsValidity: ccEmailsValidity(state),
+      messageValidity: messageValidity(state)
     };
   }
 
@@ -59,16 +69,20 @@ export default class ContactUsController extends WdkPageController {
 
   renderView() {
     const {
-      showInstructions,
-      submissionStatus,
+      displayName,
+      submissionFailed,
+      submissionSuccessful,
       responseMessage,
+      subjectValue,
+      reporterEmailValue,
+      ccEmailsValue,
+      messageValue,
       reporterEmailValidity,
       ccEmailsValidity,
       messageValidity
     } = this.state;
 
-    const { 
-      toggleInstructions,
+    const {
       updateSubject,
       updateReporterEmail,
       updateCcEmails,
@@ -79,15 +93,20 @@ export default class ContactUsController extends WdkPageController {
     return (
       <ContactUsBase>
         {
-          submissionStatus === SUBMISSION_SUCCESSFUL
+          submissionSuccessful
             ? <ContactUsFinished
-                responseMessage={responseMessage} 
+                message={
+                  `Your message has been sent to the ${displayName} team.
+                  For your records, a copy has been sent to your email.`
+                } 
               />
             : <ContactUsSubmission
-                submissionStatus={submissionStatus}
+                submissionFailed={submissionFailed}
                 responseMessage={responseMessage}
-                showInstructions={showInstructions}
-                toggleInstructions={toggleInstructions}
+                subjectValue={subjectValue}
+                reporterEmailValue={reporterEmailValue}
+                ccEmailsValue={ccEmailsValue}
+                messageValue={messageValue}
                 updateSubject={updateSubject}
                 updateReporterEmail={updateReporterEmail}
                 updateCcEmails={updateCcEmails}
@@ -102,10 +121,5 @@ export default class ContactUsController extends WdkPageController {
     );
   }
 }
-
-const parseCcField = ccField => ccField
-  .split(/[;,]/)
-  .map(token => token.trim())
-  .filter(token => token.length > 0);
 
 const targetValue = ({ target: { value } }) => value;

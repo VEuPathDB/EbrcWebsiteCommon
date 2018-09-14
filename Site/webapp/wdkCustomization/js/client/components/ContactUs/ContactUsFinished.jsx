@@ -5,10 +5,10 @@ import {
   ContactUsSubmittedBody
 } from '../../components';
 
-const ContactUsFinished = ({ responseMessage }) => (
+const ContactUsFinished = ({ message }) => (
   <Fragment>
     <ContactUsFinishedHeader />
-    <ContactUsSubmittedBody responseMessage={responseMessage} />
+    <ContactUsSubmittedBody message={message} />
   </Fragment>
 );
 

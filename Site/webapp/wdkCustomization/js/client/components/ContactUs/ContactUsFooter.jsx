@@ -3,12 +3,8 @@ import {
   ContactUsError
 } from '../../components';
 
-import {
-  SUBMISSION_FAILED
-} from '../../stores/ContactUsStore';
-
 const ContactUsFooter = ({
-  submissionStatus,
+  submissionFailed,
   responseMessage
 }) => (
   <tr>
@@ -19,7 +15,7 @@ const ContactUsFooter = ({
         type="submit" 
       />
       {
-        submissionStatus === SUBMISSION_FAILED &&
+        submissionFailed &&
         <ContactUsError 
           responseMessage={
             'An error occurred when we tried to submit your message. Please try to resubmit:\n' + responseMessage

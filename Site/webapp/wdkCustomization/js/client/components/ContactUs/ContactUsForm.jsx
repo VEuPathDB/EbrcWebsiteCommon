@@ -1,3 +1,5 @@
+import { invoke } from 'lodash';
+
 import { Component, createRef } from 'react';
 
 import {
@@ -29,15 +31,19 @@ class ContactUsForm extends Component {
       messageValidity
     } = this.props;
 
-    this.reporterEmailRef.current.setCustomValidity(reporterEmailValidity);
-    this.ccEmailsRef.current.setCustomValidity(ccEmailsValidity);
-    this.messageRef.current.setCustomValidity(messageValidity);
+    invoke(this.reporterEmailRef, 'current.setCustomValidity', reporterEmailValidity);
+    invoke(this.ccEmailsRef, 'current.setCustomValidity', ccEmailsValidity);
+    invoke(this.messageRef, 'current.setCustomValidity', messageValidity);
   }
 
   render() {
     const {
-      submissionStatus,
+      submissionFailed,
       responseMessage,
+      subjectValue,
+      reporterEmailValue,
+      ccEmailsValue,
+      messageValue,
       updateSubject,
       updateReporterEmail,
       updateCcEmails,
@@ -54,22 +60,54 @@ class ContactUsForm extends Component {
           <tbody>
               <ContactUsField
                 label="Subject:"
-                inputElement={<input type="text" onInput={updateSubject} size={81} />}
+                inputElement={
+                  <input 
+                    type="text" 
+                    value={subjectValue}
+                    onChange={updateSubject} 
+                    size={81} 
+                  />
+                }
               />
               <ContactUsField
                 label="Your email address:"
-                inputElement={<input ref={this.reporterEmailRef} type="text" onInput={updateReporterEmail} size={81} />}
+                inputElement={
+                  <input 
+                    ref={this.reporterEmailRef} 
+                    type="text" 
+                    value={reporterEmailValue}
+                    onChange={updateReporterEmail} 
+                    size={81} 
+                  />
+                }
               />
               <ContactUsField
                 label="Cc addresses:"
-                inputElement={<input ref={this.ccEmailsRef} type="text" onInput={updateCcEmails} size={81} />}
+                inputElement={
+                  <input 
+                    ref={this.ccEmailsRef} 
+                    type="text" 
+                    value={ccEmailsValue}
+                    onChange={updateCcEmails} 
+                    size={81} 
+                  />
+                }
               />
               <ContactUsField
                 label="Message:"
-                inputElement={<textarea ref={this.messageRef} onInput={updateMessage} rows={8} cols={75}></textarea>}
+                inputElement={
+                  <textarea 
+                    ref={this.messageRef} 
+                    onChange={updateMessage} 
+                    rows={8} 
+                    cols={75}
+                    value={messageValue}
+                  >
+                  </textarea>
+                }
               />
               <ContactUsFooter 
-                submissionStatus={submissionStatus}
+                submissionFailed={submissionFailed}
                 responseMessage={responseMessage}
               />
           </tbody>

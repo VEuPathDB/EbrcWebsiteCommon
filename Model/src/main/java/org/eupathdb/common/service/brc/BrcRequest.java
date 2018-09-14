@@ -3,7 +3,7 @@ package org.eupathdb.common.service.brc;
 import java.io.IOException;
 import java.util.Set;
 
-import org.gusdb.wdk.service.formatter.Keys;
+import org.gusdb.wdk.service.formatter.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,8 +60,8 @@ public class BrcRequest {
    */
   public JSONObject getDatasetJson() {
     return new JSONObject()
-        .put(Keys.SOURCE_TYPE, Keys.ID_LIST)
-        .put(Keys.SOURCE_CONTENT, new JSONObject().put(Keys.IDS, ids));
+        .put(JsonKeys.SOURCE_TYPE, JsonKeys.ID_LIST)
+        .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(JsonKeys.IDS, ids));
   }
 
   /**
