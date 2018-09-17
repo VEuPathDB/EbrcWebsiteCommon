@@ -24,13 +24,19 @@ export const submissionSuccessful = flow(
   status => status === SUBMISSION_SUCCESSFUL
 );
 
-export const messageValidity = ({ message }) => message.length === 0 
-  ? 'Please provide a message for our team.' 
-  : '';
+export const reporterEmailValidity = flow(
+  reporterEmailValue,
+  reporterEmail => reporterEmail.length > 0 && !EMAIL_REGEX.test(reporterEmail)
+    ? 'Please provide a valid email address where we can reach you.' 
+    : ''
+);
 
-export const reporterEmailValidity = ({ reporterEmail }) => reporterEmail.length > 0 && !EMAIL_REGEX.test(reporterEmail) 
-  ? 'Please provide a valid email address where we can reach you.' 
-  : '';
+export const messageValidity = flow(
+  messageValue,
+  message => message.length === 0
+    ? 'Please provide a message for our team.' 
+    : ''
+);
 
 export const parsedCcEmails = flow(
   ccEmailsValue,
@@ -68,7 +74,7 @@ export const title = flow(
     : 'Help'
 );
 
-export const formFields = state => ({
+export const parsedFormFields = state => ({
   subject: subjectValue(state),
   reporterEmail: reporterEmailValue(state),
   ccEmails: parsedCcEmails(state),

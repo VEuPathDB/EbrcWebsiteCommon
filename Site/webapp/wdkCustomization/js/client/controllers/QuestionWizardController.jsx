@@ -706,6 +706,10 @@ class QuestionWizardController extends ViewController {
     return this.state.question != null;
   }
 
+  isRenderDataLoadError() {
+    return this.state.question == null && this.state.error != null;
+  }
+
   componentDidMount() {
     this.loadQuestion(this.props);
 

@@ -1,0 +1,44 @@
+.support-form-base {
+  float: left;
+  width: 100%;
+  padding: 12px 0;
+  position: relative;
+  min-width: 900px;
+  margin: 6px 11px 6px 12px;
+
+  .support-form-contents {
+    padding: 1em;
+
+    .support-form-body {
+      h4 {
+        text-align: center;
+        margin: 1em 0em;
+      }
+
+      ul {
+        list-style: disc outside none;
+        margin: 1em 0em;
+        padding: 0em 2em;
+        line-height: 1.2;
+      }
+
+      table {
+        margin: 2em auto;
+      }
+
+      .center {
+        text-align: center;
+      }
+      
+      .instructions {
+        text-align: left;
+      }
+
+      .field {
+        td {
+          vertical-align: top;
+        }
+      } 
+    }
+  }
+}

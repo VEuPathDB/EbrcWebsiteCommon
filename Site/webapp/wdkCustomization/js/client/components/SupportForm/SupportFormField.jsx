@@ -1,4 +1,4 @@
-const ContactUsField = ({ label, inputElement }) => (
+const SupportFormField = ({ label, inputElement }) => (
   <tr className="field">
     <td>
       <b>{label}</b>
@@ -9,4 +9,4 @@ const ContactUsField = ({ label, inputElement }) => (
   </tr>
 );
 
-export default ContactUsField;
+export default SupportFormField;

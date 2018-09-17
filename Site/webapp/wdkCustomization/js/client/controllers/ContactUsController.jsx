@@ -8,9 +8,9 @@ import {
 } from  '../actioncreators/ContactUsActionCreators';
 
 import {
-  ContactUsBase,
+  ContactUsFinished,
   ContactUsSubmission,
-  ContactUsFinished
+  SupportFormBase
 } from '../components';
 
 import {
@@ -91,7 +91,7 @@ export default class ContactUsController extends WdkPageController {
     } = this.eventHandlers;
 
     return (
-      <ContactUsBase>
+      <SupportFormBase>
         {
           submissionSuccessful
             ? <ContactUsFinished
@@ -117,7 +117,7 @@ export default class ContactUsController extends WdkPageController {
                 submitDetails={submitDetails}
               />
         }
-      </ContactUsBase>
+      </SupportFormBase>
     );
   }
 }
