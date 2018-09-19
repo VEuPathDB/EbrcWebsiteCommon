@@ -111,7 +111,7 @@ const DatasetGraphTable = pure(function DatasetGraphTable(props) {
 });
 
 function References(props, context) {
-  let {questions, recordClasses, siteConfig} = context.store.getState().globalData || {};
+  let {questions, recordClasses, siteConfig} = context.viewStore.getState().globalData || {};
   if (questions == null || recordClasses == null || siteConfig == null) {
     return <noscript/>;
   }
@@ -135,7 +135,7 @@ function References(props, context) {
 }
 
 References.contextTypes = {
-  store: PropTypes.object.isRequired
+  viewStore: PropTypes.object.isRequired
 };
 
 export function RecordTable(props) {
