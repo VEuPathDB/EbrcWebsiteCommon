@@ -86,6 +86,7 @@ sub makeRPlotString {
   };
 
   if($@) {
+    print STDERR $@;
     return $blankGraph;
   }
 

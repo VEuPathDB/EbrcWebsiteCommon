@@ -65,7 +65,7 @@ sub run {
 
 	 my $pkg          = $Cgi->param('project_id');
 	 my $type           = $Cgi->param('type');
-	 $pkg = "EuPathDB" if ($type eq 'PathwayGenera');
+	 $pkg = "EuPathDB" if ($type eq 'PathwayGenera' || $type =~ /UserDatasets/);
 	 my $id             = $Cgi->param('id');
 	 my $sid            = $Cgi->param('sid');
 	 my $wantLogged     = $Cgi->param('wl');
@@ -74,6 +74,7 @@ sub run {
 	 my $save_b         = $Cgi->param('save');
 	 my $typeArg        = $Cgi->param('typeArg');
          my $template     = $Cgi->param('template');
+
          my $datasetId     = $Cgi->param('datasetId');
 
          my $widthOverride     = $Cgi->param('w');
@@ -112,7 +113,7 @@ sub run {
 	 my @errors;
 
 	 push(@errors, 'model must be supplied') if not defined $pkg;
-	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB' && $pkg ne 'Gates' && $pkg ne 'ICEMR');
+	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB' && $pkg ne 'Gates' && $pkg ne 'ICEMR' && $pkg ne 'UserDatasets');
 	   push(@errors, 'type must be supplied' ) if not defined $type;
 	   push(@errors, 'id must be supplied'   ) if not defined $id;
 
