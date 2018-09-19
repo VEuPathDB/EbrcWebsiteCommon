@@ -4,7 +4,7 @@
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <import file="${projectsDir}/WDK/build.xml" />
+  <import file="${projectsDir}/WDKWebsite/build.xml" />
 
   
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
@@ -12,15 +12,15 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-ChildCheckout">
-    <available file="${projectsDir}/WDK" type="dir"  property="WDK.present" />
-    <antcall target="WDK-Checkout"/>
+    <available file="${projectsDir}/WDKWebsite" type="dir"  property="WDKWebsite.present" />
+    <antcall target="WDKWebsite-Checkout"/>
   </target>
 
 
-  <target name="WDK-Checkout" unless="WDK.present">
+  <target name="WDKWebsite-Checkout" unless="WDKWebsite.present">
     <ant target="defaultProjectCheckout" inheritAll="false">
-      <property name="svnurl" value="https://cbilsvn.pmacs.upenn.edu/svn/gus/WDK"/>
-      <property name="project" value="WDK"/>
+      <property name="svnurl" value="https://cbilsvn.pmacs.upenn.edu/svn/gus/WDKWebsite"/>
+      <property name="project" value="WDKWebsite"/>
       <property name="version" value="alter-views"/>
     </ant>
   </target>
@@ -31,7 +31,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
  <target name="EbrcWebsiteCommon-ChildUpdate">
     <ant target="defaultProjectUpdate">
-      <property name="project" value="WDK"/>
+      <property name="project" value="WDKWebsite"/>
     </ant>
   </target>
 
@@ -40,7 +40,7 @@
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
+  <target name="EbrcWebsiteCommon-Installation" depends="WDKWebsite-Installation,
                                                         EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
@@ -100,7 +100,7 @@
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
+  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDKWebsite-WebInstallation,
                                                            EbrcWebsiteCommon-Installation,
                                                            EbrcWebsiteCommon/Site-WebInstallation">
   </target>
@@ -184,7 +184,7 @@
       dir="${projectsDir}/${project}/${component}"
       failonerror="true"
       failifexecutionfails="true">
-      <env key="NODE_PATH" value="${projectsDir}/WDK/View/node_modules"/>
+      <env key="NODE_PATH" value="${projectsDir}/WDKWebsite/View/node_modules"/>
       <arg line="${webpack.env}"/>
       <arg line="--hide-modules"/>
     </exec>
