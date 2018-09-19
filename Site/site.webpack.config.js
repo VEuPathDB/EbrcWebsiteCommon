@@ -1,5 +1,5 @@
 var path = require('path');
-var wdkRoot = path.resolve(__dirname, '../../WDK/View');
+var wdkRoot = path.resolve(__dirname, '../../WDKWebsite/View');
 var baseConfig = require('../../WDKClient/Build/base.webpack.config');
 
 module.exports = function configure(additionalConfig) {
