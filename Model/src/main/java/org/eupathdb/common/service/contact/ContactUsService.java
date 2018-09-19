@@ -84,17 +84,16 @@ public class ContactUsService extends AbstractWdkService {
       User user = this.getSessionUser();
       RequestData requestData = new HttpRequestData(request);
       WdkModel wdkModel = this.getWdkModel();
-      String displayName = wdkModel.getDisplayName();
             
       JSONObject jsonBody = new JSONObject(body);
       ContactUsParams contactUsParams = parseContactParams(jsonBody);
       
       createAndSendEmail(
-          contactUsParams,
-          user,     
-          requestData,
-          wdkModel,
-          Utilities::sendEmail
+        contactUsParams,
+        user,     
+        requestData,
+        wdkModel,
+        Utilities::sendEmail
       );  
       
       return Response.ok().build();
@@ -112,26 +111,26 @@ public class ContactUsService extends AbstractWdkService {
     String reporterEmail = getStringOrDefault(jsonBody, "reporterEmail", "");
     
     JSONArray ccEmailsJson = getJsonArrayOrDefault(
-        jsonBody, 
-        "ccEmails", 
-        new JSONArray()
+      jsonBody, 
+      "ccEmails", 
+      new JSONArray()
     );
     String[] ccEmails = toStringArray(ccEmailsJson);
         
     JSONArray attachmentIdsJson = getJsonArrayOrDefault(
-        jsonBody, 
-        "ccEmails", 
-        new JSONArray()
+      jsonBody, 
+      "ccEmails", 
+      new JSONArray()
     );
     String[] attachmentIds = toStringArray(attachmentIdsJson);
     DataHandler[] attachments = fetchAttachments(attachmentIds);
     
     return new ContactUsParams(
-        subject,
-        reporterEmail,
-        ccEmails,
-        message,
-        attachments
+      subject,
+      reporterEmail,
+      ccEmails,
+      message,
+      attachments
     );
   }
   
