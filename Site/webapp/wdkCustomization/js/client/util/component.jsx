@@ -55,6 +55,10 @@ import { wrapActions } from 'wdk-client/ComponentUtils';
 export let withStore = (getStateFromStore = identity) => (TargetComponent) => {
   class StoreProvider extends React.PureComponent {
 
+    static get displayName() {
+      return `${this.name}(${TargetComponent.displayName || TargetComponent.name})`;
+    }
+
     constructor(props, context) {
       super(props, context);
       this.state = this.getStateFromStore(this.props);
@@ -116,6 +120,10 @@ export let withStore = (getStateFromStore = identity) => (TargetComponent) => {
  */
 export let withActions = (actionCreators = {}) => (TargetComponent) => {
   class WrappActionCreatorsProvider extends React.PureComponent {
+
+    static get displayName() {
+      return `${this.name}(${TargetComponent.displayName || TargetComponent.name})`;
+    }
 
     constructor(props, context) {
       super(props, context);
