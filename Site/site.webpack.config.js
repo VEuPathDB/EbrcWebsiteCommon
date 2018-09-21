@@ -43,6 +43,7 @@ module.exports = function configure(additionalConfig) {
         'react-router'     : 'ReactRouter',
         'redux'            : 'Redux',
         'redux-observable' : 'ReduxObservable',
+        'reselect'       : 'Reselect',
         'rxjs'             : 'Rx',
         'rxjs/operators'   : 'RxOperators',
       }
