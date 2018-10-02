@@ -152,6 +152,7 @@ modelprop:
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
   REDMINE_TO_EMAIL: 'dontcare@dontcare.edu'
   REDMINE_FROM_EMAIL: 'stilldontcare@dontcare.edu'
+  GOOGLE_MAPS_API_KEY: "{{ lookup('euparc', 'attr=api_key xpath=sites/google_maps default=NOKEY') }}"
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
