@@ -1,5 +1,6 @@
-import { compose, curryN, update } from 'lodash/fp';
+import { compose, curryN, set, update } from 'lodash/fp';
 import { SITE_CONFIG_LOADED, BASKETS_LOADED, QUICK_SEARCH_LOADED } from './actioncreators/GlobalActionCreators';
+import * as contactUs from './store-modules/ContactUsStoreModule';
 import {getSearchMenuCategoryTree} from './util/category';
 import { selectReporterComponent } from './util/reporter';
 
@@ -11,6 +12,7 @@ const composeReducers = (...reducers) => (state, action) =>
 const composeReducerWith = curryN(2, composeReducers);
 
 export default compose(
+  set('contactUs', contactUs),
   update('globalData.reduce', composeReducerWith(ebrcGlobalData)),
   update('downloadForm', module => ({ ...module, reduce: module.makeReducer(selectReporterComponent) }))
 );

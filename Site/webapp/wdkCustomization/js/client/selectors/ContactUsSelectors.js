@@ -1,5 +1,5 @@
 import { flow, get } from 'lodash';
-import { SUBMISSION_FAILED, SUBMISSION_SUCCESSFUL } from '../stores/ContactUsStore';
+import { SUBMISSION_FAILED, SUBMISSION_SUCCESSFUL } from '../store-modules/ContactUsStoreModule';
 
 // Source: emailregex.com (which implements the RFC 5322 standard)
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

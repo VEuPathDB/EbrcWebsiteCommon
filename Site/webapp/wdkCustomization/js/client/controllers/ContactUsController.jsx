@@ -1,6 +1,8 @@
 import { flow } from 'lodash';
 
-import { WdkPageController } from 'wdk-client/Controllers';
+import { connect } from 'react-redux';
+
+import { PageController } from 'wdk-client/Controllers';
 
 import { 
   updateField, 
@@ -28,43 +30,9 @@ import {
   title
 } from '../selectors/ContactUsSelectors';
 
-import ContactUsStore from '../stores/ContactUsStore';
-
-export default class ContactUsController extends WdkPageController {
-  getStoreClass() {
-    return ContactUsStore;
-  }
-
-  getActionCreators() {
-    return {
-      updateSubject: flow(targetValue, updateField('subject')),
-      updateReporterEmail: flow(targetValue, updateField('reporterEmail')),
-      updateCcEmails: flow(targetValue, updateField('ccEmails')),
-      updateMessage: flow(targetValue, updateField('message')),
-      submitDetails
-    };
-  }
-
-  getStateFromStore() {
-    const state = this.store.getState();
-
-    return {
-      displayName: displayName(state),
-      submissionFailed: submissionFailed(state),
-      submissionSuccessful: submissionSuccessful(state),
-      responseMessage: responseMessage(state),
-      subjectValue: subjectValue(state),
-      reporterEmailValue: reporterEmailValue(state),
-      ccEmailsValue: ccEmailsValue(state),
-      messageValue: messageValue(state),
-      reporterEmailValidity: reporterEmailValidity(state),
-      ccEmailsValidity: ccEmailsValidity(state),
-      messageValidity: messageValidity(state)
-    };
-  }
-
+class ContactUsController extends PageController {
   getTitle() { 
-    return title(this.store.getState());
+    return this.props.stateProps.title;
   }
 
   renderView() {
@@ -80,7 +48,8 @@ export default class ContactUsController extends WdkPageController {
       reporterEmailValidity,
       ccEmailsValidity,
       messageValidity
-    } = this.state;
+    } = this.props.stateProps;
+
 
     const {
       updateSubject,
@@ -88,7 +57,7 @@ export default class ContactUsController extends WdkPageController {
       updateCcEmails,
       updateMessage,
       submitDetails
-    } = this.eventHandlers;
+    } = this.props.dispatchProps;
 
     return (
       <SupportFormBase>
@@ -123,3 +92,40 @@ export default class ContactUsController extends WdkPageController {
 }
 
 const targetValue = ({ target: { value } }) => value;
+
+const mapStateToProps = flow(
+  ({ contactUs }) => contactUs,
+  state => ({
+    displayName: displayName(state),
+    submissionFailed: submissionFailed(state),
+    submissionSuccessful: submissionSuccessful(state),
+    responseMessage: responseMessage(state),
+    subjectValue: subjectValue(state),
+    reporterEmailValue: reporterEmailValue(state),
+    ccEmailsValue: ccEmailsValue(state),
+    messageValue: messageValue(state),
+    reporterEmailValidity: reporterEmailValidity(state),
+    ccEmailsValidity: ccEmailsValidity(state),
+    messageValidity: messageValidity(state),
+    title: title(state)
+  })
+);
+
+const mapDispatchToProps = {
+  updateSubject: flow(targetValue, updateField('subject')),
+  updateReporterEmail: flow(targetValue, updateField('reporterEmail')),
+  updateCcEmails: flow(targetValue, updateField('ccEmails')),
+  updateMessage: flow(targetValue, updateField('message')),
+  submitDetails
+};
+
+const mergeProps = (stateProps, dispatchProps) => ({
+  stateProps,
+  dispatchProps
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(ContactUsController);
