@@ -395,7 +395,7 @@ for(ii in 1:length(profile.files)) {
 
     profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
 
-    if (ncol(element.names.df) > 2 ){
+    if (\"FACET\" %in% colnames(element.names.df)){
       profile.df\$FACET <- as.character(profile.df\$FACET)
       profile.df\$FACET[is.na(profile.df\$FACET)] <- \"Unknown\"
       profile.df\$FACET[profile.df\$FACET == \"\"] <- \"Unknown\"
