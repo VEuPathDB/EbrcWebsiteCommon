@@ -50,7 +50,7 @@ use vars qw( @ISA );
 use EbrcWebsiteCommon::View::CgiApp;
 
 use JSON;
-
+use Data::Dumper;
 # ========================================================================
 # --------------------------- Required Methods ---------------------------
 # ========================================================================
@@ -195,6 +195,7 @@ sub run {
                         SampleInfo => \@sampleInfo,
                         Xmin => $xminOverride,
                         Xmax => $xmaxOverride,
+                        CgiApp => $Cgi,
                        });
          };
 
