@@ -29,6 +29,18 @@ sub setDefaultXMax               { $_[0]->{'_default_x_max'                 } = 
 sub getDefaultXMin               { $_[0]->{'_default_x_min'                 }}
 sub setDefaultXMin               { $_[0]->{'_default_x_min'                 } = $_[1]}
 
+sub getAdjustXYScalesTogether    { $_[0]->{'_adjust_xy_scales_together'     }}
+sub setAdjustXYScalesTogether    { $_[0]->{'_adjust_xy_scales_together'     } = $_[1]}
+
+sub getAntisenseFloor            { $_[0]->{'antisense_floor'                }}
+sub setAntisenseFloor            { $_[0]->{'antisense_floor'                } = $_[1]}
+
+sub getAntisenseFoldChange       { $_[0]->{'antisense_fold_change'          }}
+sub setAntisenseFoldChange       { $_[0]->{'antisense_fold_change'          } = $_[1]}
+
+sub getSenseFoldChange           { $_[0]->{'sense_fold_change'              }}
+sub setSenseFoldChange           { $_[0]->{'sense_fold_change'              } = $_[1]}
+
 sub getArePointsLast             { $_[0]->{'_are_points_last'               }}
 sub setArePointsLast             { $_[0]->{'_are_points_last'               } = $_[1]}
 
@@ -178,7 +190,16 @@ sub makeRPlotString {
     
   my $xMax = $self->getDefaultXMax();
   my $xMin = $self->getDefaultXMin();
-    
+
+  my $adjustXYScalesTogether = $self->getAdjustXYScalesTogether();
+  $adjustXYScalesTogether = defined($adjustXYScalesTogether) ? $adjustXYScalesTogether : 'FALSE';
+
+  my $antisenseFoldChange = $self->getAntisenseFoldChange();
+  $antisenseFoldChange = defined($antisenseFoldChange) ? $antisenseFoldChange : 1;
+
+  my $senseFoldChange = $self->getSenseFoldChange();
+  $senseFoldChange = defined($senseFoldChange) ? $senseFoldChange : -1;
+
   my $yAxisFoldInductionFromM = $self->getMakeYAxisFoldInduction();
     
   my $df = $self->getSplineDF;
@@ -507,10 +528,25 @@ if ($prtcpnt_sum) {
    y.min = y.temp - (2.25 * y.scale);
  }
 } else {
-  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-  
+  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
+  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
 }
+
+if ($adjustXYScalesTogether) {
+   x.max = max(as.numeric(x.max), max(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+   x.min = min(as.numeric(x.min), min(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+   maxValue <- max(c(abs(y.max),abs(y.min),abs(x.max),abs(x.min)));
+   y.max=x.max=maxValue;
+   y.min=x.min=-1*maxValue;
+   if ($antisenseFoldChange>0) {y.end=y.max}
+   else {y.end=y.min}
+   if ($senseFoldChange>0) {x.end=x.max}
+   else {x.end=x.min}
+   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=$senseFoldChange,yend=y.end),linetype=\"dashed\",color=\"red\");
+   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=x.end,yend=$antisenseFoldChange),linetype=\"dashed\",color=\"red\");
+   gp = gp + geom_abline(intercept=0,slope=1,linetype=\"dashed\",color=\"red\");
+}
+
 
 if($isSVG) {
   useTooltips=TRUE;
@@ -650,7 +686,13 @@ if(is.compact) {
   gp = gp + theme_void() + theme(legend.position=\"none\");
 } else if(is.thumbnail) {
   gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+  
+  if ($adjustXYScalesTogether) {
+     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
+  } else {
+     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+  }
+
   gp = gp + ylim(y.min, y.max);
 
   if(!profile.is.numeric) {
@@ -672,7 +714,7 @@ if(is.compact) {
 
   if (myX == \"CONTXAXIS\") {
     if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
-      gp = gp + theme(axis.text.x = element_blank())    
+      gp = gp + theme(axis.text.x = element_blank());    
     }
   } else {
     if(!profile.is.numeric) {
@@ -777,8 +819,6 @@ if ($prtcpnt_sum) {
   }
 
 
-
-
   who_standards = exists(\"who.df\") && nrow(who.df)>0;
 
 
@@ -852,6 +892,7 @@ if ($prtcpnt_sum) {
     gp = gp + guides(color = guide_legend(order=1));
 
 }
+
 
 #postscript
 $rPostscript

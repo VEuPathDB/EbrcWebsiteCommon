@@ -56,7 +56,8 @@ sub init {
    $Self->setId                   ( $Args->{Id                   } );
    $Self->setThumbnail            ( $Args->{Thumbnail            } );
    $Self->setDefaultPlotPart      ( $Args->{DefaultPlotPart      } );
- 
+   $Self->setCgiApp               ( $Args->{CgiApp               } ); 
+
    $Self->setVisibleParts         ( $Args->{VisibleParts         } );
 
    $Self->setFacets               ( $Args->{Facets               } );
@@ -84,6 +85,9 @@ sub init {
 
 sub getName                    { $_[0]->{'Name'                        } }
 sub setName                    { $_[0]->{'Name'                        } = $_[1]; $_[0] }
+
+sub getCgiApp                  { $_[0]->{'CgiApp'                      } }
+sub setCgiApp                  { $_[0]->{'CgiApp'                      } = $_[1]; $_[0] }
 
 sub getQueryHandle             { $_[0]->{'QueryHandle'                 } }
 sub setQueryHandle             { $_[0]->{'QueryHandle'                 } = $_[1]; $_[0] }
