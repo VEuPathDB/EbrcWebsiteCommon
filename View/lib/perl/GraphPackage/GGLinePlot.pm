@@ -442,6 +442,11 @@ for(ii in 1:length(profile.files)) {
   profile.df.full = rbind.fill(profile.df.full, profile.df);
 }
 
+#if no y values, make a placeholder (ex: timelines)
+if (!\"VALUE\" %in% colnames(profile.df.full)) {
+  profile.df.full\$VALUE = NA
+}
+
 #allow adjustments
 $rAdjustProfile
 
