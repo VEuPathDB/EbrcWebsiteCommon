@@ -30,8 +30,6 @@ module.exports = function configure(additionalConfig) {
       resolveWdkClientExternal,
       {
         'jquery'           : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'flux'             : 'Flux',
-        'flux/utils'       : 'FluxUtils',
         'history'          : 'HistoryJS',
         'lodash'           : '_',
         'lodash/fp'        : '_fp',

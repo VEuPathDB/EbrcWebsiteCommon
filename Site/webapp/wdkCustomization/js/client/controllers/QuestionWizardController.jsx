@@ -29,7 +29,6 @@ import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
 import { preorder } from 'wdk-client/TreeUtils';
-import { WdkStore } from 'wdk-client/Stores';
 
 import QuestionWizard from '../components/QuestionWizard';
 import {
@@ -77,14 +76,6 @@ class QuestionWizardController extends ViewController {
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
 
     this.childRef = React.createRef();
-  }
-
-  getStoreClass() {
-    return WdkStore;
-  }
-
-  getStateFromStore() {
-    return {};
   }
 
   getEventHandlers() {
