@@ -94,6 +94,9 @@ sub blankPlotPart {
   $self->blankGGPlotPart(@_);
 }
 
+sub getStrandDictionaryHash      { $_[0]->{'_strand_dictionary_hash'        }}
+
+
 #--------------------------------------------------------------------------------
 
 sub new {
@@ -111,7 +114,7 @@ sub new {
 
 sub makeRPlotString {
   my ($self, $idType) = @_;
-    
+
   my $sampleLabels = $self->getSampleLabels();
     
   my $sampleLabelsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($sampleLabels, 'x.axis.label');
@@ -1071,6 +1074,47 @@ sub new {
   
   return $self;
 }
+
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeqSenseAntisense;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeq );
+use strict;
+use Data::Dumper;
+
+sub new {
+    my ($class,$args,$profileSets) = @_;
+    my $self = $class->SUPER::new($args,$profileSets);
+
+    my $strandDictionaryHash = $self->getStrandDictionaryHash();
+    my @legendNames=();
+    for(my $i = 0; $i < scalar @$profileSets; $i++) {
+       my $profileSet = $profileSets->[$i];
+       my $profileSetName = $profileSet->getName();
+       my $strandType = "";
+       if ($profileSetName =~ /(\w*strande?d?)/) {
+	   $strandType = $1;
+       }
+       my $sample = $strandDictionaryHash->{$strandType};
+       if ($sample eq "sense") {
+	   $sample="  sense";
+	   if ($i == 1) {
+	       my $newProfileSets=[];
+	       $newProfileSets->[0] = $profileSets->[1];
+	       $newProfileSets->[1] = $profileSets->[0];
+	       $self->setProfileSets($newProfileSets);
+	   }
+       }
+       push @legendNames, $sample; 
+
+    }
+    
+    @legendNames = sort {$a cmp $b} @legendNames;
+    $self->setLegendLabels(\@legendNames);
+    $self->setSmoothLines(0);
+
+    return $self;
+}
+
 
 #--------------------------------------------------------------------------------
 
