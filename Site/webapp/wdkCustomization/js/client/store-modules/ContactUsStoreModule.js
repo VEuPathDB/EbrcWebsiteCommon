@@ -1,16 +1,33 @@
+import { 
+  compose,
+  map 
+} from 'lodash/fp';
+
 import { merge } from 'rxjs';
-import { filter, mergeMap, withLatestFrom } from 'rxjs/operators';
+import { 
+  filter,
+  mergeAll, 
+  mergeMap, 
+  withLatestFrom 
+} from 'rxjs/operators';
 
 import { 
   CHANGE_SUBJECT,
   CHANGE_REPORTER_EMAIL,
   CHANGE_CC_EMAILS,
   CHANGE_MESSAGE,
+  CHANGE_ATTACHMENT_METADATA,
+  ADD_ATTACHMENT_METADATA,
+  REMOVE_ATTACHMENT_METADATA,
   SUBMIT_DETAILS,
-  FINISH_REQUEST
+  FINISH_REQUEST,
+  UPDATE_SUBMITTING_STATUS,
+  updateField,
+  updateSubmittingStatus,
+  finishRequest
 } from '../actioncreators/ContactUsActionCreators';
 
-import { parsedFormFields } from '../selectors/ContactUsSelectors';
+import { files, parsedFormFields } from '../selectors/ContactUsSelectors';
 
 const CONTACT_US_ENDPOINT = '/contact-us';
 
@@ -23,9 +40,11 @@ const initialState = {
   reporterEmail: '',
   ccEmails: '',
   message: '',
-  attachmentIds: [],
+  attachmentMetadata: [],
+  submittingStatus: false,
   submissionStatus: SUBMISSION_PENDING,
-  responseMessage: ''
+  responseMessage: '',
+  nextAttachmentId: 0
 };
 
 export function reduce(state = initialState, { type, payload }) {
@@ -54,6 +73,47 @@ export function reduce(state = initialState, { type, payload }) {
         message: payload.message
       };
 
+    case CHANGE_ATTACHMENT_METADATA:
+      return {
+        ...state,
+        attachmentMetadata: [
+          ...state.attachmentMetadata.slice(0, payload.index),
+          {
+            ...state.attachmentMetadata[payload.index],
+            ...payload.metadata
+          },
+          ...state.attachmentMetadata.slice(payload.index + 1)
+        ]
+      };
+
+    case ADD_ATTACHMENT_METADATA:
+      return {
+        ...state,
+        attachmentMetadata: [
+          ...state.attachmentMetadata,
+          {
+            ...payload.metadata,
+            id: state.nextAttachmentId
+          }
+        ],
+        nextAttachmentId: state.nextAttachmentId + 1
+      };
+
+    case REMOVE_ATTACHMENT_METADATA:
+      return {
+        ...state,
+        attachmentMetadata: [
+          ...state.attachmentMetadata.slice(0, payload.index),
+          ...state.attachmentMetadata.slice(payload.index + 1)
+        ]
+      };
+
+    case SUBMIT_DETAILS:
+      return {
+        ...state,
+        submittingStatus: true
+      };
+
     case FINISH_REQUEST:
       return {
         ...state,
@@ -63,36 +123,67 @@ export function reduce(state = initialState, { type, payload }) {
         responseMessage: payload.message
       };
 
+    case UPDATE_SUBMITTING_STATUS:
+      return {
+        ...state,
+        submittingStatus: payload.submittingStatus
+      };
+
     default: 
       return state;
   }
 }
 
-export function observe(action$, state$, services) {
+export function observe(action$, state$, dependencies) {
   return merge(
-    observeSubmitDetails(action$, state$, services)
+    observeSubmitDetails(action$, state$, dependencies),
+    observeUserLoaded(action$, state$, dependencies)
   );
 }
 
-const observeSubmitDetails = (action$, state$, services) =>
+const observeSubmitDetails = (
+  action$, 
+  state$, 
+  { 
+    wdkService
+  }
+) =>
   action$.pipe(
     filter(({ type }) => type === SUBMIT_DETAILS),
     withLatestFrom(state$),
     mergeMap(async ([ , state]) => {
+      const temporaryFilePromises = compose(
+        map(wdkService.createTemporaryFile.bind(wdkService)),
+        files
+      )(state);
+
+      const attachmentIds = await Promise.all(temporaryFilePromises);
+
       const response = await jsonPostRequest(
-        services.wdkService.serviceUrl,
+        wdkService.serviceUrl,
         CONTACT_US_ENDPOINT,
-        parsedFormFields(state)
+        {
+          ...parsedFormFields(state),
+          attachmentIds
+        }
       );
 
-      return { 
-        type: FINISH_REQUEST, 
-        payload: { 
-          message: await response.text(), 
-          ok: response.ok 
-        } 
-      };
-    })
+      return [
+        finishRequest(await response.text(), response.ok),
+        updateSubmittingStatus(false)
+      ]
+    }),
+    mergeAll()
+  );
+
+const observeUserLoaded = (action$, state$, dependencies) => 
+  action$.pipe(
+    filter(({ type }) => type === 'static/user-loaded'),
+    mergeMap(({ payload: { user: { email, isGuest } } }) =>
+      isGuest 
+        ? []
+        : [updateField('reporterEmail')(email)]
+    )
   );
 
 const jsonPostRequest = (serviceUrl, endpoint, body) => fetch(

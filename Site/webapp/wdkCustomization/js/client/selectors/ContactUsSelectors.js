@@ -1,52 +1,71 @@
-import { flow, get } from 'lodash';
-import { SUBMISSION_FAILED, SUBMISSION_SUCCESSFUL } from '../store-modules/ContactUsStoreModule';
+import { 
+  compose,
+  filter, 
+  isEqual, 
+  length,
+  map, 
+  split, 
+  trim 
+} from 'lodash/fp';
+import { createSelector } from 'reselect';
+
+import { 
+  SUBMISSION_FAILED, 
+  SUBMISSION_SUCCESSFUL 
+} from '../store-modules/ContactUsStoreModule';
 
 // Source: emailregex.com (which implements the RFC 5322 standard)
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+const MAX_ATTACHMENT_SIZE = 5000000;
+
 const propSelectorFactory = prop => state => state[prop];
 
+export const submittingStatus = propSelectorFactory('submittingStatus');
 export const submissionStatus = propSelectorFactory('submissionStatus');
 export const responseMessage = propSelectorFactory('responseMessage');
 export const subjectValue = propSelectorFactory('subject');
 export const reporterEmailValue = propSelectorFactory('reporterEmail');
 export const ccEmailsValue = propSelectorFactory('ccEmails');
 export const messageValue = propSelectorFactory('message');
-export const attachmentIdsValue = propSelectorFactory('attachmentIds');
+export const attachmentMetadata = propSelectorFactory('attachmentMetadata');
 
-export const submissionFailed = flow(
+export const submitDisabled = submittingStatus;
+
+export const submissionFailed = createSelector(
   submissionStatus,
-  status => status === SUBMISSION_FAILED
+  isEqual(SUBMISSION_FAILED)
 );
 
-export const submissionSuccessful = flow(
+export const submissionSuccessful = createSelector(
   submissionStatus,
-  status => status === SUBMISSION_SUCCESSFUL
+  isEqual(SUBMISSION_SUCCESSFUL)
 );
 
-export const reporterEmailValidity = flow(
+export const reporterEmailValidity = createSelector(
   reporterEmailValue,
   reporterEmail => reporterEmail.length > 0 && !EMAIL_REGEX.test(reporterEmail)
     ? 'Please provide a valid email address where we can reach you.' 
     : ''
 );
 
-export const messageValidity = flow(
+export const messageValidity = createSelector(
   messageValue,
   message => message.length === 0
     ? 'Please provide a message for our team.' 
     : ''
 );
 
-export const parsedCcEmails = flow(
+export const parsedCcEmails = createSelector(
   ccEmailsValue,
-  ccEmails => ccEmails
-    .split(/[;,]/)
-    .map(token => token.trim())
-    .filter(token => token.length > 0)
+  compose(
+    filter(length),
+    map(trim),
+    split(/[;,]/)
+  )
 );
 
-export const ccEmailsValidity = flow(
+export const ccEmailsValidity = createSelector(
   parsedCcEmails,
   ccEmails => {
     if (ccEmails.length > 10) {
@@ -56,28 +75,45 @@ export const ccEmailsValidity = flow(
     const invalidEmails = ccEmails.filter(ccEmail => !EMAIL_REGEX.test(ccEmail));
     
     return invalidEmails.length 
-      ? `Please correct the following email address(es): ${invalidEmails.join(', ')}`
+      ? `Please correct the following email address(es): ${invalidEmails.join(', ')}.`
       : '';
   }
 );
 
-export const displayName = state => get(
-  state,
-  'globalData.siteConfig.displayName',
-  ''
+export const files = createSelector(
+  attachmentMetadata,
+  map('file')
 );
 
-export const title = flow(
-  displayName,
-  name => name
-    ? `${name} :: Help`
-    : 'Help'
+export const validatedAttachmentMetadata = createSelector(
+  attachmentMetadata,
+  attachmentMetadata => map(validateMetadatum)(attachmentMetadata)
 );
 
-export const parsedFormFields = state => ({
-  subject: subjectValue(state),
-  reporterEmail: reporterEmailValue(state),
-  ccEmails: parsedCcEmails(state),
-  message: messageValue(state),
-  attachmentIds: attachmentIdsValue(state)
+const validateMetadatum = metadatum => {
+  if (!metadatum.file) {
+    return addValidityToAttachmentMetadatum(metadatum, 'Please choose a file to upload.')
+  } else if (metadatum.file.size > MAX_ATTACHMENT_SIZE) {
+    return addValidityToAttachmentMetadatum(metadatum, 'Please choose a file which is under 5 Mb.');
+  } else {
+    return addValidityToAttachmentMetadatum(metadatum, '');
+  }    
+};
+
+const addValidityToAttachmentMetadatum = (metadatum, validity) => ({
+  ...metadatum,
+  validity
 });
+
+export const parsedFormFields = createSelector(
+  subjectValue,
+  reporterEmailValue,
+  parsedCcEmails,
+  messageValue,
+  (subject, reporterEmail, ccEmails, message) => ({
+    subject,
+    reporterEmail,
+    ccEmails,
+    message
+  })
+);

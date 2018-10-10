@@ -1,12 +1,14 @@
-import { flow } from 'lodash';
-
+import { compose, get } from 'lodash/fp';
 import { connect } from 'react-redux';
 
 import { PageController } from 'wdk-client/Controllers';
 
 import { 
-  updateField, 
-  submitDetails 
+  updateField,
+  changeAttachmentMetadata,
+  addAttachmentMetadata,
+  removeAttachmentMetadata,
+  submitDetails  
 } from  '../actioncreators/ContactUsActionCreators';
 
 import {
@@ -16,6 +18,7 @@ import {
 } from '../components';
 
 import {
+  submitDisabled,
   submissionFailed,
   submissionSuccessful, 
   responseMessage, 
@@ -26,18 +29,29 @@ import {
   messageValidity,
   reporterEmailValidity,
   ccEmailsValidity,
-  displayName,
-  title
+  validatedAttachmentMetadata
 } from '../selectors/ContactUsSelectors';
 
 class ContactUsController extends PageController {
+  isRenderDataLoaded() {
+    const {
+      displayName,
+      user
+    } = this.props.stateProps;
+
+    return displayName && user;
+  }
+
   getTitle() { 
-    return this.props.stateProps.title;
+    const { displayName } = this.props.stateProps
+
+    return `${displayName} :: Help`;
   }
 
   renderView() {
     const {
       displayName,
+      submitDisabled,
       submissionFailed,
       submissionSuccessful,
       responseMessage,
@@ -47,15 +61,18 @@ class ContactUsController extends PageController {
       messageValue,
       reporterEmailValidity,
       ccEmailsValidity,
-      messageValidity
+      messageValidity,
+      validatedAttachmentMetadata
     } = this.props.stateProps;
-
 
     const {
       updateSubject,
       updateReporterEmail,
       updateCcEmails,
       updateMessage,
+      changeFile,
+      addFile,
+      removeFile,
       submitDetails
     } = this.props.dispatchProps;
 
@@ -70,6 +87,7 @@ class ContactUsController extends PageController {
                 } 
               />
             : <ContactUsSubmission
+                submitDisabled={submitDisabled}
                 submissionFailed={submissionFailed}
                 responseMessage={responseMessage}
                 subjectValue={subjectValue}
@@ -80,9 +98,13 @@ class ContactUsController extends PageController {
                 updateReporterEmail={updateReporterEmail}
                 updateCcEmails={updateCcEmails}
                 updateMessage={updateMessage}
+                changeFile={changeFile}
+                addFile={addFile}
+                removeFile={removeFile}
                 reporterEmailValidity={reporterEmailValidity}
                 ccEmailsValidity={ccEmailsValidity}
                 messageValidity={messageValidity}
+                validatedAttachmentMetadata={validatedAttachmentMetadata}
                 submitDetails={submitDetails}
               />
         }
@@ -93,29 +115,38 @@ class ContactUsController extends PageController {
 
 const targetValue = ({ target: { value } }) => value;
 
-const mapStateToProps = flow(
-  ({ contactUs }) => contactUs,
-  state => ({
-    displayName: displayName(state),
-    submissionFailed: submissionFailed(state),
-    submissionSuccessful: submissionSuccessful(state),
-    responseMessage: responseMessage(state),
-    subjectValue: subjectValue(state),
-    reporterEmailValue: reporterEmailValue(state),
-    ccEmailsValue: ccEmailsValue(state),
-    messageValue: messageValue(state),
-    reporterEmailValidity: reporterEmailValidity(state),
-    ccEmailsValidity: ccEmailsValidity(state),
-    messageValidity: messageValidity(state),
-    title: title(state)
-  })
-);
+const mapStateToProps = ({ 
+  contactUs: contactUsState, 
+  globalData: globalDataState 
+}) => ({
+  displayName: get('siteConfig.displayName', globalDataState),
+  user: get('user', globalDataState),
+  submitDisabled: submitDisabled(contactUsState),
+  submissionFailed: submissionFailed(contactUsState),
+  submissionSuccessful: submissionSuccessful(contactUsState),
+  responseMessage: responseMessage(contactUsState),
+  subjectValue: subjectValue(contactUsState),
+  reporterEmailValue: reporterEmailValue(contactUsState),
+  ccEmailsValue: ccEmailsValue(contactUsState),
+  messageValue: messageValue(contactUsState),
+  reporterEmailValidity: reporterEmailValidity(contactUsState),
+  ccEmailsValidity: ccEmailsValidity(contactUsState),
+  messageValidity: messageValidity(contactUsState),
+  validatedAttachmentMetadata: validatedAttachmentMetadata(contactUsState)
+});
 
 const mapDispatchToProps = {
-  updateSubject: flow(targetValue, updateField('subject')),
-  updateReporterEmail: flow(targetValue, updateField('reporterEmail')),
-  updateCcEmails: flow(targetValue, updateField('ccEmails')),
-  updateMessage: flow(targetValue, updateField('message')),
+  updateSubject: compose(updateField('subject'), targetValue),
+  updateReporterEmail: compose(updateField('reporterEmail'), targetValue),
+  updateCcEmails: compose(updateField('ccEmails'), targetValue),
+  updateMessage: compose(updateField('message'), targetValue),
+  changeFile: (index, files) => {
+    return files.length === 0
+      ? changeAttachmentMetadata(index, { file: null })
+      : changeAttachmentMetadata(index, { file: files[0] })
+  },
+  addFile: () => addAttachmentMetadata({}),
+  removeFile: index => removeAttachmentMetadata(index),
   submitDetails
 };
 
