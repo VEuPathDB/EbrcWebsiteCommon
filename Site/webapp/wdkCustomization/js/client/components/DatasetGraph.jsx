@@ -29,6 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       dataTableCollapsed: true,
       coverageCollapsed: true,
       showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
+      showSpecialGraph: this.props.rowData.has_special_gbrowse,
       graphId: graphIds[0],
       contXAxis: 'none',
       facet: 'none'
@@ -73,7 +74,11 @@ export default class DatasetGraph extends React.PureComponent {
     );
   }
 
-  makeDatasetUrl({ rowData }) {
+  makeDatasetUrl({ rowData }, isUserDataset) {
+
+    if(isUserDataset) {
+        return('/a/app/workspace/datasets/' + rowData.dataset_id);
+    }
     return (
       '../dataset/' + rowData.dataset_id
     );
@@ -148,7 +153,7 @@ export default class DatasetGraph extends React.PureComponent {
     } } = this.props;
 
     let graphIds = graph_ids.split(/\s*,\s*/);
-    let { graphs, visibleGraphs, showLogScale, graphId, facet, contXAxis } = this.state;
+    let { graphs, visibleGraphs, showLogScale, graphId, facet, contXAxis, showSpecialGraph } = this.state;
 
     let baseUrl = this.makeBaseUrl(this.props);
     let baseUrlWithState = `${baseUrl}&id=${graphId}&wl=${showLogScale ? '1' : '0'}`;
@@ -156,8 +161,14 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
-    let dataset_link = this.makeDatasetUrl(this.props);
+    let specialImgUrl = dataTable && dataTable.record.attributes.specialGbrowseUrl + '%1E';
+
+    let isUserDataset = module.startsWith("UserDatasets");
+
+    let dataset_link = this.makeDatasetUrl(this.props, isUserDataset);
     let tutorial_link = this.makeTutorialUrl(this.props);
+
+
 
     return (
       <div className="eupathdb-DatasetGraphContainer2">
@@ -217,13 +228,13 @@ hook: HostResponseGraphs
          {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene(s) from the reference strain for this species. This may or may NOT accurately represent the gene you are interested in. </div>
            : null}
 
-           {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl ?
+           {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl && !isUserDataset ?
              <div>
              <b><font color="firebrick">Warning: This gene has {safeHtml(paralog_number, {}, 'b')} paralogs!</font></b>
 <br></br>Please consider non-unique aligned reads in the expression graph and coverage plots in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>).</div>
           : null}
 
-          {assay_type == 'RNA-seq' && module !== 'SpliceSites' && covImgUrl ?
+          {assay_type == 'RNA-seq' && module !== 'SpliceSites' && !isUserDataset && covImgUrl ?
             <CollapsibleSection
               id={dataset_name + "Coverage"}
               className="eupathdb-GbrowseContext"
@@ -243,8 +254,27 @@ hook: HostResponseGraphs
             </CollapsibleSection>
           : null}
 
+          {assay_type == 'Phenotype' && showSpecialGraph == 'true' && specialImgUrl ?
+            <CollapsibleSection
+              id={"Special"}
+              className="eupathdb-GbrowseContext"
+              headerContent="View in GBrowse"
+              isCollapsed={this.state.coverageCollapsed}
+              onCollapsedChange={this.handleCoverageCollapseChange}>
 
+              <div>
+                <a href={specialImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
+                  View in genome browser
+                </a>
+              </div>
+
+              <img width="700" src={specialImgUrl}/>
+              <br></br><br></br>
+            </CollapsibleSection>
+          : null}
         </div>
+
+
         <div className="eupathdb-DatasetGraphDetails">
           {this.props.dataTable &&
             <CollapsibleSection
@@ -261,6 +291,9 @@ hook: HostResponseGraphs
               />
             </CollapsibleSection> }
 
+
+
+          {!isUserDataset ?
           <CollapsibleSection
             className={"eupathdb-DatasetGraphDescription"}
             headerContent="Description"
@@ -269,6 +302,7 @@ hook: HostResponseGraphs
             onCollapsedChange={this.handleDescriptionCollapseChange}>
             {safeHtml(description, {}, 'div')}
           </CollapsibleSection>
+          : null}
 
           <h4>X-axis</h4>
           {safeHtml(x_axis, {}, 'div')}
@@ -304,6 +338,8 @@ hook: HostResponseGraphs
                 /> {graph.visible_part} </label>
             );
           })}
+
+
 
           <h4>Graph options</h4>
           <div>

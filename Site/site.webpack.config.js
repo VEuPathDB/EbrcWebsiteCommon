@@ -1,8 +1,6 @@
 var path = require('path');
-var projectHome = path.resolve(__dirname, '../..');
-var wdkRoot = path.resolve(__dirname, '../../WDK/View');
-var baseConfig = require(path.join(wdkRoot, 'base.webpack.config'));
-var devtoolPathPrefixRe = new RegExp('^' + projectHome + '/([^/]+/){2}');
+var wdkRoot = path.resolve(__dirname, '../../WDKWebsite/View');
+var baseConfig = require('../../WDKClient/Build/base.webpack.config');
 
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
@@ -11,10 +9,6 @@ module.exports = function configure(additionalConfig) {
       path: path.join(process.cwd(), 'dist'),
       filename: '[name].bundle.js',
       chunkFilename: 'ebrc-chunk-[name].bundle.js',
-      devtoolModuleFilenameTemplate: function(info) {
-        // strip prefix from absolute path
-        return 'webpack:///' + info.absoluteResourcePath.replace(devtoolPathPrefixRe, './');
-      }
     },
     resolve: {
       alias: {
@@ -23,9 +17,6 @@ module.exports = function configure(additionalConfig) {
         site: process.cwd() + '/webapp',
         'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client'
       }
-    },
-    resolveLoader: {
-      modules: [ 'node_modules', path.join(wdkRoot, 'node_modules') ]
     },
 
     // Map external libraries Wdk exposes so we can do things like:
@@ -38,16 +29,18 @@ module.exports = function configure(additionalConfig) {
     externals: [
       resolveWdkClientExternal,
       {
-        'jquery'       : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'lodash'       : '_',
-        'react'        : 'React',
-        'react-dom'    : 'ReactDOM',
-        'react-router' : 'ReactRouter',
-        'prop-types'   : 'ReactPropTypes',
-        'flux'         : 'Flux',
-        'flux/utils'   : 'FluxUtils',
-        'natural-sort' : 'NaturalSort',
-        'rxjs'         : 'Rx'
+        'jquery'         : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
+        'lodash'         : '_',
+        'react'          : 'React',
+        'react-dom'      : 'ReactDOM',
+        'react-router'   : 'ReactRouter',
+        'reselect'       : 'Reselect',
+        'prop-types'     : 'ReactPropTypes',
+        'flux'           : 'Flux',
+        'flux/utils'     : 'FluxUtils',
+        'natural-sort'   : 'NaturalSort',
+        'rxjs'           : 'Rx',
+        'rxjs/operators' : 'RxOperators',
       }
     ]
   }, additionalConfig]);

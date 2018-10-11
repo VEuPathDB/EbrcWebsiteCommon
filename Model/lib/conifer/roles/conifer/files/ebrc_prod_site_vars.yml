@@ -39,4 +39,3 @@ password:
       'attr=password xpath=database/user[@login=\"{}\"]'.format(userDb_login)
       )
     }}"
-

@@ -17,7 +17,7 @@
     <dependencies>
       <dependency>
         <groupId>org.gusdb</groupId>
-        <artifactId>wdk-controller</artifactId>
+        <artifactId>wdk-website-controller</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

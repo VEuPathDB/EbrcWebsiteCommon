@@ -136,6 +136,7 @@ sub getSimpleValues {
   my $_sh  = $Qh->prepare($_sql);
   $_sh->execute();
   my $rows_n = 0;
+
   while (my $_row = $_sh->fetchrow_hashref()) {
     $rows_n++;
     my @keys = keys %$_row;
@@ -188,7 +189,10 @@ sub getSimpleValues {
 
     # just add to list.
     else {
-     $_row->{VALUE}          = $Self->_treatValue($_row->{VALUE});
+
+	if (exists $_row->{VALUE}) {
+	    $_row->{VALUE}          = $Self->_treatValue($_row->{VALUE});
+	}
 
       if (defined $elementOrder) {
         $_row->{ELEMENT_ORDER} = $elementOrder->[$_row->{ELEMENT_ORDER}];

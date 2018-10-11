@@ -59,7 +59,13 @@ function QuestionWizard(props) {
       {question.parameters.map(param => (
         <input key={param.name} type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
       ))}
+<div
+  data-restriction-type="search" 
+  data-record-class={question.recordClassName} 
+  data-controller="wdk.dataRestriction.restrictionController">
+</div>
     </div>
+
   )
 }
 

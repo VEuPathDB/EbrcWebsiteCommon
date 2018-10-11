@@ -24,9 +24,9 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.service.formatter.Keys;
+import org.gusdb.wdk.service.formatter.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
-import org.gusdb.wdk.service.service.WdkService;
+import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
 /**
@@ -35,7 +35,7 @@ import org.json.JSONObject;
  * @author crisl-adm
  */
 @Path("/hpi")
-public class BrcService extends WdkService {
+public class BrcService extends AbstractWdkService {
 
   private static Logger LOG = Logger.getLogger(BrcService.class);
   private NewCookie authCookie;
@@ -269,7 +269,7 @@ public class BrcService extends WdkService {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         IoUtil.transferStream(buffer, resultStream);
         JSONObject json = new JSONObject(new String(buffer.toByteArray()));
-        brcRequest.setDatasetId(json.getLong(Keys.ID));
+        brcRequest.setDatasetId(json.getLong(JsonKeys.ID));
       }
       else {
         throw new WdkModelException("Bad status - " + response.getStatus());

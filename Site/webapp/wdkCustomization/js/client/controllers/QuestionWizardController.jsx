@@ -21,7 +21,6 @@ import {
 import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
@@ -35,6 +34,7 @@ import { WdkStore } from 'wdk-client/Stores';
 import QuestionWizard from '../components/QuestionWizard';
 import {
   createInitialState,
+  createInitialParamState,
   getDefaultParamValues,
   setFilterPopupVisiblity,
   setFilterPopupPinned,
@@ -75,6 +75,8 @@ class QuestionWizardController extends AbstractViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
+
+    this.childRef = React.createRef();
   }
 
   getStoreClass() {
@@ -444,41 +446,14 @@ class QuestionWizardController extends AbstractViewController {
       paramValue,
       paramValues
     ).then(
-      // for each parameter returned, reset vocab/ontology and param value
+      // for each parameter returned, reset param value and state
       parameters =>
         Seq.from(parameters)
           .uniqBy(p => p.name)
-          .flatMap(param => {
-            switch(param.type) {
-              case 'FilterParamNew': {
-                // Return new state object with updates to param state and value
-                const ontology = param.values == null
-                  ? param.ontology
-                  : param.ontology.map(entry =>
-                    param.values[entry.term] == null
-                      ? entry
-                      : Object.assign(entry, {
-                        values: param.values[entry.term].join(' ')
-                      })
-                  );
-                return [
-                  set(['paramUIState', param.name, 'ontology'], ontology),
-                  set(['paramValues', param.name], param.defaultValue)
-                ]
-              }
-              case 'FlatVocabParam':
-              case 'EnumParam': {
-                return [
-                  set(['paramUIState', param.name, 'vocabulary'], param.vocabulary),
-                  set(['paramValues', param.name], param.defaultValue)
-                ]
-              }
-              default: {
-                console.warn('Unable to handle unexpected param type `%o`.', param.type);
-                return [identity];
-              }
-            }
-          })
+          .flatMap(param => [
+            set(['paramUIState', param.name], createInitialParamState(param)),
+            set(['paramValues', param.name], param.defaultValue)
+          ])
           .reduce(ary(flow, 2), identity)
     ).then(updater =>
       // Then, invalidate ontologyTermSummaries for dependent FilterParamNew params
@@ -731,11 +706,15 @@ class QuestionWizardController extends AbstractViewController {
     return this.state.question != null;
   }
 
+  isRenderDataLoadError() {
+    return this.state.question == null && this.state.error != null;
+  }
+
   componentDidMount() {
     this.loadQuestion(this.props);
 
     // FIXME Figure out to render form element in `QuestionWizard` component
-    const $form = $(ReactDOM.findDOMNode(this)).closest('form');
+    const $form = $(this.childRef.current).closest('form');
     $form
       .on('submit', () => {
         $form.block()
@@ -756,7 +735,7 @@ class QuestionWizardController extends AbstractViewController {
 
   renderView() {
     return (
-      <div>
+      <React.Fragment>
         {this.state.error && (
           <Dialog open modal title="An error occurred" onClose={() => this.setState({ error: undefined })}>
             {Seq.from(this.state.error.stack.split('\n'))
@@ -772,6 +751,14 @@ class QuestionWizardController extends AbstractViewController {
             showHelpText={!this.props.isRevise}
           />
         )}
+      </React.Fragment>
+    )
+  }
+
+  render() {
+    return (
+      <div ref={this.childRef}>
+        {super.render()}
       </div>
     )
   }

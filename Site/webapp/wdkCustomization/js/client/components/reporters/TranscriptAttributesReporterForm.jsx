@@ -12,9 +12,17 @@ let TranscriptAttributesReporterForm = props => {
   let getUiUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormUiState, formUiState);
 
   let transcriptAttribChangeHandler = newAttribsArray => {
-    updateFormState(Object.assign({}, formState, { ['attributes']:
-      util.addPk(util.prependAttrib('source_id', newAttribsArray), recordClass) }));
+    updateFormState(Object.assign({}, formState, {
+      attributes: prependAppropriateIds(newAttribsArray, formState.applyFilter, recordClass)
+    }));
   };
+
+  let transcriptPerGeneChangeHandler = isChecked => {
+    updateFormState(Object.assign({}, formState, {
+      applyFilter: isChecked,
+      attributes: prependAppropriateIds(formState.attributes, isChecked, recordClass)
+    }));
+  }
 
   return (
     <div>
@@ -45,7 +53,7 @@ let TranscriptAttributesReporterForm = props => {
             <h3>Choose Rows</h3>
             <div>
               <label>
-                <Checkbox value={formState.applyFilter} onChange={getUpdateHandler('applyFilter')}/>
+                <Checkbox value={formState.applyFilter} onChange={transcriptPerGeneChangeHandler}/>
                 <span style={{marginLeft:'0.5em'}}>Include only one transcript per gene (the longest)</span>
               </label>
             </div>
@@ -84,8 +92,16 @@ let TranscriptAttributesReporterForm = props => {
   );
 }
 
+function prependAppropriateIds(selectedAttributes, applyFilterChecked, recordClass) {
+  // per Redmine #22888, don't include transcript ID when filter box is checked and add back if unchecked
+  let nonIdAttrs = selectedAttributes.filter(attr =>
+      ![ recordClass.recordIdAttributeName, 'source_id'].includes(attr));
+  return util.addPk(applyFilterChecked ? nonIdAttrs :
+      util.prependAttrib('source_id', nonIdAttrs), recordClass);
+}
+
 function getUserPrefFilterValue(prefs) {
-  let prefValue = prefs['representativeTranscriptOnly'];
+  let prefValue = prefs.project['representativeTranscriptOnly'];
   return (prefValue !== undefined && prefValue === "true");
 }
 
@@ -93,16 +109,17 @@ TranscriptAttributesReporterForm.getInitialState = (downloadFormStoreState) => {
   let { scope, question, recordClass, globalData: { ontology, preferences } } = downloadFormStoreState;
   // select all attribs and tables for record page, else column user prefs and no tables
   let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.name, question));
-  let attribs = util.addPk(util.prependAttrib('source_id',
-      (scope === 'results' ?
-          util.getAttributeSelections(preferences, question, allReportScopedAttrs) :
-          allReportScopedAttrs)), recordClass);
+  let selectedAttributes = (scope === 'results' ?
+      util.getAttributeSelections(preferences, question, allReportScopedAttrs) :
+      allReportScopedAttrs);
+  let filterChecked = getUserPrefFilterValue(preferences);
+  selectedAttributes = prependAppropriateIds(selectedAttributes, filterChecked, recordClass);
   return {
     formState: {
-      attributes: attribs,
+      attributes: selectedAttributes,
       includeHeader: true,
       attachmentType: "plain",
-      applyFilter: getUserPrefFilterValue(preferences)
+      applyFilter: filterChecked
     },
     formUiState: {
       expandedAttributeNodes: null,

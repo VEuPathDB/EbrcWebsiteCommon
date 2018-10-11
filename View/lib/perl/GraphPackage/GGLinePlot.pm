@@ -29,6 +29,18 @@ sub setDefaultXMax               { $_[0]->{'_default_x_max'                 } = 
 sub getDefaultXMin               { $_[0]->{'_default_x_min'                 }}
 sub setDefaultXMin               { $_[0]->{'_default_x_min'                 } = $_[1]}
 
+sub getAdjustXYScalesTogether    { $_[0]->{'_adjust_xy_scales_together'     }}
+sub setAdjustXYScalesTogether    { $_[0]->{'_adjust_xy_scales_together'     } = $_[1]}
+
+sub getAntisenseFloor            { $_[0]->{'antisense_floor'                }}
+sub setAntisenseFloor            { $_[0]->{'antisense_floor'                } = $_[1]}
+
+sub getAntisenseFoldChange       { $_[0]->{'antisense_fold_change'          }}
+sub setAntisenseFoldChange       { $_[0]->{'antisense_fold_change'          } = $_[1]}
+
+sub getSenseFoldChange           { $_[0]->{'sense_fold_change'              }}
+sub setSenseFoldChange           { $_[0]->{'sense_fold_change'              } = $_[1]}
+
 sub getArePointsLast             { $_[0]->{'_are_points_last'               }}
 sub setArePointsLast             { $_[0]->{'_are_points_last'               } = $_[1]}
 
@@ -82,17 +94,20 @@ sub blankPlotPart {
   $self->blankGGPlotPart(@_);
 }
 
+sub getStrandDictionaryHash      { $_[0]->{'_strand_dictionary_hash'        }}
+
+
 #--------------------------------------------------------------------------------
 
 sub new {
   my $class = shift;
-
-   my $self = $class->SUPER::new(@_);
-
-   $self->setXaxisLabel("Whoops! Object forgot to call setXaxisLabel");
-   $self->setDefaultYMax(1);
-   $self->setDefaultYMin(-1);
-   return $self;
+    
+  my $self = $class->SUPER::new(@_);
+    
+  $self->setXaxisLabel("Whoops! Object forgot to call setXaxisLabel");
+  $self->setDefaultYMax(1);
+  $self->setDefaultYMin(-1);
+  return $self;
 }
 
 #--------------------------------------------------------------------------------
@@ -101,68 +116,67 @@ sub makeRPlotString {
   my ($self, $idType) = @_;
 
   my $sampleLabels = $self->getSampleLabels();
-
+    
   my $sampleLabelsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($sampleLabels, 'x.axis.label');
-
+    
   my $overrideXAxisLabels = scalar @$sampleLabels > 0 ? "TRUE" : "FALSE";
-
+    
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE';
-
+    
   my $colors = $self->getColors();
-
+        
   my $defaultPch = [ '15', '16', '17', '18', '7:10', '0:6'];
-
+    
   my $pointsPch = $self->getPointsPch();
   $pointsPch = $defaultPch unless $pointsPch;
-
+    
   my ($profileFiles, $elementNamesFiles, $stderrFiles);
-
+    
   my $blankGraph = $self->blankPlotPart();
-
+    
   eval{
-   ($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
-  };
+	($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
+    };
   if($@) {
-    return $blankGraph;
-  }
-
+	return $blankGraph;
+    }
+    
   my $profileSets = $self->getProfileSets();
   my @skipProfileSets;
   my $skipped = 0;
-  #print STDERR Dumper($colors);
-  #print STDERR Dumper(\@skipProfileSets);
+  
   for(my $i = 0; $i < scalar @$profileSets; $i++) {
-    my $profileSet = $profileSets->[$i];
-
-    if(scalar @{$profileSet->errors()} > 0) {
-      $skipProfileSets[$i] = "TRUE";
-      $skipped++;
-      if ($skipped == 1) {
-        splice @$colors, $i, 1;
-      } else {
-        #this because the size/ indexing of $colors shrinks as values removed.
-        my $j = $i - $skipped + 1;
-        splice @$colors, $j, 1;
-      }
-      next;
-    }
-
-    $skipProfileSets[$i] = "FALSE";
-  }
+      my $profileSet = $profileSets->[$i];
+	
+      if(scalar @{$profileSet->errors()} > 0) {
+	  $skipProfileSets[$i] = "TRUE";
+	  $skipped++;
+	  if ($skipped == 1) {
+	      splice @$colors, $i, 1;
+	   } else {
+		#this because the size/ indexing of $colors shrinks as values removed.
+	       my $j = $i - $skipped + 1;
+	       splice @$colors, $j, 1;
+	   }
+	   next;
+	}
+	
+	$skipProfileSets[$i] = "FALSE";
+   }
   #print STDERR Dumper($colors);
   if(scalar @$profileSets == $skipped) {
-    return $blankGraph;
+      return $blankGraph;
   }
-
+    
   my @profileFileStrings = split(/,/, $profileFiles);
   my $numProfiles = scalar @profileFileStrings;
-
+    
   my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
   my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
-
+    
   my $pointsPchString = EbrcWebsiteCommon::View::GraphPackage::Util::rNumericVectorFromArray($pointsPch, 'points.pch');
-
+    
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
   my $xAxisLabel = $self->getXaxisLabel();
@@ -172,31 +186,41 @@ sub makeRPlotString {
   $statusLegend = $statusLegend ? $statusLegend : '';
   my $eventDurLegend = $self->getEventDurLegend();
   $eventDurLegend = $eventDurLegend ? $eventDurLegend : '';
-
+    
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
   my $hideXAxisLabels = $self->getHideXAxisLabels() ? 'TRUE' : 'FALSE';
-
+    
   my $xMax = $self->getDefaultXMax();
   my $xMin = $self->getDefaultXMin();
 
+  my $adjustXYScalesTogether = $self->getAdjustXYScalesTogether();
+  $adjustXYScalesTogether = defined($adjustXYScalesTogether) ? $adjustXYScalesTogether : 'FALSE';
+
+  my $antisenseFoldChange = $self->getAntisenseFoldChange();
+  $antisenseFoldChange = defined($antisenseFoldChange) ? $antisenseFoldChange : 1;
+
+  my $senseFoldChange = $self->getSenseFoldChange();
+  $senseFoldChange = defined($senseFoldChange) ? $senseFoldChange : -1;
+
   my $yAxisFoldInductionFromM = $self->getMakeYAxisFoldInduction();
-  
+    
   my $df = $self->getSplineDF;
   my $pointsLast = $self->getArePointsLast();
   my $rPostscript = $self->getRPostscript();
-
+    
   my $smoothLines = $self->getSmoothLines();
   my $smoothWithLoess = $self->getSmoothWithLoess();
-
+    
   my $splineApproxN = $self->getSplineApproxN();
-
+    
   my $prtcpnt_sum = $self->getPartName() eq 'prtcpnt_sum' ? 'TRUE' : 'FALSE';
   my $prtcpnt_timeline = $self->getTimeline() ? 'TRUE' : 'FALSE';
-
+    
   my $colorVals = $self->getColorVals();
   $colorVals = $colorVals ? $colorVals : '';
   my $hasColorVals = $colorVals ? 'TRUE' : 'FALSE';
+
 
   my $colorLabels = $self->getColorLabels();
   $colorLabels = $colorLabels ? $colorLabels : '';
@@ -334,6 +358,7 @@ $legendLabelsString
 $skipProfilesString
 $profileTypesString
 
+
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
 
@@ -394,7 +419,7 @@ for(ii in 1:length(profile.files)) {
 
     profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
 
-    if (ncol(element.names.df) > 2 ){
+    if (\"FACET\" %in% colnames(element.names.df)){
       profile.df\$FACET <- as.character(profile.df\$FACET)
       profile.df\$FACET[is.na(profile.df\$FACET)] <- \"Unknown\"
       profile.df\$FACET[profile.df\$FACET == \"\"] <- \"Unknown\"
@@ -420,6 +445,11 @@ for(ii in 1:length(profile.files)) {
   profile.df.full = rbind.fill(profile.df.full, profile.df);
 }
 
+#if no y values, make a placeholder (ex: timelines)
+if (!\"VALUE\" %in% colnames(profile.df.full)) {
+  profile.df.full\$VALUE = NA
+}
+
 #allow adjustments
 $rAdjustProfile
 
@@ -430,7 +460,18 @@ if ($prtcpnt_sum) {
   if (\"DURATION\" %in% colnames(profile.df.full)) {
     annotate.df = completeDF(profile.df.full, \"DURATION\");
   }
-  profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+  if (any(grepl(\"WHO Standards\", unique(profile.df.full\$LEGEND)))){
+     generic.df = completeDF(profile.df.full, \"VALUE\")
+
+     who.df = generic.df[grepl(\"WHO Standards\", generic.df\$LEGEND),]
+
+     profile.df.clean = generic.df[!(grepl(\"WHO Standards\", generic.df\$LEGEND)),]
+     
+  }else{
+
+     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+  }
+
 }
 
 if(\"FACET\" %in% colnames(profile.df.full)) {
@@ -475,7 +516,7 @@ if (is.null(profile.df.full\$LEGEND)) {
   hideLegend = TRUE
 }
 
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND));
+gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
 
 if ($prtcpnt_sum) {
   if (all(is.na(profile.df.full\$VALUE))) {
@@ -484,20 +525,36 @@ if ($prtcpnt_sum) {
     y.min = 0;
     y.scale = 1;
   } else {
-    #may have to change this from determining scale, to determine the order of magnitude of the scale
-    #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
-    y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-    y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-    y.scale = abs(round((y.max - y.temp) / 3));
-    if (y.scale < 1) {
-      y.scale = 1;
-    }
-    y.min = y.temp - (2.25 * y.scale);
-  }
+     #may have to change this from determining scale, to determine the order of magnitude of the scale
+     #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
+     y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
+     y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+     y.scale = abs(round((y.max - y.temp) / 3));
+     if (y.scale < 1) {
+       y.scale = 1;
+     }
+   y.min = y.temp - (2.25 * y.scale);
+ }
 } else {
-  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
+  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
 }
+
+if ($adjustXYScalesTogether) {
+   x.max = max(as.numeric(x.max), max(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+   x.min = min(as.numeric(x.min), min(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+   maxValue <- max(c(abs(y.max),abs(y.min),abs(x.max),abs(x.min)));
+   y.max=x.max=maxValue;
+   y.min=x.min=-1*maxValue;
+   if ($antisenseFoldChange>0) {y.end=y.max}
+   else {y.end=y.min}
+   if ($senseFoldChange>0) {x.end=x.max}
+   else {x.end=x.min}
+   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=$senseFoldChange,yend=y.end),linetype=\"dashed\",color=\"red\");
+   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=x.end,yend=$antisenseFoldChange),linetype=\"dashed\",color=\"red\");
+   gp = gp + geom_abline(intercept=0,slope=1,linetype=\"dashed\",color=\"red\");
+}
+
 
 if($isSVG) {
   useTooltips=TRUE;
@@ -569,7 +626,9 @@ if(!$forceNoLines) {
       if ($colorPointsOnly) {
         gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
       } else {
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+         
+        gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
+
       }
     } else {
       if ($colorPointsOnly) {
@@ -613,7 +672,7 @@ if (coord.cartesian) {
 # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
 # then wont need the if statement. cause though fine now, this still may eventually cause problems.
 if ($hasColorVals) {
-  gp = gp + scale_color_manual(values = $colorVals)
+   gp = gp + scale_color_manual(values = $colorVals)
 } else {
   if (count/length($colorsStringNotNamed) == 1) {
     gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
@@ -621,6 +680,9 @@ if ($hasColorVals) {
     gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
   }
 }
+
+
+
 
 if( $fillBelowLine) {
   hideLegend=TRUE;
@@ -632,7 +694,13 @@ if(is.compact) {
   gp = gp + theme_void() + theme(legend.position=\"none\");
 } else if(is.thumbnail) {
   gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+  
+  if ($adjustXYScalesTogether) {
+     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
+  } else {
+     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+  }
+
   gp = gp + ylim(y.min, y.max);
 
   if(!profile.is.numeric) {
@@ -654,7 +722,7 @@ if(is.compact) {
 
   if (myX == \"CONTXAXIS\") {
     if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
-      gp = gp + theme(axis.text.x = element_blank())    
+      gp = gp + theme(axis.text.x = element_blank());    
     }
   } else {
     if(!profile.is.numeric) {
@@ -704,7 +772,7 @@ if($hideXAxisLabels) {
 if ($prtcpnt_sum) {
 
   if (\"YLABEL\" %in% colnames(profile.df.full)) {
-    if (length(unique(profile.df.full\$YLABEL)) > 1) {
+    if (length(unique(profile.df.full\$YLABEL)) > 1 & all(grepl(\"z-score\", unique(profile.df.full\$YLABEL)))) {
       myYLab <- \"Z-score\" 
     } else {
       myYLab <- unique(profile.df.full\$YLABEL)[1]
@@ -723,12 +791,14 @@ if ($prtcpnt_sum) {
     myXLab <- \"$xAxisLabel\"
   }
 
+
   if (grepl(\"z-score\", myYLab) | grepl(\"Z-score\", myYLab)) {
     gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
     gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
  
     gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
-  } 
+  }
+
 
   event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
   if (event.start) {
@@ -755,6 +825,17 @@ if ($prtcpnt_sum) {
       gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
     }
   }
+
+
+  who_standards = exists(\"who.df\") && nrow(who.df)>0;
+
+
+  if (who_standards){
+   
+     gp = gp + geom_tooltip(data=who.df,aes(x=get(myX), y=VALUE, tooltip=LEGEND),real.geom = geom_line)
+   
+   }
+
 
   status = exists(\"status.df\") && nrow(status.df) > 0;
 
@@ -784,6 +865,7 @@ if ($prtcpnt_sum) {
 
     } else {
       status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
+      status.df\$COLOR = as.character(status.df\$COLOR)
       numColors = length(unique(status.df\$COLOR))
       if (numColors > 1) {
         myColors = rainbow(numColors);
@@ -795,13 +877,13 @@ if ($prtcpnt_sum) {
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
 
       if ($hasColorVals) {
-        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\")
+        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\");
       } else {
         gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
       }
 
       #create custom legend
-      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"))
+      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"));
     }
   }
 
@@ -815,9 +897,10 @@ if ($prtcpnt_sum) {
       }
     }
 
-  gp = gp + guides(color = guide_legend(order=1))
+    gp = gp + guides(color = guide_legend(order=1));
 
 }
+
 
 #postscript
 $rPostscript
@@ -992,6 +1075,47 @@ sub new {
   return $self;
 }
 
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeqSenseAntisense;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeq );
+use strict;
+use Data::Dumper;
+
+sub new {
+    my ($class,$args,$profileSets) = @_;
+    my $self = $class->SUPER::new($args,$profileSets);
+
+    my $strandDictionaryHash = $self->getStrandDictionaryHash();
+    my @legendNames=();
+    for(my $i = 0; $i < scalar @$profileSets; $i++) {
+       my $profileSet = $profileSets->[$i];
+       my $profileSetName = $profileSet->getName();
+       my $strandType = "";
+       if ($profileSetName =~ /(\w*strande?d?)/) {
+	   $strandType = $1;
+       }
+       my $sample = $strandDictionaryHash->{$strandType};
+       if ($sample eq "sense") {
+	   $sample="  sense";
+	   if ($i == 1) {
+	       my $newProfileSets=[];
+	       $newProfileSets->[0] = $profileSets->[1];
+	       $newProfileSets->[1] = $profileSets->[0];
+	       $self->setProfileSets($newProfileSets);
+	   }
+       }
+       push @legendNames, $sample; 
+
+    }
+    
+    @legendNames = sort {$a cmp $b} @legendNames;
+    $self->setLegendLabels(\@legendNames);
+    $self->setSmoothLines(0);
+
+    return $self;
+}
+
+
 #--------------------------------------------------------------------------------
 
 package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::PairedEndRNASeq;
@@ -1132,4 +1256,4 @@ sub new {
    return $self;
 }
 
-1
+1;
