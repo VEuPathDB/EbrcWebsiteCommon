@@ -113,7 +113,7 @@ public class ContactUsService extends AbstractWdkService {
     return Response.ok().build();
   }
   
-  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, HttpSession session) throws WdkModelException {
+  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, HttpSession session) {
     String message = jsonBody.getString("message");
     
     String subject = getStringOrDefault(jsonBody, "subject", "");
