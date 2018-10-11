@@ -1,4 +1,5 @@
 import {
+  ContactUsAttachments,
   ContactUsFooter,
   SupportFormField,
   ValidatedInput,
@@ -6,6 +7,7 @@ import {
 } from '../../components';
 
 const ContactUsForm = ({
+  submitDisabled,
   submissionFailed,
   responseMessage,
   subjectValue,
@@ -15,10 +17,14 @@ const ContactUsForm = ({
   reporterEmailValidity,
   ccEmailsValidity,
   messageValidity,
+  validatedAttachmentMetadata,
   updateSubject,
   updateReporterEmail,
   updateCcEmails,
   updateMessage,
+  changeFile,
+  addFile,
+  removeFile,
   submitDetails
 }) => (
   <form onSubmit={event => {
@@ -74,7 +80,19 @@ const ContactUsForm = ({
               />
             }
           />
+          <SupportFormField
+            label="Attachments:"
+            inputElement={
+              <ContactUsAttachments
+                changeFile={changeFile}
+                addFile={addFile}
+                removeFile={removeFile}
+                validatedAttachmentMetadata={validatedAttachmentMetadata}
+              />
+            }
+          />
           <ContactUsFooter 
+            submitDisabled={submitDisabled}
             submissionFailed={submissionFailed}
             responseMessage={responseMessage}
           />

@@ -1,7 +1,8 @@
-import { WdkViewController } from 'wdk-client/Controllers';
+import { ViewController } from 'wdk-client/Controllers';
 import { Footer } from 'wdk-client/Components';
 
-export default class FooterController extends WdkViewController {
+// Used for legacy jsp pages
+export default class FooterController extends ViewController {
   renderView() {
     return <Footer/>
   }

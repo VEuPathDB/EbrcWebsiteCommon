@@ -5,9 +5,8 @@ import static org.mockito.Mockito.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-
 import org.gusdb.fgputil.web.RequestData;
+import org.gusdb.wdk.model.Attachment;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.config.ModelConfig;
@@ -22,7 +21,7 @@ public class ContactUsSubmitterTest {
     String reporterEmail = "johndoe@aol.com";
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
-    DataHandler[] attachments = new DataHandler[] {};
+    Attachment[] attachments = new Attachment[] {};
     
     ContactUsParams params = new ContactUsParams(
         subject,
@@ -43,7 +42,7 @@ public class ContactUsSubmitterTest {
     
     when(requestData.getUserAgent()).thenReturn("Internet Explorer 5");
     when(requestData.getIpAddress()).thenReturn("127.0.0.1");
-    when(requestData.getReferrer()).thenReturn("elmstreet.eupathdb.org/elmstreet.vm/contact.do");
+    when(requestData.getReferrer()).thenReturn("elmstreet.eupathdb.org/elmstreet.vm/app/contact-us");
     when(requestData.getAppHostName()).thenReturn("elmstreet.eupathdb.org");
     when(requestData.getAppHostAddress()).thenReturn("128.0.0.1");
 
@@ -77,7 +76,7 @@ public class ContactUsSubmitterTest {
         eq("My brain hurts!"),
         anyString(),
         eq("janedoe@hotmail.com, jimmydoe@gmail.com"),
-        eq(new DataHandler[] {})
+        eq(new Attachment[] {})
     );
 
     verify(emailSender, times(1)).sendEmail(
@@ -87,7 +86,7 @@ public class ContactUsSubmitterTest {
         eq("My brain hurts!"),
         anyString(),
         eq(null),
-        eq(new DataHandler[] {})
+        eq(new Attachment[] {})
     );
 
     verify(emailSender, times(1)).sendEmail(
@@ -97,7 +96,7 @@ public class ContactUsSubmitterTest {
         eq("My brain hurts!"),
         anyString(),
         eq(null),
-        eq(new DataHandler[] {})
+        eq(new Attachment[] {})
     );
   }
   

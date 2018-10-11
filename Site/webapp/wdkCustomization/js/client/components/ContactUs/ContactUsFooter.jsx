@@ -4,6 +4,7 @@ import {
 } from '../../components';
 
 const ContactUsFooter = ({
+  submitDisabled,
   submissionFailed,
   responseMessage
 }) => (
@@ -11,8 +12,9 @@ const ContactUsFooter = ({
     <td align="center" colSpan={2}>
       <ContactUsInstructions />
       <input 
+        type="submit"
+        disabled={submitDisabled}
         value="Submit message" 
-        type="submit" 
       />
       {
         submissionFailed &&

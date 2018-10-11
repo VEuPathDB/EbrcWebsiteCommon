@@ -17,10 +17,10 @@ import {
 import { debounce, identity, omit, uniq, flow } from 'lodash';
 import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
 import * as eupathComponentWrappers from './component-wrappers';
-import * as eupathStoreWrappers from './store-wrappers';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
 import * as EbrcRoutes from './routes';
+import ebrcWrapStoreModules from './wrapStoreModules';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -31,8 +31,6 @@ import '../../../js/scroll-to-top';
  * @param {Object} [options]
  * @param {Object} [options.componentWrappers] An object whose keys are Wdk
  *    Component names, and whose values are higer-order Component functions.
- * @param {Object} [options.storeWrappers] An object whose keys are Wdk Store
- *    names, and whose values are higher-order Store functions.
  * @param {Array} [options.quickSearches] An array of quick search reference
  *    objects. A quick search refrence object has the following structure:
  *      {
@@ -105,9 +103,9 @@ export function initialize(options = {}) {
   const {
     quickSearches,
     componentWrappers,
-    storeWrappers,
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
+    wrapStoreModules = identity,
   } = options;
 
   const restOptions = omit(options, [
@@ -125,7 +123,7 @@ export function initialize(options = {}) {
   // initialize the application
   const context = initializeWdk({
     wrapRoutes: flow(EbrcRoutes.wrapRoutes, wrapRoutes),
-    storeWrappers: mergeWrapperObjects(storeWrappers, eupathStoreWrappers),
+    wrapStoreModules: flow(ebrcWrapStoreModules, wrapStoreModules),
     rootUrl,
     rootElement,
     endpoint,
@@ -135,18 +133,18 @@ export function initialize(options = {}) {
 
   (window.ebrc || (window.ebrc = {})).context = context
 
-  context.dispatchAction(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
+  context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
     quickSearchReferences: quickSearches,
   })));
 
-  // XXX Move calls to dispatchAction to controller override?
+  // XXX Move calls to store.dispatch to controller override?
 
   // load quick search data
   if (quickSearches) {
-    context.dispatchAction(loadQuickSearches(quickSearches));
+    context.store.dispatch(loadQuickSearches(quickSearches));
   }
 
-  context.dispatchAction(loadBasketCounts());
+  context.store.dispatch(loadBasketCounts());
 
   return context;
 }

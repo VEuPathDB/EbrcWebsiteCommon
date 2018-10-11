@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {pure} from 'wdk-client/ComponentUtils';
 import DatasetGraph from 'ebrc-client/components/DatasetGraph';
@@ -110,10 +111,10 @@ const DatasetGraphTable = pure(function DatasetGraphTable(props) {
   );
 });
 
-function References(props, context) {
-  let {questions, recordClasses, siteConfig} = context.viewStore.getState().globalData || {};
+function References(props) {
+  let {questions, recordClasses, siteConfig} = props;
   if (questions == null || recordClasses == null || siteConfig == null) {
-    return <noscript/>;
+    return null;
   }
   let value = props.value
   .filter(row => row.target_type === 'question')
@@ -134,13 +135,18 @@ function References(props, context) {
   return value.length === 0 ? <em>No data available</em> : <ul>{value}</ul>;
 }
 
-References.contextTypes = {
-  viewStore: PropTypes.object.isRequired
-};
+const ConnectedReferences = connect(
+  state => ({
+    questions: state.globalData.questions,
+    recordClasses: state.globalData.recordClasses,
+    siteConfig: state.globalData.siteConfig
+  }),
+  null
+)(References);
 
 export function RecordTable(props) {
   if (props.table.name === 'References') {
-    return <References {...props}/>;
+    return <ConnectedReferences {...props}/>;
   }
   if (props.table.name === 'ExampleGraphs') {
     return <DatasetGraphTable {...props}/>;

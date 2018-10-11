@@ -150,8 +150,8 @@ modelprop:
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
   LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
-  REDMINE_TO_EMAIL: 'dontcare@dontcare.edu'
-  REDMINE_FROM_EMAIL: 'stilldontcare@dontcare.edu'
+  REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
+  REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"

@@ -47,7 +47,7 @@ const siteAnnouncements = [
           Your searches and strategies saved in this alpha release will not be available in the
           official release.
           Please explore the site and <a className="new-window" data-name="contact_us"
-            href={props.webAppUrl + '/contact.do'}>contact us</a> with your feedback.
+            href={props.webAppUrl + '/app/contact-us'}>contact us</a> with your feedback.
           This site is under active development so there may be incomplete or
           inaccurate data and occasional site outages can be expected.
         </div>
@@ -62,7 +62,7 @@ const siteAnnouncements = [
         <div key="beta">
           This pre-release version of {props.projectId} is available for early community review.
           Please explore the site and <a className="new-window" data-name="contact_us"
-            href={props.webAppUrl + '/contact.do'}>contact us</a> with your feedback.
+            href={props.webAppUrl + '/app/contact-us'}>contact us</a> with your feedback.
           Note that any saved strategies in the beta sites will be lost once the
           sites are fully released. Some of our sites remain under active development
           during their Beta release which might require occasional site outages or data re-analysis.
@@ -105,7 +105,7 @@ const siteAnnouncements = [
     return props.projectId == 'OrthoMCL' ? null : (
       <div key="alt-splice-release">
 Release 29 is an alpha release that includes significant updates to the underlying data and infrastructure. In addition to refreshing all data to the latest versions, we redesigned gene pages, incorporated alternative transcripts into gene pages and searches, and updated search categories.
-Please <a className="new-window" data-name="contact_us" href="{props.webAppUrl}/contact.do"> Contact Us</a> to let us know what you think. Release 28 is still available and fully functional.
+Please <a className="new-window" data-name="contact_us" href="{props.webAppUrl}/app/contact-us"> Contact Us</a> to let us know what you think. Release 28 is still available and fully functional.
       </div>
     );
   }

@@ -26,7 +26,7 @@
        This <i>beta-release</i> of Compound and Metabolic Pathways data sets incorporates KEGG pathways and a subset of PubChem records.  Future releases will include compounds for additional metabolites and small molecules, and pathways from other sources such as MPMP, MetaCyc, etc.  
 
        Please explore the site and 
-			 <a class="new-window" data-name="contact_us" href="<c:url value='/contact.do'/>" >contact us</a> 
+			 <a class="new-window" data-name="contact_us" href="<c:url value='/app/contact-us'/>" >contact us</a> 
 			 with your feedback. 
 </c:if>
 --%>
@@ -49,7 +49,7 @@ Note: the Enzyme Commission (EC) numbers associated with proteins were obtained 
   <td> 
     This ${wdkModel.name} has been significantly upgraded.  
     In addition to a refresh of all data to the latest versions, the site reflects a large development effort to upgrade many website and data features (see the <a href="<c:url value='/showXmlDataContent.do?name=XmlQuestions.News'/> ">Release Notes</a>). 
-    Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/contact.do'/>'>
+    Please explore the site and <a class="new-window" data-name="contact_us" href='<c:url value='/app/contact-us'/>'>
     Contact Us</a> with your feedback. 
     Previous database available at <a href="http://r28.${wdkModel.name}.org">${wdkModel.name} Release 28</a>.
   </td></tr>
