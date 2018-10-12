@@ -539,6 +539,7 @@ class QuestionWizardController extends ViewController {
 
   _getAnswerCount(answerSpec) {
     const formatting = {
+      format: 'wdk-service-json',
       formatConfig: {
         pagination: { offset: 0, numRecords: 0 }
       }
