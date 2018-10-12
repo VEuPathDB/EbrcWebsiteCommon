@@ -538,13 +538,10 @@ class QuestionWizardController extends ViewController {
   }
 
   _getAnswerCount(answerSpec) {
-    const formatting = {
-      format: 'wdk-service-json',
-      formatConfig: {
-        pagination: { offset: 0, numRecords: 0 }
-      }
+    const formatConfig = {
+      pagination: { offset: 0, numRecords: 0 }
     };
-    return this.props.wdkService.getAnswer(answerSpec, formatting).then(
+    return this.props.wdkService.getAnswerJson(answerSpec, formatConfig).then(
       answer => answer.meta.totalCount,
       error => {
         this.setState({ error });
