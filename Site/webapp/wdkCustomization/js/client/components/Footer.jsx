@@ -43,7 +43,7 @@ export default function Footer() {
           </li>
         </ul>
         <div className="contact">
-          Please <NewWindowLink href={webAppUrl + '/contact.do'}>Contact Us</NewWindowLink> with any questions or comments
+          Please <NewWindowLink href={webAppUrl + '/app/contact-us'}>Contact Us</NewWindowLink> with any questions or comments
         </div>
       </div>
       <div className="bottom">

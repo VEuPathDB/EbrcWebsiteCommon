@@ -1,10 +1,14 @@
-import { flow } from 'lodash';
+import { compose, get } from 'lodash/fp';
+import { connect } from 'react-redux';
 
-import { WdkPageController } from 'wdk-client/Controllers';
+import { PageController } from 'wdk-client/Controllers';
 
 import { 
-  updateField, 
-  submitDetails 
+  updateField,
+  changeAttachmentMetadata,
+  addAttachmentMetadata,
+  removeAttachmentMetadata,
+  submitDetails  
 } from  '../actioncreators/ContactUsActionCreators';
 
 import {
@@ -14,6 +18,7 @@ import {
 } from '../components';
 
 import {
+  submitDisabled,
   submissionFailed,
   submissionSuccessful, 
   responseMessage, 
@@ -24,52 +29,29 @@ import {
   messageValidity,
   reporterEmailValidity,
   ccEmailsValidity,
-  displayName,
-  title
+  validatedAttachmentMetadata
 } from '../selectors/ContactUsSelectors';
 
-import ContactUsStore from '../stores/ContactUsStore';
+class ContactUsController extends PageController {
+  isRenderDataLoaded() {
+    const {
+      displayName,
+      user
+    } = this.props.stateProps;
 
-export default class ContactUsController extends WdkPageController {
-  getStoreClass() {
-    return ContactUsStore;
-  }
-
-  getActionCreators() {
-    return {
-      updateSubject: flow(targetValue, updateField('subject')),
-      updateReporterEmail: flow(targetValue, updateField('reporterEmail')),
-      updateCcEmails: flow(targetValue, updateField('ccEmails')),
-      updateMessage: flow(targetValue, updateField('message')),
-      submitDetails
-    };
-  }
-
-  getStateFromStore() {
-    const state = this.store.getState();
-
-    return {
-      displayName: displayName(state),
-      submissionFailed: submissionFailed(state),
-      submissionSuccessful: submissionSuccessful(state),
-      responseMessage: responseMessage(state),
-      subjectValue: subjectValue(state),
-      reporterEmailValue: reporterEmailValue(state),
-      ccEmailsValue: ccEmailsValue(state),
-      messageValue: messageValue(state),
-      reporterEmailValidity: reporterEmailValidity(state),
-      ccEmailsValidity: ccEmailsValidity(state),
-      messageValidity: messageValidity(state)
-    };
+    return displayName && user;
   }
 
   getTitle() { 
-    return title(this.store.getState());
+    const { displayName } = this.props.stateProps
+
+    return `${displayName} :: Help`;
   }
 
   renderView() {
     const {
       displayName,
+      submitDisabled,
       submissionFailed,
       submissionSuccessful,
       responseMessage,
@@ -79,16 +61,20 @@ export default class ContactUsController extends WdkPageController {
       messageValue,
       reporterEmailValidity,
       ccEmailsValidity,
-      messageValidity
-    } = this.state;
+      messageValidity,
+      validatedAttachmentMetadata
+    } = this.props.stateProps;
 
     const {
       updateSubject,
       updateReporterEmail,
       updateCcEmails,
       updateMessage,
+      changeFile,
+      addFile,
+      removeFile,
       submitDetails
-    } = this.eventHandlers;
+    } = this.props.dispatchProps;
 
     return (
       <SupportFormBase>
@@ -101,6 +87,7 @@ export default class ContactUsController extends WdkPageController {
                 } 
               />
             : <ContactUsSubmission
+                submitDisabled={submitDisabled}
                 submissionFailed={submissionFailed}
                 responseMessage={responseMessage}
                 subjectValue={subjectValue}
@@ -111,9 +98,13 @@ export default class ContactUsController extends WdkPageController {
                 updateReporterEmail={updateReporterEmail}
                 updateCcEmails={updateCcEmails}
                 updateMessage={updateMessage}
+                changeFile={changeFile}
+                addFile={addFile}
+                removeFile={removeFile}
                 reporterEmailValidity={reporterEmailValidity}
                 ccEmailsValidity={ccEmailsValidity}
                 messageValidity={messageValidity}
+                validatedAttachmentMetadata={validatedAttachmentMetadata}
                 submitDetails={submitDetails}
               />
         }
@@ -123,3 +114,49 @@ export default class ContactUsController extends WdkPageController {
 }
 
 const targetValue = ({ target: { value } }) => value;
+
+const mapStateToProps = ({ 
+  contactUs: contactUsState, 
+  globalData: globalDataState 
+}) => ({
+  displayName: get('siteConfig.displayName', globalDataState),
+  user: get('user', globalDataState),
+  submitDisabled: submitDisabled(contactUsState),
+  submissionFailed: submissionFailed(contactUsState),
+  submissionSuccessful: submissionSuccessful(contactUsState),
+  responseMessage: responseMessage(contactUsState),
+  subjectValue: subjectValue(contactUsState),
+  reporterEmailValue: reporterEmailValue(contactUsState),
+  ccEmailsValue: ccEmailsValue(contactUsState),
+  messageValue: messageValue(contactUsState),
+  reporterEmailValidity: reporterEmailValidity(contactUsState),
+  ccEmailsValidity: ccEmailsValidity(contactUsState),
+  messageValidity: messageValidity(contactUsState),
+  validatedAttachmentMetadata: validatedAttachmentMetadata(contactUsState)
+});
+
+const mapDispatchToProps = {
+  updateSubject: compose(updateField('subject'), targetValue),
+  updateReporterEmail: compose(updateField('reporterEmail'), targetValue),
+  updateCcEmails: compose(updateField('ccEmails'), targetValue),
+  updateMessage: compose(updateField('message'), targetValue),
+  changeFile: (index, files) => {
+    return files.length === 0
+      ? changeAttachmentMetadata(index, { file: null })
+      : changeAttachmentMetadata(index, { file: files[0] })
+  },
+  addFile: () => addAttachmentMetadata({}),
+  removeFile: index => removeAttachmentMetadata(index),
+  submitDetails
+};
+
+const mergeProps = (stateProps, dispatchProps) => ({
+  stateProps,
+  dispatchProps
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(ContactUsController);

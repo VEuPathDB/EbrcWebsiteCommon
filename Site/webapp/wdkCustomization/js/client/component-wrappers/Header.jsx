@@ -1,13 +1,12 @@
-import { flow } from 'lodash';
 import React from 'react';
-import { withStore, withActions } from '../util/component';
+import { connect } from 'react-redux';
 import { UserActionCreators } from 'wdk-client/ActionCreators';
 import SiteHeader from '../components/SiteHeader';
 import CookieBanner from '../components/CookieBanner';
 
-const SiteHeaderWithContext = flow(
-  withActions(UserActionCreators),
-  withStore(state => state.globalData)
+const SiteHeaderWithContext = connect(
+  state => state.globalData,
+  UserActionCreators,
 )(SiteHeader);
 
 /**

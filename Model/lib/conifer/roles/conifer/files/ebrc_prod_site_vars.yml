@@ -39,3 +39,7 @@ password:
       'attr=password xpath=database/user[@login=\"{}\"]'.format(userDb_login)
       )
     }}"
+
+modelprop:
+  REDMINE_TO_EMAIL: 'redmine@apidb.org'
+  REDMINE_FROM_EMAIL: 'websitesupportform@apidb.org'

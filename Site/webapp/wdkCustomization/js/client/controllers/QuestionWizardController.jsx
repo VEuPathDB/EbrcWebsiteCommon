@@ -24,12 +24,11 @@ import React from 'react';
 
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
-import { AbstractViewController } from 'wdk-client/Controllers';
+import { ViewController } from 'wdk-client/Controllers';
 import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
 import { Seq } from 'wdk-client/IterableUtils';
 import { synchronized } from 'wdk-client/PromiseUtils';
 import { preorder } from 'wdk-client/TreeUtils';
-import { WdkStore } from 'wdk-client/Stores';
 
 import QuestionWizard from '../components/QuestionWizard';
 import {
@@ -63,7 +62,7 @@ const natSortComparator = natsort();
  * FIXME Move state management into a Store. As-is, there are potential race
  * conditions due to `setState()` being async.
  */
-class QuestionWizardController extends AbstractViewController {
+class QuestionWizardController extends ViewController {
 
   constructor(props) {
     super(props);
@@ -77,14 +76,6 @@ class QuestionWizardController extends AbstractViewController {
     this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
 
     this.childRef = React.createRef();
-  }
-
-  getStoreClass() {
-    return WdkStore;
-  }
-
-  getStateFromStore() {
-    return {};
   }
 
   getEventHandlers() {
@@ -547,12 +538,10 @@ class QuestionWizardController extends AbstractViewController {
   }
 
   _getAnswerCount(answerSpec) {
-    const formatting = {
-      formatConfig: {
-        pagination: { offset: 0, numRecords: 0 }
-      }
+    const formatConfig = {
+      pagination: { offset: 0, numRecords: 0 }
     };
-    return this.props.wdkService.getAnswer(answerSpec, formatting).then(
+    return this.props.wdkService.getAnswerJson(answerSpec, formatConfig).then(
       answer => answer.meta.totalCount,
       error => {
         this.setState({ error });

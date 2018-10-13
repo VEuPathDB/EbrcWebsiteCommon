@@ -25,7 +25,7 @@
   <span style="font-weight:bold">If this does not work, please:</span>
   <ul class="cirbulletlist">
     <li>
-      Open the <a href="${pageContext.request.contextPath}/contact.do"
+      Open the <a href="${pageContext.request.contextPath}/app/contact-us"
         class="new-window" data-name="contact_us">Contact Us</a> form,
     </li>
     <li>

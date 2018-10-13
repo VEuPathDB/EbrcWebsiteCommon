@@ -13,7 +13,7 @@
       <attribute name="content"><![CDATA[
         Your basket is not working because some IDs have changed or been retired
         since your last visit. 
-        Please <a href="/a/contact.do" class="new-window" data-name="contact_us">contact us</a> if you need to recover old IDs.
+        Please <a href="/a/app/contact-us" class="new-window" data-name="contact_us">contact us</a> if you need to recover old IDs.
         Otherwise please <a href="javascript:void();"
         onclick="emptyBasket();">empty your basket</a> to restore its functionality.
         ]]></attribute>
@@ -23,7 +23,7 @@
       <attribute name="title">There is an error with your results</attribute>
       <attribute name="content"><![CDATA[
         It appears something has gone wrong when retrieving your results.
-        Please <a href="/a/contact.do" class="new-window" data-name="contact_us">contact us</a> so that
+        Please <a href="/a/app/contact-us" class="new-window" data-name="contact_us">contact us</a> so that
         we can investigate what may be causing this.
         ]]></attribute>
     </record>

@@ -1,6 +1,6 @@
 package org.eupathdb.common.model.contact;
 
-import javax.activation.DataHandler;
+import org.gusdb.wdk.model.Attachment;
 
 // TODO: Should we factor out this "concretion"
 // using an interface?
@@ -9,14 +9,14 @@ public class ContactUsParams {
   public final String reporterEmail;
   public final String[] ccEmails;
   public final String message;
-  public final DataHandler[] attachments;
+  public final Attachment[] attachments;
   
   public ContactUsParams(
       String subject,
       String reporterEmail,
       String[] ccEmails,
       String message,
-      DataHandler[] attachments) {
+      Attachment[] attachments) {
     this.subject = subject;
     this.reporterEmail = reporterEmail;
     this.ccEmails = ccEmails;

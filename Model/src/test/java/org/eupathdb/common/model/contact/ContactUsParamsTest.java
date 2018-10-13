@@ -2,8 +2,7 @@ package org.eupathdb.common.model.contact;
 
 import static org.junit.Assert.*;
 
-import javax.activation.DataHandler;
-
+import org.gusdb.wdk.model.Attachment;
 import org.junit.Test;
 
 public class ContactUsParamsTest {
@@ -14,14 +13,14 @@ public class ContactUsParamsTest {
     String reporterEmail = "johndoe@aol.com";
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
-    DataHandler[] attachments = new DataHandler[] {};
+    Attachment[] attachments = new Attachment[] {};
     
     ContactUsParams params = new ContactUsParams(
-        subject,
-        reporterEmail,
-        ccEmails,
-        message,
-        attachments
+      subject,
+      reporterEmail,
+      ccEmails,
+      message,
+      attachments
     );
     
     assertSame(subject, params.subject);

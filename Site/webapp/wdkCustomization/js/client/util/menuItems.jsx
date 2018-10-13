@@ -115,7 +115,7 @@ export function makeMenuItems(props) {
     {
       id: 'contactUs',
       text: 'Contact Us',
-      webAppUrl: '/contact.do',
+      route: '/contact-us',
       target: '_blank'
     }
   ]
