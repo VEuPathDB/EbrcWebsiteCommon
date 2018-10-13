@@ -2,7 +2,7 @@ package org.eupathdb.common.model.report;
 
 import org.gusdb.fgputil.ArrayUtil;
 import org.gusdb.wdk.model.answer.factory.AnswerValue;
-import org.gusdb.wdk.model.report.WordCloudAttributeReporter;
+import org.gusdb.wdk.model.report.reporter.WordCloudAttributeReporter;
 
 public class EbrcWordCloudAttributeReporter extends WordCloudAttributeReporter {
 

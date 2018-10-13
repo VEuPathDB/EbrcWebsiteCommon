@@ -3,7 +3,7 @@ package org.eupathdb.common.service.brc;
 import java.io.IOException;
 import java.util.Set;
 
-import org.gusdb.wdk.service.formatter.JsonKeys;
+import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
 import org.json.JSONArray;
 import org.json.JSONException;
