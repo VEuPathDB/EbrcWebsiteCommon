@@ -106,14 +106,8 @@ export function initialize(options = {}) {
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
     wrapStoreModules = identity,
+    ...restOptions
   } = options;
-
-  const restOptions = omit(options, [
-    'quickSearches',
-    'componentWrappers',
-    'storeWrappers',
-    'wrapRoutes',
-  ]);
 
   unaliasWebappUrl();
   removeJsessionid();
