@@ -328,24 +328,24 @@ if (low == 0) {
     myColors = c(\"red\", \"yellow\", \"green\")
     myValues = c(high, mid, low)
     myBreaks = c(high, hm, mid, lm, low)
-    myLabels = c(hlab, hmlab, mlab, lmlab, llab)
+    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab), digits=4)
   } else {
     myColors = c(\"darkred\", \"red\", \"yellow\", \"green\")
     myValues = c(1, high, mid, low)
     myBreaks = c(1, high, hm, mid, lm, low)
-    myLabels = c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab)
+    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab), digits=4)
   }
 } else {
   if (high == 1) {
     myColors = c(\"red\", \"yellow\", \"green\", \"darkgreen\")
     myValues = c(high, mid, low, 0)
     myBreaks = c(high, hm, mid, lm, low, 0)
-    myLabels = c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE))
+    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
   } else {
     myColors = c(\"darkred\", \"red\", \"yellow\", \"green\", \"darkgreen\")
     myValues = c(1, high, mid, low, 0)
     myBreaks = c(1, high, hm, mid, lm, low, 0)
-    myLabels = c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE))
+    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
   }
 }
 
