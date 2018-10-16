@@ -388,19 +388,19 @@ plotlist.i = plotlist.i + 1;
 
 1;
 
-package EbrcWebsiteCommon::View::GraphPackage::GGPiePlot::MPMP;
-use base qw( EbrcWebsiteCommon::View::GraphPackage::GGPiePlot );
-use strict;
+# package EbrcWebsiteCommon::View::GraphPackage::GGPiePlot::MPMP;
+# use base qw( EbrcWebsiteCommon::View::GraphPackage::GGPiePlot );
+# use strict;
 
-sub new {
-  my $class = shift;
-  my $self = $class->SUPER::new(@_);
-  my $id = $self->getId();
+# sub new {
+#   my $class = shift;
+#   my $self = $class->SUPER::new(@_);
+#   my $id = $self->getId();
 
-  #$self->setIsDonut('TRUE');
-  ##also set Radjust here to add num for max time point to center
-  $self->setRPostscript("gp = gp + annotate(\"text\", x = 0, y = 0, label = profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$VALUE == max(profile.df.full\$VALUE)][1], size = 16)");
-  return $self;
-}
+#   #$self->setIsDonut('TRUE');
+#   ##also set Radjust here to add num for max time point to center
+#   $self->setRPostscript("gp = gp + annotate(\"text\", x = 0, y = 0, label = profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$VALUE == max(profile.df.full\$VALUE)][1], size = 16)");
+#   return $self;
+# }
 
-1;
+# 1;
