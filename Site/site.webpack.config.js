@@ -15,7 +15,8 @@ module.exports = function configure(additionalConfig) {
         wdk: wdkRoot + '/webapp/wdk',
         eupathdb: __dirname + '/webapp',
         site: process.cwd() + '/webapp',
-        'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client'
+        'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client',
+        Client: __dirname + '/webapp/wdkCustomization/js/client'
       }
     },
 

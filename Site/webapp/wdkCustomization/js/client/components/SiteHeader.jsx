@@ -1,9 +1,7 @@
-import { noop } from 'lodash';
 import PropTypes from 'prop-types';
 import { Sticky } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import { formatReleaseDate } from '../util/formatters';
-import { makeMenuItems } from '../util/menuItems';
 import Announcements from './Announcements';
 import QuickSearch from './QuickSearch';
 import SmallMenu from './SmallMenu';
@@ -16,22 +14,20 @@ function Header(props) {
     user,
     showLoginWarning,
     location = window.location,
-    siteConfig
+    siteConfig,
+    smallMenuItems,
+    mainMenuItems,
   } = props;
 
   const {
     isPartOfEuPathDB = true,
-    mainMenuItems = noop,
-    smallMenuItems = noop,
     quickSearchReferences,
     announcements,
     buildNumber,
     projectId,
     releaseDate,
-    webAppUrl
+    webAppUrl,
   } = siteConfig;
-
-  const menuItems = makeMenuItems(props);
 
   return (
     <div>
@@ -56,7 +52,7 @@ function Header(props) {
             />
             <SmallMenu
               webAppUrl={webAppUrl}
-              items={smallMenuItems(props, menuItems)}
+              items={smallMenuItems}
             />
           </div>
           <div className="eupathdb-Logo">
@@ -80,7 +76,7 @@ function Header(props) {
                 projectId={projectId}
                 showLoginWarning={showLoginWarning}
                 isGuest={user ? user.isGuest : true}
-                items={mainMenuItems(props, menuItems)}/>
+                items={mainMenuItems}/>
             </div>
           )}
         </Sticky>

@@ -14,9 +14,10 @@ import {
   Components as WdkComponents,
   Controllers as WdkControllers
 } from 'wdk-client';
-import { debounce, identity, omit, uniq, flow } from 'lodash';
+import { debounce, identity, uniq, flow } from 'lodash';
 import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
-import * as eupathComponentWrappers from './component-wrappers';
+import * as EbrcComponentWrappers from './component-wrappers';
+import { makeHeaderWrapper } from './component-wrappers/Header';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
 import * as EbrcRoutes from './routes';
@@ -106,19 +107,19 @@ export function initialize(options = {}) {
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
     wrapStoreModules = identity,
+    mainMenuItems,
+    smallMenuItems
   } = options;
-
-  const restOptions = omit(options, [
-    'quickSearches',
-    'componentWrappers',
-    'storeWrappers',
-    'wrapRoutes',
-  ]);
 
   unaliasWebappUrl();
   removeJsessionid();
 
-  wrapComponents(mergeWrapperObjects(componentWrappers, eupathComponentWrappers));
+  const Header = makeHeaderWrapper({
+    makeMainMenuItems: mainMenuItems,
+    makeSmallMenuItems: smallMenuItems
+  })
+
+  wrapComponents(mergeWrapperObjects(componentWrappers, { ...EbrcComponentWrappers, Header }));
 
   // initialize the application
   const context = initializeWdk({
@@ -133,7 +134,7 @@ export function initialize(options = {}) {
 
   (window.ebrc || (window.ebrc = {})).context = context
 
-  context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, restOptions, {
+  context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, {
     quickSearchReferences: quickSearches,
   })));
 
