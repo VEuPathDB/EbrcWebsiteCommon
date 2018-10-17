@@ -1,7 +1,7 @@
 // Wizard state utility functions
 
 import { memoize, pick } from 'lodash';
-import { getFilterFieldsFromOntology } from 'wdk-client/AttributeFilterUtils';
+import { getFilterFields } from 'wdk-client/FilterParamUtils';
 
 /**
  * Create initial wizard state object
@@ -41,16 +41,8 @@ export function createInitialState(question, recordClass, paramValues) {
 export function createInitialParamState(param) {
   switch(param.type) {
     case 'FilterParamNew': {
-      const filterFields = getFilterFieldsFromOntology(param.ontology);
-      const ontology = param.values == null
-        ? param.ontology
-        : param.ontology.map(entry =>
-          param.values[entry.term] == null
-            ? entry
-            : Object.assign(entry, {
-              values: param.values[entry.term].join(' ')
-            })
-        );
+      const filterFields = getFilterFields(param).toArray();
+      const ontology = param.ontology;
       return {
         ontology: ontology,
         activeOntologyTerm: filterFields.length > 0 ? filterFields[0].term : null,
