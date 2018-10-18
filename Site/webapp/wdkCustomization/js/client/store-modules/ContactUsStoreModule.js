@@ -29,6 +29,8 @@ import {
 
 import { files, parsedFormFields } from '../selectors/ContactUsSelectors';
 
+export const key = 'contactUs';
+
 const CONTACT_US_ENDPOINT = '/contact-us';
 
 export const SUBMISSION_PENDING = 'SUBMISSION_PENDING';
@@ -151,11 +153,11 @@ const observeSubmitDetails = (
   action$.pipe(
     filter(({ type }) => type === SUBMIT_DETAILS),
     withLatestFrom(state$),
-    mergeMap(async ([ , state]) => {
+    mergeMap(async ([ , { [key]: contactUsState }]) => {
       const temporaryFilePromises = compose(
         map(wdkService.createTemporaryFile.bind(wdkService)),
         files
-      )(state);
+      )(contactUsState);
 
       const attachmentIds = await Promise.all(temporaryFilePromises);
 
@@ -163,7 +165,7 @@ const observeSubmitDetails = (
         wdkService.serviceUrl,
         CONTACT_US_ENDPOINT,
         {
-          ...parsedFormFields(state),
+          ...parsedFormFields(contactUsState),
           attachmentIds
         }
       );
