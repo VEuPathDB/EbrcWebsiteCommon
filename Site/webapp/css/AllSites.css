@@ -1721,57 +1721,6 @@ tr.headerrow th {
 .motif { color: red; }
 
 
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      =Contact modal popup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.contact-us h4 {
-  text-align: center;
-  margin: 1em 0em;
-}
-
-.contact-us .wdk-toggle {
-  font-style: italic;
-  width: 580px;
-  margin: 0em auto;
-}
-
-.contact-us .center {
-  text-align: center;
-}
-
-.contact-us .wdk-toggle-name {
-  border: none;
-  background: none;
-  font-family: inherit;
-}
-
-.contact-us .wdk-toggle .ui-icon {
-  left: 0;
-}
-
-.contact-us .wdk-toggle-content {
-  border: none;
-  width: 650px;
-}
-
-.contact-us ul {
-  list-style: disc outside none;
-  margin: 1em 0em;
-  padding: 0em 2em;
-  line-height: 1.2;
-}
-
-.contact-us ul ul {
-  margin: 0em;
-  list-style: circle outside none;
-}
-
-.contact-us table {
-  margin: 2em auto;
-}
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       = Download tab reporter (table.center in wdk)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/

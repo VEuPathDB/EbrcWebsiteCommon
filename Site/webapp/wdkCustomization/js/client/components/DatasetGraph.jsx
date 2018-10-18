@@ -31,8 +31,8 @@ export default class DatasetGraph extends React.PureComponent {
       showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
       showSpecialGraph: this.props.rowData.has_special_gbrowse,
       graphId: graphIds[0],
-      contXAxis: 'none',
-      facet: 'none'
+      contXAxis: 'na',
+      facet: 'na'
     };
 
     this.handleDescriptionCollapseChange = descriptionCollapsed => {
@@ -198,6 +198,7 @@ hook: HostResponseGraphs
       Choose metadata category for X-axis:
     </h4>
            <select value={this.state.contXAxis} hidden={this.props.contXAxisMetadataTable ? false : true} onChange={event => this.setContXAxis(event.target.value)}>
+       <option value='na'>Select here to change from default</option>
        <option value='none'>None</option>
              {this.props.contXAxisMetadataTable &&
                 contXAxisMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(xAxisRow => {
@@ -212,6 +213,7 @@ hook: HostResponseGraphs
        Choose metadata category to facet graph on:
      </h4>
      <select value={this.state.facet} hidden={this.props.facetMetadataTable ? false : true} onChange={event => this.setFacet(event.target.value)}>
+       <option value='na'>Select here to change from default</option>
        <option value='none'>None</option>
        {this.props.facetMetadataTable &&
     facetMetadataTable.value.filter(dat => dat.dataset_id == dataset_id).map(facetRow => {

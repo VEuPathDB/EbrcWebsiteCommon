@@ -15,7 +15,8 @@ module.exports = function configure(additionalConfig) {
         wdk: wdkRoot + '/webapp/wdk',
         eupathdb: __dirname + '/webapp',
         site: process.cwd() + '/webapp',
-        'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client'
+        'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client',
+        Client: __dirname + '/webapp/wdkCustomization/js/client'
       }
     },
 
@@ -29,18 +30,21 @@ module.exports = function configure(additionalConfig) {
     externals: [
       resolveWdkClientExternal,
       {
-        'jquery'         : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'lodash'         : '_',
-        'react'          : 'React',
-        'react-dom'      : 'ReactDOM',
-        'react-router'   : 'ReactRouter',
+        'jquery'           : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
+        'history'          : 'HistoryJS',
+        'lodash'           : '_',
+        'lodash/fp'        : '_fp',
+        'natural-sort'     : 'NaturalSort',
+        'prop-types'       : 'ReactPropTypes',
+        'react'            : 'React',
+        'react-dom'        : 'ReactDOM',
+        'react-redux'      : 'ReactRedux',
+        'react-router'     : 'ReactRouter',
+        'redux'            : 'Redux',
+        'redux-observable' : 'ReduxObservable',
         'reselect'       : 'Reselect',
-        'prop-types'     : 'ReactPropTypes',
-        'flux'           : 'Flux',
-        'flux/utils'     : 'FluxUtils',
-        'natural-sort'   : 'NaturalSort',
-        'rxjs'           : 'Rx',
-        'rxjs/operators' : 'RxOperators',
+        'rxjs'             : 'Rx',
+        'rxjs/operators'   : 'RxOperators',
       }
     ]
   }, additionalConfig]);

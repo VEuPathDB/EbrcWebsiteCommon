@@ -1,7 +1,8 @@
-import { WdkViewController } from 'wdk-client/Controllers';
+import { ViewController } from 'wdk-client/Controllers';
 import { Header } from 'wdk-client/Components';
 
-export default class HeaderController extends WdkViewController {
+// Used for legacy jsp pages
+export default class HeaderController extends ViewController {
   renderView() {
     return <Header/>;
   }

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { bindAll } from 'lodash';
-import { WdkPageController } from 'wdk-client/Controllers';
+import { PageController } from 'wdk-client/Controllers';
 import { CheckboxTree } from 'wdk-client/Components';
 
 class TreeDataViewer extends Component {
@@ -75,7 +75,7 @@ function update(stateContainer, changedState) {
   stateContainer.setState(Object.assign(stateContainer.state, changedState));
 }
 
-export default class TreeDataViewerController extends WdkPageController {
+export default class TreeDataViewerController extends PageController {
   getTitle() { return "Tree Data Viewer"; }
   renderView() { return <TreeDataViewer {...this.props}/> }
 }

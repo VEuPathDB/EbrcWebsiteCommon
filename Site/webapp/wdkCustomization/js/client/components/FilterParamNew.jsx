@@ -1,6 +1,7 @@
 import React from 'react';
 import { memoize } from 'lodash';
 import { IconAlt, Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
+import { getOntologyTree } from 'wdk-client/FilterParamUtils';
 import { paramPropTypes } from '../util/paramUtil';
 
 /**
@@ -12,6 +13,7 @@ export default class FilterParamNew extends React.PureComponent {
     super(props);
     this._getFiltersFromValue = memoize(this._getFiltersFromValue);
     this._getFieldMap = memoize(this._getFieldMap);
+    this._getFieldTree = memoize(this._getFieldTree);
     this._handleActiveFieldChange = this._handleActiveFieldChange.bind(this);
     this._handleFieldCountUpdateRequest = this._handleFieldCountUpdateRequest.bind(this);
     this._handleFilterChange = this._handleFilterChange.bind(this);
@@ -27,6 +29,10 @@ export default class FilterParamNew extends React.PureComponent {
 
   _getFieldMap(ontology) {
     return new Map(ontology.map(o => [ o.term, o ]));
+  }
+
+  _getFieldTree(param) {
+    return getOntologyTree(param);
   }
 
   _handleActiveFieldChange(term) {
@@ -90,10 +96,11 @@ export default class FilterParamNew extends React.PureComponent {
           autoFocus={this.props.autoFocus}
           displayName={displayName}
 
-          fields={fields}
+          fieldTree={this._getFieldTree(param)}
           filters={filters}
           dataCount={uiState.unfilteredCount}
           filteredDataCount={uiState.filteredCount}
+          valuesMap={param.values}
 
           activeField={activeField}
           activeFieldState={activeFieldState}

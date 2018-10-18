@@ -8,6 +8,7 @@ import {
 } from '../../components';
 
 const ContactUsSubmission = ({
+  submitDisabled,
   submissionFailed,
   responseMessage,
   subjectValue,
@@ -18,9 +19,13 @@ const ContactUsSubmission = ({
   updateReporterEmail,
   updateCcEmails,
   updateMessage,
+  changeFile,
+  addFile,
+  removeFile,
   reporterEmailValidity,
   ccEmailsValidity,
   messageValidity,
+  validatedAttachmentMetadata,
   submitDetails
 }) => (
   <Fragment>
@@ -28,6 +33,7 @@ const ContactUsSubmission = ({
     <SupportFormBody>
       <ContactUsPreamble />
       <ContactUsForm
+        submitDisabled={submitDisabled}
         submissionFailed={submissionFailed}
         responseMessage={responseMessage}
         subjectValue={subjectValue}
@@ -38,9 +44,13 @@ const ContactUsSubmission = ({
         updateReporterEmail={updateReporterEmail}
         updateCcEmails={updateCcEmails}
         updateMessage={updateMessage}
+        changeFile={changeFile}
+        addFile={addFile}
+        removeFile={removeFile}
         reporterEmailValidity={reporterEmailValidity}
         ccEmailsValidity={ccEmailsValidity}
         messageValidity={messageValidity}
+        validatedAttachmentMetadata={validatedAttachmentMetadata}
         submitDetails={submitDetails}
       />
     </SupportFormBody>

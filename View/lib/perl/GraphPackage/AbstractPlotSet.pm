@@ -619,7 +619,11 @@ var hideTooltip = function() {
                 text.parentNode.removeChild(text);
                 rect.parentNode.removeChild(rect);
         }
-	};');
+	};
+document.querySelectorAll(\\'[href]\\').forEach(node => {
+	var hrefContent = node.getAttribute(\\'href\\');
+	node.setAttributeNS("http://www.w3.org/1999/xlink", \\'href\\', hrefContent);
+})');
 }
 
 dev.off();
