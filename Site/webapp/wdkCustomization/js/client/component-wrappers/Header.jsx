@@ -10,14 +10,15 @@ import { makeMenuItems } from '../util/menuItems';
  */
 export const makeHeaderWrapper = ({ makeMainMenuItems, makeSmallMenuItems }) => () => {
   const SiteHeaderWithContext = connect(
-    (state) => {
-      const { globalData } = state;
-      const menuItems = makeMenuItems(globalData);
-      const mainMenuItems = makeMainMenuItems && makeMainMenuItems(globalData, menuItems);
-      const smallMenuItems = makeSmallMenuItems && makeSmallMenuItems(globalData, menuItems);
-      return { ...globalData, mainMenuItems, smallMenuItems };
-    },
+    (state) => state.globalData,
     UserActionCreators,
+    (globalData, userActionCreators) => {
+      const finalProps = { ...globalData, ...userActionCreators };
+      const menuItems = makeMenuItems(finalProps);
+      const mainMenuItems = makeMainMenuItems && makeMainMenuItems(finalProps, menuItems);
+      const smallMenuItems = makeSmallMenuItems && makeSmallMenuItems(finalProps, menuItems);
+      return { ...finalProps, mainMenuItems, smallMenuItems };
+    }
   )(SiteHeader);
   return () => (
     <React.Fragment>
