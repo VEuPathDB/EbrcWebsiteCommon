@@ -829,7 +829,10 @@ if ($prtcpnt_sum) {
     }
   }
 
-  event.start = exists(\"event.df\") & nrow(event.df) > 0
+  event.start = exists(\"event.df\") 
+  if (event.start) {
+    event.start = nrow(event.df) > 0
+  }
   if (event.start) {
     event.df\$END <- event.df\$ELEMENT_NAMES_NUMERIC + 1
     
@@ -845,8 +848,10 @@ if ($prtcpnt_sum) {
   }
 
 
-  who_standards = exists(\"who.df\") && nrow(who.df)>0;
-
+  who_standards = exists(\"who.df\") 
+  if (who_standards) {
+    who_standards = nrow(who.df) > 0
+  }
 
   if (who_standards){
    
