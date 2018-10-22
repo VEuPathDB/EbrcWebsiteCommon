@@ -90,7 +90,7 @@ const siteAnnouncements = [
     if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/app') ) {
       return (
         <div key="clinepi-astmh">
-ASTMH 2018 New Orleans: The EuPathDB and ClinEpiDB team will be attending the <a href='https://www.astmh.org/' target='_blank'>American Society of Tropical Medicine and Hygiene (ASTMH)</a> annual meeting this month, kicking off Sunday, October 28th, 2018! We are looking forward to chatting with the attendees. 
+The EuPathDB and ClinEpiDB team will be attending the <a target='_blank' href='https://www.astmh.org/annual-meeting'>American Society of Tropical Medicine and Hygiene annual meeting</a> next week Sunday, October 28th to Thursday, November 1st! Stop by to see us in the exhibition hall booth 317 & 319 and at Tuesday's Poster Session B  #809.
         </div>
       );
     }
