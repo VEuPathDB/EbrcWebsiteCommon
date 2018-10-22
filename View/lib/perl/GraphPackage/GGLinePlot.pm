@@ -460,6 +460,9 @@ if ($prtcpnt_sum) {
   if (\"DURATION\" %in% colnames(profile.df.full)) {
     annotate.df = completeDF(profile.df.full, \"DURATION\");
   }
+  if (\"EVENT\" %in% colnames(profile.df.full)) {
+    event.df = completeDF(profile.df.full, \"EVENT\")
+  }
   if (any(grepl(\"WHO Standards\", unique(profile.df.full\$LEGEND)))){
      generic.df = completeDF(profile.df.full, \"VALUE\")
 
@@ -799,9 +802,9 @@ if ($prtcpnt_sum) {
     gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
   }
 
-
-  event.start = exists(\"annotate.df\") && nrow(annotate.df) > 0;
-  if (event.start) {
+  #should only ever have either event.dur OR event.start. otherwise fix legend
+  event.dur = exists(\"annotate.df\") && nrow(annotate.df) > 0;
+  if (event.dur) {
 
     #this to appease ggplot. otherwise wont plot a single point
     if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
@@ -821,6 +824,21 @@ if ($prtcpnt_sum) {
     if ($hasColorVals) {
       colorVector <- $colorVals
       gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(annotate.df\$LEGEND)[1]])))))
+    } else {
+      gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
+    }
+  }
+
+  event.start = exists(\"event.df\") & nrow(event.df) > 0
+  if (event.start) {
+    event.df\$END <- event.df\$ELEMENT_NAMES_NUMERIC + 1
+    
+    gp = gp + geom_tooltip(data = event.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - y.scale, xend = END, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = EVENT, size = as.factor(7)), real.geom = geom_segment)
+  
+    gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
+    if ($hasColorVals) {
+      colorVector <- $colorVals
+      gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(event.df\$LEGEND)[1]])))))
     } else {
       gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
     }

@@ -59,10 +59,13 @@ sub new {
   if (defined $params->{eventStart}) {
     $self->setEventStart($params->{eventStart});
     #print STDERR Dumper($params->{eventStart});
-    unless ($params->{eventDur}) {
-      die "Must provide source_id for event duration.";
+    if (defined $params->{eventDur}) {
+      $self->setEventDur($params->{eventDur});
+    } elsif (defined $params->{contXAxis}) {
+      $self->setContXAxis($params->{contXAxis});
+    } else {
+      die "Must provide either eventDur or contXAxis with eventStart.";
     }
-    $self->setEventDur($params->{eventDur});
   }
 
   if (defined $params->{status}) {
@@ -152,7 +155,7 @@ sub makeNodeMetadataCannedQuery {
       my $yAxis = $self->getYAxis();
       $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadata->new
         ( Id               => $id,
-          Name             => "_data_$suffix",
+          Name             => "data_$suffix",
           ContXAxis        => $contXAxis,
           YAxis            => $yAxis,
           TblPrefix        => $tblPrefix,
@@ -160,14 +163,25 @@ sub makeNodeMetadataCannedQuery {
       #print STDERR Dumper($profile);
     } elsif ($self->getEventStart()) {
       my $eventStart = $self->getEventStart();
-      my $eventDur = $self->getEventDur();
-      $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur->new
-        ( Id               => $id,
-          Name             => "_data_$suffix",
-          EventStart       => $eventStart,
-          EventDur         => $eventDur,
-          TblPrefix        => $tblPrefix,
-         );
+      if ($self->getEventDur()) {
+        my $eventDur = $self->getEventDur();
+        $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur->new
+          ( Id               => $id,
+            Name             => "data_$suffix",
+            EventStart       => $eventStart,
+            EventDur         => $eventDur,
+            TblPrefix        => $tblPrefix,
+           );
+      } else {
+        my $contXAxis = $self->getContXAxis();
+        $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataEventDur->new
+          ( Id               => $id,
+            Name             => "data_$suffix",
+            EventStart       => $eventStart,
+            ContXAxis        => $contXAxis,
+            TblPrefix        => $tblPrefix,
+           );
+      }
     } elsif ($self->getStatus()) {
       my $contXAxis = $self->getContXAxis();
       my $status = $self->getStatus();
@@ -175,7 +189,7 @@ sub makeNodeMetadataCannedQuery {
         my $optStatus = $self->getOptStatus();
         $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->new
           ( Id               => $id,
-            Name             => "_data_$suffix",
+            Name             => "data_$suffix",
             ContXAxis        => $contXAxis,
             Status           => $status,
             OptStatus        => $optStatus,
@@ -185,19 +199,18 @@ sub makeNodeMetadataCannedQuery {
       } else {
         $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataStatus->new
           ( Id               => $id,
-            Name             => "_data_$suffix",
+            Name             => "data_$suffix",
             ContXAxis        => $contXAxis,
             Status           => $status,
             TblPrefix        => $tblPrefix,
            );
       }
     } elsif ($self->getSampleInfo()) {
-      #print STDERR "running nodemetadatasampleinfo";
       my $contXAxis = $self->getContXAxis();
       my $sampleInfo = $self->getSampleInfo();
       $profile = ClinEpiWebsite::Model::CannedQuery::NodeMetadataSampleInfo->new
           ( Id               => $id,
-            Name             => "_data_$suffix",
+            Name             => "data_$suffix",
             ContXAxis        => $contXAxis,
             SampleInfo       => $sampleInfo,
             TblPrefix        => $tblPrefix,
