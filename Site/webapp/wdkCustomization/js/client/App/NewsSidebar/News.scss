@@ -1,5 +1,5 @@
 $news-width: 300px;
-$news-height: 300px;
+$news-height: 280px;
 $news-border-color: #0f597099;
 $news-border-width: 2px;
 
@@ -13,7 +13,7 @@ $news-border-width: 2px;
     padding-bottom: 1em;
     border-bottom: $news-border-width solid $news-border-color;
     width: 100%;
-    .Newslist {
+    .NewsList {
       overflow-y: scroll;
       height: $news-height;
     }
@@ -64,7 +64,7 @@ $news-border-width: 2px;
 
   .AllNewsLink {
     display: block;
-    padding-top: .2rem;
+    padding-top: 1.2rem;
     padding-bottom: .2rem;
   }
 

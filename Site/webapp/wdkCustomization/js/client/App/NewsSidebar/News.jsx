@@ -21,7 +21,7 @@ const News = ({ webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataConte
       </div>
       <div className="row wdk-Showcase-ContentRow">
         <div className="News">
-          <div className="Newslist">
+          <div className="NewsList">
           {error && <div className="NewsLoadError"><em>Error loading news items.</em></div>}
           {Seq.from(news ? news.records : Seq.empty())
               .map(({ attributes }) => (
