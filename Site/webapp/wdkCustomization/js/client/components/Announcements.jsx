@@ -163,7 +163,7 @@ function AnnouncementGroup(props) {
       padding: '4px',
       border: '1px solid gray',
       margin: '4px',
-      background: '#cdd9eb'
+      background: '#c6dfe3'
     }}>
       <div>
         {props.icon}

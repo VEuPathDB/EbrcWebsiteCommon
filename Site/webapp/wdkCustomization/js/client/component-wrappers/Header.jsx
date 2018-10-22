@@ -5,6 +5,7 @@ import SiteHeader from '../components/SiteHeader';
 import CookieBanner from '../components/CookieBanner';
 import { makeMenuItems } from '../util/menuItems';
 
+
 /**
  * Wrap Header component with state from store and configured actionCreators
  */
