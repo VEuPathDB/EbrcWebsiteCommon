@@ -1,4 +1,5 @@
 $news-width: 300px;
+$news-height: 300px;
 $news-border-color: #0f597099;
 $news-border-width: 2px;
 
@@ -12,6 +13,10 @@ $news-border-width: 2px;
     padding-bottom: 1em;
     border-bottom: $news-border-width solid $news-border-color;
     width: 100%;
+    .Newslist {
+      overflow-y: scroll;
+      height: $news-height;
+    }
   }
 
   .NewsLoadError {
