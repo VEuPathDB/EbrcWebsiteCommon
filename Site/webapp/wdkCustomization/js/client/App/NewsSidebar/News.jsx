@@ -21,6 +21,7 @@ const News = ({ webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataConte
       </div>
       <div className="row wdk-Showcase-ContentRow">
         <div className="News">
+          <div className="NewsList">
           {error && <div className="NewsLoadError"><em>Error loading news items.</em></div>}
           {Seq.from(news ? news.records : Seq.empty())
               .map(({ attributes }) => (
@@ -36,8 +37,9 @@ const News = ({ webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataConte
                   </div>
                 </div>
               ))
-              .take(2)
+          //    .take(2)
               .toArray()}
+          </div>
           <a className="AllNewsLink" href={newsUrl}>See all news</a>
         </div>
         <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId="ClinEpiDB"/>
