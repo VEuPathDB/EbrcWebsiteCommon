@@ -328,24 +328,24 @@ if (low == 0) {
     myColors = c(\"red\", \"yellow\", \"green\")
     myValues = c(high, mid, low)
     myBreaks = c(high, hm, mid, lm, low)
-    myLabels = c(hlab, hmlab, mlab, lmlab, llab)
+    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab), digits=4)
   } else {
     myColors = c(\"darkred\", \"red\", \"yellow\", \"green\")
     myValues = c(1, high, mid, low)
     myBreaks = c(1, high, hm, mid, lm, low)
-    myLabels = c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab)
+    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab), digits=4)
   }
 } else {
   if (high == 1) {
     myColors = c(\"red\", \"yellow\", \"green\", \"darkgreen\")
     myValues = c(high, mid, low, 0)
     myBreaks = c(high, hm, mid, lm, low, 0)
-    myLabels = c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE))
+    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
   } else {
     myColors = c(\"darkred\", \"red\", \"yellow\", \"green\", \"darkgreen\")
     myValues = c(1, high, mid, low, 0)
     myBreaks = c(1, high, hm, mid, lm, low, 0)
-    myLabels = c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE))
+    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
   }
 }
 
@@ -388,19 +388,19 @@ plotlist.i = plotlist.i + 1;
 
 1;
 
-package EbrcWebsiteCommon::View::GraphPackage::GGPiePlot::MPMP;
-use base qw( EbrcWebsiteCommon::View::GraphPackage::GGPiePlot );
-use strict;
+# package EbrcWebsiteCommon::View::GraphPackage::GGPiePlot::MPMP;
+# use base qw( EbrcWebsiteCommon::View::GraphPackage::GGPiePlot );
+# use strict;
 
-sub new {
-  my $class = shift;
-  my $self = $class->SUPER::new(@_);
-  my $id = $self->getId();
+# sub new {
+#   my $class = shift;
+#   my $self = $class->SUPER::new(@_);
+#   my $id = $self->getId();
 
-  #$self->setIsDonut('TRUE');
-  ##also set Radjust here to add num for max time point to center
-  $self->setRPostscript("gp = gp + annotate(\"text\", x = 0, y = 0, label = profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$VALUE == max(profile.df.full\$VALUE)][1], size = 16)");
-  return $self;
-}
+#   #$self->setIsDonut('TRUE');
+#   ##also set Radjust here to add num for max time point to center
+#   $self->setRPostscript("gp = gp + annotate(\"text\", x = 0, y = 0, label = profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$VALUE == max(profile.df.full\$VALUE)][1], size = 16)");
+#   return $self;
+# }
 
-1;
+# 1;

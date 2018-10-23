@@ -108,7 +108,9 @@ export function initialize(options = {}) {
     wrapRoutes = identity,
     wrapStoreModules = identity,
     mainMenuItems,
-    smallMenuItems
+    smallMenuItems,
+    isPartOfEuPathDB,
+    includeQueryGrid
   } = options;
 
   unaliasWebappUrl();
@@ -135,6 +137,8 @@ export function initialize(options = {}) {
   (window.ebrc || (window.ebrc = {})).context = context
 
   context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, {
+    includeQueryGrid,
+    isPartOfEuPathDB,
     quickSearchReferences: quickSearches,
   })));
 
