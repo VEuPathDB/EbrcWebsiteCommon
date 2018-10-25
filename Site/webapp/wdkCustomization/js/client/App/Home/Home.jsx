@@ -1,15 +1,15 @@
 import React from 'react';
+import { Showcase } from 'ebrc-client/App/Showcase';
+import { News } from 'ebrc-client/App/NewsSidebar';
 
 import './HomePage.scss';
-import { Showcase } from 'Client/App/Showcase';
-import { News } from 'Client/App/NewsSidebar';
 
-const HomePage = ({ newsSidebar, webAppUrl, projectId, siteData, attemptAction, homeContent }) =>
+const HomePage = ({ newsSidebar, twitterUrl, webAppUrl, projectId, siteData, attemptAction, homeContent }) =>
   <div className="HomePage">
     <div className="Showcase-Section">
-      {homeContent(siteData).map((section, idx) => (
+      {homeContent.map((section, idx) => (
         <Showcase
-          studies={siteData.studies}
+          studies={siteData.studies.entities}
           content={section}
           prefix={webAppUrl}
           projectId={projectId}
@@ -19,7 +19,7 @@ const HomePage = ({ newsSidebar, webAppUrl, projectId, siteData, attemptAction, 
       ))}
     </div>
     <div className="News-Section">
-      <News webAppUrl={webAppUrl} {...newsSidebar} />
+      <News twitterUrl={twitterUrl} webAppUrl={webAppUrl} {...newsSidebar} />
     </div>
   </div>
 

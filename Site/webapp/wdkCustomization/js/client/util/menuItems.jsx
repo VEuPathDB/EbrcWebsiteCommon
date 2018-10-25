@@ -40,6 +40,7 @@ export function makeMenuItems(props) {
     siteConfig,
     showLoginForm,
     showLogoutWarning,
+    includeQueryGrid = true
   } = props;
 
   const {
@@ -47,7 +48,6 @@ export function makeMenuItems(props) {
     twitterUrl,
     youtubeUrl,
     webAppUrl,
-    includeQueryGrid = true
   } = siteConfig;
 
 {/* in apicommon

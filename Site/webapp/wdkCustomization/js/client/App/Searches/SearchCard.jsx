@@ -3,31 +3,19 @@ import React from 'react';
 import './SearchCard.scss';
 
 import { IconAlt as Icon } from 'wdk-client/Components';
-import { getSearchIconByType, getSearchNameByType, getBodyClassByType } from './SearchUtils';
+import { getBodyClassByType } from './SearchUtils';
 
 class SearchCard extends React.Component {
-  constructor (props) {
-    super(props);
-    this.getStudyById = this.getStudyById.bind(this);
-  }
-
-  getStudyById (sid) {
-    return this.props.studies.find(({ id }) => id === sid);
-  }
 
   render () {
     const { search, prefix = '' } = this.props;
-    const { type, studyId, url, appUrl, description, disabled } = search;
+    const { icon, studyName, recordClassDisplayName, url, appUrl, description, disabled } = search;
 
     const href = typeof appUrl === 'string'
       ? prefix + appUrl
       : url;
 
-    const studyObj = this.getStudyById(studyId);
-
-    const icon = getSearchIconByType(type);
-    const name = getSearchNameByType(type);
-    const bodyClass = getBodyClassByType(type);
+    const bodyClass = getBodyClassByType(recordClassDisplayName);
 
     return (
       <div className={'Card LinkCard SearchCard ' + bodyClass + (disabled ? ' disabled' : '')}>
@@ -35,8 +23,8 @@ class SearchCard extends React.Component {
           <div className="box SearchCard-Icon">
             <Icon fa={icon} />
           </div>
-          <h2>{studyObj ? studyObj.name : 'Unknown Study'}</h2>
-          <h3>{name}</h3>
+          <h2>{studyName}</h2>
+          <h3>{recordClassDisplayName}</h3>
         </div>
         <div className="box SearchCard-Body">
           <p>{description}</p>
@@ -47,6 +35,6 @@ class SearchCard extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default SearchCard;

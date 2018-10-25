@@ -1,8 +1,8 @@
 import React from 'react';
+import { getSearchIconByType, getSearchNameByType } from 'ebrc-client/App/Searches/SearchUtils';
+import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
 
 import './StudyMenu.scss';
-import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
-import { getSearchIconByType, getSearchNameByType } from 'Client/App/Searches/SearchUtils';
 
 class StudyMenuItem extends React.Component {
   constructor (props) {

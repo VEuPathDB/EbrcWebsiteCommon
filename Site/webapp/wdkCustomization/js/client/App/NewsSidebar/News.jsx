@@ -11,7 +11,10 @@ const transformNewItem = compose(
   replace(/(<([^>]+)>)/ig, '') // strip html chars
 );
 
-const News = ({ webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataContent.do?name=XmlQuestions.News` }) =>
+const getProfileIdFromTwitterUrl =
+  replace(/(?:.*)twitter.com\/(.*)$/, '$1')
+
+const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataContent.do?name=XmlQuestions.News` }) =>
   <React.Fragment>
     <div className="stack wdk-Showcase">
       <div className="row wdk-Showcase-HeadingRow">
@@ -42,7 +45,7 @@ const News = ({ webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataConte
           </div>
           <a className="AllNewsLink" href={newsUrl}>See all news</a>
         </div>
-        <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId="ClinEpiDB"/>
+        <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId={getProfileIdFromTwitterUrl(twitterUrl)}/>
       </div>
     </div>
   </React.Fragment>

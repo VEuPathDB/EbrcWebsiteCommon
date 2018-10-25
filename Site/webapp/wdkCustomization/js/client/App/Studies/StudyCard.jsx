@@ -1,10 +1,10 @@
 import React from 'react';
+import { CategoryIcon } from 'ebrc-client/App/Categories';
+import { getSearchIconByType, getSearchNameByType } from 'ebrc-client/App/Searches/SearchUtils';
+import { IconAlt as Icon, Link } from 'wdk-client/Components';
 
 import './StudyCard.scss';
 
-import { CategoryIcon } from 'Client/App/Categories';
-import { IconAlt as Icon, Link } from 'wdk-client/Components';
-import { getSearchIconByType, getSearchNameByType } from 'Client/App/Searches/SearchUtils';
 
 class StudyCard extends React.Component {
   constructor (props) {

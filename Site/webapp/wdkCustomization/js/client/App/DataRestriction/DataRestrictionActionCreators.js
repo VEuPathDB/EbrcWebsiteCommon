@@ -1,4 +1,4 @@
-import { fetchStudies } from 'Client/App/Studies/StudyActionCreators';
+import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 
 import { isAllowedAccess } from './DataRestrictionUtils';
 

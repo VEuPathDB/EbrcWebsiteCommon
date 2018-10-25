@@ -4,6 +4,11 @@ import * as contactUs from './store-modules/ContactUsStoreModule';
 import {getSearchMenuCategoryTree} from './util/category';
 import { selectReporterComponent } from './util/reporter';
 
+import reduceStudies from 'ebrc-client/App/Studies/StudyReducer';
+import reduceDataRestriction from 'ebrc-client/App/DataRestriction/DataRestrictionReducer';
+import reduceSearchCards from 'ebrc-client/App/Searches/SearchCardReducer';
+import { newsReducer } from 'ebrc-client/App/NewsSidebar/NewsModule';
+
 
 /** Compose reducer functions from right to left */
 const composeReducers = (...reducers) => (state, action) =>
@@ -12,6 +17,10 @@ const composeReducers = (...reducers) => (state, action) =>
 const composeReducerWith = curryN(2, composeReducers);
 
 export default compose(
+  set('searchCards', { key: 'searchCards', reduce: reduceSearchCards }),
+  set('studies', { key: 'studies', reduce: reduceStudies }),
+  set('dataRestriction', { key: 'dataRestriction', reduce: reduceDataRestriction }),
+  set('newsSidebar', { key: 'newsSidebar', reduce: newsReducer }),
   set('contactUs', contactUs),
   update('globalData.reduce', composeReducerWith(ebrcGlobalData)),
   update('downloadForm', module => ({ ...module, reduce: module.makeReducer(selectReporterComponent) }))
