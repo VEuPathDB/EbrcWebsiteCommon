@@ -1,4 +1,3 @@
-
 #override ggplot cut_number function recursively decrease num bins until it works.
 rcut_number <- function(data = c(), n = 4){
   hold <- try(ggplot2::cut_number(data, n), silent = TRUE)
@@ -68,8 +67,10 @@ completeDF <- function(data, desiredCols) {
 }
 
 completeDT <- function(data, desiredCols) {
-  completeVec <- complete.cases(data[, (desiredCols), with = FALSE])
-  return(data[completeVec, ])
+  #completeVec <- complete.cases(data[, (desiredCols), with = FALSE])
+  #return(data[completeVec, ])
+  na.omit(data, cols = all.vars(desiredCols))
+  return(data)
 }
 
 #converts NA to 0 by reference for a data TABLE
