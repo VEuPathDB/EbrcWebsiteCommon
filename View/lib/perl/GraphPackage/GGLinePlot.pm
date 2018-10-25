@@ -304,7 +304,7 @@ sub makeRPlotString {
   my $hasFacets = "FALSE";
 
   if ($facets && scalar @$facets != 0) {
-    if(scalar @$facets == 1 && $facets->[0] ne 'none') {
+    if(scalar @$facets == 1 && $facets->[0] ne 'none' && $facets->[0] ne 'na') {
       $facetString = ". ~ " . $facets->[0];
       $hasFacets = "TRUE";
     }elsif(scalar @$facets == 2) {
