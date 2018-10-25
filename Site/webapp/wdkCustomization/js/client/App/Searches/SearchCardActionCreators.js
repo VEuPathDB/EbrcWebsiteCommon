@@ -28,13 +28,13 @@ async function fetchAndFormatSearches(wdkService) {
     .map(strategy => ({
       icon: get(recordClassesByName[strategy.recordClassName], 'iconName', 'question'),
       recordClassDisplayName: get(recordClassesByName[strategy.recordClassName], 'displayNamePlural', 'Uknown record type'),
-      studyName: findStudyByQuestionName(studies),
+      studyName: getStudyNameByRecordClassName(studies, strategy.recordClassName),
       appUrl: `/im.do?s=${strategy.signature}`,
       description: strategy.description
     }))
 }
 
-function findStudyByQuestionName(studies, questionName) {
-  const study = studies.find(study => Object.values(study.searches).includes(questionName));
+function getStudyNameByRecordClassName(studies, recordClassName) {
+  const study = studies.find(study => recordClassName.startsWith(study.id));
   return study && study.name;
 }
