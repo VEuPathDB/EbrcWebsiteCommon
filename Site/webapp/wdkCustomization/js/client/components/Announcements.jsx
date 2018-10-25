@@ -85,6 +85,18 @@ const siteAnnouncements = [
     return null;
   },
 
+ // Clinepi home page
+  (props) => {
+    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/app') ) {
+      return (
+        <div key="clinepi-astmh">
+The EuPathDB and ClinEpiDB team will be attending the <a target='_blank' href='https://www.astmh.org/annual-meeting'>American Society of Tropical Medicine and Hygiene annual meeting</a> next week Sunday, October 28th to Thursday, November 1st! Stop by to see us in the exhibition hall booth 317 & 319 and at Tuesday's Poster Session B  #809.
+        </div>
+      );
+    }
+    return null;
+  },
+
   // OrthoMCL enzyme/compound
   (props) => {
     if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
@@ -151,7 +163,7 @@ function AnnouncementGroup(props) {
       padding: '4px',
       border: '1px solid gray',
       margin: '4px',
-      background: '#cdd9eb'
+      background: '#c6dfe3'
     }}>
       <div>
         {props.icon}
