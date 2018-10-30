@@ -41,6 +41,7 @@ export function getSearchNameByType (type) {
   }
 }
 
+// FIXME Replace w/ stable random color assignment
 export function getBodyClassByType (type = '') {
   switch (type.toLowerCase()) {
     case 'participant':

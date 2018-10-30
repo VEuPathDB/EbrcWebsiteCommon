@@ -1,12 +1,32 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { Hero } from 'ebrc-client/App/Hero';
+import { requestStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
+import { UserActionCreators } from 'wdk-client/ActionCreators';
 
 import './Header.scss';
+
 import HeaderNav from './HeaderNav';
-import { Hero } from 'Client/App/Hero';
+
+const enhance = connect(
+  (state, props) => {
+    const { getSiteData, makeHeaderMenuItems } = props;
+    const headerMenuItems = makeHeaderMenuItems(state);
+    const siteData = getSiteData(state);
+    const { dataRestriction, globalData } = state;
+    const { user = {}, siteConfig, preferences } = globalData;
+    return { user, siteConfig, preferences, siteData, dataRestriction, headerMenuItems };
+  },
+  { ...UserActionCreators, requestStudies },
+  (stateProps, actions) => {
+    return { ...stateProps, actions };
+  }
+);
 
 class Header extends React.Component {
-  constructor (props) {
-    super(props);
+
+  componentDidMount() {
+    this.props.actions.requestStudies();
   }
 
   render () {
@@ -44,6 +64,6 @@ class Header extends React.Component {
       </header>
     );
   }
-};
+}
 
-export default Header;
+export default enhance(Header);

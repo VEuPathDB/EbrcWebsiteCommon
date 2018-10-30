@@ -1,22 +1,22 @@
 import {
-  STUDIES_REQUESTED,
-  STUDIES_RECEIVED,
-  STUDIES_ERROR
-} from './StudyActionCreators';
+  SEARCHES_LOADED,
+  SEARCHES_LOADING,
+  SEARCHES_ERROR
+} from './SearchCardActionCreators';
 
 export default function reduce(state = { loading: false, error: null, entities: null }, action) {
   switch(action.type) {
-    case STUDIES_REQUESTED: return {
+    case SEARCHES_LOADING: return {
       loading: true,
       error: null,
       entities: null
     }
-    case STUDIES_RECEIVED: return {
+    case SEARCHES_LOADED: return {
       loading: false,
       error: null,
-      entities: action.payload.studies
+      entities: action.payload.searches
     }
-    case STUDIES_ERROR: return {
+    case SEARCHES_ERROR: return {
       loading: false,
       error: action.payload.error,
       entities: null

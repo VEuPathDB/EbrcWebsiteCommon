@@ -1,5 +1,3 @@
-import { ok } from 'wdk-client/Json';
-
 const NEWS_LOADING = 'news/loading';
 const NEWS_RECEIVED = 'news/received';
 const NEWS_ERROR = 'news/error';
@@ -8,10 +6,7 @@ export function requestNews() {
   return function run({ wdkService }) {
     return [
       { type: NEWS_LOADING },
-      wdkService.sendRequest(ok, {
-        method: 'GET',
-        path: '/xml-answer/XmlQuestions.News'
-      }).then(
+      wdkService.getXmlAnswerJson('XmlQuestions.News').then(
         news => ({ type: NEWS_RECEIVED, payload: { news } }),
         error => ({ type: NEWS_ERROR, payload: { error: error.message } })
       )

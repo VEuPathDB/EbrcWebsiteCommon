@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './DataRestrictionModal.scss';
+import { getPolicyUrl, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
+import Modal from 'ebrc-client/App/Modal';
 import { IconAlt as Icon } from 'wdk-client/Components';
-import { getPolicyUrl, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'Client/App/DataRestriction/DataRestrictionUtils';
-import Modal from 'Client/App/Modal';
+
+import './DataRestrictionModal.scss';
 
 class DataRestrictionModal extends React.Component {
   constructor (props) {

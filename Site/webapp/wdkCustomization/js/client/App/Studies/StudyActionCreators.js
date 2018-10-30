@@ -1,6 +1,5 @@
 import { get, identity, mapValues, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/ActionCreatorUtils';
-import { ok } from 'wdk-client/Json';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
@@ -69,20 +68,7 @@ function loadStudies() {
 export function fetchStudies(wdkService) {
   return Promise.all([
     wdkService.getConfig().then(config => config.projectId),
-    wdkService.sendRequest(ok, {
-      useCache: 'true',
-      cacheId: 'studies',
-      method: 'post',
-      path: wdkService.getAnswerJsonServicePath(),
-      body: JSON.stringify({
-        answerSpec: {
-          filters: [],
-          parameters: {},
-          questionName: 'DatasetQuestions.AllDatasets'
-        },
-        formatConfig: { attributes: requiredAttributes }
-      })
-    })
+    wdkService.getStudies(requiredAttributes)
   ]).then(spread(formatStudies))
 }
 

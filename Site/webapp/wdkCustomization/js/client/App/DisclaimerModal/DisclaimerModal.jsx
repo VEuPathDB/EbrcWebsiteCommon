@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './DisclaimerModal.scss';
-import Modal from 'Client/App/Modal';
+import Modal from 'ebrc-client/App/Modal';
 import { IconAlt as Icon } from 'wdk-client/Components'
 
 const logoTextStyle = {

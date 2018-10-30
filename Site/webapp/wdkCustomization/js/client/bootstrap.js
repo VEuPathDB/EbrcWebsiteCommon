@@ -15,13 +15,13 @@ import {
   Controllers as WdkControllers
 } from 'wdk-client';
 import { debounce, identity, uniq, flow } from 'lodash';
-import { loadSiteConfig, loadBasketCounts, loadQuickSearches } from './actioncreators/GlobalActionCreators';
+import { loadSiteConfig } from './actioncreators/GlobalActionCreators';
 import * as EbrcComponentWrappers from './component-wrappers';
-import { makeHeaderWrapper } from './component-wrappers/Header';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
 import * as EbrcRoutes from './routes';
 import ebrcWrapStoreModules from './wrapStoreModules';
+import ebrcWrapWdkService from './wrapWdkService';
 
 // include scroll to top button
 import '../../../js/scroll-to-top';
@@ -32,101 +32,32 @@ import '../../../js/scroll-to-top';
  * @param {Object} [options]
  * @param {Object} [options.componentWrappers] An object whose keys are Wdk
  *    Component names, and whose values are higer-order Component functions.
- * @param {Array} [options.quickSearches] An array of quick search reference
- *    objects. A quick search refrence object has the following structure:
- *      {
- *        // Full Question name used to process the search
- *        name: string;
- *
- *        // Alternate full Question name to use as a hyperlink
- *        alternate: string;
- *
- *        // The name of the param to use for the text input
- *        paramName: string;
- *
- *        // The name to display next to the text input
- *        displayName: string;
- *
- *        // Text to display in the tooltip
- *        help: string;
- *      }
  * @param {Function} [options.wrapRoutes] A function that takes a Routes object
  *    and returns a new Routes object. Use this as an opportunity alter routes.
- * @param {boolean} [options.isPartOfEuPathDB = false] Controls if the EuPathDB
- *    logo is displayed. Defaults to `false`.
- * @param {boolean} [options.includeQueryGrid = false] Controls if a link to
- *    the query grid page is included in the search menu.
- * @param {Function} [options.mainMenuItems] A funtion that returns an Array of
- *    MenuItem objects. A MenuItem object has the following structure:
- *      {
- *        // Used as a modifier for the CSS classes associated with the item
- *        id: string;
- *
- *        // Text used to display the item. Can include HTML
- *        text: string;
- *
- *        // Url to link to (relative to the webapp base url)
- *        webAppUrl: string;
- *
- *        // Absolute url to link to
- *        url: string;
- *
- *        // Route url to link to
- *        route: string;
- *
- *        // Controls if a beta badge is added to item
- *        beta: boolean;
- *
- *        // Controls if a new badge is added to item
- *        new: boolean;
- *
- *        // Array of project_ids that should include the item
- *        include: string[];
- *
- *        // Array of project_ids that should exclude the item. `include` takes precedence.
- *        exclude: string[];
- *
- *        // Click event handler to call when item is clicked
- *        onClick: (event: MouseEvent) => void;
- *
- *        // Controls if the destination of the item requires a user to be logged in
- *        loginRequired: boolean;
- *
- *        // Submenu items
- *        children: MenuItem[];
- *      }
- *    The function is called with two arguments: props passed to `SiteHeader`,
- *    and on object containing preconfigured menu items.
- * @param {Function} [options.smallMenuItems] See `mainMenuItems`.
- * @param {ClientPluing[]} [options.pluginConfig] TODO - docs
+ * @param {Function} [options.wrapWdkService] A function that takes WdkService and returns
+ *     a sub class.
+ * @param {ClientPlugin[]} [options.pluginConfig] TODO - docs
+ * @param {ClassisHomePageConfig|CardBasedHomePageConfig} [options.homePageConfig] Options for home page
  */
 export function initialize(options = {}) {
   const {
-    quickSearches,
     componentWrappers,
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
     wrapStoreModules = identity,
-    mainMenuItems,
-    smallMenuItems,
-    isPartOfEuPathDB,
-    includeQueryGrid
+    wrapWdkService = identity,
   } = options;
 
   unaliasWebappUrl();
   removeJsessionid();
 
-  const Header = makeHeaderWrapper({
-    makeMainMenuItems: mainMenuItems,
-    makeSmallMenuItems: smallMenuItems
-  })
-
-  wrapComponents(mergeWrapperObjects(componentWrappers, { ...EbrcComponentWrappers, Header }));
+  wrapComponents(mergeWrapperObjects(componentWrappers, EbrcComponentWrappers));
 
   // initialize the application
   const context = initializeWdk({
     wrapRoutes: flow(EbrcRoutes.wrapRoutes, wrapRoutes),
     wrapStoreModules: flow(ebrcWrapStoreModules, wrapStoreModules),
+    wrapWdkService: flow(ebrcWrapWdkService, wrapWdkService),
     rootUrl,
     rootElement,
     endpoint,
@@ -136,20 +67,7 @@ export function initialize(options = {}) {
 
   (window.ebrc || (window.ebrc = {})).context = context
 
-  context.store.dispatch(loadSiteConfig(Object.assign({}, siteConfig, {
-    includeQueryGrid,
-    isPartOfEuPathDB,
-    quickSearchReferences: quickSearches,
-  })));
-
-  // XXX Move calls to store.dispatch to controller override?
-
-  // load quick search data
-  if (quickSearches) {
-    context.store.dispatch(loadQuickSearches(quickSearches));
-  }
-
-  context.store.dispatch(loadBasketCounts());
+  context.store.dispatch(loadSiteConfig(siteConfig));
 
   return context;
 }

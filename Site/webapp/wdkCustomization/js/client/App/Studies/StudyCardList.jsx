@@ -1,26 +1,17 @@
 import React from 'react';
-
+import CardList from 'ebrc-client/App/Showcase/CardList';
 import StudyCard from './StudyCard';
 
-class StudyCardList extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
-  render () {
-    const { list, ...otherProps } = this.props;
-    return !list ? null : (
-      <div className="CardList StudyCardList">
-        {list.map((study, idx) => (
-          <StudyCard
-            key={idx}
-            study={study}
-            {...otherProps}
-          />
-        ))}
-      </div>
-    );
-  }
-};
-
-export default StudyCardList;
+export default function StudyCardList(props) {
+  const { list, isLoading, ...otherProps } = props;
+  return (
+    <CardList
+      additionalClassName="StudyCardList"
+      list={list}
+      isLoading={isLoading}
+      renderCard={(study, idx) =>
+        <StudyCard key={idx} study={study} {...otherProps} />
+      }
+    />
+  );
+}

@@ -1,20 +1,18 @@
 import React from 'react';
+import CardList from 'ebrc-client/App/Showcase/CardList';
 
 import ImageCard from './ImageCard';
 
-class ImageCardList extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
-  render () {
-    const { list, prefix } = this.props;
-    return !list ? null : (
-      <div className="CardList ImageCardList">
-        {list.map((card, idx) => <ImageCard card={card} prefix={prefix} key={idx} />)}
-      </div>
-    );
-  }
-};
-
-export default ImageCardList;
+export default function ImageCardList(props) {
+  const { list, prefix, isLoading } = props;
+  return (
+    <CardList
+      additionalClassName="ImageCardList"
+      isLoading={isLoading}
+      list={list}
+      renderCard={(card, idx) =>
+        <ImageCard card={card} prefix={prefix} key={idx} />
+      }
+    />
+  );
+}

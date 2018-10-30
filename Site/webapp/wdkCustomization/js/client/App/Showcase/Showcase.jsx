@@ -1,12 +1,11 @@
 import React from 'react';
+import { StudyCardList } from 'ebrc-client/App/Studies';
+import { SearchCardList } from 'ebrc-client/App/Searches';
+import { ImageCardList } from 'ebrc-client/App/ImageCard';
+import { IconAlt as Icon } from 'wdk-client/Components';
 
 import './Showcase.scss';
 import ShowcaseFilter from './ShowcaseFilter';
-
-import { IconAlt as Icon } from 'wdk-client/Components';
-import { StudyCardList } from 'Client/App/Studies';
-import { SearchCardList } from 'Client/App/Searches';
-import { ImageCardList } from 'Client/App/ImageCard';
 
 class Showcase extends React.Component {
   constructor (props) {
@@ -44,9 +43,10 @@ class Showcase extends React.Component {
     const { handleFilter } = this;
     const { filteredItems } = this.state;
     const { content, prefix, projectId, attemptAction, studies } = this.props;
-    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, items, description } = content;
+    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, items, description, isLoading } = content;
     const cards = this.getListRenderer(contentType, {
       attemptAction,
+      isLoading,
       prefix,
       projectId,
       list: filteredItems,

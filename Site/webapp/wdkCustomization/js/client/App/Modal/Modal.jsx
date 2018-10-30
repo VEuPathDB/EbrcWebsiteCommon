@@ -1,8 +1,8 @@
 import React from 'react';
+import { filterKeysFromObject } from 'ebrc-client/App/Utils/Utils';
+import { Mesa } from 'wdk-client/Components';
 
 import './Modal.scss';
-import { Mesa } from 'wdk-client/Components';
-import { filterKeysFromObject } from 'Client/App/Utils/Utils';
 
 class Modal extends React.Component {
   constructor (props) {
