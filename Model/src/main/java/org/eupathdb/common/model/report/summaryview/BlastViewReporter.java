@@ -2,7 +2,7 @@ package org.eupathdb.common.model.report.summaryview;
 
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.answer.AnswerValue;
+import org.gusdb.wdk.model.answer.factory.AnswerValue;
 import org.gusdb.wdk.model.report.Reporter;
 import org.gusdb.wdk.model.report.ReporterConfigException;
 import org.gusdb.wdk.model.report.reporter.DefaultJsonReporter;
@@ -22,10 +22,10 @@ public class BlastViewReporter extends DefaultJsonReporter {
   public BlastViewReporter(AnswerValue answerValue) {
     super(answerValue);
   }
-  
+
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
-    if (!_baseAnswer.getQuestion().getName().matches("GenesBySimilarity") ) 
+    if (!_baseAnswer.getAnswerSpec().getQuestion().getName().matches("GenesBySimilarity") ) 
       throw new ReporterConfigException("Only BLAST searches can use this report");
     return super.configure(config);
   }
@@ -46,5 +46,5 @@ public class BlastViewReporter extends DefaultJsonReporter {
     writer.key(BLAST_META).value(json);
     return writer; 
   }
-  
+
 }
