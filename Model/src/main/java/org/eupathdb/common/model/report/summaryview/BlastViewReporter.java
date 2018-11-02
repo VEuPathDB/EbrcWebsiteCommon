@@ -2,6 +2,7 @@ package org.eupathdb.common.model.report.summaryview;
 
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.report.Reporter;
 import org.gusdb.wdk.model.report.ReporterConfigException;
@@ -31,7 +32,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
   }
 
   @Override
-  public JsonWriter writeAdditionalJson(JsonWriter writer) { 
+  public JsonWriter writeAdditionalJson(JsonWriter writer) throws WdkModelException, WdkUserException { 
     
     JSONObject json = new JSONObject();
     String message = _baseAnswer.getResultMessage();
