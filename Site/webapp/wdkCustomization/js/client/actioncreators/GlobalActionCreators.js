@@ -2,7 +2,6 @@
  * Created by dfalke on 8/22/16.
  */
 import { keyBy } from 'lodash';
-import { broadcast } from 'wdk-client/StaticDataUtils';
 import { emptyAction } from 'wdk-client/ActionCreatorUtils';
 
 export const SITE_CONFIG_LOADED = 'eupathdb/site-config-loaded';
@@ -10,10 +9,10 @@ export const BASKETS_LOADED = 'eupathdb/basket'
 export const QUICK_SEARCH_LOADED = 'eupathdb/quick-search-loaded'
 
 export function loadSiteConfig(siteConfig) {
-  return broadcast({
+  return {
     type: SITE_CONFIG_LOADED,
     payload: { siteConfig }
-  })
+  }
 }
 
 export function loadBasketCounts() {
@@ -21,7 +20,7 @@ export function loadBasketCounts() {
     return wdkService.getCurrentUser().then(user => {
       return user.isGuest
         ? emptyAction
-        : wdkService.getBasketCounts().then(basketCounts => broadcast({
+        : wdkService.getBasketCounts().then(basketCounts => ({
           type: BASKETS_LOADED,
           payload: { basketCounts }
         }));
@@ -43,11 +42,9 @@ export function loadQuickSearches(questions) {
     return Promise.all(requests).then(
       questions => keyBy(questions, 'name'),
       error => error
-    ).then(questions =>
-      broadcast({
-        type: QUICK_SEARCH_LOADED,
-        payload: { questions: questions }
-      })
-    );
+    ).then(questions => ({
+      type: QUICK_SEARCH_LOADED,
+      payload: { questions: questions }
+    }));
   }
 }
