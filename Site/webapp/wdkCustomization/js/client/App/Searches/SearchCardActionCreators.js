@@ -6,18 +6,20 @@ export const SEARCHES_LOADING = 'search-cards/loading';
 export const SEARCHES_LOADED = 'search-cards/loaded';
 export const SEARCHES_ERROR = 'search-cards/error';
 
-export const loadSearches = () => ({ wdkService }) => [
+export const loadSearches = (userEmails) => ({ wdkService }) => [
   { type: SEARCHES_LOADING },
-  fetchAndFormatSearches(wdkService).then(
+  fetchAndFormatSearches(wdkService, userEmails).then(
     searches => ({ type: SEARCHES_LOADED, payload: { searches }}),
     error => ({ type: SEARCHES_ERROR, payload: { error: error.message }})
   )
 ]
 
-async function fetchAndFormatSearches(wdkService) {
+async function fetchAndFormatSearches(wdkService, userEmails) {
   const [ recordClasses, strategies, [ studies ] ] = await Promise.all([
     wdkService.getRecordClasses(),
-    wdkService.getPublicStrategies({ userEmail: ['eupathdb@gmail.com'] }),
+    userEmails
+      ? wdkService.getPublicStrategies({ userEmail: userEmails })
+      : wdkService.getPublicStrategies(),
     fetchStudies(wdkService)
   ]);
 

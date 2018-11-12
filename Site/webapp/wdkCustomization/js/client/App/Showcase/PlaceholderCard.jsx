@@ -19,8 +19,8 @@ function PlaceholderParagraph(props) {
   return (
     <div className="PlaceholderParagraph">
       <div className="PlaceholderText PlaceholderText__Indent" />
-      {range(lines - 1).map(() =>
-        <div className="PlaceholderText" />
+      {range(lines - 1).map((n) =>
+        <div key={n} className="PlaceholderText" />
       )}
     </div>
   );
