@@ -1,17 +1,24 @@
-import { pick } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { UserActions } from 'wdk-client/Actions';
+
 import { clearRestrictions } from './DataRestrictionActionCreators';
 import DataRestrictionModal from './DataRestrictionModal';
 
+const { showLoginForm } = UserActions;
+
 function DataRestrictionDaemon(props) {
-  const { siteConfig, actions, user, dataRestriction, clearRestrictions } = props;
+  const {
+    dataRestriction,
+    user,
+    webAppUrl,
+    clearRestrictions,
+    showLoginForm,
+  } = props;
 
   if (dataRestriction == null || user == null) return null;
-
-  const { webAppUrl } = siteConfig;
 
   return !dataRestriction ? null : (
     <DataRestrictionModal
@@ -21,22 +28,29 @@ function DataRestrictionDaemon(props) {
       action={dataRestriction.action}
       webAppUrl={webAppUrl}
       onClose={clearRestrictions}
-      showLoginForm={actions.showLoginForm}
+      showLoginForm={showLoginForm}
     />
   );
 }
 
 DataRestrictionDaemon.propTypes = {
-  user: PropTypes.object.isRequired,
-  siteConfig: PropTypes.object.isRequired,
-  actions: PropTypes.object.isRequired,
-  clearRestrictions: PropTypes.func.isRequired,
   dataRestriction: PropTypes.object,
+  user: PropTypes.object,
+  webAppUrl: PropTypes.string.isRequired,
+  clearRestrictions: PropTypes.func.isRequired,
+  showLoginForm: PropTypes.func.isRequired,
 };
 
 const enhance = connect(
-  state => pick(state, 'dateRestriction'),
-  { clearRestrictions }
+  state => ({
+    dataRestriction: state.dataRestriction,
+    user: state.globalData.user,
+    webAppUrl: state.globalData.siteConfig.webAppUrl
+  }),
+  {
+    clearRestrictions,
+    showLoginForm
+  }
 )
 
 export default enhance(DataRestrictionDaemon);
