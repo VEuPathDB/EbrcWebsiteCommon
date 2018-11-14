@@ -3,6 +3,7 @@ import { PageController } from 'wdk-client/Controllers';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators';
 import { requestNews } from 'ebrc-client/App/NewsSidebar/NewsModule';
 import { loadSearches } from 'ebrc-client/App/Searches/SearchCardActionCreators';
+import { requestStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import CardBasedIndex from '../components/CardBasedIndex';
 
 const enhance = connect(
@@ -15,7 +16,7 @@ const enhance = connect(
 
     return { ...siteConfig, siteData, newsSidebar, homeContent };
   },
-  { attemptAction, requestNews, loadSearches }
+  { attemptAction, loadSearches, requestNews, requestStudies }
 );
 
 class ClinEpiIndexController extends PageController {
@@ -25,8 +26,9 @@ class ClinEpiIndexController extends PageController {
   }
 
   loadData() {
+    this.props.loadSearches(this.props.searchesUserEmail);
     this.props.requestNews();
-    this.props.loadSearches();
+    this.props.requestStudies();
   }
 
   renderView () {

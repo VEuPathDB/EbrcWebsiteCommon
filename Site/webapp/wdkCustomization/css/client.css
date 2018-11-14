@@ -111,6 +111,11 @@ td.wdk-DataTableCell__thumbnail {
   display: block;
 }
 
+.wdk-RecordSectionHeader,
+.wdk-RecordSubsectionHeader {
+  margin-bottom: -40px;
+}
+
 .wdk-RecordTableContainer,
 .wdk-RecordAttributeSectionItem {
   padding-top: 32px;

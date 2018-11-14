@@ -14,8 +14,8 @@ $news-border-width: 2px;
     border-bottom: $news-border-width solid $news-border-color;
     width: 100%;
     .NewsList {
-      overflow-y: scroll;
-      height: $news-height;
+      overflow-y: auto;
+      max-height: $news-height;
     }
   }
 

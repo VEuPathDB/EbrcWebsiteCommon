@@ -31,7 +31,7 @@ class TreeDataViewer extends Component {
           getNodeChildren={node => node.children ? node.children : []}
           onExpansionChange={this.onExpansionChange}
           showRoot={true}
-          nodeComponent={props => <span>{props.node.display}</span>}
+          renderNode={node => <span>{node.display}</span>}
           expandedList={this.state.expandedNodes}
           isSelectable={false}
           selectedList={[]}

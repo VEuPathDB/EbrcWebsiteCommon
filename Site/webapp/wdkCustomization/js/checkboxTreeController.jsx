@@ -41,7 +41,7 @@ export default class CheckboxTreeController {
       getNodeChildren: getNodeChildren,
       onExpansionChange: this.updateExpandedList,
       showRoot: false,
-      nodeComponent: BasicNodeComponent,
+      renderNode: renderNode,
       expandedList: this.state.expandedList,
       isSelectable: true,
       selectedList: this.state.selectedList,
@@ -90,4 +90,8 @@ export default class CheckboxTreeController {
     ReactDOM.unmountComponentAtNode(this.element[0]);
     this.state = this.getOriginalState();
   }
+}
+
+function renderNode(node) {
+  return <BasicNodeComponent node={node}/>;
 }
