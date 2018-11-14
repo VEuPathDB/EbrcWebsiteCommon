@@ -72,7 +72,7 @@ public class BrcRequest {
   public JSONObject getAnswerJson() {
     return new JSONObject()
       .put("answerSpec", getAnswerSpecJson())
-      .put("formatting", getFormatting());
+      .put("formatConfig", getFormatting());
   }
 
   /**
@@ -94,14 +94,13 @@ public class BrcRequest {
    */
   public JSONObject getFormatting() {
     return new JSONObject()
-      .put("formatConfig", new JSONObject()
         .put("attributes", new JSONArray()
           .put("display_name")
           .put("summary")
           .put("organism_prefix")
           .put("hit_count")
           .put("percent_count")
-          .put("newcategory")));
+          .put("newcategory"));
   }
 
   /**
