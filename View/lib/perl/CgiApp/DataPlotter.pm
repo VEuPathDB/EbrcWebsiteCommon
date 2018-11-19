@@ -151,6 +151,7 @@ sub run {
            $core = 'MicrobiomeWebsite::View::GraphPackage::';
          } else {
            $core = 'ApiCommonWebsite::View::GraphPackage::';
+           $pkg = 'EuPathDB';
          }
 
          $pkg = "Templates" if($template);
