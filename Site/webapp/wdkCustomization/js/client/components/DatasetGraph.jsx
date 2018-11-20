@@ -67,7 +67,7 @@ export default class DatasetGraph extends React.PureComponent {
     return (
       '/cgi-bin/dataPlotter.pl?' +
       'type=' + rowData.module + '&' +
-      'project_id=' + rowData.project_id + '&' +
+      'project_id=' + rowData.project_id_url + '&' +
       'datasetId=' + rowData.dataset_id + '&' +
       'template=' + (rowData.is_graph_custom === 'false' ? 1 : 0) + '&' +
       'id=' + graphId

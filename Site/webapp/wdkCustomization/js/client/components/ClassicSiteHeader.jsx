@@ -51,7 +51,6 @@ class ClassicSiteHeader extends React.Component {
     const smallMenuItems = makeSmallMenuItems && makeSmallMenuItems(this.props, menuItems);
 
     return (
-      <div>
         <div id="header">
           <div id="header2">
             <div id="header_rt">
@@ -102,8 +101,6 @@ class ClassicSiteHeader extends React.Component {
             )}
           </Sticky>
         </div>
-        <Announcements projectId={projectId} webAppUrl={webAppUrl} location={location} announcements={announcements}/>
-      </div>
     );
   }
 }
