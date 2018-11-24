@@ -376,11 +376,11 @@ class QuestionWizardController extends ViewController {
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
           groups
-            .dropWhile(group => !this._groupHasCount(group))
+            .dropWhile(group => group.name !== param.group)
             .takeWhile(group => this._groupHasCount(group))
             .forEach(group => {
               this.setState(set(['groupUIState', group.name, 'valid'], false));
-            })
+            });
           this._updateGroupCounts(groups
             .takeWhile(group => group !== this.state.activeGroup)
             .concat(Seq.of(this.state.activeGroup)));
