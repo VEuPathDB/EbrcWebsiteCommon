@@ -3,7 +3,6 @@
 import $ from 'jquery';
 import {
   ary,
-  debounce,
   flow,
   get,
   groupBy,
@@ -73,7 +72,7 @@ class QuestionWizardController extends ViewController {
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
-    this._commitParamValueChange = debounce(synchronized(this._commitParamValueChange), 1000);
+    this._commitParamValueChange = synchronized(this._commitParamValueChange);
 
     this.childRef = React.createRef();
   }
@@ -303,7 +302,10 @@ class QuestionWizardController extends ViewController {
 
     this.setState(set(['paramValues', param.name], paramValue),
       () => this._commitParamValueChange(param, paramValue, prevParamValue));
-    this.setState(set(['groupUIState', param.group, 'loading'], true));
+
+    if (this.state.activeGroup.name === param.group) {
+      this.setState(set(['groupUIState', param.group, 'loading'], true));
+    }
 
     if (param.type === 'FilterParamNew') {
       // for each changed member updated member field, resort
@@ -368,19 +370,17 @@ class QuestionWizardController extends ViewController {
 
   _commitParamValueChange(param, paramValue, prevParamValue) {
     const groups = Seq.from(this.state.question.groups);
-    const currentGroup = groups.find(group => group.parameters.includes(param.name));
-    groups
-      .dropWhile(group => group !== currentGroup)
-      .drop(1)
-      .takeWhile(group => this._groupHasCount(group))
-      .forEach(group => {
-        this.setState(set(['groupUIState', group.name, 'valid'], false));
-      })
 
     return Promise.all([
       this._handleParamValueChange(param, paramValue, prevParamValue),
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
+          groups
+            .dropWhile(group => !this._groupHasCount(group))
+            .takeWhile(group => this._groupHasCount(group))
+            .forEach(group => {
+              this.setState(set(['groupUIState', group.name, 'valid'], false));
+            })
           this._updateGroupCounts(groups
             .takeWhile(group => group !== this.state.activeGroup)
             .concat(Seq.of(this.state.activeGroup)));
