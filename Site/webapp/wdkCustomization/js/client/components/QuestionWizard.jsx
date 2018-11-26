@@ -107,6 +107,7 @@ export default wrappable(QuestionWizard);
 function Navigation(props) {
   const {
     wizardState: {
+      updatingParamName,
       activeGroup,
       question,
       groupUIState,
@@ -209,6 +210,7 @@ function Navigation(props) {
             )])}
             <div className={makeClassName('SubmitContainer')}>
               <button
+                disabled={updatingParamName != null}
                 className={makeClassName('SubmitButton')}
                 title="View the results of your search for further analysis."
               >

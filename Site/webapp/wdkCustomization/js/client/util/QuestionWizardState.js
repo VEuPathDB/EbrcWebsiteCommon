@@ -35,6 +35,7 @@ export function createInitialState(question, recordClass, paramValues) {
     filterPopupState,
     recordClass,
     activeGroup: undefined,
+    updatingParamName: undefined
   };
 }
 

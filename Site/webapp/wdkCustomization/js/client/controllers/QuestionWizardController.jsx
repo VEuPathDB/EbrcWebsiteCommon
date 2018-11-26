@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import {
   ary,
+  debounce,
   flow,
   get,
   groupBy,
@@ -72,7 +73,7 @@ class QuestionWizardController extends ViewController {
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
-    this._commitParamValueChange = synchronized(this._commitParamValueChange);
+    this._commitParamValueChange = synchronized(debounce(this._commitParamValueChange, 750));
 
     this.childRef = React.createRef();
   }
@@ -300,8 +301,13 @@ class QuestionWizardController extends ViewController {
   setParamValue(param, paramValue) {
     const prevParamValue = this.state.paramValues[param.name];
 
-    this.setState(set(['paramValues', param.name], paramValue),
-      () => this._commitParamValueChange(param, paramValue, prevParamValue));
+    // FIXME Add set updatingParams state for downstream groups
+    this.setState(
+      set(['paramValues', param.name], paramValue),
+      () => {
+        this._commitParamValueChange(param, paramValue, prevParamValue);
+      }
+    );
 
     if (this.state.activeGroup.name === param.group) {
       this.setState(set(['groupUIState', param.group, 'loading'], true));
@@ -356,22 +362,27 @@ class QuestionWizardController extends ViewController {
         } = this._getParamUIState(this.state, paramName);
         const { filters } = JSON.parse(this.state.paramValues[param.name]);
         const activeOntologyItem = ontology.find(item => item.term === activeOntologyTerm);
-        this._updateFilterParamCounts(param.name, filters);
-        if (activeOntologyItem && (
+        const activeOntologyItemNeedsUpdate = activeOntologyItem && (
           fieldStates[activeOntologyTerm] == null ||
           fieldStates[activeOntologyTerm].summary == null ||
           fieldStates[activeOntologyTerm].invalid
-        )) {
-          this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters);
-        }
+        );
+        return Promise.all([
+          this._updateFilterParamCounts(param.name, filters),
+          activeOntologyItemNeedsUpdate
+            ? this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters)
+            : null
+        ]);
       }
     })
   }
 
-  _commitParamValueChange(param, paramValue, prevParamValue) {
+  async _commitParamValueChange(param, paramValue, prevParamValue) {
     const groups = Seq.from(this.state.question.groups);
 
-    return Promise.all([
+    this.setState(set(['updatingParamName'], param.name));
+
+    await Promise.all([
       this._handleParamValueChange(param, paramValue, prevParamValue),
       this._updateDependedParams(param, paramValue, this.state.paramValues).then(nextState => {
         this.setState(nextState, () => {
@@ -385,10 +396,12 @@ class QuestionWizardController extends ViewController {
             .takeWhile(group => group !== this.state.activeGroup)
             .concat(Seq.of(this.state.activeGroup)));
           // If an upstream group has changed, update active group's params
-          this._initializeActiveGroupParams(this.state.activeGroup);
+          return this._initializeActiveGroupParams(this.state.activeGroup);
         });
       })
     ]);
+
+    this.setState(set(['updatingParamName'], undefined));
   }
 
   _handleParamValueChange(param, paramValue, prevParamValue) {

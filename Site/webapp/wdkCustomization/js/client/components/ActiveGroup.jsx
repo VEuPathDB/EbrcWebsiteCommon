@@ -21,7 +21,8 @@ function ActiveGroup(props) {
       groupUIState,
       recordClass,
       activeGroup,
-      initialCount
+      initialCount,
+      updatingParamName
     },
     eventHandlers: {
       setActiveOntologyTerm,
@@ -46,8 +47,22 @@ function ActiveGroup(props) {
 
   const loadingEl = <Loading radius={2} className={makeClassName('GroupLoading')}/>;
 
+  const showUpdatingOverlay = (
+    updatingParamName == null ||
+    paramMap.get(updatingParamName).group === activeGroup.name
+  )
+    ? false
+    : getDeepDependencies(updatingParamName, paramMap)
+      .map(paramName => paramMap.get(paramName))
+      .some(param => param.group === activeGroup.name)
+
   return (
     <div className={makeClassName('ActiveGroupContainer')}>
+      {showUpdatingOverlay &&
+        <div className={makeClassName('ActiveGroupContainerOverlay')}>
+          Updating
+        </div>
+      }
       <div className={makeClassName('ActiveGroupHeading')}>
         {groupParamsValuesAreDefault(props.wizardState, activeGroup) ? (
           <div className={makeClassName('ActiveGroupCount')}>
@@ -85,3 +100,9 @@ function ActiveGroup(props) {
 ActiveGroup.propTypes = propTypes;
 
 export default wrappable(ActiveGroup);
+
+function getDeepDependencies(paramName, paramMap) {
+  return Seq.from(paramMap.get(paramName).dependentParams)
+    .flatMap(depParamName =>
+      Seq.of(depParamName).concat(getDeepDependencies(depParamName, paramMap)));
+}
