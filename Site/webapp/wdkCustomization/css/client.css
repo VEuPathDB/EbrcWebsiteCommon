@@ -278,3 +278,7 @@ td.wdk-DataTableCell__thumbnail {
   font-size: 1.2em;
   padding: 4px 0;
 }
+
+div.RecordAttribution {
+  padding-top: 60px;
+}
