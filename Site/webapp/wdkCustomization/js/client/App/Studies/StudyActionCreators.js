@@ -46,7 +46,6 @@ const requiredAttributes = [
   'card_questions',
   'dataset_id',
   'display_name',
-  'policy_url',
   'project_availability',
   'study_access',
   'study_categories',
@@ -100,7 +99,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
   const records = answer.records.reduce((records, record) => {
 
     try {
-      const missingAttributes = requiredAttributes.filter(attr => record.attributes[attr] === undefined);
+      const missingAttributes = requiredAttributes.filter(attr => record.attributes[attr] == null);
       if (missingAttributes.length > 0) {
         throw new Error(`Missing data for attributes: ${missingAttributes.join(", ")}.`)
       }
@@ -117,7 +116,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
 
   return [ records.valid
     .map(study => Object.assign(study, {
-      disabled: !study.projectAvailability.includes(projectId),
+      disabled: study.projectAvailability && !study.projectAvailability.includes(projectId),
       // searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`),
       searches: Object.values(study.searches)
         .map(questionName => questionsByName[questionName])
