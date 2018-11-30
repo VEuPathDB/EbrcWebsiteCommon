@@ -1,4 +1,4 @@
-import { get, identity, mapValues, spread } from 'lodash';
+import { get, identity, keyBy, mapValues, spread, values } from 'lodash';
 import { emptyAction } from 'wdk-client/WdkMiddleware';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
@@ -68,6 +68,8 @@ function loadStudies() {
 export function fetchStudies(wdkService) {
   return Promise.all([
     wdkService.getConfig().then(config => config.projectId),
+    wdkService.getQuestions(),
+    wdkService.getRecordClasses(),
     wdkService.getStudies(requiredAttributes)
   ]).then(spread(formatStudies))
 }
@@ -91,27 +93,43 @@ const parseStudy = mapProps({
 });
   
 
-function formatStudies(projectId, answer) {
+function formatStudies(projectId, questions, recordClasses, answer) {
+  const questionsByName = keyBy(questions, 'name');
+  const recordClassesByName = keyBy(recordClasses, 'name');
+
   const records = answer.records.reduce((records, record) => {
 
     try {
-      const missingAttributes = requiredAttributes.filter(attr => record.attributes[attr] == null);
+      const missingAttributes = requiredAttributes.filter(attr => record.attributes[attr] === undefined);
       if (missingAttributes.length > 0) {
         throw new Error(`Missing data for attributes: ${missingAttributes.join(", ")}.`)
       }
       records.valid.push(parseStudy(record));
       return records;
     }
+
     catch(error) {
       records.invalid.push({ record, error });
       return records;
     }
+
   }, { valid: [], invalid: [] });
 
   return [ records.valid
     .map(study => Object.assign(study, {
       disabled: !study.projectAvailability.includes(projectId),
-      searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`)
+      // searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`),
+      searches: Object.values(study.searches)
+        .map(questionName => questionsByName[questionName])
+        .filter(question => question != null)
+        .map(question => {
+        const recordClass = recordClassesByName[question.recordClassName];
+        return {
+          icon: question.iconName || recordClass.iconName || 'fa fa-database',
+          name: question.name,
+          displayName: recordClass.shortDisplayName,
+        };
+      })
     }))
     .sort((studyA, studyB) =>
       studyA.disabled == studyB.disabled ? 0

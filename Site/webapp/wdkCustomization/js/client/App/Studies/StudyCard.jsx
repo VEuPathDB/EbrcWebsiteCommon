@@ -1,6 +1,5 @@
 import React from 'react';
 import { CategoryIcon } from 'ebrc-client/App/Categories';
-import { getSearchIconByType, getSearchNameByType } from 'ebrc-client/App/Searches/SearchUtils';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
 
 import './StudyCard.scss';
@@ -14,8 +13,7 @@ class StudyCard extends React.Component {
     this.clearDisplaySearchType = this.clearDisplaySearchType.bind(this);
   }
 
-  displaySearchType (type) {
-    const searchType = getSearchNameByType(type);
+  displaySearchType (searchType) {
     this.setState({ searchType });
   }
 
@@ -27,7 +25,7 @@ class StudyCard extends React.Component {
   render () {
     const { study, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
-    const { name, categories, route, headline, points, searchUrls, disabled, downloadUrl } = study;
+    const { name, categories, route, headline, points, searches, disabled, downloadUrl } = study;
     const myStudyTitle = "Go to the Study Details page";
     const myDownloadTitle = "Download data files";
 
@@ -74,22 +72,26 @@ class StudyCard extends React.Component {
           }
         </div>
         <div className="box StudyCard-Footer">
-          {Object.entries(searchUrls).map(entry => {
-            const [ type, searchUrl ] = entry;
-            const icon = getSearchIconByType(type);
-            const webappUrl = (prefix ? prefix : '') + searchUrl;
-            return (
-              <div
-                key={type}
-                className="box"
-                onMouseEnter={() => this.displaySearchType(type)}
-                onMouseLeave={this.clearDisplaySearchType}>
-                <a href={webappUrl}>
-                  <Icon fa={icon} />
-                </a>
+          {searches.length
+            ? searches.map(({ icon, displayName, name }) => {
+              const webappUrl = (prefix ? prefix : '') + '/showQuestion.do?questionFullName=' + name;
+              return (
+                <div
+                  key={name}
+                  className="box"
+                  onMouseEnter={() => this.displaySearchType(displayName)}
+                  onMouseLeave={this.clearDisplaySearchType}>
+                  <a href={webappUrl}>
+                    <i className={icon} />
+                  </a>
+                </div>
+              );
+            })
+            : (
+              <div className="box">
+                &nbsp;
               </div>
-            );
-          })}
+            )}
         </div>
       </div>
     );

@@ -17,6 +17,7 @@
   <c:set var="model" value="${applicationScope.wdkModel.model}"/>
   <c:set var="props" value="${model.properties}"/>
   <c:set var="webAppUrl" value="${pageContext.request.contextPath}"/>
+  <c:set var="assetsUrl" value="${model.modelConfig.assetsUrl ne null ? model.modelConfig.assetsUrl : webAppUrl}" />
   <c:set var="wdkServiceUrl" value ="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 
   <!-- only show information on home page. this jsp never gets loaded on home page -->
@@ -33,6 +34,9 @@
   <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
 
   <script>
+    // used for webpack. remove this when this can be set at build time.
+    window.__asset_path_remove_me_please__ = "${assetsUrl}/";
+
     // used for header and footer
     window.__SITE_CONFIG__ = {
       rootUrl: "${webAppUrl}/app",
