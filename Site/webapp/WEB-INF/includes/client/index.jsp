@@ -50,6 +50,7 @@
         facebookUrl: "${props.FACEBOOK_URL}",
         twitterUrl: "${props.TWITTER_URL}",
         youtubeUrl: "${props.YOUTUBE_URL}",
+        vimeoUrl: "${props.VIMEO_URL}",
         recordClassesWithProjectId: ${recordClassesWithProjectId}
       };
       window.__SITE_ANNOUNCEMENTS__ = {

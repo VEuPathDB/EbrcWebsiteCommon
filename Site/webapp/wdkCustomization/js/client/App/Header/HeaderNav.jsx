@@ -103,6 +103,7 @@ class HeaderNav extends React.Component {
       case 'facebook': return 'facebook-official';
       case 'twitter': return 'twitter';
       case 'youtube': return 'youtube-play';
+      case 'vimeo': return 'vimeo-square';
       default: return type;
     }
   }

@@ -14,11 +14,12 @@ export function filterKeysFromObject (object, keys = []) {
 };
 
 export function iconMenuItemsFromSocials (siteConfig = {}) {
-  const { facebookUrl, twitterUrl, youtubeUrl } = siteConfig;
+  const { facebookUrl, twitterUrl, youtubeUrl, vimeoUrl } = siteConfig;
   const items = [];
   if (facebookUrl) items.push({ type: 'facebook', url: facebookUrl, target: '_blank' });
   if (twitterUrl) items.push({ type: 'twitter', url: twitterUrl, target: '_blank' });
   if (youtubeUrl) items.push({ type: 'youtube', url: youtubeUrl, target: '_blank' });
+  if (vimeoUrl) items.push({ type: 'vimeo', url: vimeoUrl, target: '_blank' });
   return items;
 }
 
