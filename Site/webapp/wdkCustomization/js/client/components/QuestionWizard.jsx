@@ -136,7 +136,7 @@ function Navigation(props) {
   const prevGroupMap = new Map(zip(groups.slice(1), groups.slice(0, -1)));
 
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
-  const iconName = recordClass.iconName || 'fa fa-database';
+  const iconName = question.iconName || recordClass.iconName || 'fa fa-database';
 
   return (
     <Sticky>
