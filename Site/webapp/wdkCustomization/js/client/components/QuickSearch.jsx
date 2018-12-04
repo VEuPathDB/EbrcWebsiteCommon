@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Mesa } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
+import * as persistence from 'ebrc-client/util/persistence';
 
 let ParamPropType = PropTypes.shape({
   defaultValue: PropTypes.string,
@@ -58,10 +59,8 @@ class QuickSearchItem extends Component {
   }
 
   setStateFromProps(props) {
-    let value = window.localStorage.getItem(this.getStorageKey(props));
-    this.setState({
-      value: value != null ? value : get(this.getSearchParam(props), 'defaultValue', '')
-    });
+    let value = persistence.get(this.getStorageKey(props), get(this.getSearchParam(props), 'defaultValue', ''));
+    this.setState({ value });
   }
 
   handleChange(event) {
@@ -70,7 +69,7 @@ class QuickSearchItem extends Component {
 
   // Save value on submit
   handleSubmit() {
-    window.localStorage.setItem(this.getStorageKey(this.props), this.state.value);
+    persistence.set(this.getStorageKey(this.props), this.state.value);
   }
 
   render() {
