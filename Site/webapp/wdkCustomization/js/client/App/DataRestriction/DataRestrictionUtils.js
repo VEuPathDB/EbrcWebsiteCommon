@@ -134,6 +134,7 @@ export function getRestrictionMessage ({ action, study }) {
 export function isAllowedAccess ({ user, action, study }) {
   if (sessionStorage.getItem('restriction_override') === 'true') return true;
   // assuming approvedStudies only contain public studies for this user (in CineEpiWebsite CustomProfileService.java)
+  if (user.properties.approvedStudies == null) return true;
   if (user.properties.approvedStudies.includes(study.id)) return true;
   if (accessLevels[study.access][action] === Require.allow) return true;
   if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
