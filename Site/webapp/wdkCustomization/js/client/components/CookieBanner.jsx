@@ -79,7 +79,7 @@ export default class CookieBanner extends React.Component {
         </div>
         <div>
           <div>
-            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree &amp; close this banner.</button>
+            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree, close this banner.</button>
           </div>
           <div style={{ marginTop: '.5em' }}>
             <a style={linkStyle} target="_blank" href={privacyPolicyLink}>More info.</a>
