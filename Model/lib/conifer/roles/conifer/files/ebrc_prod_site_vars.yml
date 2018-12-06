@@ -8,6 +8,8 @@ _hostname_project_map:
   gates.clinepidb.org: Gates
   qa.icemr.clinepidb.org: ICEMR
   icemr.clinepidb.org: ICEMR
+  feature.eupathdb.org: UniDB   
+
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
 
 accountDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['acctDb_name'] }}"
