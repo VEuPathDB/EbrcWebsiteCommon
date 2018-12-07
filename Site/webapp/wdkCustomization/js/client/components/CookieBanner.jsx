@@ -1,13 +1,14 @@
 import React from 'react';
+import * as persistence from 'ebrc-client/util/persistence';
 
 // Store user consent in browser storage
 // -------------------------------------
 
-const USER_AGREED_KEY = '@ebrc/agreed-cookies';
+const USER_AGREED_KEY = 'agreed-to-cookie-usage';
 
 const UserAgreedStore = {
-  get: () => JSON.parse(window.localStorage.getItem(USER_AGREED_KEY) || "false"),
-  set: (value) => window.localStorage.setItem(USER_AGREED_KEY, JSON.stringify(Boolean(value)))
+  get: () => persistence.get(USER_AGREED_KEY, false),
+  set: (value) => persistence.set(USER_AGREED_KEY, Boolean(value))
 };
 
 
@@ -78,7 +79,7 @@ export default class CookieBanner extends React.Component {
         </div>
         <div>
           <div>
-            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree &amp; close this banner.</button>
+            <button style={linkStyle} type="button" onClick={this.handleButtonClick} className="wdk-Link">I agree, close this banner.</button>
           </div>
           <div style={{ marginTop: '.5em' }}>
             <a style={linkStyle} target="_blank" href={privacyPolicyLink}>More info.</a>

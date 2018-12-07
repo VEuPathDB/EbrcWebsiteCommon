@@ -18,8 +18,8 @@ const enhance = connect(
     return { user, siteConfig, preferences, siteData, dataRestriction, headerMenuItems };
   },
   { ...UserActions, requestStudies },
-  (stateProps, actions) => {
-    return { ...stateProps, actions };
+  (stateProps, actions, ownProps ) => {
+    return { ...stateProps, ...ownProps, actions };
   }
 );
 
@@ -30,33 +30,44 @@ class Header extends React.Component {
   }
 
   render () {
-    const { headerMenuItems, siteConfig, siteData, user, actions } = this.props;
-    const { webAppUrl, rootUrl } = siteConfig;
-    const content = {
-      heroImage: `${webAppUrl}/images/global.jpg`,
-      heroPosition: 'left 33%',
-      heading: `Welcome To <span style="font-weight: 400; font-family: 'Exo 2'">ClinEpi<span style="color:#DD314E">DB</span></span>`,
-      tagline: 'Advancing global public health by facilitating the exploration and analysis of epidemiological studies'
-    };
+    const {
+      headerMenuItems,
+      siteConfig,
+      siteData,
+      user,
+      actions,
+      heroImageUrl,
+      heroImagePosition,
+      titleWithoutDB,
+      subTitle,
+      tagline,
+      logoUrl,
+    } = this.props;
+    const { rootUrl } = siteConfig;
+    const heading = `Welcome To <span class="Hero-Title">${titleWithoutDB}</span><span style="color:#DD314E">DB</span>`;
     const { pathname } = window.location;
     const showHomeContent = (rootUrl === pathname || (rootUrl + '/') === pathname);
 
     return (
       <header className={'Header' + (showHomeContent ? ' Header--Home' : '')}>
-        <Hero image={content.heroImage} position={content.heroPosition}>
+        <Hero image={heroImageUrl} position={heroImagePosition}>
           <HeaderNav
             actions={actions}
             headerMenuItems={headerMenuItems}
             siteConfig={siteConfig}
             siteData={siteData}
             user={user}
+            titleWithoutDB={titleWithoutDB}
+            subTitle={subTitle}
+            logoUrl={logoUrl}
+            heroImageUrl={heroImageUrl}
           />
           {!showHomeContent
             ? null
             : (
               <div>
-                <h1 dangerouslySetInnerHTML={{ __html: content.heading }} />
-                <h3 dangerouslySetInnerHTML={{ __html: content.tagline }} />
+                <h1 dangerouslySetInnerHTML={{ __html: heading }} />
+                <h3 dangerouslySetInnerHTML={{ __html: tagline }} />
               </div>
             )
           }

@@ -11,6 +11,7 @@ export const {
   facebookUrl,
   twitterUrl,
   youtubeUrl,
+  vimeoUrl,
   recordClassesWithProjectId
 } = window.__SITE_CONFIG__;
 

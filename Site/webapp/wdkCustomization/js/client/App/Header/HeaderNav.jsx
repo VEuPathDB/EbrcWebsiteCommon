@@ -2,7 +2,7 @@ import React from 'react';
 import SiteMenu from 'ebrc-client/App/SiteMenu';
 import UserMenu from 'ebrc-client/App/UserMenu';
 import { formatReleaseDate } from 'ebrc-client/util/formatters';
-import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
+import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
 
 import './HeaderNav.scss';
 
@@ -41,22 +41,20 @@ class HeaderNav extends React.Component {
   }
 
   renderStickyHeader () {
-    const { headerMenuItems, siteConfig, user, actions } = this.props;
+    const { headerMenuItems, siteConfig, user, actions, titleWithoutDB, logoUrl, heroImageUrl } = this.props;
     const { webAppUrl } = siteConfig;
-    const logoUrl = webAppUrl + '/images/symbol-small.png';
-    const bgUrl = webAppUrl + '/images/global.jpg';
     const { mainMenu, iconMenu } = headerMenuItems;
     const IconMenu = this.renderIconMenu;
     return (
-      <div className="HeaderNav-Sticky" style={{ backgroundImage: `url(${bgUrl})` }}>
+      <div className="HeaderNav-Sticky" style={{ backgroundImage: `url(${heroImageUrl})` }}>
         <div className="box">
           <img src={logoUrl} className="HeaderNav-Sticky-Logo" />
         </div>
         <div className="box">
           <h2 className="HeaderNav-Title">
-            <a href={webAppUrl} style={{ color: '#DD314E' }}>
-              <mark>ClinEpi</mark>DB
-            </a>
+            <Link to="/" style={{ color: '#DD314E' }}>
+              <mark>{titleWithoutDB}</mark>DB
+            </Link>
           </h2>
         </div>
         <div className="box grow-1">
@@ -72,23 +70,22 @@ class HeaderNav extends React.Component {
     )
   }
 
-  renderBranding ({ siteConfig }) {
-    const { buildNumber, releaseDate, webAppUrl } = siteConfig;
-    const logoUrl = webAppUrl + '/images/symbol-small.png';
+  renderBranding ({ siteConfig, titleWithoutDB, subTitle, logoUrl }) {
+    const { buildNumber, releaseDate } = siteConfig;
 
     return (
       <div className="box row HeaderNav-Branding">
-        <a className="box" href={webAppUrl}>
+        <Link to="/" className="box" >
           <img src={logoUrl} className="HeaderNav-Logo" />
-        </a>
+        </Link>
         <div className="box stack">
           <h1 className="HeaderNav-Title">
-            <a href={webAppUrl} style={{ color: '#DD314E' }}>
-              <mark>ClinEpi</mark>DB
-            </a>
+            <Link to="/" style={{ color: '#DD314E' }}>
+              <mark>{titleWithoutDB}</mark>DB
+            </Link>
           </h1>
           <p>
-            Clinical Epidemiology Resources <br />
+            {subTitle} <br />
             <small>
               {/* <code>Prototype</code>  */}
               Release {buildNumber} &nbsp; &nbsp;
@@ -106,6 +103,7 @@ class HeaderNav extends React.Component {
       case 'facebook': return 'facebook-official';
       case 'twitter': return 'twitter';
       case 'youtube': return 'youtube-play';
+      case 'vimeo': return 'vimeo-square';
       default: return type;
     }
   }
@@ -152,7 +150,7 @@ class HeaderNav extends React.Component {
               <StickyHeader />
             </Mesa.BodyLayer>
           )}
-          <Branding siteConfig={siteConfig} />
+          <Branding {...this.props} />
           <div className="HeaderNav-Switch">
             <div className="row HeaderNav-Primary">
               <SiteMenu items={mainMenu} config={siteConfig} actions={actions} user={user} />

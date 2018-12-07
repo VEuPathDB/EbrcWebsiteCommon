@@ -1,6 +1,6 @@
 import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
-import { buildNumber, releaseDate, displayName, projectId, webAppUrl } from '../config';
+import { buildNumber, releaseDate, displayName, webAppUrl } from '../config';
 
 const projects = [
   [ 'https', 'EuPathDB' ],
@@ -20,33 +20,19 @@ const projects = [
 /** Application footer */
 export default function Footer() {
   return (
-    <div className="wide-footer ui-helper-clearfix" id="fixed-footer">
-      <div className="left">
-        <div className="build-info">
+    <div className="Footer">
+      <div>
+        <div>
           <span>
-            <a href={'http://' + projectId.toLowerCase() + '.org'}>{displayName}</a>
+            <a href={`//${location.hostname}`}>{displayName}</a>
             <span> {buildNumber} &nbsp;&nbsp; {formatReleaseDate(releaseDate)}</span>
           </span>
           <br/>
         </div>
-        <div className="copyright">©{new Date().getFullYear()} The EuPathDB Project Team</div>
-        <div className="twitter-footer">Follow us on
-          <a className="eupathdb-SocialMedia eupathdb-SocialMedia__twitter" href="https://twitter.com/MicrobiomeDB" target="_blank"></a>
-        </div>
+        <div>©{new Date().getFullYear()} The EuPathDB Project Team</div>
       </div>
-      <div className="right">
-        <ul className="attributions">
-          <li>
-            <a href="http://code.google.com/p/strategies-wdk/">
-              <img width="120" src={webAppUrl + '/wdk/images/stratWDKlogo.png'} />
-            </a>
-          </li>
-        </ul>
-        <div className="contact">
-          Please <NewWindowLink href={webAppUrl + '/app/contact-us'}>Contact Us</NewWindowLink> with any questions or comments
-        </div>
-      </div>
-      <div className="bottom">
+
+      <div>
         <ul className="site-icons">
           {projects.map(([ protocol, project ]) =>
             <li title={`${project}.org`} key={project}>
@@ -56,6 +42,17 @@ export default function Footer() {
             </li>
           )}
         </ul>
+      </div>
+
+      <div>
+        <div>
+          <a href="http://code.google.com/p/strategies-wdk/">
+            <img width="120" src={webAppUrl + '/wdk/images/stratWDKlogo.png'} />
+          </a>
+        </div>
+        <div>
+          Please <NewWindowLink href={webAppUrl + '/app/contact-us'}>Contact Us</NewWindowLink> with any questions or comments
+        </div>
       </div>
     </div>
   );

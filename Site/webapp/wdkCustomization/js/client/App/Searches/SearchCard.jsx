@@ -9,7 +9,7 @@ class SearchCard extends React.Component {
 
   render () {
     const { search, prefix = '' } = this.props;
-    const { icon, studyName, recordClassDisplayName, url, appUrl, description, disabled } = search;
+    const { icon, name, studyName, recordClassDisplayName, url, appUrl, description, disabled } = search;
 
     const href = typeof appUrl === 'string'
       ? prefix + appUrl
@@ -21,9 +21,9 @@ class SearchCard extends React.Component {
       <div className={'Card LinkCard SearchCard ' + bodyClass + (disabled ? ' disabled' : '')}>
         <div className="box SearchCard-Header">
           <div className="box SearchCard-Icon">
-            <Icon fa={icon} />
+            <i className={icon} />
           </div>
-          <h2>{studyName}</h2>
+          <h2>{name}</h2>
           <h3>{recordClassDisplayName}</h3>
         </div>
         <div className="box SearchCard-Body">

@@ -17,6 +17,5 @@
   <wdk:wdkStylesheets refer="${refer}" debug="${debug}"/>
 
   <imp:stylesheet rel="stylesheet" type="text/css" href="site-legacy.bundle.css"/>
-  <imp:stylesheet rel="stylesheet" type="text/css" href="css/${project}.css"/>
 
 </jsp:root>

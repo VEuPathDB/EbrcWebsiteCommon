@@ -1131,87 +1131,19 @@ a.eupathdb-MenuItemText {
       =FOOTER       this allows to insert a div with version and date
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#footer {
-   text-align: center;
-   margin: 0 2.5%;
-   font-size: 10px;
-   background-color:#FFFFFF;
-   background-repeat: repeat-x;
-   color: #505050;
-   line-height: 1.2em;
-   clear: both;
-   padding: 9px;
-   position: relative;
+.Footer {
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
 }
 
-.wide-footer {
-  /*
-  min-width: 950px;
-  width: 95%;
-  */
-}
-
-.skinny-footer {
-  margin-left: 230px;
-}
-
-#footer .left, #footer .middle, #footer .right {
-  white-space: nowrap;
-}
-
-#footer .left {
-  float: left;
-  width: 20%;
-  text-align: left;
-}
-
-/*#footer .middle {
-  width: 40%;
-  text-align: center;
-}*/
-
-#footer .right {
-  float: right;
-  width: 40%;
-  text-align: right;
-}
-
-#footer .bottom {
-  display: inline-block;
-  clear: both;
-  position: absolute;
-  top: 0.8em;
-  /*width: 82%;*/
-  left: 20%;
-}
-
-#footer.skinny-footer .bottom {
-  left: 20%;
-}
-
-#footer.wide-footer .bottom {
-  left: 30%;
-}
-
-#footer .build-info {
-  text-indent: 10px;
-}
-
-#footer .release {
-  margin-left: 20px;
-}
-
-#footer .copyright {
-  margin-left: 4px;
-}
-
-#footer .contact {
-  font-size: 1.4em;
-}
-#footer .attributions {
-  padding: 0;
-  margin: 0;
-  list-style: none;
+.Footer > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 1em;
 }
 
 .site-icons li { display: inline; }

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './SiteMenuItem.scss';
-import { IconAlt as Icon } from 'wdk-client/Components';
+import { IconAlt as Icon, Link } from 'wdk-client/Components';
 
 class SiteMenuItem extends React.Component {
   constructor (props) {
@@ -23,7 +23,7 @@ class SiteMenuItem extends React.Component {
     const { focus, blur } = this;
     const { isFocused } = this.state;
     const { item, config, actions, user } = this.props;
-    const { id, text, url, appUrl, target, loginRequired } = item;
+    const { id, text, url, appUrl, route, target, loginRequired } = item;
     const { webAppUrl, projectId } = config;
 
     const { showLoginWarning } = actions;
@@ -62,10 +62,11 @@ class SiteMenuItem extends React.Component {
         onMouseLeave={blur}
       >
 
-      	{destination
-          ? <a onClick={handleClick} className="SiteMenuItem-Link" href={destination} target={target}>{text}</a>
+      { destination ? <a onClick={handleClick} className="SiteMenuItem-Link" href={destination} target={target}>{text}</a>
+          : route ? <Link onClick={handleClick} className="SiteMenuItem-Link" to={route} target={target}>{text}</Link>
           : <span className="SiteMenuItem-Text" {...touchToggle}>{text}</span>
-        }
+      }
+
         {children && children.length
           ? <div {...touchToggle}><Icon fa="caret-down" /></div>
           : null
@@ -91,6 +92,6 @@ class SiteMenuItem extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default SiteMenuItem;

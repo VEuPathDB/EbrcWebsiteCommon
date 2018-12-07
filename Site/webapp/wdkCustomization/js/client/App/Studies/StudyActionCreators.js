@@ -1,4 +1,4 @@
-import { get, identity, mapValues, spread } from 'lodash';
+import { get, identity, keyBy, mapValues, spread, values } from 'lodash';
 import { emptyAction } from 'wdk-client/WdkMiddleware';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
@@ -46,7 +46,6 @@ const requiredAttributes = [
   'card_questions',
   'dataset_id',
   'display_name',
-  'policy_url',
   'project_availability',
   'study_access',
   'study_categories',
@@ -68,6 +67,8 @@ function loadStudies() {
 export function fetchStudies(wdkService) {
   return Promise.all([
     wdkService.getConfig().then(config => config.projectId),
+    wdkService.getQuestions(),
+    wdkService.getRecordClasses(),
     wdkService.getStudies(requiredAttributes)
   ]).then(spread(formatStudies))
 }
@@ -91,7 +92,10 @@ const parseStudy = mapProps({
 });
   
 
-function formatStudies(projectId, answer) {
+function formatStudies(projectId, questions, recordClasses, answer) {
+  const questionsByName = keyBy(questions, 'name');
+  const recordClassesByName = keyBy(recordClasses, 'name');
+
   const records = answer.records.reduce((records, record) => {
 
     try {
@@ -102,16 +106,29 @@ function formatStudies(projectId, answer) {
       records.valid.push(parseStudy(record));
       return records;
     }
+
     catch(error) {
       records.invalid.push({ record, error });
       return records;
     }
+
   }, { valid: [], invalid: [] });
 
   return [ records.valid
     .map(study => Object.assign(study, {
-      disabled: !study.projectAvailability.includes(projectId),
-      searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`)
+      disabled: study.projectAvailability && !study.projectAvailability.includes(projectId),
+      // searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`),
+      searches: Object.values(study.searches)
+        .map(questionName => questionsByName[questionName])
+        .filter(question => question != null)
+        .map(question => {
+        const recordClass = recordClassesByName[question.recordClassName];
+        return {
+          icon: question.iconName || recordClass.iconName || 'fa fa-database',
+          name: question.name,
+          displayName: recordClass.shortDisplayName,
+        };
+      })
     }))
     .sort((studyA, studyB) =>
       studyA.disabled == studyB.disabled ? 0

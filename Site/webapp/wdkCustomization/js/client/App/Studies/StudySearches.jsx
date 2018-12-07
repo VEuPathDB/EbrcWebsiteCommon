@@ -2,7 +2,7 @@ import './StudySearches.scss';
 
 import { constant } from 'lodash';
 import React from 'react';
-import { IconAlt, Mesa } from 'wdk-client/Components';
+import { Mesa } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/ComponentUtils';
 
 const cx = makeClassNameHelper('ce-StudySearchIconLinks');
@@ -27,7 +27,7 @@ export default function StudySearchIconLinks(props) {
             content={<span>Search <strong>{recordClass.displayNamePlural}</strong></span>}
           >
             <a href={`${webAppUrl}/showQuestion.do?questionFullName=${question.name}`}>
-              <IconAlt fa={recordClass.iconName}/>
+              <i className={recordClass.iconName}/>
             </a>
           </Mesa.AnchoredTooltip>
         </div>

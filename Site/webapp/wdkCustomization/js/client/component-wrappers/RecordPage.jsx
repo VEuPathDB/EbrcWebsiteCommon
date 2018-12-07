@@ -24,7 +24,8 @@ export function RecordMainSection(DefaultComponent) {
       <div>
         <DynamicRecordMainSection {...props}/>
         {!props.depth && ('attribution' in props.record.attributes) && (
-          <div>
+          <div className='RecordAttribution'>
+            <hr/>
             <h3>Record Attribution</h3>
             <RecordAttribute
               attribute={props.recordClass.attributesMap.attribution}

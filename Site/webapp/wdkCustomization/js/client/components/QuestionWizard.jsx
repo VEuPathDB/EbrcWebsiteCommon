@@ -107,6 +107,7 @@ export default wrappable(QuestionWizard);
 function Navigation(props) {
   const {
     wizardState: {
+      updatingParamName,
       activeGroup,
       question,
       groupUIState,
@@ -135,7 +136,7 @@ function Navigation(props) {
   const prevGroupMap = new Map(zip(groups.slice(1), groups.slice(0, -1)));
 
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
-  const iconName = recordClass.iconName || 'database';
+  const iconName = question.iconName || recordClass.iconName || 'fa fa-database';
 
   return (
     <Sticky>
@@ -148,7 +149,7 @@ function Navigation(props) {
                 className={makeClassName('IconButton')}
                 onClick={() => setActiveGroup(null)}
               >
-                <Icon fa={iconName} className={makeClassName('Icon')}/>
+                <i className={makeClassName('Icon') + ' ' + iconName}/>
               </button>
             </div>
             <div className={makeClassName('ParamGroupSeparator')}>
@@ -209,6 +210,7 @@ function Navigation(props) {
             )])}
             <div className={makeClassName('SubmitContainer')}>
               <button
+                disabled={updatingParamName != null}
                 className={makeClassName('SubmitButton')}
                 title="View the results of your search for further analysis."
               >
