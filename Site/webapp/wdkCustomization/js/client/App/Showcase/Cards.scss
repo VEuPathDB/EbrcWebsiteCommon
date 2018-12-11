@@ -80,14 +80,6 @@
     font-size: 1.1rem;
   }
 
-  a {
-    color: $textColor;
-    text-decoration: none;
-    &:hover, &:link, &:active {
-      text-decoration: none;
-    }
-  }
-
   &.red-fade-bg {
     background: #edb2b7;
     background: -moz-radial-gradient(100% 0%, ellipse cover,  #edb2b7 -20%, #ffffff 100%);
