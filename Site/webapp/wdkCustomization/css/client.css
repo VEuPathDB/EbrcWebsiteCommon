@@ -114,11 +114,20 @@ td.wdk-DataTableCell__thumbnail {
 .wdk-RecordSectionHeader,
 .wdk-RecordSubsectionHeader {
   margin-bottom: -40px;
+  color: black;
+}
+
+.wdk-RecordSection + .wdk-RecordSection {
+  margin-top: 32px;
 }
 
 .wdk-RecordTableContainer,
 .wdk-RecordAttributeSectionItem {
   padding-top: 32px;
+}
+
+.wdk-RecordSubsection + .wdk-RecordTableContainer {
+  margin-top: 4em;
 }
 
 .wdk-RecordTableContainer:after,
