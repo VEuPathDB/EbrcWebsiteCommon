@@ -85,6 +85,37 @@ const siteAnnouncements = [
     return null;
   },
 
+ // Clinepi home page
+/*
+  (props) => {
+    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/app') ) {
+      return (
+        <div key="clinepi-astmh">
+          The EuPathDB and ClinEpiDB team will be attending the <a target='_blank' href='https://www.astmh.org/annual-meeting'>American Society of Tropical Medicine and Hygiene annual meeting</a> next week Sunday, October 28th to Thursday, November 1st! Stop by to see us in the exhibition hall booth 317 & 319 and at Tuesday's Poster Session B  #809.
+        </div>
+      );
+    }
+    return null;
+  },
+*/
+
+// Fungi gene page for Cryptococcus neoformans KN99
+  (props) => { 
+    if ( (props.projectId == 'FungiDB') && 
+         ( (location.pathname.indexOf("/app/record/gene/CKF44_") > -1)    ||
+           (location.pathname.indexOf("/app/record/gene/cneoKN99_") > -1)
+         )  
+       ) 
+    {
+      return (
+        <div key="geneFungi">
+          <i>Cryptococcus neoformans</i> var. grubii KN99 GeneIDs and functional annotation were updated in FungiDB Release 41. To access new GeneIDs navigate to the <i>Names, Previous Identifiers, and Aliases</i> section located within the <i>Annotation, curation and identifiers</i> contents menu of the gene record pages. The genome will be reloaded in the Release 42 integrating the updated GeneIDs as default identifiers.
+        </div>
+      );
+    }
+    return null;
+  },
+
   // OrthoMCL enzyme/compound
   (props) => {
     if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
