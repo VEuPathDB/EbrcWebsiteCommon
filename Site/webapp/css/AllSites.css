@@ -1,3 +1,7 @@
+@import './eupathdb-Palette.scss';
+@import './eupathdb-Buttons.scss';
+
+
 /**
  * AllSites.css - CSS rules common for all EuPathDB websites
  */
@@ -121,76 +125,9 @@ a[name] {
   outline-offset: -2px;
 
 }
-
-/*
- * General button styling. Notice the inclusion of a.eupathdb-Button and
- * a.eupathdb-BigButton. These are used to make links look like buttons.
- * The enforcement of using it on an <a> element is to enforce accessibility.
- * See http://www.karlgroves.com/2013/05/14/links-are-not-buttons-neither-are-divs-and-spans/
- */
-a.eupathdb-Button,
-a.eupathdb-BigButton,
-input[type="submit"],
-input[type="button"],
-button {
-  background: #e8e8e8;
-  background: -webkit-linear-gradient(#f4f4f4, #dddddd);
-  background: -o-linear-gradient(#f4f4f4, #dddddd);
-  background: -moz-linear-gradient(#f4f4f4, #dddddd);
-  background: linear-gradient(#f4f4f4, #dddddd);
-  border: 1px solid #afafaf;
-  border-radius: 2px;
-  padding: 2px 6px;
-  color: black;
+a.eupathdb-BigButton,input[type="submit"] {
+  color: #3e3e3e;
   text-decoration: none;
-}
-
-a.eupathdb-Button:focus,
-a.eupathdb-BigButton:focus,
-input[type="submit"]:focus,
-input[type="button"]:focus,
-button:focus,
-a.eupathdb-Button:hover,
-a.eupathdb-BigButton:hover,
-input[type="submit"]:hover,
-input[type="button"]:hover,
-button:hover {
-  background: #ededed;
-  background: -webkit-linear-gradient(#ededed, #dddddd);
-  background: -o-linear-gradient(#ededed, #dddddd);
-  background: -moz-linear-gradient(#ededed, #dddddd);
-  background: linear-gradient(#ededed, #dddddd);
-}
-
-a.eupathdb-Button:focus,
-a.eupathdb-BigButton:focus,
-input[type="submit"]:focus,
-input[type="button"]:focus,
-button:focus {
-  border-color: #717171;
-}
-
-a.eupathdb-Button:active,
-a.eupathdb-BigButton:active,
-input[type="submit"]:active,
-input[type="button"]:active,
-button:active {
-  background: #ddd;
-}
-
-input[type="submit"][disabled],
-input[type="button"][disabled],
-button[disabled] {
-  color: #aaa;
-  background: #f4f4f4;
-  border-color: #ccc;
-  cursor: not-allowed;
-}
-
-a.eupathdb-BigButton,
-input[type="submit"],
-button[type="submit"] {
-  font-size:  0.9rem;
 }
 
 /* useful for embedding forms and making submit button look like a link */
