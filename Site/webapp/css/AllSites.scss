@@ -1,6 +1,4 @@
-@import './eupathdb-Palette.scss';
 @import './eupathdb-Buttons.scss';
-
 
 /**
  * AllSites.css - CSS rules common for all EuPathDB websites
@@ -1096,14 +1094,16 @@ a.eupathdb-MenuItemText {
   margin: 0 .5em;
   color: transparent;
 }
+
 .site-icons a.EuPathDB {
-  background-image: url(../images/eupathdblink.png);
+  background-image: url(../../images/eupathdblink.png);
   width: 116px;
 }
 .site-icons a.UniDB {
-  background-image: url(../images/eupathdblink.png);
+  background-image: url(../../images/eupathdblink.png);
   width: 116px;
 }
+/*
 .site-icons a.AmoebaDB {
   background-image: url(../images/AmoebaDB/footer-logo.png);
 }
@@ -1137,7 +1137,7 @@ a.eupathdb-MenuItemText {
 .site-icons a.OrthoMCL {
   background-image: url(../images/OrthoMCL/footer-logo.png);
 }
-
+*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    =Fixed Footer
@@ -1332,7 +1332,7 @@ th.mythStyle {
 }
 
 .announcebox.info {
-	background-image: url(../images/infobox.jpg);
+/*	background-image: url(../images/infobox.jpg); */
 	color: #093c8a;
 	background-color: #cdd9eb;
 }
@@ -1340,13 +1340,13 @@ th.mythStyle {
 .announcebox.error {
 	color: #c4000e;
 	background-color: #eec1c2;
-	background-image: url(../images/errorbox.jpg);
+/*	background-image: url(../images/errorbox.jpg); */
 }
 
 .announcebox.warn {
 	color: #c4000e;
 	background-color: #edf0ac;
-	background-image: url(../images/warnbox.jpg);
+/*	background-image: url(../images/warnbox.jpg); */
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1362,7 +1362,7 @@ table#geneFilters th.genus {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =TOXO  advanced filters (should be moved to Toxo.css)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
+/*
 .vennFilter {
    float:left;
    margin-right: 30px;
@@ -1411,7 +1411,7 @@ table#geneFilters th.genus {
 }
 
 .vennFilter.vennDiagram ul li {
-   margin-top: 7px;   /* 14px;  */
+   margin-top: 7px;  
 }
 
 .top_label {
@@ -1422,7 +1422,7 @@ table#geneFilters th.genus {
    margin-top: 24px;
 }
 
-
+*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =some custom QUESTION PAGES, also blast.js
@@ -1534,8 +1534,8 @@ div.usererror {
 	   RECORD (gene) PAGE: GBrowse button
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 a#gbView {
-    background: transparent url('../images/button-design.gif') no-repeat scroll top right;
-    display: block;
+/*    background: transparent url('../../images/button-design.gif') no-repeat scroll top right; */
+    display: block; 
 /*    float: left; */
     height: 24px;
     padding-left: 7px;
