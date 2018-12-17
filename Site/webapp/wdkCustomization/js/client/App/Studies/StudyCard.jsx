@@ -49,11 +49,9 @@ class StudyCard extends React.Component {
           {headline}
         </div>
         <div className="box StudyCard-Body">
-          <Link to={route} title={myStudyTitle}>
-            <ul>
-              {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
-            </ul>
-          </Link>
+          <ul>
+            {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
+          </ul>
         </div>
         <div className="box StudyCard-Download"> 
           <a onClick={(event) => {

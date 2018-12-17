@@ -1,4 +1,4 @@
-import { get, identity, keyBy, mapValues, spread, values } from 'lodash';
+import { get, identity, keyBy, mapValues, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/WdkMiddleware';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
@@ -49,7 +49,8 @@ const requiredAttributes = [
   'project_availability',
   'study_access',
   'study_categories',
-  'bulk_download_url'
+  'bulk_download_url',
+  'eupath_release',
 ];
 
 
