@@ -2,6 +2,7 @@ package org.eupathdb.common.model.analysis;
 
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.analysis.ExternalAnalyzer;
+import org.json.JSONObject;
 
 /**
  * This analyzer is a customized version of the WDK analyzer. It additionally relays, in the view model, the
@@ -29,6 +30,10 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
       return _projectFolder;
     }
 
+    public JSONObject toJson() {
+      return super.toJson().put("projectFolder", _projectFolder);
+    }
+
   }
 
   /**
@@ -37,11 +42,20 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
    */
   @Override
   public Object getResultViewModel() throws WdkModelException {
+    return createResultViewModel();
+  }
+
+  private ViewModel createResultViewModel() {
     String dataStorageDir = getWdkModel().getStepAnalysisPlugins().getExecutionConfig().getFileStoreDirectory();
     return new ViewModel(getProperty(EXTERNAL_APP_URL_PROP_KEY),
         chooseSize(IFRAME_WIDTH_PROP_KEY, DEFAULT_IFRAME_WIDTH_PX),
         chooseSize(IFRAME_LENGTH_PROP_KEY, DEFAULT_IFRAME_HEIGHT_PX),
         dataStorageDir.substring(dataStorageDir.lastIndexOf('/') + 1));
+  }
+
+  @Override
+  public JSONObject getResultViewModelJson() throws WdkModelException {
+    return createResultViewModel().toJson();
   }
 
 }
