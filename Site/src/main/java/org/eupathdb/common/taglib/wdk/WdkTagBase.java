@@ -51,8 +51,8 @@ public abstract class WdkTagBase extends SimpleTagSupport {
     }
     
     public void setWdkModelBean() {
-        _wdkModelBean = (WdkModelBean) this.getContext().
-        getAttribute(Utilities.WDK_MODEL_KEY);
+        _wdkModelBean = (WdkModelBean) getContext()
+            .getAttribute(Utilities.WDK_MODEL_BEAN_KEY);
     }
 
     protected WdkModelBean getWdkModelBean() {
