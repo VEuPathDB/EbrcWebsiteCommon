@@ -4,11 +4,11 @@ export default [
   {
     type: 'attributeAnalysis',
     name: 'wordCloud',
-    plugin: WordCloudAnalysisPlugin
+    component: WordCloudAnalysisPlugin
   },
   {
     type: 'attributeAnalysis',
     name: 'histogram',
-    plugin: HistogramAnalysisPlugin
+    component: HistogramAnalysisPlugin
   }
 ]
