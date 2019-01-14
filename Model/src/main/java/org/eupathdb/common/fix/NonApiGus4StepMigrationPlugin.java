@@ -81,17 +81,14 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
     // 5. Some steps have both a params property and params as top-level properties in display_params; remove the latter
     modified |= removeOldDisplayParamProps(step);
 
-    // Look up question for the current step; needs to be done after #1 so we are reading new question names
-    Question question;
-    try {
-      // use (possibly already modified) question name to look up question in the current model
-      question = _wdkModel.getQuestion(step.getQuestionName());
-    }
-    catch (WdkModelException e) {
+    // Look up question for the current step; needs to be done after #1 so we are reading new question names.
+    // Use (possibly already modified) question name to look up question in the current model.
+    Question question = _wdkModel.getQuestion(step.getQuestionName()).orElse(null);
+    if (question == null) {
       LOG.warn("Question name " + step.getQuestionName() + " does not appear in the WDK model");
       return new RowResult<StepData>(step).setShouldWrite(modified);
     }
-    
+
     // 6. Filter param format has changed a bit; update existing steps to comply
     modified |= fixFilterParamValues(step, question, true, INVALID_STEP_COUNT_PARAMS);
 

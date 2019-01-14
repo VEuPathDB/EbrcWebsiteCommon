@@ -8,7 +8,6 @@ import org.gusdb.fgputil.ListBuilder;
 import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
-import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.answer.spec.ParamFiltersClobFormat;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
@@ -18,6 +17,7 @@ import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
 import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
 import org.gusdb.wdk.model.query.param.FilterParamNew;
 import org.gusdb.wdk.model.query.param.Param;
+import org.gusdb.wdk.model.question.Question;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,15 +55,13 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
   public RowResult<StepData> processRecord(StepData nextRow) throws Exception {
     try {
       RowResult<StepData> result = new RowResult<>(nextRow);
-      Map<String, Param> questionParams;
-      try {
-        questionParams = _wdkModel.getQuestion(nextRow.getQuestionName()).getParamMap();
-      }
-      catch(WdkModelException e) {
+      Question question = _wdkModel.getQuestion(nextRow.getQuestionName()).orElse(null);
+      if (question == null) {
         // question name is invalid; skip this row without error
         _counts[ResultType.BAD_QUESTION.ordinal()]++;
-        return result;
+
       }
+      Map<String, Param> questionParams = question.getParamMap();
       JSONObject json = nextRow.getParamFilters();
       JSONObject params = json.getJSONObject(ParamFiltersClobFormat.KEY_PARAMS);
       boolean valueChanged = false;

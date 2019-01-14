@@ -3,11 +3,13 @@ package org.eupathdb.common.model.view;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gusdb.wdk.model.WdkModel;
+import org.gusdb.fgputil.validation.ValidObjectFactory.RunnableObj;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
+import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.answer.SummaryViewHandler;
-import org.gusdb.wdk.model.user.Step;
+import org.gusdb.wdk.model.answer.factory.AnswerValueFactory;
+import org.gusdb.wdk.model.answer.spec.AnswerSpec;
 import org.gusdb.wdk.model.user.User;
 
 public class BlastSummaryViewHandler implements SummaryViewHandler {
@@ -20,13 +22,14 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
   public static final String MACRO_ALIGNMENT = "__WSF_BLAST_ALIGNMENT__";
 
   @Override
-  public Map<String, Object> process(Step step, Map<String, String[]> parameters,
-      User user, WdkModel wdkModel) throws WdkModelException, WdkUserException {
+  public Map<String, Object> process(RunnableObj<AnswerSpec> answerSpec, Map<String, String[]> parameters,
+      User user) throws WdkModelException, WdkUserException {
     Map<String, Object> attributes = new HashMap<>();
 
     // split template into 3 sections, header, middle, footer
-    step.setAnswerValuePaging(1, -1);
-    String message = step.getAnswerValue().getResultMessage();
+    AnswerValue answer = AnswerValueFactory.makeAnswer(user, answerSpec);
+    answer.setPageToEntireResult();
+    String message = answer.getResultMessage();
     String[] pieces = message.split(MACRO_SUMMARY, 2);
     attributes.put(ATTR_HEADER, pieces[0]);
     if (pieces.length > 1) {
@@ -39,7 +42,7 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
   }
 
   @Override
-  public String processUpdate(Step step, Map<String, String[]> parameters, User user, WdkModel wdkModel)
+  public String processUpdate(RunnableObj<AnswerSpec> answerSpec, Map<String, String[]> parameters, User user)
       throws WdkModelException, WdkUserException {
     // this summary view does not perform updates
     return null;
