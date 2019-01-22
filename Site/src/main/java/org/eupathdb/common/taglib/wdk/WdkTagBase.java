@@ -50,9 +50,12 @@ public abstract class WdkTagBase extends SimpleTagSupport {
         return _wdkModel;
     }
     
-    public void setWdkModelBean() {
+    public void setWdkModelBean() throws JspException {
         _wdkModelBean = (WdkModelBean) getContext()
             .getAttribute(Utilities.WDK_MODEL_BEAN_KEY);
+        if (_wdkModelBean == null) {
+          throw new JspException("No WdkModelBean exists on servlet context.");
+        }
     }
 
     protected WdkModelBean getWdkModelBean() {
