@@ -100,7 +100,7 @@ const siteAnnouncements = [
 */
 
 // Fungi gene page for Cryptococcus neoformans KN99
-  (props) => { 
+/*  (props) => { 
     if ( (props.projectId == 'FungiDB') && 
          ( (location.pathname.indexOf("/app/record/gene/CKF44_") > -1)    ||
            (location.pathname.indexOf("/app/record/gene/cneoKN99_") > -1)
@@ -115,7 +115,7 @@ const siteAnnouncements = [
     }
     return null;
   },
-
+*/
   // OrthoMCL enzyme/compound
   (props) => {
     if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
