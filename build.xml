@@ -251,6 +251,7 @@
         <include name="**/*.jpeg"/>
         <include name="**/*.png"/>
         <include name="**/*.gif"/>
+        <exclude name="jbrowse/**"/>
       </fileset>
     </apply>
 
