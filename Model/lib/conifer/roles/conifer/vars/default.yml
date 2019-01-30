@@ -3,7 +3,7 @@
 project: =c= e.g. ToxoDB
 cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
 hostname: =c= FQDN or 'localhost'
-_self_url_scheme: http
+_self_url_scheme: https
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
