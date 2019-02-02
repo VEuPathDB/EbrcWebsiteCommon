@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
+import org.gusdb.wdk.service.request.user.DatasetRequestProcessor.DatasetSourceType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,9 +60,10 @@ public class BrcRequest {
    * @return - JSON object to send to WDK dataset param request
    */
   public JSONObject getDatasetJson() {
+    DatasetSourceType sourceType = DatasetSourceType.ID_LIST;
     return new JSONObject()
-        .put(JsonKeys.SOURCE_TYPE, JsonKeys.ID_LIST)
-        .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(JsonKeys.IDS, ids));
+        .put(JsonKeys.SOURCE_TYPE, sourceType.getJsonKey())
+        .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(sourceType.getConfigJsonKey(), ids));
   }
 
   /**
