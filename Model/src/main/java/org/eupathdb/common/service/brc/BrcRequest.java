@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class BrcRequest {
 
+  public static final String DATASET_QUESTION_NAME = "DatasetQuestions.DatasetsByGeneList";
+
   private String type;
   private String idSource;
   private Set<String> ids;
@@ -73,8 +75,8 @@ public class BrcRequest {
    */
   public JSONObject getAnswerJson() {
     return new JSONObject()
-      .put("answerSpec", getAnswerSpecJson())
-      .put("formatConfig", getFormatting());
+      .put(JsonKeys.SEARCH_CONFIG, getAnswerSpecJson())
+      .put(JsonKeys.REPORT_CONFIG, getFormatting());
   }
 
   /**
@@ -84,9 +86,8 @@ public class BrcRequest {
    */
   public JSONObject getAnswerSpecJson() {
     return new JSONObject()
-        .put("questionName", "DatasetQuestions.DatasetsByGeneList")
-        .put("parameters", getParametersJson())
-        .put("wdk_weight", 10);
+        .put(JsonKeys.PARAMETERS, getParametersJson())
+        .put(JsonKeys.WDK_WEIGHT, 10);
   }
 
   /**
@@ -96,7 +97,7 @@ public class BrcRequest {
    */
   public JSONObject getFormatting() {
     return new JSONObject()
-        .put("attributes", new JSONArray()
+        .put(JsonKeys.ATTRIBUTES, new JSONArray()
           .put("display_name")
           .put("summary")
           .put("organism_prefix")
