@@ -116,6 +116,26 @@ const siteAnnouncements = [
     return null;
   },
 */
+
+// TriTryp gene page for Bodo saltans strain Lake Konstanz
+  (props) => { 
+    if ( (props.projectId == 'TriTrypDB') && 
+         ( (location.pathname.indexOf("/app/record/gene/BS") > -1)    ||
+           (location.pathname.indexOf("/app/record/gene/BSAL_") > -1)
+         )  
+       ) 
+    {
+      return (
+        <div key="geneFungi">
+          This <i>Bodo saltans</i> genome sequence and annotation represents a draft version. Please carefully consider gene models and genome structure before drawing conclusions.
+        </div>
+      );
+    }
+    return null;
+  },
+
+
+
   // OrthoMCL enzyme/compound
   (props) => {
     if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
