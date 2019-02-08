@@ -144,7 +144,7 @@ public class ProjectMapper {
   public String getRecordUrl(String recordClassName, String projectId,
       String sourceId) throws WdkModelException {
     String site = getWebAppUrl(projectId);
-    RecordClass recordClass = wdkModel.getRecordClass(recordClassName).get();
+    RecordClass recordClass = wdkModel.getRecordClassByName(recordClassName).get();
     String recordClassUrlSegment = FormatUtil.urlEncodeUtf8(recordClass.getUrlSegment());
     projectId = FormatUtil.urlEncodeUtf8(projectId);
     sourceId = FormatUtil.urlEncodeUtf8(sourceId);
