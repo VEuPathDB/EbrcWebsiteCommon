@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="api" uri="http://eupathdb.org/taglib"%>
+<%--<%@ taglib prefix="api" uri="http://eupathdb.org/taglib"%>--%>
 
 <c:set var="model" value="${applicationScope.wdkModel.model}"/>
 <c:set var="props" value="${model.properties}"/>
@@ -12,10 +12,11 @@
 
 <%-- only show information on home page. this jsp never gets loaded on home page --%>
 <%-- FIXME Add logic to show information messages on homepage if this gets used for homepage --%>
+<%--
 <c:set var="information" value="[]"/>
 <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
 <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
-
+ --%>
 <c:set var="recordClassesWithProjectId">
   [
     <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
