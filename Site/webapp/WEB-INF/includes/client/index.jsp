@@ -20,7 +20,7 @@
 <c:set var="recordClassesWithProjectId">
   [
     <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
-      <c:forEach items="${recordClass.primaryKeyColumns}" var="columnName">
+      <c:forEach items="${recordClass.primaryKeyDefinition.columnRefs}" var="columnName">
         <c:if test="${columnName eq 'project_id'}">
           "${recordClass.urlSegment}",
         </c:if>
