@@ -12,8 +12,10 @@
 
 <%-- only show information on home page. this jsp never gets loaded on home page --%>
 <%-- FIXME Add logic to show information messages on homepage if this gets used for homepage --%>
-<%--
 <c:set var="information" value="[]"/>
+<c:set var="degraded" value="[]"/>
+<c:set var="down" value="[]"/>
+<%-- Disable for now- need to change the location of this code
 <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
 <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
  --%>
