@@ -45,8 +45,8 @@ public class BrcGeneListBean {
 	brcGeneListBean.setProvenance("NA");
 	JSONObject attributesJson = recordJson.getJSONObject("attributes");
 	if(answer) {
-	  brcGeneListBean.setSignificanceType("Percent matched");
-	  brcGeneListBean.setSignificance(String.valueOf(attributesJson.get("percent_count")));
+	  brcGeneListBean.setSignificanceType("p value");
+	  brcGeneListBean.setSignificance(String.valueOf(attributesJson.get("p_value")));
 	}
 	else {
 	  JSONObject tablesJson = recordJson.getJSONObject("tables");
