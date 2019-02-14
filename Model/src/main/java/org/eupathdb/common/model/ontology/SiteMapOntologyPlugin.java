@@ -37,7 +37,7 @@ public class SiteMapOntologyPlugin extends EuPathDbOwlParserWdkPlugin {
      */
 
     @Override
-    public TreeNode<OntologyNode> map(OntologyNode nodeContents,
+    public TreeNode<OntologyNode> apply(OntologyNode nodeContents,
         List<TreeNode<OntologyNode>> mappedChildren) {
 
       TreeNode<OntologyNode> newNode = new TreeNode<OntologyNode>(nodeContents);

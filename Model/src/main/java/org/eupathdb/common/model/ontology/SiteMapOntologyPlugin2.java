@@ -38,7 +38,7 @@ public class SiteMapOntologyPlugin2 extends EuPathDbOwlParserWdkPlugin {
      */
 
     @Override
-    public TreeNode<OntologyNode> map(OntologyNode nodeContents,
+    public TreeNode<OntologyNode> apply(OntologyNode nodeContents,
         List<TreeNode<OntologyNode>> mappedChildren) {
 
       // searches are ordered in the ontology
