@@ -100,7 +100,7 @@ const siteAnnouncements = [
 */
 
 // Fungi gene page for Cryptococcus neoformans KN99
-  (props) => { 
+/*  (props) => { 
     if ( (props.projectId == 'FungiDB') && 
          ( (location.pathname.indexOf("/app/record/gene/CKF44_") > -1)    ||
            (location.pathname.indexOf("/app/record/gene/cneoKN99_") > -1)
@@ -115,6 +115,26 @@ const siteAnnouncements = [
     }
     return null;
   },
+*/
+
+// TriTryp gene page for Bodo saltans strain Lake Konstanz
+  (props) => { 
+    if ( (props.projectId == 'TriTrypDB') && 
+         ( (location.pathname.indexOf("/app/record/gene/BS") > -1)    ||
+           (location.pathname.indexOf("/app/record/gene/BSAL_") > -1)
+         )  
+       ) 
+    {
+      return (
+        <div key="geneFungi">
+          This <i>Bodo saltans</i> genome sequence and annotation represents a draft version. Please carefully consider gene models and genome structure before drawing conclusions.
+        </div>
+      );
+    }
+    return null;
+  },
+
+
 
   // OrthoMCL enzyme/compound
   (props) => {
