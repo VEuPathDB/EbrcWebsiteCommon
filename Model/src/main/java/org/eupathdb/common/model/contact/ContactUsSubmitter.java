@@ -62,7 +62,7 @@ public class ContactUsSubmitter {
         supportEmail, 
         params.subject,
         escapeHtml(metaInfo + "\n\n" + redmineContent + "\n\n"), 
-        ccField, 
+        ccField,null, 
         params.attachments
     );
 
@@ -73,7 +73,7 @@ public class ContactUsSubmitter {
         replyEmail, 
         params.subject,
         escapeHtml(metaInfo + "\n\n" + params.message + "\n\n"), 
-        null, 
+        null, null,
         params.attachments
     );
     
@@ -84,7 +84,7 @@ public class ContactUsSubmitter {
         wdkModel.getProperties().get("REDMINE_FROM_EMAIL"), 
         params.subject,
         escapeHtml(redmineMetaInfo + "\n\n" + params.message + "\n\n"), 
-        null, 
+        null, null,
         params.attachments
     );    
   }
