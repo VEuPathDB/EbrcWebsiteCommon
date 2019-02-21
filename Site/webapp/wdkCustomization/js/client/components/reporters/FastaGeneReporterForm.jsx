@@ -16,6 +16,10 @@ let defLineOptions = [
   {  value: '0', display: 'Full defline' }
 ];
 
+let singleLineOption = [
+  {  value: '1', display: 'Single line' }, 
+  {  value: '0', display: 'Default (60 chars on a line)' }
+];
 
 let defaultSourceIdFilterValue = 'genesOnly';
 
@@ -137,6 +141,11 @@ let FastaGeneReporterForm = props => {
         <RadioList name="onlyIdDefLine" value={formState.onlyIdDefLine}
           onChange={getUpdateHandler('onlyIdDefLine')} items={defLineOptions}/>
       </div>
+      <h3>Sequence format:</h3>
+      <div style={{marginLeft:"2em"}}>
+        <RadioList name="noLineBreaks" value={formState.noLineBreaks}
+          onChange={getUpdateHandler('noLineBreaks')} items={singleLineOption}/>
+      </div>
 
       <div style={{margin:'0.8em'}}>
         <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
@@ -171,6 +180,8 @@ FastaGeneReporterForm.getInitialState = () => ({
     downstreamSign: 'plus',
     downstreamOffset: 0,
     onlyIdDefLine: '0', 
+    noLineBreaks: '0', 
+
 
     // sequence region inputs for 'protein'
     startAnchor3: 'Start',
