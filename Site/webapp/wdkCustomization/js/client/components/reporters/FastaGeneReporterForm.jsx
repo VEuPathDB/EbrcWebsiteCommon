@@ -13,7 +13,7 @@ let sequenceTypes = [
 
 let defLineOptions = [
   {  value: '1', display: 'Only Gene ID' }, 
-  {  value: '0', display: 'Full defline' }
+  {  value: '0', display: 'Full Fasta Header' }
 ];
 
 let singleLineOption = [
