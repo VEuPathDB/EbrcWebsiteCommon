@@ -168,7 +168,7 @@
     <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml" token="@WEBAPP@" value="${webapp}"/>
   </target>
 
-  <target name="yarn">
+  <target name="yarn" depends="installYarnBin">
     <exec executable="yarn"
       dir="${projectsDir}/${project}/${component}"
       failonerror="true"
