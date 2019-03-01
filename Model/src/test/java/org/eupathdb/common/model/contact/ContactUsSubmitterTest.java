@@ -66,6 +66,7 @@ public class ContactUsSubmitterTest {
         any(),
         any(),
         any(),
+        any(),
         any()
     );
     
@@ -75,7 +76,8 @@ public class ContactUsSubmitterTest {
         eq("support@dontcare.edu"),
         eq("My brain hurts!"),
         anyString(),
-        eq("janedoe@hotmail.com, jimmydoe@gmail.com"),
+        eq("janedoe@hotmail.com, jimmydoe@gmail.com"), 
+        eq(null),
         eq(new Attachment[] {})
     );
 
@@ -86,6 +88,7 @@ public class ContactUsSubmitterTest {
         eq("My brain hurts!"),
         anyString(),
         eq(null),
+        eq(null),
         eq(new Attachment[] {})
     );
 
@@ -95,6 +98,7 @@ public class ContactUsSubmitterTest {
         eq("stilldontcare@dontcare.edu"),
         eq("My brain hurts!"),
         anyString(),
+        eq(null),
         eq(null),
         eq(new Attachment[] {})
     );

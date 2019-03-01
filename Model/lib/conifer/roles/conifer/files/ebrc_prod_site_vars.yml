@@ -6,8 +6,12 @@ _hostname_project_map:
   qa.gates.clinepidb.org: Gates
   gems.clinepidb.org: Gates
   gates.clinepidb.org: Gates
+  w1.gates.clinepidb.org: Gates
+  w2.gates.clinepidb.org: Gates
   qa.icemr.clinepidb.org: ICEMR
   icemr.clinepidb.org: ICEMR
+  w1.icemr.clinepidb.org: ICEMR
+  w2.icemr.clinepidb.org: ICEMR
   feature.eupathdb.org: UniDB   
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
