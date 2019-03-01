@@ -4,7 +4,8 @@ import {
   StepAnalysisViewPlugin,
   ResultTableSummaryViewPlugin, 
   GenomeSummaryViewPlugin,
-  BlastSummaryViewPlugin
+  BlastSummaryViewPlugin,
+  MatchedTranscriptsFilterPlugin,
 } from 'wdk-client/Plugins';
 
 export default [
@@ -42,5 +43,10 @@ export default [
     type: 'summaryView',
     name: 'popset-view',
     component: () => <div>TODO</div>
+  },
+  {
+    type: 'questionFilter',
+    name: 'matched_transcript_filter_array',
+    component: MatchedTranscriptsFilterPlugin
   }
 ];
