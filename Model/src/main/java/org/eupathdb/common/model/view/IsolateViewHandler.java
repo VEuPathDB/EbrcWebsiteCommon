@@ -40,7 +40,7 @@ public abstract class IsolateViewHandler implements SummaryViewHandler {
             String sql = prepareSql(answerValue.getIdSql());
             DataSource dataSource = answerValue.getWdkModel().getAppDb().getDataSource();
             resultSet = SqlUtils.executeQuery(dataSource, sql,
-                    answerSpec.getObject().getQuestion().getQuery().getFullName() + "__isolate-view", 2000);
+                    answerSpec.get().getQuestion().getQuery().getFullName() + "__isolate-view", 2000);
 
             int maxLength = 0;
             Map<String, Isolate> isolates = new HashMap<String, Isolate>();
