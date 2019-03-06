@@ -3,9 +3,6 @@ import {
   WordCloudAnalysisPlugin, 
   StepAnalysisViewPlugin,
   ResultTableSummaryViewPlugin, 
-  GenomeSummaryViewPlugin,
-  BlastSummaryViewPlugin,
-  MatchedTranscriptsFilterPlugin,
 } from 'wdk-client/Plugins';
 
 export default [
@@ -29,24 +26,4 @@ export default [
     name: '_default',
     component: ResultTableSummaryViewPlugin
   },
-  {
-    type: 'summaryView',
-    name: 'genomic-view',
-    component: GenomeSummaryViewPlugin
-  },
-  {
-    type: 'summaryView',
-    name: 'blast-view',
-    component: BlastSummaryViewPlugin
-  },
-  {
-    type: 'summaryView',
-    name: 'popset-view',
-    component: () => <div>TODO</div>
-  },
-  {
-    type: 'questionFilter',
-    name: 'matched_transcript_filter_array',
-    component: MatchedTranscriptsFilterPlugin
-  }
 ];
