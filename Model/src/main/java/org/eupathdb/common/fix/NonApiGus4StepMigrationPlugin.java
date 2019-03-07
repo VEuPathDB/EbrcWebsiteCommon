@@ -1,8 +1,8 @@
 package org.eupathdb.common.fix;
 
-import static org.gusdb.wdk.model.answer.spec.ParamFiltersClobFormat.KEY_FILTERS;
-import static org.gusdb.wdk.model.answer.spec.ParamFiltersClobFormat.KEY_PARAMS;
-import static org.gusdb.wdk.model.answer.spec.ParamFiltersClobFormat.KEY_VIEW_FILTERS;
+import static org.gusdb.wdk.model.answer.spec.ParamsAndFiltersFormat.KEY_FILTERS;
+import static org.gusdb.wdk.model.answer.spec.ParamsAndFiltersFormat.KEY_PARAMS;
+import static org.gusdb.wdk.model.answer.spec.ParamsAndFiltersFormat.KEY_VIEW_FILTERS;
 
 import java.util.List;
 import java.util.Map;
