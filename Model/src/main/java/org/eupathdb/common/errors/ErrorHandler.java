@@ -3,10 +3,10 @@ package org.eupathdb.common.errors;
 import static org.eupathdb.common.errors.ErrorHandlerHelpers.getAttributeMapText;
 import static org.eupathdb.common.errors.ErrorHandlerHelpers.valueOrDefault;
 import static org.gusdb.fgputil.FormatUtil.NL;
+import static org.gusdb.fgputil.FormatUtil.arrayToString;
+import static org.gusdb.fgputil.FormatUtil.formatDateTime;
 import static org.gusdb.fgputil.FormatUtil.getInnerClassLog4jName;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +26,6 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.Stringifier;
-import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
@@ -94,12 +93,11 @@ public class ErrorHandler {
     RequestData requestData = context.getRequestData();
     String errorUrl = getErrorUrl(requestData);
     WdkModel model = context.getWdkModel();
-    DateFormat dateFormat = new SimpleDateFormat(FormatUtil.STANDARD_DATETIME_FORMAT_SLASH);
 
     return new StringBuilder()
 
         .append(SECTION_DIV)
-        .append("Date: ").append(dateFormat.format(context.getErrorDate())).append(NL)
+        .append("Date: ").append(formatDateTime(context.getErrorDate())).append(NL)
         .append("Request URI: ").append(errorUrl == null ? "<unable to determine>" : errorUrl).append(NL)
         .append("Remote Host: ").append(valueOrDefault(requestData.getRemoteHost(), "<not set>")).append(NL)
         .append("Referred from: ").append(valueOrDefault(requestData.getReferrer(), "<not set>")).append(NL)
@@ -111,7 +109,7 @@ public class ErrorHandler {
         .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
         .append("Request ID: ").append(context.getMdcBundle().getRequestId()).append(NL)
         .append("Request duration at error: ").append(context.getMdcBundle().getRequestDuration()).append(NL)
-        .append("Date of last webapp reload: ").append(dateFormat.format(new Date(model.getStartupTime()))).append(NL)
+        .append("Date of last webapp reload: ").append(formatDateTime(new Date(model.getStartupTime()))).append(NL)
         .append("Time since last webapp reload: ").append(
             Timer.getDurationString(context.getErrorDate().getTime() - model.getStartupTime())).append(NL)
         .append("Log4j Marker: ").append(context.getLogMarker()).append(doubleNewline)
@@ -125,7 +123,7 @@ public class ErrorHandler {
         .append("Request Parameters (query string or posted form data)").append(doubleNewline)
         .append(getAttributeMapText(requestData.getTypedParamMap(), new Stringifier<String[]>() {
           @Override public String stringify(String[] value, String qualifier) {
-            return FormatUtil.arrayToString(value);
+            return arrayToString(value);
           }})).append(NL)
 
         .append(SECTION_DIV)
