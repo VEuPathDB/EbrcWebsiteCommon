@@ -8,7 +8,7 @@ import org.gusdb.fgputil.ListBuilder;
 import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
-import org.gusdb.wdk.model.answer.spec.ParamsAndFiltersFormat;
+import org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
 import org.gusdb.wdk.model.fix.table.TableRowUpdater;
@@ -63,7 +63,7 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
       }
       Map<String, Param> questionParams = question.getParamMap();
       JSONObject json = nextRow.getParamFilters();
-      JSONObject params = json.getJSONObject(ParamsAndFiltersFormat.KEY_PARAMS);
+      JSONObject params = json.getJSONObject(ParamsAndFiltersDbColumnFormat.KEY_PARAMS);
       boolean valueChanged = false;
       for (String paramName : JsonUtil.getKeys(params)) {
         if (questionParams.get(paramName) instanceof FilterParamNew) {
