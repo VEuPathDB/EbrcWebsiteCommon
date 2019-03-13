@@ -183,7 +183,7 @@ public class BrcService extends AbstractWdkService {
    * @throws WdkModelException
    */
   protected JSONObject callAnswerService(JSONObject answerJson) throws WdkModelException {
-    Question question = getWdkModel().getQuestionByName(BrcRequest.DATASET_QUESTION_NAME)
+    Question question = getWdkModel().getQuestionByFullName(BrcRequest.DATASET_QUESTION_NAME)
         .orElseThrow(() -> new WdkModelException(BrcRequest.DATASET_QUESTION_NAME + " is no longer part of the WDK model."));
     Client client = ClientBuilder.newBuilder().build();
     Response response = client
@@ -191,7 +191,7 @@ public class BrcService extends AbstractWdkService {
             "record-classes/" +
             question.getRecordClass().getUrlSegment() +
             "/searches/" +
-            question.getUrlSegment() +
+            question.getName() +
             "/reports/" +
             DefaultJsonReporter.RESERVED_NAME)
         .property("Content-Type", MediaType.APPLICATION_JSON)

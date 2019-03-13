@@ -55,7 +55,7 @@ public class FilterParam2FilterParamNewMigrationPlugin implements TableRowUpdate
   public RowResult<StepData> processRecord(StepData nextRow) throws Exception {
     try {
       RowResult<StepData> result = new RowResult<>(nextRow);
-      Question question = _wdkModel.getQuestionByName(nextRow.getQuestionName()).orElse(null);
+      Question question = _wdkModel.getQuestionByFullName(nextRow.getQuestionName()).orElse(null);
       if (question == null) {
         // question name is invalid; skip this row without error
         _counts[ResultType.BAD_QUESTION.ordinal()]++;

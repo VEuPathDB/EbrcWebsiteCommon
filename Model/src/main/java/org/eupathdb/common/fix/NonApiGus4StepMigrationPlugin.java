@@ -83,7 +83,7 @@ public class NonApiGus4StepMigrationPlugin implements TableRowUpdaterPlugin<Step
 
     // Look up question for the current step; needs to be done after #1 so we are reading new question names.
     // Use (possibly already modified) question name to look up question in the current model.
-    Question question = _wdkModel.getQuestionByName(step.getQuestionName()).orElse(null);
+    Question question = _wdkModel.getQuestionByFullName(step.getQuestionName()).orElse(null);
     if (question == null) {
       LOG.warn("Question name " + step.getQuestionName() + " does not appear in the WDK model");
       return new RowResult<StepData>(step).setShouldWrite(modified);
