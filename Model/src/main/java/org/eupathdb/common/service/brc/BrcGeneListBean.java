@@ -19,6 +19,10 @@ public class BrcGeneListBean {
   private String uri;
   private String type;
   private String provenance;
+  private String t11;
+  private String t12;
+  private String t21;
+  private String t22;
   private String significance;
   private String significanceType;
   private Set<String> ids;
@@ -45,8 +49,13 @@ public class BrcGeneListBean {
 	brcGeneListBean.setProvenance("NA");
 	JSONObject attributesJson = recordJson.getJSONObject("attributes");
 	if(answer) {
-	  brcGeneListBean.setSignificanceType("Percent matched");
-	  brcGeneListBean.setSignificance(String.valueOf(attributesJson.get("percent_count")));
+	    brcGeneListBean.setT11(String.valueOf(attributesJson.get("overlap")));
+	    brcGeneListBean.setT12(String.valueOf(attributesJson.get("ul_nonDS")));
+	    brcGeneListBean.setT21(String.valueOf(attributesJson.get("ds_nonUL")));
+	    brcGeneListBean.setT22(String.valueOf(attributesJson.get("nonUL_nonDS")));
+	    brcGeneListBean.setSignificanceType("p value");
+	    brcGeneListBean.setSignificance(String.valueOf(attributesJson.get("p_value")));
+
 	}
 	else {
 	  JSONObject tablesJson = recordJson.getJSONObject("tables");
@@ -101,6 +110,34 @@ public class BrcGeneListBean {
 	this.provenance = provenance;
   }
   
+  public String getT11() {
+	return t11;
+  }
+  
+  public void setT11(String t11) {
+	this.t11 = t11;
+  }
+  public String getT12() {
+	return t12;
+  }
+  
+  public void setT12(String t12) {
+	this.t12 = t12;
+  }
+  public String getT21() {
+	return t21;
+  }
+  
+  public void setT21(String t21) {
+	this.t21 = t21;
+  }
+  public String getT22() {
+	return t22;
+  }
+  
+  public void setT22(String t22) {
+	this.t22 = t22;
+  }
   public String getSignificance() {
 	return significance;
   }

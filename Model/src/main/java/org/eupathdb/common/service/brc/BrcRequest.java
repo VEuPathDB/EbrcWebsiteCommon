@@ -98,8 +98,13 @@ public class BrcRequest {
           .put("display_name")
           .put("summary")
           .put("organism_prefix")
-          .put("hit_count")
-          .put("percent_count")
+             //          .put("hit_count")
+             //          .put("percent_count")
+          .put("overlap")
+          .put("ul_nonDS")
+          .put("ds_nonUL")
+          .put("nonUL_nonDS")
+          .put("p_value")
           .put("newcategory"));
   }
 
@@ -112,7 +117,7 @@ public class BrcRequest {
     return new JSONObject()  
         .put("orthologyFlag", useOrthology ? "yes" : "no")
         .put("ds_gene_ids", String.valueOf(datasetId))
-        .put("threshold", String.valueOf(threshold));
+        .put("fold_change", String.valueOf(threshold));
   }
 
   public String getType() {

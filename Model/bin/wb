@@ -33,7 +33,7 @@ my $mode = $ARGV[0];
 
 my @modes;
 if ($svnPrefix eq "ApiCommon") {
-  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi");
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi", "jbrowse");
 } else {
   @modes = ("full", "model", "site", "ontology", "graph", "shiny", "cgi");
 }
@@ -82,6 +82,10 @@ if($mode eq 'gbrowse') {
   $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
 }
 
+if($mode eq 'jbrowse') {
+  $cmd = "$dieOnError;  jbrowseFromDatasets; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; bld $svnPrefix\Model/Model; $injectTemplates";
+}
+
 if($mode eq 'ontology') {
   $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
 }
@@ -93,9 +97,9 @@ if($mode eq 'site') {
 if($mode eq 'shiny') {
   my @procList = `/usr/sbin/lsof -t -c R -a +D "$gusHome"`;
   if (scalar @procList > 0) {
-    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; kill \$(/usr/sbin/lsof -t -c R -a +D \"$gusHome\");";
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates; kill \$(/usr/sbin/lsof -t -c R -a +D \"$gusHome\");";
   } else {
-    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View;";
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates;";
   }
 }
 

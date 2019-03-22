@@ -868,8 +868,8 @@ if ($prtcpnt_sum) {
 
       gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
 
-      gp = gp + scale_color_manual(name=\"Border\", breaks = $customBreaks, values=$colorVals)
-      gp = gp + scale_fill_manual(name=\"Center\", breaks = $customBreaks, na.value = NA, values = $fillVals)
+      gp = gp + scale_color_manual(name=\"Legend\", breaks = $customBreaks, values=$colorVals)
+      gp = gp + scale_fill_manual(name=\"\", breaks = $customBreaks, na.value = NA, values = $fillVals)
 
       if (coord.cartesian) {
         gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
