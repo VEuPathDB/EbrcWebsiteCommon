@@ -102,6 +102,7 @@ public class BrcRequest {
              //          .put("percent_count")
           .put("overlap")
           .put("ul_nonDS")
+	  .put("fe")
           .put("ds_nonUL")
           .put("nonUL_nonDS")
           .put("p_value")

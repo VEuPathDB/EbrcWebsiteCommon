@@ -21,6 +21,7 @@ public class BrcGeneListBean {
   private String provenance;
   private String t11;
   private String t12;
+  private String t33;
   private String t21;
   private String t22;
   private String significance;
@@ -51,6 +52,7 @@ public class BrcGeneListBean {
 	if(answer) {
 	    brcGeneListBean.setT11(String.valueOf(attributesJson.get("overlap")));
 	    brcGeneListBean.setT12(String.valueOf(attributesJson.get("ul_nonDS")));
+	    brcGeneListBean.setT33(String.valueOf(attributesJson.get("fe")));
 	    brcGeneListBean.setT21(String.valueOf(attributesJson.get("ds_nonUL")));
 	    brcGeneListBean.setT22(String.valueOf(attributesJson.get("nonUL_nonDS")));
 	    brcGeneListBean.setSignificanceType("p value");
@@ -137,6 +139,13 @@ public class BrcGeneListBean {
   
   public void setT22(String t22) {
 	this.t22 = t22;
+  }
+  public String getT33() {
+	return t33;
+  }
+  
+  public void setT33(String t33) {
+	this.t33 = t33;
   }
   public String getSignificance() {
 	return significance;

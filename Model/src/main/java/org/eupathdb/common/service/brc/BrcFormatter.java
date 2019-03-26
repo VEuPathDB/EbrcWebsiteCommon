@@ -75,6 +75,7 @@ public class BrcFormatter {
         .put("t12", bean.getT12())
         .put("t21", bean.getT21())
         .put("t22", bean.getT22())
+        .put("t33", bean.getT33())
         .put("significance", bean.getSignificance())
         .put("significanceType", bean.getSignificanceType());
     }
