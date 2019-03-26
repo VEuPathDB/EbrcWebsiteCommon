@@ -25,7 +25,8 @@ class ClinEpiIndexController extends PageController {
     return this.props.displayName;
   }
 
-  loadData() {
+  componentDidMount() {
+    super.componentDidMount();
     this.props.loadSearches(this.props.searchesUserEmails);
     this.props.requestNews();
     this.props.requestStudies();
