@@ -100,11 +100,11 @@ public class BrcRequest {
           .put("organism_prefix")
              //          .put("hit_count")
              //          .put("percent_count")
-          .put("overlap")
-          .put("ul_nonDS")
-	  .put("fe")
-          .put("ds_nonUL")
-          .put("nonUL_nonDS")
+          .put("obser_ovelap")
+          .put("exp_overlap")
+	  .put("fold_enrichment")
+          .put("percent_ul")
+          .put("percent_ds")
           .put("p_value")
           .put("newcategory"));
   }

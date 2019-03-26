@@ -19,11 +19,11 @@ public class BrcGeneListBean {
   private String uri;
   private String type;
   private String provenance;
-  private String t11;
-  private String t12;
-  private String t33;
-  private String t21;
-  private String t22;
+  private String c11;
+  private String c22;
+  private String c33;
+  private String c44;
+  private String c55;
   private String significance;
   private String significanceType;
   private Set<String> ids;
@@ -50,11 +50,11 @@ public class BrcGeneListBean {
 	brcGeneListBean.setProvenance("NA");
 	JSONObject attributesJson = recordJson.getJSONObject("attributes");
 	if(answer) {
-	    brcGeneListBean.setT11(String.valueOf(attributesJson.get("overlap")));
-	    brcGeneListBean.setT12(String.valueOf(attributesJson.get("ul_nonDS")));
-	    brcGeneListBean.setT33(String.valueOf(attributesJson.get("fe")));
-	    brcGeneListBean.setT21(String.valueOf(attributesJson.get("ds_nonUL")));
-	    brcGeneListBean.setT22(String.valueOf(attributesJson.get("nonUL_nonDS")));
+	    brcGeneListBean.setC11(String.valueOf(attributesJson.get("obser_ovelap")));
+	    brcGeneListBean.setC22(String.valueOf(attributesJson.get("exp_overlap")));
+	    brcGeneListBean.setC33(String.valueOf(attributesJson.get("fold_enrichment")));
+	    brcGeneListBean.setC44(String.valueOf(attributesJson.get("percent_ul")));
+	    brcGeneListBean.setC55(String.valueOf(attributesJson.get("percent_ds")));
 	    brcGeneListBean.setSignificanceType("p value");
 	    brcGeneListBean.setSignificance(String.valueOf(attributesJson.get("p_value")));
 
@@ -112,40 +112,40 @@ public class BrcGeneListBean {
 	this.provenance = provenance;
   }
   
-  public String getT11() {
-	return t11;
+  public String getC11() {
+	return c11;
   }
   
-  public void setT11(String t11) {
-	this.t11 = t11;
+  public void setC11(String c11) {
+	this.c11 = c11;
   }
-  public String getT12() {
-	return t12;
-  }
-  
-  public void setT12(String t12) {
-	this.t12 = t12;
-  }
-  public String getT21() {
-	return t21;
+  public String getC22() {
+	return c22;
   }
   
-  public void setT21(String t21) {
-	this.t21 = t21;
+  public void setC22(String c22) {
+	this.c22 = c22;
   }
-  public String getT22() {
-	return t22;
-  }
-  
-  public void setT22(String t22) {
-	this.t22 = t22;
-  }
-  public String getT33() {
-	return t33;
+  public String getC33() {
+	return c33;
   }
   
-  public void setT33(String t33) {
-	this.t33 = t33;
+  public void setC33(String c33) {
+	this.c33 = c33;
+  }
+  public String getC44() {
+	return c44;
+  }
+  
+  public void setC44(String c44) {
+	this.c44 = c44;
+  }
+  public String getC55() {
+	return c55;
+  }
+  
+  public void setC55(String c55) {
+	this.c55 = c55;
   }
   public String getSignificance() {
 	return significance;
