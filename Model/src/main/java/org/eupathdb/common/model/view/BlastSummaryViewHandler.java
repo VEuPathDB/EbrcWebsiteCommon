@@ -29,7 +29,7 @@ public class BlastSummaryViewHandler implements SummaryViewHandler {
     // split template into 3 sections, header, middle, footer
     AnswerValue answer = AnswerValueFactory.makeAnswer(user, answerSpec);
     answer.setPageToEntireResult();
-    String message = answer.getResultMessage();
+    String message = answer.getResultMessage().orElse("");
     String[] pieces = message.split(MACRO_SUMMARY, 2);
     attributes.put(ATTR_HEADER, pieces[0]);
     if (pieces.length > 1) {

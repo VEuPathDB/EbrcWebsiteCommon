@@ -23,14 +23,13 @@ import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
-import org.gusdb.wdk.model.query.SqlQuery;
 import org.gusdb.wdk.model.record.FieldScope;
 import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.model.record.TableField;
 import org.gusdb.wdk.model.record.attribute.AttributeField;
 import org.gusdb.wdk.model.record.attribute.ColumnAttributeField;
-import org.gusdb.wdk.model.record.attribute.LinkAttributeField;
 import org.gusdb.wdk.model.record.attribute.IdAttributeField;
+import org.gusdb.wdk.model.record.attribute.LinkAttributeField;
 import org.gusdb.wdk.model.record.attribute.TextAttributeField;
 
 /**
@@ -322,7 +321,7 @@ public class DetailTableLoader extends BaseCLI {
 
   private String getWrappedSql(TableField table, String idSql, String[] pkColumns) {
 
-    String tableSql = ((SqlQuery) table.getUnwrappedQuery()).getSql();
+    String tableSql = table.getUnwrappedQuery().getSql();
     String pkPredicates = "idq." + pkColumns[0] + " = tq." + pkColumns[0] + "\n";
     String pkList = "tq." + pkColumns[0];
 

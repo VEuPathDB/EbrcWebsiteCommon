@@ -33,7 +33,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
   @Override
   public JsonWriter writeAdditionalJson(JsonWriter writer) throws WdkModelException { 
     JSONObject json = new JSONObject();
-    String message = _baseAnswer.getResultMessage();
+    String message = _baseAnswer.getResultMessage().orElse("");
     String[] pieces = message.split(MACRO_SUMMARY, 2);
     json.put(ATTR_HEADER, pieces[0]);
     if (pieces.length > 1) {
