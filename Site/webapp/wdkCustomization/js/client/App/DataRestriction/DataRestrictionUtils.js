@@ -233,7 +233,7 @@ function getDataRestrictionActionAndRecordClass(state, action, callback) {
 
     case 'step-analysis/select-tab':
     case 'step-analysis/create-new-tab':
-      return  getRecordClassNameByStepId(state.stepAnalysis.stepId, state, recordClassName =>
+      return  getRecordClassNameByStepId(state.stepAnalysis.stepId, recordClassName =>
         callback(Action.analysis, recordClassName));
 
     case BasketActions.requestUpdateBasket.type:
