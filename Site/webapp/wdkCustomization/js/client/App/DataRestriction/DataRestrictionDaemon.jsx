@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { UserActions } from 'wdk-client/Actions';
+import { UserSessionActions } from 'wdk-client/Actions';
 
 import { clearRestrictions } from './DataRestrictionActionCreators';
 import DataRestrictionModal from './DataRestrictionModal';
 
-const { showLoginForm } = UserActions;
+const { showLoginForm } = UserSessionActions;
 
 function DataRestrictionDaemon(props) {
   const {
