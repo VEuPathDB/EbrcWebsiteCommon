@@ -8,13 +8,11 @@
 response.setStatus(500);
 %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="api" uri="http://eupathdb.org/taglib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:catch var='e'>
   <imp:pageFrame title="Unexpected Error">
     <em>Sorry, an unexpected error has occurred.</em>
-    <api:errors/>
   </imp:pageFrame>
 </c:catch>
 
