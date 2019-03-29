@@ -30,6 +30,7 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
       return _projectFolder;
     }
 
+    @Override
     public JSONObject toJson() {
       return super.toJson().put("projectFolder", _projectFolder);
     }
