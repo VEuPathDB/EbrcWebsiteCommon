@@ -72,6 +72,7 @@ const siteAnnouncements = [
   },
 
   // Blast
+/*
   (props) => {
     if (props.projectId != 'OrthoMCL' && (/showQuestion\.do.+blast/i).test(location.href)) {
       return (
@@ -84,7 +85,7 @@ const siteAnnouncements = [
     }
     return null;
   },
-
+*/
  // Clinepi home page
 /*
   (props) => {
