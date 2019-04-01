@@ -63,7 +63,7 @@ function FilterParamSummary(props) {
 }
 
 function FilterParamFilter(props) {
-  const { containerFilter, eventHandlers, filter, filters, parameter } = props;
+  const { containerFilter, parameterEventHandlers, filter, filters, parameter } = props;
   const field = parameter.ontology.find(field => field.term === filter.field)
   return (
     <div key={parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
@@ -73,7 +73,7 @@ function FilterParamFilter(props) {
         className={makeClassName('ChicletTitle') + ' wdk-Link'}
         onClick={() => {
           navigateToGroup(props);
-          eventHandlers.setActiveOntologyTerm(
+          parameterEventHandlers.onOntologyTermSelect(
             parameter,
             filters,
             containerFilter ? containerFilter.field : filter.field
@@ -86,7 +86,7 @@ function FilterParamFilter(props) {
       <button
         type="button"
         className={makeClassName('RemoveFilterButton')}
-        onClick={() => eventHandlers.setParamValue(props.parameter, JSON.stringify({
+        onClick={() => parameterEventHandlers.onParamValueChange(props.parameter, JSON.stringify({
           filters: containerFilter
             ? filters.map(f => f === containerFilter
               ? { ...f, value: { ...f.value, filters: f.value.filters.filter(cf => cf !== filter) } }
@@ -118,8 +118,8 @@ function prettyPrintRange(range) {
 }
 
 function navigateToGroup(props) {
-  props.eventHandlers.setActiveGroup(props.group);
+  props.wizardEventHandlers.onGroupSelect(props.group);
   if (!props.wizardState.filterPopupState.pinned) {
-    props.eventHandlers.setFilterPopupVisiblity(false);
+    props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
   }
 }

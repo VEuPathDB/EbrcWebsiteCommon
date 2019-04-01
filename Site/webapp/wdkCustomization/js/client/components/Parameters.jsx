@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { HelpIcon } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/ComponentUtils';
 import Param from './Param';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
+import { paramGroupPropTypes } from '../util/paramUtil';
 
 /**
  * Parameters that belong to a Paramter group
@@ -13,12 +13,7 @@ function Parameters(props) {
     parameters,
     paramValues,
     paramUIState,
-    onActiveOntologyTermChange,
-    onOntologyTermSummaryUpdateRequest,
-    onOntologyTermSort,
-    onOntologyTermSearch,
-    onParamValueChange,
-    onParamStateChange
+    eventHandlers
   } = props;
   const showLabel = parameters.length > 1;
   return (
@@ -61,12 +56,7 @@ function Parameters(props) {
                 param={param}
                 value={paramValues[param.name]}
                 uiState={paramUIState[param.name]}
-                onActiveOntologyTermChange={onActiveOntologyTermChange}
-                onOntologyTermSummaryUpdateRequest={onOntologyTermSummaryUpdateRequest}
-                onOntologyTermSort={onOntologyTermSort}
-                onOntologyTermSearch={onOntologyTermSearch}
-                onParamValueChange={onParamValueChange}
-                onParamStateChange={onParamStateChange}
+                {...eventHandlers}
               />
             </div>
           </div>
@@ -76,17 +66,6 @@ function Parameters(props) {
   );
 }
 
-Parameters.propTypes = {
-  group: PropTypes.object.isRequired,
-  parameters: PropTypes.array.isRequired,
-  paramValues: PropTypes.object.isRequired,
-  paramUIState: PropTypes.object.isRequired,
-  onActiveOntologyTermChange: PropTypes.func.isRequired,
-  onOntologyTermSummaryUpdateRequest: PropTypes.func.isRequired,
-  onOntologyTermSort: PropTypes.func.isRequired,
-  onOntologyTermSearch: PropTypes.func.isRequired,
-  onParamValueChange: PropTypes.func.isRequired,
-  onParamStateChange: PropTypes.func.isRequired
-}
+Parameters.propTypes = paramGroupPropTypes;
 
 export default wrappable(Parameters);

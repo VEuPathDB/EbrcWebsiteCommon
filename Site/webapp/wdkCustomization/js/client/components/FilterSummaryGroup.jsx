@@ -11,7 +11,7 @@ import {
 import FilterSummaryParameter from './FilterSummaryParameter';
 
 function FilterSummaryGroup(props) {
-  const { group, wizardState, eventHandlers } = props;
+  const { group, wizardState, wizardEventHandlers, parameterEventHandlers } = props;
 
   if (groupParamsValuesAreDefault(wizardState, group)) return null;
 
@@ -47,7 +47,8 @@ function FilterSummaryGroup(props) {
                       group={group}
                       paramValue={paramValue}
                       wizardState={wizardState}
-                      eventHandlers={eventHandlers}
+                      wizardEventHandlers={wizardEventHandlers}
+                      parameterEventHandlers={parameterEventHandlers}
                       parameter={getParameter(wizardState, paramName)}
                     />
                   )}
@@ -61,7 +62,8 @@ function FilterSummaryGroup(props) {
                   group={group}
                   paramValue={paramValue}
                   wizardState={wizardState}
-                  eventHandlers={eventHandlers}
+                  wizardEventHandlers={wizardEventHandlers}
+                  parameterEventHandlers={parameterEventHandlers}
                   parameter={getParameter(wizardState, paramName)}
                 />
               )}

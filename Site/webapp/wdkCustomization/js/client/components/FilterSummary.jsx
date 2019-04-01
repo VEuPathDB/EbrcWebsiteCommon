@@ -16,7 +16,7 @@ import FilterSummaryGroup from './FilterSummaryGroup';
  */
 class FilterSummary extends React.Component {
   render () {
-    const { wizardState, eventHandlers } = this.props;
+    const { wizardState, wizardEventHandlers } = this.props;
 
     const filterSummary = Seq.from(wizardState.question.groups)
       .map(group => (
@@ -37,7 +37,7 @@ class FilterSummary extends React.Component {
             type="button"
             title="Prevent summary popup from closing when clicking on filters."
             className={makeClassName('FilterPopupTitleButton')}
-            onClick={() => eventHandlers.setFilterPopupPinned(!wizardState.filterPopupState.pinned)}
+            onClick={() => wizardEventHandlers.onFilterPopupPinned(!wizardState.filterPopupState.pinned)}
           >
             <Icon fa={wizardState.filterPopupState.pinned ? 'circle' : 'thumb-tack'} />
           </button>,
@@ -45,7 +45,7 @@ class FilterSummary extends React.Component {
             type="button"
             key="close"
             className={makeClassName('FilterPopupTitleButton')}
-            onClick={() => eventHandlers.setFilterPopupVisiblity(false)}
+            onClick={() => wizardEventHandlers.onFilterPopupVisibilityChange(false)}
           >
             <Icon fa="close"/>
           </button>
@@ -58,7 +58,7 @@ class FilterSummary extends React.Component {
             filterSummary
           )}
           <div className={makeClassName('FilterSummaryRemoveAll')}>
-            <button type="button" className="wdk-Link" onClick={() => eventHandlers.resetParamValues()}>
+            <button type="button" className="wdk-Link" onClick={() => wizardEventHandlers.onParamValuesReset()}>
               Remove all
             </button>
           </div>
