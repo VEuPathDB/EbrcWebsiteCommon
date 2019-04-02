@@ -1,17 +1,30 @@
+import { get, isPlainObject } from 'lodash';
+import { BasketActions, ResultPanelActions, ResultTableSummaryViewActions } from 'wdk-client/Actions';
+import { attemptAction } from './DataRestrictionActionCreators';
+
 // Data stuff =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // per https://docs.google.com/presentation/d/1Cmf2GcmGuKbSTcH4wdeTEvRHTi9DDoh5-MnPm1MkcEA/edit?pli=1#slide=id.g3d955ef9d5_3_2
 
 // Actions
 // -------
 export const Action = {
+  // Access Search page
   search: 'search',
+  // Use a step or column analysis tool
   analysis: 'analysis',
+  // Run a strategy
   results: 'results',
+  // View beyond first 20 records
   paginate: 'paginate',
+  // Click record page link in results page
   record: 'record',
+  // Access a record page
   recordPage: 'recordPage',
+  // Access download page
   downloadPage: 'downloadPage',
+  // Click download link in results page or homepage
   download: 'download',
+  // Use the basket
   basket: 'basket',
 };
 
@@ -102,7 +115,7 @@ export function getActionVerb (action) {
     case Action.results:
       return 'view search results';
     case Action.paginate:
-      return 'see more than 25 results';
+      return 'see additional results';
     case Action.record:
     case Action.recordPage:
       return 'access a record page';
@@ -179,4 +192,80 @@ export function getIdFromRecordClassName (recordClassName) {
 
 export function isStudyRecordClass(recordClass) {
   return recordClass == null || recordClass.name.startsWith('DS_');
+}
+
+
+// Redux Middleware
+// ----------------
+
+/**
+ * Redux middleware for applying restrictions to specific redux actions.
+ */
+export const reduxMiddleware = store => next => action => {
+  if (!isPlainObject(action) || action.type == null) return next(action);
+  const restrictedAction = getDataRestrictionActionAndRecordClass(
+    store.getState(),
+    action,
+    (dataRestrictionAction, recordClassName) =>
+      attemptAction(dataRestrictionAction,{
+        studyId: getIdFromRecordClassName(recordClassName),
+        onSuccess: () => next(action)
+      })
+  );
+  return restrictedAction == null ? next(action) : store.dispatch(restrictedAction);
+}
+
+/**
+ * Checks if a redux action should be restricted, and if so, calls `callback`
+ * with the restriction Action, and the record class name associated with the
+ * action.
+ * 
+ * Return null to indicate that the redux action does not need to be
+ * restricted.
+ */
+function getDataRestrictionActionAndRecordClass(state, action, callback) {
+  if (!isPlainObject(action)) return null;
+  
+  switch(action.type || '') {
+    case ResultPanelActions.openTabListing.type:
+      return getRecordClassNameByStepId(action.payload.stepId, recordClassName =>
+        callback(Action.results, recordClassName));
+
+    case 'step-analysis/select-tab':
+    case 'step-analysis/create-new-tab':
+      return  getRecordClassNameByStepId(state.stepAnalysis.stepId, recordClassName =>
+        callback(Action.analysis, recordClassName));
+
+    case BasketActions.requestUpdateBasket.type:
+      return callback(Action.basket, action.payload.recordClassName);
+
+    case BasketActions.requestAddStepToBasket.type:
+      return getRecordClassNameByStepId(action.payload.stepId, recordClassName =>
+        callback(Action.basket, recordClassName));
+
+    case ResultTableSummaryViewActions.requestPageSizeUpdate.type:
+    case ResultTableSummaryViewActions.requestSortingUpdate.type:
+      return getRecordClassNameByStepId(getStepIdByViewId(action.payload.viewId, state), recordClassName =>
+        callback(Action.paginate, recordClassName));
+      
+    case ResultTableSummaryViewActions.viewPageNumber.type:
+      return action.payload.page === 1
+        ? null
+        : getRecordClassNameByStepId(getStepIdByViewId(action.payload.viewId, state), recordClassName =>
+            callback(Action.paginate, recordClassName));
+
+    default:
+        return null;
+  }
+}
+
+function getStepIdByViewId(viewId, state) {
+  return get(state, ['resultTableSummaryView', viewId, 'stepId']);
+}
+
+function getRecordClassNameByStepId(stepId, callback) {
+  return async function run({ wdkService }) {
+    const step = await wdkService.findStep(stepId);
+    return callback(step.recordClassName);
+  };
 }

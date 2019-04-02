@@ -36,7 +36,7 @@ function QuestionWizard(props) {
               type="button"
               title="View a summary of active filters"
               className="wdk-Link"
-              onClick={() => props.eventHandlers.setFilterPopupVisiblity(!props.wizardState.filterPopupState.visible)}
+              onClick={() => props.wizardEventHandlers.onFilterPopupVisibilityChange(!props.wizardState.filterPopupState.visible)}
             >
               <Icon fa="filter" className={makeClassName('GroupFilterIcon')}/>
             </button>
@@ -79,15 +79,20 @@ const wizardPropTypes = {
   initialCount: PropTypes.number
 };
 
-const eventHandlerPropTypes = {
-  setActiveGroup: PropTypes.func.isRequired,
-  setActiveOntologyTerm: PropTypes.func.isRequired,
-  setOntologyTermSort: PropTypes.func.isRequired,
-  setOntologyTermSearch: PropTypes.func.isRequired,
-  setParamValue: PropTypes.func.isRequired,
-  updateInvalidGroupCounts: PropTypes.func.isRequired,
-  setFilterPopupVisiblity: PropTypes.func.isRequired,
-  setFilterPopupPinned: PropTypes.func.isRequired
+const wizardEventHandlerPropTypes = {
+  onGroupSelect: PropTypes.func.isRequired,
+  onInvalidGroupCountsUpdate: PropTypes.func.isRequired,
+  onFilterPopupVisibilityChange: PropTypes.func.isRequired,
+  onFilterPopupPinned: PropTypes.func.isRequired
+}
+
+const parameterEventHandlers = {
+  onOntologyTermSelect: PropTypes.func.isRequired,
+  onOntologyTermSummaryUpdate: PropTypes.func.isRequired,
+  onOntologyTermSort: PropTypes.func.isRequired,
+  onOntologyTermSearch: PropTypes.func.isRequired,
+  onParamValueChange: PropTypes.func.isRequired,
+  onParamStateChange: PropTypes.func.isRequired
 }
 
 export const propTypes = QuestionWizard.propTypes = {
@@ -95,7 +100,8 @@ export const propTypes = QuestionWizard.propTypes = {
   isAddingStep: PropTypes.bool.isRequired,
   showHelpText: PropTypes.bool.isRequired,
   wizardState: PropTypes.shape(wizardPropTypes).isRequired,
-  eventHandlers: PropTypes.shape(eventHandlerPropTypes)
+  wizardEventHandlers: PropTypes.shape(wizardEventHandlerPropTypes),
+  parameterEventHandlers: PropTypes.shape(parameterEventHandlers)
 };
 
 export default wrappable(QuestionWizard);
@@ -114,10 +120,10 @@ function Navigation(props) {
       recordClass,
       initialCount
     },
-    eventHandlers: {
-      setActiveGroup,
-      updateInvalidGroupCounts,
-      setFilterPopupVisiblity
+    wizardEventHandlers: {
+      onGroupSelect,
+      onInvalidGroupCountsUpdate,
+      onFilterPopupVisibilityChange
     },
     customName,
     showHelpText,
@@ -147,7 +153,7 @@ function Navigation(props) {
                 type="button"
                 title="See search overview"
                 className={makeClassName('IconButton')}
-                onClick={() => setActiveGroup(null)}
+                onClick={() => onGroupSelect(null)}
               >
                 <i className={makeClassName('Icon') + ' ' + iconName}/>
               </button>
@@ -173,7 +179,7 @@ function Navigation(props) {
                     'ParamGroupButton',
                     group == activeGroup && 'active'
                   )}
-                  onClick={() => setActiveGroup(group)}
+                  onClick={() => onGroupSelect(group)}
                 >
                   {group.displayName}
                 </button>
@@ -182,7 +188,7 @@ function Navigation(props) {
                     type="button"
                     title="View a summary of active filters"
                     className={makeClassName('GroupFilterIconButton') + ' wdk-Link'}
-                    onClick={() => setFilterPopupVisiblity(!props.wizardState.filterPopupState.visible)}
+                    onClick={() => onFilterPopupVisibilityChange(!props.wizardState.filterPopupState.visible)}
                   >
                     <Icon
                       fa="filter"
@@ -225,7 +231,7 @@ function Navigation(props) {
                 <button
                   type="button"
                   className="wdk-Link"
-                  onClick={updateInvalidGroupCounts}
+                  onClick={onInvalidGroupCountsUpdate}
                   title="Recompute invalid counts above"
                 >
                   <Icon fa="refresh"/> Refresh counts
