@@ -61,10 +61,8 @@ export function createInitialParamState(param) {
         defaultRangeFieldState: {
         },
         defaultMultiFieldState: {
-          sort: {
-            columnKey: 'display',
-            direction: 'asc'
-          },
+          // retain default ontology sort by default
+          sort: undefined,
           searchTerm: ''
         }
       }

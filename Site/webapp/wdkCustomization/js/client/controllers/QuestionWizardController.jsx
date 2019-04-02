@@ -857,6 +857,7 @@ function filteredCountIsZero(entry) {
  * @param {SortSpec} sort
  */
 export function sortDistribution(distribution, sort, filter) {
+  if (sort == null) return distribution;
   let { columnKey, direction, groupBySelected } = sort;
   let selectedSet = new Set(filter ? filter.value : []);
   let selectionPred = groupBySelected
@@ -878,6 +879,7 @@ export function sortDistribution(distribution, sort, filter) {
 }
 
 function sortMultiFieldSummary(summaries, ontology, sort) {
+  if (sort == null) return summaries;
   const fields = new Map(ontology.map(o => [o.term, o]));
   const sortedSummaries = sortBy(summaries, entry => sort.columnKey === 'display'
     ? fields.get(entry.term).display
