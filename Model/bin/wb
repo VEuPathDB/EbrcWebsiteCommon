@@ -52,7 +52,7 @@ my $cmd;
 
 my $dieOnError = "set -e";
 
-my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $projectHome/$svnPrefix\Model/Model/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
+my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $gusHome/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
 
 my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $tomcatName reload $webapp";
 
