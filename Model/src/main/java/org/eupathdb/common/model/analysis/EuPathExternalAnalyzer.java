@@ -37,15 +37,6 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
 
   }
 
-  /**
-   * Adding to the WDK result view model, the project folder derived from the data storage directory found in
-   * the wdk model.
-   */
-  @Override
-  public Object getResultViewModel() throws WdkModelException {
-    return createResultViewModel();
-  }
-
   private ViewModel createResultViewModel() {
     String dataStorageDir = getWdkModel().getStepAnalysisPlugins().getExecutionConfig().getFileStoreDirectory();
     return new ViewModel(getProperty(EXTERNAL_APP_URL_PROP_KEY),
