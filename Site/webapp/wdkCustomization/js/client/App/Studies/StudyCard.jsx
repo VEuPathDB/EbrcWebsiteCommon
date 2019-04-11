@@ -54,14 +54,22 @@ class StudyCard extends React.Component {
           </ul>
         </div>
         <div className="box StudyCard-Download"> 
-          <a onClick={(event) => {
-            event.preventDefault();
-            attemptAction('download', {studyId: study.id, onAllow: () => window.location.assign(downloadUrl.url) })
-          }}
-            href={downloadUrl.url}
+          <button
+            type="button"
+            className="link"
+            onClick={(event) => {
+              const { ctrlKey } = event;
+              attemptAction('download', {
+                studyId: study.id,
+                onAllow: () => {
+                  if (ctrlKey) window.open(downloadUrl.url, '_blank');
+                  else window.location.assign(downloadUrl.url)
+                }
+              });
+            }}
             title={myDownloadTitle}>
             Download Data <Icon fa="download" />
-          </a>
+          </button>
         </div>
         <div className="box StudyCard-PreFooter">
           {searchType
