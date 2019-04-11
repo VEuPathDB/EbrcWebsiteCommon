@@ -36,7 +36,7 @@ export function clearRestrictions() {
 }
 
 // Create restriction action
-function handleAction(user, studies, action, { studyId, onSuccess }) {
+function handleAction(user, studies, action, { studyId, onAllow, onDeny }) {
   console.info(label('Restriction Encountered:'), { action, studyId });
   const study = studies.find(study => studyId === study.id);
 
@@ -45,10 +45,11 @@ function handleAction(user, studies, action, { studyId, onSuccess }) {
   }
 
   if (isAllowedAccess({ user, action, study })) {
-    if (typeof onSuccess === 'function') onSuccess();
+    if (typeof onAllow === 'function') onAllow();
     return unrestricted(study, action);
   }
 
+  if (typeof onDeny === 'function') onDeny();
   return restricted(study, action);
 }
 

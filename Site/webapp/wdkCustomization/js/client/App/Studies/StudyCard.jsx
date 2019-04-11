@@ -56,7 +56,7 @@ class StudyCard extends React.Component {
         <div className="box StudyCard-Download"> 
           <a onClick={(event) => {
             event.preventDefault();
-            attemptAction('download', {studyId: study.id, onSuccess: () => window.location.assign(downloadUrl.url) })
+            attemptAction('download', {studyId: study.id, onAllow: () => window.location.assign(downloadUrl.url) })
           }}
             href={downloadUrl.url}
             title={myDownloadTitle}>
