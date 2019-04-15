@@ -1,6 +1,7 @@
 import React from 'react';
 import { CategoryIcon } from 'ebrc-client/App/Categories';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
+import DownloadLink from './DownloadLink';
 
 import './StudyCard.scss';
 
@@ -25,9 +26,8 @@ class StudyCard extends React.Component {
   render () {
     const { study, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
-    const { name, categories, route, headline, points, searches, disabled, downloadUrl } = study;
+    const { name, categories, route, headline, points, searches, disabled } = study;
     const myStudyTitle = "Go to the Study Details page";
-    const myDownloadTitle = "Download data files";
 
     return (
       <div className={'Card StudyCard ' + (disabled ? 'disabled' : '')}>
@@ -53,24 +53,7 @@ class StudyCard extends React.Component {
             {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
           </ul>
         </div>
-        <div className="box StudyCard-Download"> 
-          <button
-            type="button"
-            className="link"
-            onClick={(event) => {
-              const { ctrlKey } = event;
-              attemptAction('download', {
-                studyId: study.id,
-                onAllow: () => {
-                  if (ctrlKey) window.open(downloadUrl.url, '_blank');
-                  else window.location.assign(downloadUrl.url)
-                }
-              });
-            }}
-            title={myDownloadTitle}>
-            Download Data <Icon fa="download" />
-          </button>
-        </div>
+        <DownloadLink className="box StudyCard-Download" linkText="Download Data" study={study} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
           {searchType
             ? <span>Search <b>{searchType}</b></span>
@@ -102,6 +85,6 @@ class StudyCard extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default StudyCard;
