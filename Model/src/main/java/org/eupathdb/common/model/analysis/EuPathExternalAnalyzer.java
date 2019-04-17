@@ -21,7 +21,7 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
 
     private String _projectFolder;
 
-    public ViewModel(String iframeBaseUrl, int width, int height, String projectFolder) {
+    public ViewModel(String iframeBaseUrl, Integer width, Integer height, String projectFolder) {
       super(iframeBaseUrl, width, height);
       _projectFolder = projectFolder;
     }
@@ -40,8 +40,8 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
   private ViewModel createResultViewModel() {
     String dataStorageDir = getWdkModel().getStepAnalysisPlugins().getExecutionConfig().getFileStoreDirectory();
     return new ViewModel(getProperty(EXTERNAL_APP_URL_PROP_KEY),
-        chooseSize(IFRAME_WIDTH_PROP_KEY, DEFAULT_IFRAME_WIDTH_PX),
-        chooseSize(IFRAME_LENGTH_PROP_KEY, DEFAULT_IFRAME_HEIGHT_PX),
+        getPropertyAsInt(IFRAME_WIDTH_PROP_KEY),
+        getPropertyAsInt(IFRAME_LENGTH_PROP_KEY),
         dataStorageDir.substring(dataStorageDir.lastIndexOf('/') + 1));
   }
 
