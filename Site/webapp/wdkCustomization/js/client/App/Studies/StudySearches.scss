@@ -6,7 +6,7 @@ $red: #DD314E;
   &Item {
     margin: 0 .5em;
 
-    a {
+    a, .link, .wdk-Link {
       color: black;
       transition: 250ms color;
 

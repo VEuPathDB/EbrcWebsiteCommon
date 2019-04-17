@@ -209,7 +209,7 @@ export const reduxMiddleware = store => next => action => {
     (dataRestrictionAction, recordClassName) =>
       attemptAction(dataRestrictionAction,{
         studyId: getIdFromRecordClassName(recordClassName),
-        onSuccess: () => next(action)
+        onAllow: () => next(action)
       })
   );
   return restrictedAction == null ? next(action) : store.dispatch(restrictedAction);
