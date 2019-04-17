@@ -37,15 +37,12 @@ h4 {
 }
 
 #wdk-container {
-  min-height: calc(100% - 206px);
   position: relative;
   text-rendering: optimizeLegibility;
 }
 
-/* 230px is based on height of header, footer, and margin/padding of wdk-PageContent */
 .wdk-PageContent {
   background-color: #ffffff;
-  min-height: calc(100vh - 230px);
 }
 
 .wdk-NotFound p {

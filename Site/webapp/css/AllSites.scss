@@ -8,6 +8,11 @@ body {
   min-width: 1070px;
 }
 
+/** This image messes with layout */
+img[src*=awstats] {
+  position: absolute;
+}
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       =Scrollbars for webkit browsers on OS x
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -59,6 +64,21 @@ html {
 ._BodyLayer {
   position: relative;
   z-index: 2;
+}
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Create three-row layout with footer at bottom of screen (when possible)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.main-stack, .wdk-RootContainer {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100vh;
+
+}
+
+.wdk-PageContent {
+  flex: 1;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,16 +200,6 @@ article section {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 =MAIN structure: contentwrapper css provided by wdk
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-.wdk-PageContent {
-  background-color: white;
-  min-height: calc(100vh - 232px); /* keeps footer at bottom of screen */
-}
-
-.wdk-PageContent__summary {
-  min-height: calc(100vh - 208px); /* keeps footer at bottom of screen */
-  padding: 1em;
-}
-
 #search-bubbles {
 	min-width: 780px;
 	margin: 0 5px 0 220px;
