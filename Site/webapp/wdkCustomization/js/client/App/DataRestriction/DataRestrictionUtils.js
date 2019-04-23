@@ -265,7 +265,12 @@ function getStepIdByViewId(viewId, state) {
 
 function getRecordClassNameByStepId(stepId, callback) {
   return async function run({ wdkService }) {
-    const step = await wdkService.findStep(stepId);
-    return callback(step.recordClassName);
+    try {
+      const step = await wdkService.findStep(stepId);
+      return callback(step.recordClassName);
+    }
+    catch(error) {
+      return callback(null);
+    }
   };
 }

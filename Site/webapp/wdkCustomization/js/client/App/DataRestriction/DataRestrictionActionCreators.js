@@ -41,7 +41,11 @@ function handleAction(user, studies, action, { studyId, onAllow, onDeny }) {
   const study = studies.find(study => studyId === study.id);
 
   if (study == null) {
-    throw new Error(label(`Invalid reference: couldn't find study with id "${studyId}"`));
+    const error = new Error(label(`Invalid reference: couldn't find study with id "${studyId}"`));
+    console.warn('Allowing action `%s` for unknown study `%s`.', action, study);
+    console.error(error);
+    if (typeof onAllow === 'function') onAllow();
+    return clearRestrictions();
   }
 
   if (isAllowedAccess({ user, action, study })) {
