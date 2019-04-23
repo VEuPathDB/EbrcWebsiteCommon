@@ -20,7 +20,7 @@ let TableReporterForm = props => {
               // title and layout of the tree
               title="Choose a Table"
               searchBoxPlaceholder="Search Tables..."
-              tree={util.getTableTree(ontology, recordClass.name, question)}
+              tree={util.getTableTree(ontology, recordClass.fullName, question)}
 
               // state of the tree
               selectedLeaves={formState.tables}
@@ -68,7 +68,7 @@ let TableReporterForm = props => {
 TableReporterForm.getInitialState = (downloadFormStoreState) => {
   let tableTree = util.getTableTree(
       downloadFormStoreState.ontology,
-      downloadFormStoreState.recordClass.name,
+      downloadFormStoreState.recordClass.fullName,
       downloadFormStoreState.question);
   let firstLeafName = util.findFirstLeafId(tableTree);
   return {

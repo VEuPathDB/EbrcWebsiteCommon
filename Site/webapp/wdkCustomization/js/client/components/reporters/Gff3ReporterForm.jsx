@@ -10,7 +10,7 @@ let attachmentTypes = [
 
 let GffInputs = props => {
   let { recordClass, formState, getUpdateHandler } = props;
-  if (recordClass.name != "TranscriptRecordClasses.TranscriptRecordClass") {
+  if (recordClass.fullName != "TranscriptRecordClasses.TranscriptRecordClass") {
     return ( <noscript/> );
   }
   return (
@@ -56,9 +56,9 @@ let initialStateMap = {
 };
 
 Gff3ReporterForm.getInitialState = (downloadFormStoreState) => {
-  let recordClassName = downloadFormStoreState.recordClass.name;
+  let recordClassFullName = downloadFormStoreState.recordClass.fullName;
   return {
-    formState: (recordClassName in initialStateMap ? initialStateMap[recordClassName] : {}),
+    formState: (recordClassFullName in initialStateMap ? initialStateMap[recordClassFullName] : {}),
     formUiState: {}
   };
 };

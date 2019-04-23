@@ -18,17 +18,17 @@ let EmptyReporter = props => ( <noscript/> );
 
 EmptyReporter.getInitialState = () => ({ formState: null, formUiState: null });
 
-export function selectReporterComponent(reporterName, recordClassName) {
+export function selectReporterComponent(reporterName, recordClassFullName) {
   switch (reporterName) {
     case 'attributesTabular':
-      switch (recordClassName) {
+      switch (recordClassFullName) {
         case 'TranscriptRecordClasses.TranscriptRecordClass':
           return TranscriptAttributesReporterForm;
         default:
           return TabularReporterForm;
       }
     case 'tableTabular':
-      switch (recordClassName) {
+      switch (recordClassFullName) {
         case 'TranscriptRecordClasses.TranscriptRecordClass':
           return TranscriptTableReporterForm;
         default:
@@ -37,7 +37,7 @@ export function selectReporterComponent(reporterName, recordClassName) {
     case 'tabular':
       return TabularReporterForm;
     case 'srt':
-      switch (recordClassName) {
+      switch (recordClassFullName) {
         // both gene and transcript use the same reporter
         case 'GeneRecordClasses.GeneRecordClass':
         case 'TranscriptRecordClasses.TranscriptRecordClass':

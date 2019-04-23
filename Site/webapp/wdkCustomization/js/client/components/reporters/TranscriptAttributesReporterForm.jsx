@@ -34,7 +34,7 @@ let TranscriptAttributesReporterForm = props => {
               // title and layout of the tree
               title="Choose Columns"
               searchBoxPlaceholder="Search Columns..."
-              tree={util.getAttributeTree(ontology, recordClass.name, question)}
+              tree={util.getAttributeTree(ontology, recordClass.fullName, question)}
 
               // state of the tree
               selectedLeaves={formState.attributes}
@@ -108,7 +108,7 @@ function getUserPrefFilterValue(prefs) {
 TranscriptAttributesReporterForm.getInitialState = (downloadFormStoreState) => {
   let { scope, question, recordClass, ontology, preferences } = downloadFormStoreState;
   // select all attribs and tables for record page, else column user prefs and no tables
-  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.name, question));
+  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.fullName, question));
   let selectedAttributes = (scope === 'results' ?
       util.getAttributeSelections(preferences, question, allReportScopedAttrs) :
       allReportScopedAttrs);

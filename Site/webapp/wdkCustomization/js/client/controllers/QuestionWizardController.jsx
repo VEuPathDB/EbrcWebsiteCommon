@@ -130,7 +130,7 @@ class QuestionWizardController extends ViewController {
 
           this._updateGroupCounts(configuredGroups);
           this._getAnswerCount({
-            questionName: question.name,
+            questionName: question.fullName,
             parameters: defaultParamValues
           }).then(initialCount => {
             this.setState({ initialCount });
@@ -518,7 +518,7 @@ class QuestionWizardController extends ViewController {
       .map(groups => [
         groups.last(),
         {
-          questionName: this.state.question.name,
+          questionName: this.state.question.fullName,
           parameters: groups.reduce((paramValues, group) => {
             return group.parameters.reduce((paramValues, paramName) => {
               return Object.assign(paramValues, {

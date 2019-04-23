@@ -16,7 +16,7 @@ export function trimBooleanQuestionAttribs(question, categoryTree) {
   // determine if this type of question needs its attributes trimmed
   let needsTrimming = false;
   booleanQuestionPrefixes.forEach(prefix => {
-    if (question.name.startsWith(prefix)) needsTrimming = true;
+    if (question.fullName.startsWith(prefix)) needsTrimming = true;
   });
 
   if (!needsTrimming) {

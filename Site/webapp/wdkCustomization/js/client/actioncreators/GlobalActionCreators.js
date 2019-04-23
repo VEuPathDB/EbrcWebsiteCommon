@@ -40,7 +40,7 @@ export function loadQuickSearches(questions) {
     let requests = questions.map(reference =>
       wdkService.getQuestionAndParameters(reference.name));
     return Promise.all(requests).then(
-      questions => keyBy(questions, 'name'),
+      questions => keyBy(questions, 'fullName'),
       error => error
     ).then(questions => ({
       type: QUICK_SEARCH_LOADED,

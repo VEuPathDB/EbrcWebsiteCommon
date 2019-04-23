@@ -19,7 +19,7 @@ let SharedReporterForm = props => {
               // title and layout of the tree
               title="Choose Attributes"
               searchBoxPlaceholder="Search Attributes..."
-              tree={util.getAttributeTree(ontology, recordClass.name, question)}
+              tree={util.getAttributeTree(ontology, recordClass.fullName, question)}
 
               // state of the tree
               selectedLeaves={formState.attributes}
@@ -38,7 +38,7 @@ let SharedReporterForm = props => {
             // title and layout of the tree
             title="Choose Tables"
             searchBoxPlaceholder="Search Tables..."
-            tree={util.getTableTree(ontology, recordClass.name)}
+            tree={util.getTableTree(ontology, recordClass.fullName)}
 
             // state of the tree
             selectedLeaves={formState.tables}
@@ -83,12 +83,12 @@ let SharedReporterForm = props => {
 SharedReporterForm.getInitialState = (downloadFormStoreState) => {
   let { scope, question, recordClass, ontology, preferences } = downloadFormStoreState;
   // select all attribs and tables for record page, else column user prefs and no tables
-  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.name, question));
+  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.fullName, question));
   let attribs = util.addPk((scope === 'results' ?
       util.getAttributeSelections(preferences, question, allReportScopedAttrs) :
       allReportScopedAttrs), recordClass);
   let tables = (scope === 'results' ? [] :
-      util.getAllLeafIds(util.getTableTree(ontology, recordClass.name)));
+      util.getAllLeafIds(util.getTableTree(ontology, recordClass.fullName)));
   return {
     formState: {
       attributes: attribs,

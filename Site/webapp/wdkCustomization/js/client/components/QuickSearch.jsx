@@ -122,7 +122,7 @@ class QuickSearchItem extends Component {
               </fieldset>
             ) : (
               <fieldset>
-                <input type="hidden" name="questionFullName" value={question.name}/>
+                <input type="hidden" name="questionFullName" value={question.fullName}/>
                 <input type="hidden" name="questionSubmit" value="Get Answer"/>
                 {question.parameters.map(parameter => {
                   if (parameter === searchParam) return null;

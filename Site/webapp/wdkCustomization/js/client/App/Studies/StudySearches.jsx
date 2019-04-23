@@ -21,12 +21,12 @@ export default function StudySearchIconLinks(props) {
   return (
     <div className={cx()}>
       {entries.map(({ question, recordClass }) => (
-        <div key={question.name} className={cx('Item')}>
+        <div key={question.fullName} className={cx('Item')}>
           <Mesa.AnchoredTooltip
             fadeOut
             content={<span>Search <strong>{recordClass.displayNamePlural}</strong></span>}
           >
-            <a href={`${webAppUrl}/showQuestion.do?questionFullName=${question.name}`}>
+            <a href={`${webAppUrl}/showQuestion.do?questionFullName=${question.fullName}`}>
               <i className={recordClass.iconName}/>
             </a>
           </Mesa.AnchoredTooltip>

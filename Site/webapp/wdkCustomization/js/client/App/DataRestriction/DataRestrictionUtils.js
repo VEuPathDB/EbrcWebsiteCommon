@@ -191,7 +191,7 @@ export function getIdFromRecordClassName (recordClassName) {
 }
 
 export function isStudyRecordClass(recordClass) {
-  return recordClass == null || recordClass.name.startsWith('DS_');
+  return recordClass == null || recordClass.fullName.startsWith('DS_');
 }
 
 

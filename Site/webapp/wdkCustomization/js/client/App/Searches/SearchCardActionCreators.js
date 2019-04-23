@@ -23,13 +23,13 @@ async function fetchAndFormatSearches(wdkService, userEmails) {
     fetchStudies(wdkService)
   ]);
 
-  const recordClassesByName = keyBy(recordClasses, 'name');
+  const recordClassesByFullName = keyBy(recordClasses, 'fullName');
 
   return strategies
     .filter(strategy => strategy.isValid)
     .map(strategy => ({
-      icon: get(recordClassesByName[strategy.recordClassName], 'iconName', 'question'),
-      recordClassDisplayName: get(recordClassesByName[strategy.recordClassName], 'displayNamePlural', 'Uknown record type'),
+      icon: get(recordClassesByFullName[strategy.recordClassName], 'iconName', 'question'),
+      recordClassDisplayName: get(recordClassesByFullName[strategy.recordClassName], 'displayNamePlural', 'Uknown record type'),
       name: strategy.name,
       studyName: getStudyNameByRecordClassName(studies, strategy.recordClassName),
       appUrl: `/im.do?s=${strategy.signature}`,

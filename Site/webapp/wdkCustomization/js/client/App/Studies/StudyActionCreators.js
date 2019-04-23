@@ -94,8 +94,8 @@ const parseStudy = mapProps({
   
 
 function formatStudies(projectId, questions, recordClasses, answer) {
-  const questionsByName = keyBy(questions, 'name');
-  const recordClassesByName = keyBy(recordClasses, 'name');
+  const questionsByName = keyBy(questions, 'fullName');
+  const recordClassesByName = keyBy(recordClasses, 'fullName');
 
   const records = answer.records.reduce((records, record) => {
 
@@ -126,7 +126,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
         const recordClass = recordClassesByName[question.recordClassName];
         return {
           icon: question.iconName || recordClass.iconName || 'fa fa-database',
-          name: question.name,
+          name: question.fullName,
           displayName: recordClass.shortDisplayName,
         };
       })

@@ -54,7 +54,7 @@ function QuestionWizard(props) {
       ) : (
         <ActiveGroup {...props} />
       )}
-      <input type="hidden" name="questionFullName" value={question.name}/>
+      <input type="hidden" name="questionFullName" value={question.fullName}/>
       <input type="hidden" name="questionSubmit" value="Get Answer"/>
       {question.parameters.map(param => (
         <input key={param.name} type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>

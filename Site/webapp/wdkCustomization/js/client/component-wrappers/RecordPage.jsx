@@ -59,7 +59,7 @@ const findRecordPageComponent = findExportWith(require.context('../components/re
 function makeDynamicWrapper(componentName) {
   return function dynamicWrapper(DefaultComponent) {
     return function DynamicWrapper(props) {
-      const ResolvedComponent = findRecordPageComponent(componentName)(`./${props.recordClass.name}`) || DefaultComponent;
+      const ResolvedComponent = findRecordPageComponent(componentName)(`./${props.recordClass.fullName}`) || DefaultComponent;
       return (
         <ResolvedComponent {...props} DefaultComponent={DefaultComponent}/>
       );
