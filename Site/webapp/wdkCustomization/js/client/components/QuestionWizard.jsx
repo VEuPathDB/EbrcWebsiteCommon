@@ -222,8 +222,9 @@ function Navigation(props) {
               {!isAddingStep && (
                 <button
                   disabled={updatingParamName != null}
-                  className="link"
+                  className={makeClassName('SubmitButton')}
                   title="Analyze the results of your search."
+                  style={{width: '100%', marginTop: '.3em'}}
                   name="redirectPath"
                   value="/app/step/{stepId}/resultPanel?initialTab=stepAnalysis:menu"
                 >Analyze results
