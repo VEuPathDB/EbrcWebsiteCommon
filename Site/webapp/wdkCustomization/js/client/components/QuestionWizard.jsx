@@ -219,7 +219,7 @@ function Navigation(props) {
                 : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
                 : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordClass.displayNamePlural}` }
               </button>
-              {!isAddingStep && (
+              {/*!isAddingStep && (
                 <button
                   disabled={updatingParamName != null}
                   className={makeClassName('SubmitButton')}
@@ -229,7 +229,7 @@ function Navigation(props) {
                   value="/app/step/{stepId}/resultPanel?initialTab=stepAnalysis:menu"
                 >Analyze results
                 </button>
-              )}
+              )*/}
               <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
             </div>
             {invalid && (
