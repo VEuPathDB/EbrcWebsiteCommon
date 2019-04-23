@@ -139,6 +139,8 @@ function Navigation(props) {
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
   const iconName = question.iconName || recordClass.iconName || 'fa fa-database';
 
+  const recordDisplayName = recordClass.shortDisplayNamePlural;
+
   return (
     <Sticky>
       {({isFixed}) => (
@@ -156,7 +158,7 @@ function Navigation(props) {
             <div className={makeClassName('ParamGroupSeparator')}>
               <div className={makeClassName('ParamGroupArrow')}/>
               <ParamGroupCount
-                title={`All ${recordClass.displayNamePlural}`}
+                title={`All ${recordDisplayName}`}
                 count={initialCount}
                 isActive={activeGroup == groups[0]}
               />
@@ -169,7 +171,7 @@ function Navigation(props) {
               >
                 <button
                   type="button"
-                  title={`Filter ${recordClass.displayNamePlural} by ${group.displayName}`}
+                  title={`Filter ${recordDisplayName} by ${group.displayName}`}
                   className={makeClassName(
                     'ParamGroupButton',
                     group == activeGroup && 'active'
@@ -201,7 +203,7 @@ function Navigation(props) {
               <div key={group.name + '__sep'} className={makeClassName('ParamGroupSeparator')}>
                 <div className={makeClassName('ParamGroupArrow')}/>
                 <ParamGroupCount
-                  title={`${recordClass.displayNamePlural} selected from previous steps.`}
+                  title={`${recordDisplayName} selected from previous steps.`}
                   count={groupUIState[group.name].accumulatedTotal}
                   isLoading={groupUIState[group.name].loading}
                   isValid={groupUIState[group.name].valid}
@@ -216,8 +218,8 @@ function Navigation(props) {
                 title="View the results of your search for further analysis."
               >
                 { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-                : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
-                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordClass.displayNamePlural}` }
+                : finalCountState.valid === false ? `View ? ${recordDisplayName}`
+                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordDisplayName}` }
               </button>
               {/*!isAddingStep && (
                 <button

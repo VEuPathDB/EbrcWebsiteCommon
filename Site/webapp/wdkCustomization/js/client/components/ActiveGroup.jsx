@@ -65,7 +65,7 @@ function ActiveGroup(props) {
           <div className={makeClassName('ActiveGroupCount')}>
             Your <em>{activeGroup.displayName}</em> filters reduce {
               (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
-            } {recordClass.displayNamePlural} to {
+            } {recordClass.shortDisplayNamePlural} to {
               (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
             }
           </div>
