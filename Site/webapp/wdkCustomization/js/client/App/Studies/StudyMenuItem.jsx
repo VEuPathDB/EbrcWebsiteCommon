@@ -37,13 +37,13 @@ class StudyMenuItem extends React.Component {
 
   render () {
     const { study } = this.props;
-    const { name, disabled, route, searches } = study;
+    const { name, id, disabled, route, searches } = study;
     const SearchLink = this.renderSearchLink;
 
     return (
       <div className={'row StudyMenuItem' + (disabled ? ' StudyMenuItem--disabled' : '')}>
         <div className="box StudyMenuItem-Name">
-          <Link to={route} className="StudyMenuItem-RecordLink">
+          <Link to={route} className={'StudyMenuItem-RecordLink ' + id}>
             {name}
             <Icon fa="angle-double-right" />
           </Link>
