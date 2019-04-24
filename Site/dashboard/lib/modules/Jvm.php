@@ -25,6 +25,7 @@ class Jvm extends JolModule {
     $req = new JolRequest($this->jol_base_url);
     $read = new JolReadOperation(array(
                 'mbean' => 'java.lang:type=Runtime',
+                'attribute' => array('Uptime')
             ));
     $req->add_operation($read);
     $response = $req->invoke();
