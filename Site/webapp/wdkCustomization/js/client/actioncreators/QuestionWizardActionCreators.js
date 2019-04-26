@@ -54,8 +54,9 @@ export const loadQuestion = (questionName, paramValues) => (dispatch, {wdkServic
  * @param {string} questionName
  */
 function fetchQuestionResources(wdkService, questionName) {
-  return wdkService.getQuestionAndParameters(questionName).then(
-    question =>
+  return wdkService.findQuestion(q => q.fullName === questionName)
+    .then(q => getQuestionAndParameters(q.urlSegment))
+    .then(question =>
       wdkService.findRecordClass(rc => rc.name === question.recordClassName)
         .then(recordClass => ({ question, recordClass })))
 }

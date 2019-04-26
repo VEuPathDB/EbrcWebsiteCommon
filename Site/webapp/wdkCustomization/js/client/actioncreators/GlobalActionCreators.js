@@ -30,19 +30,22 @@ export function loadBasketCounts() {
 
 /**
  * Load data for quick search
- * @param {Array<object>} questions An array of quick search spec objects.
- *    A spec object has two properties: `name`: the name of the questions,
+ * @param {Array<object>} quickSearchSpecs An array of quick search spec objects.
+ *    A spec object has two properties: `name`: the full name of the questions,
  *    and `searchParam`: the name of the parameter to use for text box.
  * @return {run}
  */
-export function loadQuickSearches(questions) {
+export function loadQuickSearches(quickSearchSpecs) {
   return function run({ wdkService }) {
-    let requests = questions.map(reference =>
-      wdkService.getQuestionAndParameters(reference.name));
-    return Promise.all(requests).then(
-      questions => keyBy(questions, 'fullName'),
+    let requests = quickSearchSpecs.map(spec =>
+      wdkService.findQuestion(q => q.fullName === spec.name)
+        .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
+    return Promise.all(requests)
+    .then(
+      questions => keyBy(questions, 'urlSegment'),
       error => error
-    ).then(questions => ({
+    )
+    .then(questions => ({
       type: QUICK_SEARCH_LOADED,
       payload: { questions: questions }
     }));
