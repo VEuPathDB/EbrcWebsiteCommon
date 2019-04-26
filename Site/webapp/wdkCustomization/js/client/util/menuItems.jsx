@@ -2,19 +2,20 @@ import { add, reduce, keyBy } from 'lodash';
 import { getId, getDisplayName, getTargetType } from 'wdk-client/CategoryUtils';
 
 /** Map search tree to menu items.  */
-function getSearchItems(searchTree) {
-  if (searchTree == null) return [];
-  return searchTree.children.map(createMenuItem);
+function getSearchItems(searchTree, recordClasses) {
+  if (searchTree == null || recordClasses == null) return [];
+  return searchTree.children.map(createMenuItem(keyBy(recordClasses, 'fullName')));
 }
 
 /** Map a search node to a meny entry */
-function createMenuItem(searchNode) {
+const createMenuItem = recordClassesByFullName => searchNode => {
+  const question = getTargetType(searchNode) === 'search' && searchNode.wdkReference;
+  const recordClass = question && recordClassesByFullName[question.outputRecordClassName];
   return {
     id: getId(searchNode),
     text: getDisplayName(searchNode),
-    children: searchNode.children.map(createMenuItem),
-    webAppUrl: getTargetType(searchNode) === 'search' &&
-      '/showQuestion.do?questionFullName=' + getId(searchNode)
+    children: searchNode.children.map(createMenuItem(recordClassesByFullName)),
+    route: question && `/search/${recordClass && recordClass.urlSegment}/${searchNode.wdkReference.urlSegment}`
   };
 }
 
@@ -63,7 +64,7 @@ export function makeMenuItems(props) {
   return keyBy( [
     { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
-      children: getSearchItems(props.searchTree).concat(
+      children: getSearchItems(props.searchTree, props.recordClasses).concat(
         includeQueryGrid ? [
           { id: 'query-grid', text: 'View all available searches', route: '/query-grid' }
         ] : [])
