@@ -87,12 +87,7 @@ function FilterParamFilter(props) {
         type="button"
         className={makeClassName('RemoveFilterButton')}
         onClick={() => parameterEventHandlers.onParamValueChange(props.parameter, JSON.stringify({
-          filters: containerFilter
-            ? filters.map(f => f === containerFilter
-              ? { ...f, value: { ...f.value, filters: f.value.filters.filter(cf => cf !== filter) } }
-              : f
-            )
-            : filters.filter(f => f !== filter)
+          filters: removeFilter(filters, filter, containerFilter)
         }))}
       >
         <Icon fa="close"/>
@@ -101,6 +96,20 @@ function FilterParamFilter(props) {
       <div>{getFilterValueDisplay(filter)}</div>
     </div>
   );
+}
+
+function removeFilter(filters, filter, containerFilter) {
+  if (containerFilter == null) return filters.filter(f => f !== filter);
+
+  return Seq.from(filters)
+    .flatMap(f => {
+      if (f !== containerFilter) return [f];
+      const subFilters = f.value.filters.filter(sf => sf !== filter);
+      // remove multi filter if it does not have any more subfilters
+      if (subFilters.length === 0) return [];
+      return [{ ...f, value: { ...f.value, filters: subFilters } }];
+    })
+    .toArray()
 }
 
 function prettyPrint(param, value) {
