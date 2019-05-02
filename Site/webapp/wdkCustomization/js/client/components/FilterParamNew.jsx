@@ -1,7 +1,7 @@
 import React from 'react';
 import { memoize } from 'lodash';
 import { IconAlt, Loading, ServerSideAttributeFilter } from 'wdk-client/Components';
-import { getOntologyTree } from 'wdk-client/FilterParamUtils';
+import { getOntologyTree } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
 import { paramPropTypes } from '../util/paramUtil';
 
 /**

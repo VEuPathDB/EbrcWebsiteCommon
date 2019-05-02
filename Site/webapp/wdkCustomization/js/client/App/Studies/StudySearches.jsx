@@ -3,7 +3,7 @@ import './StudySearches.scss';
 import { constant } from 'lodash';
 import React from 'react';
 import { Mesa } from 'wdk-client/Components';
-import { makeClassNameHelper } from 'wdk-client/ComponentUtils';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 const cx = makeClassNameHelper('ce-StudySearchIconLinks');
 const renderEmpty = constant(null);

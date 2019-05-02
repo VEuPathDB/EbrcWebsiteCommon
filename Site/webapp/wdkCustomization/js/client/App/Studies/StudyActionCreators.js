@@ -1,5 +1,5 @@
 import { get, identity, keyBy, mapValues, spread } from 'lodash';
-import { emptyAction } from 'wdk-client/WdkMiddleware';
+import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';

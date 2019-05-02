@@ -4,16 +4,20 @@
 // placeholder used by webpack when making xhr's for code chunks
 __webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disable-line
 
+import 'babel-polyfill';
+import 'lib/jquery';
+import 'lib/jquery-migrate';
+import 'lib/jquery-ui';
+import 'lib/jquery-qtip';
+
 // TODO Remove auth_tkt from url before proceeding
 
 import * as siteConfig from './config';
 import { rootUrl, rootElement, endpoint } from './config';
 import pluginConfig from './pluginConfig';
-import {
-  initialize as initializeWdk,
-  Components as WdkComponents,
-  Controllers as WdkControllers
-} from 'wdk-client';
+import { initialize as initializeWdk } from 'wdk-client/Core/main';
+import * as WdkComponents from 'wdk-client/Components';
+import * as WdkControllers from 'wdk-client/Controllers';
 import { debounce, identity, uniq, flow } from 'lodash';
 import { loadSiteConfig } from './actioncreators/GlobalActionCreators';
 import * as EbrcComponentWrappers from './component-wrappers';

@@ -1,3 +1,4 @@
+import React from 'react';
 import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
 import { buildNumber, releaseDate, displayName, webAppUrl } from '../config';

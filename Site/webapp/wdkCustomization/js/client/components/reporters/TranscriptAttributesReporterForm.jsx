@@ -1,9 +1,12 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { CategoriesCheckboxTree, Checkbox, RadioList, ReporterSortMessage } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
+import * as CategoryUtils from 'wdk-client/Utils/CategoryUtils';
 import TabularReporterFormSubmitButtons from './TabularReporterFormSubmitButtons';
 import ExcelNote from './ExcelNote';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils, Wdk.CategoryUtils);
-let { CategoriesCheckboxTree, RadioList, Checkbox, ReporterSortMessage } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils, CategoryUtils);
 
 let TranscriptAttributesReporterForm = props => {
 

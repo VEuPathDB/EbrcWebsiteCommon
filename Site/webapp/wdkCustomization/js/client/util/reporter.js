@@ -1,4 +1,4 @@
-import { Components } from 'wdk-client';
+import WdkServiceJsonReporterForm from 'wdk-client/Views/ReporterForm/WdkServiceJsonReporterForm';
 
 // load individual reporter forms
 import TabularReporterForm from '../components/reporters/TabularReporterForm';
@@ -14,7 +14,7 @@ import TableReporterForm from '../components/reporters/TableReporterForm';
 import TranscriptTableReporterForm from '../components/reporters/TranscriptTableReporterForm';
 import TranscriptAttributesReporterForm from '../components/reporters/TranscriptAttributesReporterForm';
 
-let EmptyReporter = props => ( <noscript/> );
+let EmptyReporter = props => ( null );
 
 EmptyReporter.getInitialState = () => ({ formState: null, formUiState: null });
 
@@ -62,7 +62,7 @@ export function selectReporterComponent(reporterName, recordClassFullName) {
       return JsonReporterForm;
     // uncomment if adding service json reporter to model
     //case 'wdk-service-json':
-    //  return Components.WdkServiceJsonReporterForm;
+    //  return WdkServiceJsonReporterForm;
     default:
       return EmptyReporter;
   }

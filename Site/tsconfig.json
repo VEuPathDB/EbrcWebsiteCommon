@@ -1,0 +1,16 @@
+{
+  "extends": "../../WDKClient/Build/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "wdk-client/*": [ "./WDKClient/Client/src/*" ],
+      "ebrc-client/*": [ "./EbrcWebsiteCommon/Site/webapp/wdkCustomization/js/client/*" ]
+    },
+    "typeRoots": [
+      "../../WDKClient/Client/node_modules/@types"
+    ]
+  },
+  "include": [
+    "./webapp/wdkCustomization/js/client/**/*",
+    "../../WDKClient/Client/src/index.d.ts"
+  ]
+}

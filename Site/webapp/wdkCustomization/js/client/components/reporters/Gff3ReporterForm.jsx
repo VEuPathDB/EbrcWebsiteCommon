@@ -1,7 +1,9 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { RadioList, Checkbox } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils);
-let { RadioList, Checkbox } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils);
 
 let attachmentTypes = [
   { value: "text", display: "GFF File" },

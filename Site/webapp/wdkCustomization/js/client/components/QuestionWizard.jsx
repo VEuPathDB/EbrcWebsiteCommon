@@ -7,8 +7,8 @@ import {
   Loading,
   Sticky
 } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
-import { Seq } from 'wdk-client/IterableUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import {
   groupParamsValuesAreDefault

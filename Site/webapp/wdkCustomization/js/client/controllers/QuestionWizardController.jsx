@@ -23,12 +23,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Dialog } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { ViewController } from 'wdk-client/Controllers';
-import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
-import { Seq } from 'wdk-client/IterableUtils';
-import { synchronized } from 'wdk-client/PromiseUtils';
-import { preorder } from 'wdk-client/TreeUtils';
+import { isMulti, isRange } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
+import { synchronized } from 'wdk-client/Utils/PromiseUtils';
+import { preorder } from 'wdk-client/Utils/TreeUtils';
 
 import QuestionWizard from '../components/QuestionWizard';
 import {

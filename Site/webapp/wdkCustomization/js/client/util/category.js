@@ -1,7 +1,7 @@
-import {Seq} from 'wdk-client/IterableUtils';
-import {pruneDescendantNodes} from 'wdk-client/TreeUtils';
-import {getTree} from 'wdk-client/OntologyUtils';
-import {getRecordClassName, isQualifying} from 'wdk-client/CategoryUtils';
+import {Seq} from 'wdk-client/Utils/IterableUtils';
+import {pruneDescendantNodes} from 'wdk-client/Utils/TreeUtils';
+import {getTree} from 'wdk-client/Utils/OntologyUtils';
+import {getRecordClassName, isQualifying} from 'wdk-client/Utils/CategoryUtils';
 
 let isSearchMenuScope = isQualifying({ targetType: 'search', scope: 'menu' });
 

@@ -1,7 +1,7 @@
 import { compose, replace, truncate } from 'lodash/fp';
 import React from 'react';
 import TwitterTimeline from 'ebrc-client/components/TwitterTimeline';
-import { Seq } from 'wdk-client/IterableUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
 
 import './News.scss';
 

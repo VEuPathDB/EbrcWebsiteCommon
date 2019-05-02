@@ -1,5 +1,5 @@
 import React from 'react';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { IconAlt as Icon } from 'wdk-client/Components';
 
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';

@@ -1,4 +1,4 @@
-import { ok } from 'wdk-client/Json';
+import { ok } from 'wdk-client/Utils/Json';
 
 export default WdkService => class EbrcWdkService extends WdkService {
 

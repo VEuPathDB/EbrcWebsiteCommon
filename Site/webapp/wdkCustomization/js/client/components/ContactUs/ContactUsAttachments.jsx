@@ -1,3 +1,4 @@
+import React from 'react';
 import { ValidatedInput } from '../../components';
 
 import './ContactUsAttachments.scss';

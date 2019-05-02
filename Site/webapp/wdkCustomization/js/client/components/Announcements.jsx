@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 import { identity } from 'lodash';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 const AnnouncementPropTypes = {
   projectId: PropTypes.string.isRequired,

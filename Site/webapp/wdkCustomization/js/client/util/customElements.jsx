@@ -3,7 +3,7 @@
  */
 
 import {render, unmountComponentAtNode} from 'react-dom';
-import {Component} from 'react';
+import React, {Component} from 'react';
 
 let reactCustomElements = new Map;
 let nodeNameRegexp = /^[a-z]+(-[a-z]+)+$/;

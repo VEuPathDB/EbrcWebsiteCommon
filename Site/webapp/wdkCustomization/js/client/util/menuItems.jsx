@@ -1,5 +1,6 @@
 import { add, reduce, keyBy } from 'lodash';
-import { getId, getDisplayName, getTargetType } from 'wdk-client/CategoryUtils';
+import React from 'react';
+import { getId, getDisplayName, getTargetType } from 'wdk-client/Utils/CategoryUtils';
 
 /** Map search tree to menu items.  */
 function getSearchItems(searchTree, recordClasses) {

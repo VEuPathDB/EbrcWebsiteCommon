@@ -2,7 +2,7 @@
  * Created by dfalke on 8/22/16.
  */
 import { keyBy } from 'lodash';
-import { emptyAction } from 'wdk-client/WdkMiddleware';
+import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 export const SITE_CONFIG_LOADED = 'eupathdb/site-config-loaded';
 export const BASKETS_LOADED = 'eupathdb/basket'
@@ -38,7 +38,7 @@ export function loadBasketCounts() {
 export function loadQuickSearches(quickSearchSpecs) {
   return function run({ wdkService }) {
     let requests = quickSearchSpecs.map(spec =>
-      wdkService.findQuestion(q => q.fullName === spec.name)
+      wdkService.findQuestion(q => q.urlSegment === spec.name)
         .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
     return Promise.all(requests)
     .then(

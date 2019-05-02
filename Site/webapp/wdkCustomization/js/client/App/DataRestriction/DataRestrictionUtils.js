@@ -1,4 +1,5 @@
 import { get, isPlainObject } from 'lodash';
+import React from 'react';
 import { BasketActions, ResultPanelActions, ResultTableSummaryViewActions } from 'wdk-client/Actions';
 import { attemptAction } from './DataRestrictionActionCreators';
 

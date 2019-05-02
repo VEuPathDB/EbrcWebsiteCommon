@@ -1,12 +1,12 @@
 import { find, get, map } from 'lodash';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Mesa } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import * as persistence from 'ebrc-client/util/persistence';
 
 let ParamPropType = PropTypes.shape({
-  defaultValue: PropTypes.string,
+  initialDisplayValue: PropTypes.string,
   help: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   alternate: PropTypes.string
@@ -59,7 +59,7 @@ class QuickSearchItem extends Component {
   }
 
   setStateFromProps(props) {
-    let value = persistence.get(this.getStorageKey(props), get(this.getSearchParam(props), 'defaultValue', ''));
+    let value = persistence.get(this.getStorageKey(props), get(this.getSearchParam(props), 'initialDisplayValue', ''));
     this.setState({ value });
   }
 
@@ -126,10 +126,10 @@ class QuickSearchItem extends Component {
                 <input type="hidden" name="questionSubmit" value="Get Answer"/>
                 {question.parameters.map(parameter => {
                   if (parameter === searchParam) return null;
-                  let { defaultValue = '', type, name } = parameter;
+                  let { initialDisplayValue = '', type, name } = parameter;
                   let typeTag = isStringParam(type) ? 'value' : 'array';
                   return (
-                    <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
+                    <input key={`${typeTag}(${name})`} type="hidden" name={name} value={initialDisplayValue}/>
                   );
                 })}
                 <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>

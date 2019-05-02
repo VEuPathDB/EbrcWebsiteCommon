@@ -1,6 +1,6 @@
 import React from 'react';
 import { HelpIcon } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import Param from './Param';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import { paramGroupPropTypes } from '../util/paramUtil';

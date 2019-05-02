@@ -1,4 +1,5 @@
 import { compose, get } from 'lodash/fp';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { PageController } from 'wdk-client/Controllers';

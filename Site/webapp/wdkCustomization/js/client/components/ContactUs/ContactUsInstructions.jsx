@@ -1,3 +1,4 @@
+import React from 'react';
 const ContactUsInstructions = () => (
   <div className="instructions">
     <em>If you are reporting a problem,</em> please include the following if possible:

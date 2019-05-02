@@ -1,3 +1,4 @@
+import React from 'react';
 const SupportFormField = ({ label, inputElement }) => (
   <tr className="field">
     <td>

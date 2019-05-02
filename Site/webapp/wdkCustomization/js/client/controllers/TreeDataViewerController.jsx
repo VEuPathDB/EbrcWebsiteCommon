@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { bindAll } from 'lodash';
 import { PageController } from 'wdk-client/Controllers';
 import { CheckboxTree } from 'wdk-client/Components';

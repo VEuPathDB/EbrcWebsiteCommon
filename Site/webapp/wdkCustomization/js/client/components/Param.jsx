@@ -7,7 +7,7 @@ import DateRangeParam from './DateRangeParam';
 import NumberParam from './NumberParam';
 import NumberRangeParam from './NumberRangeParam';
 import { paramPropTypes } from '../util/paramUtil';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 /**
  * Param component

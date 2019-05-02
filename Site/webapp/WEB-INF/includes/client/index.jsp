@@ -74,8 +74,6 @@
     <imp:stylesheet rel="stylesheet" type="text/css" href="wdk-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="css/${model.projectId}.css"/>
-    <imp:script charset="utf8" src="vendor.bundle.js" ></imp:script>
-    <imp:script charset="utf8" src="wdk-client.bundle.js" ></imp:script>
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
   </head>
   <body>

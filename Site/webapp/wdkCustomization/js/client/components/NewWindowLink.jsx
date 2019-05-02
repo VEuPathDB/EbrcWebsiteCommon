@@ -1,4 +1,6 @@
 import { map } from 'lodash';
+import React from 'react';
+
 export default function NewWindowLink(props) {
   let {
     href,
