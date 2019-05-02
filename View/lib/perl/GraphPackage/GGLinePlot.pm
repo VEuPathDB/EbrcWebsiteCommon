@@ -1103,8 +1103,8 @@ profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$ELEMENT_NAMES_NUMERIC < 
 profile.df.full\$VALUE <- profile.df.full\$VALUE.y
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.is.numeric <- TRUE
+profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
 profile.df.full\$PROFILE_FILE <- \"dummy\"
-profile.df.full\$LEGEND <- \"dummy\"
 profile.df.full <- profile.df.full[profile.df.full\$LEGEND.x != profile.df.full\$LEGEND.y,]
 profile.df.full\$TOOLTIP <- paste0(\"x = \", profile.df.full\$LEGEND.x, \" : \", profile.df.full\$ELEMENT_NAMES_NUMERIC, \"|y = \", profile.df.full\$LEGEND.y, \" : \", profile.df.full\$VALUE)
 ";
@@ -1127,8 +1127,9 @@ gp <- gp + scale_y_continuous(trans='log10')
 gp <- gp + coord_cartesian(xlim=c(.01,x.max), ylim=c(.01,y.max))
 
 gp <- gp + scale_linetype_manual(name = \"Lines\", values = c(\"dashed\", \"dotted\"), labels = c(\"FPKM = 1\", \"+/- 2 fold change\"))
+gp <- gp + scale_color_manual(values = viridis(length(as.factor(unique(profile.df.full\$LEGEND)))), labels = unique(profile.df.full\$LEGEND))
 gp <- gp + guides(color = FALSE)
-gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11))
+gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11));
 ";
 
   $self->setRPostscript($post);
