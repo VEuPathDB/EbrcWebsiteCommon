@@ -17,6 +17,9 @@ sub setIsFilled                  { $_[0]->{'_is_filled'                     } = 
 sub getForceNoLines              { $_[0]->{'_force_no_lines'                }}
 sub setForceNoLines              { $_[0]->{'_force_no_lines'                } = $_[1]}
 
+sub getForceNoPoints             { $_[0]->{'_force_no_points'               }}
+sub setForceNoPoints             { $_[0]->{'_force_no_points'               } = $_[1]}
+
 sub getVaryGlyphByXAxis          { $_[0]->{'_vary_glyph_by_x_axis'          }}
 sub setVaryGlyphByXAxis          { $_[0]->{'_vary_glyph_by_x_axis'          } = $_[1]}
 
@@ -283,6 +286,7 @@ sub makeRPlotString {
 
   $yAxisFoldInductionFromM = $yAxisFoldInductionFromM ? 'TRUE' : 'FALSE';
 
+  my $forceNoPoints = $self->getForceNoPoints() ? 'TRUE' : 'FALSE';
   my $forceNoLines = $self->getForceNoLines() ? 'TRUE' : 'FALSE';
   my $forceConnectPoints = $self->getForceConnectPoints() ? 'TRUE' : 'FALSE';
   my $varyGlyphByXAxis = $self->getVaryGlyphByXAxis() ? 'TRUE' : 'FALSE';
@@ -566,87 +570,90 @@ if($isSVG) {
 }
 
 if (!$prtcpnt_timeline) {
-
-if(useTooltips){
-  if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
-    gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
-  } else {
-    if (myX == \"CONTXAXIS\") {
-      gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
-    } else {
-      if (\"SIZE\" %in% colnames(profile.df.full)) {
-        gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \", get(myX), \", y: \", VALUE), size=SIZE), real.geom=geom_point);
-        gp = gp + scale_size_manual(values=seq(length(unique(profile.df.full\$SIZE))), breaks=unique(profile.df.full\$SIZE), labels=unique(profile.df.full\$SIZE))
+  if (!$forceNoPoints) {
+    if(useTooltips){
+      if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
+        gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
       } else {
-        gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+        if (myX == \"CONTXAXIS\") {
+          gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
+        } else {
+          if (\"SIZE\" %in% colnames(profile.df.full)) {
+            gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \", get(myX), \", y: \", VALUE), size=SIZE), real.geom=geom_point);
+            gp = gp + scale_size_manual(values=seq(length(unique(profile.df.full\$SIZE))), breaks=unique(profile.df.full\$SIZE), labels=unique(profile.df.full\$SIZE))
+          } else {
+            gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+          }
+        }
+      }
+    }else{
+      gp = gp + geom_point();
+    }
+  }
+  
+  if (!$hasColorVals) {
+    if (\"GROUP\" %in% colnames(profile.df.full)) {
+      count = length(unique(profile.df.full\$GROUP));
+      if (count < length($colorsStringNotNamed)) {
+        stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
+      }
+    } else {
+     if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
+      count = length(unique(profile.df.full\$LEGEND));
+     } else {
+      count = $numProfiles;
+     }
+      if (count < length($colorsStringNotNamed)) {
+        stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
       }
     }
   }
-}else{
-  gp = gp + geom_point();
-}
-
-if (!$hasColorVals) {
-  if (\"GROUP\" %in% colnames(profile.df.full)) {
-    count = length(unique(profile.df.full\$GROUP));
-    if (count < length($colorsStringNotNamed)) {
-      stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
-    }
-  } else {
-   if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
-    count = length(unique(profile.df.full\$LEGEND));
-   } else {
-    count = $numProfiles;
-   }
-    if (count < length($colorsStringNotNamed)) {
-      stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
-    }
-  }
-}
-
-if(!$forceNoLines) {
-  #override earlier group setting if group column exists
-  if (\"GROUP\" %in% colnames(profile.df.full)) {
-    if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-      if ($colorPointsOnly) {
-        gp = gp + aes(group=GROUP)
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+  
+  if(!$forceNoLines) {
+    #override earlier group setting if group column exists
+    if (\"GROUP\" %in% colnames(profile.df.full)) {
+      if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
+        if ($colorPointsOnly) {
+          gp = gp + aes(group=GROUP)
+          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+        } else {
+          gp = gp + aes(group=GROUP)
+          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+        }
       } else {
-        gp = gp + aes(group=GROUP)
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+        if ($colorPointsOnly) {
+          gp = gp + aes(group=GROUP)
+          gp = gp + geom_line(color=\"black\")
+        } else {
+          gp = gp + aes(group=GROUP)
+          gp = gp + geom_line();
+        }
       }
     } else {
-      if ($colorPointsOnly) {
-        gp = gp + aes(group=GROUP)
-        gp = gp + geom_line(color=\"black\")
+      if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
+        if ($colorPointsOnly) {
+          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+        } else {
+           
+          gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
+  
+        }
       } else {
-        gp = gp + aes(group=GROUP)
-        gp = gp + geom_line();
+        if ($colorPointsOnly) {
+          gp = gp + geom_line(color=\"black\")
+        } else {
+          gp = gp + geom_line();
+        }
       }
     }
-  } else {
-    if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-      if ($colorPointsOnly) {
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+    if($fillBelowLine) {
+      if(length(unique(profile.df.full\$LEGEND)) > 1) {
+        gp = gp + geom_tooltip(aes(fill=LEGEND, tooltip=LEGEND, group=LEGEND), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
       } else {
-         
-        gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
-
-      }
-    } else {
-      if ($colorPointsOnly) {
-        gp = gp + geom_line(color=\"black\")
-      } else {
-        gp = gp + geom_line();
+        gp = gp + geom_area(aes(fill=LEGEND, group=LEGEND), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
       }
     }
-  }
-  if($fillBelowLine) {
-    if(length(unique(profile.df.full\$LEGEND)) > 1) {
-      gp = gp + geom_tooltip(aes(fill=LEGEND, tooltip=LEGEND, group=LEGEND), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
-    } else {
-      gp = gp + geom_area(aes(fill=LEGEND, group=LEGEND), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
-    }
+  
   }
 
   if($smoothLines) {
@@ -662,113 +669,112 @@ if(!$forceNoLines) {
       gp = gp + geom_smooth(data = df2smooth, method=\"loess\", se=FALSE, colour = \"black\", size = .5);
     }
   }
-}
-
-if (coord.cartesian) {
-  if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
-    gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
-  } else {
-    gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
-  }
-}
-
-# TODO actually fix this by setting count in perl rather than R, or figure something else out. 
-# then wont need the if statement. cause though fine now, this still may eventually cause problems.
-if ($hasColorVals) {
-   gp = gp + scale_color_manual(values = $colorVals)
-} else {
-  if (count/length($colorsStringNotNamed) == 1) {
-    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
-  } else {
-    gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
-  }
-}
-
-
-
-
-if( $fillBelowLine) {
-  hideLegend=TRUE;
-}
-
-xAxisCount = length(profile.df.full\$ELEMENT_NAMES);
-
-if(is.compact) {
-  gp = gp + theme_void() + theme(legend.position=\"none\");
-} else if(is.thumbnail) {
-  gp = gp + theme_bw();
   
-  if ($adjustXYScalesTogether) {
-     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
-  } else {
-     gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
-  }
-
-  gp = gp + ylim(y.min, y.max);
-
-  if(!profile.is.numeric) {
-    gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-    if(xAxisCount > 3) {
-      gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
+  if (coord.cartesian) {
+    if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
+      gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
     } else {
-      gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+      gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
     }
-  } else {
-    gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
   }
-  gp = gp + theme(legend.position=\"none\");
-} else {
-  gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
-  gp = gp + ylim(y.min, y.max);
-  gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
-
-  if (myX == \"CONTXAXIS\") {
-    if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
-      gp = gp + theme(axis.text.x = element_blank());    
-    }
+  
+  # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
+  # then wont need the if statement. cause though fine now, this still may eventually cause problems.
+  if ($hasColorVals) {
+     gp = gp + scale_color_manual(values = $colorVals)
   } else {
+    if (count/length($colorsStringNotNamed) == 1) {
+      gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+    } else {
+      gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+    }
+  }
+  
+  
+  
+  
+  if( $fillBelowLine) {
+    hideLegend=TRUE;
+  }
+  
+  xAxisCount = length(profile.df.full\$ELEMENT_NAMES);
+  
+  if(is.compact) {
+    gp = gp + theme_void() + theme(legend.position=\"none\");
+  } else if(is.thumbnail) {
+    gp = gp + theme_bw();
+    
+    if ($adjustXYScalesTogether) {
+       gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
+    } else {
+       gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+    }
+  
+    gp = gp + ylim(y.min, y.max);
+  
     if(!profile.is.numeric) {
       gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-      if (xAxisCount > 50) {
-        gp = gp + theme(axis.text.x = element_blank())
-      } else if(xAxisCount > 3) {
+      if(xAxisCount > 3) {
         gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
       } else {
         gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
       }
+    } else {
+      gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
     }
-  }
-
-  if(hideLegend) {
     gp = gp + theme(legend.position=\"none\");
-  #} else if(\$horizontalLegend) {
-  #  gp = gp + theme(legend.position=\"bottom\");
-  } 
-
-}
-
-if(\"FACET\" %in% colnames(profile.df.full)) {
-  if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
-    numLevels=nlevels(profile.df.full\$FACET_ns);
-    if ($facetNumCols != 0) {
-      numCols = $facetNumCols
+  } else {
+    gp = gp + theme_bw();
+    gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
+    gp = gp + ylim(y.min, y.max);
+    gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
+  
+    if (myX == \"CONTXAXIS\") {
+      if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
+        gp = gp + theme(axis.text.x = element_blank());    
+      }
     } else {
-      numCols=ceiling(numLevels / 2);
+      if(!profile.is.numeric) {
+        gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
+        if (xAxisCount > 50) {
+          gp = gp + theme(axis.text.x = element_blank())
+        } else if(xAxisCount > 3) {
+          gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
+        } else {
+          gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+        }
+      }
     }
-    if (numLevels > 3) {
-      gp = gp + facet_wrap( ~ FACET_ns, ncol=numCols);
-    } else {
-      gp = gp + facet_grid(. ~ FACET_ns);
-    }
+  
+    if(hideLegend) {
+      gp = gp + theme(legend.position=\"none\");
+    #} else if(\$horizontalLegend) {
+    #  gp = gp + theme(legend.position=\"bottom\");
+    } 
+  
   }
-}else if($hasFacets) {
-  gp = gp + facet_grid($facetString);
-}
-
-if($hideXAxisLabels) {                                                                                                                                                                                      
-    gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
-}
+  
+  if(\"FACET\" %in% colnames(profile.df.full)) {
+    if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
+      numLevels=nlevels(profile.df.full\$FACET_ns);
+      if ($facetNumCols != 0) {
+        numCols = $facetNumCols
+      } else {
+        numCols=ceiling(numLevels / 2);
+      }
+      if (numLevels > 3) {
+        gp = gp + facet_wrap( ~ FACET_ns, ncol=numCols);
+      } else {
+        gp = gp + facet_grid(. ~ FACET_ns);
+      }
+    }
+  }else if($hasFacets) {
+    gp = gp + facet_grid($facetString);
+  }
+  
+  if($hideXAxisLabels) {                                                                                                                                                                                      
+      gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
+  }
 
 }
 
@@ -1062,6 +1068,71 @@ sub new {
 
   $self->setIsFilled(1);
   
+  return $self;
+}
+
+#--------------------------------------------------------------------------------
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeqTranscriptionSummary;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot );
+use strict;
+
+sub new {
+  my $class = shift;
+  my $self = $class->SUPER::new(@_);
+  my $id = $self->getId();
+
+  $self->setPartName('transcription.summary');
+  $self->setYaxisLabel('FPKM');
+  $self->setPlotTitle("RNASeq Transcription Summary - $id");
+  $self->setIsLogged(1); 
+  $self->setForceNoLines(1);
+
+  my $adjust = "
+myMerge <- function(x) {
+  merge(x[, c('LEGEND', 'VALUE')], x, by = NULL)
+}
+
+profile.df.full\$LEGEND <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
+profile.df.full\$LEGEND <- paste0(profile.df.full\$LEGEND, \"| - \", profile.df.full\$ELEMENT_NAMES)
+profiles.list <- split(profile.df.full, f = profile.df.full\$PROFILE_FILE)
+profiles.list <- lapply(profiles.list, myMerge)
+profile.df.full <- bind_rows(profiles.list)
+profile.df.full\$ELEMENT_NAMES_NUMERIC <- profile.df.full\$VALUE.x
+profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$ELEMENT_NAMES_NUMERIC < .01] <- .01
+profile.df.full\$VALUE <- profile.df.full\$VALUE.y
+profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
+profile.is.numeric <- TRUE
+profile.df.full\$PROFILE_FILE <- \"dummy\"
+profile.df.full\$LEGEND <- \"dummy\"
+profile.df.full <- profile.df.full[profile.df.full\$LEGEND.x != profile.df.full\$LEGEND.y,]
+profile.df.full\$TOOLTIP <- paste0(\"x = \", profile.df.full\$LEGEND.x, \" : \", profile.df.full\$ELEMENT_NAMES_NUMERIC, \"|y = \", profile.df.full\$LEGEND.y, \" : \", profile.df.full\$VALUE)
+";
+
+  $self->addAdjustProfile($adjust);
+
+  my $post = "
+y.max <- 1000
+x.max <- 1000
+
+y.max <- max(y.max, as.numeric(profile.df.full\$VALUE), na.rm = TRUE)
+x.max <- max(x.max, as.numeric(profile.df.full\$ELEMENT_NAMES_NUMERIC), na.rm = TRUE)
+
+gp <- gp + geom_abline(aes(slope=1, intercept=log10(2), linetype = \"dotted\"))
+gp <- gp + geom_abline(aes(slope=1, intercept=-log10(2), linetype = \"dotted\"))
+gp <- gp + geom_hline(aes(yintercept=1, linetype = \"dashed\"))
+gp <- gp + geom_vline(aes(xintercept=1, linetype = \"dashed\"))
+gp <- gp + scale_x_continuous(trans='log10') 
+gp <- gp + scale_y_continuous(trans='log10')
+gp <- gp + coord_cartesian(xlim=c(.01,x.max), ylim=c(.01,y.max))
+
+gp <- gp + scale_linetype_manual(name = \"Lines\", values = c(\"dashed\", \"dotted\"), labels = c(\"FPKM = 1\", \"+/- 2 fold change\"))
+gp <- gp + guides(color = FALSE)
+gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11))
+";
+
+  $self->setRPostscript($post);
+ 
   return $self;
 }
 
