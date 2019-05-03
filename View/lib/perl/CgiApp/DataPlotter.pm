@@ -63,7 +63,8 @@ sub run {
 
 	 my $_qh         = $Self->getQueryHandle($Cgi);
 
-	 my $pkg          = $Cgi->param('project_id');
+	 #my $pkg          = $Cgi->param('project_id');
+	 my $pkg          = $ENV{PROJECT_ID};
 	 my $type           = $Cgi->param('type');
 	 $pkg = "EuPathDB" if ($type eq 'PathwayGenera' || $type =~ /UserDatasets/);
 	 my $id             = $Cgi->param('id');

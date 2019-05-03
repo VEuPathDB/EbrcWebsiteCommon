@@ -83,7 +83,8 @@ sub init {
      my $Self = shift;
      my $Args = ref $_[0] ? shift : {@_};
      
-     my $projectId = $Self->cla()->param('project_id') 
+     # my $projectId = $Self->cla()->param('project_id')
+     my $projectId = $ENV{PROJECT_ID}
             or die "project_id parameter not defined\n";
      
      $Self->setProjectId( $projectId );
