@@ -87,7 +87,7 @@ const siteAnnouncements = [
   },
 */
  // Clinepi home page
-
+/*
   (props) => {
     if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && 
          (location.pathname == props.webAppUrl + '/app') || (location.pathname == props.webAppUrl + '/app/') ) {
@@ -99,7 +99,7 @@ const siteAnnouncements = [
     }
     return null;
   },
-
+*/
 
 // Fungi gene page for Cryptococcus neoformans KN99
 /*  (props) => { 
