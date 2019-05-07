@@ -4,7 +4,7 @@
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <import file="${projectsDir}/WDKClient/build.xml" />
+  <import file="${projectsDir}/WDKWebsite/build.xml" />
 
   
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
@@ -12,15 +12,15 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-ChildCheckout">
-    <available file="${projectsDir}/WDKClient" type="dir"  property="WDKClient.present" />
-    <antcall target="WDKClient-Checkout"/>
+    <available file="${projectsDir}/WDKWebsite" type="dir"  property="WDKWebsite.present" />
+    <antcall target="WDKWebsite-Checkout"/>
   </target>
 
 
-  <target name="WDKClient-Checkout" unless="WDKClient.present">
+  <target name="WDKWebsite-Checkout" unless="WDKWebsite.present">
     <ant target="defaultProjectCheckout" inheritAll="false">
-      <property name="svnurl" value="https://cbilsvn.pmacs.upenn.edu/svn/gus/WDKClient"/>
-      <property name="project" value="WDKClient"/>
+      <property name="svnurl" value="https://cbilsvn.pmacs.upenn.edu/svn/gus/WDKWebsite"/>
+      <property name="project" value="WDKWebsite"/>
       <property name="version" value="alter-views"/>
     </ant>
   </target>
@@ -31,7 +31,7 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
  <target name="EbrcWebsiteCommon-ChildUpdate">
     <ant target="defaultProjectUpdate">
-      <property name="project" value="WDKClient"/>
+      <property name="project" value="WDKWebsite"/>
     </ant>
   </target>
 
@@ -40,7 +40,7 @@
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-Installation" depends="WDKClient-Installation,
+  <target name="EbrcWebsiteCommon-Installation" depends="WDKWebsite-Installation,
                                                         EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
@@ -100,8 +100,7 @@
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDKClient-WebInstallation,
-                                                           WDKClient/Client-WebInstallation,
+  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDKWebsite-WebInstallation,
                                                            EbrcWebsiteCommon-Installation,
                                                            EbrcWebsiteCommon/Site-WebInstallation">
   </target>
