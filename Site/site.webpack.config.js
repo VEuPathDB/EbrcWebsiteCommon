@@ -1,6 +1,6 @@
 var path = require('path');
 var wdkRoot = path.resolve(__dirname, '../../WDKWebsite/View');
-var baseConfig = require('../../WDKClient/Build/base.webpack.config');
+var baseConfig = require('../../install/base.webpack.config');
 
 var scriptRoot = path.join(__dirname, '../../WDKClient/Dependencies/lib');
 var depPath = path.join.bind(null, scriptRoot);
@@ -62,7 +62,11 @@ module.exports = function configure(additionalConfig) {
     },
     resolve: {
       alias,
-      modules: [ path.resolve(__dirname, '../../WDKClient/Client/node_modules') ]
+      modules: [
+        path.resolve(process.cwd(), 'node_modules'),
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, '../../WDKClient/Client/node_modules'),
+      ]
     },
 
     // Map external libraries Wdk exposes so we can do things like:

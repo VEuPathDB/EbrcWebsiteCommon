@@ -852,7 +852,7 @@ a.eupathdb-MenuItemText {
 
 .eupathdb-MenuItemText__favorites:before {
   content: ' ';
-  background-image: url(~wdk/images/favorite_color.gif);
+  background-image: url(~wdk-client/Core/Style/images/favorite_color.gif);
   background-size: 18px auto;
   position: absolute;
   height: 18px;
@@ -882,7 +882,7 @@ a.eupathdb-MenuItemText {
  */
 
 .eupathdb-MenuItemText__beta:after {
-  content: url('~wdk/images/beta2-30.png');
+  content: url('~wdk-client/Core/Style/images/beta2-30.png');
   top: 0;
 }
 
@@ -897,11 +897,11 @@ a.eupathdb-MenuItemText {
   content: '\f0da';
 }
 .eupathdb-MenuItemText__new:after {
-  content: url('~wdk/images/new-feature.png');
+  content: url('~wdk-client/Core/Style/images/new-feature.png');
   top: 4px;
 }
 .eupathdb-MenuItemText__beta:after {
-  content: url('~wdk/images/beta2-30.png');
+  content: url('~wdk-client/Core/Style/images/beta2-30.png');
   top: 0;
 }
 

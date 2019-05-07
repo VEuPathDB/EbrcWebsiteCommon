@@ -4,7 +4,9 @@
 // placeholder used by webpack when making xhr's for code chunks
 __webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disable-line
 
-import 'babel-polyfill';
+import '@babel/polyfill';
+import 'custom-event-polyfill';
+import 'whatwg-fetch';
 import 'lib/jquery';
 import 'lib/jquery-migrate';
 import 'lib/jquery-ui';
