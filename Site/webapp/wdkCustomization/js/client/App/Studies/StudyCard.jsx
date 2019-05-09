@@ -24,9 +24,9 @@ class StudyCard extends React.Component {
   }
 
   render () {
-    const { study, prefix, attemptAction } = this.props;
+    const { card, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
-    const { name, categories, route, headline, points, searches, disabled } = study;
+    const { name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
 
     return (
@@ -53,7 +53,7 @@ class StudyCard extends React.Component {
             {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
           </ul>
         </div>
-        <DownloadLink className="box StudyCard-Download" linkText="Download Data" study={study} attemptAction={attemptAction}/>
+        <DownloadLink className="box StudyCard-Download" linkText="Download Data" study={card} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
           {searchType
             ? <span>Search <b>{searchType}</b></span>

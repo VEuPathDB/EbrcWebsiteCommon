@@ -1,8 +1,6 @@
 import React from 'react';
-import { StudyCardList } from 'ebrc-client/App/Studies';
-import { SearchCardList } from 'ebrc-client/App/Searches';
-import { ImageCardList } from 'ebrc-client/App/ImageCard';
 import { IconAlt as Icon } from 'wdk-client/Components';
+import CardList from './CardList';
 
 import './Showcase.scss';
 import ShowcaseFilter from './ShowcaseFilter';
@@ -14,10 +12,9 @@ class Showcase extends React.Component {
     const { items } = props.content;
     this.state = { filteredItems: items };
     this.handleFilter = this.handleFilter.bind(this);
-    this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this);
   }
 
-  componentWillReceiveProps ({ content }) {
+  UNSAFE_componentWillReceiveProps ({ content }) {
     const { items } = content;
     if (items !== this.props.items) {
       this.setState({ filteredItems: items });
@@ -28,29 +25,32 @@ class Showcase extends React.Component {
     this.setState({ filteredItems });
   }
 
-  getListRenderer (contentType, props) {
-    switch (contentType.toLowerCase()) {
-      case 'studycardlist':
-        return <StudyCardList {...props} />
-      case 'searchcardlist':
-        return <SearchCardList {...props} />
-      case 'imagecardlist':
-        return <ImageCardList {...props} />
-    }
+  renderCardList (contentType, Card, props) {
+    const { prefix, ...cardListProps } = props;
+    return (
+      <CardList
+        {...cardListProps}
+        additionalClassName={contentType}
+        renderCard={(card) =>
+          <Card card={card} prefix={prefix} key={card.name} />
+        }
+      />
+    );
   }
 
   render () {
     const { handleFilter } = this;
-    const { filteredItems } = this.state;
-    const { content, prefix, projectId, attemptAction, studies } = this.props;
-    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, items, description, isLoading } = content;
-    const cards = this.getListRenderer(contentType, {
+    const { filteredItems: list } = this.state;
+    const { content, prefix, attemptAction } = this.props;
+    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, contentNamePlural, items, description, isLoading, isExpandable, cardComponent, getSearchStringForItem } = content;
+    const cards = this.renderCardList(contentType, cardComponent, {
       attemptAction,
+      contentNamePlural,
       isLoading,
       prefix,
-      projectId,
-      list: filteredItems,
-      studies
+      list,
+      isExpandable,
+      getSearchStringForItem
     });
 
 
@@ -76,6 +76,6 @@ class Showcase extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default Showcase;
