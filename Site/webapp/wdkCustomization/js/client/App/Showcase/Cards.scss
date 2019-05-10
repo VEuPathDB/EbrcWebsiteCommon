@@ -21,6 +21,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding: 10px 0;
+    margin: 1em 0;
   }
 
   &_Expanded &__Entries {
@@ -33,8 +34,7 @@
   }
 
   &__FilterInput {
-    width: 50em;
-    margin: 1em 0;
+    max-width: 50em;
     align-self: center;
     font-size: 1.2em;
   }
