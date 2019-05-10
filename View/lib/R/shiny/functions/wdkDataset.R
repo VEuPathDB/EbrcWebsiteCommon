@@ -1,4 +1,4 @@
-library(shiny)
+require(shiny)
 
 # A function that fetches the passed contextHash or ID of a
 # WDK step analysis, loads the data file output into a dataset,
@@ -13,7 +13,7 @@ getWdkDataset <- function(session, fetchStyle, filename, expectHeader, dataStora
   if (fetchStyle == "disk") {
     contextHash = get("contextHash", query)
     projectFolder <- get("projectFolder", query)
-    validate(
+    shiny:::validate(
       need(contextHash != "", "Must pass a contextHash query parameter"),
       need(projectFolder != "", "Must pass the data storage directory as a query parameter"),
       need(grepl("..",contextHash), "Hash must be sent alone")
@@ -26,7 +26,7 @@ getWdkDataset <- function(session, fetchStyle, filename, expectHeader, dataStora
   else {
     # this style currently allows only one data file in the 'dataUrl' query param
     fetchUrl = get("dataUrl", query)
-    validate(
+    shiny:::validate(
         need(fetchUrl != "", "Must pass a dataUrl query paramenter")
     )
     print(paste0("Will read from: ", fetchUrl), stderr())
@@ -42,7 +42,7 @@ getWdkDatasetFile <- function(filename, session, expectHeader, dataStorageDir=""
 
   contextHash = get("contextHash", query)
   projectFolder <- get("projectFolder", query)
-  validate(
+  shiny:::validate(
     need(contextHash != "", "Must pass a contextHash query parameter"),
     need(projectFolder != "", "Must pass the data storage directory as a query parameter"),
     need(grepl("..",contextHash), "Hash must be sent alone")

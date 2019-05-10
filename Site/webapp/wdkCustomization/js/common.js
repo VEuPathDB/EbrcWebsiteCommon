@@ -1,8 +1,6 @@
 /* global wdk */
 import '!!script-loader!eupathdb/js/newwindow';
-import './attributeCheckboxTree';
 import './controllerResolver';
-
 // include scroll to top button
 import 'eupathdb/js/scroll-to-top';
 

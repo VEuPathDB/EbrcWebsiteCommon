@@ -91,3 +91,12 @@ naToUnknown = function(DT, col = NULL) {
     set(DT, which(is.na(DT[[col]])), col, "Unknown")
   }
 }
+
+naToNotSelected = function(DT, col = NULL) {
+  if (is.null(col)) {
+    for (j in seq_len(ncol(DT)))
+      set(DT,which(is.na(DT[[j]])),j,"Not Selected")
+  } else {
+    set(DT, which(is.na(DT[[col]])), col, "Not Selected")
+  }
+}

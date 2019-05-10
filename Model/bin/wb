@@ -33,7 +33,7 @@ my $mode = $ARGV[0];
 
 my @modes;
 if ($svnPrefix eq "ApiCommon") {
-  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi");
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi", "jbrowse");
 } else {
   @modes = ("full", "model", "site", "ontology", "graph", "shiny", "cgi");
 }
@@ -52,7 +52,7 @@ my $cmd;
 
 my $dieOnError = "set -e";
 
-my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $projectHome/$svnPrefix\Model/Model/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
+my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters -templatesDir $gusHome/lib/dst -contactsXmlFile $projectHome/$svnPrefix\Presenters/Model/lib/xml/datasetPresenters/contacts/contacts.xml -globalPresentersFile $projectHome/$svnPrefix\Model/Model/lib/xml/datasetPresenters/global.xml";
 
 my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $tomcatName reload $webapp";
 
@@ -80,6 +80,10 @@ if($mode eq 'graph') {
 
 if($mode eq 'gbrowse') {
   $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+}
+
+if($mode eq 'jbrowse') {
+  $cmd = "$dieOnError;  jbrowseFromDatasets; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; bld $svnPrefix\Model/Model; $injectTemplates";
 }
 
 if($mode eq 'ontology') {

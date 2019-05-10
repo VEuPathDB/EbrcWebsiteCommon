@@ -36,7 +36,7 @@ function QuestionWizard(props) {
               type="button"
               title="View a summary of active filters"
               className="wdk-Link"
-              onClick={() => props.eventHandlers.setFilterPopupVisiblity(!props.wizardState.filterPopupState.visible)}
+              onClick={() => props.wizardEventHandlers.onFilterPopupVisibilityChange(!props.wizardState.filterPopupState.visible)}
             >
               <Icon fa="filter" className={makeClassName('GroupFilterIcon')}/>
             </button>
@@ -59,11 +59,6 @@ function QuestionWizard(props) {
       {question.parameters.map(param => (
         <input key={param.name} type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
       ))}
-<div
-  data-restriction-type="search" 
-  data-record-class={question.recordClassName} 
-  data-controller="wdk.dataRestriction.restrictionController">
-</div>
     </div>
 
   )
@@ -79,15 +74,20 @@ const wizardPropTypes = {
   initialCount: PropTypes.number
 };
 
-const eventHandlerPropTypes = {
-  setActiveGroup: PropTypes.func.isRequired,
-  setActiveOntologyTerm: PropTypes.func.isRequired,
-  setOntologyTermSort: PropTypes.func.isRequired,
-  setOntologyTermSearch: PropTypes.func.isRequired,
-  setParamValue: PropTypes.func.isRequired,
-  updateInvalidGroupCounts: PropTypes.func.isRequired,
-  setFilterPopupVisiblity: PropTypes.func.isRequired,
-  setFilterPopupPinned: PropTypes.func.isRequired
+const wizardEventHandlerPropTypes = {
+  onGroupSelect: PropTypes.func.isRequired,
+  onInvalidGroupCountsUpdate: PropTypes.func.isRequired,
+  onFilterPopupVisibilityChange: PropTypes.func.isRequired,
+  onFilterPopupPinned: PropTypes.func.isRequired
+}
+
+const parameterEventHandlers = {
+  onOntologyTermSelect: PropTypes.func.isRequired,
+  onOntologyTermSummaryUpdate: PropTypes.func.isRequired,
+  onOntologyTermSort: PropTypes.func.isRequired,
+  onOntologyTermSearch: PropTypes.func.isRequired,
+  onParamValueChange: PropTypes.func.isRequired,
+  onParamStateChange: PropTypes.func.isRequired
 }
 
 export const propTypes = QuestionWizard.propTypes = {
@@ -95,7 +95,8 @@ export const propTypes = QuestionWizard.propTypes = {
   isAddingStep: PropTypes.bool.isRequired,
   showHelpText: PropTypes.bool.isRequired,
   wizardState: PropTypes.shape(wizardPropTypes).isRequired,
-  eventHandlers: PropTypes.shape(eventHandlerPropTypes)
+  wizardEventHandlers: PropTypes.shape(wizardEventHandlerPropTypes),
+  parameterEventHandlers: PropTypes.shape(parameterEventHandlers)
 };
 
 export default wrappable(QuestionWizard);
@@ -114,10 +115,10 @@ function Navigation(props) {
       recordClass,
       initialCount
     },
-    eventHandlers: {
-      setActiveGroup,
-      updateInvalidGroupCounts,
-      setFilterPopupVisiblity
+    wizardEventHandlers: {
+      onGroupSelect,
+      onInvalidGroupCountsUpdate,
+      onFilterPopupVisibilityChange
     },
     customName,
     showHelpText,
@@ -138,6 +139,8 @@ function Navigation(props) {
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
   const iconName = question.iconName || recordClass.iconName || 'fa fa-database';
 
+  const recordDisplayName = recordClass.shortDisplayNamePlural;
+
   return (
     <Sticky>
       {({isFixed}) => (
@@ -147,7 +150,7 @@ function Navigation(props) {
                 type="button"
                 title="See search overview"
                 className={makeClassName('IconButton')}
-                onClick={() => setActiveGroup(null)}
+                onClick={() => onGroupSelect(null)}
               >
                 <i className={makeClassName('Icon') + ' ' + iconName}/>
               </button>
@@ -155,7 +158,7 @@ function Navigation(props) {
             <div className={makeClassName('ParamGroupSeparator')}>
               <div className={makeClassName('ParamGroupArrow')}/>
               <ParamGroupCount
-                title={`All ${recordClass.displayNamePlural}`}
+                title={`All ${recordDisplayName}`}
                 count={initialCount}
                 isActive={activeGroup == groups[0]}
               />
@@ -168,12 +171,12 @@ function Navigation(props) {
               >
                 <button
                   type="button"
-                  title={`Filter ${recordClass.displayNamePlural} by ${group.displayName}`}
+                  title={`Filter ${recordDisplayName} by ${group.displayName}`}
                   className={makeClassName(
                     'ParamGroupButton',
                     group == activeGroup && 'active'
                   )}
-                  onClick={() => setActiveGroup(group)}
+                  onClick={() => onGroupSelect(group)}
                 >
                   {group.displayName}
                 </button>
@@ -182,7 +185,7 @@ function Navigation(props) {
                     type="button"
                     title="View a summary of active filters"
                     className={makeClassName('GroupFilterIconButton') + ' wdk-Link'}
-                    onClick={() => setFilterPopupVisiblity(!props.wizardState.filterPopupState.visible)}
+                    onClick={() => onFilterPopupVisibilityChange(!props.wizardState.filterPopupState.visible)}
                   >
                     <Icon
                       fa="filter"
@@ -200,7 +203,7 @@ function Navigation(props) {
               <div key={group.name + '__sep'} className={makeClassName('ParamGroupSeparator')}>
                 <div className={makeClassName('ParamGroupArrow')}/>
                 <ParamGroupCount
-                  title={`${recordClass.displayNamePlural} selected from previous steps.`}
+                  title={`${recordDisplayName} selected from previous steps.`}
                   count={groupUIState[group.name].accumulatedTotal}
                   isLoading={groupUIState[group.name].loading}
                   isValid={groupUIState[group.name].valid}
@@ -215,9 +218,20 @@ function Navigation(props) {
                 title="View the results of your search for further analysis."
               >
                 { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-                : finalCountState.valid === false ? `View ? ${recordClass.displayNamePlural}`
-                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordClass.displayNamePlural}` }
+                : finalCountState.valid === false ? `View ? ${recordDisplayName}`
+                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordDisplayName}` }
               </button>
+              {/*!isAddingStep && (
+                <button
+                  disabled={updatingParamName != null}
+                  className={makeClassName('SubmitButton')}
+                  title="Analyze the results of your search."
+                  style={{width: '100%', marginTop: '.3em'}}
+                  name="redirectPath"
+                  value="/app/step/{stepId}/resultPanel?initialTab=stepAnalysis:menu"
+                >Analyze results
+                </button>
+              )*/}
               <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
             </div>
             {invalid && (
@@ -225,7 +239,7 @@ function Navigation(props) {
                 <button
                   type="button"
                   className="wdk-Link"
-                  onClick={updateInvalidGroupCounts}
+                  onClick={onInvalidGroupCountsUpdate}
                   title="Recompute invalid counts above"
                 >
                   <Icon fa="refresh"/> Refresh counts

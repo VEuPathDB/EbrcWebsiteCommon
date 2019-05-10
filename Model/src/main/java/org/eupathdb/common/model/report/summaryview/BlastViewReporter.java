@@ -26,8 +26,9 @@ public class BlastViewReporter extends DefaultJsonReporter {
   
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
-    if (!_baseAnswer.getQuestion().getName().matches("GenesBySimilarity") ) 
-      throw new ReporterConfigException("Only BLAST searches can use this report");
+    //if (!(_baseAnswer.getQuestion().getName().contains("Similarity")) || 
+    //     (_baseAnswer.getQuestion().getName().contains("Blast"))  ) 
+    //  throw new ReporterConfigException("Only BLAST searches can use this report");
     return super.configure(config);
   }
 

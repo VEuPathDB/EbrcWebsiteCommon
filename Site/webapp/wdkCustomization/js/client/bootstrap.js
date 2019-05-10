@@ -46,6 +46,7 @@ export function initialize(options = {}) {
     wrapRoutes = identity,
     wrapStoreModules = identity,
     wrapWdkService = identity,
+    additionalMiddleware
   } = options;
 
   unaliasWebappUrl();
@@ -62,7 +63,8 @@ export function initialize(options = {}) {
     rootElement,
     endpoint,
     onLocationChange: makeLocationHandler(),
-    pluginConfig: sitePluginConfig.concat(pluginConfig)
+    pluginConfig: sitePluginConfig.concat(pluginConfig),
+    additionalMiddleware
   });
 
   (window.ebrc || (window.ebrc = {})).context = context

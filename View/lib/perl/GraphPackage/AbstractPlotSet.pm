@@ -304,6 +304,7 @@ suppressPackageStartupMessages(library(gridSVG));
 library(tools);
 library(gtools);
 library(plyr);
+library(dplyr);
 library(scales);
 library(viridisLite);
 library(tidyr)

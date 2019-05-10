@@ -1,14 +1,29 @@
-import { HistogramAnalysisPlugin, WordCloudAnalysisPlugin } from 'wdk-client/Plugins';
+import { 
+  HistogramAnalysisPlugin, 
+  WordCloudAnalysisPlugin, 
+  StepAnalysisViewPlugin,
+  ResultTableSummaryViewPlugin, 
+} from 'wdk-client/Plugins';
 
 export default [
   {
     type: 'attributeAnalysis',
     name: 'wordCloud',
-    plugin: WordCloudAnalysisPlugin
+    component: WordCloudAnalysisPlugin
   },
   {
     type: 'attributeAnalysis',
     name: 'histogram',
-    plugin: HistogramAnalysisPlugin
-  }
-]
+    component: HistogramAnalysisPlugin
+  },
+  {
+    type: 'stepAnalysis',
+    name: 'stepAnalysis',
+    component: StepAnalysisViewPlugin
+  },
+  {
+    type: 'summaryView',
+    name: '_default',
+    component: ResultTableSummaryViewPlugin
+  },
+];

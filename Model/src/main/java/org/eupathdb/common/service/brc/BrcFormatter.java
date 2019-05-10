@@ -71,10 +71,11 @@ public class BrcFormatter {
       .put("provenance", bean.getProvenance()); 
     if(search) {
       json
-        .put("t11", bean.getT11())
-        .put("t12", bean.getT12())
-        .put("t21", bean.getT21())
-        .put("t22", bean.getT22())
+        .put("c11", bean.getC11())
+        .put("c22", bean.getC22())
+        .put("c33", bean.getC33())
+        .put("c44", bean.getC44())
+        .put("c55", bean.getC55())
         .put("significance", bean.getSignificance())
         .put("significanceType", bean.getSignificanceType());
     }

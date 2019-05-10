@@ -63,7 +63,7 @@ function FilterParamSummary(props) {
 }
 
 function FilterParamFilter(props) {
-  const { containerFilter, eventHandlers, filter, filters, parameter } = props;
+  const { containerFilter, parameterEventHandlers, filter, filters, parameter } = props;
   const field = parameter.ontology.find(field => field.term === filter.field)
   return (
     <div key={parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
@@ -73,7 +73,7 @@ function FilterParamFilter(props) {
         className={makeClassName('ChicletTitle') + ' wdk-Link'}
         onClick={() => {
           navigateToGroup(props);
-          eventHandlers.setActiveOntologyTerm(
+          parameterEventHandlers.onOntologyTermSelect(
             parameter,
             filters,
             containerFilter ? containerFilter.field : filter.field
@@ -86,13 +86,8 @@ function FilterParamFilter(props) {
       <button
         type="button"
         className={makeClassName('RemoveFilterButton')}
-        onClick={() => eventHandlers.setParamValue(props.parameter, JSON.stringify({
-          filters: containerFilter
-            ? filters.map(f => f === containerFilter
-              ? { ...f, value: { ...f.value, filters: f.value.filters.filter(cf => cf !== filter) } }
-              : f
-            )
-            : filters.filter(f => f !== filter)
+        onClick={() => parameterEventHandlers.onParamValueChange(props.parameter, JSON.stringify({
+          filters: removeFilter(filters, filter, containerFilter)
         }))}
       >
         <Icon fa="close"/>
@@ -101,6 +96,20 @@ function FilterParamFilter(props) {
       <div>{getFilterValueDisplay(filter)}</div>
     </div>
   );
+}
+
+function removeFilter(filters, filter, containerFilter) {
+  if (containerFilter == null) return filters.filter(f => f !== filter);
+
+  return Seq.from(filters)
+    .flatMap(f => {
+      if (f !== containerFilter) return [f];
+      const subFilters = f.value.filters.filter(sf => sf !== filter);
+      // remove multi filter if it does not have any more subfilters
+      if (subFilters.length === 0) return [];
+      return [{ ...f, value: { ...f.value, filters: subFilters } }];
+    })
+    .toArray()
 }
 
 function prettyPrint(param, value) {
@@ -118,8 +127,8 @@ function prettyPrintRange(range) {
 }
 
 function navigateToGroup(props) {
-  props.eventHandlers.setActiveGroup(props.group);
+  props.wizardEventHandlers.onGroupSelect(props.group);
   if (!props.wizardState.filterPopupState.pinned) {
-    props.eventHandlers.setFilterPopupVisiblity(false);
+    props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
   }
 }

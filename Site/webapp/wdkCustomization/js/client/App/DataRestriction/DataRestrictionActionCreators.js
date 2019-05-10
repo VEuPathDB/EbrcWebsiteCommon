@@ -36,19 +36,24 @@ export function clearRestrictions() {
 }
 
 // Create restriction action
-function handleAction(user, studies, action, { studyId, onSuccess }) {
+function handleAction(user, studies, action, { studyId, onAllow, onDeny }) {
   console.info(label('Restriction Encountered:'), { action, studyId });
   const study = studies.find(study => studyId === study.id);
 
   if (study == null) {
-    throw new Error(label(`Invalid reference: couldn't find study with id "${studyId}"`));
+    const error = new Error(label(`Invalid reference: couldn't find study with id "${studyId}"`));
+    console.warn('Allowing action `%s` for unknown study `%s`.', action, study);
+    console.error(error);
+    if (typeof onAllow === 'function') onAllow();
+    return clearRestrictions();
   }
 
   if (isAllowedAccess({ user, action, study })) {
-    if (typeof onSuccess === 'function') onSuccess();
+    if (typeof onAllow === 'function') onAllow();
     return unrestricted(study, action);
   }
 
+  if (typeof onDeny === 'function') onDeny();
   return restricted(study, action);
 }
 

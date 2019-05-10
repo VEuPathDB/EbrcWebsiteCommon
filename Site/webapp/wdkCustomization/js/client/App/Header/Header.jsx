@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Hero } from 'ebrc-client/App/Hero';
 import { requestStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
-import { UserActions } from 'wdk-client/Actions';
+import { UserActions, UserSessionActions } from 'wdk-client/Actions';
 
 import './Header.scss';
 
@@ -17,7 +17,7 @@ const enhance = connect(
     const { user = {}, siteConfig, preferences } = globalData;
     return { user, siteConfig, preferences, siteData, dataRestriction, headerMenuItems };
   },
-  { ...UserActions, requestStudies },
+  { ...UserActions, ...UserSessionActions, requestStudies },
   (stateProps, actions, ownProps ) => {
     return { ...stateProps, ...ownProps, actions };
   }

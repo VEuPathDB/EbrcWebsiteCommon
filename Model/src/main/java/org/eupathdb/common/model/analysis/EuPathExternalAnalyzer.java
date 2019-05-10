@@ -2,6 +2,7 @@ package org.eupathdb.common.model.analysis;
 
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.analysis.ExternalAnalyzer;
+import org.json.JSONObject;
 
 /**
  * This analyzer is a customized version of the WDK analyzer. It additionally relays, in the view model, the
@@ -20,7 +21,7 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
 
     private String _projectFolder;
 
-    public ViewModel(String iframeBaseUrl, int width, int height, String projectFolder) {
+    public ViewModel(String iframeBaseUrl, Integer width, Integer height, String projectFolder) {
       super(iframeBaseUrl, width, height);
       _projectFolder = projectFolder;
     }
@@ -29,19 +30,24 @@ public class EuPathExternalAnalyzer extends ExternalAnalyzer {
       return _projectFolder;
     }
 
+    @Override
+    public JSONObject toJson() {
+      return super.toJson().put("projectFolder", _projectFolder);
+    }
+
   }
 
-  /**
-   * Adding to the WDK result view model, the project folder derived from the data storage directory found in
-   * the wdk model.
-   */
-  @Override
-  public Object getResultViewModel() throws WdkModelException {
+  private ViewModel createResultViewModel() {
     String dataStorageDir = getWdkModel().getStepAnalysisPlugins().getExecutionConfig().getFileStoreDirectory();
     return new ViewModel(getProperty(EXTERNAL_APP_URL_PROP_KEY),
-        chooseSize(IFRAME_WIDTH_PROP_KEY, DEFAULT_IFRAME_WIDTH_PX),
-        chooseSize(IFRAME_LENGTH_PROP_KEY, DEFAULT_IFRAME_HEIGHT_PX),
+        getPropertyAsInt(IFRAME_WIDTH_PROP_KEY),
+        getPropertyAsInt(IFRAME_LENGTH_PROP_KEY),
         dataStorageDir.substring(dataStorageDir.lastIndexOf('/') + 1));
+  }
+
+  @Override
+  public JSONObject getResultViewModelJson() throws WdkModelException {
+    return createResultViewModel().toJson();
   }
 
 }

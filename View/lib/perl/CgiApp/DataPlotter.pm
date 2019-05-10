@@ -113,7 +113,7 @@ sub run {
 	 my @errors;
 
 	 push(@errors, 'model must be supplied') if not defined $pkg;
-	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB' && $pkg ne 'Gates' && $pkg ne 'ICEMR' && $pkg ne 'UserDatasets');
+	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'UniDB' and $pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB' && $pkg ne 'Gates' && $pkg ne 'ICEMR' && $pkg ne 'UserDatasets');
 	   push(@errors, 'type must be supplied' ) if not defined $type;
 	   push(@errors, 'id must be supplied'   ) if not defined $id;
 

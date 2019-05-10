@@ -68,7 +68,8 @@ class QuestionWizardController extends ViewController {
     super(props);
     this.state = { };
     this.parameterMap = null;
-    this.eventHandlers = mapValues(this.getEventHandlers(), handler => handler.bind(this));
+    this.wizardEventHandlers = mapValues(this.getWizardEventHandlers(), handler => handler.bind(this));
+    this.parameterEventHandlers = mapValues(this.getParameterEventHandlers(), handler => handler.bind(this));
 
     this._getAnswerCount = memoize(this._getAnswerCount, (...args) => JSON.stringify(args));
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
@@ -78,19 +79,24 @@ class QuestionWizardController extends ViewController {
     this.childRef = React.createRef();
   }
 
-  getEventHandlers() {
+  getWizardEventHandlers() {
     return pick(this, [
-      'setActiveGroup',
-      'setActiveOntologyTerm',
-      'setOntologyTermSort',
-      'setOntologyTermSearch',
-      'setParamState',
-      'setParamValue',
-      'updateInvalidGroupCounts',
-      'updateOntologyTermSummary',
-      'setFilterPopupVisiblity',
-      'setFilterPopupPinned',
-      'resetParamValues'
+      'onGroupSelect',
+      'onInvalidGroupCountsUpdate',
+      'onFilterPopupVisibilityChange',
+      'onFilterPopupPinned',
+      'onParamValuesReset'
+    ]);
+  }
+
+  getParameterEventHandlers() {
+    return pick(this, [
+      'onOntologyTermSearch',
+      'onOntologyTermSelect',
+      'onOntologyTermSort',
+      'onOntologyTermSummaryUpdate',
+      'onParamStateChange',
+      'onParamValueChange',
     ]);
   }
 
@@ -130,7 +136,7 @@ class QuestionWizardController extends ViewController {
             this.setState({ initialCount });
           });
 
-          this.setActiveGroup(question.groups[0]);
+          this.onGroupSelect(question.groups[0]);
         });
       },
       error => {
@@ -146,7 +152,7 @@ class QuestionWizardController extends ViewController {
   /**
    * Update selected group and its count.
    */
-  setActiveGroup(activeGroup) {
+  onGroupSelect(activeGroup) {
     this.setState({ activeGroup });
 
     if (activeGroup == null) return;
@@ -167,28 +173,28 @@ class QuestionWizardController extends ViewController {
     // END_SIDE_EFFECTS
   }
 
-  setParamState(param, state) {
+  onParamStateChange(param, state) {
     this.setState(set(['paramUIState', param.name], state));
   }
 
   /**
    * Set filter popup visiblity
    */
-  setFilterPopupVisiblity(show) {
+  onFilterPopupVisibilityChange(show) {
     this.setState(state => setFilterPopupVisiblity(state, show));
   }
 
   /**
    * Set filter popup stickyness
    */
-  setFilterPopupPinned(pinned) {
+  onFilterPopupPinned(pinned) {
     this.setState(state => setFilterPopupPinned(state, pinned));
   }
 
   /**
    * Set all params to default values, then update group counts and ontology term summaries
    */
-  resetParamValues() {
+  onParamValuesReset() {
     // reset values
     this.setState(resetParamValues, () => {
       this._updateGroupCounts(
@@ -210,7 +216,7 @@ class QuestionWizardController extends ViewController {
         .map(paramName => this.parameterMap.get(paramName))
         .filter(param => param.type === 'FilterParamNew')
         .forEach(param => {
-          this.setActiveOntologyTerm(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
+          this.onOntologyTermSelect(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
         })
     })
   }
@@ -219,15 +225,15 @@ class QuestionWizardController extends ViewController {
    * Force an update of ontology term counts. If `ontologyTerm` isMulti, then
    * update all of it's children's counts.
    */
-  updateOntologyTermSummary(paramName, ontologyTerm) {
+  onOntologyTermSummaryUpdate(paramName, ontologyTerm) {
     const { filters } = JSON.parse(this.state.paramValues[paramName]);
-    this._updateOntologyTermSummary(paramName, ontologyTerm, filters);
+    this._onUpdateOntologyTermSummary(paramName, ontologyTerm, filters);
   }
 
   /**
    * Force stale counts to be updated.
    */
-  updateInvalidGroupCounts() {
+  onInvalidGroupCountsUpdate() {
     this._updateGroupCounts(
       Seq.from(this.state.question.groups)
         .filter(group => this.state.groupUIState[group.name].valid === false));
@@ -236,7 +242,7 @@ class QuestionWizardController extends ViewController {
   /**
    * Update paramUI state based on ontology term.
    */
-  setActiveOntologyTerm(param, filters, ontologyTerm) {
+  onOntologyTermSelect(param, filters, ontologyTerm) {
     const {
       summary,
       loading = false,
@@ -244,12 +250,12 @@ class QuestionWizardController extends ViewController {
       multiLeafInvalid = false
     } = get(this.state, ['paramUIState', param.name, 'fieldStates', ontologyTerm], {});
     if ((summary == null || invalid || multiLeafInvalid) && !loading) {
-      this._updateOntologyTermSummary(param.name, ontologyTerm, filters);
+      this._onUpdateOntologyTermSummary(param.name, ontologyTerm, filters);
     }
     this.setState(set(['paramUIState', param.name, 'activeOntologyTerm'], ontologyTerm));
   }
 
-  setOntologyTermSort(param, term, sort) {
+  onOntologyTermSort(param, term, sort) {
     let uiState = this.state.paramUIState[param.name];
     let field = uiState.ontology.find(field => field.term === term);
     if (field == null || isRange(field)) return;
@@ -281,7 +287,7 @@ class QuestionWizardController extends ViewController {
     ));
   }
 
-  setOntologyTermSearch(param, term, searchTerm) {
+  onOntologyTermSearch(param, term, searchTerm) {
     let uiState = this.state.paramUIState[param.name];
     let { fieldStates, defaultMemberFieldState } = uiState;
     let newState = Object.assign({}, uiState, {
@@ -291,14 +297,14 @@ class QuestionWizardController extends ViewController {
         })
       })
     });
-    this.setParamState(param, newState);
+    this.onParamStateChange(param, newState);
   }
 
   /**
    * Update parameter value, update dependent parameter vocabularies and
    * ontologies, and update counts.
    */
-  setParamValue(param, paramValue) {
+  onParamValueChange(param, paramValue) {
     const prevParamValue = this.state.paramValues[param.name];
 
     // FIXME Add set updatingParams state for downstream groups
@@ -346,7 +352,7 @@ class QuestionWizardController extends ViewController {
           }
         }
       );
-      this.setParamState(param, Object.assign({}, paramState, { fieldStates }));
+      this.onParamStateChange(param, Object.assign({}, paramState, { fieldStates }));
     }
   }
 
@@ -370,7 +376,7 @@ class QuestionWizardController extends ViewController {
         return Promise.all([
           this._updateFilterParamCounts(param.name, filters),
           activeOntologyItemNeedsUpdate
-            ? this._updateOntologyTermSummary(param.name, activeOntologyTerm, filters)
+            ? this._onUpdateOntologyTermSummary(param.name, activeOntologyTerm, filters)
             : null
         ]);
       }
@@ -591,7 +597,7 @@ class QuestionWizardController extends ViewController {
     );
   }
 
-  _updateOntologyTermSummary(paramName, ontologyTerm, filters) {
+  _onUpdateOntologyTermSummary(paramName, ontologyTerm, filters) {
     const { ontology } = this.state.paramUIState[paramName];
     const ontologyItem = ontology.find(item => item.term === ontologyTerm);
 
@@ -748,8 +754,9 @@ class QuestionWizardController extends ViewController {
         )}
         {this.state.question && (
           <QuestionWizard
-            eventHandlers={this.eventHandlers}
             wizardState={this.state}
+            wizardEventHandlers={this.wizardEventHandlers}
+            parameterEventHandlers={this.parameterEventHandlers}
             customName={this.props.customName}
             isAddingStep={this.props.isAddingStep}
             showHelpText={!this.props.isRevise}
@@ -850,6 +857,7 @@ function filteredCountIsZero(entry) {
  * @param {SortSpec} sort
  */
 export function sortDistribution(distribution, sort, filter) {
+  if (sort == null) return distribution;
   let { columnKey, direction, groupBySelected } = sort;
   let selectedSet = new Set(filter ? filter.value : []);
   let selectionPred = groupBySelected
@@ -871,6 +879,7 @@ export function sortDistribution(distribution, sort, filter) {
 }
 
 function sortMultiFieldSummary(summaries, ontology, sort) {
+  if (sort == null) return summaries;
   const fields = new Map(ontology.map(o => [o.term, o]));
   const sortedSummaries = sortBy(summaries, entry => sort.columnKey === 'display'
     ? fields.get(entry.term).display

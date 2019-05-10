@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { UserActions } from 'wdk-client/Actions';
+import { UserSessionActions, UserActions } from 'wdk-client/Actions';
 import { Sticky } from 'wdk-client/Components';
 import { formatReleaseDate } from '../util/formatters';
 import { makeMenuItems } from '../util/menuItems';
@@ -14,7 +14,7 @@ import { loadBasketCounts, loadQuickSearches } from '../actioncreators/GlobalAct
 /** Site header */
 const enhance = connect(
   (state) => state.globalData,
-  { ...UserActions, loadBasketCounts, loadQuickSearches }
+  { ...UserSessionActions, ...UserActions, loadBasketCounts, loadQuickSearches }
 );
 
 class ClassicSiteHeader extends React.Component {

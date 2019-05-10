@@ -8,8 +8,8 @@ import { getBodyClassByType } from './SearchUtils';
 class SearchCard extends React.Component {
 
   render () {
-    const { search, prefix = '' } = this.props;
-    const { icon, name, studyName, recordClassDisplayName, url, appUrl, description, disabled } = search;
+    const { card, prefix = '' } = this.props;
+    const { icon, name, studyName, recordClassDisplayName, url, appUrl, description, disabled } = card;
 
     const href = typeof appUrl === 'string'
       ? prefix + appUrl

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import TreeDataViewerController from './controllers/TreeDataViewerController';
 import ContactUsController from './controllers/ContactUsController';
 
@@ -7,7 +9,15 @@ import ContactUsController from './controllers/ContactUsController';
  * For example: the route '/about' is not here because the content (in About.jsx) is not shared.
  */
 export const wrapRoutes = wdkRoutes => [
-  { path: '/tree-data-viewer', component: TreeDataViewerController },
-  { path: '/contact-us', component: ContactUsController },
+  {
+    path: '/tree-data-view',
+    component: () => <TreeDataViewerController/>
+  },
+
+  {
+    path: '/contact-us',
+    component: () => <ContactUsController/>
+  },
+
   ...wdkRoutes
 ];

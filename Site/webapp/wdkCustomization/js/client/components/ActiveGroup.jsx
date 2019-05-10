@@ -24,14 +24,7 @@ function ActiveGroup(props) {
       initialCount,
       updatingParamName
     },
-    eventHandlers: {
-      setActiveOntologyTerm,
-      updateOntologyTermSummary,
-      setOntologyTermSort,
-      setOntologyTermSearch,
-      setParamValue,
-      setParamState
-    }
+    parameterEventHandlers
   } = props;
 
   const paramMap = new Map(question.parameters.map(p => [p.name, p]));
@@ -72,7 +65,7 @@ function ActiveGroup(props) {
           <div className={makeClassName('ActiveGroupCount')}>
             Your <em>{activeGroup.displayName}</em> filters reduce {
               (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
-            } {recordClass.displayNamePlural} to {
+            } {recordClass.shortDisplayNamePlural} to {
               (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
             }
           </div>
@@ -86,12 +79,7 @@ function ActiveGroup(props) {
         parameters={parameters}
         paramValues={paramValues}
         paramUIState={paramUIState}
-        onActiveOntologyTermChange={setActiveOntologyTerm}
-        onOntologyTermSummaryUpdateRequest={updateOntologyTermSummary}
-        onOntologyTermSort={setOntologyTermSort}
-        onOntologyTermSearch={setOntologyTermSearch}
-        onParamValueChange={setParamValue}
-        onParamStateChange={setParamState}
+        eventHandlers={parameterEventHandlers}
       />
     </div>
   );
