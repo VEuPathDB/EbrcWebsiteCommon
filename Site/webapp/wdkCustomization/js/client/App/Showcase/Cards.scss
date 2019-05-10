@@ -12,12 +12,13 @@
 
   &__Entries {
     display: grid;
-    align-self: normal;
-    position: relative;
     grid-template-columns: repeat(auto-fill, 300px);
     grid-gap: 1.2rem;
     grid-auto-flow: column;
     grid-auto-rows: 1fr;
+    justify-content: start;
+    align-self: normal;
+    position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 10px 0;
@@ -25,7 +26,7 @@
   }
 
   &_Expanded &__Entries {
-    justify-content: space-evenly;
+    justify-content: center;
     grid-auto-flow: row;
   }
 
