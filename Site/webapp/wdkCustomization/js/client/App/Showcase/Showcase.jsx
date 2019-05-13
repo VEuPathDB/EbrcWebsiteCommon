@@ -26,13 +26,14 @@ class Showcase extends React.Component {
   }
 
   renderCardList (contentType, Card, props) {
-    const { prefix, ...cardListProps } = props;
+    const { prefix, attemptAction, ...cardListProps } = props;
     return (
       <CardList
         {...cardListProps}
+        attemptAction={attemptAction}
         additionalClassName={contentType}
         renderCard={(card) =>
-          <Card card={card} prefix={prefix} key={card.name} />
+          <Card card={card} attemptAction={attemptAction} prefix={prefix} key={card.name} />
         }
       />
     );
