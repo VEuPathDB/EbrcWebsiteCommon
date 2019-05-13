@@ -87,19 +87,19 @@ const siteAnnouncements = [
   },
 */
  // Clinepi home page
-/*
+
   (props) => {
-    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && 
+    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB' || props.projectId == 'MicrobiomeDB') && 
          (location.pathname == props.webAppUrl + '/app') || (location.pathname == props.webAppUrl + '/app/') ) {
       return (
         <div key="clinepi-dbUpgrade">
-          Due to planned upgrades, you may experience issues saving strategies today from 11:00 EDT - 20:00 EDT 
+          Due to planned upgrades, you may experience issues registering or updating user profiles today from 12:00 EDT - 20:00 EDT
         </div>
       );
     }
     return null;
   },
-*/
+
 
 // Fungi gene page for Cryptococcus neoformans KN99
 /*  (props) => { 
