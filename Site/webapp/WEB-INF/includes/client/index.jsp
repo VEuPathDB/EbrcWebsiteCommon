@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%--<%@ taglib prefix="api" uri="http://eupathdb.org/taglib"%>--%>
 
 <c:set var="model" value="${applicationScope.wdkModel.model}"/>
 <c:set var="props" value="${model.properties}"/>

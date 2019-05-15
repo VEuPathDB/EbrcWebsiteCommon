@@ -2,7 +2,6 @@
 <jsp:root version="2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:api="http://eupathdb.org/taglib"
     xmlns:wdk="urn:jsptagdir:/WEB-INF/tags/wdk"
     xmlns:imp="urn:jsptagdir:/WEB-INF/tags/imp">
 
@@ -24,15 +23,16 @@
   <!-- FIXME Add logic to show information messages on homepage if this gets used for homepage -->
   <c:choose>
     <c:when test="${refer eq 'home'}">
-      <api:messages var="information" projectName="${model.projectId}" messageCategory="Information"/>
+      <%--<api:messages var="information" projectName="${model.projectId}" messageCategory="Information"/>--%>
     </c:when>
     <c:otherwise>
       <c:set var="information" value="[]"/>
     </c:otherwise>
   </c:choose>
+  <%--
   <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
   <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
-
+  --%>
   <script>
     // used for webpack. remove this when this can be set at build time.
     window.__asset_path_remove_me_please__ = "${assetsUrl}/";
