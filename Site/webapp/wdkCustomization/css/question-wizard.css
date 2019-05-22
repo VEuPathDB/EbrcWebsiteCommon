@@ -416,3 +416,8 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   margin-top: 18px;
   align-self: flex-start;
 }
+
+.ebrc-QuestionWizard div.range-filter div.head input {
+  width : 90px;
+  text-align: right;
+}
