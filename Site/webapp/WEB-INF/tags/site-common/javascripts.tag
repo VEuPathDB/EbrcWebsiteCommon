@@ -21,18 +21,20 @@
 
   <!-- only show information on home page. this jsp never gets loaded on home page -->
   <!-- FIXME Add logic to show information messages on homepage if this gets used for homepage -->
+  <!--
   <c:choose>
     <c:when test="${refer eq 'home'}">
-      <%--<api:messages var="information" projectName="${model.projectId}" messageCategory="Information"/>--%>
+      <api:messages var="information" projectName="${model.projectId}" messageCategory="Information"/>
     </c:when>
-    <c:otherwise>
+    <c:otherwise> -->
       <c:set var="information" value="[]"/>
+      <!--
     </c:otherwise>
   </c:choose>
-  <%--
+  
   <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
   <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
-  --%>
+  -->
   <script>
     // used for webpack. remove this when this can be set at build time.
     window.__asset_path_remove_me_please__ = "${assetsUrl}/";
