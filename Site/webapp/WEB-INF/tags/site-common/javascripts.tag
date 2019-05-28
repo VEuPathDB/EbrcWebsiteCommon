@@ -19,6 +19,18 @@
   <c:set var="assetsUrl" value="${model.modelConfig.assetsUrl ne null ? model.modelConfig.assetsUrl : webAppUrl}" />
   <c:set var="wdkServiceUrl" value ="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 
+  <c:set var="recordClassesWithProjectId">
+    [
+      <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
+        <c:forEach items="${recordClass.primaryKeyDefinition.columnRefs}" var="columnName">
+          <c:if test="${columnName eq 'project_id'}">
+            "${recordClass.urlSegment}",
+          </c:if>
+        </c:forEach>
+      </c:forEach>
+    ]
+  </c:set>
+
   <!-- only show information on home page. this jsp never gets loaded on home page -->
   <!-- FIXME Add logic to show information messages on homepage if this gets used for homepage -->
   <!--
@@ -34,14 +46,18 @@
   
   <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
   <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
-  -->
+  TODO: reinstate to values when we figure out how to load messages without api:messages -->
+  <c:set var="degraded" value="[]"/>
+  <c:set var="down" value="[]"/>
+
   <script>
     // used for webpack. remove this when this can be set at build time.
     window.__asset_path_remove_me_please__ = "${assetsUrl}/";
 
     // used for header and footer
     window.__SITE_CONFIG__ = {
-      rootUrl: "${webAppUrl}/app",
+      rootElement: "#wdk-container",
+      rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
       endpoint: "${wdkServiceUrl}",
       displayName: "${model.displayName}",
       projectId: "${model.projectId}",
@@ -52,6 +68,7 @@
       twitterUrl: "${props.TWITTER_URL}",
       youtubeUrl: "${props.YOUTUBE_URL}",
       vimeoUrl: "${props.VIMEO_URL}",
+      recordClassesWithProjectId: ${recordClassesWithProjectId},
       isLegacy: true
     };
     window.__SITE_ANNOUNCEMENTS__ = {
