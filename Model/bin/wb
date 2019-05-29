@@ -97,9 +97,9 @@ if($mode eq 'site') {
 if($mode eq 'shiny') {
   my @procList = `/usr/sbin/lsof -t -c R -a +D "$gusHome"`;
   if (scalar @procList > 0) {
-    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates; kill \$(/usr/sbin/lsof -t -c R -a +D \"$gusHome\");";
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld $svnPrefix\Model/Model; $injectTemplates; kill \$(/usr/sbin/lsof -t -c R -a +D \"$gusHome\");";
   } else {
-    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates;";
+    $cmd = "bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld $svnPrefix\Model/Model; $injectTemplates;";
   }
 }
 
