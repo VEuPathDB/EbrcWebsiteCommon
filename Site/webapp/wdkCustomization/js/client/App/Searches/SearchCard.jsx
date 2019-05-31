@@ -17,6 +17,12 @@ class SearchCard extends React.Component {
 
     const bodyClass = getBodyClassByType(recordClassDisplayName);
 
+    function httpHtml(content) {
+      const reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g;
+      return content.description.replace(reg, "<a href='$1$2'>$1$2</a>");
+    }
+
+    const myDesc = description
     return (
       <div className={'Card LinkCard SearchCard ' + bodyClass + (disabled ? ' disabled' : '')}>
         <div className="box SearchCard-Header">
@@ -27,7 +33,9 @@ class SearchCard extends React.Component {
           <h3>{recordClassDisplayName}</h3>
         </div>
         <div className="box SearchCard-Body">
-          <p>{description}</p>
+          <div dangerouslySetInnerHTML={{
+            __html: httpHtml({description})
+          }} />
         </div>
         <a href={href} className="SearchCard-Footer">
           Explore Results <Icon fa={'chevron-circle-right'} />
