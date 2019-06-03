@@ -125,7 +125,8 @@ sub makeRPlotString {
   my $overrideXAxisLabels = scalar @$sampleLabels > 0 ? "TRUE" : "FALSE";
     
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE';
-    
+  my $isWidget = lc($self->getFormat()) eq 'html' ? 'TRUE' : 'FALSE';   
+ 
   my $colors = $self->getColors();
         
   my $defaultPch = [ '15', '16', '17', '18', '7:10', '0:6'];
@@ -211,7 +212,9 @@ sub makeRPlotString {
   my $df = $self->getSplineDF;
   my $pointsLast = $self->getArePointsLast();
   my $rPostscript = $self->getRPostscript();
-    
+   
+  my $plotlyCustomConfig = $self->getPlotlyCustomConfig();
+ 
   my $smoothLines = $self->getSmoothLines();
   my $smoothWithLoess = $self->getSmoothWithLoess();
     
@@ -295,6 +298,7 @@ sub makeRPlotString {
   $rAdjustProfile = $rAdjustProfile ? $rAdjustProfile : "";
 
   $rPostscript = $rPostscript ? $rPostscript : "";
+  $plotlyCustomConfig = $plotlyCustomConfig ? $plotlyCustomConfig : "";
 
   $splineApproxN = defined($splineApproxN) ? $splineApproxN : 60;
 
@@ -523,6 +527,11 @@ if (is.null(profile.df.full\$LEGEND)) {
   hideLegend = TRUE
 }
 
+#if ($isWidget) {
+#  profile.df.full <- highlight_key(profile.df.full, ~LEGEND, \"Select Legend entry\")
+#  profile.df.full <- SharedData\$new(profile.df.full)
+#}
+
 gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
 
 if ($prtcpnt_sum) {
@@ -563,7 +572,7 @@ if ($adjustXYScalesTogether) {
 }
 
 
-if($isSVG) {
+if($isSVG | $isWidget) {
   useTooltips=TRUE;
 }else{
   useTooltips=FALSE;
@@ -573,7 +582,11 @@ if (!$prtcpnt_timeline) {
   if (!$forceNoPoints) {
     if(useTooltips){
       if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
-        gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
+	if ($isWidget) {
+          gp = gp + geom_point(aes(text=TOOLTIP))
+        } else {
+          gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
+        }
       } else {
         if (myX == \"CONTXAXIS\") {
           gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
@@ -934,8 +947,40 @@ if ($prtcpnt_sum) {
 #postscript
 $rPostscript
 
-plotlist[[plotlist.i]] = gp;
-plotlist.i = plotlist.i + 1;
+if ($isWidget) {
+  if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
+    myPlotly <- ggplotly(gp, tooltip = c(\"text\"))
+  } else {
+    myPlotly <- ggplotly(gp)
+  }
+  myPlotly <- myPlotly %>%
+    add_annotations(
+      yref=\"paper\", 
+      xref=\"paper\", 
+      y=1.05, 
+      x=0, 
+      text=\"$plotTitle\", 
+      showarrow=F, 
+      font=list(size=14,
+                color=\"red\")
+    ) %>% 
+    layout(title=FALSE #,
+    	   #legend = list(orientation = \"v\",
+	#		 xanchor = \"center\",
+        #                 yanchor = \"top\",
+        #                 yref = \"paper\",
+        #                 y = -1.3, 
+        #                 x = 0.5)
+    ) %>% 
+    config(displaylogo = FALSE, 
+           collaborate = FALSE) 
+  $plotlyCustomConfig
+  plotlist <- c(plotlist, tagList(myPlotly))
+  #plotlist <- c(plotlist, datatable(profile.df.full))
+} else {
+  plotlist[[plotlist.i]] = gp;
+  plotlist.i = plotlist.i + 1;
+}
 
 
 ";
@@ -1083,7 +1128,7 @@ sub new {
   my $id = $self->getId();
 
   $self->setPartName('transcription.summary');
-  $self->setYaxisLabel('FPKM');
+  $self->setYaxisLabel('FPKM - Sample 2');
   $self->setPlotTitle("RNASeq Transcription Summary - $id");
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
@@ -1093,8 +1138,8 @@ myMerge <- function(x) {
   merge(x[, c('LEGEND', 'VALUE')], x, by = NULL)
 }
 
-profile.df.full\$LEGEND <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
-profile.df.full\$LEGEND <- paste0(profile.df.full\$LEGEND, \"| - \", profile.df.full\$ELEMENT_NAMES)
+profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
+profile.df.full\$LEGEND <- profile.df.full\$ELEMENT_NAMES
 profiles.list <- split(profile.df.full, f = profile.df.full\$PROFILE_FILE)
 profiles.list <- lapply(profiles.list, myMerge)
 profile.df.full <- bind_rows(profiles.list)
@@ -1103,10 +1148,12 @@ profile.df.full\$ELEMENT_NAMES_NUMERIC[profile.df.full\$ELEMENT_NAMES_NUMERIC < 
 profile.df.full\$VALUE <- profile.df.full\$VALUE.y
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.is.numeric <- TRUE
-profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
+profile.df.full\$LEGEND <- profile.df.full\$DATASET
 profile.df.full\$PROFILE_FILE <- \"dummy\"
 profile.df.full <- profile.df.full[profile.df.full\$LEGEND.x != profile.df.full\$LEGEND.y,]
-profile.df.full\$TOOLTIP <- paste0(\"x = \", profile.df.full\$LEGEND.x, \" : \", profile.df.full\$ELEMENT_NAMES_NUMERIC, \"|y = \", profile.df.full\$LEGEND.y, \" : \", profile.df.full\$VALUE)
+profile.df.full <- transform(profile.df.full, FOLD_CHANGE=ifelse(VALUE > ELEMENT_NAMES_NUMERIC, profile.df.full\$VALUE/profile.df.full\$ELEMENT_NAMES_NUMERIC, profile.df.full\$ELEMENT_NAMES_NUMERIC/profile.df.full\$VALUE * -1))
+profile.df.full\$FOLD_CHANGE <- round(profile.df.full\$FOLD_CHANGE, 2)
+profile.df.full\$TOOLTIP <- paste0(\"SAMPLE 1: \", profile.df.full\$LEGEND.x, \"<br>SAMPLE 2: \", profile.df.full\$LEGEND.y, \"<br>FOLD CHANGE: \", profile.df.full\$FOLD_CHANGE)
 ";
 
   $self->addAdjustProfile($adjust);
@@ -1118,21 +1165,124 @@ x.max <- 1000
 y.max <- max(y.max, as.numeric(profile.df.full\$VALUE), na.rm = TRUE)
 x.max <- max(x.max, as.numeric(profile.df.full\$ELEMENT_NAMES_NUMERIC), na.rm = TRUE)
 
-gp <- gp + geom_abline(aes(slope=1, intercept=log10(2), linetype = \"dotted\"))
-gp <- gp + geom_abline(aes(slope=1, intercept=-log10(2), linetype = \"dotted\"))
-gp <- gp + geom_hline(aes(yintercept=1, linetype = \"dashed\"))
-gp <- gp + geom_vline(aes(xintercept=1, linetype = \"dashed\"))
+gp <- gp + geom_abline(slope=1, intercept=log10(2), linetype = \"dotted\")
+gp <- gp + geom_abline(slope=1, intercept=-log10(2), linetype = \"dotted\")
+gp <- gp + geom_hline(yintercept=1, linetype = \"dashed\")
+gp <- gp + geom_vline(xintercept=1, linetype = \"dashed\")
 gp <- gp + scale_x_continuous(trans='log10') 
 gp <- gp + scale_y_continuous(trans='log10')
 gp <- gp + coord_cartesian(xlim=c(.01,x.max), ylim=c(.01,y.max))
 
-gp <- gp + scale_linetype_manual(name = \"Lines\", values = c(\"dashed\", \"dotted\"), labels = c(\"FPKM = 1\", \"+/- 2 fold change\"))
-gp <- gp + scale_color_manual(values = viridis(length(as.factor(unique(profile.df.full\$LEGEND)))), labels = unique(profile.df.full\$LEGEND))
-gp <- gp + guides(color = FALSE)
-gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11));
+gp <- gp + scale_color_manual(name = \"Datasets\", values = viridis(length(as.factor(unique(profile.df.full\$LEGEND)))), labels = unique(profile.df.full\$LEGEND))
+#gp <- gp + scale_color_manual(values = viridis(length(as.factor(unique(profile.df.full\$data()\$LEGEND)))), labels = unique(profile.df.full\$data()\$LEGEND))
+#gp <- gp + guides(color = FALSE)
+gp <- gp + guides(linetype = FALSE)
+gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11))
 ";
-
   $self->setRPostscript($post);
+
+  my $plotlyConfig = "
+myPlotly <- plot_ly(data = profile.df.full, x = ~ELEMENT_NAMES_NUMERIC, y = ~VALUE, color = ~LEGEND, text = ~TOOLTIP) %>% 
+  layout(xaxis = list(title = \"FPKM - Sample 1\", 
+		      range = c(log10(0.008), log10(x.max)+1),
+		      type = \"log\"),
+         yaxis = list(title = \"FPKM - Sample 2\", 
+		      range = c(log10(0.008), log10(y.max)+1),
+                      type = \"log\"),
+         legend = list(orientation = \"h\", 
+                       xanchor = \"center\", 
+                       x = 0.5, 
+                       yanchor = \"top\", 
+                       y = -0.3),
+         margin = list(l = 40, 
+                       r = 10, 
+                       b = 50, 
+                       t = 40, 
+                       pad = 4)
+  ) %>%
+  highlight(on = \"plotly_selected\") %>%
+  add_annotations(
+      yref=\"paper\", 
+      xref=\"paper\", 
+      y=1.1, 
+      x=0, 
+      text=\"RNASeq Transcription Summary - $id\", 
+      showarrow=F, 
+      font=list(size=14,
+                color=\"red\")
+    ) %>% 
+    config(displaylogo = FALSE, 
+           collaborate = FALSE)
+
+vline <- list(type = \"line\", 
+              y0 = 0, 
+              y1 = 1, 
+              yref = \"paper\",
+              x0 = 1, 
+              x1 = 1, 
+              line = list(color = \"black\",
+                          dash = \"dash\")
+  )
+
+hline <- list(type = \"line\", 
+              x0 = 0, 
+              x1 = 1, 
+              xref = \"paper\",
+              y0 = 1, 
+              y1 = 1, 
+              line = list(color = \"black\",
+                          dash = \"dash\")
+  )
+
+dline <- list(type = \"line\",
+              x0 = 0.00001,
+              x1 = x.max * 100,
+              y0 = 0.00002,
+              y1 = x.max * 200,
+	      line = list(color = \"black\",
+                          dash = \"dot\")
+  )
+
+dline2 <- list(type = \"line\",
+               x0 = 0.00002,
+               x1 = x.max * 200,
+               y0 = 0.00001,
+               y1 = x.max * 100,
+               line = list(color = \"black\",
+                           dash = \"dot\")
+  )
+
+myPlotly <- myPlotly %>%
+  layout(shapes = list(vline, hline, dline, dline2))
+
+myPlotly <- myPlotly %>% 
+  add_annotations(
+    x = 0,
+    y = .9,
+    xref = \"x\",
+    yref = \"paper\",
+    text = \"FPKM = 1\",
+    showarrow = T,
+    ax = 40,
+    ay = -40
+  ) %>% 
+  add_annotations(
+    x = log10(.02),
+    y = log10(.02) + log10(2),
+    xref = \"x\",
+    yref = \"y\",
+    text = \"+/- 2 fold change\",
+    showarrow = T,
+    ax = 0,
+    ay = -60
+  )
+
+#myPlotly <-  tagList(
+#               myPlotly,
+#	        datatable(profile.df.full)
+#             )
+";
+  $self->setPlotlyCustomConfig($plotlyConfig);
  
   return $self;
 }
