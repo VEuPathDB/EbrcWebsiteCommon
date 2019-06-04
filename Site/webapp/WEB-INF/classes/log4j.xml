@@ -228,7 +228,7 @@
 
   <!-- log connection open/close events and dump of all open connection numbers -->
   <logger name="jdbc.connection" additivity="false"><level value="fatal"/><appender-ref ref="connection-appender"/></logger>
-  
+
   <!-- this log is for internal debugging of log4jdbc, itself -->
   <!-- debug logging for log4jdbc itself -->
   <logger name="log4jdbc.debug" additivity="false"><level value="warn"/><appender-ref ref="debug-log"/></logger>
