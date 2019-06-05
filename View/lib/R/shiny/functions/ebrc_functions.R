@@ -1,3 +1,10 @@
+appDbFromConfigXml <- function(file) {
+  xml <- xmlParse(file)
+  xmlList <- xmlToList(xml)
+  appDb <- as.list(xmlList$appDb)
+  appDb
+}
+
 #override ggplot cut_number function recursively decrease num bins until it works.
 rcut_number <- function(data = c(), n = 4){
   hold <- try(ggplot2::cut_number(data, n), silent = TRUE)

@@ -75,6 +75,7 @@ modelconfig_accountDb_maxActive: 20
 modelconfig_accountDb_maxIdle: 1
 modelconfig_accountDb_maxWait: 50
 modelconfig_accountDb_minIdle: 1
+modelconfig_accountDb_defaultFetchSize: 200
 modelconfig_accountDb_password: '{{ accountDb_password }}'
 modelconfig_accountDb_platform: Oracle
 modelconfig_accountDb_showConnections: 'false'
@@ -89,6 +90,7 @@ modelconfig_appDb_maxIdle: 1
 modelconfig_appDb_maxPkColumnWidth: 150
 modelconfig_appDb_maxWait: 50
 modelconfig_appDb_minIdle: 1
+modelconfig_appDb_defaultFetchSize: 200
 modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_platform: Oracle
 modelconfig_appDb_showConnections: 'false'
@@ -104,6 +106,7 @@ modelconfig_userDb_maxActive: 20
 modelconfig_userDb_maxIdle: 1
 modelconfig_userDb_maxWait: 50
 modelconfig_userDb_minIdle: 1
+modelconfig_userDb_defaultFetchSize: 200
 modelconfig_userDb_password: '{{ userDb_password }}'
 modelconfig_userDb_platform: Oracle
 modelconfig_userDb_showConnections: 'false'
@@ -152,6 +155,7 @@ modelprop:
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
   REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
   REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
+  COMMUNITY_SITE: //devcommunity.eupathdb.org/embedded/
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"

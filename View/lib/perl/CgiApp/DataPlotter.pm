@@ -123,13 +123,14 @@ sub run {
 	 }
 	
 	 # will declare this content type
-	 my %contentType = ( png  => 'image/png',
-                             pdf  => 'application/pdf',
-                             jpeg => 'image/jpeg',
-                             jpg  => 'image/jpeg',
-                             gif  => 'image/gif',
+	 my %contentType = ( png   => 'image/png',
+                             pdf   => 'application/pdf',
+                             jpeg  => 'image/jpeg',
+                             jpg   => 'image/jpeg',
+                             gif   => 'image/gif',
                              table => 'text/html',
-			     svg  => 'text/xml'
+			     html  => 'text/html',
+			     svg   => 'text/xml'
 										 );
 
    # some GDD formats may be different from their formats

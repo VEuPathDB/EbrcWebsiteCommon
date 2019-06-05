@@ -94,6 +94,18 @@ sub addRPostscript {
   }
 }
 
+sub getPlotlyCustomConfig        { $_[0]->{'_plotly_custom_config'          }}
+sub setPlotlyCustomConfig        { $_[0]->{'_plotly_custom_config'          } = $_[1]}
+sub addPlotlyCustomConfig {
+  my ($self, $pc) = @_;
+
+  my $existing = $self->getPlotlyCustomConfig() || '';
+
+  if($pc) {
+    $self->setPlotlyCustomConfig($existing . $pc);
+  }
+}
+
 sub getFillBelowLine	 	 { $_[0]->{'_fill_below_line'		    }}
 sub setFillBelowLine		 { $_[0]->{'_fill_below_line'		    } = $_[1]}
 

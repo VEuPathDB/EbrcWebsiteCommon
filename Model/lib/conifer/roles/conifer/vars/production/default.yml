@@ -1,0 +1,5 @@
+# $SourceFileURL: EbrcWebsiteCommon/trunk/Model/lib/conifer/roles/conifer/vars/production/default.yml $
+---
+
+modelprop:
+  COMMUNITY_SITE: //community.eupathdb.org/embedded/ 

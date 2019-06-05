@@ -292,6 +292,9 @@ sub rOpenFile {
 	     $Rv = qq{gridsvg(name="$out_f", width=$w, height=$h)};
 	   }
 	 }
+         elsif(lc($fmt) eq 'html') {
+           # do nothing
+         }
          else {
            die "Unsupported Format $fmt";
          }
