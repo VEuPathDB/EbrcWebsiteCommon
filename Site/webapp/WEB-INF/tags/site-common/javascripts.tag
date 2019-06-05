@@ -56,8 +56,7 @@
 
     // used for header and footer
     window.__SITE_CONFIG__ = {
-      rootElement: "#wdk-container",
-      rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
+      rootUrl: "${webAppUrl}/app",
       endpoint: "${wdkServiceUrl}",
       displayName: "${model.displayName}",
       projectId: "${model.projectId}",
