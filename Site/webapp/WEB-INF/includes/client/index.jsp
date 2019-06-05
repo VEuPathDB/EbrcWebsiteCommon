@@ -35,6 +35,7 @@
   <head>
     <meta charset="UTF-8">
     <imp:stylesheet href="images/${model.projectId}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <imp:siteInfo/>
     <script>
       // used for webpack. remove this when this can be set at build time.
       window.__asset_path_remove_me_please__ = "${assetsUrl}/";
@@ -69,8 +70,6 @@
       ga('create', '${gaId}', 'auto');
     </script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <imp:stylesheet rel="stylesheet" type="text/css" href="vendor.bundle.css"/>
-    <imp:stylesheet rel="stylesheet" type="text/css" href="wdk-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="css/${model.projectId}.css"/>
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
