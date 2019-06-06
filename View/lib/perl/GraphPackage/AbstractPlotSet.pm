@@ -308,10 +308,15 @@ library(dplyr);
 library(scales);
 library(viridisLite);
 library(tidyr)
+library(plotly)
+library(htmltools)
+library(htmlwidgets)
+library(crosstalk)
+library(DT)
 
 $open_R
 
-plasmodb.par();
+#plasmodb.par();
 
 # screen.dimis only used for legacy
 screen.dims <- t(array(c($screens),dim=c(4,$parts_n)));
@@ -521,6 +526,24 @@ completeDF <- function(data, desiredCols) {
   return(data[completeVec, ])
 }
 
+save_tags <- function (tags, file, selfcontained = TRUE, libdir = NULL) 
+{
+    if (is.null(libdir)) {
+        libdir <- paste(tools::file_path_sans_ext(basename(file)), 
+            "_files", sep = "")
+    }
+    htmltools::save_html(tags, file = file, libdir = libdir)
+    if (selfcontained) {
+        if (!htmlwidgets:::pandoc_available()) {
+            stop("Saving a widget with selfcontained = TRUE requires pandoc. For details see:\n", 
+                "https://github.com/rstudio/rmarkdown/blob/master/PANDOC.md")
+        }
+        htmlwidgets:::pandoc_self_contained_html(file, file)
+        unlink(libdir, recursive = TRUE)
+    }
+    return(file)
+}
+
 
 # --------------------------------- Add Legend-------------------------------
 
@@ -535,8 +558,15 @@ $rStrings
 
 $splitScreenFinish
 
-#add some javascript to the svg to make the tooltips functional.
-if (grepl(file_ext(\"$out_f\"), \"svg\")) {
+if (grepl(file_ext(\"$out_f\"), \"html\")) {
+  Sys.setenv(HOME = \"$ENV{"HOME"}\")
+  if (length(plotlist) > 1) {
+    save_tags(tagList(plotlist), \"$out_f\")
+  } else {
+    htmlwidgets::saveWidget(as_widget(myPlotly), \"$out_f\")
+  }
+  quit(save=\"no\")
+} else if (grepl(file_ext(\"$out_f\"), \"svg\")) {
     grid.script('var showTooltip = function(evt, label) {
     // Getting rid of any existing tooltips
         hideTooltip();

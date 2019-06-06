@@ -155,6 +155,7 @@ modelprop:
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
   REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
   REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
+  COMMUNITY_SITE: //devcommunity.eupathdb.org/embedded/
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
