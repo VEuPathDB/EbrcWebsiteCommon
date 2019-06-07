@@ -6,10 +6,11 @@ export function requestNews() {
   return function run({ wdkService }) {
     return [
       { type: NEWS_LOADING },
-      wdkService.getXmlAnswerJson('XmlQuestions.News').then(
-        news => ({ type: NEWS_RECEIVED, payload: { news } }),
-        error => ({ type: NEWS_ERROR, payload: { error: error.message } })
-      )
+      // FIXME Load news from jekyll site
+      // wdkService.getXmlAnswerJson('XmlQuestions.News').then(
+      //   news => ({ type: NEWS_RECEIVED, payload: { news } }),
+      //   error => ({ type: NEWS_ERROR, payload: { error: error.message } })
+      // )
     ];
   }
 }
