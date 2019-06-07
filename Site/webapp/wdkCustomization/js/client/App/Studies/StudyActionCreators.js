@@ -123,7 +123,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
         .map(questionName => questionsByName[questionName])
         .filter(question => question != null)
         .map(question => {
-        const recordClass = recordClassesByName[question.recordClassName];
+        const recordClass = recordClassesByName[question.outputRecordClassName];
         return {
           icon: question.iconName || recordClass.iconName || 'fa fa-database',
           name: question.fullName,
