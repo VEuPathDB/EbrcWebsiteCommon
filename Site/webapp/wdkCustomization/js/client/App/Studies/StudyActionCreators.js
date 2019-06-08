@@ -127,6 +127,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
         return {
           icon: question.iconName || recordClass.iconName || 'fa fa-database',
           name: question.fullName,
+          path: `${recordClass.urlSegment}/${question.urlSegment}`,
           displayName: recordClass.shortDisplayName,
         };
       })

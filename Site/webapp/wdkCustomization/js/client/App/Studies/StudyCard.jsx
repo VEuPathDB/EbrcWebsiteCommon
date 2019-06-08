@@ -62,17 +62,17 @@ class StudyCard extends React.Component {
         </div>
         <div className="box StudyCard-Footer">
           {searches.length
-            ? searches.map(({ icon, displayName, name }) => {
-              const webappUrl = (prefix ? prefix : '') + '/showQuestion.do?questionFullName=' + name;
+            ? searches.map(({ icon, displayName, path }) => {
+              const route = `/search/${path}`;
               return (
                 <div
-                  key={name}
+                  key={path}
                   className="box"
                   onMouseEnter={() => this.displaySearchType(displayName)}
                   onMouseLeave={this.clearDisplaySearchType}>
-                  <a href={webappUrl}>
+                  <Link to={route}>
                     <i className={icon} />
-                  </a>
+                  </Link>
                 </div>
               );
             })
