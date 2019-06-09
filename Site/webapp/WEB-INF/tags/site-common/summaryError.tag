@@ -1,9 +1,5 @@
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="pg" uri="http://jsptags.com/tags/navigation/pager" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
-<%@ taglib prefix="nested" uri="http://struts.apache.org/tags-nested" %>
-
 
 <h3 style="margin-left:0">Sorry, there is a problem with the selected strategy.</h3>
 

@@ -12,13 +12,19 @@ response.setStatus(500);
 
 <c:catch var='e'>
   <imp:pageFrame title="Unexpected Error">
-    <em>Sorry, an unexpected error has occurred.</em>
+    <em>Sorry, an unexpected error has occurred. Bad!</em>
+    <span>${pageContext.exception}</span>
+    <ul>
+      <c:forEach var = "trace" items = "${pageContext.exception.stackTrace}">
+        <li>${trace}</li>
+      </c:forEach>
+    </ul>
   </imp:pageFrame>
 </c:catch>
 
 <c:if test="${e != null}">
   <script>
-    //alert("Sorry, an unexpected error has occurred.  ${e}")
+    alert("Sorry, an unexpected error has occurred.  ${e}");
     document.body.innerHTML = '<br><br><h1>Sorry, an unexpected error has occurred.</h1><br><br><br><br><br>Please make a snapshot and attach to an email to help@eupathdb.org. Thanks!';
   </script>
 </c:if>
