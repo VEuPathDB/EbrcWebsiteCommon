@@ -1,3 +1,52 @@
+#assumes shiny only needs a single connection to a single appDB
+manageOracleConnection <- function(drv, con, model.prop) {
+
+  if (is.null(drv)) { 
+    stop("Cannot create Oracle DB Connection. No driver provided. (Try making one with `dbDriver('Oracle')`") 
+  }
+
+  if (is.null(con)) {
+    if (is.null(model.prop)) {
+      stop("Cannot create Oracle DB Connection. No 'model.prop' file provided.")
+    } else {
+      warning("Specified DB connection is NULL. Will attempt to create another..")
+      con <- createOracleConnection(drv, model.prop)
+    }
+  } else {
+    conList <- dbListConnections(drv)
+    if (length(conList) > 1) {
+      stop("Too many oracle connections associated with driver. Please ensure only one connection to one appDB per driver.")
+    } else if (length(conList) == 0) {
+      warning("Specified DB connection does not exist. Will attempt to create another..")
+      con <- createOracleConnection(drv, model.prop)
+    } else {
+      testQuery <- "select * from apidbtuning.datasetpresenter"
+      testResult <- try(dbGetQuery(con, testQuery))
+      if (grepl("Error", testResult[1])) {
+        warning("Test query with provided DB connection has failed. Will try again with a new connection..")
+        dbDisconnect(con)
+        con <- createOracleConnection(drv, model.prop)
+        testResult <- try(dbGetQuery(con, testQuery))
+        if (grepl("Error", testResult[1])) {
+          stop("Test query still failing.. Oracle DB connection could not be established.")
+        }
+      }
+    }
+  }
+
+  con
+}
+
+createOracleConnection <- function(drv, model.prop) {
+  gusHome <- model.prop$V2[model.prop$V1 == "gusHome"]
+  project_id <- model.prop$V2[model.prop$V1 == "PROJECT_ID"]
+  modelConfig <- paste0(gusHome, "/config/", project_id, "/model-config.xml")
+  appDbInfo <- appDbFromConfigXml(modelConfig)
+  con <- dbConnect(drv, appDbInfo$login, appDbInfo$password, unlist(strsplit(appDbInfo$connectionUrl, '@', fixed = TRUE))[2])
+
+  con
+}
+
 appDbFromConfigXml <- function(file) {
   xml <- xmlParse(file)
   xmlList <- xmlToList(xml)
