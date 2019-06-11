@@ -95,7 +95,7 @@ const parseStudy = mapProps({
 
 function formatStudies(projectId, questions, recordClasses, answer) {
   const questionsByName = keyBy(questions, 'fullName');
-  const recordClassesByName = keyBy(recordClasses, 'fullName');
+  const recordClassesByName = keyBy(recordClasses, 'urlSegment');
 
   const records = answer.records.reduce((records, record) => {
 
