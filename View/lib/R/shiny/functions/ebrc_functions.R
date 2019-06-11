@@ -66,6 +66,17 @@ rcut_number <- function(data = c(), n = 4){
   returnData
 }
 
+rcut <- function(data = c(), n=12) {
+  hold <- try(cut(data,n), silent = TRUE)
+  if (!grepl("Error", hold[1])) {
+    returnData <- hold
+  } else {
+    returnData <- rcut(data, n = n-1)
+  }
+
+  returnData
+}
+
 isDate <- function(mydate, date.format = "%Y-%m-%d") {
   # Check if field is a date using as.Date that looks for unambiguous dates
   #   Assumes date format so NA returned not Character error. 
