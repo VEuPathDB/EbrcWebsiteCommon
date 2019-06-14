@@ -5,18 +5,17 @@ import { getId, getDisplayName, getTargetType } from 'wdk-client/Utils/CategoryU
 /** Map search tree to menu items.  */
 function getSearchItems(searchTree, recordClasses) {
   if (searchTree == null || recordClasses == null) return [];
-  return searchTree.children.map(createMenuItem(keyBy(recordClasses, 'fullName')));
+  return searchTree.children.map(createMenuItem);
 }
 
 /** Map a search node to a meny entry */
-const createMenuItem = recordClassesByFullName => searchNode => {
+function createMenuItem(searchNode) {
   const question = getTargetType(searchNode) === 'search' && searchNode.wdkReference;
-  const recordClass = question && recordClassesByFullName[question.outputRecordClassName];
   return {
     id: getId(searchNode),
     text: getDisplayName(searchNode),
-    children: searchNode.children.map(createMenuItem(recordClassesByFullName)),
-    route: question && `/search/${recordClass && recordClass.urlSegment}/${searchNode.wdkReference.urlSegment}`
+    children: searchNode.children.map(createMenuItem),
+    route: question && `/search/${question.outputRecordClassName}/${question.urlSegment}`
   };
 }
 
