@@ -69,7 +69,7 @@ export function makeMenuItems(props) {
           { id: 'query-grid', text: 'View all available searches', route: '/query-grid' }
         ] : [])
     },
-    { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
+    { id: 'strategies', text: 'My Strategies',  route: '/workspace/strategies/all' },
 {/* in apicommon
     userDatasetsEnabled ? {
       id: 'workspace',
@@ -82,13 +82,13 @@ export function makeMenuItems(props) {
     {
       id: 'basket',
       text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
-      webAppUrl: '/showApplication.do?tab=basket',
+      webAppUrl: '/workspace/basket',
       loginRequired: true
     },
     {
       id: 'favorites',
       text: 'My Favorites',
-      route: '/favorites',
+      route: '/workspace/favorites',
       loginRequired: true
     },
 
