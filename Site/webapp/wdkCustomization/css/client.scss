@@ -23,6 +23,7 @@ h4 {
   font-weight: 500;
 }
 
+
 .TableAsTree .wdk-CheckboxTreeItem__leaf .wdk-CheckboxTreeNodeContent span {
   background: yellow;
   font-weight: bold;
@@ -287,4 +288,10 @@ td.wdk-DataTableCell__thumbnail {
 
 div.RecordAttribution {
   padding-top: 60px;
+}
+
+div.eupathdb-content {
+  font-size: 16px;
+  margin-bottom: 20px;
+  line-height: 150%;
 }
