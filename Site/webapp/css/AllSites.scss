@@ -271,7 +271,6 @@ div.innertube #record-toolbox li {
 .threecolumndiv div.heading {
   display: block;
   border-radius: 13px 13px 0 0;
-  height: 28px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 14px;
   color: #FFFFFF;
@@ -279,6 +278,7 @@ div.innertube #record-toolbox li {
   padding-right: 10px;
   padding-left:  7px;
   padding-top: 12px;
+  padding-bottom: 12px;
   text-align: center;
 }
 
@@ -457,13 +457,13 @@ div.innertube #record-toolbox li {
 #sidebar a.heading,
 #menu_lefttop a.heading {
   text-align: center;
-  height: 26px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 14px;
   text-decoration: none;
   padding-right: 10px;
   padding-left:  7px;
   padding-top: 12px;
+  padding-bottom: 12px;
   margin-bottom: 5px;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
