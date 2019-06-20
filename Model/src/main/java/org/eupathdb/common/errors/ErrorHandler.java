@@ -143,10 +143,6 @@ public class ErrorHandler {
         //.append(getAttributeMapText(context.getServletContextAttributes())).append(NL)
 
         .append(SECTION_DIV)
-        .append("Struts Action Errors").append(doubleNewline)
-        .append(errors.getActionErrorsAsText()).append(NL)
-
-        .append(SECTION_DIV)
         .append("Detailed Description").append(doubleNewline)
         .append(valueOrDefault(errors.getDetailedDescription(), "")).append(NL)
 
