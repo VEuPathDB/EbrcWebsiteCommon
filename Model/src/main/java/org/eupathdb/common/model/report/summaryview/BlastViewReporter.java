@@ -5,6 +5,7 @@ import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.report.Reporter;
 import org.gusdb.wdk.model.report.ReporterConfigException;
+import org.gusdb.wdk.model.report.ReporterConfigException.ErrorType;
 import org.gusdb.wdk.model.report.reporter.DefaultJsonReporter;
 import org.json.JSONObject;
 
@@ -27,7 +28,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
     String questionName = _baseAnswer.getAnswerSpec().getQuestionName();
     if (!(questionName.contains("Similarity") || questionName.contains("Blast"))) {
-      throw new ReporterConfigException("Only BLAST searches can use this report");
+      throw new ReporterConfigException("Only BLAST searches can use this report", ErrorType.DATA_VALIDATION);
     }
     return super.configure(config);
   }
