@@ -185,6 +185,8 @@ sub makeRPlotString {
   $highlightMissingValues = $highlightMissingValues ? 'TRUE' : 'FALSE';
 
   $rAdjustProfile = $rAdjustProfile ? $rAdjustProfile : "";
+  my $rPostscript = $self->getRPostscript();
+  $rPostscript = $rPostscript ? $rPostscript : "";
 
   $horizontalXAxisLabels = $horizontalXAxisLabels ? 'TRUE' : 'FALSE';
 
@@ -350,7 +352,7 @@ profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels = unique(profile.d
 expandColors = FALSE;
 hideLegend = FALSE;
 
-if($numProfiles > length($colorsStringNotNamed)) {
+if ($numProfiles > length($colorsStringNotNamed)) {
   expandColors=TRUE;
 }
 
@@ -491,6 +493,9 @@ if($hasFacets) {
 }
 
 #}
+
+#postscript
+$rPostscript
 
 plotlist[[plotlist.i]] = gp;
 plotlist.i = plotlist.i + 1;
