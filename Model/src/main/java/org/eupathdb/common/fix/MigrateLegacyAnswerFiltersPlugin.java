@@ -28,6 +28,7 @@ public class MigrateLegacyAnswerFiltersPlugin implements TableRowUpdaterPlugin<S
   }
 
   // TODO: probably want to use this to help inspect the row (e.g. determine if valid question name)
+  @SuppressWarnings("unused")
   private WdkModel _wdkModel;
 
   @Override
@@ -50,6 +51,7 @@ public class MigrateLegacyAnswerFiltersPlugin implements TableRowUpdaterPlugin<S
   public RowResult<StepData> processRecord(StepData nextRow) throws Exception {
 
     // read legacy filter name from row
+    @SuppressWarnings("unused")
     String legacyAnswerFilterName = nextRow.getLegacyAnswerFilter();
 
     // TODO: Perform translation of filter name to organism name and convert
