@@ -333,7 +333,6 @@ implements TableRowUpdaterPlugin<StepData> {
         return debug(false, "Step display params already has a column filter"
           + "configured for value " + value + " on column " + column);
 
-
     confs.put(debug(
       new JSONObject()
         .put(KEY_FILTER_VAL, value),
