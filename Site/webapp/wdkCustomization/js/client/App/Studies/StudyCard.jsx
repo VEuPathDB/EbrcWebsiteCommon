@@ -26,11 +26,11 @@ class StudyCard extends React.Component {
   render () {
     const { card, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
-    const { name, categories, route, headline, points, searches, disabled } = card;
+    const { id, name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
 
     return (
-      <div className={'Card StudyCard ' + (disabled ? 'disabled' : '')}>
+      <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
         <div className="box StudyCard-Heading">
           <h2 title={myStudyTitle}><Link to={route}>{name}</Link></h2>
           <div className="box StudyCard-Categories">
