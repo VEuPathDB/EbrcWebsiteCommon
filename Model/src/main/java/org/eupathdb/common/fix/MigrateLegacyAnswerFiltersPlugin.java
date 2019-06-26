@@ -2,7 +2,6 @@ package org.eupathdb.common.fix;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.gusdb.fgputil.Tuples.TwoTuple;
 import org.gusdb.fgputil.functional.Result;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
@@ -16,53 +15,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static org.gusdb.fgputil.json.JsonUtil.Jackson;
-
-class MLAFRowSelector extends StepDataFactory {
-
-  MLAFRowSelector() {
-    super(false);
-  }
-
-  @Override
-  public String getRecordsSql(String schema, String projectId) {
-    return "SELECT\n"
-      + "  " + SELECT_COLS_TEXT + "\n"
-      + "FROM\n"
-      + "  " + schema + "steps s\n"
-      + (_includeGuestUserSteps
-        ? ""
-        : "  INNER JOIN " + schema + "users u\n"
-          + "    ON s.user_id = u.user_id\n")
-      + "WHERE\n"
-      + "  is_deleted = 0\n"
-      + "  AND answer_filter IS NOT NULL\n"
-      + "  AND answer_filter NOT LIKE 'all\\_%' ESCAPE '\\'\n"
-      + "  AND answer_filter NOT LIKE '%\\_genes' ESCAPE '\\'\n"
-      + "  AND answer_filter NOT LIKE '%\\_groups' ESCAPE '\\'\n"
-      + "  AND answer_filter NOT LIKE '%distinct\\_gene\\_instances' ESCAPE '\\'"
-      + (_includeGuestUserSteps ? "" : "\n  AND u.is_guest = 0");
-  }
-}
-
-enum MLAFRowType {
-  SEQUENCE,
-  ORGANISM,
-  OTHER
-}
-
-class MLAFStats {
-  public int read;
-  public int organism;
-  public int sequence;
-  public int invalid;
-  public int skipped;
-}
 
 /**
  * Parses the organism name or sequence type from a steps answer_filter value
@@ -145,36 +102,35 @@ implements TableRowUpdaterPlugin<StepData> {
 
   @Override
   public RowResult<StepData> processRecord(final StepData row) {
-    var sortRes = categorize(row);
-    var cat = sortRes.getFirst();
-    var val = sortRes.getSecond();
+    var sorted = categorize(row);
 
-    stats.read++;
+    stats.read.incrementAndGet();
 
     // Not a usable row, skip it.
-    if (cat == MLAFRowType.OTHER) {
-      stats.invalid++;
+    if (sorted.type == MLAFRowType.OTHER) {
+      stats.invalid.incrementAndGet();
       return debug(new RowResult<>(row).setShouldWrite(false),
         "Row " + stats.read + " invalid, skipping.");
     }
 
-    var column = cat == MLAFRowType.ORGANISM
+    var column = sorted.type == MLAFRowType.ORGANISM
       ? COL_ORGANISM
       : COL_SEQUENCE;
 
-    var updated = mergeFilterConfig(column, val, row.getParamFilters());
+    var updated = mergeFilterConfig(column, sorted.name, row.getParamFilters());
 
     if (updated)
-      if (cat == MLAFRowType.ORGANISM)
-        stats.organism++;
+      if (sorted.type == MLAFRowType.ORGANISM)
+        stats.organism.incrementAndGet();
       else
-        stats.sequence++;
+        stats.sequence.incrementAndGet();
     else
-      stats.skipped++;
+      stats.skipped.incrementAndGet();
 
     return debug(
       new RowResult<>(row).setShouldWrite(updated && performUpdates),
-      "For row " + stats.read + " shouldWrite set to " + (updated && performUpdates)
+      "Row " + stats.read.get() + ": shouldWrite = "
+        + (updated && performUpdates)
     );
   }
 
@@ -202,7 +158,7 @@ implements TableRowUpdaterPlugin<StepData> {
    *
    * @return A tuple of data matching one of the above 3 sort categories.
    */
-  private TwoTuple<MLAFRowType, String> categorize(final StepData rec) {
+  private MLAFPair categorize(final StepData rec) {
     // Both sides lowercased for matching.
     var afName = rec.getLegacyAnswerFilter()
       .toLowerCase();
@@ -212,18 +168,18 @@ implements TableRowUpdaterPlugin<StepData> {
       // not a sequence type filter then it can be skipped.
       return debug(
         seqMapping.containsKey(afName)
-          ? new TwoTuple<>(MLAFRowType.SEQUENCE, afName)
-          : new TwoTuple<>(MLAFRowType.OTHER, null),
-        "categorized " + afName + " as %s"
+          ? new MLAFPair(MLAFRowType.SEQUENCE, afName)
+          : new MLAFPair(MLAFRowType.OTHER, null),
+        "Categorized input '" + afName + "' as %s"
       );
 
     var orgName = parseOrganismName(trimSuffix(afName));
 
     return debug(
       null == orgName
-        ? new TwoTuple<>(MLAFRowType.OTHER, null)
-        : new TwoTuple<>(MLAFRowType.ORGANISM, orgName),
-      "categorized " + afName + " as %s"
+        ? new MLAFPair(MLAFRowType.OTHER, null)
+        : new MLAFPair(MLAFRowType.ORGANISM, orgName),
+      "Categorized input '" + afName + "' as %s"
     );
   }
 
@@ -257,8 +213,8 @@ implements TableRowUpdaterPlugin<StepData> {
    *   found) else null.
    */
   private String parseOrganismName(final String filter) {
-    for(var i = filter.lastIndexOf('_'); i > -1; i = filter.lastIndexOf('_', i)) {
-      var sub = filter.substring(i);
+    for(var i = filter.lastIndexOf('_'); i > -1; i = filter.lastIndexOf('_', i - 1)) {
+      var sub = filter.substring(i+1);
       var org = abbrToOrg.get(sub);
 
       if (null != org)
@@ -392,5 +348,64 @@ implements TableRowUpdaterPlugin<StepData> {
   private static <T> T debug(final T val, final String message) {
     LOG.debug(String.format(message, val));
     return val;
+  }
+}
+
+class MLAFRowSelector extends StepDataFactory {
+
+  MLAFRowSelector() {
+    super(false);
+  }
+
+  @Override
+  public String getRecordsSql(String schema, String projectId) {
+    return "SELECT\n"
+      + "  " + SELECT_COLS_TEXT + "\n"
+      + "FROM\n"
+      + "  " + schema + "steps s\n"
+      + (_includeGuestUserSteps
+      ? ""
+      : "  INNER JOIN " + schema + "users u\n"
+        + "    ON s.user_id = u.user_id\n")
+      + "WHERE\n"
+      + "  is_deleted = 0\n"
+      + (_includeGuestUserSteps ? "" : "  AND u.is_guest = 0\n")
+      + "  AND answer_filter IS NOT NULL\n"
+      + "  AND answer_filter NOT LIKE 'all\\_%' ESCAPE '\\'\n"
+      + "  AND answer_filter NOT LIKE '%\\_genes' ESCAPE '\\'\n"
+      + "  AND answer_filter NOT LIKE '%\\_groups' ESCAPE '\\'\n"
+      + "  AND answer_filter NOT LIKE '%distinct\\_gene\\_instances' ESCAPE '\\'";
+  }
+}
+
+enum MLAFRowType {
+  SEQUENCE,
+  ORGANISM,
+  OTHER
+}
+
+class MLAFStats {
+  public AtomicInteger read = new AtomicInteger();
+  public AtomicInteger organism = new AtomicInteger();
+  public AtomicInteger sequence = new AtomicInteger();
+  public AtomicInteger invalid = new AtomicInteger();
+  public AtomicInteger skipped = new AtomicInteger();
+}
+
+class MLAFPair {
+  final MLAFRowType type;
+  final String name;
+
+  public MLAFPair(MLAFRowType type, String name) {
+    this.type = type;
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return new JSONObject()
+      .put("name", name)
+      .put("type", type)
+      .toString();
   }
 }
