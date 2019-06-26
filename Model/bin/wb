@@ -33,9 +33,9 @@ my $mode = $ARGV[0];
 
 my @modes;
 if ($svnPrefix eq "ApiCommon") {
-  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "shiny", "cgi", "jbrowse");
+  @modes = ("full", "model", "graph", "gbrowse", "ontology", "site", "watch-ts", "shiny", "cgi", "jbrowse");
 } else {
-  @modes = ("full", "model", "site", "ontology", "graph", "shiny", "cgi");
+  @modes = ("full", "model", "site", "watch-ts", "ontology", "graph", "shiny", "cgi");
 }
 
 my $isValidMode;
@@ -61,6 +61,8 @@ my $stopWebapp = "instance_manager manage $tomcatName stop $webapp";
 my $wdkXml = "wdkXml -model $projectName > /dev/null";
 
 my $cleanGbrowseCache = "rm -rf $baseGus/html/gbrowse/tmp/*";
+
+my $stopWebappOnError = 1;
 
 if($mode eq 'full') {
   $cmd = "$dieOnError; bldw $svnPrefix\Presenters $baseGus/etc/webapp.prop; $wdkXml; $reloadWebapp";
@@ -92,6 +94,12 @@ if($mode eq 'ontology') {
 
 if($mode eq 'site') {
   $cmd = "$dieOnError; bldw EbrcWebsiteCommon/Site $baseGus/etc/webapp.prop; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop";
+  $stopWebappOnError = 0;
+}
+
+if($mode eq 'watch-ts') {
+  $cmd = "$dieOnError; $projectHome/install/node_modules/.bin/tsc --watch --noEmit -p $svnPrefix\Website/Site/tsconfig.json";
+  $stopWebappOnError = 0;
 }
 
 if($mode eq 'shiny') {
@@ -107,7 +115,10 @@ print STDERR "Running Command:  $cmd\n";
 
 
 unless(system($cmd) == 0) {
-  system($stopWebapp);
+  if ($stopWebappOnError == 1) {
+    print STDERR "stopping webapp...\n";
+    system($stopWebapp);
+  }
   die "ERROR [$?] running Command: $cmd";;
 }
 
