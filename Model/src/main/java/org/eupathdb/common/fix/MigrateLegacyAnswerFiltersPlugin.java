@@ -38,7 +38,7 @@ implements TableRowUpdaterPlugin<StepData> {
     COL_SEQUENCE    = "sequence_type",
     KEY_COL_FILTER  = "columnFilters",
     KEY_FILTER_VAL  = "filter",
-    DEFAULT_TOOL    = "histogram", //Should match the default column tool bundle name
+    DEFAULT_TOOL    = "byValue", //Should match the default column tool bundle name
     INSTANCE_SUFFIX = "_instances";
 
   private static final String SQL_ORG_MAPPING = ""
@@ -108,7 +108,7 @@ implements TableRowUpdaterPlugin<StepData> {
 
     // Not a usable row, skip it.
     if (sorted.type == MLAFRowType.OTHER) {
-      stats.invalid.incrementAndGet();
+      stats.unrecognized.incrementAndGet();
       return debug(new RowResult<>(row).setShouldWrite(false),
         "Row " + stats.read + " invalid, skipping.");
     }
@@ -388,7 +388,7 @@ class MLAFStats {
   public AtomicInteger read = new AtomicInteger();
   public AtomicInteger organism = new AtomicInteger();
   public AtomicInteger sequence = new AtomicInteger();
-  public AtomicInteger invalid = new AtomicInteger();
+  public AtomicInteger unrecognized = new AtomicInteger();
   public AtomicInteger skipped = new AtomicInteger();
 }
 
