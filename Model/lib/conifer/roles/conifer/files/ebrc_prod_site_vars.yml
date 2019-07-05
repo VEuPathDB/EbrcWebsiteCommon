@@ -51,5 +51,6 @@ password:
     }}"
 
 modelprop:
+  COMMUNITY_SITE: //community.eupathdb.org/ 
   REDMINE_TO_EMAIL: 'redmine@apidb.org'
   REDMINE_FROM_EMAIL: 'websitesupportform@apidb.org'
