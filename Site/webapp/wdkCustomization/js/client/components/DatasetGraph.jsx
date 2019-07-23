@@ -161,7 +161,7 @@ export default class DatasetGraph extends React.PureComponent {
     let baseUrlWithMetadata = `${baseUrlWithState}&facet=${facet}&contXAxis=${contXAxis}`;
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
-    let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
+    let covImgUrl = dataTable && dataTable.record.attributes.CoverageJbrowseUrl + dataset_name;
     let specialImgUrl = dataTable && dataTable.record.attributes.specialGbrowseUrl + '%1E';
 
     let isUserDataset = module.startsWith("UserDatasets");
@@ -248,12 +248,11 @@ hook: HostResponseGraphs
               <div>
                 Non-unique mapping may be examined in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>)
                 <br></br><br></br>
-                <a href={covImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
+                <a href={covImgUrl.replace('/rnaseqTracks/', '/tracks/')}>
                   View in genome browser
                 </a>
               </div>
-
-              <img width="450" src={covImgUrl}/>
+              <iframe src={covImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="235" scrolling="no" allowfullscreen="false" />
             </CollapsibleSection>
           : null}
 
