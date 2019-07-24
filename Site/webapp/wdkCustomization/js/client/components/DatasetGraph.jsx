@@ -29,7 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       dataTableCollapsed: true,
       coverageCollapsed: true,
       showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
-      showSpecialGraph: this.props.rowData.has_special_gbrowse,
+      showSpecialGraph: this.props.rowData.has_special_jbrowse,
       graphId: graphIds[0],
       contXAxis: 'na',
       facet: 'na'
