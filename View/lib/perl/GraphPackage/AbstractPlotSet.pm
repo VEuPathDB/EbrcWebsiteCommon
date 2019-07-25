@@ -305,6 +305,7 @@ library(tools);
 library(gtools);
 library(plyr);
 library(dplyr);
+library(purrr)
 library(scales);
 library(viridisLite);
 library(tidyr)
@@ -312,6 +313,7 @@ library(plotly)
 library(htmltools)
 library(htmlwidgets)
 library(crosstalk)
+library(data.table)
 library(DT)
 
 $open_R

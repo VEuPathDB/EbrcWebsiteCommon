@@ -29,7 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       dataTableCollapsed: true,
       coverageCollapsed: true,
       showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
-      showSpecialGraph: this.props.rowData.has_special_gbrowse,
+      showSpecialGraph: this.props.rowData.has_special_jbrowse,
       graphId: graphIds[0],
       contXAxis: 'na',
       facet: 'na'
@@ -162,7 +162,7 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageJbrowseUrl + dataset_name;
-    let specialImgUrl = dataTable && dataTable.record.attributes.specialGbrowseUrl + '%1E';
+    let specialImgUrl = dataTable && dataTable.record.attributes.specialJbrowseUrl;
 
     let isUserDataset = module.startsWith("UserDatasets");
 
@@ -260,17 +260,16 @@ hook: HostResponseGraphs
             <CollapsibleSection
               id={"Special"}
               className="eupathdb-GbrowseContext"
-              headerContent="View in GBrowse"
+              headerContent="View in JBrowse"
               isCollapsed={this.state.coverageCollapsed}
               onCollapsedChange={this.handleCoverageCollapseChange}>
 
               <div>
-                <a href={specialImgUrl.replace('/gbrowse_img/', '/gbrowse/')}>
+                <a href={specialImgUrl}>
                   View in genome browser
                 </a>
               </div>
-
-              <img width="700" src={specialImgUrl}/>
+              <iframe src={specialImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="185" scrolling="no" allowfullscreen="false" />
               <br></br><br></br>
             </CollapsibleSection>
           : null}
