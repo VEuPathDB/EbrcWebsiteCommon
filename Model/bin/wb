@@ -98,7 +98,7 @@ if($mode eq 'site') {
 }
 
 if($mode eq 'watch-ts') {
-  $cmd = "$dieOnError; $projectHome/install/node_modules/.bin/tsc --watch --noEmit -p $svnPrefix\Website/Site/tsconfig.json";
+  $cmd = "$dieOnError; $projectHome/install/node_modules/.bin/tsc --watch --noEmit -p $projectHome/$svnPrefix\Website/Site/tsconfig.json";
   $stopWebappOnError = 0;
 }
 
