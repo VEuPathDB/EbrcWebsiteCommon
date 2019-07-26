@@ -4,6 +4,8 @@ import * as contactUs from './store-modules/ContactUsStoreModule';
 import {getSearchMenuCategoryTree} from './util/category';
 import { selectReporterComponent } from './util/reporter';
 
+import * as galaxyTerms from './store-modules/GalaxyTerms';
+
 import reduceStudies from 'ebrc-client/App/Studies/StudyReducer';
 import reduceDataRestriction from 'ebrc-client/App/DataRestriction/DataRestrictionReducer';
 import reduceSearchCards from 'ebrc-client/App/Searches/SearchCardReducer';
@@ -22,6 +24,7 @@ export default compose(
   set('dataRestriction', { key: 'dataRestriction', reduce: reduceDataRestriction }),
   set('newsSidebar', { key: 'newsSidebar', reduce: newsReducer }),
   set('contactUs', contactUs),
+  set('galaxyTerms', galaxyTerms),
   update('globalData.reduce', composeReducerWith(ebrcGlobalData)),
   update('downloadForm', module => ({ ...module, reduce: module.makeReducer(selectReporterComponent) }))
 );
