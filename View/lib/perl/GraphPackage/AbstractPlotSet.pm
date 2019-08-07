@@ -621,7 +621,7 @@ if (grepl(file_ext(\"$out_f\"), \"html\")) {
         }
         var tooltiplabx = tooltipx + 5;
         var tooltipy = p.y + 3;
-        var offset = arrayLength * 17 + 5;
+        var offset = arrayLength * 8.5 + 15;
         var svgHeight = document.getElementById("gridSVG").getBBox().height;
         var toolHeight = text.getBBox().height;
         var maxY = svgHeight - toolHeight - 10;
