@@ -1142,6 +1142,7 @@ profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.df.orig <- profile.df.full
 profile.df.orig\$LEGEND <- profile.df.orig\$DATASET
+profile.df.orig\$LEGEND <- profile.df.orig\$DISPLAY_NAME
 profile.df.orig\$TOOLTIP <- paste(profile.df.orig\$ELEMENT_NAMES, \" (\", profile.df.orig\$VALUE, \")\")
 
 profile.df.full\$LEGEND <- profile.df.full\$ELEMENT_NAMES
@@ -1300,9 +1301,9 @@ myTextColors <- c(rep(\"white\", floor(length(myColors)/2)), rep(\"black\", ceil
 colors.df <- data.table(\"LEGEND\" = unique(profile.df.orig\$LEGEND), \"COLOR\" = paste0(myOpaqueColors, \"|\", myTextColors))
 profile.df.orig <- merge(profile.df.orig, colors.df, by = \"LEGEND\")
 
-myPlotly <- plot_ly(data = profile.df.orig, x = ~log2(VALUE), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", type = \"box\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .7) %>% 
-  layout(xaxis = list(title = \"log2 FPKM\", 
-		      range = c(log2(.008), log2(x.max) + 2),
+myPlotly <- plot_ly(data = profile.df.orig, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", type = \"box\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .7) %>% 
+  layout(xaxis = list(title = \"log2(FPKM + 1)\", 
+		      range = c(log2(1), log2(x.max) + 2),
 		      dtick = 2),
          yaxis = list(title = \"Experiment\",
 		      showticklabels = FALSE),
@@ -1322,7 +1323,7 @@ myPlotly <- plot_ly(data = profile.df.orig, x = ~log2(VALUE), y = ~LEGEND, color
                  font=list(size=14,
                            color=\"red\")) %>%
   highlight(on = \"plotly_selected\") %>%
-  add_annotations(x = log2(.008),
+  add_annotations(x = log2(1),
                  y = unique(profile.df.orig\$LEGEND),
                  text = unique(profile.df.orig\$LEGEND),
                  xref = \"x\",
@@ -1348,13 +1349,19 @@ annotationJS <- \"function(el) {
       var elData = el.data;
       var xData = [];
       var xFPKM = [];
+      var xLogFPKM = [];
       elData.forEach(function(expt) {
   	xData.push(expt.x);
 	exptFPKM = [];
+	exptLogFPKM = [];
         expt.x.forEach(function(x) {
-	  exptFPKM.push(Math.pow(2,x));
+	  exptFPKM.push(Math.pow(2,x)-1);
         });
 	xFPKM.push(exptFPKM);
+        exptFPKM.forEach(function(x) {
+          exptLogFPKM.push(getLog2(x));
+        });
+        xLogFPKM.push(exptLogFPKM);
       });      
       var range = el.layout.xaxis.range;
 
@@ -1373,7 +1380,7 @@ annotationJS <- \"function(el) {
       var i;
       for (i = 2; i < annotations.length; i++) {
         var ann = {  
-          x: .008,
+          x: 0,
           y: annotations[i].y,
           text: annotations[i].text,
           xref: 'x',
@@ -1385,24 +1392,60 @@ annotationJS <- \"function(el) {
 	};
 	linearAnnotations.push(ann);
       }
+
+      var logAnnotations = [];
+      logAnnotations[0] = {
+        yref: 'paper', 
+        xref: 'paper', 
+        y: 1.1, 
+        x: 0, 
+        text: annotations[0].text, 
+        showarrow: false, 
+        font: {size: 14,
+               color: 'red'}
+      };
+      var i;
+      for (i = 2; i < annotations.length; i++) {
+        var ann = {  
+          x: getLog2(.01),
+          y: annotations[i].y,
+          text: annotations[i].text,
+          xref: 'x',
+          yref: 'y',
+          xanchor: 'left',
+          showarrow: false,
+          height: 40,
+          valign: 'top'
+	};
+	logAnnotations.push(ann);
+      }
+
 	annotations.shift();
 
       var updatemenus =[{
         buttons: [
             {
                 args: [{x: xData},
-                       {xaxis: {title: 'log2 FPKM',
+                       {xaxis: {title: 'log2(FPKM + 1)',
                                 range: range},
 			annotations: annotations}],
-                label: 'Log Scale',
+                label: 'log2(FPKM + 1)',
+                method: 'update'
+            },
+	    {
+                args: [{x: xLogFPKM},
+                       {xaxis: {title: 'log2(FPKM)',
+                                range: [getLog2(.008), range[1]]},
+                        annotations: logAnnotations}],
+                label: 'log2(FPKM)',
                 method: 'update'
             },
             {
 		args: [{x: xFPKM},
                        {xaxis: {title: 'FPKM',
-                                range: [Math.pow(2,range[0]), Math.pow(2,range[1]-2)]},
+                                range: [0, Math.pow(2,range[1]-2)]},
 			annotations: linearAnnotations}],
-                label: 'Linear Scale',
+                label: 'FPKM',
                 method: 'update'
             }
         ],
@@ -1506,7 +1549,7 @@ sub new {
   my $wantLogged = $self->getWantLogged();
   if(defined($wantLogged) && $wantLogged eq '1') {
     $self->addAdjustProfile('profile.df.full$VALUE <- log2(profile.df.full$VALUE + 1);');
-    $self->setYaxisLabel("FPKM (log2)");
+    $self->setYaxisLabel("log2(FPKM + 1)");
     $self->setDefaultYMax(4);
     $self->setIsLogged(1);
   }
@@ -1518,7 +1561,6 @@ sub new {
   
   return $self;
 }
-
 
 package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeqSenseAntisense;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::RNASeq );
