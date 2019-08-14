@@ -27,7 +27,7 @@ public class SiteMessagesService extends AbstractWdkService {
       "  from announce.messages m, announce.message_projects mp, announce.projects p" +
       " where m.message_id = mp.message_id" +
       "   and p.project_id = mp.project_id" +
-      "   and p.project_name = ?" + 
+      "   and p.project_name = ?" +
       "   and current_timestamp between m.start_date and m.stop_date" +
       " order by m.message_id desc";
 
@@ -42,7 +42,7 @@ public class SiteMessagesService extends AbstractWdkService {
           JSONArray messages = new JSONArray();
           while (rs.next()) {
             messages.put(new JSONObject()
-              .put(JsonKeys.CATEGORY, rs.getString("message_category"))
+              .put(JsonKeys.CATEGORY, rs.getString("message_category").toLowerCase())
               .put(JsonKeys.MESSAGE, rs.getString("message_text")
             ));
           }
@@ -51,6 +51,7 @@ public class SiteMessagesService extends AbstractWdkService {
       );
     }
     catch (SQLRunnerException e) {
+      // this service should always succeed; any failure is a 500
       return WdkModelException.unwrap(e);
     }
   }
