@@ -48,11 +48,14 @@ sub init {
   $Self->setSql(<<Sql);
 
 select  rownum as element_order, ps.* FROM (
-SELECT protocol_app_node_name AS name,
-       '<<DisplayName>>' as display_name
-FROM  apidbtuning.ProfileSamples
-WHERE  study_name            = '<<ProfileSet>>'
-AND profile_type = '<<ProfileType>>'
+SELECT ps.protocol_app_node_name AS name,
+       '<<DisplayName>>' as display_name,
+       dsp.dataset_presenter_id
+FROM  apidbtuning.ProfileSamples ps,
+      apidbtuning.DatasetPresenter dsp
+WHERE  ps.study_name = '<<ProfileSet>>'
+AND ps.profile_type = '<<ProfileType>>'
+AND ps.dataset_name = dsp.name
 ORDER  BY node_order_num
 ) ps
 Sql
