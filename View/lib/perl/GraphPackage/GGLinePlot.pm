@@ -1138,7 +1138,13 @@ profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
 profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
-
+#exptOrder <- unique(profile.df.full\$LEGEND)
+#profile.df.full <- profile.df.full[order(match(profile.df.full\$LEGEND, exptOrder), profile.df.full\$VALUE),]
+profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(profile.df.full\$LEGEND)))
+table.df <- profile.df.full %>% 
+		   group_by(LEGEND) %>% 
+		   summarize(TABLE=paste(paste0(\"<b>\", ELEMENT_NAMES, \"</b> \", VALUE), collapse=\"<br>\"))
+profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
 
   $self->addAdjustProfile($adjust);
@@ -1185,7 +1191,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 		 text = unique(profile.df.full\$LEGEND),
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #or some similar thing to build a tooltip w a link
-#should be a tooltip though, making the expt name itself clickable conflicts with the boxes
+#keep in mind events on expt labels conflict with the boxes
 #also remember to add hovertext to the expt annotations for the buttons below
 #R was giving me issues with special characters, may try just building w js below
 #                 hovertext = paste0(
@@ -1193,11 +1199,12 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 #         		 '#ExpressionGraphs__', 
 #			 unique(profile.df.full\$DATASET_PRESENTER_ID),
 #			 '\\'>Dataset Expression Graphs</a>'),
+		 hovertext = unique(profile.df.full\$TABLE),
                  xref = \"x\",
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
-                 height = 40,
+		 yshift = 15,
                  valign = \"top\",
 		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
@@ -1247,11 +1254,12 @@ annotationJS <- \"function(el) {
           x: 0,
           y: annotations[i].y,
           text: annotations[i].text,
+	  hovertext: annotations[i].hovertext,
           xref: 'x',
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
-          height: 40,
+          yshift: 15,
           valign: 'top',
 	  name: annotations[i].name
 	};
