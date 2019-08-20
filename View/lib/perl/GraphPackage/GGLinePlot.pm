@@ -1128,180 +1128,43 @@ sub new {
   my $id = $self->getId();
 
   $self->setPartName('transcription.summary');
-  $self->setYaxisLabel('FPKM - Sample 2');
+  $self->setYaxisLabel('');
   $self->setPlotTitle("RNASeq Transcription Summary - $id");
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
 
   my $adjust = "
-myMerge <- function(x) {
-  merge(x[, c('LEGEND', 'VALUE')], x, by = NULL)
-}
-
 profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
-profile.df.orig <- profile.df.full
-profile.df.orig\$LEGEND <- profile.df.orig\$DATASET
-profile.df.orig\$LEGEND <- profile.df.orig\$DISPLAY_NAME
-profile.df.orig\$TOOLTIP <- paste(profile.df.orig\$ELEMENT_NAMES, \" (\", profile.df.orig\$VALUE, \")\")
-
-profile.df.full\$LEGEND <- profile.df.full\$ELEMENT_NAMES
-profiles.list <- split(profile.df.full, f = profile.df.full\$PROFILE_FILE)
-profiles.list <- lapply(profiles.list, myMerge)
-profile.df.full <- bind_rows(profiles.list)
-profile.df.full\$ELEMENT_NAMES_NUMERIC <- profile.df.full\$VALUE.x
-profile.df.full\$VALUE <- profile.df.full\$VALUE.y
-profile.is.numeric <- TRUE
-profile.df.full\$LEGEND <- profile.df.full\$DATASET
-profile.df.full <- profile.df.full[profile.df.full\$LEGEND.x != profile.df.full\$LEGEND.y,]
-profile.df.full <- transform(profile.df.full, FOLD_CHANGE=ifelse(VALUE > ELEMENT_NAMES_NUMERIC, profile.df.full\$VALUE/profile.df.full\$ELEMENT_NAMES_NUMERIC, profile.df.full\$ELEMENT_NAMES_NUMERIC/profile.df.full\$VALUE * -1))
-profile.df.full\$FOLD_CHANGE <- round(profile.df.full\$FOLD_CHANGE, 2)
-profile.df.full\$TOOLTIP <- paste0(\"SAMPLE 1: \", profile.df.full\$LEGEND.x, \"<br>SAMPLE 2: \", profile.df.full\$LEGEND.y, \"<br>FOLD CHANGE: \", profile.df.full\$FOLD_CHANGE)
+profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
+profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
+#exptOrder <- unique(profile.df.full\$LEGEND)
+#profile.df.full <- profile.df.full[order(match(profile.df.full\$LEGEND, exptOrder), profile.df.full\$VALUE),]
+profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(profile.df.full\$LEGEND)))
+table.df <- profile.df.full %>% 
+		   group_by(LEGEND) %>% 
+		   summarize(TABLE=paste(paste0(\"<b>\", ELEMENT_NAMES, \"</b> \", VALUE), collapse=\"<br>\"))
+profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
 
   $self->addAdjustProfile($adjust);
 
-  my $post = "
-y.max <- 1000
-x.max <- 1000
-
-y.max <- max(y.max, as.numeric(profile.df.full\$VALUE), na.rm = TRUE)
-x.max <- max(x.max, as.numeric(profile.df.full\$ELEMENT_NAMES_NUMERIC), na.rm = TRUE)
-
-gp <- gp + geom_abline(slope=1, intercept=log10(2), linetype = \"dotted\")
-gp <- gp + geom_abline(slope=1, intercept=-log10(2), linetype = \"dotted\")
-gp <- gp + geom_hline(yintercept=1, linetype = \"dashed\")
-gp <- gp + geom_vline(xintercept=1, linetype = \"dashed\")
-gp <- gp + scale_x_continuous(trans='log10') 
-gp <- gp + scale_y_continuous(trans='log10')
-gp <- gp + coord_cartesian(xlim=c(.01,x.max), ylim=c(.01,y.max))
-
-gp <- gp + scale_color_manual(name = \"Datasets\", values = viridis(length(as.factor(unique(profile.df.full\$LEGEND)))), labels = unique(profile.df.full\$LEGEND))
-#gp <- gp + scale_color_manual(values = viridis(length(as.factor(unique(profile.df.full\$data()\$LEGEND)))), labels = unique(profile.df.full\$data()\$LEGEND))
-#gp <- gp + guides(color = FALSE)
-gp <- gp + guides(linetype = FALSE)
-gp <- gp + theme(legend.title=element_text(size=12), legend.text=element_text(size=11))
-";
-#  $self->setRPostscript($post);
-
   my $plotlyConfig = "
-#this is the fold change plot
-y.max <- 1000
 x.max <- 1000
-
-y.max <- max(y.max, as.numeric(profile.df.full\$VALUE), na.rm = TRUE)
-x.max <- max(x.max, as.numeric(profile.df.full\$ELEMENT_NAMES_NUMERIC), na.rm = TRUE)
-
-#myPlotly <- plot_ly(data = profile.df.full, x = ~ELEMENT_NAMES_NUMERIC, y = ~VALUE, color = ~LEGEND, legendgroup = ~LEGEND, showlegend = FALSE, text = ~TOOLTIP) %>% 
-#  layout(xaxis = list(title = \"FPKM - Sample 1\", 
-#		      range = c(log10(0.008), log10(x.max)+1),
-#		      type = \"log\"),
-#         yaxis = list(title = \"FPKM - Sample 2\", 
-#		      range = c(log10(0.008), log10(y.max)+1),
-#                      type = \"log\"),
-         #legend = list(orientation = \"h\", 
-         #              xanchor = \"center\", 
-         #              x = 0.5, 
-         #              yanchor = \"top\", 
-         #              y = -0.3),
-#         margin = list(l = 40, 
-#                       r = 10, 
-#                       b = 50, 
-#                       t = 40, 
-#                       pad = 4)
-#  ) %>%
-#  highlight(on = \"plotly_selected\") %>%
-  #add_annotations(
-  #    yref=\"paper\", 
-  #    xref=\"paper\", 
-  #    y=1.1, 
-  #    x=0, 
-  #    text=\"RNASeq Transcription Summary - $id\", 
-  #    showarrow=F, 
-  #    font=list(size=14,
-  #              color=\"red\")
-  #  ) %>% 
-#    config(displaylogo = FALSE, 
-#           collaborate = FALSE)
-
-vline <- list(type = \"line\", 
-              y0 = 0, 
-              y1 = 1, 
-              yref = \"paper\",
-              x0 = 1, 
-              x1 = 1, 
-              line = list(color = \"black\",
-                          dash = \"dash\")
-  )
-
-hline <- list(type = \"line\", 
-              x0 = 0, 
-              x1 = 1, 
-              xref = \"paper\",
-              y0 = 1, 
-              y1 = 1, 
-              line = list(color = \"black\",
-                          dash = \"dash\")
-  )
-
-dline <- list(type = \"line\",
-              x0 = 0.00001,
-              x1 = x.max * 100,
-              y0 = 0.00002,
-              y1 = x.max * 200,
-	      line = list(color = \"black\",
-                          dash = \"dot\")
-  )
-
-dline2 <- list(type = \"line\",
-               x0 = 0.00002,
-               x1 = x.max * 200,
-               y0 = 0.00001,
-               y1 = x.max * 100,
-               line = list(color = \"black\",
-                           dash = \"dot\")
-  )
-
-#myPlotly <- myPlotly %>%
-#  layout(shapes = list(vline, hline, dline, dline2))
-
-#myPlotly <- myPlotly %>% 
-#  add_annotations(
-#    x = 0,
-#    y = .9,
-#    xref = \"x\",
-#    yref = \"paper\",
-#    text = \"FPKM = 1\",
-#    showarrow = T,
-#    ax = 40,
-#    ay = -40
-#  ) %>% 
-#  add_annotations(
-#    x = log10(.02),
-#    y = log10(.02) + log10(2),
-#    xref = \"x\",
-#    yref = \"y\",
-#    text = \"+/- 2 fold change\",
-#    showarrow = T,
-#    ax = 0,
-#    ay = -60
-#  )
-
-#this is the jittered box plot
-x.max <- 1000
-x.max <- max(x.max, as.numeric(profile.df.orig\$VALUE + 1), na.rm = TRUE)
+x.max <- max(x.max, as.numeric(profile.df.full\$VALUE + 1), na.rm = TRUE)
 
 if (x.max > 1000) {
   x.max <- 1.2*x.max
 }
 
-myColors <- viridis(uniqueN(profile.df.orig\$LEGEND), begin = .1, end = .9)
-myOpaqueColors <- viridis(uniqueN(profile.df.orig\$LEGEND), begin = .1, end = .9, alpha=.8)
-myTextColors <- c(rep(\"white\", floor(length(myColors)/2)), rep(\"black\", ceiling(length(myColors)/2)))
-colors.df <- data.table(\"LEGEND\" = unique(profile.df.orig\$LEGEND), \"COLOR\" = paste0(myOpaqueColors, \"|\", myTextColors))
-profile.df.orig <- merge(profile.df.orig, colors.df, by = \"LEGEND\")
+myColors <- rep(\"#38588CFF\", uniqueN(profile.df.full\$LEGEND))
+myOpaqueColors <- rep(\"#38588CCC\", uniqueN(profile.df.full\$LEGEND))
+myTextColors <- rep(\"white\", uniqueN(profile.df.full\$LEGEND))
+colors.df <- data.table(\"LEGEND\" = unique(profile.df.full\$LEGEND), \"COLOR\" = paste0(myOpaqueColors, \"|\", myTextColors))
+profile.df.full <- merge(profile.df.full, colors.df, by = \"LEGEND\")
+profile.df.full\$COLOR <- paste0(profile.df.full\$COLOR, \"|\", profile.df.full\$DATASET_PRESENTER_ID)
 
-myPlotly <- plot_ly(data = profile.df.orig, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", type = \"box\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .7) %>% 
+myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
   layout(xaxis = list(title = \"log2(FPKM + 1)\", 
 		      range = c(log2(1), log2(x.max) + 2),
 		      dtick = 2),
@@ -1324,14 +1187,26 @@ myPlotly <- plot_ly(data = profile.df.orig, x = ~log2(VALUE + 1), y = ~LEGEND, c
                            color=\"red\")) %>%
   highlight(on = \"plotly_selected\") %>%
   add_annotations(x = log2(1),
-                 y = unique(profile.df.orig\$LEGEND),
-                 text = unique(profile.df.orig\$LEGEND),
+                 y = unique(profile.df.full\$LEGEND),
+		 text = unique(profile.df.full\$LEGEND),
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#or some similar thing to build a tooltip w a link
+#keep in mind events on expt labels conflict with the boxes
+#also remember to add hovertext to the expt annotations for the buttons below
+#R was giving me issues with special characters, may try just building w js below
+#                 hovertext = paste0(
+#     			 '<a href=\\'',
+#         		 '#ExpressionGraphs__', 
+#			 unique(profile.df.full\$DATASET_PRESENTER_ID),
+#			 '\\'>Dataset Expression Graphs</a>'),
+		 hovertext = unique(profile.df.full\$TABLE),
                  xref = \"x\",
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
-                 height = 40,
-                 valign = \"top\") %>%
+		 yshift = 15,
+                 valign = \"top\",
+		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
          collaborate = FALSE)
 
@@ -1345,24 +1220,20 @@ annotationJS <- \"function(el) {
 	else
 		return false;
       }
- 
+
+      //loop through experiments in plot element and get fpkm from log
       var elData = el.data;
       var xData = [];
       var xFPKM = [];
-      var xLogFPKM = [];
       elData.forEach(function(expt) {
   	xData.push(expt.x);
 	exptFPKM = [];
-	exptLogFPKM = [];
         expt.x.forEach(function(x) {
 	  exptFPKM.push(Math.pow(2,x)-1);
         });
 	xFPKM.push(exptFPKM);
-        exptFPKM.forEach(function(x) {
-          exptLogFPKM.push(getLog2(x));
-        });
-        xLogFPKM.push(exptLogFPKM);
       });      
+
       var range = el.layout.xaxis.range;
 
       var annotations = el.layout.annotations;
@@ -1383,41 +1254,16 @@ annotationJS <- \"function(el) {
           x: 0,
           y: annotations[i].y,
           text: annotations[i].text,
+	  hovertext: annotations[i].hovertext,
           xref: 'x',
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
-          height: 40,
-          valign: 'top'
+          yshift: 15,
+          valign: 'top',
+	  name: annotations[i].name
 	};
 	linearAnnotations.push(ann);
-      }
-
-      var logAnnotations = [];
-      logAnnotations[0] = {
-        yref: 'paper', 
-        xref: 'paper', 
-        y: 1.1, 
-        x: 0, 
-        text: annotations[0].text, 
-        showarrow: false, 
-        font: {size: 14,
-               color: 'red'}
-      };
-      var i;
-      for (i = 2; i < annotations.length; i++) {
-        var ann = {  
-          x: getLog2(.01),
-          y: annotations[i].y,
-          text: annotations[i].text,
-          xref: 'x',
-          yref: 'y',
-          xanchor: 'left',
-          showarrow: false,
-          height: 40,
-          valign: 'top'
-	};
-	logAnnotations.push(ann);
       }
 
 	annotations.shift();
@@ -1429,15 +1275,7 @@ annotationJS <- \"function(el) {
                        {xaxis: {title: 'log2(FPKM + 1)',
                                 range: range},
 			annotations: annotations}],
-                label: 'log2(FPKM + 1)',
-                method: 'update'
-            },
-	    {
-                args: [{x: xLogFPKM},
-                       {xaxis: {title: 'log2(FPKM)',
-                                range: [getLog2(.008), range[1]]},
-                        annotations: logAnnotations}],
-                label: 'log2(FPKM)',
+                label: 'Log2 Scale',
                 method: 'update'
             },
             {
@@ -1445,26 +1283,46 @@ annotationJS <- \"function(el) {
                        {xaxis: {title: 'FPKM',
                                 range: [0, Math.pow(2,range[1]-2)]},
 			annotations: linearAnnotations}],
-                label: 'FPKM',
+                label: 'Linear Scale',
                 method: 'update'
             }
         ],
         showactive: true,
 	active: 0,
-        type: 'buttons'
+        type: 'buttons',
+        y: .75,
+	x: -.12,
+	xanchor: 'left'
+    },
+    {
+        buttons: [
+	    {
+                args: [{annotations: el.layout.annotations}],
+		label: '<br>Remove<br> Sample<br> Labels<br>',
+                method: 'relayout'
+            }
+        ],
+        showactive: false,
+        active: 0,
+        type: 'buttons',
+        y: 1,
+	x: -.12,
+	xanchor: 'left'
     }];
 
     Plotly.relayout(el.id, {updatemenus: updatemenus});
 
       el.on('plotly_click', function(d) {
   	var ptsData = d.points[0].data;
-	console.log('Click: ', ptsData)
+	console.log('Click: ', ptsData);
 	
 	var i;
 	var annArray = [];
 	var foundDup = false;
 	for (i = 0; i < ptsData.customdata.length; i++) {
-//	  if (isEven(i)) {
+	  if (!(Array.isArray(ptsData.text))) {
+	    ptsData.text = [ptsData.text];
+	  }
 	    var ann = {
               bgcolor: ptsData.customdata[i].split('|')[0],
               bordercolor: 'black',
@@ -1473,7 +1331,7 @@ annotationJS <- \"function(el) {
               ax: ptsData.x[i],
               axref: 'x',
               clicktoshow: 'onoff',
-              font: {size: 10,
+              font: {size: 12,
                      color: ptsData.customdata[i].split('|')[1]},
               textangle: 60,
               text: ptsData.text[i],
@@ -1484,27 +1342,6 @@ annotationJS <- \"function(el) {
               xanchor: 'left',
               showarrow: true
 	    };
-//	  } else {
-//	    var ann = {
-//              bgcolor: ptsData.customdata[i].split('|')[0],
-//              bordercolor: 'black',
-//              arrowsize: .5,
-//              ay: -30,
-//              ax: ptsData.x[i],
-//              axref: 'x',
-//              clicktoshow: 'onoff',
-//              font: {size: 10,
-//                     color: ptsData.customdata[i].split('|')[1]},
-//              textangle: -120,
-//              text: ptsData.text[i],
-//              x: ptsData.x[i],
-//              y: ptsData.y[i],
-//              xref: 'x',
-//              yref: 'y',
-//              xanchor: 'left',
-//              showarrow: true
-//            };
-//	  }
           
           // delete instead if already exists
 	  el.layout.annotations.forEach(
@@ -1520,9 +1357,20 @@ annotationJS <- \"function(el) {
 
 	Plotly.relayout(el.id, {annotations: el.layout.annotations.concat(annArray)});
       })
+
+	el.on('plotly_clickannotation', function(d) {
+	  console.log('Click annotation: ', d);
+	})
 }\"
 
 myPlotly <- myPlotly %>% onRender(annotationJS)
+
+#myPlotly <- list(
+# 	      tags\$head(
+#      		tags\$style(\".js-plotly-plot .plotly .modebar {left: 1%;}\")
+#    	      ),
+#    	      myPlotly
+#	    )    
 ";
   $self->setPlotlyCustomConfig($plotlyConfig);
  
