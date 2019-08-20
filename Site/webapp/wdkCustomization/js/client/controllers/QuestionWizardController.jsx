@@ -19,6 +19,7 @@ import {
 import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { Dialog } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
@@ -27,6 +28,8 @@ import { isMulti, isRange } from 'wdk-client/Components/AttributeFilter/Attribut
 import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { synchronized } from 'wdk-client/Utils/PromiseUtils';
 import { preorder } from 'wdk-client/Utils/TreeUtils';
+import * as StrategyActions from 'wdk-client/Actions/StrategyActions';
+import { DEFAULT_STEP_WEIGHT, DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
 
 import QuestionWizard from '../components/QuestionWizard';
 import {
@@ -37,6 +40,7 @@ import {
   setFilterPopupPinned,
   resetParamValues
 } from '../util/QuestionWizardState';
+import {addStep} from 'wdk-client/Utils/StrategyUtils';
 
 const natSortComparator = natsort();
 
@@ -359,7 +363,90 @@ class QuestionWizardController extends ViewController {
   }
 
   onSubmit() {
-    console.log('TODO - Submit logic');
+    this.props.dispatch(async ({ wdkService, getState }) => {
+      const { submissionMetadata } = this.props;
+      // submissionMetadata.type =
+      //   | "create-strategy"
+      //   | "add-binary-step"
+      //   | "add-unary-step"
+      //   | "submit-custom-form"
+      //   | "edit-step"
+
+      if (submissionMetadata.type === 'edit-step') {
+        // patch step's searchConfig
+        return StrategyActions.requestUpdateStepSearchConfig(
+          submissionMetadata.strategyId,
+          submissionMetadata.stepId,
+          {
+            ...submissionMetadata.previousSearchConfig,
+            parameters: this.state.paramValues
+          }
+        );
+      }
+
+      // Each case below requires a new step to be created...
+      const searchSpec = {
+        searchName: this.props.questionName,
+        searchConfig: {
+          parameters: this.state.paramValues,
+          wdkWeight: DEFAULT_STEP_WEIGHT
+        },
+        customName: this.state.customName || this.state.question.shortDisplayName
+      };
+
+      const stepResponse = await wdkService.createStep(searchSpec);
+
+      if (submissionMetadata.type === 'create-strategy') {
+        // create a new step, then new strategy, then go to the strategy panel
+        return StrategyActions.requestCreateStrategy({
+          isSaved: false,
+          isPublic: false,
+          stepTree: { stepId: stepResponse.id },
+          name: DEFAULT_STRATEGY_NAME
+        });
+      }
+
+      if (submissionMetadata.type === 'add-binary-step') {
+        // create steps and patch strategy's stepTree
+        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+        const { operatorQuestionState } = this.props;
+        if (operatorQuestionState == null || operatorQuestionState.questionStatus !== 'complete') {
+          throw new Error(`Tried to create an operator step using a nonexistent or unloaded question: ${submissionMetadata.operatorSearchName}`);
+        }
+        const operatorParamValues = operatorQuestionState.paramValues;
+        const operatorStepResponse = await wdkService.createStep({
+          searchName: submissionMetadata.operatorSearchName,
+          searchConfig: {
+            parameters: operatorParamValues
+          }
+        });
+        return StrategyActions.requestPutStrategyStepTree(
+          submissionMetadata.strategyId,
+          addStep(
+            strategy.stepTree,
+            submissionMetadata.addType,
+            operatorStepResponse.id,
+            { stepId: stepResponse.id }
+          )
+        );
+      }
+
+      if (submissionMetadata.type === 'add-unary-step') {
+        // create step and patch strategy's stepTree
+        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+        return StrategyActions.requestPutStrategyStepTree(
+          submissionMetadata.strategyId,
+          addStep(
+            strategy.stepTree,
+            submissionMetadata.addType,
+            stepResponse.id,
+            undefined
+          )
+        );
+      }
+
+      throw new Error(`Unknonwn submissionMetadata type: "${submissionMetadata.type}"`);
+    });
   }
 
   _initializeActiveGroupParams(activeGroup) {
@@ -761,14 +848,6 @@ class QuestionWizardController extends ViewController {
     )
   }
 
-  render() {
-    return (
-      <div>
-        {super.render()}
-      </div>
-    )
-  }
-
 }
 
 QuestionWizardController.propTypes = {
@@ -784,7 +863,16 @@ QuestionWizardController.defaultProps = {
   }
 }
 
-export default wrappable(QuestionWizardController);
+function mapStateToProps(state, props) {
+  const { submissionMetadata } = props;
+  if (submissionMetadata.type === 'add-binary-step') {
+    const operatorQuestionState = state.question.questions[submissionMetadata.operatorSearchName];
+    return { operatorQuestionState };
+  }
+  return {};
+}
+
+export default connect(mapStateToProps)(wrappable(QuestionWizardController));
 
 
 /**
