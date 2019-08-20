@@ -1,9 +1,11 @@
-import { 
+import {
   HistogramAnalysisPlugin, 
   WordCloudAnalysisPlugin, 
   StepAnalysisViewPlugin,
   ResultTableSummaryViewPlugin, 
 } from 'wdk-client/Plugins';
+
+import QuestionWizardPlugin from './plugins/QuestionWizardPlugin';
 
 export default [
   {
@@ -26,4 +28,9 @@ export default [
     name: '_default',
     component: ResultTableSummaryViewPlugin
   },
+  {
+    type: 'questionController',
+    test: ({ question }) => question && question.properties.websiteProperties && question.properties.websiteProperties.includes('useWizard'),
+    component: QuestionWizardPlugin
+  }
 ];

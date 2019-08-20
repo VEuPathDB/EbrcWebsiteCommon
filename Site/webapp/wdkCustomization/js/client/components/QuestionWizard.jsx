@@ -15,6 +15,7 @@ import {
 } from '../util/QuestionWizardState';
 
 import FilterSummary from './FilterSummary';
+import QuestionWizardPropTypes from './QuestionWizardPropTypes';
 
 /**
  * QuestionWizard component
@@ -54,50 +55,12 @@ function QuestionWizard(props) {
       ) : (
         <ActiveGroup {...props} />
       )}
-      <input type="hidden" name="questionFullName" value={question.fullName}/>
-      <input type="hidden" name="questionSubmit" value="Get Answer"/>
-      {question.parameters.map(param => (
-        <input key={param.name} type="hidden" name={`value(${param.name})`} value={paramValues[param.name]}/>
-      ))}
     </div>
 
   )
 }
 
-const wizardPropTypes = {
-  question: PropTypes.object.isRequired,
-  paramValues: PropTypes.object.isRequired,
-  paramUIState: PropTypes.object.isRequired,
-  groupUIState: PropTypes.object.isRequired,
-  recordClass: PropTypes.object.isRequired,
-  activeGroup: PropTypes.object,
-  initialCount: PropTypes.number
-};
-
-const wizardEventHandlerPropTypes = {
-  onGroupSelect: PropTypes.func.isRequired,
-  onInvalidGroupCountsUpdate: PropTypes.func.isRequired,
-  onFilterPopupVisibilityChange: PropTypes.func.isRequired,
-  onFilterPopupPinned: PropTypes.func.isRequired
-}
-
-const parameterEventHandlers = {
-  onOntologyTermSelect: PropTypes.func.isRequired,
-  onOntologyTermSummaryUpdate: PropTypes.func.isRequired,
-  onOntologyTermSort: PropTypes.func.isRequired,
-  onOntologyTermSearch: PropTypes.func.isRequired,
-  onParamValueChange: PropTypes.func.isRequired,
-  onParamStateChange: PropTypes.func.isRequired
-}
-
-export const propTypes = QuestionWizard.propTypes = {
-  customName: PropTypes.string,
-  isAddingStep: PropTypes.bool.isRequired,
-  showHelpText: PropTypes.bool.isRequired,
-  wizardState: PropTypes.shape(wizardPropTypes).isRequired,
-  wizardEventHandlers: PropTypes.shape(wizardEventHandlerPropTypes),
-  parameterEventHandlers: PropTypes.shape(parameterEventHandlers)
-};
+QuestionWizard.propTypes = QuestionWizardPropTypes;
 
 export default wrappable(QuestionWizard);
 
@@ -118,7 +81,8 @@ function Navigation(props) {
     wizardEventHandlers: {
       onGroupSelect,
       onInvalidGroupCountsUpdate,
-      onFilterPopupVisibilityChange
+      onFilterPopupVisibilityChange,
+      onSubmit
     },
     customName,
     showHelpText,
@@ -213,9 +177,11 @@ function Navigation(props) {
             )])}
             <div className={makeClassName('SubmitContainer')}>
               <button
+                type="button"
                 disabled={updatingParamName != null}
                 className={makeClassName('SubmitButton')}
                 title="View the results of your search for further analysis."
+                onClick={() => onSubmit()}
               >
                 { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
                 : finalCountState.valid === false ? `View ? ${recordDisplayName}`

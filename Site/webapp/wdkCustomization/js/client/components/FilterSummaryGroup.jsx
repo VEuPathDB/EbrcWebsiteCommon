@@ -25,7 +25,7 @@ function FilterSummaryGroup(props) {
           // separate filter params from other params
           .reduce(([partitions], entry) => {
             const param = getParameter(wizardState, entry[0]);
-            if (param.type === 'FilterParamNew') {
+            if (param.type === 'filter') {
               partitions[0].push(entry);
             }
             else {

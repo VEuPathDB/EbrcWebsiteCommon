@@ -10,7 +10,7 @@ import { makeQuestionWizardClassName as makeClassName } from '../util/classNames
 export default wrappable(FilterSummaryParameter);
 
 function FilterSummaryParameter(props) {
-  return props.parameter.type === 'FilterParamNew'
+  return props.parameter.type === 'filter'
     ? <FilterParamSummary {...props} />
     : (
       <div className={makeClassName('ParameterSummary')}>

@@ -1,6 +1,4 @@
 /*global wdk*/
-
-import $ from 'jquery';
 import {
   ary,
   debounce,
@@ -75,8 +73,6 @@ class QuestionWizardController extends ViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = synchronized(debounce(this._commitParamValueChange, 750));
-
-    this.childRef = React.createRef();
   }
 
   getWizardEventHandlers() {
@@ -85,7 +81,8 @@ class QuestionWizardController extends ViewController {
       'onInvalidGroupCountsUpdate',
       'onFilterPopupVisibilityChange',
       'onFilterPopupPinned',
-      'onParamValuesReset'
+      'onParamValuesReset',
+      'onSubmit'
     ]);
   }
 
@@ -97,52 +94,57 @@ class QuestionWizardController extends ViewController {
       'onOntologyTermSummaryUpdate',
       'onParamStateChange',
       'onParamValueChange',
+      'onSubmit'
     ]);
   }
 
-  loadQuestion(props) {
-    const { questionName, wdkService, isRevise, paramValues } = props;
+  async loadQuestion() {
+    // clear state
+    this.setState(state => mapValues(state, () => undefined));
+    
+    const { questionName, wdkService, submissionMetadata } = this.props;
 
-    const question$ = isRevise ?
-      wdkService.getQuestionGivenParameters(questionName, paramValues) :
-      wdkService.getQuestionAndParameters(questionName);
-
-    const recordClass$ = question$.then(question => {
-      return wdkService.findRecordClass(rc => rc.name === question.recordClassName);
-    });
-
-    Promise.all([ question$, recordClass$ ]).then(
-      ([ question, recordClass ]) => {
-        this.setState(createInitialState(question, recordClass, paramValues), () => {
-          document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
-
-          // store <string, Parameter>Map for quick lookup
-          this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
-
-          const defaultParamValues = getDefaultParamValues(this.state);
-          const lastConfiguredGroup = Seq.from(question.groups)
-            .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
-            .last();
-          const configuredGroups = lastConfiguredGroup == null ? []
-            : Seq.from(question.groups)
-                .takeWhile(group => group !== lastConfiguredGroup)
-                .concat(Seq.of(lastConfiguredGroup));
-
-          this._updateGroupCounts(configuredGroups);
-          this._getAnswerCount({
-            questionName: question.fullName,
+    try {
+      const step = submissionMetadata.type === 'edit-step'
+        ? await wdkService.findStep(submissionMetadata.stepId)
+        : undefined;
+      const question = await wdkService.getQuestionAndParameters(questionName);
+      const recordClass = await wdkService.findRecordClass(rc => rc.urlSegment === question.outputRecordClassName);
+      const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
+      // FIXME Deal with invalid steps
+      this.setState(createInitialState(question, recordClass, paramValues), () => {
+        document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+  
+        // store <string, Parameter>Map for quick lookup
+        this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
+  
+        const defaultParamValues = getDefaultParamValues(this.state);
+        const lastConfiguredGroup = Seq.from(question.groups)
+          .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
+          .last();
+        const configuredGroups = lastConfiguredGroup == null ? []
+          : Seq.from(question.groups)
+              .takeWhile(group => group !== lastConfiguredGroup)
+              .concat(Seq.of(lastConfiguredGroup));
+  
+        this._updateGroupCounts(configuredGroups);
+        this._getAnswerCount({
+          searchName: question.urlSegment,
+          searchConfig: {
             parameters: defaultParamValues
-          }).then(initialCount => {
-            this.setState({ initialCount });
-          });
-
-          this.onGroupSelect(question.groups[0]);
+          }
+        }).then(initialCount => {
+          this.setState({ initialCount });
         });
-      },
-      error => {
-        this.setState({ error });
-      }
-    );
+  
+        this.onGroupSelect(question.groups[0]);
+      });
+    }
+
+    catch(error) {
+      this.setState({ error });
+    }
+      
   }
 
   // Top level action creator methods
@@ -214,7 +216,7 @@ class QuestionWizardController extends ViewController {
     this.setState({ paramUIState }, () => {
       Seq.from(this.state.activeGroup.parameters)
         .map(paramName => this.parameterMap.get(paramName))
-        .filter(param => param.type === 'FilterParamNew')
+        .filter(param => param.type === 'filter')
         .forEach(param => {
           this.onOntologyTermSelect(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
         })
@@ -319,7 +321,7 @@ class QuestionWizardController extends ViewController {
       this.setState(set(['groupUIState', param.group, 'loading'], true));
     }
 
-    if (param.type === 'FilterParamNew') {
+    if (param.type === 'filter') {
       // for each changed member updated member field, resort
       let paramState = this.state.paramUIState[param.name];
       let { filters = [] } = JSON.parse(paramValue);
@@ -356,11 +358,15 @@ class QuestionWizardController extends ViewController {
     }
   }
 
+  onSubmit() {
+    console.log('TODO - Submit logic');
+  }
+
   _initializeActiveGroupParams(activeGroup) {
     activeGroup.parameters.forEach(paramName => {
       const param = this.state.question.parameters.find(param => param.name === paramName);
       if (param == null) throw new Error("Could not find param `" + paramName + "`.");
-      if (param.type === 'FilterParamNew') {
+      if (param.type === 'filter') {
         const {
           activeOntologyTerm,
           fieldStates,
@@ -411,7 +417,7 @@ class QuestionWizardController extends ViewController {
   }
 
   _handleParamValueChange(param, paramValue, prevParamValue) {
-    if (param.type === 'FilterParamNew') {
+    if (param.type === 'filter') {
       const { filters = [] } = JSON.parse(paramValue);
       const { filters: oldFilters = [] } = JSON.parse(prevParamValue);
       const { ontology } = this.state.paramUIState[param.name];
@@ -468,9 +474,9 @@ class QuestionWizardController extends ViewController {
           ])
           .reduce(ary(flow, 2), identity)
     ).then(updater =>
-      // Then, invalidate ontologyTermSummaries for dependent FilterParamNew params
+      // Then, invalidate ontologyTermSummaries for dependent filter params
       Seq.from(this._getDeepParameterDependencies(rootParam))
-        .filter(parameter => parameter.type === 'FilterParamNew')
+        .filter(parameter => parameter.type === 'filter')
         .map(parameter =>
           update(
             ['paramUIState', parameter.name, 'fieldStates'],
@@ -518,24 +524,26 @@ class QuestionWizardController extends ViewController {
       .map(groups => [
         groups.last(),
         {
-          questionName: this.state.question.fullName,
-          parameters: groups.reduce((paramValues, group) => {
-            return group.parameters.reduce((paramValues, paramName) => {
-              return Object.assign(paramValues, {
-                [paramName]: this.state.paramValues[paramName]
-              });
-            }, paramValues);
-          }, Object.assign({}, defaultParamValues))
+          searchName: this.state.question.urlSegment,
+          searchConfig: {
+            parameters: groups.reduce((paramValues, group) => {
+              return group.parameters.reduce((paramValues, paramName) => {
+                return Object.assign(paramValues, {
+                  [paramName]: this.state.paramValues[paramName]
+                });
+              }, paramValues);
+            }, Object.assign({}, defaultParamValues))
+          }
         }
       ])
       .map(([ group, answerSpec ]) => {
         const params = group.parameters.map(paramName => this.parameterMap.get(paramName));
-        // TODO Use countPredictsAnswerCount FilterParamNew property
-        return (params.length === 1 && params[0].type === 'FilterParamNew'
+        // TODO Use countPredictsAnswerCount filter property
+        return (params.length === 1 && params[0].type === 'filter'
           ? this._getFilterCounts(
               params[0].name,
               JSON.parse(this.state.paramValues[params[0].name]).filters,
-              answerSpec.parameters
+              answerSpec.searchConfig.parameters
             ).then(counts => counts.filtered)
 
           : this._getAnswerCount(answerSpec)
@@ -721,26 +729,13 @@ class QuestionWizardController extends ViewController {
   }
 
   componentDidMount() {
-    this.loadQuestion(this.props);
-
-    // FIXME Figure out to render form element in `QuestionWizard` component
-    const $form = $(this.childRef.current).closest('form');
-    $form
-      .on('submit', () => {
-        $form.block()
-      })
-      .on(wdk.addStepPopup.SUBMIT_EVENT, () => {
-        $form.block()
-      })
-      .on(wdk.addStepPopup.CANCEL_EVENT, () => {
-        $form.unblock()
-      })
-      .prop('autocomplete', 'off')
-      .attr('novalidate', '');
+    this.loadQuestion();
   }
 
-  componentDidWillReceiveProps(nextProps) {
-    this.loadQuestion(nextProps);
+  componentDidUpdate(prevProps) {
+    if (prevProps.questionName !== this.props.questionName) {
+      this.loadQuestion();
+    }
   }
 
   renderView() {
@@ -758,8 +753,8 @@ class QuestionWizardController extends ViewController {
             wizardEventHandlers={this.wizardEventHandlers}
             parameterEventHandlers={this.parameterEventHandlers}
             customName={this.props.customName}
-            isAddingStep={this.props.isAddingStep}
-            showHelpText={!this.props.isRevise}
+            isAddingStep={this.props.submissionMetadata.type.startsWith('add-')}
+            showHelpText={!this.props.submissionMetadata.type === 'edit-step'}
           />
         )}
       </React.Fragment>
@@ -768,7 +763,7 @@ class QuestionWizardController extends ViewController {
 
   render() {
     return (
-      <div ref={this.childRef}>
+      <div>
         {super.render()}
       </div>
     )
@@ -779,10 +774,8 @@ class QuestionWizardController extends ViewController {
 QuestionWizardController.propTypes = {
   wdkService: PropTypes.object.isRequired,
   questionName: PropTypes.string.isRequired,
-  paramValues: PropTypes.object.isRequired,
-  isRevise: PropTypes.bool.isRequired,
-  isAddingStep: PropTypes.bool.isRequired,
-  customName: PropTypes.string
+  /* See  import { SubmissionMetadata } from 'wdk-client/Actions/QuestionActions' */
+  submissionMetadata: PropTypes.object.isRequired,
 }
 
 QuestionWizardController.defaultProps = {
