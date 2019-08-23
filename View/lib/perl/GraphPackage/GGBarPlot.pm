@@ -494,6 +494,10 @@ if($hasFacets) {
 
 #}
 
+if (nchar(levels(profile.df.full\$NAME)[1]) >= 20) {
+  gp = gp + theme(plot.margin = margin(l=40))
+}
+
 #postscript
 $rPostscript
 
