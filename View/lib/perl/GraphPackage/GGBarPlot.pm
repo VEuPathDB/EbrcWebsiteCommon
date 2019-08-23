@@ -494,6 +494,10 @@ if($hasFacets) {
 
 #}
 
+if (nchar(levels(profile.df.full\$NAME)[1]) >= 20) {
+  gp = gp + theme(plot.margin = margin(l=40))
+}
+
 #postscript
 $rPostscript
 
@@ -610,7 +614,7 @@ sub new {
 
   if($wantLogged) {
     $self->addAdjustProfile('profile.df.full$VALUE = log2(profile.df.full$VALUE + 1);');
-    $self->setYaxisLabel('FPKM (log2)');
+    $self->setYaxisLabel('log2(FPKM + 1)');
     $self->setIsLogged(1);
     $self->setDefaultYMax(4);
     $self->setSkipStdErr(1);
