@@ -1162,6 +1162,11 @@ if (x.max > 1000) {
   x.max <- 1.2*x.max
 }
 
+myYShift <- 15
+if (uniqueN(profile.df.full\$LEGEND) < 6) {
+  myYShift <- 25
+}
+
 myColors <- rep(\"#38588CFF\", uniqueN(profile.df.full\$LEGEND))
 myOpaqueColors <- rep(\"#38588CCC\", uniqueN(profile.df.full\$LEGEND))
 myTextColors <- rep(\"white\", uniqueN(profile.df.full\$LEGEND))
@@ -1207,7 +1212,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
-		 yshift = 15,
+		 yshift = myYShift,
                  valign = \"top\",
 		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
@@ -1262,7 +1267,7 @@ annotationJS <- \"function(el) {
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
-          yshift: 15, 
+          yshift: annotations[i].yshift, 
           valign: 'top',
 	  name: annotations[i].name
 	};
