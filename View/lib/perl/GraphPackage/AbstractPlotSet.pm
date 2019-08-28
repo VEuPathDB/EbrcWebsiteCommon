@@ -305,6 +305,7 @@ library(tools);
 library(gtools);
 library(plyr);
 library(dplyr);
+library(purrr)
 library(scales);
 library(viridisLite);
 library(tidyr)
@@ -312,6 +313,7 @@ library(plotly)
 library(htmltools)
 library(htmlwidgets)
 library(crosstalk)
+library(data.table)
 library(DT)
 
 $open_R
@@ -619,7 +621,7 @@ if (grepl(file_ext(\"$out_f\"), \"html\")) {
         }
         var tooltiplabx = tooltipx + 5;
         var tooltipy = p.y + 3;
-        var offset = arrayLength * 17 + 5;
+        var offset = arrayLength * 8.5 + 15;
         var svgHeight = document.getElementById("gridSVG").getBBox().height;
         var toolHeight = text.getBBox().height;
         var maxY = svgHeight - toolHeight - 10;

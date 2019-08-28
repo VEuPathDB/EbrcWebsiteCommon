@@ -187,6 +187,8 @@ sub makeProfileCannedQuery {
 
   my $api = eval
   {
+    require EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithDisplayName;
+    EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithDisplayName->import();
     require EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithMetaData;
     EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithMetaData->import();
     require EbrcWebsiteCommon::Model::CannedQuery::Profile;
@@ -258,6 +260,7 @@ sub makeProfileNamesCannedQuery {
   my $profileSetType = $self->getType();
   my $facet = $self->getFacet();
   my $contXAxis = $self->getContXAxis();
+  my $displayName = $self->getDisplayName();
 #  my $idOverride = $self->getIdOverride();
 
 #  if ($idOverride) {
@@ -274,6 +277,14 @@ sub makeProfileNamesCannedQuery {
          Facet => $facet,
          ContXAxis => $contXAxis,
        );
+   } elsif ($displayName ne $profileSetName) {
+     $elementNamesProfile = EbrcWebsiteCommon::Model::CannedQuery::ElementNamesWithDisplayName->new
+      ( Name         => "_names_$suffix",
+        Id           => $id,
+        ProfileSet   => $profileSetName,
+        ProfileType  => $profileSetType,
+	DisplayName  => $displayName,
+      );
    }
    else {
      $elementNamesProfile = EbrcWebsiteCommon::Model::CannedQuery::ElementNames->new
