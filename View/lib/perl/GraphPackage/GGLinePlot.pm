@@ -944,6 +944,11 @@ if ($prtcpnt_sum) {
 }
 
 
+if (nchar(as.character(unique(profile.df.full[[myX]])[1])) >= 18) {
+  gp = gp + theme(plot.margin = margin(l=40))
+}
+
+
 #postscript
 $rPostscript
 
@@ -1191,8 +1196,6 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 		 text = unique(profile.df.full\$LEGEND),
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #or some similar thing to build a tooltip w a link
-#keep in mind events on expt labels conflict with the boxes
-#also remember to add hovertext to the expt annotations for the buttons below
 #R was giving me issues with special characters, may try just building w js below
 #                 hovertext = paste0(
 #     			 '<a href=\\'',
@@ -1259,7 +1262,7 @@ annotationJS <- \"function(el) {
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
-          yshift: 15,
+          yshift: 15, 
           valign: 'top',
 	  name: annotations[i].name
 	};
@@ -1298,7 +1301,7 @@ annotationJS <- \"function(el) {
         buttons: [
 	    {
                 args: [{annotations: el.layout.annotations}],
-		label: '<br>Remove<br> Sample<br> Labels<br>',
+		label: '<br>Remove<br>Sample<br>Labels<br>',
                 method: 'relayout'
             }
         ],
@@ -1314,7 +1317,7 @@ annotationJS <- \"function(el) {
 
       el.on('plotly_click', function(d) {
   	var ptsData = d.points[0].data;
-	console.log('Click: ', ptsData);
+	//console.log('Click: ', ptsData);
 	
 	var i;
 	var annArray = [];
@@ -1358,13 +1361,14 @@ annotationJS <- \"function(el) {
 	Plotly.relayout(el.id, {annotations: el.layout.annotations.concat(annArray)});
       })
 
-	el.on('plotly_clickannotation', function(d) {
-	  console.log('Click annotation: ', d);
-	})
+	//el.on('plotly_clickannotation', function(d) {
+	//  console.log('Click annotation: ', d);
+	//})
 }\"
 
 myPlotly <- myPlotly %>% onRender(annotationJS)
 
+#havent yet figured how to successfully add custom css
 #myPlotly <- list(
 # 	      tags\$head(
 #      		tags\$style(\".js-plotly-plot .plotly .modebar {left: 1%;}\")
