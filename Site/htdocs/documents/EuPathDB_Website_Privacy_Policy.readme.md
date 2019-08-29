@@ -3,18 +3,18 @@
 The EuPathDB Website Privacy Policy is served at the url,
 [https://eupathdb.org/documents/EuPathDB_Website_Privacy_Policy.shtml](https://eupathdb.org/documents/EuPathDB_Website_Privacy_Policy.shtml)
 
-The source file is the Markdown-formated file in our svn repository,
-[`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md`](https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md).
+The source file is the Markdown-formated file in our git repository,
+[`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md`](https://github.com/EuPathDB/EbrcWebsiteCommon/tree/master/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.md).
 
-This Markdown file is converted to the HTML formated file in our svn repository,
-[`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml`](https://cbilsvn.pmacs.upenn.edu/svn/apidb/EbrcWebsiteCommon/trunk/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml),
+This Markdown file is converted to the HTML formated file in our git repository,
+[`EbrcWebsiteCommon/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml`](https://github.com/EuPathDB/EbrcWebsiteCommon/tree/master/Site/htdocs/documents/EuPathDB_Website_Privacy_Policy.shtml),
 by manually running the `pandoc` command (this is not currently part of the website build).
 
 ```
 $ pandoc EuPathDB_Website_Privacy_Policy.md  -o EuPathDB_Website_Privacy_Policy.shtml
 ```
 
-Both files are committed to the svn repo.
+Both files are committed to the git repo.
 
 The use of the separate Markdown-formated file is simply for editing
 convenience. If the designated maintainers of the Policy prefer to work
