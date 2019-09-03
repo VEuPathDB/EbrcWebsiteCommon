@@ -94,7 +94,7 @@ export default function CardList(props) {
       }
     </button>
 
-  const filterInput = isExpandable && isExpanded &&
+  const filterInput = isExpandable &&
     <RealTimeSearchBox
       autoFocus
       className={FILTER_CLASS_NAME}
@@ -106,8 +106,8 @@ export default function CardList(props) {
 
   return (
     <div className={className}>
-      {expandButton}
       {filterInput}
+      {expandButton}  
       {cardList}
       {loadingIndicator}
       {emptyIndicator}
