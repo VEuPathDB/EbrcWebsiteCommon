@@ -1,3 +1,7 @@
+.CardList .wdk-RealTimeSearchBox__withHelp {
+  padding-bottom: 10px;
+}
+
 .CardList {
   align-items: center;
   background-color: $paleBlue;
@@ -17,7 +21,7 @@
     position: relative;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 0;
+/*    padding: 10px 0; */
     margin: 1em 0;
   }
 
