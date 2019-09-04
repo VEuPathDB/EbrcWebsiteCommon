@@ -49,7 +49,7 @@ sub init {
 
 select  rownum as element_order, ps.* FROM (
 SELECT ps.protocol_app_node_name AS name,
-       '<<DisplayName>>' as display_name,
+       q'[<<DisplayName>>]' as display_name,
        dsp.dataset_presenter_id
 FROM  apidbtuning.ProfileSamples ps,
       apidbtuning.DatasetPresenter dsp
