@@ -46,7 +46,7 @@ export default function CardList(props) {
 
   }, [ isExpanded, filterString, additionalClassName ]);
 
-  if (filterString == null || isExpanded == null) return null;
+  if (filterString == null) return null;
 
   const isEmpty = list != null && list.length === 0;
   const className = `${CLASS_NAME} ${isLoading ? LOADING_CLASS_NAME : ''} ` +
@@ -57,7 +57,7 @@ export default function CardList(props) {
     ? Array(5).fill(null).map((_, index) => <PlaceholderCard key={index}/>)
     : list
     .filter(item => {
-      if (!isExpandable || !isExpanded) return true;
+      if (!isExpandable) return true;
       const searchString = getSearchStringForItem(item);
       return searchString.toLowerCase().includes(filterString.toLowerCase());
     })
@@ -94,7 +94,7 @@ export default function CardList(props) {
       }
     </button>
 
-  const filterInput = isExpandable &&
+  const filterInput = isExpandable && 
     <RealTimeSearchBox
       autoFocus
       className={FILTER_CLASS_NAME}
