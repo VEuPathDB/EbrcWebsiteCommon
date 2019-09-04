@@ -417,7 +417,7 @@ for(ii in 1:length(profile.files)) {
   }
 
   if (element.names.files[ii] != \"\") {
-    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
+    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\", quote=\"\");
 
     if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
       message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
