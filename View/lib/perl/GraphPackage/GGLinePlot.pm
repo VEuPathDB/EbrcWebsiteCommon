@@ -1139,7 +1139,6 @@ sub new {
   $self->setForceNoLines(1);
 
   my $adjust = "
-profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
 profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
