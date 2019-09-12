@@ -37,9 +37,11 @@ export function loadBasketCounts() {
  */
 export function loadQuickSearches(quickSearchSpecs) {
   return function run({ wdkService }) {
-    let requests = quickSearchSpecs.map(spec =>
-      wdkService.findQuestion(q => q.urlSegment === spec.name)
-        .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
+    let requests = quickSearchSpecs
+      .filter(spec => !spec.isDisabled)
+      .map(spec =>
+        wdkService.findQuestion(q => q.urlSegment === spec.name)
+          .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
     return Promise.all(requests)
     .then(
       questions => keyBy(questions, 'urlSegment'),

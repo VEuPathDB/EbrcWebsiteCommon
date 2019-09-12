@@ -158,7 +158,7 @@ input.link, button.link, button.wdk-Link {
 
 /* Search boxes */
 textarea,
-input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]):not([class~="wdk-RealTimeSearchBoxInput"]) {
+input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=hidden]):not([type=image]):not([type=radio]):not([type=range]):not([type=reset]):not([type=submit]):not([class~="select2-input"]):not([class~="wdk-RealTimeSearchBoxInput"]):not([disabled]) {
   border: 1px solid #888;
   background: #fafaf9;
 }
@@ -1044,7 +1044,6 @@ a.eupathdb-MenuItemText {
    width: 10em;
    padding: 2px;
    color: black;    /*   #5b5b5b;  */
-   background-color: white;  /*  #eadfd9; */
    font-size: 11px;
    text-align: right;
 }
@@ -1056,7 +1055,6 @@ a.eupathdb-MenuItemText {
 .search-box .textbox{
 	color: #333333;
 	padding: 3px 5px;
-	background-color: #EEEEEE;
 }
 
 .search-box .submit{
