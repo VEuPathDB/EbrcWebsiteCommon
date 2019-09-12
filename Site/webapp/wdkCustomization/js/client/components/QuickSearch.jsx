@@ -170,14 +170,14 @@ class _QuickSearchItem extends Component {
   }
 }
 
-const QuickSearchItem = withRouter(_QuickSearchItem);
-
-QuickSearchItem.propTypes = {
+_QuickSearchItem.propTypes = {
   history: PropTypes.object.isRequired,
   webAppUrl: PropTypes.string.isRequired,
   question: QuestionPropType,
   reference: ReferencePropType.isRequired,
 };
+
+const QuickSearchItem = withRouter(_QuickSearchItem);
 
 function QuickSearch (props) {
   let { references, questions = {}, webAppUrl } = props;
