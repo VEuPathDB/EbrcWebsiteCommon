@@ -58,7 +58,7 @@ _userdb_link_map:
   rm25199s:    rm25199s.login_comment
   rm25199n:    rm25199n.login_comment
   rm9972:      rm9972.login_comment
-  rm35304a:    devn.login_comment
+  rm35304a:    rm35304a.login_comment
   rm35304c:    cedevn.login_comment
   userdb:      vm.userdb
 
