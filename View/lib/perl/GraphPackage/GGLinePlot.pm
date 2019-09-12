@@ -1139,7 +1139,6 @@ sub new {
   $self->setForceNoLines(1);
 
   my $adjust = "
-profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
 profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
@@ -1181,7 +1180,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
          yaxis = list(title = \"Experiment\",
 		      showticklabels = FALSE),
          margin = list(l = 30, 
-                       r = 10, 
+                       r = 30, 
                        b = 50, 
                        t = 100, 
                        pad = 4),

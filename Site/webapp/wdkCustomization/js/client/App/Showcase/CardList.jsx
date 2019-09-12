@@ -106,8 +106,8 @@ export default function CardList(props) {
 
   return (
     <div className={className}>
+      {expandButton}
       {filterInput}
-      {expandButton}  
       {cardList}
       {loadingIndicator}
       {emptyIndicator}
