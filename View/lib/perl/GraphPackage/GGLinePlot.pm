@@ -1180,7 +1180,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
          yaxis = list(title = \"Experiment\",
 		      showticklabels = FALSE),
          margin = list(l = 30, 
-                       r = 10, 
+                       r = 30, 
                        b = 50, 
                        t = 100, 
                        pad = 4),
