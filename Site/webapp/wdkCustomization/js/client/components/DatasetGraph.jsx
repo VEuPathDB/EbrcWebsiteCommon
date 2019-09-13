@@ -2,6 +2,7 @@ import React from 'react';
 import { httpGet } from '../util/http';
 import { CollapsibleSection, Loading } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
+import ExternalResource from './ExternalResource';
 
 /**
  * Renders an Dataset graph with the provided rowData.
@@ -109,15 +110,13 @@ export default class DatasetGraph extends React.PureComponent {
 
   setFacet(myfacet) {
     if (this.state.facet !== myfacet) {
-      this.setState({loading: true,
-         facet: myfacet});
+      this.setState({ facet: myfacet});
     }
   }
 
   setContXAxis(myXAxis) {
     if (this.state.contXAxis !== myXAxis) {
-      this.setState({loading: true,
-               contXAxis: myXAxis});
+      this.setState({ contXAxis: myXAxis});
     }
   }
 
@@ -180,14 +179,15 @@ export default class DatasetGraph extends React.PureComponent {
         <div className="eupathdb-DatasetGraph">
           {visibleGraphs.map(index => {
             let { height, width, visible_part } = graphs[index];
+            let fullUrl = `${imgUrl}&vp=${visible_part}`;
             return (
-              <object
-                style={{ height, width }}
-                data={`${imgUrl}&vp=${visible_part}`}
-                type='image/svg+xml'
-                onLoad={() => this.setState({ loading: false })}
-                onError={() => this.setState({ loading: false, imgError: true })}
-              />
+              <ExternalResource>
+                <object
+                  style={{ height, width }}
+                  data={fullUrl}
+                  type='image/svg+xml'
+                />
+              </ExternalResource>
             );
           })}
           {this.renderLoading()}
@@ -253,7 +253,7 @@ hook: HostResponseGraphs
                     View in genome browser
                 </a>
               </div>
-              <img width="450" src={covImgUrl}/>
+              <ExternalResource><img width="450" src={covImgUrl}/></ExternalResource>
             </CollapsibleSection>
           : null}
 
@@ -270,7 +270,7 @@ hook: HostResponseGraphs
                   View in genome browser
                 </a>
               </div>
-              <iframe src={specialImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="185" scrolling="no" allowfullscreen="false" />
+              <ExternalResource><iframe src={specialImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="185" scrolling="no" allowfullscreen="false" /></ExternalResource>
               <br></br><br></br>
             </CollapsibleSection>
           : null}
@@ -332,7 +332,6 @@ hook: HostResponseGraphs
                   type="checkbox"
                   checked={visibleGraphs.includes(index)}
                   onChange={e => this.setState({
-                    loading: e.target.checked,
                     visibleGraphs: e.target.checked
                       ? visibleGraphs.concat(index)
                       : visibleGraphs.filter(i => i !== index)
@@ -349,7 +348,7 @@ hook: HostResponseGraphs
               <input
                 type="checkbox"
                 checked={showLogScale}
-                onChange={e => this.setState({ loading: true, showLogScale: e.target.checked })}
+                onChange={e => this.setState({ showLogScale: e.target.checked })}
               /> Show log Scale (not applicable for log(ratio) graphs, percentile graphs or data tables)
             </label>
           </div>
