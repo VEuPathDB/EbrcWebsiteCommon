@@ -5,6 +5,7 @@ import {
   ResultTableSummaryViewPlugin, 
 } from 'wdk-client/Plugins';
 
+import { EbrcDefaultQuestionForm } from './components/questions/EbrcDefaultQuestionForm';
 import QuestionWizardPlugin from './plugins/QuestionWizardPlugin';
 
 export default [
@@ -32,5 +33,9 @@ export default [
     type: 'questionController',
     test: ({ question }) => question && question.properties.websiteProperties && question.properties.websiteProperties.includes('useWizard'),
     component: QuestionWizardPlugin
+  },
+  {
+    type: 'questionForm',
+    component: EbrcDefaultQuestionForm
   }
 ];
