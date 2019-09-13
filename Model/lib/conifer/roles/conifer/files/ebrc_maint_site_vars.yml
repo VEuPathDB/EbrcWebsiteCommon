@@ -14,7 +14,7 @@ userDb_login: "{{ host_data['userDb_login'] }}"
 userDb_password: "{{ password['userdb'] }}"
 
 host_data: "{{ lookup('colfile',
-    '{} src=https://cbilsvn.pmacs.upenn.edu/svn/apidb/websiteconf/master_configuration_set'.format(hostname)
+    '{} src=https://raw.githubusercontent.com/EuPathDB/websiteconf/master/master_configuration_set'.format(hostname)
   ) }}"
 
 password:
