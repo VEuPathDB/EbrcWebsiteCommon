@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
 import { Link } from 'wdk-client/Components';
 import { useWdkEffect } from 'wdk-client/Service/WdkService';
@@ -10,7 +10,7 @@ import './EbrcDescription.scss';
 const cx = makeClassNameHelper('ebrc-Description');
 
 export const useEbrcDescription = (question: Question) => {
-  const [ datasetRecords, setDatasetRecords ] = useState<RecordInstance[] | undefined>(undefined);
+  const [ datasetRecords, setDatasetRecords ] = React.useState(undefined as RecordInstance[] | undefined);
 
   useWdkEffect(wdkService => {
     (async () => {
@@ -23,7 +23,7 @@ export const useEbrcDescription = (question: Question) => {
     })();
   }, [ question.fullName ]);
 
-  const DescriptionComponent = useCallback(
+  const DescriptionComponent = React.useCallback(
     (props: { description?: string }) => 
       <div className={cx()}>
         {
