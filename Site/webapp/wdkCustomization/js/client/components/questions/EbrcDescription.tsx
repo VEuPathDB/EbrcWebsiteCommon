@@ -121,7 +121,7 @@ const publicationToLink = ({ pubmed_link, dataset_id }: Record<string, Attribute
           ? <RecordError 
               message={`pubmed_link attribute '${pubmed_link}' for data set ${dataset_id} is invalid.`}
             />
-          : <a href={publicationLink.url}>{safeHtml(publicationLink.displayText || publicationLink.url)}</a>
+          : <a href={publicationLink.url} target="_blank">{safeHtml(publicationLink.displayText || publicationLink.url)}</a>
       }
     </li>
   );
