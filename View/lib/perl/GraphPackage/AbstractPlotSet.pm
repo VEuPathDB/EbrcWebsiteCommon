@@ -482,11 +482,10 @@ geom_tooltip <- function (mapping = NULL, data = NULL, stat = "identity",
       #different
       } else if (class(parent)[1]=="GeomSegment") {
         rg\$geom <-ggproto(parent, parent,
-          draw_panel = function(self, data, panel_scales, coord,
-                         arrow = NULL, lineend = "butt", na.rm = FALSE) {
+          draw_panel = function(self, data, panel_params, coord, arrow.fill = NULL, arrow = NULL, lineend = "butt", linejoin = "round", na.rm = FALSE) {
             grobs <- list()
             for (i in 1:nrow(data)) {
-              grob <- parent\$draw_panel(data[i,], panel_scales, coord, arrow, lineend)
+              grob <- parent\$draw_panel(data[i,], panel_params, coord, arrow.fill, arrow, lineend, linejoin)
               grobs[[i]] <- garnishGrob(grob, onmousemove=paste("showTooltip(evt, '",
                          data[i,]\$tooltip , "')"), onmouseout="hideTooltip(evt)",
                          "pointer-events"="all")

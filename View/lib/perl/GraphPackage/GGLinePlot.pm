@@ -417,7 +417,7 @@ for(ii in 1:length(profile.files)) {
   }
 
   if (element.names.files[ii] != \"\") {
-    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
+    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\", quote=\"\");
 
     if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
       message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
@@ -944,6 +944,11 @@ if ($prtcpnt_sum) {
 }
 
 
+if (nchar(as.character(unique(profile.df.full[[myX]])[1])) >= 18) {
+  gp = gp + theme(plot.margin = margin(l=40))
+}
+
+
 #postscript
 $rPostscript
 
@@ -1134,7 +1139,6 @@ sub new {
   $self->setForceNoLines(1);
 
   my $adjust = "
-profile.df.full\$DATASET <- unlist(lapply(strsplit(profile.df.full\$LEGEND, \"[\", fixed=TRUE), \"[\", 1))
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
 profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
 profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
@@ -1157,6 +1161,11 @@ if (x.max > 1000) {
   x.max <- 1.2*x.max
 }
 
+myYShift <- 15
+if (uniqueN(profile.df.full\$LEGEND) < 6) {
+  myYShift <- 25
+}
+
 myColors <- rep(\"#38588CFF\", uniqueN(profile.df.full\$LEGEND))
 myOpaqueColors <- rep(\"#38588CCC\", uniqueN(profile.df.full\$LEGEND))
 myTextColors <- rep(\"white\", uniqueN(profile.df.full\$LEGEND))
@@ -1171,7 +1180,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
          yaxis = list(title = \"Experiment\",
 		      showticklabels = FALSE),
          margin = list(l = 30, 
-                       r = 10, 
+                       r = 30, 
                        b = 50, 
                        t = 100, 
                        pad = 4),
@@ -1191,8 +1200,6 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 		 text = unique(profile.df.full\$LEGEND),
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #or some similar thing to build a tooltip w a link
-#keep in mind events on expt labels conflict with the boxes
-#also remember to add hovertext to the expt annotations for the buttons below
 #R was giving me issues with special characters, may try just building w js below
 #                 hovertext = paste0(
 #     			 '<a href=\\'',
@@ -1204,7 +1211,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
-		 yshift = 15,
+		 yshift = myYShift,
                  valign = \"top\",
 		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
@@ -1259,7 +1266,7 @@ annotationJS <- \"function(el) {
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
-          yshift: 15,
+          yshift: annotations[i].yshift, 
           valign: 'top',
 	  name: annotations[i].name
 	};
@@ -1298,7 +1305,7 @@ annotationJS <- \"function(el) {
         buttons: [
 	    {
                 args: [{annotations: el.layout.annotations}],
-		label: '<br>Remove<br> Sample<br> Labels<br>',
+		label: '<br>Remove<br>Sample<br>Labels<br>',
                 method: 'relayout'
             }
         ],
@@ -1314,7 +1321,7 @@ annotationJS <- \"function(el) {
 
       el.on('plotly_click', function(d) {
   	var ptsData = d.points[0].data;
-	console.log('Click: ', ptsData);
+	//console.log('Click: ', ptsData);
 	
 	var i;
 	var annArray = [];
@@ -1358,13 +1365,14 @@ annotationJS <- \"function(el) {
 	Plotly.relayout(el.id, {annotations: el.layout.annotations.concat(annArray)});
       })
 
-	el.on('plotly_clickannotation', function(d) {
-	  console.log('Click annotation: ', d);
-	})
+	//el.on('plotly_clickannotation', function(d) {
+	//  console.log('Click annotation: ', d);
+	//})
 }\"
 
 myPlotly <- myPlotly %>% onRender(annotationJS)
 
+#havent yet figured how to successfully add custom css
 #myPlotly <- list(
 # 	      tags\$head(
 #      		tags\$style(\".js-plotly-plot .plotly .modebar {left: 1%;}\")
