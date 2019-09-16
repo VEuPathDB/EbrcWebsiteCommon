@@ -2,15 +2,19 @@ package org.eupathdb.common.fix;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.gusdb.fgputil.FormatUtil;
+import org.gusdb.fgputil.FormatUtil.Style;
 import org.gusdb.fgputil.functional.Result;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
 import org.gusdb.wdk.model.fix.table.TableRowUpdater;
 import org.gusdb.wdk.model.fix.table.steps.StepData;
 import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
 import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
+import org.gusdb.wdk.model.toolbundle.filter.ColumnFilterConfigStyle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,12 +38,12 @@ implements TableRowUpdaterPlugin<StepData> {
     ERR_ORG_FAIL = "Failed to populate organism abbreviation map";
 
   private static final String
-    COL_ORGANISM    = "organism",
-    COL_SEQUENCE    = "sequence_type",
-    KEY_COL_FILTER  = "columnFilters",
-    KEY_FILTER_VAL  = "filter",
-    DEFAULT_TOOL    = "byValue", //Should match the default column tool bundle name
-    INSTANCE_SUFFIX = "_instances";
+    COL_ORGANISM      = "organism",
+    COL_SEQUENCE      = "sequence_type",
+    KEY_COL_FILTER    = ParamsAndFiltersDbColumnFormat.KEY_COLUMN_FILTERS,
+    KEY_VALUES_CONFIG = ColumnFilterConfigStyle.VALUES.getRequiredPropertyName(),
+    DEFAULT_TOOL      = "byValue", //Should match the default column tool bundle name
+    INSTANCE_SUFFIX   = "_instances";
 
   private static final String SQL_ORG_MAPPING = ""
     + "SELECT\n"
@@ -90,6 +94,7 @@ implements TableRowUpdaterPlugin<StepData> {
     final List<String> additionalArgs
   ) throws Exception {
     populateOrgMapping(wdkModel);
+    LOG.info("Org Mapping populated as:" + FormatUtil.NL + FormatUtil.prettyPrint(abbrToOrg, Style.MULTI_LINE));
     performUpdates = !additionalArgs.isEmpty()
       && additionalArgs.get(0).equals("-write");
   }
@@ -271,27 +276,24 @@ implements TableRowUpdaterPlugin<StepData> {
    *   column on which the filter should be applied
    * @param value
    *   value to filter on
-   * @param params
+   * @param paramsAndFilters
    *   display params json to update
    */
   private static boolean mergeFilterConfig(
     final String column,
     final String value,
-    final JSONObject params
+    final JSONObject paramsAndFilters
   ) {
-    var tools = require(KEY_COL_FILTER, params, JSONObject::new);
-    var filts = require(column, tools, JSONObject::new);
-    var confs = require(DEFAULT_TOOL, filts, JSONArray::new);
+    var columnFilters = require(KEY_COL_FILTER, paramsAndFilters, JSONObject::new);
+    var filterConfigs = require(column, columnFilters, JSONObject::new);
 
     // Skip if this column already has this filter applied
-    for (var i = 0; i < confs.length(); i++)
-      if (value.equals(confs.getJSONObject(i).get(KEY_FILTER_VAL)))
+    if (filterConfigs.has(DEFAULT_TOOL)) {
         return debug(false, "Step display params already has a column filter"
           + "configured for value " + value + " on column " + column);
-
-    confs.put(debug(
-      new JSONObject()
-        .put(KEY_FILTER_VAL, value),
+    }
+    filterConfigs.put(DEFAULT_TOOL, debug(
+      new JSONObject().put(KEY_VALUES_CONFIG, new JSONArray().put(value)),
       "Configured display params with column filter %s on column " + column
     ));
 
@@ -346,7 +348,7 @@ implements TableRowUpdaterPlugin<StepData> {
    * @return the input {@code val}
    */
   private static <T> T debug(final T val, final String message) {
-    LOG.debug(String.format(message, val));
+    LOG.info(String.format(message, val));
     return val;
   }
 }
