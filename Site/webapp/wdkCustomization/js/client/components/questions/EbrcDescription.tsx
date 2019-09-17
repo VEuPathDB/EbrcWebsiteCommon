@@ -8,6 +8,7 @@ import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import './EbrcDescription.scss';
 
 const cx = makeClassNameHelper('ebrc-Description');
+const defaultFormCx = makeClassNameHelper('wdk-QuestionForm');
 
 export const useEbrcDescription = (question: Question) => {
   const [ datasetRecords, setDatasetRecords ] = React.useState(undefined as RecordInstance[] | undefined);
@@ -28,22 +29,22 @@ export const useEbrcDescription = (question: Question) => {
       <div className={cx()}>
         {
           props.description !== undefined && (
-            <>
+            <div className={defaultFormCx('DescriptionSection')}>
               <hr/>
               <h2 className={cx('SearchDescriptionHeader')}>Description</h2>
               {safeHtml(props.description)}
-            </>
+            </div>
           )
         }
         {
           datasetRecords !== undefined && datasetRecords.length > 0 && (
-            <>
+            <div className={defaultFormCx('DescriptionSection')}>
               <hr/>
               <h2 className={cx('SearchDatasetsHeader')}>Data Sets used by this search</h2>
               <ul className={cx('DatasetsList')}>
                 {datasetRecords.map(recordToAttribution)}
               </ul>
-            </>
+            </div>
           )
         }
       </div>,

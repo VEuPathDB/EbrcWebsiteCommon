@@ -30,4 +30,9 @@
   &RecordError {
     color: red;
   }
+
+  &SearchDescriptionHeader, &SearchDatasetsHeader {
+    font-size: 1.6em;
+    margin: 1em 0 0.5em 0;
+  }  
 }
