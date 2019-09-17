@@ -78,11 +78,6 @@
 
   <target name="EbrcWebsiteCommon/Site-WebInstallation">
 
-    <ant target="yarn">
-      <property name="project" value="EbrcWebsiteCommon" />
-      <property name="component" value="Site" />
-    </ant>
-
     <ant target="defaultWebComponentInstall">
       <property name="project" value="EbrcWebsiteCommon" />
       <property name="component" value="Site" />
