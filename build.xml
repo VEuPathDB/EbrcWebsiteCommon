@@ -110,23 +110,11 @@
 
   <!-- Target to be used by implementing sites -->
   <target name="eupathWebComponentInstall">
-<<<<<<< HEAD
     <echo message="Building ${project}/${component} assets"/>
     <ant target="eupath-merge-tags"/>
     <ant target="defaultWebComponentInstall"/>
     <ant target="siteLog4j"/>
     <ant target="generate-assets-manifest"/>
-=======
-    <echo message="Building ${project}/${component} assets" />
-    <available file="${projectsDir}/${project}/${component}/webpack.config.js"
-               property="webpack.config.js.present" />
-    <ant target="eupath-merge-tags" />
-    <ant target="defaultWebComponentInstall" />
-    <ant target="siteLog4j" />
-    <ant target="yarn" />
-    <ant target="webpack" />
-    <ant target="generate-assets-manifest" />
->>>>>>> origin/master
   </target>
 
   <target name="siteLog4j">
@@ -153,37 +141,6 @@
              token="@WEBAPP@" value="${webapp}" />
   </target>
 
-<<<<<<< HEAD
-=======
-  <target name="yarn">
-    <exec executable="yarn"
-          dir="${projectsDir}/${project}/${component}"
-          failonerror="true"
-          failifexecutionfails="true" />
-  </target>
-
-  <target name="webpack" if="webpack.config.js.present">
-    <condition property="webpack.env" value="--env.production"
-               else="--env.development">
-      <isset property="optimizeWebAssets" />
-    </condition>
-
-    <exec executable="${projectsDir}/WDKClient/Build/node_modules/.bin/webpack"
-          dir="${projectsDir}/${project}/${component}"
-          failonerror="true"
-          failifexecutionfails="true">
-      <env key="NODE_PATH"
-           value="${projectsDir}/WDKWebsite/View/node_modules" />
-      <arg line="${webpack.env}" />
-      <arg line="--hide-modules" />
-    </exec>
-
-    <copy todir="${webappTargetDir}">
-      <fileset dir="${projectsDir}/${project}/${component}/dist" />
-    </copy>
-  </target>
-
->>>>>>> origin/master
   <target name="eupath-merge-tags">
     <mkdir dir="${webappTargetDir}/WEB-INF/tags/site" />
     <delete>
