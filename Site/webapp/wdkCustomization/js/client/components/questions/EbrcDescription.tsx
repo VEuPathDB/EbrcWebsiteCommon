@@ -25,13 +25,15 @@ export const useEbrcDescription = (question: Question) => {
   }, [ question.fullName ]);
 
   const DescriptionComponent = React.useCallback(
-    (props: { description?: string }) => 
+    (props: { description?: string, navigatingToDescription: boolean }) => 
       <div className={cx()}>
         {
           props.description !== undefined && (
             <div className={defaultFormCx('DescriptionSection')}>
               <hr/>
-              <h2 className={cx('SearchDescriptionHeader')}>Description</h2>
+              <h2 className={cx('SearchDescriptionHeader') + (props.navigatingToDescription ? ' navigatingToDescription' : '')}>
+                Description
+              </h2>
               {safeHtml(props.description)}
             </div>
           )
