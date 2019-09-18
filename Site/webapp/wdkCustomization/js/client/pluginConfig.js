@@ -6,6 +6,7 @@ import {
 } from 'wdk-client/Plugins';
 
 import { EbrcDefaultQuestionForm } from './components/questions/EbrcDefaultQuestionForm';
+import { RadioParams } from './components/questions/RadioParams/RadioParams';
 import QuestionWizardPlugin from './plugins/QuestionWizardPlugin';
 
 export default [
@@ -33,6 +34,15 @@ export default [
     type: 'questionController',
     test: ({ question }) => question && question.properties.websiteProperties && question.properties.websiteProperties.includes('useWizard'),
     component: QuestionWizardPlugin
+  },
+  {
+    type: 'questionForm',
+    test: ({ question }) => !!(
+      question && 
+      question.properties && 
+      question.properties['radio-params']
+    ),
+    component: RadioParams
   },
   {
     type: 'questionForm',
