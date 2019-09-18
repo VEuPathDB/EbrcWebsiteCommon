@@ -6,7 +6,7 @@ import {
 } from 'wdk-client/Plugins';
 
 import { EbrcDefaultQuestionForm } from './components/questions/EbrcDefaultQuestionForm';
-import { RadioParams } from './components/questions/RadioParams/RadioParams';
+import { RadioParams } from './components/questions/RadioParams';
 import QuestionWizardPlugin from './plugins/QuestionWizardPlugin';
 
 export default [
