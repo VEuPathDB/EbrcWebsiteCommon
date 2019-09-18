@@ -8,7 +8,7 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { Props, Group } from 'wdk-client/Views/Question/DefaultQuestionForm';
 
-import { EbrcDefaultQuestionForm } from '../EbrcDefaultQuestionForm';
+import { EbrcDefaultQuestionForm } from './EbrcDefaultQuestionForm';
 
 import './RadioParams.scss';
 
