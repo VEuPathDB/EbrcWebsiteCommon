@@ -555,7 +555,7 @@ class QuestionWizardController extends ViewController {
           .uniqBy(p => p.name)
           .flatMap(newParam => [
             set(['paramUIState', newParam.name], createInitialParamState(newParam)),
-            set(['paramValues', newParam.name], newParam.defaultValue),
+            set(['paramValues', newParam.name], newParam.initialDisplayValue),
             update(['question', 'parameters'], parameters =>
               parameters.map(currentParam => currentParam.name === newParam.name ? newParam : currentParam))
           ])
