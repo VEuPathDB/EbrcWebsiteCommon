@@ -32,7 +32,7 @@ async function fetchAndFormatSearches(wdkService, userEmails) {
       recordClassDisplayName: get(recordClassesByFullName[strategy.recordClassName], 'displayNamePlural', 'Uknown record type'),
       name: strategy.name,
       studyName: getStudyNameByRecordClassName(studies, strategy.recordClassName),
-      appUrl: `/im.do?s=${strategy.signature}`,
+      appUrl: `/app/workspace/strategies/import/${strategy.signature}`,
       description: strategy.description
     }))
 }
