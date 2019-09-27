@@ -564,7 +564,7 @@ if (grepl(file_ext(\"$out_f\"), \"html\")) {
   if (length(plotlist) > 1) {
     save_tags(tagList(plotlist), \"$out_f\")
   } else {
-    htmlwidgets::saveWidget(as_widget(myPlotly), \"$out_f\")
+    htmlwidgets::saveWidget(as_widget(myPlotly), \"$out_f\", selfcontained=F, libdir=\"DATA_PLOTTER\")
   }
   quit(save=\"no\")
 } else if (grepl(file_ext(\"$out_f\"), \"svg\")) {
