@@ -226,7 +226,16 @@ sub run {
 			print $Cgi->header(-Content_type => $contentType{$format},
                          -Cache_Control      => 'max-age=600',
                         );
-			system "cat $outputFile";
+                      
+                      # THIS IS A TEMPORARY WORKAROUND
+                      if($format eq 'html') {
+                       system('sed \'s/DATA_PLOTTER/\/dataPlotter/\' ' .  $outputFile);
+                       }
+                      else {
+                        system "cat $outputFile";
+                      }
+
+
 	 }
 
 	 # report or delete temporary files.
