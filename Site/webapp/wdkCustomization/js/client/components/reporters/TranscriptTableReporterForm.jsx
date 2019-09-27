@@ -3,7 +3,7 @@ import TableReporterForm from './TableReporterForm';
 
 // Transcript Table Reporter is the same as a regular Table Reporter, but need to
 //   override the recordClass (Transcript) with Gene to get Gene tables for a Transcript result
-let recordClassOverride = { recordClass: { name: "GeneRecordClasses.GeneRecordClass" } };
+let recordClassOverride = { recordClass: { fullName: "GeneRecordClasses.GeneRecordClass" } };
 
 let TranscriptTableReporterForm = props => {
   let newProps = Object.assign({}, props, recordClassOverride);
