@@ -143,9 +143,9 @@ sub run {
 	 my $ext = $extension{$format} || $format;
 
 	 # write to these files.
-	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
-	 my @filesToDelete = ( $fmt_f );
+
+	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
          my $core;
          if ($pkg eq 'ClinEpiDB' || $pkg eq 'Gates' || $pkg eq 'ICEMR') {
@@ -200,6 +200,7 @@ sub run {
                         Xmin => $xminOverride,
                         Xmax => $xmaxOverride,
                         CgiApp => $Cgi,
+                        Save => $save_b,
                        });
          };
 
@@ -211,15 +212,10 @@ sub run {
 			print $Cgi->header(-Content_type => "application/json");
            my $parts = $_gp->declareParts();
            print STDOUT encode_json($parts);
-
-           my $r_f = $_gp->getOutputFile(). '.R';
-           push @filesToDelete, $r_f;
          }
 
         else {
          my @files = $_gp->run();
-
-	 push(@filesToDelete, @files);
 
 	 # output the result; expiration date set to disable caching for
 	 # now.
@@ -243,13 +239,6 @@ sub run {
 
 	 }
        }
-	 # report or delete temporary files.
-	 if ($save_b) {
-           print STDERR join("\n", 'Files', @filesToDelete), "\n";
-	 } else {
-           print STDERR join("\n", 'Files', @filesToDelete), "\n";
-	   map {unlink $_ if $_} @filesToDelete;
-         }
 }
 
 # ========================================================================

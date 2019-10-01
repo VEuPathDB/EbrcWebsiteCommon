@@ -15,6 +15,29 @@ use FileHandle;
 
 #--------------------------------------------------------------------------------
 
+sub DESTROY {
+  my $self = shift;
+
+  my $tempFiles = $self->getTempFiles();
+
+  my $outputFile = $self->getOutputFile();
+
+  my $rFile = $self->getOutputFile(). '.R';
+
+  my @filesToDelete = (@$tempFiles, $outputFile, $rFile);
+
+  if($self->getSave()) {
+    print STDERR join("\n", 'These files would normally be cleaned up', @filesToDelete), "\n";
+    return;
+  }
+  
+  map {unlink $_ if $_} @filesToDelete;
+}
+
+
+
+#--------------------------------------------------------------------------------
+
 #TODO: would like to factor out into PlotPart.pm
 sub getScreenSize                { $_[0]->{'_screen_size'                 }}
 sub setScreenSize                { $_[0]->{'_screen_size'                 } = $_[1]; $_[0] }
