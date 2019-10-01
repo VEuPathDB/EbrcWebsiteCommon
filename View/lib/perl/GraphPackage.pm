@@ -71,6 +71,8 @@ sub init {
    $Self->setCompact              ( $Args->{Compact              } );
    $Self->setIdType               ( $Args->{IdType               } );
 
+   $Self->setSave                 ( $Args->{Save               } );
+
    my $Thumb = $Self->getThumbnail();
 
    my $thumbSF = 0.62;
@@ -85,6 +87,9 @@ sub init {
 
 sub getName                    { $_[0]->{'Name'                        } }
 sub setName                    { $_[0]->{'Name'                        } = $_[1]; $_[0] }
+
+sub getSave                    { $_[0]->{'Save'                        } }
+sub setSave                    { $_[0]->{'Save'                        } = $_[1]; $_[0] }
 
 sub getCgiApp                  { $_[0]->{'CgiApp'                      } }
 sub setCgiApp                  { $_[0]->{'CgiApp'                      } = $_[1]; $_[0] }
