@@ -137,7 +137,9 @@ sub run {
    my $gddFormat = $gddFormat{$format} || $format;
 
 	 # some extensions may be different from their format
-	 my %extension = ( 'jpeg' => 'jpg', table => 'txt' );
+	 my %extension = ( 'jpeg' => 'jpg', 
+                           'table' => 'txt', 
+             );
 	 my $ext = $extension{$format} || $format;
 
 	 # write to these files.
@@ -209,10 +211,13 @@ sub run {
 			print $Cgi->header(-Content_type => "application/json");
            my $parts = $_gp->declareParts();
            print STDOUT encode_json($parts);
-           return;
+
+           my $r_f = $_gp->getOutputFile(). '.R';
+           push @filesToDelete, $r_f;
          }
 
-	 my @files = $_gp->run();
+        else {
+         my @files = $_gp->run();
 
 	 push(@filesToDelete, @files);
 
@@ -237,11 +242,12 @@ sub run {
 
 
 	 }
-
+       }
 	 # report or delete temporary files.
 	 if ($save_b) {
            print STDERR join("\n", 'Files', @filesToDelete), "\n";
 	 } else {
+           print STDERR join("\n", 'Files', @filesToDelete), "\n";
 	   map {unlink $_ if $_} @filesToDelete;
          }
 }
