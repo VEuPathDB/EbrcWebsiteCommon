@@ -943,9 +943,11 @@ if ($prtcpnt_sum) {
 
 }
 
-
-if (nchar(as.character(unique(profile.df.full[[myX]])[1])) >= 18) {
-  gp = gp + theme(plot.margin = margin(l=40))
+maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
+if (!is.na(maxNumChar)) {
+    if (maxNumChar >= 18) {
+        gp = gp + theme(plot.margin = margin(l=40));
+    }
 }
 
 
