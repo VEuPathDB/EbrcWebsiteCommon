@@ -1,8 +1,8 @@
 package org.eupathdb.common.model.report;
 
-import static com.google.common.collect.Streams.stream;
 import static java.util.stream.Collectors.joining;
 import static org.gusdb.fgputil.functional.Functions.fSwallow;
+import static org.gusdb.fgputil.iterator.IteratorUtil.toStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -59,7 +59,7 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
         " " +
         // join all requested tables
         _tables.keySet().stream()
-          .map(fSwallow(tableName -> stream(record.getTableValue(tableName))
+          .map(fSwallow(tableName -> toStream(record.getTableValue(tableName))
             .map(map -> map.values().stream()
               .map(fSwallow(attrVal -> attrVal.getValue()))
               .collect(joining(" ")))
