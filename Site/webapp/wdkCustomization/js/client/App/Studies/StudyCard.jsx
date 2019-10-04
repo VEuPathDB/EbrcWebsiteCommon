@@ -1,6 +1,7 @@
 import React from 'react';
 import { CategoryIcon } from 'ebrc-client/App/Categories';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
+import { safeHtml } from 'wdk-client/ComponentUtils';
 import DownloadLink from './DownloadLink';
 
 import './StudyCard.scss';
