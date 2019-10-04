@@ -1,6 +1,7 @@
 import React from 'react';
 import { getSearchIconByType, getSearchNameByType } from 'ebrc-client/App/Searches/SearchUtils';
 import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
+import { safeHtml } from 'wdk-client/ComponentUtils';
 
 import './StudyMenu.scss';
 
@@ -22,7 +23,7 @@ class StudyMenuItem extends React.Component {
 
     const url = `${config.webAppUrl}/showQuestion.do?questionFullName=${name}`;
 
-    const tooltip = (<span>Search <b>{displayName}</b> in the {study.name} Study</span>);
+    const tooltip = (<span>Search <b>{displayName}</b> in the {safeHtml(study.name)} Study</span>);
     return (
       <Mesa.AnchoredTooltip
         fadeOut={true}
@@ -44,7 +45,7 @@ class StudyMenuItem extends React.Component {
       <div className={'row StudyMenuItem' + (disabled ? ' StudyMenuItem--disabled' : '')}>
         <div className="box StudyMenuItem-Name">
           <Link to={route} className={'StudyMenuItem-RecordLink ' + id}>
-            {name}
+            {safeHtml(name)}
             <Icon fa="angle-double-right" />
           </Link>
         </div>

@@ -22,7 +22,7 @@ class DataRestrictionModal extends React.Component {
     return !policyUrl ? null : (
       <p>
         The data from this study requires approval to download and use in research projects.
-        Please read the <a href={policyUrl} target="_blank">{study.name} Data Access and Use Policy.</a>
+        Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
       </p>
     );
   }
