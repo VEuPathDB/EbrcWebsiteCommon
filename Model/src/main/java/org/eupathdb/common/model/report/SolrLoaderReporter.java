@@ -55,8 +55,8 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
         _attributes.keySet().stream()
           .map(fSwallow(attrName -> record.getAttributeValue(attrName).getValue()))
           .collect(joining(" ")) +
-        // add to tables
-        " " +
+        // put space between if needed
+        (_attributes.isEmpty() || _tables.isEmpty() ? "" : " ") +
         // join all requested tables
         _tables.keySet().stream()
           .map(fSwallow(tableName -> toStream(record.getTableValue(tableName))
