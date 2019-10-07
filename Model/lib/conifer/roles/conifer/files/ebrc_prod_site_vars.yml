@@ -16,6 +16,12 @@ _hostname_project_map:
   icemr.clinepidb.org: ICEMR
   w1.icemr.clinepidb.org: ICEMR
   w2.icemr.clinepidb.org: ICEMR
+  q1.restricted.clinepidb.org: AllClinEpiDB
+  q2.restricted.clinepidb.org: AllClinEpiDB
+  w1.restricted.clinepidb.org: AllClinEpiDB
+  w2.restricted.clinepidb.org: AllClinEpiDB
+  restricted.clinepidb.org: AllClinEpiDB
+  qa.restricted.clinepidb.org: AllClinEpiDB
   feature.eupathdb.org: UniDB   
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
