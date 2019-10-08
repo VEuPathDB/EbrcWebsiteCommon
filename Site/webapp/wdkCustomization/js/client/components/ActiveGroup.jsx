@@ -57,19 +57,13 @@ function ActiveGroup(props) {
         </div>
       }
       <div className={makeClassName('ActiveGroupHeading')}>
-        {groupParamsValuesAreDefault(props.wizardState, activeGroup) ? (
-          <div className={makeClassName('ActiveGroupCount')}>
-            No <em>{activeGroup.displayName}</em> filters applied yet
-          </div>
-        ) : (
-          <div className={makeClassName('ActiveGroupCount')}>
-            Your <em>{activeGroup.displayName}</em> filters reduce {
-              (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
-            } {recordClass.shortDisplayNamePlural} to {
-              (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
-            }
-          </div>
-        )}
+        <div className={makeClassName('ActiveGroupCount', groupParamsValuesAreDefault(props.wizardState, activeGroup) ? 'hidden' : 'visible')}>
+          Your <em>{activeGroup.displayName}</em> filters reduce {
+            (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
+          } {recordClass.shortDisplayNamePlural} to {
+            (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
+          }
+        </div>
         {activeGroup.description && (
           <div className={makeClassName('ActiveGroupDescription')}>{activeGroup.description}</div>
         )}
