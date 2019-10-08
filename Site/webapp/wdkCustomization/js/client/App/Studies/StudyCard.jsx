@@ -1,6 +1,7 @@
 import React from 'react';
 import { CategoryIcon } from 'ebrc-client/App/Categories';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
+import { safeHtml } from 'wdk-client/ComponentUtils';
 import DownloadLink from './DownloadLink';
 
 import './StudyCard.scss';
@@ -32,7 +33,7 @@ class StudyCard extends React.Component {
     return (
       <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
         <div className="box StudyCard-Heading">
-          <h2 title={myStudyTitle}><Link to={route}>{name}</Link></h2>
+          <h2 title={myStudyTitle}><Link to={route}>{safeHtml(name)}</Link></h2>
           <div className="box StudyCard-Categories">
             {categories.map(cat => (
               <CategoryIcon category={cat} key={cat} />

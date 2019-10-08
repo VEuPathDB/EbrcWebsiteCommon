@@ -137,13 +137,15 @@ sub run {
    my $gddFormat = $gddFormat{$format} || $format;
 
 	 # some extensions may be different from their format
-	 my %extension = ( 'jpeg' => 'jpg', table => 'txt' );
+	 my %extension = ( 'jpeg' => 'jpg', 
+                           'table' => 'txt', 
+             );
 	 my $ext = $extension{$format} || $format;
 
 	 # write to these files.
-	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
-	 my @filesToDelete = ( $fmt_f );
+
+	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
          my $core;
          if ($pkg eq 'ClinEpiDB' || $pkg eq 'Gates' || $pkg eq 'ICEMR') {
@@ -198,6 +200,7 @@ sub run {
                         Xmin => $xminOverride,
                         Xmax => $xmaxOverride,
                         CgiApp => $Cgi,
+                        Save => $save_b,
                        });
          };
 
@@ -209,12 +212,10 @@ sub run {
 			print $Cgi->header(-Content_type => "application/json");
            my $parts = $_gp->declareParts();
            print STDOUT encode_json($parts);
-           return;
          }
 
-	 my @files = $_gp->run();
-
-	 push(@filesToDelete, @files);
+        else {
+         my @files = $_gp->run();
 
 	 # output the result; expiration date set to disable caching for
 	 # now.
@@ -226,15 +227,18 @@ sub run {
 			print $Cgi->header(-Content_type => $contentType{$format},
                          -Cache_Control      => 'max-age=600',
                         );
-			system "cat $outputFile";
-	 }
+                      
+                      # THIS IS A TEMPORARY WORKAROUND
+                      if($format eq 'html') {
+                       system('sed \'s/DATA_PLOTTER/\/dataPlotter/\' ' .  $outputFile);
+                       }
+                      else {
+                        system "cat $outputFile";
+                      }
 
-	 # report or delete temporary files.
-	 if ($save_b) {
-           print STDERR join("\n", 'Files', @filesToDelete), "\n";
-	 } else {
-	   map {unlink $_ if $_} @filesToDelete;
-         }
+
+	 }
+       }
 }
 
 # ========================================================================

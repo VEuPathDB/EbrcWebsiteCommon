@@ -32,5 +32,6 @@ export default {
   showHelpText: PropTypes.bool.isRequired,
   wizardState: PropTypes.shape(wizardPropTypes).isRequired,
   wizardEventHandlers: PropTypes.shape(wizardEventHandlerPropTypes),
-  parameterEventHandlers: PropTypes.shape(parameterEventHandlers)
+  parameterEventHandlers: PropTypes.shape(parameterEventHandlers),
+  additionalHeadingContent: PropTypes.node
 };

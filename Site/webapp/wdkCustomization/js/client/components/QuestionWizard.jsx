@@ -14,6 +14,7 @@ import {
   groupParamsValuesAreDefault
 } from '../util/QuestionWizardState';
 
+import FilterFinder from './FilterFinder';
 import FilterSummary from './FilterSummary';
 import QuestionWizardPropTypes from './QuestionWizardPropTypes';
 
@@ -24,8 +25,12 @@ function QuestionWizard(props) {
   const {
     question,
     paramValues,
-    activeGroup
+    activeGroup,
   } = props.wizardState;
+  
+  const {
+    additionalHeadingContent = null
+  } = props;
 
   return (
     <div className={makeClassName()}>
@@ -44,7 +49,9 @@ function QuestionWizard(props) {
           )}
         </h1>
         <FilterSummary {...props} />
+        {additionalHeadingContent}
       </div>
+      <FilterFinder {...props} />
       <Navigation {...props} />
       {activeGroup == null ? (
         <div className={makeClassName('ActiveGroupContainer')}>
