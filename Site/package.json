@@ -5,6 +5,7 @@
   "repository": {},
   "license": "MIT",
   "dependencies": {
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "react-select": "^3.0.7"
   }
 }

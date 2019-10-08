@@ -37,6 +37,64 @@
   padding: 0 1em;
 }
 
+.ebrc-QuestionWizard > * {
+  margin: 1.5em 0;
+}
+
+.ebrc-QuestionWizardHeadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ebrc-QuestionWizardHeadingContainer > *:not(:last-child) {
+  margin-right: .5em;
+}
+
+.ebrc-QuestionWizardHeading {
+  padding: 0;
+}
+
+.ebrc-QuestionWizardFilterFinder {
+  z-index: 3;
+  width: 50em;
+}
+
+.ebrc-QuestionWizardFilterFinder input {
+  opacity: 1 !important;
+}
+
+.ebrc-QuestionWizardFilterFinder--Label {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.ebrc-QuestionWizardFilterFinder--TermAndPath {
+  margin-left: .5em;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-end;
+  align-self: stretch;
+  font-size: 1.2em;
+}
+
+.ebrc-QuestionWizardFilterFinder--Term {
+  font-weight: 500;
+}
+
+.ebrc-QuestionWizardFilterFinder--Path {
+  color: #222;
+  font-variant: all-small-caps;
+  min-height: 1em;
+  /* visibility: hidden; */
+}
+
+.ebrc-QuestionWizardFilterFinder--Label:hover .ebrc-QuestionWizardFilterFinder--Path {
+  /* visibility: visible; */
+}
+
 .ebrc-QuestionWizardHeading {
   font-size: 2.4em;
 }
@@ -198,7 +256,7 @@
   margin-left: 2em;
   position: relative;
   align-self: center;
-  z-index: 1;
+  /*z-index: 1;*/
 }
 
 button.ebrc-QuestionWizardSubmitButton {
@@ -240,6 +298,7 @@ button.ebrc-QuestionWizardParamGroupButton {
   overflow-x: hidden;
   padding: 0 1em;
   text-overflow: ellipsis;
+  vertical-align: middle;
 }
 
 
