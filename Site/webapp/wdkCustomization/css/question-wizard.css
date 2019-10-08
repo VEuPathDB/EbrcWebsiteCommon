@@ -164,6 +164,7 @@
 .ebrc-QuestionWizardActiveGroupContainer {
   position: relative;
   font-size: .8rem;
+  margin: 0;
 }
 
 .ebrc-QuestionWizardActiveGroupContainerOverlay {
@@ -188,7 +189,7 @@
 
 .ebrc-QuestionWizardActiveGroupDescription {
   max-width: 50%;
-  margin: 1em 0 1em auto;
+  margin-left: auto;
   border: 1px solid #dadada;
   padding: .5em;
   border-radius: 4px;
@@ -198,7 +199,10 @@
 .ebrc-QuestionWizardActiveGroupCount {
   font-weight: 500;
   font-size: 1.4em;
-  margin: .5em 0;
+}
+
+.ebrc-QuestionWizardActiveGroupCount__hidden {
+  visibility: hidden;
 }
 
 .ebrc-QuestionWizardGroupLoading {
