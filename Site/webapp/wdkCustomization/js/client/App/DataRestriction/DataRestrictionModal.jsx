@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { getPolicyUrl, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import Modal from 'ebrc-client/App/Modal';
 import { IconAlt as Icon } from 'wdk-client/Components';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './DataRestrictionModal.scss';
 

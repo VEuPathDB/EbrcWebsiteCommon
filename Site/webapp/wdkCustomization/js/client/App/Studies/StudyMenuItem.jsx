@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './StudyMenu.scss';
 
