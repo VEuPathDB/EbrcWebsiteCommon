@@ -2,9 +2,9 @@ import { keyBy } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import Select from 'react-select';
-import { isMulti } from 'wdk-client/AttributeFilterUtils';
-import { getOntologyTree } from 'wdk-client/FilterParamUtils';
-import { getLeaves } from 'wdk-client/TreeUtils';
+import { isMulti } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
+import { getOntologyTree } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
+import { getLeaves } from 'wdk-client/Utils/TreeUtils';
 
 const cx = (suffix = '') => `ebrc-QuestionWizardFilterFinder${suffix}`;
 
