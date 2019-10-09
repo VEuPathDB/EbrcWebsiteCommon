@@ -129,7 +129,7 @@ function FilterFinderOption(props) {
 function makeOptions(question) {
   const groupsByName = keyBy(question.groups, 'name');
   return question.parameters
-    .filter(parameter => parameter.type === 'FilterParamNew')
+    .filter(parameter => parameter.type === 'filter')
     .flatMap(parameter => {
       const ontologyItemsByTerm = keyBy(parameter.ontology, 'term');
       const group = groupsByName[parameter.group];
