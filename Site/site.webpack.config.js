@@ -17,7 +17,8 @@ module.exports = function configure(additionalConfig) {
         site: process.cwd() + '/webapp',
         'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client',
         Client: __dirname + '/webapp/wdkCustomization/js/client'
-      }
+      },
+      modules: [ path.join(__dirname, 'node_modules') ]
     },
 
     // Map external libraries Wdk exposes so we can do things like:
