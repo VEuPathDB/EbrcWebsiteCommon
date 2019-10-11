@@ -21,6 +21,13 @@ const styles = {
   indicatorsContainer: base => ({
     ...base,
     display: 'none'
+  }),
+  placeholder: base => ({
+    ...base,
+    display: 'flex',
+    left: '.5em',
+    right: '.5em',
+    justifyContent: 'space-between'
   })
 }
 
@@ -35,7 +42,7 @@ export default function FilterFinder({
     <Select
       className={cx()}
       controlShouldRenderValue={false}
-      placeholder={<React.Fragment><i className="fa fa-search"/> Find a filter...</React.Fragment>}
+      placeholder={<React.Fragment>Find a variable <i className="fa fa-search"/></React.Fragment>}
       options={options}
       noOptionsMessage={noOptionsMessage}
       formatGroupLabel={formatGroupLabel}
