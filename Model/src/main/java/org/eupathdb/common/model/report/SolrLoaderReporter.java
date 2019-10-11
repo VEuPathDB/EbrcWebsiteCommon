@@ -1,8 +1,6 @@
 package org.eupathdb.common.model.report;
 
-import static java.util.stream.Collectors.joining;
-import static org.gusdb.fgputil.FormatUtil.TAB;
-import static org.gusdb.fgputil.functional.Functions.fSwallow;
+import static org.gusdb.fgputil.functional.Functions.f0Swallow;
 import static org.gusdb.fgputil.iterator.IteratorUtil.toStream;
 
 import java.io.IOException;
@@ -12,12 +10,14 @@ import java.util.Set;
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.answer.stream.RecordStream;
 import org.gusdb.wdk.model.answer.stream.RecordStreamFactory;
 import org.gusdb.wdk.model.record.RecordInstance;
 import org.gusdb.wdk.model.record.TableValue;
 import org.gusdb.wdk.model.report.reporter.AnswerDetailsReporter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -67,7 +67,7 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
         obj.put(attributeName, record.getAttributeValue(attributeName).getValue());
       }
       for (String tableName: tableNames) {
-        obj.put(tableName, aggregateTableValue(record.getTableValue(tableName)));
+        obj.put(tableName, aggregateTableValueJson(record.getTableValue(tableName)));
       }
       return obj;
     }
@@ -75,12 +75,20 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
       throw WdkModelException.translateFrom(e);
     }
   }
-
-  private static String aggregateTableValue(TableValue table) {
-    return toStream(table)
-      .map(row -> row.values().stream()
-        .map(fSwallow(col -> col.getValue()))
-        .collect(joining(TAB)))
-      .collect(joining(TAB));
+  
+  private static JSONArray aggregateTableValueJson(TableValue table) {
+    JSONArray jsonarray = new JSONArray();
+    toStream(table)
+      .forEach(row -> row.values().stream()
+        .forEach(cell -> {
+          try {
+            jsonarray.put(cell.getValue());
+          }
+          catch (WdkUserException | WdkModelException e) {
+            throw new RuntimeException(e);
+          }
+        }));
+    return jsonarray;
   }
+
 }
