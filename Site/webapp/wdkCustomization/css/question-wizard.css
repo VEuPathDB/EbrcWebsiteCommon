@@ -66,33 +66,28 @@
 
 .ebrc-QuestionWizardFilterFinder--Label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: nowrap;
 }
 
 .ebrc-QuestionWizardFilterFinder--TermAndPath {
-  margin-left: .5em;
+  margin-left: 1em;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-self: stretch;
   font-size: 1.2em;
 }
 
 .ebrc-QuestionWizardFilterFinder--Term {
   font-weight: 500;
+  padding-top: .2em;
 }
 
 .ebrc-QuestionWizardFilterFinder--Path {
   color: #222;
-  font-variant: all-small-caps;
-  min-height: 1em;
-  /* visibility: hidden; */
-}
-
-.ebrc-QuestionWizardFilterFinder--Label:hover .ebrc-QuestionWizardFilterFinder--Path {
-  /* visibility: visible; */
+  font-size: .75em;
 }
 
 .ebrc-QuestionWizardHeading {
