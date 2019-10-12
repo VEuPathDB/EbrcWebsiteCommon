@@ -122,9 +122,6 @@
   .ebrc-QuestionWizardNavigationContainer {
     font-size: .8em;
   }
-  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
-    font-size: .7em;
-  }
 }
 
 @media all and (min-width: 980px) {
@@ -136,9 +133,6 @@
 @media all and (min-width: 1200px) {
   .ebrc-QuestionWizardNavigationContainer {
     font-size: 1em;
-  }
-  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
-    font-size: .8em;
   }
 }
 
