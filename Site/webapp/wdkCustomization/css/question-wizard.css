@@ -116,8 +116,6 @@
   width: 100%;
   box-shadow: 0 1px 12px #cecece;
   border-bottom: 1px solid #cccccc;
-  font-size: .8em;
-  transition: 250ms font-size;
 }
 
 @media all and (max-width: 980px) {
@@ -132,9 +130,6 @@
 @media all and (min-width: 980px) {
   .ebrc-QuestionWizardNavigationContainer {
     font-size: 1vw;
-  }
-  .wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
-    font-size: .9vw;
   }
 }
 
