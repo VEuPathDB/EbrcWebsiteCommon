@@ -2,7 +2,7 @@ import React from 'react';
 import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
 
 export default function DownloadLink(props) {
-  const { attemptAction, study, className, linkText = '' } = props;
+  const { attemptAction, studyId, studyUrl, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
@@ -15,10 +15,10 @@ export default function DownloadLink(props) {
           onClick={(event) => {
             const { ctrlKey } = event;
             attemptAction('download', {
-              studyId: study.id,
+              studyId: studyId,
               onAllow: () => {
-                if (ctrlKey) window.open(study.downloadUrl.url, '_blank');
-                else window.location.assign(study.downloadUrl.url)
+                if (ctrlKey) window.open(studyUrl, '_blank');
+                else window.location.assign(studyUrl)
               }
             });
           }}>
