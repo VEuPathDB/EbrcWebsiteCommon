@@ -1,6 +1,5 @@
 package org.eupathdb.common.model.report;
 
-import static org.gusdb.fgputil.functional.Functions.f0Swallow;
 import static org.gusdb.fgputil.iterator.IteratorUtil.toStream;
 
 import java.io.IOException;
@@ -63,6 +62,7 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
     try {
       var obj = new JSONObject()
           .put(JsonKeys.ID, record.getPrimaryKey().getValues().values());
+      obj.put("recordType", record.getRecordClass().getUrlSegment());
       for (String attributeName: attributeNames) {
         obj.put(attributeName, record.getAttributeValue(attributeName).getValue());
       }
