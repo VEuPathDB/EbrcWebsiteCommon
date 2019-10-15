@@ -1,6 +1,7 @@
 package org.eupathdb.common.model.report;
 
-import static org.gusdb.fgputil.iterator.IteratorUtil.toStream;
+import static org.gusdb.fgputil.functional.Functions.rSwallow;
+import static org.gusdb.fgputil.functional.Functions.reduce;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,7 +10,6 @@ import java.util.Set;
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.answer.stream.RecordStream;
 import org.gusdb.wdk.model.answer.stream.RecordStreamFactory;
@@ -61,13 +61,13 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
       Set<String> attributeNames, Set<String> tableNames) throws WdkModelException {
     try {
       var obj = new JSONObject()
-          .put(JsonKeys.ID, record.getPrimaryKey().getValues().values());
-      obj.put("recordType", record.getRecordClass().getUrlSegment());
+          .put(JsonKeys.ID, record.getPrimaryKey().getValues().values())
+          .put("recordType", record.getRecordClass().getUrlSegment());
       for (String attributeName: attributeNames) {
         obj.put(attributeName, record.getAttributeValue(attributeName).getValue());
       }
       for (String tableName: tableNames) {
-        obj.put(tableName, aggregateTableValueJson(record.getTableValue(tableName)));
+        obj.put(tableName, flattenTableValue(record.getTableValue(tableName)));
       }
       return obj;
     }
@@ -75,20 +75,11 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
       throw WdkModelException.translateFrom(e);
     }
   }
-  
-  private static JSONArray aggregateTableValueJson(TableValue table) {
-    JSONArray jsonarray = new JSONArray();
-    toStream(table)
-      .forEach(row -> row.values().stream()
-        .forEach(cell -> {
-          try {
-            jsonarray.put(cell.getValue());
-          }
-          catch (WdkUserException | WdkModelException e) {
-            throw new RuntimeException(e);
-          }
-        }));
-    return jsonarray;
-  }
 
+  private static JSONArray flattenTableValue(TableValue table) {
+    return
+      reduce(table, (arr1, row) ->
+        reduce(row.values(), rSwallow((arr2, col) ->
+          arr2.put(col.getValue())), arr1), new JSONArray());
+  }
 }
