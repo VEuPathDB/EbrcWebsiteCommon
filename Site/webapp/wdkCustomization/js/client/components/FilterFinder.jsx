@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { isMulti } from 'wdk-client/AttributeFilterUtils';
 import { getOntologyTree } from 'wdk-client/FilterParamUtils';
 import { getLeaves } from 'wdk-client/TreeUtils';
+import { parseSearchQueryString, areTermsInString } from 'wdk-client/SearchUtils';
 
 const cx = (suffix = '') => `ebrc-QuestionWizardFilterFinder${suffix}`;
 
@@ -86,7 +87,8 @@ function findPath(ontologyItemsByTerm, ontologyTerm) {
 function selectFilter(candidate, input) {
   if (!input) return false;
   const { matchString } = candidate.data;
-  return matchString.includes(input.toLowerCase());
+  const tokens = parseSearchQueryString(input);
+  return areTermsInString(tokens, matchString);
 }
 
 function noOptionsMessage({ inputValue }) {
@@ -166,6 +168,5 @@ function makeOptions(question) {
       .concat([node.field])
       .flatMap(field => [field.display, field.description])
       .concat(values)
-      .join(' ')
-      .toLowerCase();
+      .join(' ');
   }
