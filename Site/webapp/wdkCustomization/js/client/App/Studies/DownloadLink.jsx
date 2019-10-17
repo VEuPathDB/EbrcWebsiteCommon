@@ -1,8 +1,10 @@
 import React from 'react';
 import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
+import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators'
+import { connect } from 'react-redux'
 
-export default function DownloadLink(props) {
-  const { attemptAction, study, className, linkText = '' } = props;
+function DownloadLink(props) {
+  const { attemptAction, studyId, studyUrl, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
@@ -15,10 +17,10 @@ export default function DownloadLink(props) {
           onClick={(event) => {
             const { ctrlKey } = event;
             attemptAction('download', {
-              studyId: study.id,
+              studyId: studyId,
               onAllow: () => {
-                if (ctrlKey) window.open(study.downloadUrl.url, '_blank');
-                else window.location.assign(study.downloadUrl.url)
+                if (ctrlKey) window.open(studyUrl, '_blank');
+                else window.location.assign(studyUrl)
               }
             });
           }}>
@@ -28,3 +30,8 @@ export default function DownloadLink(props) {
     </div>
   );
 }
+// expression (not declaration): we are calling connect
+// arg1: mapStateToProps: take state from store and pass to component as props
+// arg2: mapDispatchToProps: pass an object with one property 'attemptAction' which is an actionCreator (because it returns a run() function) see DataRestrictionActionCreators
+// attemptAction gets bound to the store, the store receives the action, which will get executed when user clicks.
+export default connect(null,{ attemptAction })(DownloadLink);

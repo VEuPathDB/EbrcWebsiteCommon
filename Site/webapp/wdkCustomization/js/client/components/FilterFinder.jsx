@@ -5,6 +5,7 @@ import Select from 'react-select';
 import { isMulti } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
 import { getOntologyTree } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
 import { getLeaves } from 'wdk-client/Utils/TreeUtils';
+import { parseSearchQueryString, areTermsInString } from 'wdk-client/Utils/SearchUtils';
 
 const cx = (suffix = '') => `ebrc-QuestionWizardFilterFinder${suffix}`;
 
@@ -21,6 +22,13 @@ const styles = {
   indicatorsContainer: base => ({
     ...base,
     display: 'none'
+  }),
+  placeholder: base => ({
+    ...base,
+    display: 'flex',
+    left: '.5em',
+    right: '.5em',
+    justifyContent: 'space-between'
   })
 }
 
@@ -35,7 +43,7 @@ export default function FilterFinder({
     <Select
       className={cx()}
       controlShouldRenderValue={false}
-      placeholder={<React.Fragment><i className="fa fa-search"/> Find a filter...</React.Fragment>}
+      placeholder={<React.Fragment>Find a variable <i className="fa fa-search"/></React.Fragment>}
       options={options}
       noOptionsMessage={noOptionsMessage}
       formatGroupLabel={formatGroupLabel}
@@ -79,7 +87,8 @@ function findPath(ontologyItemsByTerm, ontologyTerm) {
 function selectFilter(candidate, input) {
   if (!input) return false;
   const { matchString } = candidate.data;
-  return matchString.includes(input.toLowerCase());
+  const tokens = parseSearchQueryString(input);
+  return areTermsInString(tokens, matchString);
 }
 
 function noOptionsMessage({ inputValue }) {
@@ -159,6 +168,5 @@ function makeOptions(question) {
       .concat([node.field])
       .flatMap(field => [field.display, field.description])
       .concat(values)
-      .join(' ')
-      .toLowerCase();
+      .join(' ');
   }
