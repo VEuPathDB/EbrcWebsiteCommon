@@ -16,3 +16,8 @@
   text-align: center;
   color: white;
 }
+
+div.wdk-Answer .CategoryIcon {
+  position: relative;
+  left: 1em;
+}
