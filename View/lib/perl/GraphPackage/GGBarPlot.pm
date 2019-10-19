@@ -494,7 +494,7 @@ if($hasFacets) {
 
 #}
 
-if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 18) {
+if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 14) {
   gp = gp + theme(plot.margin = margin(l=40))
 }
 
