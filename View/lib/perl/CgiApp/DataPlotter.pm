@@ -113,7 +113,29 @@ sub run {
 	 my @errors;
 
 	 push(@errors, 'model must be supplied') if not defined $pkg;
-	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') if ($pkg ne 'UniDB' and $pkg ne 'PlasmoDB' and $pkg ne 'ToxoDB' and $pkg ne 'GiardiaDB' and $pkg ne 'AmoebaDB' and $pkg ne 'TriTrypDB' and $pkg ne 'FungiDB' and $pkg ne 'CryptoDB' and $pkg ne 'PiroplasmaDB' and $pkg ne 'MicrosporidiaDB' and $pkg ne 'HostDB' and $pkg ne 'EuPathDB' and $pkg ne 'ClinEpiDB' and $pkg ne 'MicrobiomeDB' && $pkg ne 'Gates' && $pkg ne 'ICEMR' && $pkg ne 'UserDatasets');
+
+
+         my %allowedProjects = ('UniDB' => 1,
+                                'PlasmoDB' => 1,
+                                'ToxoDB' => 1,
+                                'GiardiaDB' => 1,
+                                'AmoebaDD' => 1,
+                                'TriTrypDB' => 1,
+                                'FungiDB' => 1,
+                                'CryptoDB' => 1,
+                                'PiroplasmaDB' => 1,
+                                'MicrosporidiaDB' => 1,
+                                'HostDB' => 1,
+                                'EuPathDB' => 1,
+                                'ClinEpiDB' => 1,
+                                'MicrobiomeDB' => 1,
+                                'Gates' => 1,
+                                'ICEMR' => 1,
+                                'UserDatasets' => 1,
+                                'AllClinEpiDB' => 1,
+             );
+
+	 push(@errors, $pkg . ' is an unallowed value for Project_id arg') unless($allowedProjects{$pkg});
 	   push(@errors, 'type must be supplied' ) if not defined $type;
 	   push(@errors, 'id must be supplied'   ) if not defined $id;
 
@@ -148,7 +170,7 @@ sub run {
 	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
          my $core;
-         if ($pkg eq 'ClinEpiDB' || $pkg eq 'Gates' || $pkg eq 'ICEMR') {
+         if ($pkg eq 'ClinEpiDB' || $pkg eq 'Gates' || $pkg eq 'ICEMR' || $pkg eq 'AllClinEpiDB' ) {
            $core = 'ClinEpiWebsite::View::GraphPackage::';
          } elsif ( $pkg eq 'MicrobiomeDB') {
            $core = 'MicrobiomeWebsite::View::GraphPackage::';
