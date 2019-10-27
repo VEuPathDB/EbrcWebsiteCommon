@@ -1,9 +1,9 @@
-import './StudySearches.scss';
-
 import { constant } from 'lodash';
 import React from 'react';
-import { Mesa } from 'wdk-client/Components';
+import { Mesa, Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
+
+import './StudySearches.scss';
 
 const cx = makeClassNameHelper('StudySearchIconLinks');
 const renderEmpty = constant(null);
@@ -13,7 +13,6 @@ export default function StudySearchIconLinks(props) {
     // Array of objects with question and recordClass
     entries = [],
     renderNotFound = renderEmpty,
-    webAppUrl
   } = props;
 
   if (entries.length === 0) return renderNotFound();
@@ -26,9 +25,9 @@ export default function StudySearchIconLinks(props) {
             fadeOut
             content={<span>Search <strong>{recordClass.displayNamePlural}</strong></span>}
           >
-            <a href={`${webAppUrl}/showQuestion.do?questionFullName=${question.fullName}`}>
+            <Link to={`/search/${recordClass.urlSegment}/${question.urlSegment}`}>
               <i className={recordClass.iconName}/>
-            </a>
+            </Link>
           </Mesa.AnchoredTooltip>
         </div>
       ))}

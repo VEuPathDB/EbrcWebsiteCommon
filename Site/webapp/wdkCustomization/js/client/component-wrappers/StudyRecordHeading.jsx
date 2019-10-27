@@ -1,8 +1,8 @@
 import { get } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Seq } from 'wdk-client/IterableUtils';
-import { makeClassNameHelper } from 'wdk-client/ComponentUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import StudySearches from 'ebrc-client/App/Studies/StudySearches';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators';
@@ -12,7 +12,7 @@ import './StudyRecordHeading.scss';
 
 const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
 
-function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, webAppUrl, study, attemptAction, ...props }) {
+function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, study, attemptAction, ...props }) {
   let newProps = set(['recordClass','displayName'],'Study', props); 
   return (
     <React.Fragment>
@@ -23,7 +23,6 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           {loading ? null :
             <StudySearches
               entries={entries}
-              webAppUrl={webAppUrl}
               renderNotFound={() => (
                 <div>
                   <em>No searches were found for this study.</em>
@@ -45,8 +44,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
 
 function mapStateToProps(state) {
   const { globalData, record, studies } = state;
-  const { questions, recordClasses, siteConfig } = globalData;
-  const { webAppUrl } = siteConfig;
+  const { questions, recordClasses } = globalData;
 
   if (questions == null || recordClasses == null || studies.loading) {
     return { loading: true };
@@ -66,16 +64,16 @@ function mapStateToProps(state) {
       .map(search => search.name)
       .flatMap(questionName =>
         Seq.from(questions)
-          .filter(question => question.name === questionName)
+          .filter(question => question.fullName === questionName)
           .take(1)
           .flatMap(question =>
             Seq.from(recordClasses)
-              .filter(recordClass => question.recordClassName === recordClass.name)
+              .filter(recordClass => question.outputRecordClassName === recordClass.urlSegment)
               .map(recordClass => ({ question, recordClass }))
               .take(1)))
       .toArray();
 
-  return { entries, webAppUrl, study: activeStudy };
+  return { entries, study: activeStudy };
 }
 
 const mapDispatchToProps = {
