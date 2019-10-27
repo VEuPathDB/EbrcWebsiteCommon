@@ -5,7 +5,7 @@ import React from 'react';
 import { Mesa } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
-const cx = makeClassNameHelper('ce-StudySearchIconLinks');
+const cx = makeClassNameHelper('StudySearchIconLinks');
 const renderEmpty = constant(null);
 
 export default function StudySearchIconLinks(props) {

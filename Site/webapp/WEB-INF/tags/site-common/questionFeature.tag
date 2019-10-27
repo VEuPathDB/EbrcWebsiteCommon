@@ -16,9 +16,14 @@
 
 <c:choose>
 
+<%-- ORFS to BE RETIRED  ICON --%>
+  <c:when test="${fn:containsIgnoreCase(question.name,'Orf')}">
+    <imp:image alt="To Be Retired icon" title="ORF searches to be restired" 
+               src="wdk/images/toBeRetired.png" width="10%"/>
+  </c:when>
+
 <%-- BETA ICON --%>
-  <c:when test="${fn:containsIgnoreCase(question.name,'GenesByRNASeqUserDataset')
-                 }">
+  <c:when test="${fn:containsIgnoreCase(question.name,'GenesByRNASeqUserDataset')}">
     <c:set var="betaIconFile" value="${refer eq 'questionPage' ? 'beta2-40.png' : 'beta2-30.png'}"/>
     <imp:image alt="Beta feature icon" title="This search is new and under revision; please provide feedback using the Contact Us link on the top header." 
 			src="wdk/images/${betaIconFile}"/>
@@ -36,7 +41,7 @@
 
 <%-- Provided by WDK:  "NEW" AND "REVISED" ICONS --%>
   <c:otherwise>
-		<wdk:questionFeature question="${question}" />
+    <wdk:questionFeature question="${question}" />
   </c:otherwise>
 </c:choose>
 

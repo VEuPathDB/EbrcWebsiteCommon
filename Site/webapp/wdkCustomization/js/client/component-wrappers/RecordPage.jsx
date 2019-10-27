@@ -40,6 +40,7 @@ export function RecordMainSection(DefaultComponent) {
   };
 }
 
+export const RecordUI = makeDynamicWrapper('RecordUI');
 export const RecordTable = makeDynamicWrapper('RecordTable');
 
 

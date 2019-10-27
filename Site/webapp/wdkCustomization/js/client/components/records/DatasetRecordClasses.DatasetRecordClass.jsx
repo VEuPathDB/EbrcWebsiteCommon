@@ -153,3 +153,28 @@ export function RecordTable(props) {
   }
   return <props.DefaultComponent {...props}/>;
 }
+
+export function RecordUI({ DefaultComponent, ...props }) {
+  return (
+    <React.Fragment>
+      <DefaultComponent {...props}/>
+      <JsonLinkedData {...props}/>
+    </React.Fragment>
+  );
+}
+
+function JsonLinkedData(props) {
+  const { record } = props;
+  return (
+    <script type='application/ld+json'>
+    {`
+      {
+          "@context": "http://schema.org/",
+          "@type": "Dataset",
+          "name": ${JSON.stringify(record.displayName)},
+          "description": ${JSON.stringify(record.attributes.description)}
+      }
+    `}
+    </script>
+  );
+}

@@ -1,6 +1,6 @@
 $red: #DD314E;
 
-.ce-StudySearchIconLinks {
+.StudySearchIconLinks {
   display: flex;
 
   &Item {
@@ -9,6 +9,7 @@ $red: #DD314E;
     a, .link, .wdk-Link {
       color: black;
       transition: 250ms color;
+      text-decoration: none;
 
       &:hover {
         color: $red;
@@ -16,4 +17,8 @@ $red: #DD314E;
     }
 
   }
+}
+
+div.wdk-Answer .StudySearchIconLinks {
+  font-size: 2em;
 }
