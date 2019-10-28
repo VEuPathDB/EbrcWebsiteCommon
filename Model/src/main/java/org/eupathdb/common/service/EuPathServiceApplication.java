@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.eupathdb.common.service.brc.BrcService;
 import org.eupathdb.common.service.contact.ContactUsService;
+import org.eupathdb.common.service.sitemap.SitemapService;
 import org.gusdb.fgputil.SetBuilder;
 import org.gusdb.wdk.service.WdkServiceApplication;
 
@@ -15,6 +16,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .addAll(super.getClasses())
     .add(BrcService.class)
     .add(ContactUsService.class)
+    .add(SitemapService.class)
     .toSet();
   }
 }
