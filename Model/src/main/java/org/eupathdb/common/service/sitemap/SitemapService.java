@@ -1,50 +1,86 @@
 package org.eupathdb.common.service.sitemap;
 
+import static org.gusdb.fgputil.functional.Functions.fSwallow;
+import static org.gusdb.fgputil.functional.Functions.toJavaFunction;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+import org.gusdb.fgputil.Tuples.ThreeTuple;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.WdkUserException;
-import org.gusdb.wdk.model.dbms.ResultList;
-import org.gusdb.wdk.model.query.Query;
-import org.gusdb.wdk.model.query.QueryInstance;
-import org.gusdb.wdk.model.record.PrimaryKeyDefinition;
-import org.gusdb.wdk.model.record.PrimaryKeyValue;
+import org.gusdb.wdk.model.question.Question;
 import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 
 @Path("sitemap")
 public class SitemapService extends AbstractWdkService {
 
-  private static final String recordPagePath = "app/record";
+  private static final Logger LOG = Logger.getLogger(SitemapService.class);
 
   @GET
-  @Path("{recordType}")
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response getSiteMap(@PathParam("recordType") String recordType) throws WdkModelException, WdkUserException {
-    RecordClass recordClass = getWdkModel().getRecordClassByUrlSegment(recordType);
-    if (recordClass == null || !recordClass.hasAllRecordsQuery()) return Response.ok("").build();
-
-    PrimaryKeyDefinition pkDef = recordClass.getPrimaryKeyDefinition();
-    List<String> urls = new LinkedList<>();
+  @Produces(MediaType.TEXT_XML)
+  public String getSiteMap(@QueryParam("fmt") String fmt) {
     String urlBase = getContextUri();
-    Query allRecordsQuery = recordClass.getAllRecordsQuery();
-    QueryInstance<?> queryInstance = allRecordsQuery.makeInstance(getSessionUser(), new HashMap<String, String>(), true, 0, new HashMap<String, String>());
-    ResultList resultList = queryInstance.getResults();
-    while (resultList.next()) {
-      PrimaryKeyValue pkValue = pkDef.getPrimaryKeyFromResultList(resultList);
-      String url = urlBase + "/" + recordPagePath + "/" + recordType + "/" + String.join("/", pkValue.getValues().values());
-      urls.add(url);
-    }
-    String responseString = String.join("\n", urls);
-    return Response.ok(responseString).build();
+    String sitemaps = Arrays.stream(getWdkModel().getAllQuestionSets())
+        .flatMap(questionSet -> Arrays.stream(questionSet.getQuestions()))
+        .filter(question -> question.getPropertyLists().containsKey("forSitemap")).map(question -> "<sitemap><loc>"
+            + urlBase + fmt.replace("{question}", question.getUrlSegment()) + "</loc></sitemap>")
+        .collect(Collectors.joining(""));
+
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
+        + "<sitemapindex xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        + "xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd\" "
+        + "xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" + sitemaps + "</sitemapindex>";
+  }
+
+  @GET
+  @Path("{questionName}")
+  @Produces(MediaType.TEXT_XML)
+  public String getSiteMapForQuestion(@PathParam("questionName") String questionName, @QueryParam("fmt") String fmt) throws WdkModelException {
+    String urlBase = getContextUri();
+
+    // find question for sitemap.xml
+    Optional<Question> maybeQuestion = Optional.of(getWdkModel().getQuestionByUrlSegment(questionName))
+        .filter(question -> question.getPropertyLists().containsKey("forSitemap"));
+
+    Optional<RecordClass> maybeRecordClass = maybeQuestion
+        .map(toJavaFunction(fSwallow(question -> getWdkModel().getRecordClass(question.getRecordClassName()))));
+
+    Optional<List<String[]>> maybeAllIds = maybeQuestion.map(toJavaFunction(
+        fSwallow(question -> question.makeAnswerValue(getSessionUser(), new HashMap<>(), true, 0).getAllIds())));
+
+    Optional<ThreeTuple<Question, RecordClass, List<String[]>>> maybeData = maybeQuestion
+        .flatMap(question -> maybeRecordClass.flatMap(recordClass -> maybeAllIds
+            .map(allIds -> new ThreeTuple<Question, RecordClass, List<String[]>>(question, recordClass, allIds))));
+
+    return maybeData.map(data -> {
+      String urls = data.getThird().stream().map(id -> {
+        String idPart = Arrays.stream(id).map(part ->
+          URLEncoder.encode(part, StandardCharsets.UTF_8)).collect(Collectors.joining("/"));
+
+        String url = urlBase + fmt
+          .replace("{recordClass}", URLEncoder.encode(data.getSecond().getUrlSegment(), StandardCharsets.UTF_8))
+          .replace("{id}", idPart);
+
+        return "<url><loc>" + url + "</loc></url>";
+      }).collect(Collectors.joining(""));
+      return "<?xml version='1.0' encoding='UTF-8'?>\n"
+          + "<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+          + "xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">"
+          + urls + "</urlset>";
+    }).orElse("");
   }
 }
