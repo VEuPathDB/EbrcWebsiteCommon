@@ -127,7 +127,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
         return {
           icon: question.iconName || recordClass.iconName || 'fa fa-database',
           name: question.name,
-          displayName: recordClass.shortDisplayName,
+          displayName: recordClass.shortDisplayNamePlural,
         };
       })
     }))
