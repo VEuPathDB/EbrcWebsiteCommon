@@ -16,10 +16,10 @@
     <name>Resolve assets</name>
     <note>Strip checksums from filenames and add far-future cache-related headers</note>
     <from>^(.*)-.{32}\.(ico|js|css|jpeg|jpg|gif|png)$</from>
-    <to>$1.$2</to>
     <set type="expires">1 year</set>
     <set type="response-header" name="Cache-Control">public, max-age=31536000</set>
     <set type="response-header" name="Vary">Accept-Encoding</set>
+    <to>$1.$2</to>
   </rule>
 
   <rule>
@@ -29,6 +29,20 @@
     <set type="expires">1 year</set>
     <set type="response-header" name="Cache-Control">public, max-age=31536000</set>
     <set type="response-header" name="Vary">Accept-Encoding</set>
+  </rule>
+
+  <rule>
+    <name>Generated Sitemap Index</name>
+    <note>Forward to REST service that generates a sitemap index file</note>
+    <from>^/sitemap.xml$</from>
+    <to>/service/sitemap?fmt=/sitemap-{question}.xml</to>
+  </rule>
+  
+  <rule>
+    <name>Generated Sitemap</name>
+    <note>Forward to REST service that generates a sitemap file</note>
+    <from>^/sitemap-(.*).xml$</from>
+    <to>/service/sitemap/$1?fmt=/app/record/{recordClass}/{id}</to>
   </rule>
 
 </urlrewrite>

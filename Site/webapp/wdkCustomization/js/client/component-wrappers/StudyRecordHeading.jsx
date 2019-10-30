@@ -22,7 +22,8 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           <div className={cx('Label')}>Search the data</div>
           {loading ? null :
             <StudySearches
-              entries={entries}
+              study={study}
+              webAppUrl={webAppUrl}
               renderNotFound={() => (
                 <div>
                   <em>No searches were found for this study.</em>
@@ -44,9 +45,10 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
 
 function mapStateToProps(state) {
   const { globalData, record, studies } = state;
-  const { questions, recordClasses } = globalData;
+  const { siteConfig } = globalData;
+  const { webAppUrl } = siteConfig;
 
-  if (questions == null || recordClasses == null || studies.loading) {
+  if (studies.loading) {
     return { loading: true };
   }
 
@@ -54,26 +56,9 @@ function mapStateToProps(state) {
     .filter(part => part.name === 'dataset_id')
     .map(part => part.value)[0];
 
-  const activeStudy = get(studies, 'entities', [])
+  const study = get(studies, 'entities', [])
     .find(study => study.id === studyId);
-
-  // Find record class and searches from study id.
-  // If none found, render nothing.
-  // FIXME Start with questions!!
-  const entries = activeStudy && Seq.from(activeStudy.searches)
-      .map(search => search.name)
-      .flatMap(questionName =>
-        Seq.from(questions)
-          .filter(question => question.fullName === questionName)
-          .take(1)
-          .flatMap(question =>
-            Seq.from(recordClasses)
-              .filter(recordClass => question.outputRecordClassName === recordClass.urlSegment)
-              .map(recordClass => ({ question, recordClass }))
-              .take(1)))
-      .toArray();
-
-  return { entries, study: activeStudy };
+  return { webAppUrl, study };
 }
 
 const mapDispatchToProps = {

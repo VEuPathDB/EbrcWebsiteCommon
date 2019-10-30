@@ -51,7 +51,7 @@ export function RecordHeading(props) {
   } = attributes;
 
   let version = tables.Version && tables.Version[0];
-  let primaryPublication = tables.Publications && tables.Publications[0];
+  let primaryPublication = getPrimaryPublication(record);
 
   return (
     <div>
@@ -165,16 +165,33 @@ export function RecordUI({ DefaultComponent, ...props }) {
 
 function JsonLinkedData(props) {
   const { record } = props;
+  const primaryPublication = getPrimaryPublication(record);
+  const contacts = record.tables.Contacts && record.tables.Contacts.map(row => ({
+    '@type': 'Person',
+    name: row.contact_name,
+    affiliation: row.affiliation
+  }));
+
+  const metadata = {
+    "@context": "http://schema.org/",
+    "@type": "Dataset",
+    name: record.displayName,
+    description: record.attributes.summary,
+    publication: primaryPublication && {
+      name: primaryPublication.pubmed_link.displayText,
+      url: primaryPublication.pubmed_link.url,
+    },
+    contributor: contacts
+  };
+
   return (
-    <script type='application/ld+json'>
-    {`
-      {
-          "@context": "http://schema.org/",
-          "@type": "Dataset",
-          "name": ${JSON.stringify(record.displayName)},
-          "description": ${JSON.stringify(record.attributes.description)}
-      }
-    `}
-    </script>
+    <script type='application/ld+json'>{JSON.stringify(metadata)}</script>
   );
+}
+
+
+// helpers
+function getPrimaryPublication(record) {
+  const { tables } = record;
+  return tables.Publications && tables.Publications[0];
 }

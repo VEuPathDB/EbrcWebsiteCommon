@@ -1705,7 +1705,11 @@ div.step-analysis-usernotes {
 
 
 .wdk-PageContent__jbrowse {
-    padding:0
+  padding: 0;
+}
+
+#jbrowse_iframe {
+  box-sizing: border-box;
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

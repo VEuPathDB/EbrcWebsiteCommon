@@ -162,3 +162,7 @@ modelprop:
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
 contextxml_model: "{{ project }}"
+
+# below will remove the wN. prefix from live sites.  This is used for
+# creating link references for robots.txt / sitemap.txt for live sites.
+live_hostname: "{{ hostname | regex_replace('^(q|w)[0-9]\\.','') }}"
