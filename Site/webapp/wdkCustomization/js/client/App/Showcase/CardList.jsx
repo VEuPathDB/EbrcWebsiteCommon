@@ -16,6 +16,8 @@ const EMPTY_INDICATOR_CLASS_NAME = `${CLASS_NAME}__EmptyIndicator`;
 const EXPAND_BUTTON_CLASS_NAME = `${CLASS_NAME}__ExpandButton link`;
 const FILTER_CLASS_NAME = `${CLASS_NAME}__FilterInput`;
 
+const ALLSTUDIES_LINK_CLASS_NAME = `${CLASS_NAME}__AllStudies link`;
+
 export default function CardList(props) {
   const { additionalClassName, isLoading, list, renderCard, isExpandable, contentNamePlural, getSearchStringForItem = () => '' } = props;
 
@@ -104,8 +106,11 @@ export default function CardList(props) {
       helpText={`Find ${contentNamePlural} by searching the visible content.`}
     />
 
+   const allStudies = <a href="/a/app/search/dataset/Studies/result" className={ALLSTUDIES_LINK_CLASS_NAME} title="Go to the 'All Studies' page"><i className="fa fa-th-list" aria-hidden="true"></i> Table view</a>
+
   return (
     <div className={className}>
+      {allStudies}
       {expandButton}
       {filterInput}
       {cardList}
