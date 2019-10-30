@@ -10,24 +10,23 @@ const renderEmpty = constant(null);
 
 export default function StudySearchIconLinks(props) {
   const {
-    // Array of objects with question and recordClass
-    entries = [],
+    study,
     renderNotFound = renderEmpty,
     webAppUrl
   } = props;
 
-  if (entries.length === 0) return renderNotFound();
+  if (study == null) return renderNotFound();
 
   return (
     <div className={cx()}>
-      {entries.map(({ question, recordClass }) => (
-        <div key={question.name} className={cx('Item')}>
+      {study.searches.map(({ icon, displayName, name }) => (
+        <div key={name} className={cx('Item')}>
           <Mesa.AnchoredTooltip
             fadeOut
-            content={<span>Search <strong>{recordClass.displayNamePlural}</strong></span>}
+            content={<span>Search <strong>{displayName}</strong></span>}
           >
-            <a href={`${webAppUrl}/showQuestion.do?questionFullName=${question.name}`}>
-              <i className={recordClass.iconName}/>
+            <a href={`${webAppUrl}/showQuestion.do?questionFullName=${name}`}>
+              <i className={icon}/>
             </a>
           </Mesa.AnchoredTooltip>
         </div>
