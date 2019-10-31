@@ -1,7 +1,6 @@
+import { get } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
-import { Seq } from 'wdk-client/IterableUtils';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import CategoryIcon from 'ebrc-client/App/Categories/CategoryIcon';
 import StudySearchIconLinks from 'ebrc-client/App/Studies/StudySearches';

@@ -18,13 +18,13 @@ export default function StudySearchIconLinks(props) {
 
   return (
     <div className={cx()}>
-      {study.searches.map(({ icon, displayName, name }) => (
+      {study.searches.map(({ icon, displayName, name, path }) => (
         <div key={name} className={cx('Item')}>
           <Mesa.AnchoredTooltip
             fadeOut
             content={<span>Search <strong>{displayName}</strong></span>}
           >
-            <Link to={`/search/${recordClass.urlSegment}/${question.urlSegment}`}>
+            <Link to={`/search/${path}`}>
               <i className={icon}/>
             </Link>
           </Mesa.AnchoredTooltip>
