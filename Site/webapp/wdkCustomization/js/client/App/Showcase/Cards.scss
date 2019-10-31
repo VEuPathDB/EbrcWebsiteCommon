@@ -1,7 +1,8 @@
+/*
 .CardList .wdk-RealTimeSearchBox__withHelp {
   padding-bottom: 10px;
 }
-
+*/
 .CardList {
   align-items: center;
   background-color: $paleBlue;
@@ -38,10 +39,11 @@
     font-weight: 500;
     font-size: 120%;
     margin-left: auto !important;
+    height: 0;
   }
 
   &__FilterInput {
-    max-width: 50em;
+    max-width: 28em;
     align-self: center;
     font-size: 1.2em;
   }
