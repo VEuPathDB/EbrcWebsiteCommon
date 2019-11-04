@@ -85,38 +85,44 @@ export const Header = ({
 
   return (
     <header className={combineClassNames(cx(), containerClassName)}>
-      {branding}
-      <MenuItemGroup
-        menuItems={menuItems}
-        selectedItems={selectedMenuItems}
-        setSelectedItems={setSelectedMenuItems}
-      />
-      <div className={cx('SearchBar', isSearchBarToggleHidden ? 'toggle-hidden' : 'toggle-shown')}>
-        <TextBox 
-          onChange={setSearchTerm}
-          value={searchTerm}
-          placeholder="Site search..."
-          onFocus={() => {
-            setIsSearchBarSelected(true);
-          }}
-          onBlur={() => {
-            setIsSearchBarSelected(false);
-          }}
-        />
-        <div className={cx('SearchSubmit')}>
-          <IconAlt fa="search" />
-        </div>
-        {
-          isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
-          <Suggestions
-            siteSearchSuggestions={siteSearchSuggestions}
-            additionalSuggestions={additionalSuggestions}
-          />
-        }
+      <div className={cx('Branding')}>
+        {branding}
       </div>
-      <div className={cx('SearchBarToggle', isSearchBarToggleHidden ? 'hidden' : 'shown')}>
-        <div className={cx('SearchSubmit')}>
-          <IconAlt fa="search" />
+      <div className={cx('Content')}>
+        <div className={cx('MenuBar')}>
+          <MenuItemGroup
+            menuItems={menuItems}
+            selectedItems={selectedMenuItems}
+            setSelectedItems={setSelectedMenuItems}
+          />
+        </div>
+        <div className={cx('SearchBar', isSearchBarToggleHidden ? 'toggle-hidden' : 'toggle-shown')}>
+          <TextBox 
+            onChange={setSearchTerm}
+            value={searchTerm}
+            placeholder="Site search..."
+            onFocus={() => {
+              setIsSearchBarSelected(true);
+            }}
+            onBlur={() => {
+              setIsSearchBarSelected(false);
+            }}
+          />
+          <div className={cx('SearchSubmit')}>
+            <IconAlt fa="search" />
+          </div>
+          {
+            isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
+            <Suggestions
+              siteSearchSuggestions={siteSearchSuggestions}
+              additionalSuggestions={additionalSuggestions}
+            />
+          }
+        </div>
+        <div className={cx('SearchBarToggle', isSearchBarToggleHidden ? 'hidden' : 'shown')}>
+          <div className={cx('SearchSubmit')}>
+            <IconAlt fa="search" />
+          </div>
         </div>
       </div>
     </header>
@@ -166,8 +172,26 @@ const HeaderMenuItemContent = ({
 }: HeaderMenuItemContentProps) => {
   const webAppUrl = useWebAppUrl();
 
+  const onMouseEnter = item.type === 'subMenu' 
+    ? (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSelectedItems(path);
+      }
+    : undefined;
+
+  const onMouseLeave = item.type === 'subMenu'
+    ? (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSelectedItems(path.slice(0, -1));
+      }
+    : undefined;
+
   return (
-    <div className={cx('MenuItemContent')}>
+    <div 
+      className={cx('MenuItemContent')}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {
         item.type === 'route'
           ? <Link 
@@ -190,34 +214,30 @@ const HeaderMenuItemContent = ({
             >
               {item.display}
             </a>
-          : <div className={cx('SubmenuGroup')}>
-              <button type="button"
-                onBlur={(e) => {
-                  e.stopPropagation();
-                  setSelectedItems(path.slice(0, -1));
-                }}
-                onFocus={(e) => {
-                  e.stopPropagation();
-                  setSelectedItems(path);
-                }}
-                onMouseEnter={(e) => {
+          : <div 
+              className={cx('SubmenuGroup')}
+            >
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   setSelectedItems(path);
-                }}
-                onMouseLeave={(e) => {
-                  e.stopPropagation();
-                  setSelectedItems(path.slice(0, -1));
                 }}
               >
                 {item.display}
+                {' '}
                 <IconAlt fa="caret-down" />
-              </button>
-              <MenuItemGroup 
-                menuItems={item.items} 
-                path={path}
-                selectedItems={selectedItems}
-                setSelectedItems={setSelectedItems}
-              />
+              </a>
+              {
+                selectedItems.includes(item.key) &&
+                <MenuItemGroup 
+                  menuItems={item.items} 
+                  path={path}
+                  selectedItems={selectedItems}
+                  setSelectedItems={setSelectedItems}
+                />
+              }
             </div>
       }
     </div>
