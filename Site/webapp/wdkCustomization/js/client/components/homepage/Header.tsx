@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Link, TextBox, IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -53,15 +53,30 @@ interface SubmenuItem extends HeaderMenuItemBase {
   items: HeaderMenuItem[]
 }
 
+interface CustomMenuItem extends HeaderMenuItemBase {
+  type: 'custom'
+}
+
 export type HeaderMenuItem = 
   | RouteMenuItem
   | WebAppMenuItem
   | ExternalLinkMenuItem
-  | SubmenuItem;
+  | SubmenuItem
+  | CustomMenuItem;
 
 type AdditionalSuggestionItem = {
   key: string,
   display: ReactNode
+};
+
+const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
+  if (e === ancestorCandidate) {
+    return true;
+  } else if (!e.parentElement) {
+    return false;
+  } else {
+    return hasAsAncestor(e.parentElement, ancestorCandidate);
+  }
 };
 
 export const Header = ({ 
@@ -72,19 +87,39 @@ export const Header = ({
   siteSearchSuggestions,
   additionalSuggestions
 }: Props) => {
+  const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
   const [ searchTerm, setSearchTerm ] = useState('');
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
 
-  console.log(selectedMenuItems);
+  const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
+    if (
+      headerRef.current &&
+      e.target instanceof Element && 
+      !hasAsAncestor(e.target, headerRef.current)
+    ) {
+      setSelectedMenuItems([]);
+    }
+  }, [ headerRef.current ]);
+
+  useEffect(() => {
+    window.addEventListener('click', closeSubmenusOnClickout);
+
+    return () => {
+      window.removeEventListener('click', closeSubmenusOnClickout);
+    };
+  }, [ closeSubmenusOnClickout ]);
 
   useEffect(() => {
     loadSuggestions(searchTerm);
   }, [ searchTerm ]);
 
   return (
-    <header className={combineClassNames(cx(), containerClassName)}>
+    <header 
+      className={combineClassNames(cx(), containerClassName)}
+      ref={headerRef}
+    >
       <div className={cx('Branding')}>
         {branding}
       </div>
@@ -174,15 +209,13 @@ const HeaderMenuItemContent = ({
 
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
-        e.stopPropagation();
         setSelectedItems(path);
       }
     : undefined;
 
   const onMouseLeave = item.type === 'subMenu'
     ? (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setSelectedItems(path.slice(0, -1));
+        setSelectedItems([]);
       }
     : undefined;
 
@@ -214,14 +247,14 @@ const HeaderMenuItemContent = ({
             >
               {item.display}
             </a>
-          : <div 
+          : item.type === 'subMenu'
+          ? <div 
               className={cx('SubmenuGroup')}
             >
               <a
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  e.stopPropagation();
                   setSelectedItems(path);
                 }}
               >
@@ -239,6 +272,7 @@ const HeaderMenuItemContent = ({
                 />
               }
             </div>
+          : item.display
       }
     </div>
   );

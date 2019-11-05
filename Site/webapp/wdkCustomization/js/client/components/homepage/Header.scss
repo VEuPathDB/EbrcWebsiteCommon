@@ -40,6 +40,10 @@
     }
   }
 
+  &MenuItemContent {
+    white-space: nowrap;
+  }
+
   &SubmenuGroup {
     position: relative;
     color: black;
@@ -50,9 +54,9 @@
 
     .ebrc-HeaderMenuItemGroup {
       position: absolute;
+      top: 1.25rem;
       background-color: #ededed;
       padding: 0.125rem 0.25rem;
-      margin-top: 0.25rem;
     }
 
     .ebrc-HeaderMenuItemContent {
