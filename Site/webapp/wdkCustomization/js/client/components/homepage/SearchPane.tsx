@@ -18,22 +18,35 @@ type Props = {
   searchTree?: CategoryTreeNode
 };
 
-export const SearchPane = (props: Props) => 
-  <nav className={combineClassNames(cx(), props.containerClassName)}>
-    <h6>
-      SPECIALIZED SEARCHES
-    </h6> 
-    <SearchCheckboxTree  searchTree={props.searchTree} />
-  </nav>;
-
-type SearchCheckboxTreeProps = {
-  searchTree?: CategoryTreeNode
-};
-
-export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
+export const SearchPane = (props: Props) => {
   const [ expandedBranches, setExpandedBranches ] = useState<string[]>([]);
   const [ searchTerm, setSearchTerm ] = useState('');
 
+  return (
+    <nav className={combineClassNames(cx(), props.containerClassName)}>
+      <h6>
+        SPECIALIZED SEARCHES
+      </h6> 
+      <SearchCheckboxTree 
+        searchTree={props.searchTree} 
+        searchTerm={searchTerm}
+        expandedBranches={expandedBranches}
+        setSearchTerm={setSearchTerm}
+        setExpandedBranches={setExpandedBranches}
+      />
+    </nav>
+  );
+}
+
+type SearchCheckboxTreeProps = {
+  searchTree?: CategoryTreeNode,
+  searchTerm: string,
+  expandedBranches: string[],
+  setSearchTerm: (newSearchTerm: string) => void,
+  setExpandedBranches: (newExpandedBranches: string[]) => void
+};
+
+export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
   const noSelectedLeaves = useMemo(
     () => [] as string[],
     []
@@ -45,15 +58,15 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
         selectedLeaves={noSelectedLeaves}
         onChange={noop}
         tree={props.searchTree}
-        expandedBranches={expandedBranches}
-        searchTerm={searchTerm}
+        expandedBranches={props.expandedBranches}
+        searchTerm={props.searchTerm}
         isSelectable={false}
         searchBoxPlaceholder="Find a search..."
         leafType="search"
         renderNode={renderNode}
         renderNoResults={renderNoResults}
-        onUiChange={setExpandedBranches}
-        onSearchTermChange={setSearchTerm}
+        onUiChange={props.setExpandedBranches}
+        onSearchTermChange={props.setSearchTerm}
         showSearchBox   
         linksPosition={LinksPosition.Top}
       />;
