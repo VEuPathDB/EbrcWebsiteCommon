@@ -24,6 +24,8 @@ type Props = {
   additionalSuggestions?: AdditionalSuggestionItem[]
 };
 
+type FocusType = 'hover' | 'click' | 'unfocused';
+
 type HeaderMenuItemBase = {
   key: string,
   display: ReactNode,
@@ -89,6 +91,7 @@ export const Header = ({
 }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
+  const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
   const [ searchTerm, setSearchTerm ] = useState('');
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
@@ -99,9 +102,12 @@ export const Header = ({
       e.target instanceof Element && 
       !hasAsAncestor(e.target, headerRef.current)
     ) {
-      setSelectedMenuItems([]);
+      if (selectedMenuItems.length) {
+        setFocusType('unfocused');
+        setSelectedMenuItems([]);
+      }
     }
-  }, [ headerRef.current ]);
+  }, [ selectedMenuItems, headerRef.current ]);
 
   useEffect(() => {
     window.addEventListener('click', closeSubmenusOnClickout);
@@ -129,6 +135,8 @@ export const Header = ({
             menuItems={menuItems}
             selectedItems={selectedMenuItems}
             setSelectedItems={setSelectedMenuItems}
+            focusType={focusType}
+            setFocusType={setFocusType}
           />
         </div>
         <div className={cx('SearchBar', isSearchBarToggleHidden ? 'toggle-hidden' : 'toggle-shown')}>
@@ -168,14 +176,18 @@ type MenuItemGroupProps = {
   menuItems: HeaderMenuItem[],
   path?: string[],
   selectedItems: string[],
-  setSelectedItems: (newSelectedItems: string[]) => void
+  focusType: FocusType,
+  setSelectedItems: (newSelectedItems: string[]) => void,
+  setFocusType: (newFocusType: FocusType) => void
 };
 
 const MenuItemGroup = ({
   menuItems,
   path = [],
   selectedItems,
-  setSelectedItems
+  focusType,
+  setSelectedItems,
+  setFocusType
 }: MenuItemGroupProps) => 
   <div className={cx('MenuItemGroup')}>
     {
@@ -186,7 +198,9 @@ const MenuItemGroup = ({
             item={menuItem}
             path={[...path, menuItem.key]}
             selectedItems={selectedItems}
+            focusType={focusType}
             setSelectedItems={setSelectedItems}
+            setFocusType={setFocusType}
           />
       )
     }
@@ -196,26 +210,37 @@ type HeaderMenuItemContentProps = {
   item: HeaderMenuItem
   path: string[],
   selectedItems: string[],
-  setSelectedItems: (newSelectedItems: string[]) => void
+  focusType: FocusType,
+  setSelectedItems: (newSelectedItems: string[]) => void,
+  setFocusType: (newFocusType: FocusType) => void
 };
 
 const HeaderMenuItemContent = ({
   item,
   path,
   selectedItems,
-  setSelectedItems
+  focusType,
+  setSelectedItems,
+  setFocusType
 }: HeaderMenuItemContentProps) => {
   const webAppUrl = useWebAppUrl();
 
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
+        if (focusType !== 'click') {
+          setFocusType('hover');
+        }
+
         setSelectedItems(path);
       }
     : undefined;
 
   const onMouseLeave = item.type === 'subMenu'
     ? (e: React.MouseEvent) => {
-        setSelectedItems([]);
+        if (focusType === 'hover') {
+          setFocusType('unfocused');
+          setSelectedItems([]);
+        }
       }
     : undefined;
 
@@ -259,6 +284,7 @@ const HeaderMenuItemContent = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
+                  setFocusType('click');
                   setSelectedItems(path);
                 }}
               >
@@ -270,7 +296,9 @@ const HeaderMenuItemContent = ({
                   menuItems={item.items} 
                   path={path}
                   selectedItems={selectedItems}
+                  focusType={focusType}
                   setSelectedItems={setSelectedItems}
+                  setFocusType={setFocusType}
                 />
               }
             </div>
