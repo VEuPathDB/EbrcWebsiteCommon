@@ -219,6 +219,8 @@ const HeaderMenuItemContent = ({
       }
     : undefined;
 
+  const selected = selectedItems.includes(item.key);
+
   return (
     <div 
       className={cx('MenuItemContent')}
@@ -250,6 +252,8 @@ const HeaderMenuItemContent = ({
           : item.type === 'subMenu'
           ? <div 
               className={cx('SubmenuGroup')}
+              aria-haspopup
+              aria-expanded={selected}
             >
               <a
                 href="#"
@@ -259,11 +263,9 @@ const HeaderMenuItemContent = ({
                 }}
               >
                 {item.display}
-                {' '}
-                <IconAlt fa="caret-down" />
               </a>
               {
-                selectedItems.includes(item.key) &&
+                selected &&
                 <MenuItemGroup 
                   menuItems={item.items} 
                   path={path}
