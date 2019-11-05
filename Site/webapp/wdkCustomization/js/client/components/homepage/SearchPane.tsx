@@ -24,9 +24,6 @@ export const SearchPane = (props: Props) =>
       SPECIALIZED SEARCHES
     </h6> 
     <SearchCheckboxTree  searchTree={props.searchTree} />
-    <h4>
-      What do you want to explore?
-    </h4>
   </nav>;
 
 type SearchCheckboxTreeProps = {
