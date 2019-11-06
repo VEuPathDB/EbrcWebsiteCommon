@@ -26,45 +26,46 @@ type Props = {
 
 type FocusType = 'hover' | 'click' | 'unfocused';
 
-type HeaderMenuItemBase = {
+type HeaderMenuItemBase<T> = {
   key: string,
   display: ReactNode,
-  tooltip?: string
+  tooltip?: string,
+  metadata?: T
 };
 
-interface RouteMenuItem extends HeaderMenuItemBase {
+interface RouteMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'route';
   route: string;
   target?: string;
 }
 
-interface WebAppMenuItem extends HeaderMenuItemBase {
+interface WebAppMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'webAppRoute';
   urlSegment: string;
   target?: string;
 }
 
-interface ExternalLinkMenuItem extends HeaderMenuItemBase {
+interface ExternalLinkMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'externalLink',
   href: string
   target?: string
 }
 
-interface SubmenuItem extends HeaderMenuItemBase {
+interface SubmenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'subMenu',
-  items: HeaderMenuItem[]
+  items: HeaderMenuItem<T>[]
 }
 
-interface CustomMenuItem extends HeaderMenuItemBase {
+interface CustomMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'custom'
 }
 
-export type HeaderMenuItem = 
-  | RouteMenuItem
-  | WebAppMenuItem
-  | ExternalLinkMenuItem
-  | SubmenuItem
-  | CustomMenuItem;
+export type HeaderMenuItem<T = {}> = 
+  | RouteMenuItem<T>
+  | WebAppMenuItem<T>
+  | ExternalLinkMenuItem<T>
+  | SubmenuItem<T>
+  | CustomMenuItem<T>;
 
 type AdditionalSuggestionItem = {
   key: string,
