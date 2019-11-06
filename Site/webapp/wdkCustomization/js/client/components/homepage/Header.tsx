@@ -276,7 +276,7 @@ const HeaderMenuItemContent = ({
             </a>
           : item.type === 'subMenu'
           ? <div 
-              className={cx('SubmenuGroup')}
+              className={cx('SubmenuGroup', selected ? 'selected' : 'unselected')}
               aria-haspopup
               aria-expanded={selected}
             >
@@ -292,14 +292,16 @@ const HeaderMenuItemContent = ({
               </a>
               {
                 selected &&
-                <MenuItemGroup 
-                  menuItems={item.items} 
-                  path={path}
-                  selectedItems={selectedItems}
-                  focusType={focusType}
-                  setSelectedItems={setSelectedItems}
-                  setFocusType={setFocusType}
-                />
+                <div className={cx('MenuItemGroupContainer')}>
+                  <MenuItemGroup 
+                    menuItems={item.items} 
+                    path={path}
+                    selectedItems={selectedItems}
+                    focusType={focusType}
+                    setSelectedItems={setSelectedItems}
+                    setFocusType={setFocusType}
+                  />
+                </div>
               }
             </div>
           : item.display

@@ -52,16 +52,34 @@
       color: black;
     }
 
-    .ebrc-HeaderMenuItemGroup {
-      position: absolute;
-      top: 1.25rem;
-      background-color: #ededed;
-      padding: 0.125rem 0.25rem;
+    &__selected {
+      > a::after {
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 1rem solid transparent;
+        border-right: 1rem solid transparent;
+        border-bottom: 1rem solid #ededed;
+        content: "";
+        left: 50%;
+        margin-left: -1rem;
+        top: 1.6rem;
+      }
     }
 
-    .ebrc-HeaderMenuItemContent {
-      padding: 0.625rem 1rem;
-    } 
+    .ebrc-HeaderMenuItemGroupContainer {
+      position: absolute; 
+
+      .ebrc-HeaderMenuItemGroup {
+        margin-top: 1.5rem;
+        background-color: #ededed;
+        padding: 0.125rem 0.25rem;
+      }
+  
+      .ebrc-HeaderMenuItemContent {
+        padding: 0.625rem 1rem;
+      } 
+    }
   }
 
   &SearchBar {
