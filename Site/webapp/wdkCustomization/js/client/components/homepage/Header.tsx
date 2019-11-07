@@ -12,6 +12,7 @@ import './Header.scss';
 const cx = makeClassNameHelper('ebrc-Header');
 
 const useWebAppUrl = (): string => {
+  // FIXME: Pull this from global data
   return webAppUrl;
 };
 
@@ -34,20 +35,20 @@ type HeaderMenuItemBase<T> = {
 };
 
 interface RouteMenuItem<T> extends HeaderMenuItemBase<T> {
-  type: 'route';
-  route: string;
+  type: 'reactRoute';
+  url: string;
   target?: string;
 }
 
 interface WebAppMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'webAppRoute';
-  urlSegment: string;
+  url: string;
   target?: string;
 }
 
 interface ExternalLinkMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'externalLink',
-  href: string
+  url: string
   target?: string
 }
 
@@ -254,23 +255,23 @@ const HeaderMenuItemContent = ({
       onMouseLeave={onMouseLeave}
     >
       {
-        item.type === 'route'
+        item.type === 'reactRoute'
           ? <Link 
-              to={item.route} 
+              to={item.url} 
               target={item.target}
             >
               {item.display}
             </Link>
           : item.type === 'webAppRoute'
           ? <a 
-              href={`${webAppUrl}${item.urlSegment}`} 
+              href={`${webAppUrl}${item.url}`} 
               target={item.target}
             >
               {item.display}
             </a>
           : item.type === 'externalLink'
           ? <a 
-              href={item.href} 
+              href={item.url} 
               target={item.target}
             >
               {item.display}
