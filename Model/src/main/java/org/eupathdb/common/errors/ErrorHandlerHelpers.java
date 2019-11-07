@@ -130,16 +130,15 @@ public class ErrorHandlerHelpers {
    * @param <T>
    *          type of value being stringified
    */
-  static class Stringifier<T> {
+  @FunctionalInterface
+  static interface Stringifier<T> {
     /**
      * @param value
      *          value to be stringified
      * @param qualifier
      *          indicator to help stringify
      */
-    public String stringify(T value, String qualifier) {
-      return value.toString();
-    }
+    String stringify(T value, String qualifier);
   }
 
   static String valueOrDefault(String value, String defaultValue) {
@@ -147,7 +146,7 @@ public class ErrorHandlerHelpers {
   }
 
   static <T> String getAttributeMapText(Map<String, T> attributeMap) {
-    return getAttributeMapText(attributeMap, new Stringifier<T>());
+    return getAttributeMapText(attributeMap, (val, q) -> val.toString());
   }
 
   static <T> String getAttributeMapText(Map<String, T> attributeMap, Stringifier<T> stringifier) {

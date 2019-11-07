@@ -41,10 +41,10 @@ public class ContactUsSubmitterTest {
     when(user.getUserId()).thenReturn(42l);
     
     when(requestData.getUserAgent()).thenReturn("Internet Explorer 5");
-    when(requestData.getIpAddress()).thenReturn("127.0.0.1");
+    when(requestData.getLocalIpAddress()).thenReturn("127.0.0.1");
     when(requestData.getReferrer()).thenReturn("elmstreet.eupathdb.org/elmstreet.vm/app/contact-us");
-    when(requestData.getAppHostName()).thenReturn("elmstreet.eupathdb.org");
-    when(requestData.getAppHostAddress()).thenReturn("128.0.0.1");
+    when(requestData.getLocalHost()).thenReturn("elmstreet.eupathdb.org");
+    when(requestData.getLocalIpAddress()).thenReturn("128.0.0.1");
 
     when(wdkModel.getBuildNumber()).thenReturn("39");
     when(wdkModel.getDisplayName()).thenReturn("PlasmoDB");

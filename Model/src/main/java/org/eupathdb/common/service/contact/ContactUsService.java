@@ -10,20 +10,17 @@ import java.util.stream.Stream;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.eupathdb.common.model.contact.ContactUsParams;
-import org.gusdb.fgputil.web.HttpRequestData;
 import org.gusdb.fgputil.web.RequestData;
+import org.gusdb.fgputil.web.SessionProxy;
 import org.gusdb.wdk.model.Attachment;
 import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
@@ -85,19 +82,18 @@ public class ContactUsService extends AbstractWdkService {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.TEXT_PLAIN)
   public Response buildResult(
-      String body, 
-      @Context HttpServletRequest request) throws WdkModelException {
+      String body) throws WdkModelException {
     LOG.info("Handling 'contact us' request...");
 
     try {
       User user = getSessionUser();
-      RequestData requestData = new HttpRequestData(request);
+      RequestData requestData = getRequest();
       WdkModel wdkModel = getWdkModel();
-      HttpSession session = getSession();
-            
+      SessionProxy session = requestData.getSession();
+
       JSONObject jsonBody = new JSONObject(body);
       ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, session);
-      
+
       createAndSendEmail(
         contactUsParams,
         user,     
@@ -113,7 +109,7 @@ public class ContactUsService extends AbstractWdkService {
     return Response.ok().build();
   }
   
-  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, HttpSession session) {
+  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, SessionProxy session) {
     String message = jsonBody.getString("message");
     
     String subject = getStringOrDefault(jsonBody, "subject", "");
@@ -143,14 +139,14 @@ public class ContactUsService extends AbstractWdkService {
     );
   }
   
-  private static Attachment[] fetchAttachments(String[] attachmentIds, WdkModel wdkModel, HttpSession session) {
+  private static Attachment[] fetchAttachments(String[] attachmentIds, WdkModel wdkModel, SessionProxy session) {
     return Stream
       .of(attachmentIds)
       .map(attachmentId -> fetchAttachment(attachmentId, wdkModel, session))
       .toArray(Attachment[]::new);
   }
 
-  private static Attachment fetchAttachment(String attachmentId, WdkModel wdkModel, HttpSession session) {
+  private static Attachment fetchAttachment(String attachmentId, WdkModel wdkModel, SessionProxy session) {
     java.nio.file.Path attachmentPath = getAttachmentPath(attachmentId, wdkModel, session)
       .orElseThrow(() -> new WdkRuntimeException("Could not find expected attachment " + attachmentId));
     DataHandler tempFileDataHandler = new DataHandler(new FileDataSource(attachmentPath.toFile()));
@@ -161,7 +157,7 @@ public class ContactUsService extends AbstractWdkService {
     return new Attachment(tempFileDataHandler, attachmentMetadata.getOriginalName());
   }
 
-  private static Optional<java.nio.file.Path> getAttachmentPath(String tempFile, WdkModel wdkModel, HttpSession session) {
+  private static Optional<java.nio.file.Path> getAttachmentPath(String tempFile, WdkModel wdkModel, SessionProxy session) {
     return TemporaryFileService.getTempFileFactory(wdkModel, session).apply(tempFile);
   }
   
