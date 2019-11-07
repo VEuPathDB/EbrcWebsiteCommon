@@ -32,7 +32,7 @@ type Props = {
   containerClassName?: string
 };
 
-export const Footer = ({containerClassName}: Props) => (
+export const Footer = ({ containerClassName }: Props) => (
   <footer className={combineClassNames(cx(), containerClassName)}>
     <div className={cx('Copyright')}>
       <div className={cx('Brand')}>
