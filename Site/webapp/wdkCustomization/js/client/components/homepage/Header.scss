@@ -75,7 +75,9 @@
         margin-top: 1.5rem;
         background-color: #ededed;
         padding: 0.125rem 0.25rem;
-        box-shadow: 0 0 1rem rgba(0,48,76,.5)
+        box-shadow: 0 0 1rem rgba(0,48,76,.5);
+        overflow-y: scroll;
+        max-height: 80vh;
       }
   
       .ebrc-HeaderMenuItemContent {
