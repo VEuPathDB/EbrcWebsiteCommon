@@ -1,10 +1,16 @@
 import React from 'react';
 
+import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import './SocialMediaIcons.scss';
 
 const cx = makeClassNameHelper('ebrc-SocialMediaIcon');
+
+export const ContactUs = () => 
+  <div className={cx()}>
+    <IconAlt fa="envelope-o" />
+  </div>;
 
 export const Twitter = () => (
   <svg 

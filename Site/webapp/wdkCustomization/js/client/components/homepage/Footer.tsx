@@ -3,10 +3,11 @@ import React from 'react';
 import { Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
+// FIXME: Pull these from globalData
 import { twitterUrl, facebookUrl, youtubeUrl, buildNumber, releaseDate, displayName } from 'ebrc-client/config';
 import { formatReleaseDate } from 'ebrc-client/util/formatters';
 
-import { Twitter, Facebook, YouTube } from './SocialMediaIcons';
+import { Twitter, Facebook, YouTube, ContactUs } from './SocialMediaIcons';
 import { combineClassNames } from './Utils';
 
 import './Footer.scss';
@@ -55,19 +56,24 @@ export const Footer = ({ containerClassName }: Props) => (
         </div>
       )}
     </div>
-
-    <div className={cx('SocialMediaLinks')}>
-      <a href={twitterUrl} target="_blank">
-        <Twitter />
-      </a>
-
-      <a href={facebookUrl} target="_blank">
-        <Facebook />
-      </a>
-      
-      <a href={youtubeUrl} target="_blank">
-        <YouTube />
-      </a>
-    </div>
   </footer>
 );
+
+export const SocialMediaLinks = () =>
+  <div className={cx('SocialMediaLinks')}>
+    <Link to="/contact-us" target="_blank">
+      <ContactUs />
+    </Link>
+
+    <a href={twitterUrl} target="_blank">
+      <Twitter />
+    </a>
+
+    <a href={facebookUrl} target="_blank">
+      <Facebook />
+    </a>
+
+    <a href={youtubeUrl} target="_blank">
+      <YouTube />
+    </a>
+  </div>;

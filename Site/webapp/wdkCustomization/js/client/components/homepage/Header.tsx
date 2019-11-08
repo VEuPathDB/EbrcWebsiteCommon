@@ -1,7 +1,14 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
 
+import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
 import { Link, TextBox, IconAlt } from 'wdk-client/Components';
+import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
+import { RootState } from 'wdk-client/Core/State/Types';
+import { User } from 'wdk-client/Utils/WdkUser';
+
+import UserMenu from 'ebrc-client/App/UserMenu';
 
 import { webAppUrl } from '../../config';
 
@@ -16,7 +23,18 @@ const useWebAppUrl = (): string => {
   return webAppUrl;
 };
 
-type Props = {
+type StateProps = {
+  user?: User
+};
+
+type DispatchProps = {
+  actions: {
+    showLoginForm: (url: string) => void,
+    showLogoutWarning: () => void
+  }
+};
+
+type OwnProps = {
   branding: ReactNode,
   containerClassName?: string,
   loadSuggestions: (searchTerm: string) => void,
@@ -24,6 +42,8 @@ type Props = {
   siteSearchSuggestions?: string[],
   additionalSuggestions?: AdditionalSuggestionItem[]
 };
+
+type Props = StateProps & DispatchProps & OwnProps;
 
 type FocusType = 'hover' | 'click' | 'unfocused';
 
@@ -83,13 +103,15 @@ const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
   }
 };
 
-export const Header = ({ 
+const HeaderView = ({ 
   branding, 
   containerClassName, 
   loadSuggestions, 
   menuItems,
   siteSearchSuggestions,
-  additionalSuggestions
+  additionalSuggestions,
+  actions,
+  user
 }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
@@ -169,10 +191,28 @@ export const Header = ({
             <IconAlt fa="search" />
           </div>
         </div>
+        <UserMenu
+          webAppUrl={webAppUrl}
+          user={user}
+          actions={actions}
+        />
       </div>
     </header>
   );
 };
+
+const mapStateToProps = (state: RootState): StateProps => ({
+  user: state.globalData.user
+});
+
+const mapDispatchToProps = (dispatch: DispatchAction): DispatchProps => ({
+  actions: {
+    showLoginForm: (url: string) => dispatch(showLoginForm(url)),
+    showLogoutWarning: () => dispatch(showLogoutWarning())
+  }
+});
+
+export const Header = connect(mapStateToProps, mapDispatchToProps)(HeaderView);
 
 type MenuItemGroupProps = {
   menuItems: HeaderMenuItem[],
