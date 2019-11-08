@@ -19,6 +19,7 @@
 
   &Content {
     display: flex;
+    position: relative;
     align-items: center;
     flex: auto;
   }
@@ -139,8 +140,25 @@
     }
   }
 
+  .ebrc-FooterSocialMediaLinks {
+    position: absolute;
+    top: 3.75rem;
+    right: -1rem;
+    background-color: rgba(255,255,255,.9);
+
+    a {
+      color: #00304c;
+    }
+  }
+
   .UserMenu {
     text-align: center;
     padding: unset;
+
+    &-Pane {
+      background-color: #ededed;
+      box-shadow: 0 0 1rem rgba(0,48,76,.5);
+      z-index: 10;
+    }
   }
 }

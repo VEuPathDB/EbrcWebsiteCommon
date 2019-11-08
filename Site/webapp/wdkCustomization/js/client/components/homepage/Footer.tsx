@@ -56,6 +56,8 @@ export const Footer = ({ containerClassName }: Props) => (
         </div>
       )}
     </div>
+
+    <SocialMediaLinks />
   </footer>
 );
 
