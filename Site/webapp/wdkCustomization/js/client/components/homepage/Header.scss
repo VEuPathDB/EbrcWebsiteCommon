@@ -132,6 +132,10 @@
 
       line-height: 1.5;
     }
+
+    @media screen and (max-width: 991px) {
+      display: none;
+    }
   }
 
   &SearchBarToggle {
@@ -148,6 +152,10 @@
 
     a {
       color: #00304c;
+    }
+
+    @media screen and (max-width: 767px) {
+      display: none;
     }
   }
 
