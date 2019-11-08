@@ -20,6 +20,11 @@
   &Content {
     display: flex;
     align-items: center;
+    flex: auto;
+  }
+
+  &MenuBar {
+    margin-right: auto;
   }
 
   &MenuBar > &MenuItemGroup {
@@ -89,6 +94,43 @@
   &SearchBar {
     display: flex;
     align-items: center;
+
+    font-size: 1rem;
+
+    flex: auto;
+    max-width: 650px;
+
+    margin-left: 1rem;
+    margin-right: 1rem;
+
+    input {
+      // FIXME: The specificity for the input styles
+      // in AllSites.scss might be too high
+      padding: .375rem .75rem!important;
+      padding-left: 1rem padding!important;
+
+      flex: auto;
+
+      line-height: 1.5;
+
+      border-top-left-radius: 50rem;
+      border-bottom-left-radius: 50rem;
+    }
+
+    button.ebrc-HeaderSearchSubmit {
+      color: #fff;
+      background: #6c757d;
+      border-color: #6c757d;
+
+      margin-left: -0.0625rem;
+
+      border-top-right-radius: 50rem;
+      border-bottom-right-radius: 50rem;
+
+      padding: .375rem 1rem .375rem .75rem;
+
+      line-height: 1.5;
+    }
   }
 
   &SearchBarToggle {
@@ -99,5 +141,6 @@
 
   .UserMenu {
     text-align: center;
+    padding: unset;
   }
 }

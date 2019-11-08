@@ -18,6 +18,8 @@ import './Header.scss';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
+export const todo = () => alert('Under construction');
+
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
   return webAppUrl;
@@ -142,7 +144,11 @@ const HeaderView = ({
   }, [ closeSubmenusOnClickout ]);
 
   useEffect(() => {
-    loadSuggestions(searchTerm);
+    if (searchTerm) {
+      // We're disabling suggestions for now
+      todo();
+    }
+    // loadSuggestions(searchTerm);
   }, [ searchTerm ]);
 
   return (
@@ -175,9 +181,13 @@ const HeaderView = ({
               setIsSearchBarSelected(false);
             }}
           />
-          <div className={cx('SearchSubmit')}>
+          <button 
+            className={cx('SearchSubmit')}
+            onClick={todo}
+            type="button"
+          >
             <IconAlt fa="search" />
-          </div>
+          </button>
           {
             isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
             <Suggestions
@@ -187,9 +197,13 @@ const HeaderView = ({
           }
         </div>
         <div className={cx('SearchBarToggle', isSearchBarToggleHidden ? 'hidden' : 'shown')}>
-          <div className={cx('SearchSubmit')}>
+          <button 
+            className={cx('SearchSubmit')}
+            onClick={todo}
+            type="button"
+          >
             <IconAlt fa="search" />
-          </div>
+          </button>
         </div>
         <UserMenu
           webAppUrl={webAppUrl}
