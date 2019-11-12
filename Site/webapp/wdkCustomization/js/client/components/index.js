@@ -1,8 +1,11 @@
-let re = /\.(js|jsx|ts|tsx)$/
-let req = require.context('./', true);
-Object.defineProperty(exports, '__esModule', { value: true });
-
-for (let key of req.keys()) {
-  if (key === './' || key === './index' || re.test(key)) continue;
-  exports[key.replace(/([^/]*\/)*/, '')] = req(key).default;
-}
+// export wrappable components here
+export { default as Parameters } from './Parameters';
+export { default as FilterSummary } from './FilterSummary';
+export { default as Param } from './Param';
+export { default as QuestionWizard } from './QuestionWizard';
+export { default as FilterSummaryParameter } from './FilterSummaryParameter';
+export { default as FilterSummaryGroup } from './FilterSummaryGroup';
+export { default as ActiveGroup } from './ActiveGroup';
+export { default as SiteHeader } from './SiteHeader';
+export { default as QuickSearch } from './QuickSearch';
+export { default as TabularReporterFormSubmitButtons } from './reporters/TabularReporterFormSubmitButtons';
