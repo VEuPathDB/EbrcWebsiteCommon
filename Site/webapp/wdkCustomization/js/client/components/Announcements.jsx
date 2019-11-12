@@ -1,18 +1,8 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { identity } from 'lodash';
+import React, { useState } from 'react';
+import { groupBy, identity } from 'lodash';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
-
-const AnnouncementPropTypes = {
-  projectId: PropTypes.string.isRequired,
-  webAppUrl: PropTypes.string.isRequired,
-  location: PropTypes.object.isRequired,
-  announcements: PropTypes.shape({
-    information: PropTypes.arrayOf(PropTypes.string),
-    degraded: PropTypes.arrayOf(PropTypes.string),
-    down: PropTypes.arrayOf(PropTypes.string)
-  })
-};
+import { Link } from 'wdk-client/Components';
+import {useWdkEffect} from 'wdk-client/Service/WdkService';
 
 const stopIcon = (
   <span className="fa-stack" style={{ fontSize: '1.6em' }}>
@@ -47,8 +37,7 @@ const siteAnnouncements = [
           This pre-release version of {props.projectId} is available for early community review.
           Your searches and strategies saved in this alpha release will not be available in the
           official release.
-          Please explore the site and <a className="new-window" data-name="contact_us"
-            href={props.webAppUrl + '/app/contact-us'}>contact us</a> with your feedback.
+          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
           This site is under active development so there may be incomplete or
           inaccurate data and occasional site outages can be expected.
         </div>
@@ -62,8 +51,7 @@ const siteAnnouncements = [
       return (
         <div key="beta">
           This pre-release version of {props.projectId} is available for early community review.
-          Please explore the site and <a className="new-window" data-name="contact_us"
-            href={props.webAppUrl + '/app/contact-us'}>contact us</a> with your feedback.
+          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
           Note that any saved strategies in the beta sites will be lost once the
           sites are fully released. Some of our sites remain under active development
           during their Beta release which might require occasional site outages or data re-analysis.
@@ -90,7 +78,7 @@ const siteAnnouncements = [
  // Clinepi home page
 /*
   (props) => {
-    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/app') ) {
+    if ( (props.projectId == 'Gates' || props.projectId == 'ICEMR' || props.projectId == 'ClinEpiDB') && location.pathname.endsWith('/app') ) {
       return (
         <div key="clinepi-astmh">
           The EuPathDB and ClinEpiDB team will be attending the <a target='_blank' href='https://www.astmh.org/annual-meeting'>American Society of Tropical Medicine and Hygiene annual meeting</a> next week Sunday, October 28th to Thursday, November 1st! Stop by to see us in the exhibition hall booth 317 & 319 and at Tuesday's Poster Session B  #809.
@@ -158,7 +146,7 @@ const siteAnnouncements = [
     return props.projectId == 'OrthoMCL' ? null : (
       <div key="alt-splice-release">
 Release 29 is an alpha release that includes significant updates to the underlying data and infrastructure. In addition to refreshing all data to the latest versions, we redesigned gene pages, incorporated alternative transcripts into gene pages and searches, and updated search categories.
-Please <a className="new-window" data-name="contact_us" href="{props.webAppUrl}/app/contact-us"> Contact Us</a> to let us know what you think. Release 28 is still available and fully functional.
+Please <Link to="/contact-us"> Contact Us</Link> to let us know what you think. Release 28 is still available and fully functional.
       </div>
     );
   }
@@ -169,15 +157,31 @@ Please <a className="new-window" data-name="contact_us" href="{props.webAppUrl}/
  * Info box containing announcements.
  */
 export default function Announcements(props) {
-  let downAnnouncements = props.announcements.down
+  const [ data, setData ] = useState();
+  useWdkEffect(wdkService => {
+    let doUpdate = true;
+    (async () => {
+      const { projectId } = await wdkService.getConfig();
+      const announcements = await wdkService.getSiteMessages();
+      const location = window.location;
+      if (doUpdate) setData({ projectId, announcements, location });
+    })();
+    return () => { doUpdate = false };
+  }, []);
+
+  if (data == null) return null;
+
+  const { down = [], degraded = [], information = [] } = groupBy(data.announcements, 'category');
+
+  let downAnnouncements = down
     .map(toElement)
 
-  let degradedAnnouncements = props.announcements.degraded
+  let degradedAnnouncements = degraded
     .map(toElement)
 
-  let infoAnnouncements = props.announcements.information
+  let infoAnnouncements = information
     .map(toElement)
-    .concat(siteAnnouncements.map(invokeWith(props)))   // map to React Elements
+    .concat(siteAnnouncements.map(invokeWith(data)))   // map to React Elements
 
   return (
     <div>
@@ -187,9 +191,6 @@ export default function Announcements(props) {
     </div>
   );
 }
-
-Announcements.propTypes = AnnouncementPropTypes;
-
 
 /**
  * Box of announcements.
@@ -201,10 +202,12 @@ function AnnouncementGroup(props) {
 
   return finalAnnouncements !== null && (
     <div className="eupathdb-Announcement" style={{
-      padding: '4px',
-      border: '1px solid gray',
-      margin: '4px',
-      background: '#c6dfe3'
+      padding: '.5em',
+      border: '1px solid #bbbbbb',
+      margin: '.5em .25em',
+      background: '#E3F2FD',
+      boxShadow: '0 0 4px #00000014',
+      borderRadius: '.5em'
     }}>
       <div>
         {props.icon}
@@ -229,8 +232,8 @@ function AnnouncementGroup(props) {
  * @param {string} html
  * @return {React.Element}
  */
-function toElement(html) {
-  return safeHtml(html, { key: html }, 'div');
+function toElement({ message }) {
+  return safeHtml(message, { key: message }, 'div');
 }
 
 /**

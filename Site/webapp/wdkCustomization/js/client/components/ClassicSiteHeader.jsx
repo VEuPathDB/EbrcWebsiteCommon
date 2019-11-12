@@ -6,7 +6,6 @@ import * as UserActions from 'wdk-client/Actions/UserActions';
 import { Sticky } from 'wdk-client/Components';
 import { formatReleaseDate } from '../util/formatters';
 import { makeMenuItems } from '../util/menuItems';
-import Announcements from './Announcements';
 import QuickSearch from './QuickSearch';
 import SmallMenu from './SmallMenu';
 import Menu from './Menu';
@@ -40,7 +39,6 @@ class ClassicSiteHeader extends React.Component {
     } = this.props;
 
     const {
-      announcements,
       buildNumber,
       projectId,
       releaseDate,

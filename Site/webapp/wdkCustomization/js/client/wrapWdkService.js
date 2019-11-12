@@ -3,7 +3,7 @@ import { ok } from 'wdk-client/Utils/Json';
 export default wdkService => ({
   ...wdkService,
   getStudies: attributes => wdkService.sendRequest(ok, {
-    useCache: 'true',
+    useCache: true,
     cacheId: 'studies',
     method: 'post',
     path: wdkService.getStandardSearchReportEndpoint('dataset', 'AllDatasets'),
@@ -11,5 +11,10 @@ export default wdkService => ({
       searchConfig: { parameters: {} },
       reportConfig: { attributes }
     })
+  }),
+  getSiteMessages: () => wdkService.sendRequest(ok, {
+    useCache: false,
+    method: 'get',
+    path: '/site-messages'
   })
 });

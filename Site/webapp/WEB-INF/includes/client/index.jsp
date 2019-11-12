@@ -9,15 +9,6 @@
 <c:set var="wdkServiceUrl" value="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
 
-<%-- only show information on home page. this jsp never gets loaded on home page --%>
-<%-- FIXME Add logic to show information messages on homepage if this gets used for homepage --%>
-<c:set var="information" value="[]"/>
-<c:set var="degraded" value="[]"/>
-<c:set var="down" value="[]"/>
-<%-- Disable for now- need to change the location of this code
-<api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
-<api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
- --%>
 <c:set var="recordClassesWithProjectId">
   [
     <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
@@ -55,11 +46,6 @@
         youtubeUrl: "${props.YOUTUBE_URL}",
         vimeoUrl: "${props.VIMEO_URL}",
         recordClassesWithProjectId: ${recordClassesWithProjectId}
-      };
-      window.__SITE_ANNOUNCEMENTS__ = {
-        information: ${information},
-        degraded: ${degraded},
-        down: ${down}
       };
 
       <%-- Initialize google analytics. A pageview event will be sent in the JavaScript code. --%>
