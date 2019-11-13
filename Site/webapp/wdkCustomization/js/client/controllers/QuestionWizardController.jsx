@@ -29,6 +29,7 @@ import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { synchronized } from 'wdk-client/Utils/PromiseUtils';
 import { preorder } from 'wdk-client/Utils/TreeUtils';
 import * as StrategyActions from 'wdk-client/Actions/StrategyActions';
+import * as RouterActions from 'wdk-client/Actions/RouterActions';
 import { DEFAULT_STEP_WEIGHT, DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
 
 import QuestionWizard from '../components/QuestionWizard';
@@ -398,12 +399,13 @@ class QuestionWizardController extends ViewController {
 
       if (submissionMetadata.type === 'create-strategy') {
         // create a new step, then new strategy, then go to the strategy panel
-        return StrategyActions.requestCreateStrategy({
+        const strategyReponse = await wdkService.createStrategy({
           isSaved: false,
           isPublic: false,
           stepTree: { stepId: stepResponse.id },
           name: DEFAULT_STRATEGY_NAME
         });
+        return RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`);
       }
 
       if (submissionMetadata.type === 'add-binary-step') {
