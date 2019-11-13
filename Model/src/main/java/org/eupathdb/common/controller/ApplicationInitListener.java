@@ -3,7 +3,7 @@ package org.eupathdb.common.controller;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.gusdb.wdk.controller.ServletApplicationContext;
+import org.gusdb.fgputil.web.servlet.HttpServletApplicationContext;
 import org.gusdb.wdk.controller.WdkInitializer;
 import org.gusdb.wdk.model.WdkModel;
 
@@ -15,7 +15,7 @@ public class ApplicationInitListener implements ServletContextListener {
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
-    var context = new ServletApplicationContext(sce.getServletContext());
+    var context = new HttpServletApplicationContext(sce.getServletContext());
     WdkInitializer.initializeWdk(context);
     WdkModel wdkModel = WdkInitializer.getWdkModel(context);
     EuPathSiteSetup.initialize(wdkModel);
@@ -23,7 +23,7 @@ public class ApplicationInitListener implements ServletContextListener {
 
   @Override
   public void contextDestroyed(ServletContextEvent sce) {
-    WdkInitializer.terminateWdk(new ServletApplicationContext(sce.getServletContext()));
+    WdkInitializer.terminateWdk(new HttpServletApplicationContext(sce.getServletContext()));
   }
 }
 
