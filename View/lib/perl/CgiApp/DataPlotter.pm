@@ -119,7 +119,7 @@ sub run {
                                 'PlasmoDB' => 1,
                                 'ToxoDB' => 1,
                                 'GiardiaDB' => 1,
-                                'AmoebaDD' => 1,
+                                'AmoebaDB' => 1,
                                 'TriTrypDB' => 1,
                                 'FungiDB' => 1,
                                 'CryptoDB' => 1,
