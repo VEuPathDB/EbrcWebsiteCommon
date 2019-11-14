@@ -16,7 +16,7 @@ import './Footer.scss';
 
 const cx = makeClassNameHelper('ebrc-Footer');
 
-const projects = [
+export const projects = [
   'AmoebaDB',
   'CryptoDB',
   'FungiDB',
