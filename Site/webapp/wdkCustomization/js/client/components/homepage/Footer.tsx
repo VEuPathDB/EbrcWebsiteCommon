@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
+import { ProjectLink } from 'ebrc-client/components/homepage/ProjectLink';
+
 // FIXME: Pull these from globalData
 import { twitterUrl, facebookUrl, youtubeUrl, buildNumber, releaseDate, displayName } from 'ebrc-client/config';
 import { formatReleaseDate } from 'ebrc-client/util/formatters';
@@ -48,12 +50,8 @@ export const Footer = ({ containerClassName }: Props) => (
     </div>
 
     <div className={cx('ProjectLinks')}>
-      {projects.map(project =>
-        <div title={`${project}.org`} key={project}>
-          <a href={`https://${project.toLowerCase()}.org`} className={project}>
-            https://{project.toLowerCase()}.org
-          </a>
-        </div>
+      {projects.map(projectId =>
+        <ProjectLink key={projectId} projectId={projectId} />
       )}
     </div>
 
