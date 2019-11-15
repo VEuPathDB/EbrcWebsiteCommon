@@ -12,5 +12,6 @@ export const {
   twitterUrl,
   youtubeUrl,
   vimeoUrl,
-  recordClassesWithProjectId
+  recordClassesWithProjectId,
+  communitySite,
 } = window.__SITE_CONFIG__;

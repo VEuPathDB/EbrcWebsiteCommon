@@ -45,7 +45,8 @@
         twitterUrl: "${props.TWITTER_URL}",
         youtubeUrl: "${props.YOUTUBE_URL}",
         vimeoUrl: "${props.VIMEO_URL}",
-        recordClassesWithProjectId: ${recordClassesWithProjectId}
+        recordClassesWithProjectId: ${recordClassesWithProjectId},
+        communitySite: "${props.COMMUNITY_SITE}"
       };
 
       <%-- Initialize google analytics. A pageview event will be sent in the JavaScript code. --%>
