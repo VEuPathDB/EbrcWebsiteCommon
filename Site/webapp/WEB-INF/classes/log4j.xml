@@ -189,7 +189,7 @@
   <logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.ExampleQueryLog" additivity="false"><level value="info"/><appender-ref ref="example-sql-log" /></logger>
   <logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.SlowQueryLog" additivity="false"><level value="warn"/><appender-ref ref="slow-sql-log" /></logger>
   <logger name="org.gusdb.wdk.service.filter.RequestLoggingFilter" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
-  <logger name="org.gusdb.wdk.service.provider.LoggingWriterInterceptor" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
+  <logger name="org.gusdb.wdk.service.filter.RequestCompleteFilter" additivity="false"><level value="info"/><appender-ref ref="service-access-log" /></logger>
   <logger name="org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger" additivity="false"><level value="info"/><appender-ref ref="http-response-log" /></logger>
   <logger name="org.eupathdb.common.errors.ErrorHandler.IgnoredErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-ignored" /></logger>
   <logger name="org.eupathdb.common.errors.ErrorHandler.RetainedErrorLog" additivity="false"><level value="info"/><appender-ref ref="errors-retained" /></logger>
