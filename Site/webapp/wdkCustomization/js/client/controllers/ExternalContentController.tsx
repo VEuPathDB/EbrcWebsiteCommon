@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import {Loading} from 'wdk-client/Components';
@@ -22,7 +22,7 @@ export default function ExternalContentController(props: Props) {
     }
   }, [ url ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (content == null) return;
 
     try {
