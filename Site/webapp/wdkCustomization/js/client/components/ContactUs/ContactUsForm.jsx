@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  ContactUsAttachments,
-  ContactUsFooter,
-  SupportFormField,
-  ValidatedInput,
-  ValidatedTextArea
-} from '../../components';
+import ContactUsAttachments from './ContactUsAttachments';
+import ContactUsFooter from './ContactUsFooter';
+import SupportFormField from '../SupportForm/SupportFormField';
+import ValidatedInput from '../ValidatedInput';
+import ValidatedTextArea from '../ValidatedTextArea';
 
 const ContactUsForm = ({
   submitDisabled,

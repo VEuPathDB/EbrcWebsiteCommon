@@ -12,11 +12,9 @@ import {
   submitDetails  
 } from  '../actioncreators/ContactUsActionCreators';
 
-import {
-  ContactUsFinished,
-  ContactUsSubmission,
-  SupportFormBase
-} from '../components';
+import ContactUsFinished from '../components/ContactUs/ContactUsFinished';
+import ContactUsSubmission from '../components/ContactUs/ContactUsSubmission';
+import SupportFormBase from '../components/SupportForm/SupportFormBase';
 
 import {
   submitDisabled,
