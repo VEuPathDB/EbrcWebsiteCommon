@@ -16,9 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
 import org.gusdb.fgputil.Tuples.ThreeTuple;
-import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.answer.factory.AnswerValueFactory;
 import org.gusdb.wdk.model.answer.spec.AnswerSpec;
 import org.gusdb.wdk.model.question.Question;
@@ -28,8 +26,6 @@ import org.gusdb.wdk.service.service.AbstractWdkService;
 
 @Path("sitemap")
 public class SitemapService extends AbstractWdkService {
-
-  private static final Logger LOG = Logger.getLogger(SitemapService.class);
 
   @GET
   @Produces(MediaType.TEXT_XML)
@@ -48,7 +44,7 @@ public class SitemapService extends AbstractWdkService {
   @GET
   @Path("{questionName}")
   @Produces(MediaType.TEXT_XML)
-  public String getSiteMapForQuestion(@PathParam("questionName") String questionName, @QueryParam("fmt") String fmt) throws WdkModelException {
+  public String getSiteMapForQuestion(@PathParam("questionName") String questionName, @QueryParam("fmt") String fmt) {
     String urlBase = getContextUri();
 
     // find question for sitemap.xml
