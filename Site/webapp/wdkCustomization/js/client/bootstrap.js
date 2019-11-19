@@ -18,7 +18,7 @@ import { debounce, identity, uniq, flow } from 'lodash';
 
 // XXX Replace with import from wdk-client once legacy jsp pages are removed
 // import from legacy wdk package so that legacy jsp pages continue to work.
-import { initialize as initializeWdk } from 'wdk/js/index.js';
+import { initialize as initializeWdk_ } from 'wdk-client/Core/main';
 import * as WdkComponents from 'wdk-client/Components';
 import * as WdkControllers from 'wdk-client/Controllers';
 
@@ -51,6 +51,7 @@ import '../../../js/scroll-to-top';
  */
 export function initialize(options = {}) {
   const {
+    initializeWdk = initializeWdk_,
     componentWrappers,
     pluginConfig: sitePluginConfig = [],
     wrapRoutes = identity,
