@@ -1,6 +1,8 @@
 import { get, isPlainObject } from 'lodash';
+import React from 'react';
 import { BasketActions, ResultPanelActions, ResultTableSummaryViewActions } from 'wdk-client/Actions';
 import { attemptAction } from './DataRestrictionActionCreators';
+import {getResultTypeDetails} from 'wdk-client/Utils/WdkResult';
 
 // Data stuff =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // per https://docs.google.com/presentation/d/1Cmf2GcmGuKbSTcH4wdeTEvRHTi9DDoh5-MnPm1MkcEA/edit?pli=1#slide=id.g3d955ef9d5_3_2
@@ -191,7 +193,7 @@ export function getIdFromRecordClassName (recordClassName) {
 }
 
 export function isStudyRecordClass(recordClass) {
-  return recordClass == null || recordClass.name.startsWith('DS_');
+  return recordClass == null || recordClass.fullName.startsWith('DS_');
 }
 
 
@@ -228,13 +230,14 @@ function getDataRestrictionActionAndRecordClass(state, action, callback) {
   
   switch(action.type || '') {
     case ResultPanelActions.openTabListing.type:
-      return getRecordClassNameByStepId(action.payload.stepId, recordClassName =>
+      return getRecordClassNameByResultType(action.payload.resultType, recordClassName =>
         callback(Action.results, recordClassName));
 
     case 'step-analysis/select-tab':
-    case 'step-analysis/create-new-tab':
+    case 'step-analysis/create-new-tab': {
       return  getRecordClassNameByStepId(state.stepAnalysis.stepId, recordClassName =>
         callback(Action.analysis, recordClassName));
+    }
 
     case BasketActions.requestUpdateBasket.type:
       return callback(Action.basket, action.payload.recordClassName);
@@ -245,13 +248,13 @@ function getDataRestrictionActionAndRecordClass(state, action, callback) {
 
     case ResultTableSummaryViewActions.requestPageSizeUpdate.type:
     case ResultTableSummaryViewActions.requestSortingUpdate.type:
-      return getRecordClassNameByStepId(getStepIdByViewId(action.payload.viewId, state), recordClassName =>
+      return getRecordClassNameByResultType(getResultTypeByViewId(action.payload.viewId, state), recordClassName =>
         callback(Action.paginate, recordClassName));
-      
+
     case ResultTableSummaryViewActions.viewPageNumber.type:
       return action.payload.page === 1
         ? null
-        : getRecordClassNameByStepId(getStepIdByViewId(action.payload.viewId, state), recordClassName =>
+        : getRecordClassNameByResultType(getResultTypeByViewId(action.payload.viewId, state), recordClassName =>
             callback(Action.paginate, recordClassName));
 
     default:
@@ -259,8 +262,8 @@ function getDataRestrictionActionAndRecordClass(state, action, callback) {
   }
 }
 
-function getStepIdByViewId(viewId, state) {
-  return get(state, ['resultTableSummaryView', viewId, 'stepId']);
+function getResultTypeByViewId(viewId, state) {
+  return get(state, ['resultTableSummaryView', viewId, 'resultType']);
 }
 
 function getRecordClassNameByStepId(stepId, callback) {
@@ -268,6 +271,18 @@ function getRecordClassNameByStepId(stepId, callback) {
     try {
       const step = await wdkService.findStep(stepId);
       return callback(step.recordClassName);
+    }
+    catch(error) {
+      return callback(null);
+    }
+  };
+}
+
+function getRecordClassNameByResultType(resultType, callback) {
+  return async function run({ wdkService }) {
+    try {
+      const { recordClassName } = await getResultTypeDetails(wdkService, resultType)
+      return callback(recordClassName);
     }
     catch(error) {
       return callback(null);

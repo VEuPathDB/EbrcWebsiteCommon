@@ -1,5 +1,5 @@
 import { get, identity, keyBy, mapValues, spread } from 'lodash';
-import { emptyAction } from 'wdk-client/WdkMiddleware';
+import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
@@ -94,8 +94,8 @@ const parseStudy = mapProps({
   
 
 function formatStudies(projectId, questions, recordClasses, answer) {
-  const questionsByName = keyBy(questions, 'name');
-  const recordClassesByName = keyBy(recordClasses, 'name');
+  const questionsByName = keyBy(questions, 'fullName');
+  const recordClassesByName = keyBy(recordClasses, 'urlSegment');
 
   const records = answer.records.reduce((records, record) => {
 
@@ -123,10 +123,11 @@ function formatStudies(projectId, questions, recordClasses, answer) {
         .map(questionName => questionsByName[questionName])
         .filter(question => question != null)
         .map(question => {
-        const recordClass = recordClassesByName[question.recordClassName];
+        const recordClass = recordClassesByName[question.outputRecordClassName];
         return {
           icon: question.iconName || recordClass.iconName || 'fa fa-database',
-          name: question.name,
+          name: question.fullName,
+          path: `${recordClass.urlSegment}/${question.urlSegment}`,
           displayName: recordClass.shortDisplayNamePlural,
         };
       })

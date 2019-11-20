@@ -1,11 +1,8 @@
-import { Fragment } from 'react';
-
-import {
-  ContactUsSubmissionHeader,
-  ContactUsPreamble,
-  ContactUsForm,
-  SupportFormBody
-} from '../../components';
+import React, { Fragment } from 'react';
+import ContactUsSubmissionHeader from './ContactUsSubmissionHeader';
+import ContactUsPreamble from './ContactUsPreamble';
+import ContactUsForm from './ContactUsForm';
+import SupportFormBody from '../SupportForm/SupportFormBody';
 
 const ContactUsSubmission = ({
   submitDisabled,

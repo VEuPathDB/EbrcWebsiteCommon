@@ -1,7 +1,7 @@
-import {Seq} from 'wdk-client/IterableUtils';
-import {pruneDescendantNodes} from 'wdk-client/TreeUtils';
-import {getTree} from 'wdk-client/OntologyUtils';
-import {getRecordClassName, isQualifying} from 'wdk-client/CategoryUtils';
+import {Seq} from 'wdk-client/Utils/IterableUtils';
+import {pruneDescendantNodes} from 'wdk-client/Utils/TreeUtils';
+import {getTree} from 'wdk-client/Utils/OntologyUtils';
+import {getRecordClassName, isQualifying} from 'wdk-client/Utils/CategoryUtils';
 
 let isSearchMenuScope = isQualifying({ targetType: 'search', scope: 'menu' });
 
@@ -18,7 +18,7 @@ let isSearchMenuScope = isQualifying({ targetType: 'search', scope: 'menu' });
  * @returns RecordClassTree
  */
 export function getSearchMenuCategoryTree(ontology, recordClasses) {
-  let recordClassMap = new Map(recordClasses.map( rc => [ rc.name, rc ] ));
+  let recordClassMap = new Map(recordClasses.map( rc => [ rc.fullName, rc ] ));
   // get searches scoped for menu
   let categoryTree = getTree(ontology, isSearchMenuScope);
   return groupByRecordClass(categoryTree, recordClassMap);
@@ -50,7 +50,7 @@ function getRecordClassTree(categoryTree) {
     if (tree.children.length === 0) return;
     return {
       properties: {
-        label: [recordClass.name],
+        label: [recordClass.fullName],
         'EuPathDB alternative term': [recordClass.displayNamePlural]
       },
       children: tree.children
@@ -60,6 +60,6 @@ function getRecordClassTree(categoryTree) {
 
 function isRecordClassTreeNode(recordClass) {
   return function(node) {
-    return node.children.length !== 0 || getRecordClassName(node) === recordClass.name;
+    return node.children.length !== 0 || getRecordClassName(node) === recordClass.fullName;
   }
 }

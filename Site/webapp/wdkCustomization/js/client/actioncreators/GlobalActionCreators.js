@@ -2,7 +2,7 @@
  * Created by dfalke on 8/22/16.
  */
 import { keyBy } from 'lodash';
-import { emptyAction } from 'wdk-client/WdkMiddleware';
+import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 export const SITE_CONFIG_LOADED = 'eupathdb/site-config-loaded';
 export const BASKETS_LOADED = 'eupathdb/basket'
@@ -30,19 +30,24 @@ export function loadBasketCounts() {
 
 /**
  * Load data for quick search
- * @param {Array<object>} questions An array of quick search spec objects.
- *    A spec object has two properties: `name`: the name of the questions,
+ * @param {Array<object>} quickSearchSpecs An array of quick search spec objects.
+ *    A spec object has two properties: `name`: the full name of the questions,
  *    and `searchParam`: the name of the parameter to use for text box.
  * @return {run}
  */
-export function loadQuickSearches(questions) {
+export function loadQuickSearches(quickSearchSpecs) {
   return function run({ wdkService }) {
-    let requests = questions.map(reference =>
-      wdkService.getQuestionAndParameters(reference.name));
-    return Promise.all(requests).then(
-      questions => keyBy(questions, 'name'),
+    let requests = quickSearchSpecs
+      .filter(spec => !spec.isDisabled)
+      .map(spec =>
+        wdkService.findQuestion(q => q.urlSegment === spec.name)
+          .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
+    return Promise.all(requests)
+    .then(
+      questions => keyBy(questions, 'urlSegment'),
       error => error
-    ).then(questions => ({
+    )
+    .then(questions => ({
       type: QUICK_SEARCH_LOADED,
       payload: { questions: questions }
     }));

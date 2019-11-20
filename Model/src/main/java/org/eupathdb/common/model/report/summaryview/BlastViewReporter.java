@@ -2,10 +2,10 @@ package org.eupathdb.common.model.report.summaryview;
 
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.report.Reporter;
 import org.gusdb.wdk.model.report.ReporterConfigException;
+import org.gusdb.wdk.model.report.ReporterConfigException.ErrorType;
 import org.gusdb.wdk.model.report.reporter.DefaultJsonReporter;
 import org.json.JSONObject;
 
@@ -26,31 +26,26 @@ public class BlastViewReporter extends DefaultJsonReporter {
   
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
-    //if (!(_baseAnswer.getQuestion().getName().contains("Similarity")) || 
-    //     (_baseAnswer.getQuestion().getName().contains("Blast"))  ) 
-    //  throw new ReporterConfigException("Only BLAST searches can use this report");
+    String questionName = _baseAnswer.getAnswerSpec().getQuestionName();
+    if (!(questionName.contains("Similarity") || questionName.contains("Blast"))) {
+      throw new ReporterConfigException("Only BLAST searches can use this report", ErrorType.DATA_VALIDATION);
+    }
     return super.configure(config);
   }
 
   @Override
   public JsonWriter writeAdditionalJson(JsonWriter writer) throws WdkModelException { 
-    try {
-      JSONObject json = new JSONObject();
-      String message = _baseAnswer.getResultMessage();
-      String[] pieces = message.split(MACRO_SUMMARY, 2);
-      json.put(ATTR_HEADER, pieces[0]);
-      if (pieces.length > 1) {
-        pieces = pieces[1].split(MACRO_ALIGNMENT, 2);
-        json.put(ATTR_MIDDLE, pieces[0]);
-        if (pieces.length > 1)
-          json.put(ATTR_FOOTER, pieces[1]);
-      }
-      writer.key(BLAST_META).value(json);
-      return writer;
+    JSONObject json = new JSONObject();
+    String message = _baseAnswer.getResultMessage().orElse("");
+    String[] pieces = message.split(MACRO_SUMMARY, 2);
+    json.put(ATTR_HEADER, pieces[0]);
+    if (pieces.length > 1) {
+      pieces = pieces[1].split(MACRO_ALIGNMENT, 2);
+      json.put(ATTR_MIDDLE, pieces[0]);
+      if (pieces.length > 1)
+        json.put(ATTR_FOOTER, pieces[1]);
     }
-    catch (WdkUserException e) {
-      throw new WdkModelException(e);
-    }
+    writer.key(BLAST_META).value(json);
+    return writer;
   }
-  
 }

@@ -1,8 +1,10 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { RadioList, Checkbox, TextBox } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
 import SrtHelp from '../SrtHelp';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils);
-let { RadioList, Checkbox, TextBox } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils);
 
 let FastaGenomicSequenceReporterForm = props => {
 

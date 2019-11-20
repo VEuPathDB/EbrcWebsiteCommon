@@ -5,7 +5,8 @@
   "repository": {},
   "license": "MIT",
   "dependencies": {
+    "custom-event-polyfill": "^1.0.7",
     "md5": "^2.2.1",
-    "react-select": "^3.0.7"
+    "whatwg-fetch": "^3.0.0"
   }
 }

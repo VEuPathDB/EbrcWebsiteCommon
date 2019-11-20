@@ -1,6 +1,4 @@
 /*global wdk*/
-
-import $ from 'jquery';
 import {
   ary,
   debounce,
@@ -21,14 +19,18 @@ import {
 import natsort from 'natural-sort';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { Dialog } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { ViewController } from 'wdk-client/Controllers';
-import { isMulti, isRange } from 'wdk-client/AttributeFilterUtils';
-import { Seq } from 'wdk-client/IterableUtils';
-import { synchronized } from 'wdk-client/PromiseUtils';
-import { preorder } from 'wdk-client/TreeUtils';
+import { isMulti, isRange } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
+import { synchronized } from 'wdk-client/Utils/PromiseUtils';
+import { preorder } from 'wdk-client/Utils/TreeUtils';
+import * as StrategyActions from 'wdk-client/Actions/StrategyActions';
+import * as RouterActions from 'wdk-client/Actions/RouterActions';
+import { DEFAULT_STEP_WEIGHT, DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
 
 import QuestionWizard from '../components/QuestionWizard';
 import {
@@ -39,6 +41,7 @@ import {
   setFilterPopupPinned,
   resetParamValues
 } from '../util/QuestionWizardState';
+import {addStep} from 'wdk-client/Utils/StrategyUtils';
 
 const natSortComparator = natsort();
 
@@ -75,8 +78,6 @@ class QuestionWizardController extends ViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = synchronized(debounce(this._commitParamValueChange, 750));
-
-    this.childRef = React.createRef();
   }
 
   getWizardEventHandlers() {
@@ -85,7 +86,8 @@ class QuestionWizardController extends ViewController {
       'onInvalidGroupCountsUpdate',
       'onFilterPopupVisibilityChange',
       'onFilterPopupPinned',
-      'onParamValuesReset'
+      'onParamValuesReset',
+      'onSubmit'
     ]);
   }
 
@@ -97,52 +99,57 @@ class QuestionWizardController extends ViewController {
       'onOntologyTermSummaryUpdate',
       'onParamStateChange',
       'onParamValueChange',
+      'onSubmit'
     ]);
   }
 
-  loadQuestion(props) {
-    const { questionName, wdkService, isRevise, paramValues } = props;
+  async loadQuestion() {
+    // clear state
+    this.setState(state => mapValues(state, () => undefined));
+    
+    const { questionName, wdkService, submissionMetadata } = this.props;
 
-    const question$ = isRevise ?
-      wdkService.getQuestionGivenParameters(questionName, paramValues) :
-      wdkService.getQuestionAndParameters(questionName);
-
-    const recordClass$ = question$.then(question => {
-      return wdkService.findRecordClass(rc => rc.name === question.recordClassName);
-    });
-
-    Promise.all([ question$, recordClass$ ]).then(
-      ([ question, recordClass ]) => {
-        this.setState(createInitialState(question, recordClass, paramValues), () => {
-          document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
-
-          // store <string, Parameter>Map for quick lookup
-          this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
-
-          const defaultParamValues = getDefaultParamValues(this.state);
-          const lastConfiguredGroup = Seq.from(question.groups)
-            .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
-            .last();
-          const configuredGroups = lastConfiguredGroup == null ? []
-            : Seq.from(question.groups)
-                .takeWhile(group => group !== lastConfiguredGroup)
-                .concat(Seq.of(lastConfiguredGroup));
-
-          this._updateGroupCounts(configuredGroups);
-          this._getAnswerCount({
-            questionName: question.name,
+    try {
+      const step = submissionMetadata.type === 'edit-step'
+        ? await wdkService.findStep(submissionMetadata.stepId)
+        : undefined;
+      const question = await wdkService.getQuestionAndParameters(questionName);
+      const recordClass = await wdkService.findRecordClass(rc => rc.urlSegment === question.outputRecordClassName);
+      const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
+      // FIXME Deal with invalid steps
+      this.setState(createInitialState(question, recordClass, paramValues), () => {
+        document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
+  
+        // store <string, Parameter>Map for quick lookup
+        this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
+  
+        const defaultParamValues = getDefaultParamValues(this.state);
+        const lastConfiguredGroup = Seq.from(question.groups)
+          .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
+          .last();
+        const configuredGroups = lastConfiguredGroup == null ? []
+          : Seq.from(question.groups)
+              .takeWhile(group => group !== lastConfiguredGroup)
+              .concat(Seq.of(lastConfiguredGroup));
+  
+        this._updateGroupCounts(configuredGroups);
+        this._getAnswerCount({
+          searchName: question.urlSegment,
+          searchConfig: {
             parameters: defaultParamValues
-          }).then(initialCount => {
-            this.setState({ initialCount });
-          });
-
-          this.onGroupSelect(question.groups[0]);
+          }
+        }).then(initialCount => {
+          this.setState({ initialCount });
         });
-      },
-      error => {
-        this.setState({ error });
-      }
-    );
+  
+        this.onGroupSelect(question.groups[0]);
+      });
+    }
+
+    catch(error) {
+      this.setState({ error });
+    }
+      
   }
 
   // Top level action creator methods
@@ -214,7 +221,7 @@ class QuestionWizardController extends ViewController {
     this.setState({ paramUIState }, () => {
       Seq.from(this.state.activeGroup.parameters)
         .map(paramName => this.parameterMap.get(paramName))
-        .filter(param => param.type === 'FilterParamNew')
+        .filter(param => param.type === 'filter')
         .forEach(param => {
           this.onOntologyTermSelect(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
         })
@@ -319,7 +326,7 @@ class QuestionWizardController extends ViewController {
       this.setState(set(['groupUIState', param.group, 'loading'], true));
     }
 
-    if (param.type === 'FilterParamNew') {
+    if (param.type === 'filter') {
       // for each changed member updated member field, resort
       let paramState = this.state.paramUIState[param.name];
       let { filters = [] } = JSON.parse(paramValue);
@@ -356,11 +363,99 @@ class QuestionWizardController extends ViewController {
     }
   }
 
+  onSubmit() {
+    this.props.dispatch(async ({ wdkService, getState }) => {
+      const { submissionMetadata } = this.props;
+      // submissionMetadata.type =
+      //   | "create-strategy"
+      //   | "add-binary-step"
+      //   | "add-unary-step"
+      //   | "submit-custom-form"
+      //   | "edit-step"
+
+      if (submissionMetadata.type === 'edit-step') {
+        // patch step's searchConfig
+        return StrategyActions.requestUpdateStepSearchConfig(
+          submissionMetadata.strategyId,
+          submissionMetadata.stepId,
+          {
+            ...submissionMetadata.previousSearchConfig,
+            parameters: this.state.paramValues
+          }
+        );
+      }
+
+      // Each case below requires a new step to be created...
+      const searchSpec = {
+        searchName: this.props.questionName,
+        searchConfig: {
+          parameters: this.state.paramValues,
+          wdkWeight: DEFAULT_STEP_WEIGHT
+        },
+        customName: this.state.customName || this.state.question.shortDisplayName
+      };
+
+      const stepResponse = await wdkService.createStep(searchSpec);
+
+      if (submissionMetadata.type === 'create-strategy') {
+        // create a new step, then new strategy, then go to the strategy panel
+        const strategyReponse = await wdkService.createStrategy({
+          isSaved: false,
+          isPublic: false,
+          stepTree: { stepId: stepResponse.id },
+          name: DEFAULT_STRATEGY_NAME
+        });
+        return RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`);
+      }
+
+      if (submissionMetadata.type === 'add-binary-step') {
+        // create steps and patch strategy's stepTree
+        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+        const { operatorQuestionState } = this.props;
+        if (operatorQuestionState == null || operatorQuestionState.questionStatus !== 'complete') {
+          throw new Error(`Tried to create an operator step using a nonexistent or unloaded question: ${submissionMetadata.operatorSearchName}`);
+        }
+        const operatorParamValues = operatorQuestionState.paramValues;
+        const operatorStepResponse = await wdkService.createStep({
+          searchName: submissionMetadata.operatorSearchName,
+          searchConfig: {
+            parameters: operatorParamValues
+          }
+        });
+        return StrategyActions.requestPutStrategyStepTree(
+          submissionMetadata.strategyId,
+          addStep(
+            strategy.stepTree,
+            submissionMetadata.addType,
+            operatorStepResponse.id,
+            { stepId: stepResponse.id }
+          )
+        );
+      }
+
+      if (submissionMetadata.type === 'add-unary-step') {
+        // create step and patch strategy's stepTree
+        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+        return StrategyActions.requestPutStrategyStepTree(
+          submissionMetadata.strategyId,
+          addStep(
+            strategy.stepTree,
+            submissionMetadata.addType,
+            stepResponse.id,
+            undefined
+          )
+        );
+      }
+
+      throw new Error(`Unknonwn submissionMetadata type: "${submissionMetadata.type}"`);
+    });
+  }
+
   _initializeActiveGroupParams(activeGroup) {
     activeGroup.parameters.forEach(paramName => {
       const param = this.state.question.parameters.find(param => param.name === paramName);
       if (param == null) throw new Error("Could not find param `" + paramName + "`.");
-      if (param.type === 'FilterParamNew') {
+      if (param.type === 'filter') {
         const {
           activeOntologyTerm,
           fieldStates,
@@ -411,7 +506,7 @@ class QuestionWizardController extends ViewController {
   }
 
   _handleParamValueChange(param, paramValue, prevParamValue) {
-    if (param.type === 'FilterParamNew') {
+    if (param.type === 'filter') {
       const { filters = [] } = JSON.parse(paramValue);
       const { filters: oldFilters = [] } = JSON.parse(prevParamValue);
       const { ontology } = this.state.paramUIState[param.name];
@@ -462,15 +557,15 @@ class QuestionWizardController extends ViewController {
           .uniqBy(p => p.name)
           .flatMap(newParam => [
             set(['paramUIState', newParam.name], createInitialParamState(newParam)),
-            set(['paramValues', newParam.name], newParam.defaultValue),
+            set(['paramValues', newParam.name], newParam.initialDisplayValue),
             update(['question', 'parameters'], parameters =>
               parameters.map(currentParam => currentParam.name === newParam.name ? newParam : currentParam))
           ])
           .reduce(ary(flow, 2), identity)
     ).then(updater =>
-      // Then, invalidate ontologyTermSummaries for dependent FilterParamNew params
+      // Then, invalidate ontologyTermSummaries for dependent filter params
       Seq.from(this._getDeepParameterDependencies(rootParam))
-        .filter(parameter => parameter.type === 'FilterParamNew')
+        .filter(parameter => parameter.type === 'filter')
         .map(parameter =>
           update(
             ['paramUIState', parameter.name, 'fieldStates'],
@@ -518,24 +613,26 @@ class QuestionWizardController extends ViewController {
       .map(groups => [
         groups.last(),
         {
-          questionName: this.state.question.name,
-          parameters: groups.reduce((paramValues, group) => {
-            return group.parameters.reduce((paramValues, paramName) => {
-              return Object.assign(paramValues, {
-                [paramName]: this.state.paramValues[paramName]
-              });
-            }, paramValues);
-          }, Object.assign({}, defaultParamValues))
+          searchName: this.state.question.urlSegment,
+          searchConfig: {
+            parameters: groups.reduce((paramValues, group) => {
+              return group.parameters.reduce((paramValues, paramName) => {
+                return Object.assign(paramValues, {
+                  [paramName]: this.state.paramValues[paramName]
+                });
+              }, paramValues);
+            }, Object.assign({}, defaultParamValues))
+          }
         }
       ])
       .map(([ group, answerSpec ]) => {
         const params = group.parameters.map(paramName => this.parameterMap.get(paramName));
-        // TODO Use countPredictsAnswerCount FilterParamNew property
-        return (params.length === 1 && params[0].type === 'FilterParamNew'
+        // TODO Use countPredictsAnswerCount filter property
+        return (params.length === 1 && params[0].type === 'filter'
           ? this._getFilterCounts(
               params[0].name,
               JSON.parse(this.state.paramValues[params[0].name]).filters,
-              answerSpec.parameters
+              answerSpec.searchConfig.parameters
             ).then(counts => counts.filtered)
 
           : this._getAnswerCount(answerSpec)
@@ -721,26 +818,13 @@ class QuestionWizardController extends ViewController {
   }
 
   componentDidMount() {
-    this.loadQuestion(this.props);
-
-    // FIXME Figure out to render form element in `QuestionWizard` component
-    const $form = $(this.childRef.current).closest('form');
-    $form
-      .on('submit', () => {
-        $form.block()
-      })
-      .on(wdk.addStepPopup.SUBMIT_EVENT, () => {
-        $form.block()
-      })
-      .on(wdk.addStepPopup.CANCEL_EVENT, () => {
-        $form.unblock()
-      })
-      .prop('autocomplete', 'off')
-      .attr('novalidate', '');
+    this.loadQuestion();
   }
 
-  componentDidWillReceiveProps(nextProps) {
-    this.loadQuestion(nextProps);
+  componentDidUpdate(prevProps) {
+    if (prevProps.questionName !== this.props.questionName) {
+      this.loadQuestion();
+    }
   }
 
   renderView() {
@@ -758,19 +842,11 @@ class QuestionWizardController extends ViewController {
             wizardEventHandlers={this.wizardEventHandlers}
             parameterEventHandlers={this.parameterEventHandlers}
             customName={this.props.customName}
-            isAddingStep={this.props.isAddingStep}
-            showHelpText={!this.props.isRevise}
+            isAddingStep={this.props.submissionMetadata.type.startsWith('add-')}
+            showHelpText={!this.props.submissionMetadata.type === 'edit-step'}
           />
         )}
       </React.Fragment>
-    )
-  }
-
-  render() {
-    return (
-      <div ref={this.childRef}>
-        {super.render()}
-      </div>
     )
   }
 
@@ -779,10 +855,8 @@ class QuestionWizardController extends ViewController {
 QuestionWizardController.propTypes = {
   wdkService: PropTypes.object.isRequired,
   questionName: PropTypes.string.isRequired,
-  paramValues: PropTypes.object.isRequired,
-  isRevise: PropTypes.bool.isRequired,
-  isAddingStep: PropTypes.bool.isRequired,
-  customName: PropTypes.string
+  /* See  import { SubmissionMetadata } from 'wdk-client/Actions/QuestionActions' */
+  submissionMetadata: PropTypes.object.isRequired,
 }
 
 QuestionWizardController.defaultProps = {
@@ -791,7 +865,16 @@ QuestionWizardController.defaultProps = {
   }
 }
 
-export default wrappable(QuestionWizardController);
+function mapStateToProps(state, props) {
+  const { submissionMetadata } = props;
+  if (submissionMetadata.type === 'add-binary-step') {
+    const operatorQuestionState = state.question.questions[submissionMetadata.operatorSearchName];
+    return { operatorQuestionState };
+  }
+  return {};
+}
+
+export default connect(mapStateToProps)(wrappable(QuestionWizardController));
 
 
 /**

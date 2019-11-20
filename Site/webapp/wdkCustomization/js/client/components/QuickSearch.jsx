@@ -1,12 +1,13 @@
 import { find, get, map } from 'lodash';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
-import { Mesa } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { Mesa, Link } from 'wdk-client/Components';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import * as persistence from 'ebrc-client/util/persistence';
 
 let ParamPropType = PropTypes.shape({
-  defaultValue: PropTypes.string,
+  initialDisplayValue: PropTypes.string,
   help: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   alternate: PropTypes.string
@@ -14,8 +15,12 @@ let ParamPropType = PropTypes.shape({
 
 let ReferencePropType = PropTypes.shape({
   name: PropTypes.string.isRequired,
+  recordClassName: PropTypes.string.isRequired,
   paramName: PropTypes.string.isRequired,
   displayName: PropTypes.string.isRequired,
+  alternate: PropTypes.string,
+  linkTemplate: PropTypes.string,
+  isDisabled: PropTypes.bool
 });
 
 let QuestionPropType = PropTypes.shape({
@@ -26,7 +31,7 @@ let QuestionPropType = PropTypes.shape({
 /**
  * Quick search boxes that appear in header
  */
-class QuickSearchItem extends Component {
+class _QuickSearchItem extends Component {
 
   constructor(props) {
     super(props);
@@ -59,7 +64,7 @@ class QuickSearchItem extends Component {
   }
 
   setStateFromProps(props) {
-    let value = persistence.get(this.getStorageKey(props), get(this.getSearchParam(props), 'defaultValue', ''));
+    let value = persistence.get(this.getStorageKey(props), get(this.getSearchParam(props), 'initialDisplayValue', ''));
     this.setState({ value });
   }
 
@@ -68,13 +73,18 @@ class QuickSearchItem extends Component {
   }
 
   // Save value on submit
-  handleSubmit() {
+  handleSubmit(event) {
+    const { linkTemplate } = this.props.reference;
     persistence.set(this.getStorageKey(this.props), this.state.value);
+    if (linkTemplate != null) {
+      event.preventDefault();
+      this.props.history.push(linkTemplate.replace('{value}', this.state.value));
+    }
   }
 
   render() {
     const { question, reference, webAppUrl } = this.props;
-    const { displayName } = reference;
+    const { displayName, recordClassName } = reference;
     const linkName = reference.alternate || reference.name;
     const searchParam = this.getSearchParam(this.props);
 
@@ -95,7 +105,7 @@ class QuickSearchItem extends Component {
             {question == null ? (
               <fieldset>
                 <b key="name">
-                  <a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a>
+                  <Link to={`/search/${recordClassName}/${linkName}`}>{displayName}: </Link>
                 </b>
                 <input
                   type="text"
@@ -122,14 +132,14 @@ class QuickSearchItem extends Component {
               </fieldset>
             ) : (
               <fieldset>
-                <input type="hidden" name="questionFullName" value={question.name}/>
+                <input type="hidden" name="questionFullName" value={question.fullName}/>
                 <input type="hidden" name="questionSubmit" value="Get Answer"/>
                 {question.parameters.map(parameter => {
                   if (parameter === searchParam) return null;
-                  let { defaultValue = '', type, name } = parameter;
+                  let { initialDisplayValue = '', type, name } = parameter;
                   let typeTag = isStringParam(type) ? 'value' : 'array';
                   return (
-                    <input key={`${typeTag}(${name})`} type="hidden" name={name} value={defaultValue}/>
+                    <input key={`${typeTag}(${name})`} type="hidden" name={name} value={initialDisplayValue}/>
                   );
                 })}
                 <b><a href={webAppUrl + '/showQuestion.do?questionFullName=' + linkName}>{displayName}: </a></b>
@@ -160,11 +170,14 @@ class QuickSearchItem extends Component {
   }
 }
 
-QuickSearchItem.propTypes = {
+_QuickSearchItem.propTypes = {
+  history: PropTypes.object.isRequired,
   webAppUrl: PropTypes.string.isRequired,
   question: QuestionPropType,
   reference: ReferencePropType.isRequired,
 };
+
+const QuickSearchItem = withRouter(_QuickSearchItem);
 
 function QuickSearch (props) {
   let { references, questions = {}, webAppUrl } = props;

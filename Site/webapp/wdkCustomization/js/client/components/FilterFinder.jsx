@@ -2,10 +2,10 @@ import { keyBy } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useMemo, useState } from 'react';
 import Select from 'react-select';
-import { isMulti } from 'wdk-client/AttributeFilterUtils';
-import { getOntologyTree } from 'wdk-client/FilterParamUtils';
-import { getLeaves } from 'wdk-client/TreeUtils';
-import { parseSearchQueryString, areTermsInString } from 'wdk-client/SearchUtils';
+import { isMulti } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
+import { getOntologyTree } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
+import { getLeaves } from 'wdk-client/Utils/TreeUtils';
+import { parseSearchQueryString, areTermsInString } from 'wdk-client/Utils/SearchUtils';
 
 const cx = (suffix = '') => `ebrc-QuestionWizardFilterFinder${suffix}`;
 
@@ -138,7 +138,7 @@ function FilterFinderOption(props) {
 function makeOptions(question) {
   const groupsByName = keyBy(question.groups, 'name');
   return question.parameters
-    .filter(parameter => parameter.type === 'FilterParamNew')
+    .filter(parameter => parameter.type === 'filter')
     .flatMap(parameter => {
       const ontologyItemsByTerm = keyBy(parameter.ontology, 'term');
       const group = groupsByName[parameter.group];

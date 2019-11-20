@@ -5,8 +5,6 @@ display the attributions.
 --%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="bean" uri="http://struts.apache.org/tags-bean" %>
-<%@ taglib prefix="html" uri="http://struts.apache.org/tags-html" %>
 
 <%@ attribute name="caption"
               required="true"

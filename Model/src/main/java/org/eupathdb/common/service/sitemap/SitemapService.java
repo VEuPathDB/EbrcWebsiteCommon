@@ -1,12 +1,10 @@
 package org.eupathdb.common.service.sitemap;
 
 import static org.gusdb.fgputil.functional.Functions.fSwallow;
-import static org.gusdb.fgputil.functional.Functions.toJavaFunction;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,17 +16,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
 import org.gusdb.fgputil.Tuples.ThreeTuple;
-import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.answer.factory.AnswerValueFactory;
+import org.gusdb.wdk.model.answer.spec.AnswerSpec;
 import org.gusdb.wdk.model.question.Question;
 import org.gusdb.wdk.model.record.RecordClass;
+import org.gusdb.wdk.model.user.StepContainer;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 
 @Path("sitemap")
 public class SitemapService extends AbstractWdkService {
-
-  private static final Logger LOG = Logger.getLogger(SitemapService.class);
 
   @GET
   @Produces(MediaType.TEXT_XML)
@@ -37,7 +34,7 @@ public class SitemapService extends AbstractWdkService {
     String sitemaps = Arrays.stream(getWdkModel().getAllQuestionSets())
         .flatMap(questionSet -> Arrays.stream(questionSet.getQuestions()))
         .filter(question -> question.getPropertyLists().containsKey("forSitemap")).map(question -> "<sitemap><loc>"
-            + urlBase + fmt.replace("{question}", question.getUrlSegment()) + "</loc></sitemap>")
+            + urlBase + fmt.replace("{question}", question.getName()) + "</loc></sitemap>")
         .collect(Collectors.joining(""));
 
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
@@ -47,18 +44,26 @@ public class SitemapService extends AbstractWdkService {
   @GET
   @Path("{questionName}")
   @Produces(MediaType.TEXT_XML)
-  public String getSiteMapForQuestion(@PathParam("questionName") String questionName, @QueryParam("fmt") String fmt) throws WdkModelException {
+  public String getSiteMapForQuestion(@PathParam("questionName") String questionName, @QueryParam("fmt") String fmt) {
     String urlBase = getContextUri();
 
     // find question for sitemap.xml
-    Optional<Question> maybeQuestion = Optional.of(getWdkModel().getQuestionByUrlSegment(questionName))
+    Optional<Question> maybeQuestion = getWdkModel().getQuestionByName(questionName)
         .filter(question -> question.getPropertyLists().containsKey("forSitemap"));
 
     Optional<RecordClass> maybeRecordClass = maybeQuestion
-        .map(toJavaFunction(fSwallow(question -> getWdkModel().getRecordClass(question.getRecordClassName()))));
+        .flatMap(question -> getWdkModel().getRecordClassByName(question.getRecordClassName()));
 
-    Optional<List<String[]>> maybeAllIds = maybeQuestion.map(toJavaFunction(
-        fSwallow(question -> question.makeAnswerValue(getSessionUser(), new HashMap<>(), true, 0).getAllIds())));
+    Optional<List<String[]>> maybeAllIds = maybeQuestion
+      .map(fSwallow(question ->
+        AnswerValueFactory.makeAnswer(
+          getSessionUser(),
+          AnswerSpec.builder(getWdkModel())
+            .setQuestionFullName(question.getFullName())
+            .buildRunnable(getSessionUser(), StepContainer.emptyContainer())
+        )
+        .getAllIds()
+      ));
 
     Optional<ThreeTuple<Question, RecordClass, List<String[]>>> maybeData = maybeQuestion
         .flatMap(question -> maybeRecordClass.flatMap(recordClass -> maybeAllIds

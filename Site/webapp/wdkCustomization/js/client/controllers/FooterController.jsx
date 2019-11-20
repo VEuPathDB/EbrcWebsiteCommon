@@ -1,3 +1,4 @@
+import React from 'react';
 import { ViewController } from 'wdk-client/Controllers';
 import { Footer } from 'wdk-client/Components';
 

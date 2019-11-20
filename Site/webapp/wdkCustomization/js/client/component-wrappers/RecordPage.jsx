@@ -1,3 +1,4 @@
+import React from 'react';
 import { RecordAttribute } from 'wdk-client/Components';
 import { renderWithCustomElements } from '../util/customElements';
 import { findExportWith } from './util';
@@ -60,7 +61,7 @@ const findRecordPageComponent = findExportWith(require.context('../components/re
 function makeDynamicWrapper(componentName) {
   return function dynamicWrapper(DefaultComponent) {
     return function DynamicWrapper(props) {
-      const ResolvedComponent = findRecordPageComponent(componentName)(`./${props.recordClass.name}`) || DefaultComponent;
+      const ResolvedComponent = findRecordPageComponent(componentName)(`./${props.recordClass.fullName}`) || DefaultComponent;
       return (
         <ResolvedComponent {...props} DefaultComponent={DefaultComponent}/>
       );

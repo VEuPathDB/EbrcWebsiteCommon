@@ -1,11 +1,9 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
 import TableReporterForm from './TableReporterForm';
-
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils);
 
 // Transcript Table Reporter is the same as a regular Table Reporter, but need to
 //   override the recordClass (Transcript) with Gene to get Gene tables for a Transcript result
-let recordClassOverride = { recordClass: { name: "GeneRecordClasses.GeneRecordClass" } };
+let recordClassOverride = { recordClass: { fullName: "GeneRecordClasses.GeneRecordClass" } };
 
 let TranscriptTableReporterForm = props => {
   let newProps = Object.assign({}, props, recordClassOverride);

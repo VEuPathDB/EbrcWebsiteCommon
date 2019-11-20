@@ -37,7 +37,7 @@ public class SiteMapOntologyPlugin extends EuPathDbOwlParserWdkPlugin {
      */
 
     @Override
-    public TreeNode<OntologyNode> map(OntologyNode nodeContents,
+    public TreeNode<OntologyNode> apply(OntologyNode nodeContents,
         List<TreeNode<OntologyNode>> mappedChildren) {
 
       TreeNode<OntologyNode> newNode = new TreeNode<OntologyNode>(nodeContents);
@@ -45,7 +45,7 @@ public class SiteMapOntologyPlugin extends EuPathDbOwlParserWdkPlugin {
       if (nodeContents.get("label") != null) parentLabel = nodeContents.get("label").get(0);
       
       // a sub-category node that will hold tracks, if any
-      TreeNode<OntologyNode> trackSubCategory = makeCategoryNode("Tracks", "Genome browser tracks", new Integer(1), parentLabel+"-tracks");
+      TreeNode<OntologyNode> trackSubCategory = makeCategoryNode("Tracks", "Genome browser tracks", Integer.valueOf(1), parentLabel+"-tracks");
       
       // 
       Map<String, RecordSubCategory> recordSubCategories = new HashMap<String, RecordSubCategory>();
@@ -171,7 +171,7 @@ public class SiteMapOntologyPlugin extends EuPathDbOwlParserWdkPlugin {
     nodeContents.put("definition", descs);
 
     ArrayList<String> orders = new ArrayList<String>();
-    orders.add(new Integer(order).toString());
+    orders.add(Integer.valueOf(order).toString());
     nodeContents.put("display order", orders);
 
     return node;

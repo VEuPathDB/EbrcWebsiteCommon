@@ -1,7 +1,6 @@
-import {
-  ContactUsInstructions,
-  ContactUsError
-} from '../../components';
+import React from 'react';
+import ContactUsInstructions from './ContactUsInstructions';
+import ContactUsError from './ContactUsError';
 
 const ContactUsFooter = ({
   submitDisabled,

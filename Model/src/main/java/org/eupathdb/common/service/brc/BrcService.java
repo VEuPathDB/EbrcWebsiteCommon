@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.question.Question;
+import org.gusdb.wdk.model.report.reporter.DefaultJsonReporter;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
@@ -83,7 +85,7 @@ public class BrcService extends AbstractWdkService {
   }
 
   /**
-   * Gets a set of experiment (WDK term is dataset) attributes for the experiement (a.k.a. dataset) as given
+   * Gets a set of experiment (WDK term is dataset) attributes for the experiment (a.k.a. dataset) as given
    * by its WDK based id.
    * 
    * @param experimentId
@@ -181,9 +183,17 @@ public class BrcService extends AbstractWdkService {
    * @throws WdkModelException
    */
   protected JSONObject callAnswerService(JSONObject answerJson) throws WdkModelException {
+    Question question = getWdkModel().getQuestionByFullName(BrcRequest.DATASET_QUESTION_NAME)
+        .orElseThrow(() -> new WdkModelException(BrcRequest.DATASET_QUESTION_NAME + " is no longer part of the WDK model."));
     Client client = ClientBuilder.newBuilder().build();
     Response response = client
-        .target(getBaseUri() + "answer")
+        .target(getBaseUri() +
+            "record-classes/" +
+            question.getRecordClass().getUrlSegment() +
+            "/searches/" +
+            question.getName() +
+            "/reports/" +
+            DefaultJsonReporter.RESERVED_NAME)
         .property("Content-Type", MediaType.APPLICATION_JSON)
         .request(MediaType.APPLICATION_JSON)
         .cookie(authCookie)

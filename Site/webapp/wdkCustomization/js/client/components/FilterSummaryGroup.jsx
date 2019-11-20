@@ -1,5 +1,5 @@
 import React from 'react';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { IconAlt as Icon } from 'wdk-client/Components';
 
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
@@ -25,7 +25,7 @@ function FilterSummaryGroup(props) {
           // separate filter params from other params
           .reduce(([partitions], entry) => {
             const param = getParameter(wizardState, entry[0]);
-            if (param.type === 'FilterParamNew') {
+            if (param.type === 'filter') {
               partitions[0].push(entry);
             }
             else {

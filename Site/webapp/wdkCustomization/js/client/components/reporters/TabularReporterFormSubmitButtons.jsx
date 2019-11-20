@@ -1,4 +1,5 @@
-import { wrappable } from 'wdk-client/ComponentUtils';
+import React from 'react';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 // by default, no supplemental submit buttons
 let TabularReporterFormSubmitButtons = props =>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { UserSessionActions, UserActions } from 'wdk-client/Actions';
+import * as UserSessionActions from 'wdk-client/Actions/UserSessionActions';
+import * as UserActions from 'wdk-client/Actions/UserActions';
 import { Sticky } from 'wdk-client/Components';
 import { formatReleaseDate } from '../util/formatters';
 import { makeMenuItems } from '../util/menuItems';
-import Announcements from './Announcements';
 import QuickSearch from './QuickSearch';
 import SmallMenu from './SmallMenu';
 import Menu from './Menu';
@@ -39,7 +39,6 @@ class ClassicSiteHeader extends React.Component {
     } = this.props;
 
     const {
-      announcements,
       buildNumber,
       projectId,
       releaseDate,

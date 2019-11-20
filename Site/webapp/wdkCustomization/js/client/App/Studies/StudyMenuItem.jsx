@@ -1,7 +1,6 @@
 import React from 'react';
-import { getSearchIconByType, getSearchNameByType } from 'ebrc-client/App/Searches/SearchUtils';
 import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './StudyMenu.scss';
 
@@ -18,10 +17,10 @@ class StudyMenuItem extends React.Component {
     return (webAppUrl ? webAppUrl : '') + (!url.indexOf('/') ? '' : '/') + url;
   }
 
-  renderSearchLink ({ displayName, icon, name }) {
-    const { study, config } = this.props;
+  renderSearchLink ({ displayName, icon, path }) {
+    const { study } = this.props;
 
-    const url = `${config.webAppUrl}/showQuestion.do?questionFullName=${name}`;
+    const route = `/search/${path}`;
 
     const tooltip = (<span>Search <b>{displayName}</b> in the {safeHtml(study.name)} Study</span>);
     return (
@@ -29,9 +28,9 @@ class StudyMenuItem extends React.Component {
         fadeOut={true}
         content={tooltip}
         style={{ pointerEvents: 'none' }}>
-        <a name={`Search ${displayName}`} href={url} key={name}>
+        <Link name={`Search ${displayName}`} to={route} key={path}>
           <i className={icon} />
-        </a>
+        </Link>
       </Mesa.AnchoredTooltip>
     );
   }
@@ -50,7 +49,7 @@ class StudyMenuItem extends React.Component {
           </Link>
         </div>
         <div className="row StudyMenuItem-Links">
-          {searches.map(({ name, displayName, icon }) => <SearchLink key={name} name={name} displayName={displayName} icon={icon} />)}
+          {searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)}
         </div>
       </div>
     )

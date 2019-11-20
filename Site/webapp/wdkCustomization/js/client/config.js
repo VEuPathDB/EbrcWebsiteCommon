@@ -12,8 +12,6 @@ export const {
   twitterUrl,
   youtubeUrl,
   vimeoUrl,
-  recordClassesWithProjectId
+  recordClassesWithProjectId,
+  communitySite,
 } = window.__SITE_CONFIG__;
-
-// __SITE_ANNOUNCEMENTS__ is defined in index.jsp
-export const announcements = window.__SITE_ANNOUNCEMENTS__;

@@ -1,6 +1,52 @@
 var path = require('path');
 var wdkRoot = path.resolve(__dirname, '../../WDKWebsite/View');
-var baseConfig = require('../../WDKClient/Build/base.webpack.config');
+var baseConfig = require('../../install/base.webpack.config');
+
+var scriptRoot = path.join(__dirname, '../../WDKClient/Dependencies/lib');
+var depPath = path.join.bind(null, scriptRoot);
+
+// Shims for global style scripts
+// These will expose global varables on the `window` object.
+// For instance, `window.$`
+// TODO Migrate to npm/yarn packages
+var scripts = [
+  { alias: 'lib/jquery',                                 path: depPath('jquery.js') },
+  { alias: 'lib/jquery-migrate',                         path: depPath('jquery-migrate-1.2.1.js') },
+  { alias: 'lib/jquery-ui',                              path: depPath('jquery-ui.js') },
+  { alias: 'lib/flexigrid',                              path: depPath('flexigrid.js') },
+  { alias: 'lib/jquery-blockUI',                         path: depPath('jquery.blockUI.js') },
+  { alias: 'lib/jquery-cookie',                          path: depPath('jquery.cookie.js') },
+  { alias: 'lib/jquery-datatables',                      path: depPath('datatables.js') },
+  { alias: 'lib/jquery-datatables-natural-type-plugin',  path: depPath('datatables-natural-type-plugin.js') },
+  { alias: 'lib/jquery-flot',                            path: depPath('flot/jquery.flot.js') },
+  { alias: 'lib/jquery-flot-categories',                 path: depPath('flot/jquery.flot.categories.js') },
+  { alias: 'lib/jquery-flot-selection',                  path: depPath('flot/jquery.flot.selection.js') },
+  { alias: 'lib/jquery-flot-time',                       path: depPath('flot/jquery.flot.time.js') },
+  { alias: 'lib/jquery-jstree',                          path: depPath('jstree/jquery.jstree.js') },
+  { alias: 'lib/jquery-qtip',                            path: depPath('jquery.qtip.min.js') },
+  { alias: 'lib/select2',                                path: depPath('select2.min.js') },
+];
+
+// Create webpack alias configuration object
+var alias = scripts.reduce(function(alias, script) {
+  alias[script.alias + '$'] = script.path;
+  return alias;
+}, {
+  wdk: wdkRoot + '/webapp/wdk',
+  'wdk-client': path.resolve(__dirname, '../../WDKClient/Client/src'),
+  eupathdb: __dirname + '/webapp',
+  site: process.cwd() + '/webapp',
+  'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client',
+  Client: __dirname + '/webapp/wdkCustomization/js/client'
+});
+
+// Create webpack script-loader configuration object
+var scriptLoaders = scripts.map(function(script) {
+  return {
+    test: script.path,
+    loader: 'script-loader'
+  };
+});
 
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
@@ -9,16 +55,18 @@ module.exports = function configure(additionalConfig) {
       path: path.join(process.cwd(), 'dist'),
       filename: '[name].bundle.js',
       chunkFilename: 'ebrc-chunk-[name].bundle.js',
+      library: 'Ebrc'
+    },
+    module: {
+      rules: [ ].concat(scriptLoaders),
     },
     resolve: {
-      alias: {
-        wdk: wdkRoot + '/webapp/wdk',
-        eupathdb: __dirname + '/webapp',
-        site: process.cwd() + '/webapp',
-        'ebrc-client': __dirname + '/webapp/wdkCustomization/js/client',
-        Client: __dirname + '/webapp/wdkCustomization/js/client'
-      },
-      modules: [ path.join(__dirname, 'node_modules') ]
+      alias,
+      modules: [
+        path.resolve(process.cwd(), 'node_modules'),
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, '../../WDKClient/Client/node_modules'),
+      ]
     },
 
     // Map external libraries Wdk exposes so we can do things like:
@@ -29,45 +77,9 @@ module.exports = function configure(additionalConfig) {
     // This will give us more flexibility in changing how we load libraries
     // without having to rewrite a bunch of application code.
     externals: [
-      resolveWdkClientExternal,
       {
         'jquery'           : 'jQuery', // import $ from 'jquery' => var $ = window.jQuery
-        'history'          : 'HistoryJS',
-        'lodash'           : '_',
-        'lodash/fp'        : '_fp',
-        'natural-sort'     : 'NaturalSort',
-        'prop-types'       : 'ReactPropTypes',
-        'react'            : 'React',
-        'react-dom'        : 'ReactDOM',
-        'react-redux'      : 'ReactRedux',
-        'react-router'     : 'ReactRouter',
-        'redux'            : 'Redux',
-        'redux-observable' : 'ReduxObservable',
-        'reselect'       : 'Reselect',
-        'rxjs'             : 'Rx',
-        'rxjs/operators'   : 'RxOperators',
       }
     ]
   }, additionalConfig]);
-}
-
-/**
- * Resolves modules IDs that begin with 'wdk-client' to properties
- * of the global `Wdk` object.
- *
- *   E.g., import { DataTable } from 'wdk-client/Components';
- *
- * See https://webpack.github.io/docs/configuration.html#externals (function bullet)
- */
-function resolveWdkClientExternal(context, request, callback) {
-  var matches = /^wdk-client(\/(.*))?/.exec(request);
-  if (matches != null) {
-    if (matches[2]) {
-      return callback(null, 'var Wdk.' + matches[2]);
-    }
-    else {
-      return callback(null, 'var Wdk');
-    }
-  }
-  callback();
 }

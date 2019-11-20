@@ -1,7 +1,6 @@
 @import './eupathdb-Palette.scss';
 
-a.eupathdb-BigButton, input[type="submit"], .filter-button input[type=submit],
-button.btn {
+a.eupathdb-BigButton, input[type="submit"], .filter-button input[type=submit], button.btn, a.btn, a:link.btn {
 /*  @include transition; */
   padding: 8px 12px;
   font-size: 1em;
@@ -12,6 +11,7 @@ button.btn {
   border: 0.5px solid rgba(0,0,0,0.1);
   border-bottom: 3px solid #999;
   margin: 5px 5px 5px 5px;
+  text-decoration: none;
 
   &:hover {
     background-color: #f0f0f2;
@@ -90,11 +90,12 @@ button {
 }
 
 
-
+a.btn:focus,
 a.eupathdb-BigButton:focus,
 input[type="submit"]:focus,
 input[type="button"]:focus,
 button:focus,
+a.btn:hover,
 a.eupathdb-BigButton:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover,
@@ -107,6 +108,7 @@ button:hover {
 }
 
 a.eupathdb-BigButton:focus,
+a.btn:focus,
 input[type="submit"]:focus,
 input[type="button"]:focus,
 button:focus {
@@ -114,6 +116,7 @@ button:focus {
 }
 
 a.eupathdb-BigButton:active,
+a.btn:active,
 input[type="submit"]:active,
 input[type="button"]:active,
 button:active {

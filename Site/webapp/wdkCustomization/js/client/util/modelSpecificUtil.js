@@ -1,6 +1,6 @@
-import { pruneDescendantNodes } from 'wdk-client/TreeUtils';
-import { nodeHasChildren } from 'wdk-client/OntologyUtils';
-import { getNodeId } from 'wdk-client/CategoryUtils';
+import { pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
+import { nodeHasChildren } from 'wdk-client/Utils/OntologyUtils';
+import { getNodeId } from 'wdk-client/Utils/CategoryUtils';
 
 let booleanQuestionPrefixes = [
   'InternalQuestions.boolean_question',
@@ -16,7 +16,7 @@ export function trimBooleanQuestionAttribs(question, categoryTree) {
   // determine if this type of question needs its attributes trimmed
   let needsTrimming = false;
   booleanQuestionPrefixes.forEach(prefix => {
-    if (question.name.startsWith(prefix)) needsTrimming = true;
+    if (question.fullName.startsWith(prefix)) needsTrimming = true;
   });
 
   if (!needsTrimming) {

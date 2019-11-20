@@ -1,9 +1,6 @@
-import { Fragment } from 'react';
-
-import {
-  ContactUsFinishedHeader,
-  ContactUsSubmittedBody
-} from '../../components';
+import React, { Fragment } from 'react';
+import ContactUsFinishedHeader from './ContactUsFinishedHeader';
+import ContactUsSubmittedBody from './ContactUsSubmittedBody';
 
 const ContactUsFinished = ({ message }) => (
   <Fragment>

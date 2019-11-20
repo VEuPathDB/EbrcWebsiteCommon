@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="imp" tagdir="/WEB-INF/tags/imp" %>
-<%@ taglib prefix="api" uri="http://eupathdb.org/taglib"%>
 
 <%@ attribute name="refer"
               required="true"
@@ -14,14 +13,15 @@
 
 
 <c:set var="project" value="${wdkModel.name}"/>
+<%--
 <api:messages var="degraded" projectName="${project}" messageCategory="Degraded"/>
 <api:messages var="down" projectName="${project}" messageCategory="Down"/>
-
+--%>
   <!-- refer: ${refer} -->
 <%-- only show information message from dashboard on home page --%>
 <c:choose>
   <c:when test="${refer eq 'home'}">
-    <api:messages var="information" projectName="${project}" messageCategory="Information"/>
+    <%--<api:messages var="information" projectName="${project}" messageCategory="Information"/>--%>
   </c:when>
   <c:otherwise>
     <c:set var="information" value="[]"/>

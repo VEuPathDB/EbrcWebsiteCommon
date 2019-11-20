@@ -1,7 +1,7 @@
 import React from 'react';
 import { httpGet } from '../util/http';
 import { CollapsibleSection, Loading } from 'wdk-client/Components';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import ExternalResource from './ExternalResource';
 
 /**

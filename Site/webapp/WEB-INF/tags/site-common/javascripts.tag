@@ -2,7 +2,6 @@
 <jsp:root version="2.0"
     xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:api="http://eupathdb.org/taglib"
     xmlns:wdk="urn:jsptagdir:/WEB-INF/tags/wdk"
     xmlns:imp="urn:jsptagdir:/WEB-INF/tags/imp">
 
@@ -20,18 +19,17 @@
   <c:set var="assetsUrl" value="${model.modelConfig.assetsUrl ne null ? model.modelConfig.assetsUrl : webAppUrl}" />
   <c:set var="wdkServiceUrl" value ="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 
-  <!-- only show information on home page. this jsp never gets loaded on home page -->
-  <!-- FIXME Add logic to show information messages on homepage if this gets used for homepage -->
-  <c:choose>
-    <c:when test="${refer eq 'home'}">
-      <api:messages var="information" projectName="${model.projectId}" messageCategory="Information"/>
-    </c:when>
-    <c:otherwise>
-      <c:set var="information" value="[]"/>
-    </c:otherwise>
-  </c:choose>
-  <api:messages var="degraded" projectName="${model.projectId}" messageCategory="Degraded"/>
-  <api:messages var="down" projectName="${model.projectId}" messageCategory="Down"/>
+  <c:set var="recordClassesWithProjectId">
+    [
+      <c:forEach items="${applicationScope.wdkModel.recordClasses}" var="recordClass">
+        <c:forEach items="${recordClass.primaryKeyDefinition.columnRefs}" var="columnName">
+          <c:if test="${columnName eq 'project_id'}">
+            "${recordClass.urlSegment}",
+          </c:if>
+        </c:forEach>
+      </c:forEach>
+    ]
+  </c:set>
 
   <script>
     // used for webpack. remove this when this can be set at build time.
@@ -50,12 +48,8 @@
       twitterUrl: "${props.TWITTER_URL}",
       youtubeUrl: "${props.YOUTUBE_URL}",
       vimeoUrl: "${props.VIMEO_URL}",
+      recordClassesWithProjectId: ${recordClassesWithProjectId},
       isLegacy: true
-    };
-    window.__SITE_ANNOUNCEMENTS__ = {
-      information: ${information},
-      degraded: ${degraded},
-      down: ${down}
     };
   </script>
 

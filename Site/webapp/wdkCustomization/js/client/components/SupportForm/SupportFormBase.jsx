@@ -1,3 +1,4 @@
+import React from 'react';
 import './SupportFormBase.scss';
 
 const SupportFormBase = ({ children }) => (

@@ -1,11 +1,12 @@
 import { result } from 'lodash';
-import { Seq } from 'wdk-client/IterableUtils';
+import React from 'react';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { Loading } from 'wdk-client/Components';
-import { propTypes } from './QuestionWizard';
 import Parameters from './Parameters';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import { groupParamsValuesAreDefault } from '../util/QuestionWizardState';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
+import QuestionWizardPropTypes from './QuestionWizardPropTypes';
 
 /**
  * Active group section. Includes heading, help text, summary counts, and parameters.
@@ -79,7 +80,7 @@ function ActiveGroup(props) {
   );
 }
 
-ActiveGroup.propTypes = propTypes;
+ActiveGroup.propTypes = QuestionWizardPropTypes;
 
 export default wrappable(ActiveGroup);
 

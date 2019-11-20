@@ -1,9 +1,12 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { CategoriesCheckboxTree, Checkbox, RadioList, ReporterSortMessage } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
+import * as CategoryUtils from 'wdk-client/Utils/CategoryUtils';
 import TabularReporterFormSubmitButtons from './TabularReporterFormSubmitButtons';
 import ExcelNote from './ExcelNote';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils, Wdk.CategoryUtils);
-let { CategoriesCheckboxTree, RadioList, Checkbox, ReporterSortMessage } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils, CategoryUtils);
 
 let TranscriptAttributesReporterForm = props => {
 
@@ -34,7 +37,7 @@ let TranscriptAttributesReporterForm = props => {
               // title and layout of the tree
               title="Choose Columns"
               searchBoxPlaceholder="Search Columns..."
-              tree={util.getAttributeTree(ontology, recordClass.name, question)}
+              tree={util.getAttributeTree(ontology, recordClass.fullName, question)}
 
               // state of the tree
               selectedLeaves={formState.attributes}
@@ -108,7 +111,7 @@ function getUserPrefFilterValue(prefs) {
 TranscriptAttributesReporterForm.getInitialState = (downloadFormStoreState) => {
   let { scope, question, recordClass, ontology, preferences } = downloadFormStoreState;
   // select all attribs and tables for record page, else column user prefs and no tables
-  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.name, question));
+  let allReportScopedAttrs = util.getAllLeafIds(util.getAttributeTree(ontology, recordClass.fullName, question));
   let selectedAttributes = (scope === 'results' ?
       util.getAttributeSelections(preferences, question, allReportScopedAttrs) :
       allReportScopedAttrs);

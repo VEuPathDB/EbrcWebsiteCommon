@@ -50,8 +50,9 @@ public class ContactUsSubmitter {
     String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + 
         website + "\n" + "\n" +
         metaInfo + "\n" + 
-        "Client IP Address: " + requestData.getIpAddress() + "\n" +
-        "WDK Host: " + requestData.getAppHostName() + " (" + requestData.getAppHostAddress() + ")\n";
+        "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" +
+        "Request URL: " + requestData.getFullRequestUri() + "\n" +
+        "WDK Host: " + requestData.getLocalHost() + " (" + requestData.getLocalIpAddress() + ")\n";
     
     String smtpServer = modelConfig.getSmtpServer();
     

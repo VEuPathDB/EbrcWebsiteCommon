@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
+import org.gusdb.wdk.service.request.user.DatasetRequestProcessor.DatasetSourceType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author crisl-adm
  */
 public class BrcRequest {
+
+  public static final String DATASET_QUESTION_NAME = "DatasetQuestions.DatasetsByGeneList";
 
   private String type;
   private String idSource;
@@ -69,9 +72,10 @@ public class BrcRequest {
    * @return - JSON object to send to WDK dataset param request
    */
   public JSONObject getDatasetJson() {
+    DatasetSourceType sourceType = DatasetSourceType.ID_LIST;
     return new JSONObject()
-        .put(JsonKeys.SOURCE_TYPE, JsonKeys.ID_LIST)
-        .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(JsonKeys.IDS, ids));
+        .put(JsonKeys.SOURCE_TYPE, sourceType.getJsonKey())
+        .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(sourceType.getConfigJsonKey(), ids));
   }
 
   /**
@@ -81,8 +85,8 @@ public class BrcRequest {
    */
   public JSONObject getAnswerJson() {
     return new JSONObject()
-      .put("answerSpec", getAnswerSpecJson())
-      .put("formatConfig", getFormatting());
+      .put(JsonKeys.SEARCH_CONFIG, getAnswerSpecJson())
+      .put(JsonKeys.REPORT_CONFIG, getFormatting());
   }
 
   /**
@@ -92,9 +96,8 @@ public class BrcRequest {
    */
   public JSONObject getAnswerSpecJson() {
     return new JSONObject()
-        .put("questionName", "DatasetQuestions.DatasetsByGeneList")
-        .put("parameters", getParametersJson())
-        .put("wdk_weight", 10);
+        .put(JsonKeys.PARAMETERS, getParametersJson())
+        .put(JsonKeys.WDK_WEIGHT, 10);
   }
 
   /**
@@ -104,7 +107,7 @@ public class BrcRequest {
    */
   public JSONObject getFormatting() {
     return new JSONObject()
-        .put("attributes", new JSONArray()
+        .put(JsonKeys.ATTRIBUTES, new JSONArray()
           .put("display_name")
           .put("summary")
           .put("organism_prefix")

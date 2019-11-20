@@ -1,0 +1,23 @@
+.ebrc-NewsPane {
+  .News-Section { 
+    margin-top: 3.8rem;
+
+    .wdk-Showcase-HeadingRow {
+      h2 {
+        font-size: 1.75rem;
+        color: #00304c;
+        text-shadow: unset;
+        font-weight: 500;
+        margin: 0;
+      }
+    }
+
+    .AllNewsLink {
+      color: #00304c;
+    }
+
+    .wdk-Showcase-ContentRow, .News {
+      border: unset;
+    }
+  }
+}

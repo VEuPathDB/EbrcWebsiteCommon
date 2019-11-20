@@ -1,6 +1,7 @@
 /**
  * Created by dfalke on 8/24/16.
  */
+import React from 'react';
 import { render } from 'react-dom'
 import { throttle, once, partial } from 'lodash'
 

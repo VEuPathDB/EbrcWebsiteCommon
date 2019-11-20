@@ -1,8 +1,11 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { RadioList, Checkbox, ReporterSortMessage, CategoriesCheckboxTree } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
+import * as CategoryUtils from 'wdk-client/Utils/CategoryUtils';
 import ExcelNote from './ExcelNote';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils, Wdk.CategoryUtils);
-let { CategoriesCheckboxTree, RadioList, Checkbox, ReporterSortMessage } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils, CategoryUtils);
 
 let TableReporterForm = props => {
 
@@ -20,7 +23,7 @@ let TableReporterForm = props => {
               // title and layout of the tree
               title="Choose a Table"
               searchBoxPlaceholder="Search Tables..."
-              tree={util.getTableTree(ontology, recordClass.name, question)}
+              tree={util.getTableTree(ontology, recordClass.fullName, question)}
 
               // state of the tree
               selectedLeaves={formState.tables}
@@ -68,7 +71,7 @@ let TableReporterForm = props => {
 TableReporterForm.getInitialState = (downloadFormStoreState) => {
   let tableTree = util.getTableTree(
       downloadFormStoreState.ontology,
-      downloadFormStoreState.recordClass.name,
+      downloadFormStoreState.recordClass.fullName,
       downloadFormStoreState.question);
   let firstLeafName = util.findFirstLeafId(tableTree);
   return {

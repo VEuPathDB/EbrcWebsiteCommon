@@ -1,7 +1,9 @@
-import * as Wdk from 'wdk-client';
+import React from 'react';
+import { RadioList, Checkbox } from 'wdk-client/Components';
+import * as ComponentUtils from 'wdk-client/Utils/ComponentUtils';
+import * as ReporterUtils from 'wdk-client/Views/ReporterForm/reporterUtils';
 
-let util = Object.assign({}, Wdk.ComponentUtils, Wdk.ReporterUtils);
-let { RadioList, Checkbox } = Wdk.Components;
+let util = Object.assign({}, ComponentUtils, ReporterUtils);
 
 let attachmentTypes = [
   { value: "text", display: "GFF File" },
@@ -10,7 +12,7 @@ let attachmentTypes = [
 
 let GffInputs = props => {
   let { recordClass, formState, getUpdateHandler } = props;
-  if (recordClass.name != "TranscriptRecordClasses.TranscriptRecordClass") {
+  if (recordClass.fullName != "TranscriptRecordClasses.TranscriptRecordClass") {
     return ( <noscript/> );
   }
   return (
@@ -56,9 +58,9 @@ let initialStateMap = {
 };
 
 Gff3ReporterForm.getInitialState = (downloadFormStoreState) => {
-  let recordClassName = downloadFormStoreState.recordClass.name;
+  let recordClassFullName = downloadFormStoreState.recordClass.fullName;
   return {
-    formState: (recordClassName in initialStateMap ? initialStateMap[recordClassName] : {}),
+    formState: (recordClassFullName in initialStateMap ? initialStateMap[recordClassFullName] : {}),
     formUiState: {}
   };
 };

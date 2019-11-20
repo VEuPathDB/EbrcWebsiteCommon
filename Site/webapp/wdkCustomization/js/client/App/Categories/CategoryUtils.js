@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function getCategoryColor (category) {
   if (!category) return null;
   switch (category.toLowerCase()) {
@@ -20,4 +22,4 @@ export function getCategoryName (category = '') {
     default:
       return <span>An <b>Epidemiological</b> Study</span>;
   }
-};
+}

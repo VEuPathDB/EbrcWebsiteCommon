@@ -78,7 +78,7 @@ public class BasketTransfer {
     }
   }
 
-  private static class BasketTransferrer implements ResultSetHandler {
+  private static class BasketTransferrer implements ResultSetHandler<BasketTransferrer> {
 
     private final Connection _toDbConnection;
 
@@ -87,7 +87,7 @@ public class BasketTransfer {
     }
 
     @Override
-    public void handleResult(ResultSet rs) throws SQLException {
+    public BasketTransferrer handleResult(ResultSet rs) throws SQLException {
       List<Object[]> mergeBatch = new ArrayList<>();
       int numBatchesRun = 0;
       int numCommits = 0;
@@ -114,6 +114,7 @@ public class BasketTransfer {
         System.out.println("Committing final " + numBatchesRun + " batches. Total commits: " + numCommits);
         if (WRITE) _toDbConnection.commit();
       }
+      return this;
     }
   }
 

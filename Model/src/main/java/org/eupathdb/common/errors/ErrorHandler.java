@@ -3,10 +3,9 @@ package org.eupathdb.common.errors;
 import static org.eupathdb.common.errors.ErrorHandlerHelpers.getAttributeMapText;
 import static org.eupathdb.common.errors.ErrorHandlerHelpers.valueOrDefault;
 import static org.gusdb.fgputil.FormatUtil.NL;
+import static org.gusdb.fgputil.FormatUtil.formatDateTime;
 import static org.gusdb.fgputil.FormatUtil.getInnerClassLog4jName;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,8 +24,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
-import org.eupathdb.common.errors.ErrorHandlerHelpers.Stringifier;
-import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
@@ -92,26 +89,24 @@ public class ErrorHandler {
 
     String doubleNewline = NL + NL;
     RequestData requestData = context.getRequestData();
-    String errorUrl = getErrorUrl(requestData);
     WdkModel model = context.getWdkModel();
-    DateFormat dateFormat = new SimpleDateFormat(FormatUtil.STANDARD_DATETIME_FORMAT_SLASH);
 
     return new StringBuilder()
 
         .append(SECTION_DIV)
-        .append("Date: ").append(dateFormat.format(context.getErrorDate())).append(NL)
-        .append("Request URI: ").append(errorUrl == null ? "<unable to determine>" : errorUrl).append(NL)
+        .append("Date: ").append(formatDateTime(context.getErrorDate())).append(NL)
+        .append("Request URI: ").append(valueOrDefault(requestData.getContextUri(), "<unable to determine>")).append(NL)
         .append("Remote Host: ").append(valueOrDefault(requestData.getRemoteHost(), "<not set>")).append(NL)
         .append("Referred from: ").append(valueOrDefault(requestData.getReferrer(), "<not set>")).append(NL)
-        .append("User Agent: ").append(requestData.getUserAgent()).append(NL)
+        .append("User Agent: ").append(valueOrDefault(requestData.getUserAgent(), "<not set>")).append(NL)
         // "JkEnvVar SERVER_ADDR" is required in Apache configuration
-        .append("Server Addr: ").append(valueOrDefault((String)requestData.getRequestAttribute("SERVER_ADDR"),
+        .append("Server Addr: ").append(valueOrDefault((String)requestData.getAttributeMap().get("SERVER_ADDR"),
             "<not set> Is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?")).append(NL)
         .append("Server Name: " ).append(valueOrDefault(requestData.getServerName(), "<unknown>")).append(NL)
         .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
         .append("Request ID: ").append(context.getMdcBundle().getRequestId()).append(NL)
         .append("Request duration at error: ").append(context.getMdcBundle().getRequestDuration()).append(NL)
-        .append("Date of last webapp reload: ").append(dateFormat.format(new Date(model.getStartupTime()))).append(NL)
+        .append("Date of last webapp reload: ").append(formatDateTime(new Date(model.getStartupTime()))).append(NL)
         .append("Time since last webapp reload: ").append(
             Timer.getDurationString(context.getErrorDate().getTime() - model.getStartupTime())).append(NL)
         .append("Log4j Marker: ").append(context.getLogMarker()).append(doubleNewline)
@@ -123,18 +118,14 @@ public class ErrorHandler {
 
         .append(SECTION_DIV)
         .append("Request Parameters (query string or posted form data)").append(doubleNewline)
-        .append(getAttributeMapText(requestData.getTypedParamMap(), new Stringifier<String[]>() {
-          @Override public String stringify(String[] value, String qualifier) {
-            return FormatUtil.arrayToString(value);
-          }})).append(NL)
+        .append(getAttributeMapText(requestData.getRequestParamMap(), (list,q) -> String.join(", ", list)))
+        .append(NL)
 
         .append(SECTION_DIV)
         .append("Associated Request-Scope Attributes").append(doubleNewline)
-        .append(getAttributeMapText(context.getRequestAttributeMap(), new Stringifier<Object>() {
-          @Override public String stringify(Object value, String key) {
-            return (key.toLowerCase().startsWith("email") || key.toLowerCase().startsWith("passw")) ?
-                "*****" : value.toString();
-          }})).append(NL)
+        .append(getAttributeMapText(context.getRequestAttributeMap(), (value, key) ->
+            (key.toLowerCase().startsWith("email") || key.toLowerCase().startsWith("passw")) ? "*****" : value.toString()))
+        .append(NL)
 
         .append(SECTION_DIV)
         .append("Session Attributes").append(doubleNewline)
@@ -143,10 +134,6 @@ public class ErrorHandler {
         //.append(SECTION_DIV)
         //.append("ServletContext Attributes").append(doubleNewline)
         //.append(getAttributeMapText(context.getServletContextAttributes())).append(NL)
-
-        .append(SECTION_DIV)
-        .append("Struts Action Errors").append(doubleNewline)
-        .append(errors.getActionErrorsAsText()).append(NL)
 
         .append(SECTION_DIV)
         .append("Detailed Description").append(doubleNewline)
@@ -165,13 +152,6 @@ public class ErrorHandler {
         .append("..").append(config.getMaxIdle())
         .append("], current=").append(db.getIdleCount())
         .append(" }").toString();
-  }
-
-  private static String getErrorUrl(RequestData requestData) {
-    String requestURI = (String) requestData.getRequestAttribute("javax.servlet.forward.request_uri");
-    String queryString = (String) requestData.getRequestAttribute("javax.servlet.forward.query_string");
-    return (requestURI == null ? null
-        : requestData.getNoContextUrl() + requestURI + (queryString == null ? "" : "?" + queryString));
   }
 
   /**

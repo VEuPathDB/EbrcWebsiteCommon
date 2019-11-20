@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import {pure} from 'wdk-client/ComponentUtils';
+import {pure} from 'wdk-client/Utils/ComponentUtils';
 import DatasetGraph from 'ebrc-client/components/DatasetGraph';
 
 // Use Element.innerText to strip XML

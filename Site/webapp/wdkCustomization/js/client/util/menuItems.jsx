@@ -1,20 +1,21 @@
 import { add, reduce, keyBy } from 'lodash';
-import { getId, getDisplayName, getTargetType } from 'wdk-client/CategoryUtils';
+import React from 'react';
+import { getId, getDisplayName, getTargetType } from 'wdk-client/Utils/CategoryUtils';
 
 /** Map search tree to menu items.  */
-function getSearchItems(searchTree) {
-  if (searchTree == null) return [];
+function getSearchItems(searchTree, recordClasses) {
+  if (searchTree == null || recordClasses == null) return [];
   return searchTree.children.map(createMenuItem);
 }
 
 /** Map a search node to a meny entry */
 function createMenuItem(searchNode) {
+  const question = getTargetType(searchNode) === 'search' && searchNode.wdkReference;
   return {
     id: getId(searchNode),
     text: getDisplayName(searchNode),
     children: searchNode.children.map(createMenuItem),
-    webAppUrl: getTargetType(searchNode) === 'search' &&
-      '/showQuestion.do?questionFullName=' + getId(searchNode)
+    route: question && `/search/${question.outputRecordClassName}/${question.urlSegment}`
   };
 }
 
@@ -63,12 +64,12 @@ export function makeMenuItems(props) {
   return keyBy( [
     { id: 'home', text: 'Home', tooltip: 'Go to the home page', url: webAppUrl },
     { id: 'search', text: 'New Search', tooltip: 'Start a new search strategy',
-      children: getSearchItems(props.searchTree).concat(
+      children: getSearchItems(props.searchTree, props.recordClasses).concat(
         includeQueryGrid ? [
           { id: 'query-grid', text: 'View all available searches', route: '/query-grid' }
         ] : [])
     },
-    { id: 'strategies', text: 'My Strategies',  webAppUrl: '/showApplication.do' },
+    { id: 'strategies', text: 'My Strategies',  route: '/workspace/strategies' },
 {/* in apicommon
     userDatasetsEnabled ? {
       id: 'workspace',
@@ -81,13 +82,13 @@ export function makeMenuItems(props) {
     {
       id: 'basket',
       text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
-      webAppUrl: '/showApplication.do?tab=basket',
+      route: '/workspace/basket',
       loginRequired: true
     },
     {
       id: 'favorites',
       text: 'My Favorites',
-      route: '/favorites',
+      route: '/workspace/favorites',
       loginRequired: true
     },
 

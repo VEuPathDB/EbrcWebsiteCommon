@@ -1,4 +1,5 @@
-import { ValidatedInput } from '../../components';
+import React from 'react';
+import ValidatedInput from '../../components/ValidatedInput';
 
 import './ContactUsAttachments.scss';
 

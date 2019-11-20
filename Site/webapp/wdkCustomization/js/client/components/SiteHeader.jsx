@@ -1,5 +1,5 @@
 import React from 'react';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 export default wrappable(function SiteHeader() {
   return (

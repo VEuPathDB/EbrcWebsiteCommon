@@ -1,7 +1,8 @@
 import { isEmpty, identity } from 'lodash';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Link } from 'wdk-client/Components';
-import { safeHtml } from 'wdk-client/ComponentUtils';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 /**
  * Small menu that appears in header

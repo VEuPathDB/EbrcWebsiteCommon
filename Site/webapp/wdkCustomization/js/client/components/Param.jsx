@@ -7,7 +7,7 @@ import DateRangeParam from './DateRangeParam';
 import NumberParam from './NumberParam';
 import NumberRangeParam from './NumberRangeParam';
 import { paramPropTypes } from '../util/paramUtil';
-import { wrappable } from 'wdk-client/ComponentUtils';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 /**
  * Param component
@@ -33,14 +33,13 @@ Param.defaultProps = {
  */
 function findParamComponent(param) {
   switch(param.type) {
-    case 'FilterParamNew': return FilterParamNew;
-    case 'StringParam': return StringParam;
-    case 'EnumParam': return FlatVocabParam;
-    case 'FlatVocabParam': return FlatVocabParam;
-    case 'DateParam': return DateParam;
-    case 'DateRangeParam': return DateRangeParam;
-    case 'NumberParam': return NumberParam;
-    case 'NumberRangeParam': return NumberRangeParam;
+    case 'filter': return FilterParamNew;
+    case 'string': return StringParam;
+    case 'vocabulary': return FlatVocabParam;
+    case 'date': return DateParam;
+    case 'date-range': return DateRangeParam;
+    case 'number': return NumberParam;
+    case 'number-range': return NumberRangeParam;
     default: return null;
   }
 }

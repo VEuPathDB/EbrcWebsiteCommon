@@ -1,18 +1,17 @@
 import { get } from 'lodash';
+import { set } from 'lodash/fp';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Seq } from 'wdk-client/IterableUtils';
-import { makeClassNameHelper } from 'wdk-client/ComponentUtils';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import StudySearches from 'ebrc-client/App/Studies/StudySearches';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators';
-import { set } from 'lodash/fp';
 
 import './StudyRecordHeading.scss';
 
 const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
 
-function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, webAppUrl, study, attemptAction, ...props }) {
+function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, study, attemptAction, ...props }) {
   let newProps = set(['recordClass','displayName'],'Study', props); 
   return (
     <React.Fragment>

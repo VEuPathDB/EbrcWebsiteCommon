@@ -1,7 +1,7 @@
 // Wizard state utility functions
 
 import { memoize, pick } from 'lodash';
-import { getFilterFields } from 'wdk-client/FilterParamUtils';
+import { getFilterFields } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
 
 /**
  * Create initial wizard state object
@@ -41,7 +41,7 @@ export function createInitialState(question, recordClass, paramValues) {
 
 export function createInitialParamState(param) {
   switch(param.type) {
-    case 'FilterParamNew': {
+    case 'filter': {
       const filterFields = getFilterFields(param).toArray();
       const ontology = param.ontology;
       return {
@@ -68,8 +68,7 @@ export function createInitialParamState(param) {
       }
     }
 
-    case 'FlatVocabParam':
-    case 'EnumParam':
+    case 'vocabulary':
       return {
         vocabulary: param.vocabulary
       }
@@ -87,7 +86,7 @@ export function createInitialParamState(param) {
  */
 export function getDefaultParamValues(wizardState) {
   return wizardState.question.parameters.reduce(function(defaultParamValues, param) {
-    return Object.assign(defaultParamValues, { [param.name]: param.defaultValue });
+    return Object.assign(defaultParamValues, { [param.name]: param.initialDisplayValue });
   }, {});
 }
 
