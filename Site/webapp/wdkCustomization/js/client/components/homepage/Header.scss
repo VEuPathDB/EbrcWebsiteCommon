@@ -34,10 +34,18 @@
       font-size: 0.9rem;
 
       > a, .ebrc-HeaderSubmenuGroup > a {
-        color: rgba(255,255,255,.5);
+        color: #FAFAFA;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px black, 
+          -1px -1px 1px black, 
+          1px -1px 1px black, 
+          -1px 1px 1px black, 
+          2px 2px 2px black, 
+          -2px -2px 2px black, 
+          2px -2px 2px black, 
+          -2px 2px 2px black;
 
         &:hover {
-          color: rgba(255,255,255,.8);
           text-decoration: none;
         }
       }
@@ -166,6 +174,23 @@
       background-color: #ededed;
       box-shadow: 0 0 1rem rgba(0,48,76,.5);
       z-index: 10;
+    }
+
+    &-Icon {
+      opacity: 0.8;
+    }
+
+    span.UserMenu-Title {
+      opacity: 0.8;
+      font-weight: bold;
+      text-shadow: 1px 1px 1px black, 
+        -1px -1px 1px black, 
+        1px -1px 1px black, 
+        -1px 1px 1px black, 
+        2px 2px 2px black, 
+        -2px -2px 2px black, 
+        2px -2px 2px black, 
+        -2px 2px 2px black;
     }
   }
 }
