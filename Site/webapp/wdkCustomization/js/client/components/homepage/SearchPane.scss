@@ -3,7 +3,7 @@
   border-right: 0.0625rem solid;
 
   h6 {
-    font-size: 1rem;
+    font-size: 1.33333333333em;
     margin: 1rem 0 0 0;
     text-align: center;
   }
@@ -19,7 +19,7 @@
 
     &__withHelp {
       margin-left: 0.5rem;
-      width: calc(100% - 1.5rem);
+      width: calc(100% - 2em);
     }
   }
 
@@ -28,7 +28,7 @@
   }
 
   .wdk-CheckboxTree {
-    font-size: 1rem;
+    font-size: 1.33333333333em;
   }
 
   .wdk-CheckboxTree > .wdk-CheckboxTreeList > .wdk-CheckboxTreeItem > .wdk-CheckboxTreeNodeWrapper {
