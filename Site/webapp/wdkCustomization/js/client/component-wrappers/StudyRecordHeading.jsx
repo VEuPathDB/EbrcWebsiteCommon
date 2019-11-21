@@ -22,7 +22,6 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           {loading ? null :
             <StudySearches
               study={study}
-              webAppUrl={webAppUrl}
               renderNotFound={() => (
                 <div>
                   <em>No searches were found for this study.</em>
@@ -43,9 +42,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
 }
 
 function mapStateToProps(state) {
-  const { globalData, record, studies } = state;
-  const { siteConfig } = globalData;
-  const { webAppUrl } = siteConfig;
+  const { record, studies } = state;
 
   if (studies.loading) {
     return { loading: true };
@@ -57,7 +54,7 @@ function mapStateToProps(state) {
 
   const study = get(studies, 'entities', [])
     .find(study => study.id === studyId);
-  return { webAppUrl, study };
+  return { study };
 }
 
 const mapDispatchToProps = {
