@@ -65,6 +65,8 @@
     }
 
     &__selected {
+      z-index: 10;
+
       > a::after {
         position: absolute;
         width: 0;
