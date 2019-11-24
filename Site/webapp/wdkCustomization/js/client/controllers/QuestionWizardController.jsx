@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Dialog } from 'wdk-client/Components';
+import { Dialog, LoadingOverlay } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { ViewController } from 'wdk-client/Controllers';
 import { isMulti, isRange } from 'wdk-client/Components/AttributeFilter/AttributeFilterUtils';
@@ -364,90 +364,98 @@ class QuestionWizardController extends ViewController {
   }
 
   onSubmit() {
-    this.props.dispatch(async ({ wdkService, getState }) => {
-      const { submissionMetadata } = this.props;
-      // submissionMetadata.type =
-      //   | "create-strategy"
-      //   | "add-binary-step"
-      //   | "add-unary-step"
-      //   | "submit-custom-form"
-      //   | "edit-step"
+    this.props.dispatch(async ({ wdkService }) => {
+      try {
+        this.setState({ submitting: true });
+        const { submissionMetadata } = this.props;
+        // submissionMetadata.type =
+        //   | "create-strategy"
+        //   | "add-binary-step"
+        //   | "add-unary-step"
+        //   | "submit-custom-form"
+        //   | "edit-step"
 
-      if (submissionMetadata.type === 'edit-step') {
-        // patch step's searchConfig
-        return StrategyActions.requestUpdateStepSearchConfig(
-          submissionMetadata.strategyId,
-          submissionMetadata.stepId,
-          {
-            ...submissionMetadata.previousSearchConfig,
-            parameters: this.state.paramValues
-          }
-        );
-      }
-
-      // Each case below requires a new step to be created...
-      const searchSpec = {
-        searchName: this.props.questionName,
-        searchConfig: {
-          parameters: this.state.paramValues,
-          wdkWeight: DEFAULT_STEP_WEIGHT
-        },
-        customName: this.state.customName || this.state.question.shortDisplayName
-      };
-
-      const stepResponse = await wdkService.createStep(searchSpec);
-
-      if (submissionMetadata.type === 'create-strategy') {
-        // create a new step, then new strategy, then go to the strategy panel
-        const strategyReponse = await wdkService.createStrategy({
-          isSaved: false,
-          isPublic: false,
-          stepTree: { stepId: stepResponse.id },
-          name: DEFAULT_STRATEGY_NAME
-        });
-        return RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`);
-      }
-
-      if (submissionMetadata.type === 'add-binary-step') {
-        // create steps and patch strategy's stepTree
-        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
-        const { operatorQuestionState } = this.props;
-        if (operatorQuestionState == null || operatorQuestionState.questionStatus !== 'complete') {
-          throw new Error(`Tried to create an operator step using a nonexistent or unloaded question: ${submissionMetadata.operatorSearchName}`);
+        if (submissionMetadata.type === 'edit-step') {
+          // patch step's searchConfig
+          return StrategyActions.requestUpdateStepSearchConfig(
+            submissionMetadata.strategyId,
+            submissionMetadata.stepId,
+            {
+              ...submissionMetadata.previousSearchConfig,
+              parameters: this.state.paramValues
+            }
+          );
         }
-        const operatorParamValues = operatorQuestionState.paramValues;
-        const operatorStepResponse = await wdkService.createStep({
-          searchName: submissionMetadata.operatorSearchName,
+
+        // Each case below requires a new step to be created...
+        const searchSpec = {
+          searchName: this.props.questionName,
           searchConfig: {
-            parameters: operatorParamValues
+            parameters: this.state.paramValues,
+            wdkWeight: DEFAULT_STEP_WEIGHT
+          },
+          customName: this.state.customName || this.state.question.shortDisplayName
+        };
+
+        const stepResponse = await wdkService.createStep(searchSpec);
+
+        if (submissionMetadata.type === 'create-strategy') {
+          // create a new step, then new strategy, then go to the strategy panel
+          const strategyReponse = await wdkService.createStrategy({
+            isSaved: false,
+            isPublic: false,
+            stepTree: { stepId: stepResponse.id },
+            name: DEFAULT_STRATEGY_NAME
+          });
+          return RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`);
+        }
+
+        if (submissionMetadata.type === 'add-binary-step') {
+          // create steps and patch strategy's stepTree
+          const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+          const { operatorQuestionState } = this.props;
+          if (operatorQuestionState == null || operatorQuestionState.questionStatus !== 'complete') {
+            throw new Error(`Tried to create an operator step using a nonexistent or unloaded question: ${submissionMetadata.operatorSearchName}`);
           }
-        });
-        return StrategyActions.requestPutStrategyStepTree(
-          submissionMetadata.strategyId,
-          addStep(
-            strategy.stepTree,
-            submissionMetadata.addType,
-            operatorStepResponse.id,
-            { stepId: stepResponse.id }
-          )
-        );
+          const operatorParamValues = operatorQuestionState.paramValues;
+          const operatorStepResponse = await wdkService.createStep({
+            searchName: submissionMetadata.operatorSearchName,
+            searchConfig: {
+              parameters: operatorParamValues
+            }
+          });
+          return StrategyActions.requestPutStrategyStepTree(
+            submissionMetadata.strategyId,
+            addStep(
+              strategy.stepTree,
+              submissionMetadata.addType,
+              operatorStepResponse.id,
+              { stepId: stepResponse.id }
+            )
+          );
+        }
+
+        if (submissionMetadata.type === 'add-unary-step') {
+          // create step and patch strategy's stepTree
+          const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
+          return StrategyActions.requestPutStrategyStepTree(
+            submissionMetadata.strategyId,
+            addStep(
+              strategy.stepTree,
+              submissionMetadata.addType,
+              stepResponse.id,
+              undefined
+            )
+          );
+        }
+
+        throw new Error(`Unknonwn submissionMetadata type: "${submissionMetadata.type}"`);
       }
 
-      if (submissionMetadata.type === 'add-unary-step') {
-        // create step and patch strategy's stepTree
-        const strategy = await wdkService.getStrategy(submissionMetadata.strategyId);
-        return StrategyActions.requestPutStrategyStepTree(
-          submissionMetadata.strategyId,
-          addStep(
-            strategy.stepTree,
-            submissionMetadata.addType,
-            stepResponse.id,
-            undefined
-          )
-        );
+      catch(error) {
+        this.setState({ submitting: false });
+        throw error;
       }
-
-      throw new Error(`Unknonwn submissionMetadata type: "${submissionMetadata.type}"`);
     });
   }
 
@@ -836,6 +844,7 @@ class QuestionWizardController extends ViewController {
               .flatMap(line => [ line, <br/> ])}
           </Dialog>
         )}
+        {this.state.submitting && <LoadingOverlay>Running search...</LoadingOverlay>}
         {this.state.question && (
           <QuestionWizard
             wizardState={this.state}
