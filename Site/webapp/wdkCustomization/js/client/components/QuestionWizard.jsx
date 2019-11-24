@@ -5,7 +5,7 @@ import ActiveGroup from './ActiveGroup';
 import {
   IconAlt as Icon,
   Loading,
-  Sticky
+  Sticky,
 } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { Seq } from 'wdk-client/Utils/IterableUtils';
@@ -24,7 +24,6 @@ import QuestionWizardPropTypes from './QuestionWizardPropTypes';
 function QuestionWizard(props) {
   const {
     question,
-    paramValues,
     activeGroup,
   } = props.wizardState;
   
