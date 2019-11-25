@@ -428,7 +428,7 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   margin: 1em 0;
 }
 
-.ebrc-QuestionWizardParam + .ebrc-QuestionWizardParam__FilterParamNew {
+.ebrc-QuestionWizardParam + .ebrc-QuestionWizardParam__filter {
   margin-top: 3em;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -455,13 +455,13 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   align-self: center;
 }
 
-.ebrc-QuestionWizardParamHelp__FilterParamNew,
-.ebrc-QuestionWizardParamLabel__FilterParamNew {
+.ebrc-QuestionWizardParamHelp__filter,
+.ebrc-QuestionWizardParamLabel__filter {
   display: none;
 }
 
-.ebrc-QuestionWizardParamHelp__DateRangeParam,
-.ebrc-QuestionWizardParamLabel__DateRangeParam {
+.ebrc-QuestionWizardParamHelp__date-range,
+.ebrc-QuestionWizardParamLabel__date-range {
   margin-top: 18px;
   align-self: flex-start;
 }
