@@ -9,11 +9,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.FormatUtil;
+import org.gusdb.fgputil.collection.ReadOnlyMap;
 import org.gusdb.fgputil.json.JsonIterators;
 import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.fgputil.json.JsonType.ValueType;
@@ -145,11 +145,11 @@ public class ErrorHandlerHelpers {
     return (value == null ? defaultValue : value);
   }
 
-  static <T> String getAttributeMapText(Map<String, T> attributeMap) {
+  static <T> String getAttributeMapText(ReadOnlyMap<String, T> attributeMap) {
     return getAttributeMapText(attributeMap, (val, q) -> val.toString());
   }
 
-  static <T> String getAttributeMapText(Map<String, T> attributeMap, Stringifier<T> stringifier) {
+  static <T> String getAttributeMapText(ReadOnlyMap<String, T> attributeMap, Stringifier<T> stringifier) {
     StringBuilder sb = new StringBuilder();
     for (String key : attributeMap.keySet()) {
       sb.append(key + " = " + stringifier.stringify(attributeMap.get(key), key) + FormatUtil.NL);

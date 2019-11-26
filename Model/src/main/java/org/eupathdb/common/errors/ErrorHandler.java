@@ -27,7 +27,7 @@ import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
 import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
-import org.gusdb.fgputil.web.RequestData;
+import org.gusdb.fgputil.web.RequestSnapshot;
 import org.gusdb.wdk.errors.ClientErrorBundle;
 import org.gusdb.wdk.errors.ErrorBundle;
 import org.gusdb.wdk.errors.ErrorContext;
@@ -88,7 +88,7 @@ public class ErrorHandler {
   private static String getErrorText(ErrorBundle errors, ErrorContext context) {
 
     String doubleNewline = NL + NL;
-    RequestData requestData = context.getRequestData();
+    RequestSnapshot requestData = context.getRequestData();
     WdkModel model = context.getWdkModel();
 
     return new StringBuilder()
@@ -100,7 +100,7 @@ public class ErrorHandler {
         .append("Referred from: ").append(valueOrDefault(requestData.getReferrer(), "<not set>")).append(NL)
         .append("User Agent: ").append(valueOrDefault(requestData.getUserAgent(), "<not set>")).append(NL)
         // "JkEnvVar SERVER_ADDR" is required in Apache configuration
-        .append("Server Addr: ").append(valueOrDefault((String)requestData.getAttributeMap().get("SERVER_ADDR"),
+        .append("Server Addr: ").append(valueOrDefault((String)context.getRequestAttributeMap().get("SERVER_ADDR"),
             "<not set> Is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?")).append(NL)
         .append("Server Name: " ).append(valueOrDefault(requestData.getServerName(), "<unknown>")).append(NL)
         .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
@@ -174,7 +174,7 @@ public class ErrorHandler {
    * 
    * Allowed subkeys are referer ip
    **/
-  private static String matchFilter(String searchText, RequestData requestData, Properties filters) {
+  private static String matchFilter(String searchText, RequestSnapshot requestData, Properties filters) {
 
     LOG.debug("Will use the following text as filter input:\n" + searchText);
 
