@@ -36,14 +36,14 @@
       > a, .ebrc-HeaderSubmenuGroup > a {
         color: #FAFAFA;
         font-weight: bold;
-        text-shadow: 1px 1px 1px black, 
-          -1px -1px 1px black, 
-          1px -1px 1px black, 
-          -1px 1px 1px black, 
-          2px 2px 2px black, 
-          -2px -2px 2px black, 
-          2px -2px 2px black, 
-          -2px 2px 2px black;
+        text-shadow: 1px 1px 2px #00000052,
+          -1px -1px 2px #00000052,
+          1px -1px 2px #00000052,
+          -1px 1px 2px #00000052,
+          2px 2px 3px #00000052,
+          -2px -2px 3px #00000052,
+          2px -2px 3px #00000052,
+          -2px 2px 3px #00000052;
 
         &:hover {
           text-decoration: none;

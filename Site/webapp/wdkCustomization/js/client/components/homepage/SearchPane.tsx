@@ -1,17 +1,21 @@
 import React, { useState, useMemo } from 'react';
 
-import { noop } from 'lodash';
+import { memoize, noop } from 'lodash';
 
 import { CategoriesCheckboxTree, Link, Tooltip, Icon, Loading, IconAlt } from 'wdk-client/Components';
 import { LinksPosition } from 'wdk-client/Components/CheckboxTree/CheckboxTree';
 import { CategoryTreeNode, getDisplayName, getTargetType, getRecordClassUrlSegment, getTooltipContent } from 'wdk-client/Utils/CategoryUtils';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
+import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 import { combineClassNames } from './Utils';
 
 import './SearchPane.scss';
+import { decode, arrayOf, string } from 'wdk-client/Utils/Json';
 
 const cx = makeClassNameHelper('ebrc-SearchPane');
+const GENE_ITEM_ID = 'category:transcript-record-classes-transcript-record-class';
+const EXPANDED_BRANCHES_SESSION_KEY = 'homepage-left-panel-expanded-branch-ids';
 
 type Props = {
   containerClassName?: string,
@@ -19,8 +23,13 @@ type Props = {
 };
 
 export const SearchPane = (props: Props) => {
-  const [ expandedBranches, setExpandedBranches ] = useState<string[]>([]);
   const [ searchTerm, setSearchTerm ] = useState('');
+  const [ expandedBranches, setExpandedBranches ] = useSessionBackedState(
+    [ GENE_ITEM_ID ],
+    EXPANDED_BRANCHES_SESSION_KEY,
+    JSON.stringify,
+    memoize((s: string) => decode(arrayOf(string), s))
+  );
 
   return (
     <nav className={combineClassNames(cx(), props.containerClassName)}>
