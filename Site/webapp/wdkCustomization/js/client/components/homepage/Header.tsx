@@ -123,8 +123,9 @@ const HeaderView = ({
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
   const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
+  // XXX Temporary until site search is done
   const [ searchTerm, setSearchTerm ] = useSessionBackedState<string>(
-    '',
+    'PF3D7_1133400',
     'header-site-search-term',
     identity,
     identity
