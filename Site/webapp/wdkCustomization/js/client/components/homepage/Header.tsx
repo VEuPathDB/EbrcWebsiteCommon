@@ -132,6 +132,28 @@ const HeaderView = ({
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
 
+  const onClickSubmenuLink = useCallback((e: MouseEvent) => {
+    if (
+      headerRef.current &&
+      e.target instanceof HTMLAnchorElement
+    ) {
+      setFocusType('unfocused');
+      setSelectedMenuItems([]);
+    }
+  }, [ headerRef.current ]);
+
+  useEffect(() => {
+    if (headerRef.current) {
+      headerRef.current.addEventListener('click', onClickSubmenuLink);
+    }
+
+    return () => {
+      if (headerRef.current) {
+        headerRef.current.removeEventListener('click', onClickSubmenuLink);
+      }
+    };
+  }, [ headerRef.current, onClickSubmenuLink ]);
+  
   const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
     if (
       headerRef.current &&
