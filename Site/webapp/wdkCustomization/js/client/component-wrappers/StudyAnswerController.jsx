@@ -71,19 +71,7 @@ interface CellContentProps {
 interface RenderCellProps extends CellContentProps {
   CellContent: React.ComponentType<CellContentProps>;
 }
-interface RowClassNameProps {
-  record: RecordInstance;
-  recordClass: RecordClass;
-}
 */
-
-// currying to use projectId
-const deriveRowClassName = projectId => props => {
-  const { project_availability } = props.record.attributes;
-  if (project_availability == null || project_availability.includes('"' + projectId + '"')) {
-    return 'non-greyed-out';}
-  return 'greyed-out';
-};
 
 const renderCellContent = props => {
   if (props.attribute.name === 'study_categories') {
