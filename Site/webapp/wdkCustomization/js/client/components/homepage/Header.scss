@@ -77,7 +77,7 @@
         content: "";
         left: 50%;
         margin-left: -1rem;
-        top: 1.6rem;
+        top: 2em;
         z-index: 10;
       }
     }
@@ -111,6 +111,11 @@
 
     margin-left: 1rem;
     margin-right: 1rem;
+
+    form {
+      display: flex;
+      flex: auto;
+    }
 
     input {
       // FIXME: The specificity for the input styles

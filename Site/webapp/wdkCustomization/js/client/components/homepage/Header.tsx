@@ -1,7 +1,9 @@
+import { identity } from 'lodash';
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
 import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
+import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
 import { Link, TextBox, IconAlt } from 'wdk-client/Components';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -14,8 +16,9 @@ import { webAppUrl } from '../../config';
 
 import { combineClassNames } from './Utils';
 
-import './Header.scss';
 import { SocialMediaLinks } from './Footer';
+import './Header.scss';
+import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
@@ -33,7 +36,8 @@ type StateProps = {
 type DispatchProps = {
   actions: {
     showLoginForm: (url: string) => void,
-    showLogoutWarning: () => void
+    showLogoutWarning: () => void,
+    goToGenePage: (geneId: string) => void
   }
 };
 
@@ -119,7 +123,12 @@ const HeaderView = ({
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
   const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
-  const [ searchTerm, setSearchTerm ] = useState('');
+  const [ searchTerm, setSearchTerm ] = useSessionBackedState<string>(
+    '',
+    'header-site-search-term',
+    identity,
+    identity
+  );
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
 
@@ -147,7 +156,6 @@ const HeaderView = ({
   useEffect(() => {
     if (searchTerm) {
       // We're disabling suggestions for now
-      todo();
     }
     // loadSuggestions(searchTerm);
   }, [ searchTerm ]);
@@ -157,9 +165,11 @@ const HeaderView = ({
       className={combineClassNames(cx(), containerClassName)}
       ref={headerRef}
     >
-      <div className={cx('Branding')}>
-        {branding}
-      </div>
+      <Link to="/">
+        <div className={cx('Branding')}>
+          {branding}
+        </div>
+      </Link>
       <div className={cx('Content')}>
         <div className={cx('MenuBar')}>
           <MenuItemGroup
@@ -171,24 +181,28 @@ const HeaderView = ({
           />
         </div>
         <div className={cx('SearchBar', isSearchBarToggleHidden ? 'toggle-hidden' : 'toggle-shown')}>
-          <TextBox 
-            onChange={setSearchTerm}
-            value={searchTerm}
-            placeholder="Site search..."
-            onFocus={() => {
-              setIsSearchBarSelected(true);
-            }}
-            onBlur={() => {
-              setIsSearchBarSelected(false);
-            }}
-          />
-          <button 
-            className={cx('SearchSubmit')}
-            onClick={todo}
-            type="button"
-          >
-            <IconAlt fa="search" />
-          </button>
+          <form onSubmit={e => {
+            e.preventDefault();
+            if (searchTerm) actions.goToGenePage(searchTerm);
+          }}>
+            <TextBox 
+              onChange={setSearchTerm}
+              value={searchTerm}
+              placeholder="Site search..."
+              onFocus={() => {
+                setIsSearchBarSelected(true);
+              }}
+              onBlur={() => {
+                setIsSearchBarSelected(false);
+              }}
+            />
+            <button 
+              type="submit"
+              className={cx('SearchSubmit')}
+            >
+              <IconAlt fa="search" />
+            </button>
+          </form>
           {
             isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
             <Suggestions
@@ -224,7 +238,8 @@ const mapStateToProps = (state: RootState): StateProps => ({
 const mapDispatchToProps = (dispatch: DispatchAction): DispatchProps => ({
   actions: {
     showLoginForm: (url: string) => dispatch(showLoginForm(url)),
-    showLogoutWarning: () => dispatch(showLogoutWarning())
+    showLogoutWarning: () => dispatch(showLogoutWarning()),
+    goToGenePage: (geneId: string) => dispatch(transitionToInternalPage(`/record/gene/${geneId}`))
   }
 });
 
