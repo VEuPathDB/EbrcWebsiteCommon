@@ -125,7 +125,7 @@ const HeaderView = ({
   const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
   // XXX Temporary until site search is done
   const [ searchTerm, setSearchTerm ] = useSessionBackedState<string>(
-    'PF3D7_1133400',
+    '',
     'header-site-search-term',
     identity,
     identity
@@ -211,7 +211,7 @@ const HeaderView = ({
             <TextBox 
               onChange={setSearchTerm}
               value={searchTerm}
-              placeholder="Site search..."
+              placeholder="Site search... e.g. PF3D7_1133400"
               onFocus={() => {
                 setIsSearchBarSelected(true);
               }}
