@@ -35,9 +35,6 @@ function StudyAnswerController(props) {
     [ studyEntities, props.stateProps.records, props.stateProps.unfilteredRecords ]
   );
 
-  console.log(props);
-  console.log(visibleRecords);
-
   return (
     <React.Fragment>
       <props.DefaultComponent 
