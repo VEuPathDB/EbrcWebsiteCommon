@@ -1,18 +1,56 @@
 import { get } from 'lodash';
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useMemo } from 'react';
+import { connect, useSelector } from 'react-redux';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import CategoryIcon from 'ebrc-client/App/Categories/CategoryIcon';
 import StudySearchIconLinks from 'ebrc-client/App/Studies/StudySearches';
 
 // wrapping WDKClient AnswerController for specific rendering on certain columns
 function StudyAnswerController(props) {
+  const studyEntities = useSelector(state => state.studies && state.studies.entities);
+
+  const { visibleRecords, totalCount } = useMemo(
+    () => {
+      const enabledStudyIds = (
+        studyEntities && 
+        studyEntities.filter(({ disabled }) => !disabled).map(({ id }) => id)
+      );
+
+      const enabledStudyIdsSet = new Set(enabledStudyIds);
+
+      return {
+        visibleRecords: (
+          props.stateProps.records && 
+          props.stateProps.records.filter(record => enabledStudyIdsSet.has(record.id[0].value))
+        ),
+        totalCount: (
+          props.stateProps.unfilteredRecords && 
+          props.stateProps.unfilteredRecords.reduce(
+            (count, record) => count + (enabledStudyIdsSet.has(record.id[0].value) ? 1 : 0),
+            0
+          )
+        )
+      };
+    }, 
+    [ studyEntities, props.stateProps.records, props.stateProps.unfilteredRecords ]
+  );
+
+  console.log(props);
+  console.log(visibleRecords);
+
   return (
     <React.Fragment>
       <props.DefaultComponent 
         {...props}
+        stateProps={{
+          ...props.stateProps,
+          records: visibleRecords,
+          meta: props.stateProps.meta && {
+            ...props.stateProps.meta,
+            totalCount
+          }
+        }}
         renderCellContent={renderCellContent}
-        deriveRowClassName={deriveRowClassName(props.projectId)}
       />
       
     </React.Fragment>
