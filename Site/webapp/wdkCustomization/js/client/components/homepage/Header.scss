@@ -129,6 +129,11 @@
 
       border-top-left-radius: 50rem;
       border-bottom-left-radius: 50rem;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 3pt 2pt rgb(0, 103, 244);
+      }  
     }
 
     button.ebrc-HeaderSearchSubmit {
@@ -144,6 +149,11 @@
       padding: .375rem 1rem .375rem .75rem;
 
       line-height: 1.5;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 3pt 2pt rgb(0, 103, 244);
+      } 
     }
 
     @media screen and (max-width: 991px) {
