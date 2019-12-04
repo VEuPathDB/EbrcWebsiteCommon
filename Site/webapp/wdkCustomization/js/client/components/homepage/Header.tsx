@@ -133,27 +133,28 @@ const HeaderView = ({
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
 
-  const onClickSubmenuLink = useCallback((e: MouseEvent) => {
+  const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
     if (
-      headerRef.current &&
       e.target instanceof HTMLAnchorElement
     ) {
       setFocusType('unfocused');
       setSelectedMenuItems([]);
+    } else {
+      setFocusType('click');
     }
-  }, [ headerRef.current ]);
+  }, []);
 
   useEffect(() => {
     if (headerRef.current) {
-      headerRef.current.addEventListener('click', onClickSubmenuLink);
+      headerRef.current.addEventListener('click', onClickInsideSubmenu);
     }
 
     return () => {
       if (headerRef.current) {
-        headerRef.current.removeEventListener('click', onClickSubmenuLink);
+        headerRef.current.removeEventListener('click', onClickInsideSubmenu);
       }
     };
-  }, [ headerRef.current, onClickSubmenuLink ]);
+  }, [ headerRef.current, onClickInsideSubmenu ]);
   
   const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
     if (
