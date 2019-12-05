@@ -166,6 +166,7 @@ const observeSubmitDetails = (
         CONTACT_US_ENDPOINT,
         {
           ...parsedFormFields(contactUsState),
+          referrer: window.opener && window.opener.location.href,
           attachmentIds
         }
       );
