@@ -37,7 +37,7 @@ public class ContactUsSubmitter {
         "Privacy preferences: " + "\n" +
         "Uid: " + uid + "\n" +
         "Browser information: " + requestData.getUserAgent() + "\n" +
-        "Referrer page: " + requestData.getReferrer() + "\n" +
+        "Referrer page: " + params.referrer + "\n" +
         "WDK Model version: " + version;
 
     String redmineContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +

@@ -49,6 +49,9 @@ public class ContactUsService extends AbstractWdkService {
   //      "subject": {
   //        "type": "string"
   //      },
+  //      "referrer": {
+  //        "type": ["string", "null"]
+  //      },
   //      "reporterEmail": {
   //        "type": "string",
   //        "oneOf": [
@@ -92,7 +95,7 @@ public class ContactUsService extends AbstractWdkService {
       SessionProxy session = requestData.getSession();
 
       JSONObject jsonBody = new JSONObject(body);
-      ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, session);
+      ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, requestData, session);
 
       createAndSendEmail(
         contactUsParams,
@@ -109,11 +112,12 @@ public class ContactUsService extends AbstractWdkService {
     return Response.ok().build();
   }
   
-  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, SessionProxy session) {
+  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, RequestData requestData, SessionProxy session) {
     String message = jsonBody.getString("message");
     
     String subject = getStringOrDefault(jsonBody, "subject", "");
     String reporterEmail = getStringOrDefault(jsonBody, "reporterEmail", "");
+    String referrer = getStringOrDefault(jsonBody, "referrer", requestData.getReferrer());
     
     JSONArray ccEmailsJson = getJsonArrayOrDefault(
       jsonBody, 
@@ -133,6 +137,7 @@ public class ContactUsService extends AbstractWdkService {
     return new ContactUsParams(
       subject,
       reporterEmail,
+      referrer,
       ccEmails,
       message,
       attachments
