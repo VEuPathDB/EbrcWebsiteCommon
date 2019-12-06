@@ -8,6 +8,12 @@
 
   padding: 90px 20px 10px;
 
+  @media screen and (max-width: 767px) {
+    flex-direction: column;
+    align-items: start;
+    height: auto;
+  }
+
   &Branding {
     font-size: 35px;
     color: white;
@@ -50,6 +56,10 @@
         }
       }
     }
+
+    @media screen and (max-width: 767px) {
+      flex-direction: column;
+    }
   }
 
   &MenuItemContent {
@@ -79,6 +89,10 @@
         margin-left: -1rem;
         top: 2em;
         z-index: 10;
+
+        @media screen and (max-width: 767px) {
+          display: none;
+        }
       }
     }
 
@@ -96,7 +110,11 @@
   
       .ebrc-HeaderMenuItemContent {
         padding: 0.625rem 1rem;
-      } 
+      }
+      
+      @media screen and (max-width: 767px) {
+        position: relative;
+      }
     }
   }
 
@@ -159,6 +177,10 @@
     @media screen and (max-width: 991px) {
       // Future residence of expand/collapse searchbar control
     }
+
+    @media screen and (max-width: 767px) {
+      display: none;
+    }
   }
 
   &SearchBarToggle {
@@ -200,14 +222,18 @@
     span.UserMenu-Title {
       opacity: 0.8;
       font-weight: bold;
-      text-shadow: 1px 1px 1px black, 
-        -1px -1px 1px black, 
-        1px -1px 1px black, 
-        -1px 1px 1px black, 
-        2px 2px 2px black, 
-        -2px -2px 2px black, 
-        2px -2px 2px black, 
-        -2px 2px 2px black;
+      text-shadow: 1px 1px 1px #00000052, 
+        -1px -1px 1px #00000052, 
+        1px -1px 1px #00000052, 
+        -1px 1px 1px #00000052, 
+        2px 2px 2px #00000052, 
+        -2px -2px 2px #00000052, 
+        2px -2px 2px #00000052, 
+        -2px 2px 2px #00000052;
+    }
+
+    @media screen and (max-width: 767px) {
+      display: none;
     }
   }
 }
