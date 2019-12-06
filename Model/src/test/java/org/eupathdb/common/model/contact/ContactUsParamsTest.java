@@ -11,6 +11,7 @@ public class ContactUsParamsTest {
   public void testConstructor() {
     String subject = "My brain hurts!";
     String reporterEmail = "johndoe@aol.com";
+    String referrer = "http://brokenpage.com";
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
     Attachment[] attachments = new Attachment[] {};
@@ -18,6 +19,7 @@ public class ContactUsParamsTest {
     ContactUsParams params = new ContactUsParams(
       subject,
       reporterEmail,
+      referrer,
       ccEmails,
       message,
       attachments
