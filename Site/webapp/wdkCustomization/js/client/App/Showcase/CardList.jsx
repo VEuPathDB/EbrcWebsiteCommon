@@ -91,8 +91,8 @@ export default function CardList(props) {
   const expandButton = isExpandable &&
     <button type="button" className={EXPAND_BUTTON_CLASS_NAME} onClick={() => setIsExpanded(!isExpanded)} title={buttonTitle}>
       {isExpanded
-        ? <React.Fragment><i className="fa fa-ellipsis-h" aria-hidden="true"></i> Condensed view</React.Fragment>
-        : <React.Fragment><i className="fa fa-th" aria-hidden="true"></i> Expanded view</React.Fragment>
+        ? <React.Fragment><i className="fa fa-ellipsis-h" aria-hidden="true"></i> Row view</React.Fragment>
+        : <React.Fragment><i className="fa fa-th" aria-hidden="true"></i> Grid view</React.Fragment>
       }
     </button>
 
