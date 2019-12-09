@@ -356,9 +356,8 @@ const HeaderMenuItemContent = ({
     ? (e: React.MouseEvent) => {
         if (focusType !== 'click') {
           setFocusType('hover');
+          setSelectedItems(path);
         }
-
-        setSelectedItems(path);
       }
     : undefined;
 
