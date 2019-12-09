@@ -132,6 +132,11 @@ const HeaderView = ({
   );
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
+  const [ showHamburgerMenu, setShowHamburgerMenu ] = useState(false);
+
+  const toggleHamburgerMenu = useCallback(() => {
+    setShowHamburgerMenu(!showHamburgerMenu);
+  }, [ showHamburgerMenu ]);
 
   const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
     if (
@@ -189,13 +194,22 @@ const HeaderView = ({
       className={combineClassNames(cx(), containerClassName)}
       ref={headerRef}
     >
-      <Link to="/">
-        <div className={cx('Branding')}>
-          {branding}
+      <div className={cx('BrandingContainer')}>
+        <Link to="/">
+          <div className={cx('Branding')}>
+            {branding}
+          </div>
+        </Link>
+        <div className={cx('Hamburger')} onClick={toggleHamburgerMenu}>
+          {
+            showHamburgerMenu 
+              ? <IconAlt fa="close" />
+              : <IconAlt fa="bars" />
+          }
         </div>
-      </Link>
+      </div>
       <div className={cx('Content')}>
-        <div className={cx('MenuBar')}>
+        <div className={cx('MenuBar', showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden')}>
           <MenuItemGroup
             menuItems={menuItems}
             selectedItems={selectedMenuItems}
