@@ -131,12 +131,16 @@ const HeaderView = ({
     identity
   );
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
-  const [ isSearchBarToggleHidden, setIsSearchBarToggleHidden ] = useState(true);
+  const [ showToggledSearchBar, setShowToggledSearchBar ] = useState(false);
   const [ showHamburgerMenu, setShowHamburgerMenu ] = useState(false);
 
   const toggleHamburgerMenu = useCallback(() => {
     setShowHamburgerMenu(!showHamburgerMenu);
   }, [ showHamburgerMenu ]);
+
+  const toggleSearchBar = useCallback(() => {
+    setShowToggledSearchBar(!showToggledSearchBar);
+  }, [ showToggledSearchBar ]);
 
   const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
     if (
@@ -200,16 +204,20 @@ const HeaderView = ({
             {branding}
           </div>
         </Link>
-        <div className={cx('Hamburger')} onClick={toggleHamburgerMenu}>
+        <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
           {
             showHamburgerMenu 
               ? <IconAlt fa="close" />
               : <IconAlt fa="bars" />
           }
-        </div>
+        </button>
       </div>
       <div className={cx('Content')}>
-        <div className={cx('MenuBar', showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden')}>
+        <div className={cx(
+          'MenuBar', 
+          showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden',
+          showToggledSearchBar ? 'toggle-shown' : 'toggle-hidden'
+        )}>
           <MenuItemGroup
             menuItems={menuItems}
             selectedItems={selectedMenuItems}
@@ -218,7 +226,11 @@ const HeaderView = ({
             setFocusType={setFocusType}
           />
         </div>
-        <div className={cx('SearchBar', isSearchBarToggleHidden ? 'toggle-hidden' : 'toggle-shown')}>
+        <div className={cx(
+            'SearchBar', 
+            showToggledSearchBar ? 'toggle-shown' : 'toggle-hidden'
+          )}
+        >
           <form onSubmit={e => {
             e.preventDefault();
             if (searchTerm) actions.goToGenePage(searchTerm);
@@ -249,13 +261,17 @@ const HeaderView = ({
             />
           }
         </div>
-        <div className={cx('SearchBarToggle', isSearchBarToggleHidden ? 'hidden' : 'shown')}>
-          <button 
-            className={cx('SearchSubmit')}
-            onClick={todo}
+        <div className={cx('SearchBarToggle')}>
+          <button
+            className={cx('SearchBarToggleButton')}
+            onClick={toggleSearchBar}
             type="button"
           >
-            <IconAlt fa="search" />
+            {
+              showToggledSearchBar
+                ? <IconAlt fa="close" />
+                : <IconAlt fa="search" />
+            }
           </button>
         </div>
         <UserMenu

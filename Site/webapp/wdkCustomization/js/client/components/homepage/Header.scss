@@ -8,7 +8,7 @@
 
   padding: 90px 20px 10px;
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1000px) {
     flex-direction: column;
     align-items: start;
     height: auto;
@@ -18,7 +18,7 @@
     display: flex;
     justify-content: space-between;
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1000px) {
       width: 100%;
     }
   }
@@ -34,20 +34,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
     font-size: 2em;
     border-radius: .25rem;
     border: 0.0625rem solid white;
     padding: 0.25em 0.5em;
 
-    text-shadow: 1px 1px 1px #00000052, 
-      -1px -1px 1px #00000052, 
-      1px -1px 1px #00000052, 
-      -1px 1px 1px #00000052, 
-      2px 2px 2px #00000052, 
-      -2px -2px 2px #00000052, 
-      2px -2px 2px #00000052, 
-      -2px 2px 2px #00000052;
     box-shadow: 1px 1px 1px #00000052, 
       -1px -1px 1px #00000052, 
       1px -1px 1px #00000052, 
@@ -57,7 +48,7 @@
       2px -2px 2px #00000052, 
       -2px 2px 2px #00000052;
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: 1001px) {
       display: none;
     }
   }
@@ -72,7 +63,7 @@
   &MenuBar {
     margin-right: auto;
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1000px) {
       display: none;
 
       &__hamburger-shown {
@@ -106,7 +97,7 @@
       }
     }
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1000px) {
       flex-direction: column;
     }
   }
@@ -139,7 +130,7 @@
         top: 2em;
         z-index: 10;
 
-        @media screen and (max-width: 767px) {
+        @media screen and (max-width: 1000px) {
           display: none;
         }
       }
@@ -161,7 +152,7 @@
         padding: 0.625rem 1rem;
       }
       
-      @media screen and (max-width: 767px) {
+      @media screen and (max-width: 1000px) {
         position: relative;
       }
     }
@@ -223,18 +214,46 @@
       } 
     }
 
-    @media screen and (max-width: 991px) {
-      // Future residence of expand/collapse searchbar control
+    @media screen and (max-width: 1000px) {
+      display: none;
     }
 
-    @media screen and (max-width: 767px) {
+    &Toggle {
       display: none;
+      margin-left: auto;
+      margin-right: 1rem;
+
+      button.ebrc-HeaderSearchBarToggleButton {
+        font-size: 1.2em;
+
+        color: #fff;
+        background: #6c757d;
+        border-color: #6c757d;
+
+        border-radius: 50rem;
+
+        padding: .375rem 1rem;
+
+        line-height: 1.5;
+      }
+      
+      @media screen and (min-width: 1001px) and (max-width: 1200px) {
+        display: block;
+      }
     }
   }
 
-  &SearchBarToggle {
-    &__hidden {
-      display: none;
+  @media screen and (min-width: 1001px) and (max-width: 1200px) {
+    &MenuBar {
+      &__toggle-shown {
+        display: none;
+      }
+    }
+    
+    &SearchBar {
+      &__toggle-hidden {
+        display: none;
+      }
     }
   }
 
@@ -249,7 +268,7 @@
       color: #00304c;
     }
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1000px) {
       display: none;
     }
   }
@@ -281,7 +300,7 @@
         -2px 2px 2px #00000052;
     }
 
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: 1000px) {
       display: none;
     }
   }
