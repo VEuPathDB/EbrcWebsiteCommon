@@ -205,11 +205,7 @@ const HeaderView = ({
           </div>
         </Link>
         <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
-          {
-            showHamburgerMenu 
-              ? <IconAlt fa="close" />
-              : <IconAlt fa="bars" />
-          }
+          <IconAlt fa="bars" />
         </button>
       </div>
       <div className={cx('Content')}>

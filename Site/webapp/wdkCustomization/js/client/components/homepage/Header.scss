@@ -39,14 +39,14 @@
     border: 0.0625rem solid white;
     padding: 0.25em 0.5em;
 
-    box-shadow: 1px 1px 1px #00000052, 
-      -1px -1px 1px #00000052, 
-      1px -1px 1px #00000052, 
-      -1px 1px 1px #00000052, 
-      2px 2px 2px #00000052, 
-      -2px -2px 2px #00000052, 
-      2px -2px 2px #00000052, 
-      -2px 2px 2px #00000052;
+    height: 2.3em;
+    color: white;
+    background: transparent;
+
+    &:focus, &:active, &:hover {
+      background: transparent;
+      border-color: white;
+    }
 
     @media screen and (min-width: 1001px) {
       display: none;
