@@ -24,6 +24,8 @@ const cx = makeClassNameHelper('ebrc-Header');
 
 export const todo = () => alert('Under construction');
 
+const SMALL_SCREEN_SIZE = 1000;
+
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
   return webAppUrl;
@@ -350,7 +352,9 @@ const HeaderMenuItemContent = ({
 
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
-        if (focusType !== 'click') {
+        // Note that we don't open items on hover when we're mobile-width
+        // FIXME Find a cleaner way to do this
+        if (focusType !== 'click' && document.documentElement.clientWidth > SMALL_SCREEN_SIZE) {
           setFocusType('hover');
           setSelectedItems(path);
         }
