@@ -35,8 +35,7 @@
     justify-content: center;
     align-items: center;
     font-size: 2em;
-    border-radius: .25rem;
-    border: 0.0625rem solid white;
+    border: none;
     padding: 0.25em 0.5em;
 
     height: 2.3em;
@@ -45,7 +44,7 @@
 
     &:focus, &:active, &:hover {
       background: transparent;
-      border-color: white;
+      border: none;
     }
 
     @media screen and (min-width: 1001px) {
