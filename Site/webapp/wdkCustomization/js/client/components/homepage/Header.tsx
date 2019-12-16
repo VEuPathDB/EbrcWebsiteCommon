@@ -1,4 +1,4 @@
-import { identity } from 'lodash';
+import { identity, isEqual } from 'lodash';
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 
@@ -146,7 +146,11 @@ const HeaderView = ({
 
   const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
     if (
-      e.target instanceof HTMLAnchorElement
+      e.target instanceof HTMLAnchorElement &&
+      (
+        !e.target.parentElement ||
+        !e.target.parentElement.className.includes('ebrc-HeaderSubmenuGroup')
+      )
     ) {
       setFocusType('unfocused');
       setSelectedMenuItems([]);
@@ -410,8 +414,14 @@ const HeaderMenuItemContent = ({
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  setFocusType('click');
-                  setSelectedItems(path);
+
+                  if (isEqual(selectedItems, path)) {
+                    setFocusType('unfocused');
+                    setSelectedItems([]);
+                  } else {
+                    setFocusType('click');
+                    setSelectedItems(path);
+                  }
                 }}
               >
                 {item.display}
