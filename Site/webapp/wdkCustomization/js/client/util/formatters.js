@@ -4,6 +4,7 @@ let MONTHS = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', '
  * format release date string
  */
 export function formatReleaseDate(releaseDateString, format) {
+  if (releaseDateString == null) return null;
   const date = new Date(releaseDateString);
   return (typeof format === 'string' ? format : 'd m y')
     .replace('d', date.getDate())

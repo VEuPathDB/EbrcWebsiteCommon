@@ -1,0 +1,23 @@
+// used for webpack. remove this when this can be set at build time.
+window.__asset_path_remove_me_please__ = "/{{ webapp_ctx }}/";
+
+// used by EbrcWebsiteCommon to initialize wdk
+window.__SITE_CONFIG__ = {
+  rootElement: "#wdk-container",
+  rootUrl: "{{ modelprop.WEBAPP_BASE_URL }}",
+  endpoint: "{{ modelprop.REST_SERVICE_BASE_URL }}",
+  projectId: "{{ modelprop.PROJECT_ID }}",
+  webAppUrl: "{{ modelprop.LEGACY_WEBAPP_BASE_URL }}",
+  facebookUrl: "{{ modelprop.FACEBOOK_URL }}",
+  twitterUrl: "{{ modelprop.TWITTER_URL }}",
+  youtubeUrl: "{{ modelprop.YOUTUBE_URL }}",
+  vimeoUrl: "{{ modelprop.VIMEO_URL }}",
+  communitySite: "{{ modelprop.COMMUNITY_SITE }}"
+};
+
+// Initialize google analytics. A pageview event will be sent in the JavaScript code.
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', '{{ modelprop.GOOGLE_ANALYTICS_ID }}', 'auto');

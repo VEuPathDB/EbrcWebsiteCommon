@@ -151,6 +151,7 @@ modelprop:
   PROJECT_ID: '{{ project }}'
   LEGACY_WEBAPP_BASE_URL: "/{{ _webapp_ctx }}"
   WEBAPP_BASE_URL: "/{{ _webapp_ctx }}/app"
+  REST_SERVICE_BASE_URL: "/{{ _webapp_ctx }}/service"
   WEBSERVICEMIRROR: /var/www/Common/apiSiteFilesMirror/webServices/
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
   LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
@@ -158,6 +159,8 @@ modelprop:
   REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
   REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
   COMMUNITY_SITE: //qa.community.eupathdb.org/
+  VIMEO_URL: ''
+  GOOGLE_ANALYTICS_ID: ''
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"

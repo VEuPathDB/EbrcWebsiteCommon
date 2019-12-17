@@ -1,7 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
-import { buildNumber, releaseDate, displayName, webAppUrl } from '../config';
 
 const projects = [
   [ 'https', 'EuPathDB' ],
@@ -18,15 +18,21 @@ const projects = [
   [ 'http', 'OrthoMCL' ],
 ];
 
+const enhance = connect(state => state.globalData, null)
 /** Application footer */
-export default function Footer() {
+export default enhance(function Footer(props) {
+  const {
+    siteConfig: { webAppUrl },
+    config: { buildNumber, displayName, releaseDate } = {}
+  } = props;
+
   return (
     <div className="Footer">
       <div>
         <div>
           <span>
             <a href={`//${location.hostname}`}>{displayName}</a>
-            <span> {buildNumber} &nbsp;&nbsp; {formatReleaseDate(releaseDate)}</span>
+            <span> {buildNumber} &nbsp;&nbsp; {releaseDate && formatReleaseDate(releaseDate)}</span>
           </span>
           <br/>
         </div>
@@ -57,4 +63,4 @@ export default function Footer() {
       </div>
     </div>
   );
-}
+});

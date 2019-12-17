@@ -31,32 +31,33 @@ class ClassicSiteHeader extends React.Component {
       quickSearchReferences,
       user,
       showLoginWarning,
-      location = window.location,
       siteConfig,
+      config = {},
       makeSmallMenuItems,
       makeMainMenuItems,
       isPartOfEuPathDB = true,
     } = this.props;
 
     const {
-      buildNumber,
       projectId,
-      releaseDate,
       webAppUrl,
     } = siteConfig;
+
+    const {
+      buildNumber,
+      releaseDate
+    } = config;
 
     const menuItems = makeMenuItems(this.props);
     const mainMenuItems = makeMainMenuItems && makeMainMenuItems(this.props, menuItems);
     const smallMenuItems = makeSmallMenuItems && makeSmallMenuItems(this.props, menuItems);
 
     return (
+      <React.Fragment>
+        <link rel="stylesheet" type="text/css" href={`${webAppUrl}/css/${projectId}.css`}/>
         <div id="header">
           <div id="header2">
             <div id="header_rt">
-              <div id="private-Logo">
-                <a target=":blank" href="http://www.vet.upenn.edu">
-                  <img width="210px" src={webAppUrl + '/images/PrivateLogo.png'}/>
-                </a></div>
               <div id="toplink">
                 {isPartOfEuPathDB &&
                   <a href="http://eupathdb.org">
@@ -81,7 +82,7 @@ class ClassicSiteHeader extends React.Component {
               <span className="eupathdb-LogoRelease">
                 Release {buildNumber}
                 <br/>
-                {formatReleaseDate(releaseDate)}
+                {releaseDate && formatReleaseDate(releaseDate)}
               </span>
             </div>
           </div>
@@ -100,6 +101,7 @@ class ClassicSiteHeader extends React.Component {
             )}
           </Sticky>
         </div>
+      </React.Fragment>
     );
   }
 }

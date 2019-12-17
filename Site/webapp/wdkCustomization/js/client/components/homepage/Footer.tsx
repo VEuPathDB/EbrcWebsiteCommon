@@ -6,7 +6,7 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { ProjectLink } from 'ebrc-client/components/homepage/ProjectLink';
 
 // FIXME: Pull these from globalData
-import { twitterUrl, facebookUrl, youtubeUrl, buildNumber, releaseDate, displayName } from 'ebrc-client/config';
+import { twitterUrl, facebookUrl, youtubeUrl } from 'ebrc-client/config';
 import { formatReleaseDate } from 'ebrc-client/util/formatters';
 
 import { Twitter, Facebook, YouTube, ContactUs } from './SocialMediaIcons';
@@ -32,17 +32,20 @@ export const projects = [
 ];
 
 type Props = {
-  containerClassName?: string
+  containerClassName?: string;
+  buildNumber: string | undefined;
+  releaseDate: string | undefined;
+  displayName: string | undefined;
 };
 
-export const Footer = ({ containerClassName }: Props) => (
+export const Footer = ({ containerClassName, buildNumber, releaseDate, displayName }: Props) => (
   <footer className={combineClassNames(cx(), containerClassName)}>
     <div className={cx('Copyright')}>
       <div className={cx('Brand')}>
         <Link to="/new-home-page">{displayName}</Link>
       </div>
       <div>
-        Release {buildNumber} | {formatReleaseDate(releaseDate)}
+        Release {buildNumber} | {releaseDate && formatReleaseDate(releaseDate)}
       </div>
       <div>
         ©{new Date().getFullYear()} The VEuPathDB Project Team

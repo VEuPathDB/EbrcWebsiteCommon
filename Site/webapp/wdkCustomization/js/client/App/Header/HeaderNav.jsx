@@ -70,8 +70,8 @@ class HeaderNav extends React.Component {
     )
   }
 
-  renderBranding ({ siteConfig, titleWithoutDB, subTitle, logoUrl }) {
-    const { buildNumber, releaseDate } = siteConfig;
+  renderBranding ({ config = {}, titleWithoutDB, subTitle, logoUrl }) {
+    const { buildNumber, releaseDate } = config;
 
     return (
       <div className="box row HeaderNav-Branding">

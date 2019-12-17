@@ -39,5 +39,41 @@ export const wrapRoutes = wdkRoutes => [
       />
   },
 
+  {
+    path: '/downloads/:path*',
+    component: props =>
+      <iframe
+        src={`/common/downloads/${(props.match.params.path || '') + props.location.search + props.location.hash}`}
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 'none'
+        }}
+        onLoad={event => {
+          const iframe = event.target;
+          const pathname = iframe.contentWindow.location.pathname.replace(/^\/common/, '');
+          const { search, hash } = iframe.contentWindow.location;
+          const href = props.history.createHref({
+            ...props.location,
+            pathname,
+            search,
+            hash
+          });
+          window.history.replaceState({}, '', href);
+          iframe.style.height = iframe.contentDocument.body.scrollHeight + 'px';
+
+          if (pathname == '/downloads/') {
+            // remove Parent Directory link
+            const img = iframe.contentDocument.body.querySelector('hr + img');
+            if (img == null) return;
+            for (let i = 0; i < 3; i++) {
+              img.nextSibling.remove();
+            }
+            img.remove();
+          }
+        }}
+      />
+  },
+
   ...wdkRoutes
 ];

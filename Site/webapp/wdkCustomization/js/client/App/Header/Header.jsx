@@ -14,8 +14,8 @@ const enhance = connect(
     const headerMenuItems = makeHeaderMenuItems(state);
     const siteData = getSiteData(state);
     const { dataRestriction, globalData } = state;
-    const { user = {}, siteConfig, preferences } = globalData;
-    return { user, siteConfig, preferences, siteData, dataRestriction, headerMenuItems };
+    const { user = {}, config, siteConfig, preferences } = globalData;
+    return { user, config, siteConfig, preferences, siteData, dataRestriction, headerMenuItems };
   },
   { ...UserActions, ...UserSessionActions, requestStudies },
   (stateProps, actions, ownProps ) => {
@@ -32,6 +32,7 @@ class Header extends React.Component {
   render () {
     const {
       headerMenuItems,
+      config,
       siteConfig,
       siteData,
       user,
@@ -54,6 +55,7 @@ class Header extends React.Component {
           <HeaderNav
             actions={actions}
             headerMenuItems={headerMenuItems}
+            config={config}
             siteConfig={siteConfig}
             siteData={siteData}
             user={user}

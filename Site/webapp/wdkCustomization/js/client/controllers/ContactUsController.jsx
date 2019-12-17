@@ -118,7 +118,7 @@ const mapStateToProps = ({
   contactUs: contactUsState, 
   globalData: globalDataState 
 }) => ({
-  displayName: get('siteConfig.displayName', globalDataState),
+  displayName: get('config.displayName', globalDataState),
   user: get('user', globalDataState),
   submitDisabled: submitDisabled(contactUsState),
   submissionFailed: submissionFailed(contactUsState),

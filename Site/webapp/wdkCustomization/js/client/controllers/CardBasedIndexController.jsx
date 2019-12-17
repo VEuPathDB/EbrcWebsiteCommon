@@ -11,11 +11,11 @@ const enhance = connect(
   (state, props) => {
     const { getSiteData, getHomeContent } = props;
     const { globalData, newsSidebar } = state;
-    const { siteConfig } = globalData;
+    const { siteConfig, config } = globalData;
     const siteData = getSiteData(state);
     const homeContent = getHomeContent(siteData);
 
-    return { ...siteConfig, siteData, newsSidebar, homeContent };
+    return { ...siteConfig, ...config, siteData, newsSidebar, homeContent };
   },
   { attemptAction, loadSearches, requestNews, requestStudies }
 );
@@ -23,7 +23,7 @@ const enhance = connect(
 class ClinEpiIndexController extends PageController {
 
   getTitle () {
-    return this.props.displayName;
+    return this.props.displayName || '';
   }
 
   componentDidMount() {

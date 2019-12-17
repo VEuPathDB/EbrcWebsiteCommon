@@ -26,39 +26,9 @@
   <head>
     <meta charset="UTF-8">
     <imp:stylesheet href="images/${model.projectId}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
-    <imp:siteInfo/>
-    <script>
-      // used for webpack. remove this when this can be set at build time.
-      window.__asset_path_remove_me_please__ = "${assetsUrl}/";
-
-      // used by EbrcWebsiteCommon to initialize wdk
-      window.__SITE_CONFIG__ = {
-        rootElement: "#wdk-container",
-        rootUrl: "${webAppUrl}${pageContext.request.servletPath}",
-        endpoint: "${wdkServiceUrl}",
-        displayName: "${model.displayName}",
-        projectId: "${model.projectId}",
-        buildNumber: "${model.buildNumber}",
-        releaseDate: "${model.releaseDate}",
-        webAppUrl: "${webAppUrl}",
-        facebookUrl: "${props.FACEBOOK_URL}",
-        twitterUrl: "${props.TWITTER_URL}",
-        youtubeUrl: "${props.YOUTUBE_URL}",
-        vimeoUrl: "${props.VIMEO_URL}",
-        recordClassesWithProjectId: ${recordClassesWithProjectId},
-        communitySite: "${props.COMMUNITY_SITE}"
-      };
-
-      <%-- Initialize google analytics. A pageview event will be sent in the JavaScript code. --%>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-      ga('create', '${gaId}', 'auto');
-    </script>
+    <imp:script src="siteConfig.js"/>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
-    <imp:stylesheet rel="stylesheet" type="text/css" href="css/${model.projectId}.css"/>
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
   </head>
   <body>
