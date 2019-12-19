@@ -69,10 +69,10 @@ export function createInitialParamState(param) {
       }
     }
 
-    case 'vocabulary':
+    case 'single-pick-vocabulary':
       return {
         vocabulary: param.vocabulary
-      }
+      };
 
     default:
       return {};

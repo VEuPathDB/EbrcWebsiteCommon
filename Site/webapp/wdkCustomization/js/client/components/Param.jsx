@@ -35,7 +35,7 @@ function findParamComponent(param) {
   switch(param.type) {
     case 'filter': return FilterParamNew;
     case 'string': return StringParam;
-    case 'vocabulary': return FlatVocabParam;
+    case 'single-pick-vocabulary': return FlatVocabParam;
     case 'date': return DateParam;
     case 'date-range': return DateRangeParam;
     case 'number': return NumberParam;
