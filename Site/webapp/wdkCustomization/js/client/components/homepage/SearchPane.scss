@@ -31,14 +31,20 @@
     font-size: 1.33333333333em;
   }
 
-  .wdk-CheckboxTree > .wdk-CheckboxTreeList > .wdk-CheckboxTreeItem > .wdk-CheckboxTreeNodeWrapper {
-    text-transform: uppercase;
+  .wdk-CheckboxTree > .wdk-CheckboxTreeList > .wdk-CheckboxTreeItem {
+    > .wdk-CheckboxTreeNodeWrapper {
+      text-transform: uppercase;
 
-    background-color: #ced4da;
-    margin-bottom: .25em;
-    border: 0.0625rem solid #ddd;
-    border-radius: 50rem;
-    padding-left: 1.2em;
+      background-color: #ced4da;
+      margin-bottom: .25em;
+      border: 0.0625rem solid #ddd;
+      border-radius: 50rem;
+      padding-left: 1.2em;
+    }
+
+    > .wdk-CheckboxTreeList {
+      padding-left: 1em;
+    }
   }
 
   .wdk-CheckboxTreeNodeWrapper {
