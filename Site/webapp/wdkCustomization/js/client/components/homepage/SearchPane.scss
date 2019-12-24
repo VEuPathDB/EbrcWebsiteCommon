@@ -10,9 +10,11 @@
 
   .wdk-CheckboxTreeLinks {
     font-size: 0.8em;
+    margin-left: 0;
   }
 
   .wdk-RealTimeSearchBoxInput {
+    border-radius: 0.5em;
     font-size: 0.9em;
 
     padding: 0.2em 1.5em 0.2em 1.75em;
@@ -38,7 +40,7 @@
       background-color: #ced4da;
       margin-bottom: .25em;
       border: 0.0625rem solid #ddd;
-      border-radius: 50rem;
+      border-radius: 0.5em;
       padding-left: 1.2em;
     }
 
