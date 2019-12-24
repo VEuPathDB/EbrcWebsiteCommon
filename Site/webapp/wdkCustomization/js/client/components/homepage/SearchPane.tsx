@@ -34,7 +34,7 @@ export const SearchPane = (props: Props) => {
   return (
     <nav className={combineClassNames(cx(), props.containerClassName)}>
       <h6>
-        SPECIALIZED SEARCHES
+        Specialized Searches
       </h6> 
       <SearchCheckboxTree 
         searchTree={props.searchTree} 
