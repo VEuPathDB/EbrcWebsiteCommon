@@ -70,7 +70,7 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
         expandedBranches={props.expandedBranches}
         searchTerm={props.searchTerm}
         isSelectable={false}
-        searchBoxPlaceholder="Find a search..."
+        searchBoxPlaceholder="Filter the searches below..."
         leafType="search"
         renderNode={renderNode}
         renderNoResults={renderNoResults}

@@ -3,12 +3,12 @@
   border-right: 0.0625rem solid;
 
   h6 {
-    /* To discuss with team: does "text-transform: uppercase" and/or "font-size: [something smaller]" look better? */
-    font-size: 2.33333333333em;
+    font-size: 1.66666666667em;
     margin: 1rem 0 0 0;
     text-align: center;
-    text-transform: none;
+    text-transform: uppercase;
     font-weight: 500;
+    white-space: nowrap;
   }
 
   .wdk-CheckboxTreeLinks {
@@ -44,7 +44,7 @@
       margin-bottom: .25em;
       border: 0.0625rem solid #ddd;
       border-radius: 0.5em;
-      padding-left: 1.2em;
+      padding: 0.5em 0.6em 0.5em 1.2em;
     }
 
     > .wdk-CheckboxTreeList {
@@ -57,10 +57,9 @@
 
     align-items: flex-start;
 
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+    padding-top: 0.375em;
+    padding-bottom: 0.375em;
     padding-right: 0.6em;
-
   }
 
   .wdk-CheckboxTreeItem {
