@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-import { set } from 'lodash/fp';
 import React from 'react';
 import { connect } from 'react-redux';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -12,7 +11,6 @@ import './StudyRecordHeading.scss';
 const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
 
 function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, study, attemptAction, ...props }) {
-  let newProps = set(['recordClass','displayName'],'Study', props); 
   return (
     <React.Fragment>
       <props.DefaultComponent {...newProps}/>
