@@ -13,7 +13,7 @@ const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
 function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, study, attemptAction, ...props }) {
   return (
     <React.Fragment>
-      <props.DefaultComponent {...newProps}/>
+      <props.DefaultComponent {...props}/>
       {showSearches && (
         <div className={cx()}>
           <div className={cx('Label')}>Search the data</div>
