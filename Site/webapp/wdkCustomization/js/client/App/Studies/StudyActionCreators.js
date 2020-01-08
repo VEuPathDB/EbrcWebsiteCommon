@@ -133,10 +133,20 @@ function formatStudies(projectId, questions, recordClasses, answer) {
       })
     }))
     .sort((studyA, studyB) =>
-      studyA.disabled == studyB.disabled ? 0
+      studyA.disabled == studyB.disabled ? stringComparator(studyA.name, studyB.name)
       : studyA.disabled ? 1 : -1
     ),
     records.invalid ];
+}
+
+function stringComparator(strA, strB) {
+  if (strA < strB) {
+    return -1;
+  } else if (strB < strA) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 /**
