@@ -1,3 +1,4 @@
+export * from './AnswerController';
 export * from './DownloadForm';
 export * from './Footer';
 export * from './Header';
