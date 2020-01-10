@@ -1,6 +1,8 @@
 import { get, identity, keyBy, mapValues, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
+import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
+
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
 export const STUDIES_ERROR = 'studies/studies-error'
@@ -70,7 +72,7 @@ export function fetchStudies(wdkService) {
     wdkService.getConfig().then(config => config.projectId),
     wdkService.getQuestions(),
     wdkService.getRecordClasses(),
-    wdkService.getStudies(requiredAttributes)
+    wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__')
   ]).then(spread(formatStudies))
 }
 
@@ -104,7 +106,14 @@ function formatStudies(projectId, questions, recordClasses, answer) {
       if (missingAttributes.length > 0) {
         throw new Error(`Missing data for attributes: ${missingAttributes.join(", ")}.`)
       }
-      records.valid.push(parseStudy(record));
+      records.valid.push({
+        ...parseStudy(record),
+        searchString: getSearchableString(
+          [],
+          [],
+          record
+        )
+      });
       return records;
     }
 
