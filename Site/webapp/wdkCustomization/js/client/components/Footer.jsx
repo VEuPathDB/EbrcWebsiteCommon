@@ -4,7 +4,7 @@ import NewWindowLink from './NewWindowLink';
 import { formatReleaseDate } from '../util/formatters';
 
 const projects = [
-  [ 'https', 'EuPathDB' ],
+  [ 'https', 'VEuPathDB' ],
   [ 'http', 'AmoebaDB' ],
   [ 'http', 'CryptoDB' ],
   [ 'http', 'FungiDB' ],
