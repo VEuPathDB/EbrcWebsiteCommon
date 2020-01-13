@@ -162,7 +162,7 @@ class HeaderNav extends React.Component {
             </div>
           </div>
           <a href="http://eupathdb.org/eupathdb/" target="_blank">
-            <img src={webAppUrl + '/images/partofeupath.png'} id="EuPathLogo" />
+            <img src={webAppUrl + '/images/partofveupath.png'} id="VEuPathLogo" />
           </a>
         </div>
       </div>
