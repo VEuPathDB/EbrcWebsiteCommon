@@ -6,8 +6,9 @@ import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSession
 import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
 import { Link, TextBox, IconAlt } from 'wdk-client/Components';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
-import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { RootState } from 'wdk-client/Core/State/Types';
+import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { User } from 'wdk-client/Utils/WdkUser';
 
 import UserMenu from 'ebrc-client/App/UserMenu';
@@ -17,8 +18,8 @@ import { webAppUrl } from '../../config';
 import { combineClassNames } from './Utils';
 
 import { SocialMediaLinks } from './Footer';
+
 import './Header.scss';
-import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
@@ -204,6 +205,8 @@ const HeaderView = ({
       className={combineClassNames(cx(), containerClassName)}
       ref={headerRef}
     >
+      <div className={cx('ProjectBranding')}>
+      </div>
       <div className={cx('BrandingContainer')}>
         <Link to="/">
           <div className={cx('Branding')}>

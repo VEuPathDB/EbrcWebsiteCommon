@@ -14,6 +14,14 @@
     position: relative;
   }
 
+  &ProjectBranding {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+
+    content: url('~eupathdb/images/partofveupath.png');
+  }
+
   &BrandingContainer {
     display: flex;
     justify-content: space-between;
