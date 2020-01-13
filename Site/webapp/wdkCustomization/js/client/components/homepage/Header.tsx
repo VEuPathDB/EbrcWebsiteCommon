@@ -205,8 +205,8 @@ const HeaderView = ({
       className={combineClassNames(cx(), containerClassName)}
       ref={headerRef}
     >
-      <div className={cx('ProjectBranding')}>
-      </div>
+      <a href="https://veupathdb.org" className={cx('ProjectBranding')}>
+      </a>
       <div className={cx('BrandingContainer')}>
         <Link to="/">
           <div className={cx('Branding')}>
