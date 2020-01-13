@@ -161,7 +161,7 @@ class HeaderNav extends React.Component {
               <UserMenu webAppUrl={webAppUrl} actions={actions} user={user} />
             </div>
           </div>
-          <a href="http://eupathdb.org/eupathdb/" target="_blank">
+          <a href="https://veupathdb.org" target="_blank">
             <img src={webAppUrl + '/images/partofveupath.png'} id="VEuPathLogo" />
           </a>
         </div>
