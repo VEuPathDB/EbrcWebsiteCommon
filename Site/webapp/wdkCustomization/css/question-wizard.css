@@ -460,9 +460,7 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
   display: none;
 }
 
-.ebrc-QuestionWizardParamHelp__date-range,
 .ebrc-QuestionWizardParamLabel__date-range {
-  margin-top: 18px;
   align-self: flex-start;
 }
 
