@@ -99,7 +99,6 @@ export default function CardList(props) {
 
   const filterInput = isExpandable && 
     <RealTimeSearchBox
-      autoFocus
       className={FILTER_CLASS_NAME}
       searchTerm={filterString}
       onSearchTermChange={setFilterString}
