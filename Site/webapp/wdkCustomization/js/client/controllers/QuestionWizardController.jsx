@@ -407,7 +407,10 @@ class QuestionWizardController extends ViewController {
             stepTree: { stepId: stepResponse.id },
             name: DEFAULT_STRATEGY_NAME
           });
-          return RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`);
+          return [
+            StrategyActions.fulfillCreateStrategy(strategyReponse.id, Date.now()),
+            RouterActions.transitionToInternalPage(`/workspace/strategies/${strategyReponse.id}/${stepResponse.id}`)
+          ];
         }
 
         if (submissionMetadata.type === 'add-binary-step') {
