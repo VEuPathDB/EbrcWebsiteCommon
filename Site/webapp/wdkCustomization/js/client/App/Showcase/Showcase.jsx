@@ -1,4 +1,7 @@
 import React from 'react';
+
+import { debounce } from 'lodash';
+
 import { IconAlt as Icon } from 'wdk-client/Components';
 import CardList from './CardList';
 
@@ -11,7 +14,7 @@ class Showcase extends React.Component {
 
     const { items } = props.content;
     this.state = { filteredItems: items };
-    this.handleFilter = this.handleFilter.bind(this);
+    this.handleFilter = debounce(this.handleFilter.bind(this), 300);
   }
 
   UNSAFE_componentWillReceiveProps ({ content }) {
@@ -43,7 +46,7 @@ class Showcase extends React.Component {
     const { handleFilter } = this;
     const { filteredItems: list } = this.state;
     const { content, prefix, attemptAction } = this.props;
-    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, contentNamePlural, items, description, isLoading, isExpandable, tableViewLink, cardComponent, getSearchStringForItem } = content;
+    const { title, viewAllUrl, viewAllAppUrl, filters, contentType, contentNamePlural, items, description, isLoading, isExpandable, tableViewLink, cardComponent, getSearchStringForItem, matchPredicate } = content;
     const cards = this.renderCardList(contentType, cardComponent, {
       attemptAction,
       contentNamePlural,
@@ -52,7 +55,8 @@ class Showcase extends React.Component {
       list,
       isExpandable,
       tableViewLink,
-      getSearchStringForItem
+      getSearchStringForItem,
+      matchPredicate
     });
 
 

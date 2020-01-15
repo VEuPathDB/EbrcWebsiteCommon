@@ -19,7 +19,7 @@ const FILTER_CLASS_NAME = `${CLASS_NAME}__FilterInput`;
 const ALLSTUDIES_LINK_CLASS_NAME = `${CLASS_NAME}__TableViewLink link`;
 
 export default function CardList(props) {
-  const { additionalClassName, isLoading, list, renderCard, isExpandable, tableViewLink, contentNamePlural, getSearchStringForItem = () => '' } = props;
+  const { additionalClassName, isLoading, list, renderCard, isExpandable, tableViewLink, contentNamePlural, getSearchStringForItem = () => '', matchPredicate = defaultMatchPredicate } = props;
 
   // state
   const [ isExpanded, setIsExpanded ] = React.useState(null);
@@ -61,7 +61,8 @@ export default function CardList(props) {
     .filter(item => {
       if (!isExpandable) return true;
       const searchString = getSearchStringForItem(item);
-      return searchString.toLowerCase().includes(filterString.toLowerCase());
+
+      return matchPredicate(searchString, filterString);
     })
     .map((item, index) => renderCard(item, index));
 
@@ -119,6 +120,10 @@ export default function CardList(props) {
       {emptyIndicator}
     </div>
   );
+}
+
+function defaultMatchPredicate(searchString, filterString) {
+  return searchString.toLowerCase().includes(filterString.toLowerCase());
 }
 
 CardList.propTypes = {
