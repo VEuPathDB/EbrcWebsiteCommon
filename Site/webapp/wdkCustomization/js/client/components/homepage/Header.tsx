@@ -17,8 +17,6 @@ import { webAppUrl } from '../../config';
 
 import { combineClassNames } from './Utils';
 
-import { SocialMediaLinks } from './Footer';
-
 import './Header.scss';
 
 const cx = makeClassNameHelper('ebrc-Header');
@@ -284,7 +282,6 @@ const HeaderView = ({
           user={user}
           actions={actions}
         />
-        <SocialMediaLinks />
       </div>
     </header>
   );

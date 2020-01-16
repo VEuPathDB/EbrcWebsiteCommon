@@ -2,13 +2,24 @@
   padding: 1rem;
   border-right: 0.0625rem solid;
 
-  h6 {
-    font-size: 1.66666666667em;
-    margin: 1rem 0 0 0;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 500;
+  h2 {
+    font-size: 2.3em;
+    margin: 0.5em 1em 0.25em 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    font-style: italic;
     white-space: nowrap;
+  }
+
+  &CheckboxTreeContainer {
+    font-size: 1.2em;
+
+    &__controls_collapsed {
+      .wdk-CheckboxTreeLinks, .wdk-RealTimeSearchBox {
+        display: none;
+      }
+    }
   }
 
   .wdk-CheckboxTreeLinks {
@@ -38,9 +49,7 @@
 
   .wdk-CheckboxTree > .wdk-CheckboxTreeList > .wdk-CheckboxTreeItem {
     > .wdk-CheckboxTreeNodeWrapper {
-      text-transform: uppercase;
-
-      background-color: #ced4da;
+      background-color: #dfdfdf;
       margin: .25em 0;
       border: 0.0625rem solid #ddd;
       border-radius: 0.5em;

@@ -7,13 +7,14 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
 
+import { SocialMediaLinks } from './Footer';
 import { combineClassNames } from './Utils';
-
-const cx = makeClassNameHelper('ebrc-NewsPane');
 
 import 'ebrc-client/App/Showcase/Showcase.scss';
 
 import './NewsPane.scss';
+
+const cx = makeClassNameHelper('ebrc-NewsPane');
 
 type NewsState =
   | {
@@ -63,6 +64,9 @@ export const NewsPane = ({ containerClassName }: Props) => {
 
   return (
     <aside className={combineClassNames(cx(), containerClassName)}>
+      <div className={cx('SocialMediaLinksContainer')}>
+        <SocialMediaLinks />
+      </div>
       <div className="News-Section">
         {/* FIXME: Pass the Jekyll newsUrl */}
         <News

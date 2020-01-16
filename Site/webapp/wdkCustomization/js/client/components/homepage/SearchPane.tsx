@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
 import { memoize, noop } from 'lodash';
 
@@ -14,7 +14,6 @@ import './SearchPane.scss';
 import { decode, arrayOf, string } from 'wdk-client/Utils/Json';
 
 const cx = makeClassNameHelper('ebrc-SearchPane');
-const GENE_ITEM_ID = 'category:transcript-record-classes-transcript-record-class';
 const EXPANDED_BRANCHES_SESSION_KEY = 'homepage-left-panel-expanded-branch-ids';
 
 type Props = {
@@ -25,24 +24,35 @@ type Props = {
 export const SearchPane = (props: Props) => {
   const [ searchTerm, setSearchTerm ] = useState('');
   const [ expandedBranches, setExpandedBranches ] = useSessionBackedState(
-    [ GENE_ITEM_ID ],
+    [ ],
     EXPANDED_BRANCHES_SESSION_KEY,
     JSON.stringify,
     memoize((s: string) => decode(arrayOf(string), s))
   );
 
+  const [ areControlsExpanded, setAreControlsExpanded ] = useState(false);
+
+  const toggleAreControlsExpanded = useCallback(() => {
+    setAreControlsExpanded(!areControlsExpanded);
+  }, [ areControlsExpanded ]);
+
   return (
     <nav className={combineClassNames(cx(), props.containerClassName)}>
-      <h6>
-        Specialized Searches
-      </h6> 
-      <SearchCheckboxTree 
-        searchTree={props.searchTree} 
-        searchTerm={searchTerm}
-        expandedBranches={expandedBranches}
-        setSearchTerm={setSearchTerm}
-        setExpandedBranches={setExpandedBranches}
-      />
+      <h2>
+        Search for...
+        <button type="button" className="link" onClick={toggleAreControlsExpanded}>
+          <IconAlt fa="sliders" />
+        </button>
+      </h2> 
+      <div className={cx('CheckboxTreeContainer', areControlsExpanded ? 'controls_expanded' : 'controls_collapsed')}>
+        <SearchCheckboxTree 
+          searchTree={props.searchTree} 
+          searchTerm={searchTerm}
+          expandedBranches={expandedBranches}
+          setSearchTerm={setSearchTerm}
+          setExpandedBranches={setExpandedBranches}
+        />
+      </div>
     </nav>
   );
 }
@@ -64,6 +74,7 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
   return !props.searchTree 
     ? <Loading />
     : <CategoriesCheckboxTree
+        autoFocusSearchBox
         selectedLeaves={noSelectedLeaves}
         onChange={noop}
         tree={props.searchTree}

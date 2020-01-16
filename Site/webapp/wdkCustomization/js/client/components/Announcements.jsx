@@ -204,10 +204,7 @@ function AnnouncementGroup(props) {
     <div className="eupathdb-Announcement" style={{
       padding: '.5em',
       border: '1px solid #bbbbbb',
-      margin: '.5em .25em',
-      background: '#E3F2FD',
-      boxShadow: '0 0 4px #00000014',
-      borderRadius: '.5em'
+      background: '#E3F2FD'
     }}>
       <div>
         {props.icon}
