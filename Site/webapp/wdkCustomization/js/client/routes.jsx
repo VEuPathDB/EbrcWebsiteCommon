@@ -5,6 +5,8 @@ import TreeDataViewerController from './controllers/TreeDataViewerController';
 import ContactUsController from './controllers/ContactUsController';
 import GalaxyTermsController from './controllers/GalaxyTermsController';
 import ExternalContentController from 'ebrc-client/controllers/ExternalContentController';
+export const STATIC_ROUTE_PATH = '/static-content';
+
 /**
  * Wrap WDK Routes
  * Jan 9 2019: routes here connect to a react component that is mostly shared across websites.
@@ -32,7 +34,7 @@ export const wrapRoutes = wdkRoutes => [
   },
 
   {
-    path: '/community/:path*',
+    path: `${STATIC_ROUTE_PATH}/:path*`,
     component: props =>
       <ExternalContentController
         url={communitySite + props.match.params.path + props.location.search + props.location.hash}
