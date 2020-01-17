@@ -1,16 +1,24 @@
+import { communitySite, projectId } from 'ebrc-client/config';
+
 const NEWS_LOADING = 'news/loading';
 const NEWS_RECEIVED = 'news/received';
 const NEWS_ERROR = 'news/error';
 
 export function requestNews() {
-  return function run({ wdkService }) {
+  return function run() {
     return [
       { type: NEWS_LOADING },
-      // FIXME Load news from jekyll site
-      wdkService.getXmlAnswerJson('XmlQuestions.News').then(
-        news => ({ type: NEWS_RECEIVED, payload: { news } }),
-        error => ({ type: NEWS_ERROR, payload: { error: error.message } })
-      )
+      fetch(`${communitySite}/${projectId}/news.json`, { mode: 'cors' })
+        .then(res => res.text())
+        .then(text => text.replace(/,(?=[^,]*$)/, ''))
+        .then(JSON.parse)
+        // FIXME: Once the trailing comma is removed from the Jekyll response,
+        // replace the three ".then"s aboves with this ".then": 
+        // .then(res=> res.json())
+        .then(
+          news => ({ type: NEWS_RECEIVED, payload: { news } }),
+          error => ({ type: NEWS_ERROR, payload: { error: error.message } })
+        )
     ];
   }
 }
