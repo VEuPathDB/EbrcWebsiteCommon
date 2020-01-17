@@ -92,7 +92,14 @@ function selectFilter(candidate, input) {
 }
 
 function noOptionsMessage({ inputValue }) {
-  return inputValue ? 'No options' : 'Start typing to see options'
+  return inputValue
+    ? 'No options'
+    : (
+      <div>
+        <p>Start typing to see options.</p>
+        <p>Each word you enter will be matched at the beginning of words in variable names and descriptions.</p>
+      </div>
+    )
 }
 
 function formatOptionLabel({ group, path, ontologyItem }, { context }) {
