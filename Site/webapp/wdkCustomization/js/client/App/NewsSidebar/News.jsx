@@ -4,7 +4,7 @@ import TwitterTimeline from 'ebrc-client/components/TwitterTimeline';
 import { Seq } from 'wdk-client/Utils/IterableUtils';
 
 import './News.scss';
-
+import { projectId } from 'ebrc-client/config';
 
 const transformNewItem = compose(
   truncate({ length: 200 }),
@@ -14,7 +14,7 @@ const transformNewItem = compose(
 const getProfileIdFromTwitterUrl =
   replace(/(?:.*)twitter.com\/(.*)$/, '$1')
 
-const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/showXmlDataContent.do?name=XmlQuestions.News` }) =>
+const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/static-content/${projectId}/news.html` }) =>
   <React.Fragment>
     <div className="stack wdk-Showcase">
       <div className="row wdk-Showcase-HeadingRow">
@@ -34,7 +34,7 @@ const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/show
                       {attributes.headline}
                     </a>
                   </h4>
-                  <div className="NewsDate">{new Date(attributes.date).toDateString()}</div>
+                  <div className="NewsDate">{new Date(attributes.date.replace(/-/g, '\/')).toDateString()}</div>
                   <div className="NewsTeaser">
                     {transformNewItem(attributes.item)} <a href={`${newsUrl}#${attributes.tag}`} target="_blank"> read more</a>
                   </div>

@@ -6,6 +6,7 @@ import { RootState } from 'wdk-client/Core/State/Types';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
+import { communitySite } from 'ebrc-client/config';
 
 import { SocialMediaLinks } from './Footer';
 import { combineClassNames } from './Utils';
@@ -43,8 +44,7 @@ export const NewsPane = ({ containerClassName }: Props) => {
 
     setNewsSidebarState({ status: 'loading', ...newsSidebarState });
 
-    // FIXME: Fetch news from Jekyll site
-    wdkService.getXmlAnswerJson('XmlQuestions.News').then(
+    fetch(`${communitySite}/${projectId}/news.json`, { mode: 'cors' }).then(res=> res.json()).then(
       news => {
         if (!cancelLoading) {
           setNewsSidebarState({ status: 'idle', news, error: null });
