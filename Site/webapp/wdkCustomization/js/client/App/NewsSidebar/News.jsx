@@ -36,7 +36,7 @@ const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/
                   </h4>
                   <div className="NewsDate">{new Date(attributes.date.replace(/-/g, '\/')).toDateString()}</div>
                   <div className="NewsTeaser">
-                    {transformNewItem(attributes.item)} <a href={`${newsUrl}#${attributes.tag}`} target="_blank"> read more</a>
+                    {transformNewItem(attributes.item)} <a href={`${newsUrl}#${attributes.tag}`} > read more</a>
                   </div>
                 </div>
               ))
