@@ -6,7 +6,7 @@ import { RootState } from 'wdk-client/Core/State/Types';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
-import { communitySite } from 'ebrc-client/config';
+import { communitySite, projectId } from 'ebrc-client/config';
 
 import { SocialMediaLinks } from './Footer';
 import { combineClassNames } from './Utils';
