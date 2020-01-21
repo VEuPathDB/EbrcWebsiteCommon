@@ -37,5 +37,5 @@ export default function ExternalContentController(props: Props) {
 
   if (content == null) return <Loading/>;
 
-  return safeHtml(content);
+  return safeHtml(content, null, 'div');
 }
