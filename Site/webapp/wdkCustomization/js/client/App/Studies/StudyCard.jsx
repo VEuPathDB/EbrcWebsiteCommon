@@ -57,8 +57,8 @@ class StudyCard extends React.Component {
         <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
           {searchType
-            ? <span>Search <b>{searchType}</b></span>
-            : <span title="Click on an Icon">{disabled ? 'Search Unavailable' : 'Search The Data'}</span>
+            ? <span>by <b>{searchType}</b></span>
+            : <span title="Click on an Icon">{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
           }
         </div>
         <div className="box StudyCard-Footer">
