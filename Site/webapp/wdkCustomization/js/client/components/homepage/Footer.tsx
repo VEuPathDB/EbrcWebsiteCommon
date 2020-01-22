@@ -1,16 +1,13 @@
 import React from 'react';
 
-import { Link, IconAlt } from 'wdk-client/Components';
+import { Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { ProjectLink } from 'ebrc-client/components/homepage/ProjectLink';
+import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
+import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
 
-// FIXME: Pull these from globalData
-import { twitterUrl, facebookUrl, youtubeUrl } from 'ebrc-client/config';
 import { formatReleaseDate } from 'ebrc-client/util/formatters';
-
-import { Twitter, Facebook, YouTube, ContactUs } from './SocialMediaIcons';
-import { combineClassNames } from './Utils';
 
 import './Footer.scss';
 
@@ -62,38 +59,3 @@ export const Footer = ({ containerClassName, buildNumber, releaseDate, displayNa
     <SocialMediaLinks />
   </footer>
 );
-
-type SocialMediaLinksProps = {
-  showNewsIcon?: boolean,
-  onNewsIconClick?: () => void
-};
-
-export const SocialMediaLinks = ({
-  showNewsIcon = false,
-  onNewsIconClick
-}: SocialMediaLinksProps) =>
-  <div className={cx('SocialMediaLinks')}>
-    {
-      showNewsIcon &&
-      <button onClick={onNewsIconClick} className="link">
-        <IconAlt fa="newspaper-o" />
-        <span>News</span>
-      </button>
-    }
-
-    <Link to="/contact-us" target="_blank">
-      <ContactUs />
-    </Link>
-
-    <a href={twitterUrl} target="_blank">
-      <Twitter />
-    </a>
-
-    <a href={facebookUrl} target="_blank">
-      <Facebook />
-    </a>
-
-    <a href={youtubeUrl} target="_blank">
-      <YouTube />
-    </a>
-  </div>;

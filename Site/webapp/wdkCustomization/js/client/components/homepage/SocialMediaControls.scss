@@ -3,9 +3,8 @@
   flex-direction: column;
   align-items: flex-end;
 
-  .ebrc-FooterSocialMediaLinks {
+  .ebrc-SocialMediaLinks {
     background-color: rgba(255,255,255,.9);
-    max-width: unset;
     a, button.link {
       color: #00304c;
 
@@ -16,7 +15,7 @@
   }
 
   &__news-collapsed {
-    .ebrc-FooterSocialMediaLinks {
+    .ebrc-SocialMediaLinks {
       flex-direction: column;
     }
   }

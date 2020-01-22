@@ -3,7 +3,7 @@ import React from 'react';
 import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
-import { SocialMediaLinks } from 'ebrc-client/components/homepage/Footer';
+import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
 
 import './SocialMediaControls.scss';

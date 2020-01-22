@@ -1,0 +1,28 @@
+.ebrc-SocialMediaLinks {
+  margin-top: 1rem;
+
+  display: flex;
+  align-items: center;
+
+  font-size: 1.6em;
+
+  button.link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    i {
+      font-size: 1.2em;
+    }
+
+    span {
+      font-size: 0.6em;
+    }
+  }
+
+  > a {
+    margin: .625em 1.1em;
+
+    color: #6c757d;
+  }
+}
