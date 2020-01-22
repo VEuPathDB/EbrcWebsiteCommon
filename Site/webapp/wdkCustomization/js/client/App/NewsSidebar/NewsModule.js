@@ -5,17 +5,15 @@ const NEWS_RECEIVED = 'news/received';
 const NEWS_ERROR = 'news/error';
 
 export function requestNews() {
-  return function run() {
-    return [
-      { type: NEWS_LOADING },
-      fetch(`${communitySite}/${projectId}/news.json`, { mode: 'cors' })
-        .then(res=> res.json())
-        .then(
-          news => ({ type: NEWS_RECEIVED, payload: { news } }),
-          error => ({ type: NEWS_ERROR, payload: { error: error.message } })
-        )
-    ];
-  }
+  return [
+    { type: NEWS_LOADING },
+    fetch(`https://${communitySite}/${projectId}/news.json`, { mode: 'cors' })
+      .then(res => res.json())
+      .then(
+        news => ({ type: NEWS_RECEIVED, payload: { news } }),
+        error => ({ type: NEWS_ERROR, payload: { error: error.message } })
+      )
+  ];
 }
 
 const defaultState = {
