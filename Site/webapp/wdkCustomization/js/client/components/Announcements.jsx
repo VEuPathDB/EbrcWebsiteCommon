@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
-import { groupBy, identity } from 'lodash';
+import React, { useCallback, useState } from 'react';
+import { groupBy } from 'lodash';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
-import { Link } from 'wdk-client/Components';
+import { Link, IconAlt } from 'wdk-client/Components';
 import {useWdkEffect} from 'wdk-client/Service/WdkService';
+import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 const stopIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.6em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
     <i className="fa fa-circle fa-stack-2x" style={{color: 'darkred'}}/>
     <i className="fa fa-times fa-stack-1x" style={{color: 'white'}}/>
   </span>
 );
 
 const warningIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.6em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
     <i className="fa fa-exclamation-triangle fa-stack-2x" style={{color: '#ffeb3b'}}/>
     <i className="fa fa-exclamation fa-stack-1x" style={{color: 'black', fontSize: '1.3em', top: 2}}/>
   </span>
 );
 
 const infoIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.6em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
     <i className="fa fa-circle fa-stack-2x" style={{color: '#004aff'}}/>
     <i className="fa fa-info fa-stack-1x" style={{color: 'white'}}/>
   </span>
@@ -154,7 +155,7 @@ Please <Link to="/contact-us"> Contact Us</Link> to let us know what you think. 
 ];
 
 /**
- * Info box containing announcements.
+ * Info boxes containing announcements.
  */
 export default function Announcements(props) {
   const [ data, setData ] = useState();
@@ -169,55 +170,95 @@ export default function Announcements(props) {
     return () => { doUpdate = false };
   }, []);
 
+  const [ closedBanners, setClosedBanners ] = useSessionBackedState(
+    [],
+    'eupath-Announcements',
+    closedBanners => closedBanners.join(','),
+    closedBannersString => closedBannersString.split(/\s*,\s*/g)
+  );
+
+  const onCloseFactory = useCallback(id => () => {
+    setClosedBanners([ ...closedBanners, id ]);
+  }, [ closedBanners ]);
+
   if (data == null) return null;
 
   const { down = [], degraded = [], information = [] } = groupBy(data.announcements, 'category');
 
-  let downAnnouncements = down
-    .map(toElement)
-
-  let degradedAnnouncements = degraded
-    .map(toElement)
-
-  let infoAnnouncements = information
-    .map(toElement)
-    .concat(siteAnnouncements.map(invokeWith(data)))   // map to React Elements
-
   return (
     <div>
-      <AnnouncementGroup icon={stopIcon} announcements={downAnnouncements}/>
-      <AnnouncementGroup icon={warningIcon} announcements={degradedAnnouncements}/>
-      <AnnouncementGroup icon={infoIcon} announcements={infoAnnouncements}/>
+      {
+        [
+          ...down,
+          ...degraded,
+          ...information
+        ].map(announcement => (
+          <AnnouncementContainer
+            key={announcement.id}
+            announcement={announcement} 
+            isOpen={!closedBanners.includes(`${announcement.id}`)}
+            onClose={onCloseFactory(`${announcement.id}`)}
+          />
+        ))
+      }
     </div>
   );
 }
 
 /**
- * Box of announcements.
+ * Container for a single announcement banner.
  */
-function AnnouncementGroup(props) {
-  let finalAnnouncements = props.announcements
-    .filter(identity)
-    .reduce(injectHr, null);
+function AnnouncementContainer(props) {
+  const icon = props.announcement.category === 'down'
+    ? stopIcon
+    : props.announcement.category === 'degraded'
+    ? warningIcon
+    : infoIcon;
 
-  return finalAnnouncements !== null && (
+  return <AnnouncementBanner {...props} icon={icon} />;
+}
+
+/**
+ * Banner for a single announcement.
+ */
+function AnnouncementBanner({ 
+  announcement, 
+  isOpen, 
+  onClose, 
+  icon
+}) {
+  return (
     <div className="eupathdb-Announcement" style={{
       padding: '.5em',
-      border: '1px solid #bbbbbb',
-      background: '#E3F2FD'
+      borderWidth: '0 1px 1px 1px',
+      borderColor: '#bbbbbb',
+      borderStyle: 'solid',
+      background: '#E3F2FD',
+      display: isOpen ? 'block' : 'none'
     }}>
-      <div>
-        {props.icon}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center'
+      }}>
+        {icon}
         <div style={{
           display: 'inline-block',
-          width: 'calc(100% - 70px)',
+          width: 'calc(100% - 5.5em)',
           padding: '8px',
           verticalAlign: 'middle',
           color: 'darkred',
           fontSize: '1.1em'
         }}>
-          {finalAnnouncements}
+          {toElement(announcement)}
         </div>
+        <button onClick={onClose} className="link" style={{
+          color: '#7c7c7c',
+          alignSelf: 'flex-start',
+          fontSize: '0.8em'
+        }}>
+          <IconAlt fa="times" className="fa-2x" />
+        </button>
       </div>
     </div>
   );

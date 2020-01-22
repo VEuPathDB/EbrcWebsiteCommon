@@ -37,19 +37,8 @@
     }
   }
 
-  &SocialMediaLinks {
-    display: flex;
-    align-items: center;
-
-    font-size: 1.6em;
-
+  .ebrc-SocialMediaLinks {
     max-width: 25%;
-
-    > a {
-      padding: .75rem 1.25rem; 
-
-      color: #6c757d;
-    }
   }
 
   @media screen and (max-width: 575px) {

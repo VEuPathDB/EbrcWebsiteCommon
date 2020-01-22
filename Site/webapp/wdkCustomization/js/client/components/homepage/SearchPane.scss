@@ -4,7 +4,7 @@
 
   h2 {
     font-size: 2.3em;
-    margin: 0.5em 1em 0.25em 0;
+    margin: 0 1em 0.25em 0;
     padding: 0;
     display: flex;
     justify-content: space-between;
@@ -45,6 +45,10 @@
 
   .wdk-CheckboxTree {
     font-size: 1.33333333333em;
+
+    &Item {
+      line-height: 1em;
+    }
   }
 
   .wdk-CheckboxTree > .wdk-CheckboxTreeList > .wdk-CheckboxTreeItem {
@@ -85,7 +89,8 @@
         }
 
         i {
-          margin-right: 0.25em;
+          margin: 0.15em 0.25em 0 0;
+          font-size: 0.8em;
         }
       }
     }

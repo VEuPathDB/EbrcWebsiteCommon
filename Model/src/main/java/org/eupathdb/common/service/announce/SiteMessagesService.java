@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public class SiteMessagesService extends AbstractWdkService {
 
   private static final String SITE_MESSAGES_SQL =
-      "select m.message_text, m.message_category" +
+      "select m.message_id, m.message_text, m.message_category" +
       "  from announce.messages m, announce.message_projects mp, announce.projects p" +
       " where m.message_id = mp.message_id" +
       "   and p.project_id = mp.project_id" +
@@ -42,6 +42,7 @@ public class SiteMessagesService extends AbstractWdkService {
           JSONArray messages = new JSONArray();
           while (rs.next()) {
             messages.put(new JSONObject()
+              .put(JsonKeys.ID, rs.getLong("message_id"))
               .put(JsonKeys.CATEGORY, rs.getString("message_category").toLowerCase())
               .put(JsonKeys.MESSAGE, rs.getString("message_text")
             ));

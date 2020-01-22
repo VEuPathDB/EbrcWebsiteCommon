@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
-import { useWdkEffect } from 'wdk-client/Service/WdkService';
-import { RootState } from 'wdk-client/Core/State/Types';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
-import { communitySite, projectId } from 'ebrc-client/config';
+import { communitySite, projectId, twitterUrl, webAppUrl } from 'ebrc-client/config';
 
-import { SocialMediaLinks } from './Footer';
+import { SocialMediaControls } from './SocialMediaControls';
 import { combineClassNames } from './Utils';
 
 import 'ebrc-client/App/Showcase/Showcase.scss';
@@ -30,21 +27,20 @@ type NewsState =
     };
 
 type Props = {
-  containerClassName?: string
+  containerClassName?: string,
+  isNewsExpanded: boolean,
+  toggleNews: () => void
 };
 
-export const NewsPane = ({ containerClassName }: Props) => {
-  const twitterUrl = useSelector((state: RootState) => state.globalData.siteConfig && state.globalData.siteConfig.twitterUrl);
-  const webAppUrl = useSelector((state: RootState) => state.globalData.siteConfig && state.globalData.siteConfig.webAppUrl);
-
+export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Props) => {
   const [ newsSidebarState, setNewsSidebarState ] = useState<NewsState>({ status: 'idle', news: null, error: null });
 
-  useWdkEffect(wdkService => {
+  useEffect(() => {
     let cancelLoading = false;
 
     setNewsSidebarState({ status: 'loading', ...newsSidebarState });
 
-    fetch(`${communitySite}/${projectId}/news.json`, { mode: 'cors' }).then(res=> res.json()).then(
+    fetch(`https://${communitySite}/${projectId}/news.json`, { mode: 'cors' }).then(res=> res.json()).then(
       news => {
         if (!cancelLoading) {
           setNewsSidebarState({ status: 'idle', news, error: null });
@@ -64,17 +60,17 @@ export const NewsPane = ({ containerClassName }: Props) => {
 
   return (
     <aside className={combineClassNames(cx(), containerClassName)}>
-      <div className={cx('SocialMediaLinksContainer')}>
-        <SocialMediaLinks />
-      </div>
-      <div className="News-Section">
-        {/* FIXME: Pass the Jekyll newsUrl */}
-        <News
-          twitterUrl={twitterUrl}
-          webAppUrl={webAppUrl}
-          {...newsSidebarState}
-        />
-      </div>
+      <SocialMediaControls isNewsExpanded={isNewsExpanded} toggleNews={toggleNews} />
+      {
+        isNewsExpanded &&
+        <div className="News-Section">
+          <News
+            twitterUrl={twitterUrl}
+            webAppUrl={webAppUrl}
+            {...newsSidebarState}
+          />
+        </div>
+      }
     </aside>
   );
 };
