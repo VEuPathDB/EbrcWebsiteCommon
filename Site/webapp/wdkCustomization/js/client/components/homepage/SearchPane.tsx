@@ -41,7 +41,7 @@ export const SearchPane = (props: Props) => {
       <h2>
         Search for...
         <button type="button" className="link" onClick={toggleAreControlsExpanded}>
-          <IconAlt fa="sliders" />
+          <IconAlt fa="wrench" className="fa-flip-horizontal" />
         </button>
       </h2> 
       <div className={cx('CheckboxTreeContainer', areControlsExpanded ? 'controls_expanded' : 'controls_collapsed')}>

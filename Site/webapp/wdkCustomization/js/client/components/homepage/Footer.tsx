@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Link } from 'wdk-client/Components';
+import { Link, IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { ProjectLink } from 'ebrc-client/components/homepage/ProjectLink';
@@ -63,8 +63,24 @@ export const Footer = ({ containerClassName, buildNumber, releaseDate, displayNa
   </footer>
 );
 
-export const SocialMediaLinks = () =>
+type SocialMediaLinksProps = {
+  showNewsIcon?: boolean,
+  onNewsIconClick?: () => void
+};
+
+export const SocialMediaLinks = ({
+  showNewsIcon = false,
+  onNewsIconClick
+}: SocialMediaLinksProps) =>
   <div className={cx('SocialMediaLinks')}>
+    {
+      showNewsIcon &&
+      <button onClick={onNewsIconClick} className="link">
+        <IconAlt fa="newspaper-o" />
+        <span>News</span>
+      </button>
+    }
+
     <Link to="/contact-us" target="_blank">
       <ContactUs />
     </Link>

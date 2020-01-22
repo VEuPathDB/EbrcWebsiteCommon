@@ -38,6 +38,8 @@
   }
 
   &SocialMediaLinks {
+    margin-top: 1rem;
+
     display: flex;
     align-items: center;
 
@@ -45,8 +47,22 @@
 
     max-width: 25%;
 
+    button.link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      i {
+        font-size: 1.2em;
+      }
+
+      span {
+        font-size: 0.75em;
+      }
+    }
+
     > a {
-      padding: .75rem 1.25rem; 
+      margin: .625em 1.1em;
 
       color: #6c757d;
     }

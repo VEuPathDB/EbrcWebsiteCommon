@@ -1,21 +1,4 @@
 .ebrc-NewsPane {
-  &SocialMediaLinksContainer {
-    display: flex;
-    justify-content: flex-end;
-
-    @media screen and (max-width: 1000px) {
-      display: none;
-    }    
-  }
-
-  .ebrc-FooterSocialMediaLinks {
-    background-color: rgba(255,255,255,.9);
-    max-width: unset;
-    a {
-      color: #00304c;
-    }
-  }
-
   .News-Section { 
     .wdk-Showcase-HeadingRow {
       h2 {
