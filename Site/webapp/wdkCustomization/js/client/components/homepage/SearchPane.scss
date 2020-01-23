@@ -8,7 +8,6 @@
     padding: 0;
     display: flex;
     justify-content: space-between;
-    font-style: italic;
     white-space: nowrap;
   }
 
@@ -94,5 +93,14 @@
         }
       }
     }
+  }
+
+  .fa-wrench {
+    color: #00304c;
+  }
+
+  .SubcategoryText {
+    font-style: normal;
+    font-weight: normal;
   }
 }
