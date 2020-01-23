@@ -1,18 +1,17 @@
 import React, { useCallback, useState, useMemo } from 'react';
 
-import { memoize, noop, orderBy } from 'lodash';
+import { memoize, noop } from 'lodash';
 
 import { CategoriesCheckboxTree, Link, Tooltip, Icon, Loading, IconAlt } from 'wdk-client/Components';
 import { LinksPosition } from 'wdk-client/Components/CheckboxTree/CheckboxTree';
-import { CategoryTreeNode, getDisplayName, getTargetType, getRecordClassUrlSegment, getTooltipContent, getLabel } from 'wdk-client/Utils/CategoryUtils';
-import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
+import { CategoryTreeNode, getDisplayName, getTargetType, getRecordClassUrlSegment, getTooltipContent } from 'wdk-client/Utils/CategoryUtils';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
+import { decode, arrayOf, string } from 'wdk-client/Utils/Json';
 
-import { combineClassNames } from './Utils';
+import { combineClassNames, useAlphabetizedSearchTree } from 'ebrc-client/components/homepage/Utils';
 
 import './SearchPane.scss';
-import { decode, arrayOf, string } from 'wdk-client/Utils/Json';
-import { mapStructure } from 'wdk-client/Utils/TreeUtils';
 
 const cx = makeClassNameHelper('ebrc-SearchPane');
 const EXPANDED_BRANCHES_SESSION_KEY = 'homepage-left-panel-expanded-branch-ids';
@@ -31,7 +30,7 @@ export const SearchPane = (props: Props) => {
     memoize((s: string) => decode(arrayOf(string), s))
   );
 
-  const [ areControlsExpanded, setAreControlsExpanded ] = useState(false);
+  const [ areControlsExpanded, setAreControlsExpanded ] = useState(true);
 
   const toggleAreControlsExpanded = useCallback(() => {
     setAreControlsExpanded(!areControlsExpanded);
@@ -42,7 +41,7 @@ export const SearchPane = (props: Props) => {
   return (
     <nav className={combineClassNames(cx(), props.containerClassName)}>
       <h2>
-        Search the Data
+        Search for...
         <button type="button" className="link" onClick={toggleAreControlsExpanded}>
           <IconAlt fa="wrench" className="fa-flip-horizontal" />
         </button>
@@ -58,32 +57,6 @@ export const SearchPane = (props: Props) => {
       </div>
     </nav>
   );
-}
-
-function useAlphabetizedSearchTree(searchTree?: CategoryTreeNode) {
-  const result = useMemo(() => {
-    if (searchTree == null) {
-      return undefined;
-    }
-
-    return mapStructure(
-      (node, mappedChildren: CategoryTreeNode[]) => {
-        return {
-          ...node,
-          children: getLabel(node)?.endsWith('RecordClass')
-            ? mappedChildren
-            : orderBy(
-              [...mappedChildren],
-              getDisplayName
-            )
-        };
-      },
-      node => node.children,
-      searchTree
-    );
-  }, [ searchTree ]);
-
-  return result;
 }
 
 type SearchCheckboxTreeProps = {
@@ -103,7 +76,6 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
   return !props.searchTree 
     ? <Loading />
     : <CategoriesCheckboxTree
-        autoFocusSearchBox
         selectedLeaves={noSelectedLeaves}
         onChange={noop}
         tree={props.searchTree}
