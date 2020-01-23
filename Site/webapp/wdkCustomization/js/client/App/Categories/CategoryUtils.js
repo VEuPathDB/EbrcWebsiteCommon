@@ -6,6 +6,7 @@ export function getCategoryColor (category) {
     case 'enteric':
       return '#6738ff';
     case 'malarial':
+    case 'malaria':
       return '#ff6d0d';
     default:
       return '#9b9c9c';
