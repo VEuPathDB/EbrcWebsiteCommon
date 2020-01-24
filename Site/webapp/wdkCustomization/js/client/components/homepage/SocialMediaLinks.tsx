@@ -26,6 +26,7 @@ export const SocialMediaLinks = ({
       <button onClick={onNewsIconClick} className="link">
         <IconAlt fa="newspaper-o" />
         <span>News</span>
+        <span>Tweets</span>
       </button>
     }
 

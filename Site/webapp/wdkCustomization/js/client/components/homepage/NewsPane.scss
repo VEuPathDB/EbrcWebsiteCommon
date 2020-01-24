@@ -18,4 +18,25 @@
       border: unset;
     }
   }
+
+  &Drawer {
+    position: relative;
+    left: -.0625rem;
+
+    &Content {
+      position: fixed;
+
+      border-left: 1.5em solid #6c757d;
+      border-top: 1em solid transparent;
+      border-bottom: 1em solid transparent;
+      height: 4em;
+
+      button {
+        position: relative;
+        left: -0.875em;
+        color: white;
+        font-size: 1.5em;
+      }
+    }
+  }
 }

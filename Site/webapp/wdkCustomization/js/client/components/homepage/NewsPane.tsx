@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { IconAlt } from 'wdk-client/Components';
+
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
@@ -61,15 +63,21 @@ export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Pro
   return (
     <aside className={combineClassNames(cx(), containerClassName)}>
       <SocialMediaControls isNewsExpanded={isNewsExpanded} toggleNews={toggleNews} />
-      {
-        isNewsExpanded &&
-        <div className="News-Section">
-          <News
-            twitterUrl={twitterUrl}
-            webAppUrl={webAppUrl}
-            {...newsSidebarState}
-          />
-        </div>
+      {isNewsExpanded 
+        ? <div className="News-Section">
+            <News
+              twitterUrl={twitterUrl}
+              webAppUrl={webAppUrl}
+              {...newsSidebarState}
+            />
+          </div>
+        : <div className={cx('Drawer')}>
+            <div className={cx('DrawerContent')}>
+              <button className="link" onClick={toggleNews}>
+                <IconAlt fa="angle-double-left" />
+              </button>
+            </div>
+          </div>
       }
     </aside>
   );
