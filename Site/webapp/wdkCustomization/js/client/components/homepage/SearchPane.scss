@@ -1,5 +1,5 @@
 .ebrc-SearchPane {
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 1.25rem;
   border-right: 0.0625rem solid;
 
   h2 {
@@ -9,6 +9,7 @@
     display: flex;
     justify-content: space-between;
     white-space: nowrap;
+    font-style: italic;
   }
 
   &CheckboxTreeContainer {

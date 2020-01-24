@@ -48,7 +48,7 @@ export const SearchPane = (props: Props) => {
       </h2> 
       <div className={cx('CheckboxTreeContainer', areControlsExpanded ? 'controls_expanded' : 'controls_collapsed')}>
         <SearchCheckboxTree 
-          searchTree={alphabetizedSearchTree} 
+          searchTree={alphabetizedSearchTree}
           searchTerm={searchTerm}
           expandedBranches={expandedBranches}
           setSearchTerm={setSearchTerm}
