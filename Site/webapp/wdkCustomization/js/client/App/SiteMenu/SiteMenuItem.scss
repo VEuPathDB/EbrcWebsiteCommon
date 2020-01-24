@@ -19,7 +19,6 @@ $white: #E0E0E0;
   }
   &:hover {
     opacity: 1;
-    visibility: hidden;
   }
   .SiteMenuItem-Submenu {
     right: 0;
@@ -59,10 +58,12 @@ $white: #E0E0E0;
       pointer-events: none;
       .SiteMenu-Item-Submenu-Inner {
         opacity: 0;
+        visibility: hidden;
       }
       .SiteMenuItem {
         max-height: 0px;
         opacity: 0;
+        visibility: hidden;
       }
     }
 
