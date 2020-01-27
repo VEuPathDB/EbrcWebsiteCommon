@@ -30,7 +30,7 @@ const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/
               .map(({ attributes }) => (
                 <div className="NewsEntry" key={attributes.tag}>
                   <h4 className="NewsHeadline">
-                    <a href={`${newsUrl}#${attributes.tag}`} target="_blank">
+                    <a href={`${newsUrl}#${attributes.tag}`}>
                       {attributes.headline}
                     </a>
                   </h4>
