@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 import { Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -36,26 +36,32 @@ type Props = {
   displayName: string | undefined;
 };
 
-export const Footer = ({ containerClassName, buildNumber, releaseDate, displayName }: Props) => (
+export const Footer: FunctionComponent<Props> = ({ children, containerClassName, buildNumber, releaseDate, displayName }) => (
   <footer className={combineClassNames(cx(), containerClassName)}>
-    <div className={cx('Copyright')}>
-      <div className={cx('Brand')}>
-        <Link to="/new-home-page">{displayName}</Link>
-      </div>
-      <div>
-        Release {buildNumber} | {releaseDate && formatReleaseDate(releaseDate)}
-      </div>
-      <div>
-        ©{new Date().getFullYear()} The VEuPathDB Project Team
-      </div>
+    <div className={cx('PageDescriptionRow')}>
+      {children}
     </div>
 
-    <div className={cx('ProjectLinks')}>
-      {projects.map(projectId =>
-        <ProjectLink key={projectId} projectId={projectId} />
-      )}
-    </div>
+    <div className={cx('SiteFamilyRow')}>
+      <div className={cx('Copyright')}>
+        <div className={cx('Brand')}>
+          <Link to="/new-home-page">{displayName}</Link>
+        </div>
+        <div>
+          Release {buildNumber} | {releaseDate && formatReleaseDate(releaseDate)}
+        </div>
+        <div>
+          ©{new Date().getFullYear()} The VEuPathDB Project Team
+        </div>
+      </div>
 
-    <SocialMediaLinks />
+      <div className={cx('ProjectLinks')}>
+        {projects.map(projectId =>
+          <ProjectLink key={projectId} projectId={projectId} />
+        )}
+      </div>
+
+      <SocialMediaLinks />
+    </div>
   </footer>
 );
