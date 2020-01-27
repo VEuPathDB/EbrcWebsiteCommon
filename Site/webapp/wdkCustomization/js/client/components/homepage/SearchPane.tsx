@@ -116,6 +116,16 @@ const renderNode = (node: any, path: number[] | undefined) => {
 const renderNoResults = (searchTerm: string) =>
   <div>
     <p>
-      <Icon type="warning"/> We could not find any searches matching "{searchTerm}".
+      <strong>
+        We could not find any searches matching "{searchTerm}".
+      </strong>
+    </p>
+    <p>
+      Perhaps you meant to
+      {' '}
+      <Link to={`/search?searchString=${encodeURIComponent(searchTerm)}`} onClick={() => alert('Site search is under construction')}>
+        run a site-wide search for "{searchTerm}"
+      </Link>
+      ?
     </p>
   </div>;
