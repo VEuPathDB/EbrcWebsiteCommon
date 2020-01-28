@@ -9,6 +9,10 @@ $white: #E0E0E0;
   opacity: 0.85;
   transition: all 0.5s;
 
+  &:hover {
+    background-color: #ffffff24;
+  }
+
   .fa-caret-down {
     margin-left: 10px;
   }
@@ -21,7 +25,7 @@ $white: #E0E0E0;
     opacity: 1;
   }
   .SiteMenuItem-Submenu {
-    right: 0;
+    left: -.25em;
     top: 100%;
     padding: 10px 5px;
     z-index: 10000;
@@ -36,16 +40,18 @@ $white: #E0E0E0;
     justify-content: flex-start;
     transition: all 0.5s;
     margin-top: -10px;
+    max-height: calc(100vh - 10em);
 
     .SiteMenu-Item-Submenu-Inner {
       border-radius: 4px;
-      overflow: hidden;
+      overflow: auto;
       height: auto;
       display: flex;
       align-items: flex-start;
       flex-flow: column nowrap;
       justify-content: flex-start;
       box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+      background-color: #ededed;
     }
 
 
