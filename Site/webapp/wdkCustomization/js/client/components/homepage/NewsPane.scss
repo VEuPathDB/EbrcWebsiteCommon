@@ -1,4 +1,6 @@
 .ebrc-NewsPane {
+  position: relative;
+
   .News-Section { 
     .wdk-Showcase-HeadingRow {
       h2 {
@@ -20,12 +22,11 @@
   }
 
   &Drawer {
-    position: relative;
+    position: absolute;
     left: -.0625rem;
+    top: 0.5rem;
 
     &Content {
-      position: fixed;
-
       border-left: 1.5em solid #90989e;
       border-top: 1em solid transparent;
       border-bottom: 1em solid transparent;

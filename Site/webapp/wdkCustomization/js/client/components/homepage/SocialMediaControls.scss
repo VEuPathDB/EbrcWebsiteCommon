@@ -15,7 +15,10 @@
   }
 
   &__news-collapsed {
+    margin-top: calc(1rem + 4.625em);
+
     .ebrc-SocialMediaLinks {
+      margin-top: 0;
       flex-direction: column;
     }
   }
