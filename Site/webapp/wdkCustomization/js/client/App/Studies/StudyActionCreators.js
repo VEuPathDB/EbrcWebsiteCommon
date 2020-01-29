@@ -1,4 +1,4 @@
-import { get, identity, keyBy, mapValues, spread } from 'lodash';
+import { get, identity, keyBy, mapValues, orderBy, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
@@ -114,6 +114,16 @@ function formatStudies(projectId, questions, recordClasses, answer) {
           record
         )
       });
+
+      // Our presenters use a build number of 0 to convey studies
+      // which should appear first...
+      // (1) in the cards and...
+      // (2) in the "Search a study" menu
+      if (record.attributes.build_number_introduced === '0') {
+        console.log('haaaahnratface');
+        records.appearFirst.add(record.attributes.dataset_id);
+      }
+
       return records;
     }
 
@@ -122,9 +132,9 @@ function formatStudies(projectId, questions, recordClasses, answer) {
       return records;
     }
 
-  }, { valid: [], invalid: [] });
+  }, { valid: [], invalid: [], appearFirst: new Set() });
 
-  return [ records.valid
+  const unsortedValidRecords = records.valid
     .map(study => Object.assign(study, {
       disabled: study.projectAvailability && !study.projectAvailability.includes(projectId),
       // searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`),
@@ -140,22 +150,23 @@ function formatStudies(projectId, questions, recordClasses, answer) {
           displayName: recordClass.shortDisplayNamePlural,
         };
       })
-    }))
-    .sort((studyA, studyB) =>
-      studyA.disabled == studyB.disabled ? stringComparator(studyA.name, studyB.name)
-      : studyA.disabled ? 1 : -1
-    ),
-    records.invalid ];
-}
+    }));
 
-function stringComparator(strA, strB) {
-  if (strA < strB) {
-    return -1;
-  } else if (strB < strA) {
-    return 1;
-  } else {
-    return 0;
-  }
+  const sortedValidRecords = orderBy(
+    unsortedValidRecords,
+    [
+      ({ disabled }) => disabled,
+      ({ id }) => records.appearFirst.has(id),
+      ({ name }) => name
+    ],
+    [
+      'asc',
+      'desc',
+      'asc'
+    ]
+  );
+
+  return [ sortedValidRecords, records.invalid ];
 }
 
 /**
