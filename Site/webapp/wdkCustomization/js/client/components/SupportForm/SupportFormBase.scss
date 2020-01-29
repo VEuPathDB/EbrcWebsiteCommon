@@ -7,11 +7,15 @@
   margin: 6px 11px 6px 12px;
 
   .support-form-contents {
+    display: flex;
+    flex-direction: column;
+
     padding: 1em;
 
     .support-form-body {
+      align-self: center;
+
       h4 {
-        text-align: center;
         margin: 1em 0em;
       }
     

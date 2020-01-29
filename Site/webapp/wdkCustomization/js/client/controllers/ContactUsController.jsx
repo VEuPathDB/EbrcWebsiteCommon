@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { PageController } from 'wdk-client/Controllers';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 import { 
   updateField,
@@ -31,7 +32,7 @@ import {
   validatedAttachmentMetadata
 } from '../selectors/ContactUsSelectors';
 
-class ContactUsController extends PageController {
+class ContactUsView extends PageController {
   isRenderDataLoaded() {
     const {
       displayName,
@@ -105,6 +106,7 @@ class ContactUsController extends PageController {
                 messageValidity={messageValidity}
                 validatedAttachmentMetadata={validatedAttachmentMetadata}
                 submitDetails={submitDetails}
+                specialInstructions={this.props.specialInstructions}
               />
         }
       </SupportFormBase>
@@ -149,13 +151,16 @@ const mapDispatchToProps = {
   submitDetails
 };
 
-const mergeProps = (stateProps, dispatchProps) => ({
+const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   stateProps,
-  dispatchProps
+  dispatchProps,
+  specialInstructions: ownProps.specialInstructions || null
 });
 
-export default connect(
+const ContactUsController = connect(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps
-)(ContactUsController);
+)(ContactUsView);
+
+export default wrappable(ContactUsController);

@@ -23,10 +23,12 @@ const ContactUsSubmission = ({
   ccEmailsValidity,
   messageValidity,
   validatedAttachmentMetadata,
-  submitDetails
+  submitDetails,
+  specialInstructions
 }) => (
   <Fragment>
     <ContactUsSubmissionHeader />
+    {specialInstructions}
     <SupportFormBody>
       <ContactUsPreamble />
       <ContactUsForm
