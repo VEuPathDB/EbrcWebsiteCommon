@@ -1,6 +1,7 @@
 import { identity, isEqual } from 'lodash';
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router';
 
 import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
 import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
@@ -51,7 +52,7 @@ type OwnProps = {
   additionalSuggestions?: AdditionalSuggestionItem[]
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = StateProps & DispatchProps & RouteComponentProps<any> & OwnProps;
 
 type FocusType = 'hover' | 'click' | 'unfocused';
 
@@ -111,7 +112,7 @@ const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
   }
 };
 
-const HeaderView = ({ 
+const HeaderView = withRouter(({ 
   branding, 
   containerClassName, 
   loadSuggestions, 
@@ -119,7 +120,8 @@ const HeaderView = ({
   siteSearchSuggestions,
   additionalSuggestions,
   actions,
-  user
+  user,
+  location
 }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
@@ -197,6 +199,11 @@ const HeaderView = ({
     }
     // loadSuggestions(searchTerm);
   }, [ searchTerm ]);
+
+  useEffect(() => {
+    setFocusType('unfocused');
+    setSelectedMenuItems([]);
+  }, [ location.pathname, location.pathname ]);
 
   return (
     <header 
@@ -285,7 +292,7 @@ const HeaderView = ({
       </div>
     </header>
   );
-};
+});
 
 const mapStateToProps = (state: RootState): StateProps => ({
   user: state.globalData.user
