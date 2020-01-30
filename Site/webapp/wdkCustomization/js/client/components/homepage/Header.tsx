@@ -13,6 +13,7 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { User } from 'wdk-client/Utils/WdkUser';
 
 import UserMenu from 'ebrc-client/App/UserMenu';
+import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
 
 import { webAppUrl } from '../../config';
 
@@ -134,16 +135,11 @@ const HeaderView = withRouter(({
     identity
   );
   const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
-  const [ showToggledSearchBar, setShowToggledSearchBar ] = useState(false);
   const [ showHamburgerMenu, setShowHamburgerMenu ] = useState(false);
 
   const toggleHamburgerMenu = useCallback(() => {
     setShowHamburgerMenu(!showHamburgerMenu);
   }, [ showHamburgerMenu ]);
-
-  const toggleSearchBar = useCallback(() => {
-    setShowToggledSearchBar(!showToggledSearchBar);
-  }, [ showToggledSearchBar ]);
 
   const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
     if (
@@ -222,74 +218,55 @@ const HeaderView = withRouter(({
           <IconAlt fa="bars" />
         </button>
       </div>
-      <div className={cx('Content')}>
-        <div className={cx(
-          'MenuBar', 
-          showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden',
-          showToggledSearchBar ? 'toggle-shown' : 'toggle-hidden'
-        )}>
-          <MenuItemGroup
-            menuItems={menuItems}
-            selectedItems={selectedMenuItems}
-            setSelectedItems={setSelectedMenuItems}
-            focusType={focusType}
-            setFocusType={setFocusType}
-          />
-        </div>
-        <div className={cx(
-            'SearchBar', 
-            showToggledSearchBar ? 'toggle-shown' : 'toggle-hidden'
-          )}
-        >
-          <form onSubmit={e => {
-            e.preventDefault();
-            if (searchTerm) actions.goToGenePage(searchTerm);
-          }}>
-            <TextBox 
-              onChange={setSearchTerm}
-              value={searchTerm}
-              placeholder="Site search... e.g. PF3D7_1133400"
-              onFocus={() => {
-                setIsSearchBarSelected(true);
-              }}
-              onBlur={() => {
-                setIsSearchBarSelected(false);
-              }}
-            />
-            <button 
-              type="submit"
-              className={cx('SearchSubmit')}
-            >
-              <IconAlt fa="search" />
-            </button>
-          </form>
-          {
-            isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
-            <Suggestions
-              siteSearchSuggestions={siteSearchSuggestions}
-              additionalSuggestions={additionalSuggestions}
-            />
-          }
-        </div>
-        <div className={cx('SearchBarToggle')}>
-          <button
-            className={cx('SearchBarToggleButton')}
-            onClick={toggleSearchBar}
-            type="button"
-          >
-            {
-              showToggledSearchBar
-                ? <IconAlt fa="close" />
-                : <IconAlt fa="search" />
-            }
-          </button>
-        </div>
-        <UserMenu
-          webAppUrl={webAppUrl}
-          user={user}
-          actions={actions}
-        />
+      <div className={cx(
+        'MenuBar', 
+        showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden'
+      )}>
+      <MenuItemGroup
+        menuItems={menuItems}
+        selectedItems={selectedMenuItems}
+        setSelectedItems={setSelectedMenuItems}
+        focusType={focusType}
+        setFocusType={setFocusType}
+      />
       </div>
+      <div className={cx('SearchBar')}>
+        <form onSubmit={e => {
+          e.preventDefault();
+          if (searchTerm) actions.goToGenePage(searchTerm);
+        }}>
+          <TextBox 
+            onChange={setSearchTerm}
+            value={searchTerm}
+            placeholder="Site search... e.g. PF3D7_1133400"
+            onFocus={() => {
+              setIsSearchBarSelected(true);
+            }}
+            onBlur={() => {
+              setIsSearchBarSelected(false);
+            }}
+          />
+          <button 
+            type="submit"
+            className={cx('SearchSubmit')}
+          >
+            <IconAlt fa="search" />
+          </button>
+        </form>
+        {
+          isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
+          <Suggestions
+            siteSearchSuggestions={siteSearchSuggestions}
+            additionalSuggestions={additionalSuggestions}
+          />
+        }
+      </div>
+      <UserMenu
+        webAppUrl={webAppUrl}
+        user={user}
+        actions={actions}
+      />
+      <SocialMediaLinks />
     </header>
   );
 });

@@ -3,7 +3,6 @@ import React from 'react';
 import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
-import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
 
 import './SocialMediaControls.scss';
@@ -32,7 +31,16 @@ export const SocialMediaControls = ({ isNewsExpanded, toggleNews }: Props) => {
           />
         </button>
       }
-      <SocialMediaLinks showNewsIcon={!isNewsExpanded} onNewsIconClick={toggleNews} />
+      {
+        !isNewsExpanded &&
+        <div className="ebrc-SocialMediaLinks">
+          <button onClick={toggleNews} className="link">
+            <IconAlt fa="newspaper-o" />
+            <span>News</span>
+            <span>Tweets</span>
+          </button>
+        </div>
+      }
     </div>
   );
 };
