@@ -15,6 +15,7 @@ const projects = [
   [ 'http', 'ToxoDB' ],
   [ 'http', 'TrichDB' ],
   [ 'http', 'TriTrypDB' ],
+  [ 'http', 'VectorBase' ],
   [ 'http', 'OrthoMCL' ],
 ];
 
@@ -36,7 +37,7 @@ export default enhance(function Footer(props) {
           </span>
           <br/>
         </div>
-        <div>©{new Date().getFullYear()} The EuPathDB Project Team</div>
+        <div>©{new Date().getFullYear()} The VEuPathDB Project Team</div>
       </div>
 
       <div>
