@@ -9,7 +9,7 @@ const ContactUsFooter = ({
 }) => (
   <tr>
     <td align="center" colSpan={2}>
-      <ContactUsInstructions />
+    {/*  <ContactUsInstructions /> */}
       <input 
         type="submit"
         disabled={submitDisabled}

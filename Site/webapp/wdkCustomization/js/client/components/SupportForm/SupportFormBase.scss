@@ -11,9 +11,15 @@
     flex-direction: column;
 
     padding: 1em;
-
+ 
     .support-form-body {
       align-self: center;
+      font-size: 120%;
+      div.contact-us-files a {
+        background-color: lightyellow;
+        padding: 1em;
+        border-radius: 3em;
+      }
 
       h4 {
         margin: 1em 0em;
