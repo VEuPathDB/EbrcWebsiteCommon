@@ -21,4 +21,5 @@ export const {
   youtubeUrl = '',
   vimeoUrl = '',
   communitySite = '',
+  siteSearchServiceUrl = '',
 } = window.__SITE_CONFIG__;

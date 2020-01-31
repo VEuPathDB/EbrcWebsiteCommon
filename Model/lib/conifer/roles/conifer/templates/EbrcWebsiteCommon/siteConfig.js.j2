@@ -1,23 +1,26 @@
-// used for webpack. remove this when this can be set at build time.
+{#- used for webpack. remove this when this can be set at build time. #}
 window.__asset_path_remove_me_please__ = "/{{ webapp_ctx }}/";
 
-// used by EbrcWebsiteCommon to initialize wdk
+{#- used by EbrcWebsiteCommon to initialize wdk #}
 window.__SITE_CONFIG__ = {
   rootElement: "#wdk-container",
-  rootUrl: "{{ modelprop.WEBAPP_BASE_URL }}",
-  endpoint: "{{ modelprop.REST_SERVICE_BASE_URL }}",
-  projectId: "{{ modelprop.PROJECT_ID }}",
-  webAppUrl: "{{ modelprop.LEGACY_WEBAPP_BASE_URL }}",
-  facebookUrl: "{{ modelprop.FACEBOOK_URL }}",
-  twitterUrl: "{{ modelprop.TWITTER_URL }}",
-  youtubeUrl: "{{ modelprop.YOUTUBE_URL }}",
-  vimeoUrl: "{{ modelprop.VIMEO_URL }}",
-  communitySite: "{{ modelprop.COMMUNITY_SITE }}"
+  rootUrl: "{{ modelprop.WEBAPP_BASE_URL|default('') }}",
+  endpoint: "{{ modelprop.REST_SERVICE_BASE_URL|default('') }}",
+  projectId: "{{ modelprop.PROJECT_ID|default('') }}",
+  webAppUrl: "{{ modelprop.LEGACY_WEBAPP_BASE_URL|default('') }}",
+  facebookUrl: "{{ modelprop.FACEBOOK_URL|default('') }}",
+  twitterUrl: "{{ modelprop.TWITTER_URL|default('') }}",
+  youtubeUrl: "{{ modelprop.YOUTUBE_URL|default('') }}",
+  vimeoUrl: "{{ modelprop.VIMEO_URL|default('') }}",
+  communitySite: "{{ modelprop.COMMUNITY_SITE|default('') }}",
+  siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}"
 };
 
-// Initialize google analytics. A pageview event will be sent in the JavaScript code.
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-ga('create', '{{ modelprop.GOOGLE_ANALYTICS_ID }}', 'auto');
+{#- Initialize google analytics. A pageview event will be sent in the JavaScript code. #}
+{%- if modelprop.GOOGLE_ANALYTICS_ID is defined %}}
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '{{ modelprop.GOOGLE_ANALYTICS_ID }}', 'auto');
+{%- endif %}

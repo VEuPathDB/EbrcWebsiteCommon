@@ -159,10 +159,11 @@ modelprop:
   REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
   REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
   COMMUNITY_SITE: //qa.community.eupathdb.org/
-  VIMEO_URL: ''
-  GOOGLE_ANALYTICS_ID: ''
-  FACEBOOK_URL: ''
-  YOUTUBE_URL: ''
+  VIMEO_URL:
+  GOOGLE_ANALYTICS_ID:
+  FACEBOOK_URL:
+  YOUTUBE_URL:
+  SITE_SEARCH_SERVICE_URL:
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
