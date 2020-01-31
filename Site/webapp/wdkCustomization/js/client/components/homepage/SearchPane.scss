@@ -5,20 +5,12 @@
     font-size: 2.3em;
     margin: 0 1em 0.25em 0;
     padding: 0;
-    display: flex;
-    justify-content: space-between;
     white-space: nowrap;
     font-style: italic;
   }
 
   &CheckboxTreeContainer {
     font-size: 1.2em;
-
-    &__controls_collapsed {
-      .wdk-CheckboxTreeLinks, .wdk-RealTimeSearchBox {
-        display: none;
-      }
-    }
   }
 
   .wdk-CheckboxTreeLinks {

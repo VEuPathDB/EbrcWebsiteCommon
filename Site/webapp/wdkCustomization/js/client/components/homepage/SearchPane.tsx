@@ -30,23 +30,14 @@ export const SearchPane = (props: Props) => {
     memoize((s: string) => decode(arrayOf(string), s))
   );
 
-  const [ areControlsExpanded, setAreControlsExpanded ] = useState(true);
-
-  const toggleAreControlsExpanded = useCallback(() => {
-    setAreControlsExpanded(!areControlsExpanded);
-  }, [ areControlsExpanded ]);
-
   const alphabetizedSearchTree = useAlphabetizedSearchTree(props.searchTree);
 
   return (
     <nav className={combineClassNames(cx(), props.containerClassName)}>
       <h2>
         Search for...
-        <button type="button" className="link" onClick={toggleAreControlsExpanded}>
-          <IconAlt fa="wrench" className="fa-flip-horizontal" />
-        </button>
       </h2> 
-      <div className={cx('CheckboxTreeContainer', areControlsExpanded ? 'controls_expanded' : 'controls_collapsed')}>
+      <div className={cx('CheckboxTreeContainer')}>
         <SearchCheckboxTree 
           searchTree={alphabetizedSearchTree}
           searchTerm={searchTerm}
