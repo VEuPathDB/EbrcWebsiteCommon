@@ -63,6 +63,7 @@ module.exports = function configure(additionalConfig) {
     resolve: {
       alias,
       modules: [
+        'node_modules',
         path.resolve(process.cwd(), 'node_modules'),
         path.resolve(__dirname, 'node_modules'),
         path.resolve(__dirname, '../../WDKClient/Client/node_modules'),
