@@ -10,7 +10,7 @@ interface Props {
 export default function ExternalContentController(props: Props) {
   const { url } = props;
 
-  const content = usePromise(async () => {
+  const { value: content } = usePromise(async () => {
     try {
       const response = await fetch(url, { mode: 'cors' });
       if (response.ok) return response.text();
