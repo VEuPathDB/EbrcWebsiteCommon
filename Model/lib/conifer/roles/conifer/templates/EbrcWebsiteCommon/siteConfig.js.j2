@@ -1,7 +1,7 @@
-{#- used for webpack. remove this when this can be set at build time. #}
+{# used for webpack. remove this when this can be set at build time. #}
 window.__asset_path_remove_me_please__ = "/{{ webapp_ctx }}/";
 
-{#- used by EbrcWebsiteCommon to initialize wdk #}
+{# used by EbrcWebsiteCommon to initialize wdk #}
 window.__SITE_CONFIG__ = {
   rootElement: "#wdk-container",
   rootUrl: "{{ modelprop.WEBAPP_BASE_URL|default('') }}",
@@ -16,8 +16,8 @@ window.__SITE_CONFIG__ = {
   siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}"
 };
 
-{#- Initialize google analytics. A pageview event will be sent in the JavaScript code. #}
-{%- if modelprop.GOOGLE_ANALYTICS_ID is defined %}}
+{# Initialize google analytics. A pageview event will be sent in the JavaScript code. #}
+{%- if modelprop.GOOGLE_ANALYTICS_ID is defined %}
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
