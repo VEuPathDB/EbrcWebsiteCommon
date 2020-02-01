@@ -39,7 +39,7 @@ const ContactUsForm = ({
                 type="text"
                 value={subjectValue}
                 onChange={updateSubject} 
-                size={81} 
+                size={80} 
               />
             }
           />
@@ -51,7 +51,7 @@ const ContactUsForm = ({
                 value={reporterEmailValue}
                 validity={reporterEmailValidity}
                 onChange={updateReporterEmail} 
-                size={81} 
+                size={80} 
               />
             }
           />
@@ -63,19 +63,7 @@ const ContactUsForm = ({
                 value={ccEmailsValue}
                 validity={ccEmailsValidity}
                 onChange={updateCcEmails} 
-                size={81} 
-              />
-            }
-          />
-          <SupportFormField
-            label="Message:"
-            inputElement={
-              <ValidatedTextArea
-                value={messageValue}
-                validity={messageValidity}
-                onChange={updateMessage} 
-                rows={8} 
-                cols={75}
+                size={80} 
               />
             }
           />
@@ -90,7 +78,30 @@ const ContactUsForm = ({
               />
             }
           />
-          <ContactUsFooter 
+          <SupportFormField
+            label="Message:"
+            inputElement={
+              <ValidatedTextArea
+                value={messageValue}
+                validity={messageValidity}
+                onChange={updateMessage} 
+                rows={8} 
+                cols={80}
+            />
+            }
+          />
+  {/*     <SupportFormField
+            label="Attachments:"
+            inputElement={
+              <ContactUsAttachments
+                changeFile={changeFile}
+                addFile={addFile}
+                removeFile={removeFile}
+                validatedAttachmentMetadata={validatedAttachmentMetadata}
+              />
+            }
+          />
+    */}       <ContactUsFooter 
             submitDisabled={submitDisabled}
             submissionFailed={submissionFailed}
             responseMessage={responseMessage}

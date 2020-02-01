@@ -10,7 +10,7 @@ const ContactUsAttachments = ({
   validatedAttachmentMetadata
 }) => 
   <div className="contact-us-files">
-    Optionally, attach up to three screenshots to your message (maximum 5Mb per file).
+    Attach up to three screenshots (maximum 5Mb per file).
     <br />
     <br />
     {
