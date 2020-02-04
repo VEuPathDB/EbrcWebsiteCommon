@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { groupBy } from 'lodash';
+import { groupBy, noop } from 'lodash';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { Link, IconAlt } from 'wdk-client/Components';
 import {useWdkEffect} from 'wdk-client/Service/WdkService';
@@ -31,33 +31,41 @@ const infoIcon = (
 // be displayed for the given context.
 const siteAnnouncements = [
   // alpha
-  (props) => {
-    if (param('alpha', location) === 'true' || /^(alpha|a1|a2)/.test(location.hostname)) {
-      return (
-        <div key="alpha">
-          This pre-release version of {props.projectId} is available for early community review.
-          Your searches and strategies saved in this alpha release will not be available in the
-          official release.
-          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
-          This site is under active development so there may be incomplete or
-          inaccurate data and occasional site outages can be expected.
-        </div>
-      );
+  {
+    id: 'alpha',
+    dismissible: false,
+    renderDisplay: props => {
+      if (param('alpha', location) === 'true' || /^(alpha|a1|a2)/.test(location.hostname)) {
+        return (
+          <div key="alpha">
+            This pre-release version of {props.projectId} is available for early community review.
+            Your searches and strategies saved in this alpha release will not be available in the
+            official release.
+            Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
+            This site is under active development so there may be incomplete or
+            inaccurate data and occasional site outages can be expected.
+          </div>
+        );
+      }
     }
   },
 
   // beta
-  (props) => {
-    if (param('beta', location) === 'true' || /^(beta|b1|b2)/.test(location.hostname)) {
-      return (
-        <div key="beta">
-          This pre-release version of {props.projectId} is available for early community review.
-          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
-          Note that any saved strategies in the beta sites will be lost once the
-          sites are fully released. Some of our sites remain under active development
-          during their Beta release which might require occasional site outages or data re-analysis.
-        </div>
-      );
+  {
+    id: 'beta',
+    dismissible: false,
+    renderDisplay: props => {
+      if (param('beta', location) === 'true' || /^(beta|b1|b2)/.test(location.hostname)) {
+        return (
+          <div key="beta">
+            This pre-release version of {props.projectId} is available for early community review.
+            Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
+            Note that any saved strategies in the beta sites will be lost once the
+            sites are fully released. Some of our sites remain under active development
+            during their Beta release which might require occasional site outages or data re-analysis.
+          </div>
+        );
+      }
     }
   },
 
@@ -77,18 +85,24 @@ const siteAnnouncements = [
   },
 */
  // Clinepi home page
-
-  (props) => {
+ {
+   id: "clinepi-PERCH",
+   dismissible: false,
+   renderDisplay: (props) => {
     if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && location.pathname.endsWith('/app/record/dataset/DS_1595200bb8') ) {
+      var divStyle = {
+        color: 'black',
+        fontSize: '120%'
+        };
       return (
-        <div key="clinepi-PERCH">
+        <div style={divStyle} key="clinepi-PERCH">
           To request access to the PERCH data, please email Christine Prosperi at <a href = "mailto: cprospe1@jhu.edu">cprospe1@jhu.edu</a>.
         </div>
       );
     }
     return null;
-  },
-
+  }
+ },
 
 // Fungi gene page for Cryptococcus neoformans KN99
 /*  (props) => { 
@@ -109,36 +123,42 @@ const siteAnnouncements = [
 */
 
 // TriTryp gene page for Bodo saltans strain Lake Konstanz
-  (props) => { 
-    if ( (props.projectId == 'TriTrypDB') && 
-         ( (location.pathname.indexOf("/app/record/gene/BS") > -1)    ||
-           (location.pathname.indexOf("/app/record/gene/BSAL_") > -1)
-         )  
-       ) 
-    {
-      return (
-        <div key="geneFungi">
-          This <i>Bodo saltans</i> genome sequence and annotation represents a draft version. Please carefully consider gene models and genome structure before drawing conclusions.
-        </div>
-      );
+  {
+    id: 'geneFungi',
+    dismissible: false,
+    renderDisplay: props => { 
+      if ( (props.projectId == 'TriTrypDB') && 
+           ( (location.pathname.indexOf("/app/record/gene/BS") > -1)    ||
+             (location.pathname.indexOf("/app/record/gene/BSAL_") > -1)
+           )  
+         ) 
+      {
+        return (
+          <div key="geneFungi">
+            This <i>Bodo saltans</i> genome sequence and annotation represents a draft version. Please carefully consider gene models and genome structure before drawing conclusions.
+          </div>
+        );
+      }
+      return null;
     }
-    return null;
   },
 
-
-
   // OrthoMCL enzyme/compound
-  (props) => {
-    if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
-      return (
-        <div key="ortho-enzyme">
-          Note: the Enzyme Commission (EC) numbers associated with proteins were
-          obtained only from UniProt. In future releases we expect to include EC
-          numbers from multiple sources including the annotation.
-        </div>
-      );
+  {
+    id: 'ortho-enzyme',
+    dismissible: false,
+    renderDisplay: (props) => {
+      if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
+        return (
+          <div key="ortho-enzyme">
+            Note: the Enzyme Commission (EC) numbers associated with proteins were
+            obtained only from UniProt. In future releases we expect to include EC
+            numbers from multiple sources including the annotation.
+          </div>
+        );
+      }
+      return null;
     }
-    return null;
   }
 
   // Alt-splice release
@@ -191,16 +211,28 @@ export default function Announcements(props) {
         [
           ...down,
           ...degraded,
-          ...information
-        ].map(announcement => (
-          <AnnouncementContainer
-            key={announcement.id}
-            announcement={announcement} 
-            isOpen={!closedBanners.includes(`${announcement.id}`)}
-            onClose={onCloseFactory(`${announcement.id}`)}
-          />
-        ))
-      }
+          ...information,
+          ...siteAnnouncements
+        ].map(announcementData => {
+          const category = announcementData.category || 'info';
+          const dismissible = announcementData.dismissible == null ? true : false;
+          const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
+          const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
+          const display = typeof announcementData.renderDisplay === 'function' 
+            ? announcementData.renderDisplay({ projectId: data.projectId, location: data.location })
+            : toElement(announcementData);
+
+          return (
+            <AnnouncementContainer
+              key={announcementData.id}
+              category={category}
+              dismissible={dismissible}
+              isOpen={isOpen}
+              onClose={onClose}
+              display={display}
+            />
+          );
+        })}
     </div>
   );
 }
@@ -209,9 +241,9 @@ export default function Announcements(props) {
  * Container for a single announcement banner.
  */
 function AnnouncementContainer(props) {
-  const icon = props.announcement.category === 'down'
+  const icon = props.category === 'down'
     ? stopIcon
-    : props.announcement.category === 'degraded'
+    : props.category === 'degraded'
     ? warningIcon
     : infoIcon;
 
@@ -222,11 +254,16 @@ function AnnouncementContainer(props) {
  * Banner for a single announcement.
  */
 function AnnouncementBanner({ 
-  announcement, 
   isOpen, 
   onClose, 
-  icon
+  icon,
+  display,
+  dismissible
 }) {
+  if (display == null) {
+    return null;
+  }
+
   return (
     <div className="eupathdb-Announcement" style={{
       padding: '.5em',
@@ -250,15 +287,18 @@ function AnnouncementBanner({
           color: 'darkred',
           fontSize: '1.1em'
         }}>
-          {toElement(announcement)}
+          {display}
         </div>
-        <button onClick={onClose} className="link" style={{
-          color: '#7c7c7c',
-          alignSelf: 'flex-start',
-          fontSize: '0.8em'
-        }}>
-          <IconAlt fa="times" className="fa-2x" />
-        </button>
+        {
+          dismissible &&
+          <button onClick={onClose} className="link" style={{
+            color: '#7c7c7c',
+            alignSelf: 'flex-start',
+            fontSize: '0.8em'
+          }}>
+            <IconAlt fa="times" className="fa-2x" />
+          </button>
+        }
       </div>
     </div>
   );
