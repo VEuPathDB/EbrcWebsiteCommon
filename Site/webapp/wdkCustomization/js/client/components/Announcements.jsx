@@ -214,7 +214,7 @@ export default function Announcements(props) {
             <AnnouncementContainer
               key={announcementData.id}
               category={announcementData.category || 'info'}
-              dismissible={dismissible || true}
+              dismissible={dismissible}
               isOpen={dismissible ? !closedBanners.includes(`${announcementData.id}`) : true}
               onClose={dismissible === false ? onCloseFactory(`${announcementData.id}`) : noop}
               display={typeof announcementData.renderDisplay === 'function' 
