@@ -85,8 +85,10 @@ const siteAnnouncements = [
   },
 */
  // Clinepi home page
-
-  (props) => {
+ {
+   id: "clinepi-PERCH",
+   dismissible: false,
+   renderDisplay: (props) => {
     if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && location.pathname.endsWith('/app/record/dataset/DS_1595200bb8') ) {
       return (
         <div key="clinepi-PERCH">
@@ -95,8 +97,8 @@ const siteAnnouncements = [
       );
     }
     return null;
-  },
-
+  }
+ },
 
 // Fungi gene page for Cryptococcus neoformans KN99
 /*  (props) => { 
