@@ -40,6 +40,8 @@ export const Require = {
   login: 'login',
   // approval required
   approval: 'approval',
+  // not ready for release, only study page
+  notready: 'notready',
 }
 
 // 
@@ -90,7 +92,18 @@ export const accessLevels = {
     [Action.recordPage]: Require.approval,
     [Action.download]: Require.approval,
     [Action.basket]: Require.approval
+  },
+  "noaccessreq": {
+    [Action.search]: Require.notready,
+    [Action.analysis]: Require.notready,
+    [Action.results]: Require.notready,
+    [Action.paginate]: Require.notready,
+    [Action.record]: Require.notready,
+    [Action.recordPage]: Require.notready,
+    [Action.download]: Require.notready,
+    [Action.basket]: Require.notready
   }
+
 };
 
 
