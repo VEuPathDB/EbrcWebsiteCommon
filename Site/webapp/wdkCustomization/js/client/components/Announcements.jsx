@@ -214,19 +214,22 @@ export default function Announcements(props) {
           ...information,
           ...siteAnnouncements
         ].map(announcementData => {
+          const category = announcementData.category || 'info';
           const dismissible = announcementData.dismissible == null ? true : false;
+          const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
+          const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
+          const display = typeof announcementData.renderDisplay === 'function' 
+            ? announcementData.renderDisplay({ projectId: data.projectId, location: data.location })
+            : toElement(announcementData);
 
           return (
             <AnnouncementContainer
               key={announcementData.id}
-              category={announcementData.category || 'info'}
+              category={category}
               dismissible={dismissible}
-              isOpen={dismissible ? !closedBanners.includes(`${announcementData.id}`) : true}
-              onClose={dismissible === false ? onCloseFactory(`${announcementData.id}`) : noop}
-              display={typeof announcementData.renderDisplay === 'function' 
-                ? announcementData.renderDisplay({ projectId: data.projectId, location: data.location })
-                : toElement(announcementData)
-              }
+              isOpen={isOpen}
+              onClose={onClose}
+              display={display}
             />
           );
         })}
