@@ -90,8 +90,12 @@ const siteAnnouncements = [
    dismissible: false,
    renderDisplay: (props) => {
     if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && location.pathname.endsWith('/app/record/dataset/DS_1595200bb8') ) {
+      var divStyle = {
+        color: 'black',
+        fontSize: '120%'
+        };
       return (
-        <div key="clinepi-PERCH">
+        <div style={divStyle} key="clinepi-PERCH">
           To request access to the PERCH data, please email Christine Prosperi at <a href = "mailto: cprospe1@jhu.edu">cprospe1@jhu.edu</a>.
         </div>
       );
