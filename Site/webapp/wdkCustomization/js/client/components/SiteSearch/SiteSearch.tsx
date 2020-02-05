@@ -45,19 +45,24 @@ export default function SiteSearch(props: Props) {
 }
 
 function Results(props: ResultProps) {
+  if (props.response.searchResults.totalCount === 0) {
+    return (
+      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>Nothing matched your search. Try something else.</div>
+    )
+  }
   return (
     <div className={cx('--Results')}>
-      <Pagination {...props as ResultProps} />
+      <Pagination {...props} />
       <div className={cx('--CountsContainer')}>
-        <SearchCounts {...props as ResultProps}/>
+        <SearchCounts {...props}/>
       </div>
       <div className={cx('--ResultTypeWidgetContainer')}>
-        <ResultTypeWidget {...props as ResultProps} />
+        <ResultTypeWidget {...props} />
       </div>
       <div className={cx('--ResultContainer')}>
         <SearchResult {...props} />
       </div>
-      <Pagination {...props as ResultProps}/>
+      <Pagination {...props}/>
     </div>
   )
 }
