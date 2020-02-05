@@ -94,7 +94,17 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
 const renderNodeFactory = (questionsByUrlSegment: Record<string, Question> | undefined = {}) => (node: any, path: number[] | undefined) => {
   const isSearch = getTargetType(node) === 'search';
   const baseUrlSegment  = isSearch ? node.wdkReference.urlSegment : null;
-  const urlSegment = questionsByUrlSegment[baseUrlSegment]?.paramNames.length === 0 ? `${baseUrlSegment}?autoRun` : baseUrlSegment;
+
+  // autoRun searches whose questions (1) require no parameters and (2) are not internal dataset questions
+  // (N.B.: internal dataset questions are currently being detected by the presence of
+  // "datasetCategory" and "datasetSubtype" properties)
+  const urlSegment = (
+    questionsByUrlSegment[baseUrlSegment]?.paramNames.length === 0 &&
+    questionsByUrlSegment[baseUrlSegment]?.properties?.datasetCategory == null &&
+    questionsByUrlSegment[baseUrlSegment]?.properties?.datasetSubtype == null
+  )
+    ? `${baseUrlSegment}?autoRun`
+    : baseUrlSegment;
 
   const displayName = getDisplayName(node);
   const displayElement = isSearch
