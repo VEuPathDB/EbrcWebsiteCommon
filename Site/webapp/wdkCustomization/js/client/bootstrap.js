@@ -62,6 +62,7 @@ export function initialize(options = {}) {
 
   unaliasWebappUrl();
   removeJsessionid();
+  preventButtonOutlineOnClick();
 
   wrapComponents(mergeWrapperObjects(componentWrappers, EbrcComponentWrappers));
 
@@ -97,7 +98,6 @@ function unaliasWebappUrl() {
       window.history.replaceState(null, '', pathname.replace(aliasUrl, rootUrl) + location.search);
     }
   }
-
 }
 
 /**
@@ -197,4 +197,12 @@ function wrapComponents(wrappersByComponentName) {
       }
     }
   });
+}
+
+function preventButtonOutlineOnClick() {
+  if (window.document == null) return;
+  window.addEventListener('mouseup', function(event) {
+    const { target } = event;
+    if (target instanceof HTMLButtonElement) target.blur();
+  })
 }
