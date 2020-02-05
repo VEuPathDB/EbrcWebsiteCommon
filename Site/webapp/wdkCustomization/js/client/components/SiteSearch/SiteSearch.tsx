@@ -159,7 +159,7 @@ function SearchCounts(props: ResultProps) {
 
 function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
   const { organismTree, filterOrganisms, onOrganismsChange, response } = props;
-  const initialExpandedNodes = organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [];
+  const initialExpandedNodes = useMemo(() => organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [], [ organismTree ]);
   const [ expansion, setExpansion ] = useState<string[]>(initialExpandedNodes);
   const [ selection, setSelection ] = useState<string[]>(filterOrganisms);
   const pendingFilter = !isEqual(selection, filterOrganisms);
@@ -181,6 +181,15 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
   const showResetButton = filterOrganisms.length > 0;
   const showApplyCancelButtons = pendingFilter;
   const showButtons = showResetButton || showApplyCancelButtons;
+
+  useEffect(() => {
+    setExpansion(initialExpandedNodes);
+  }, [ initialExpandedNodes ]);
+
+  useEffect(() => {
+    setSelection(filterOrganisms);
+  }, [ filterOrganisms ]);
+
   return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'organism')}>
