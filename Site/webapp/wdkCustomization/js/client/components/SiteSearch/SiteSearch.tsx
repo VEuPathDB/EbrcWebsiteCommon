@@ -106,7 +106,10 @@ function SearchCounts(props: ResultProps) {
         )
       : organismTree
     ), [ organismTree, organismCounts, onlyShowMatches ]);
-  const showOrganismFilter = documentType == null || docTypesById[documentType]?.hasOrganismField;
+  const showOrganismFilter = documentType == null
+    ? documentTypes.filter(d => d.count > 0).some(d => d.hasOrganismField)
+    : docTypesById[documentType]?.hasOrganismField;
+  const totalOrgsCount = Object.values(organismCounts).reduce(add, 0);
   
   return (
     <div className={cx('--Counts')}>
@@ -145,7 +148,7 @@ function SearchCounts(props: ResultProps) {
           ))}
         </tbody>
       </table>
-      {showOrganismFilter && organismTree && filterOrganisms && (
+      {totalOrgsCount > 0 && showOrganismFilter && organismTree && filterOrganisms && (
         <OrgansimFilter
           organismTree={finalOrganismTree}
           filterOrganisms={filterOrganisms}
@@ -272,7 +275,7 @@ function DirectHit(props: ResultProps) {
   const quotes = [``, `'`, `"`];
   const firstHit = response?.searchResults?.documents[0];
   const firstHitDocType = response?.documentTypes.find(d => d.id === firstHit?.documentType);
-  const firstHitIsExact = firstHit != null && quotes.some(q => searchString === q + firstHit.wdkPrimaryKeyString + q);
+  const firstHitIsExact = firstHit != null && quotes.some(q => searchString.toLowerCase() === (q + firstHit.wdkPrimaryKeyString + q).toLowerCase());
   
   if (!response || !firstHit || !firstHitDocType || !firstHitIsExact) return null;
 
