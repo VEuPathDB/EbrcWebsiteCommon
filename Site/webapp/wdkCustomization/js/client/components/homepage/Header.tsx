@@ -14,8 +14,9 @@ import { User } from 'wdk-client/Utils/WdkUser';
 
 import UserMenu from 'ebrc-client/App/UserMenu';
 import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
+import { SiteSearchInput } from 'ebrc-client/components/SiteSearch/SiteSearchInput';
 
-import { webAppUrl } from '../../config';
+import { webAppUrl } from 'ebrc-client/config';
 
 import { combineClassNames } from './Utils';
 
@@ -230,37 +231,7 @@ const HeaderView = withRouter(({
         setFocusType={setFocusType}
       />
       </div>
-      <div className={cx('SearchBar')}>
-        <form onSubmit={e => {
-          e.preventDefault();
-          if (searchTerm) actions.goToGenePage(searchTerm);
-        }}>
-          <TextBox 
-            onChange={setSearchTerm}
-            value={searchTerm}
-            placeholder="Site search... e.g. PF3D7_1133400"
-            onFocus={() => {
-              setIsSearchBarSelected(true);
-            }}
-            onBlur={() => {
-              setIsSearchBarSelected(false);
-            }}
-          />
-          <button 
-            type="submit"
-            className={cx('SearchSubmit')}
-          >
-            <IconAlt fa="search" />
-          </button>
-        </form>
-        {
-          isSearchBarSelected && siteSearchSuggestions && additionalSuggestions &&
-          <Suggestions
-            siteSearchSuggestions={siteSearchSuggestions}
-            additionalSuggestions={additionalSuggestions}
-          />
-        }
-      </div>
+      <SiteSearchInput/>
       <UserMenu
         webAppUrl={webAppUrl}
         user={user}

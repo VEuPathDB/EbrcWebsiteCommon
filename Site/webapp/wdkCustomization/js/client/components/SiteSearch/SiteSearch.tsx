@@ -1,10 +1,11 @@
-import { keyBy, add, isEqual } from 'lodash';
-import React, { useMemo, useRef, useState, useCallback, useEffect } from 'react';
+import { capitalize, keyBy, add, isEqual } from 'lodash';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { PaginationMenu } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
-import { CheckboxTree, CheckboxList, Link } from 'wdk-client/Components';
+import { CheckboxTree, CheckboxList } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 
 import './SiteSearch.scss';
@@ -34,54 +35,60 @@ type ResultProps = Omit<Props, ResultPropKeys> &  Required<Pick<Props, ResultPro
 const cx = makeClassNameHelper('SiteSearch');
 
 export default function SiteSearch(props: Props) {
-  const { searchString, onSearch, onPageOffsetChange } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className={cx()}>
-      <h1>Search</h1>
-      <div className={cx('--SearchContainer')}>
-        <div className={cx('--SearchBox')}>
-          <input
-            type="input"
-            ref={inputRef}
-            key={searchString}
-            defaultValue={searchString}
-            placeholder="Search the site"
-            onBlur={() => {/* setShowSuggestions(false) */}}
-            onFocus={() => {/* setShowSuggestions(true) */}}
-            onKeyPress={e => {
-              switch(e.key) {
-                case 'Esc':
-                case 'Escape':
-                  // setShowSuggestions(false);
-                  break;
-                case 'Down':
-                case 'ArrowDown':
-                  // setShowSuggestions(true);
-                  break;
-                case 'Enter':
-                  onSearch(e.currentTarget.value);
-                  break;
-                default:
-                  return;
-              }
-            }}
-          />
-          <button type="button" onClick={() => { inputRef.current && onSearch(inputRef.current.value)}}>
-            <i className="fa fa-search"/>
-          </button>
-        </div>
-      </div>
+      <h1>{Title(props)}</h1>
+      {props.response && <Results {...props as ResultProps} />}
+    </div>
+  )
+}
+
+function Results(props: ResultProps) {
+  return (
+    <div className={cx('--Results')}>
+      <Pagination {...props as ResultProps} />
       <div className={cx('--CountsContainer')}>
-        { props.response && <SearchCounts {...props as ResultProps}/> }
+        <SearchCounts {...props as ResultProps}/>
+      </div>
+      <div className={cx('--ResultTypeWidgetContainer')}>
+        <ResultTypeWidget {...props as ResultProps} />
       </div>
       <div className={cx('--ResultContainer')}>
         <SearchResult {...props} />
       </div>
-      <div className={cx('--ResultTypeWidgetContainer')}>
-        { props.response && <ResultTypeWidget {...props as ResultProps} /> }
-      </div>
+      <Pagination {...props as ResultProps}/>
+    </div>
+  )
+}
+
+function Title(props: Props) {
+  const { response, documentType, searchString } = props;
+
+  if (!searchString) {
+    return <React.Fragment>No results</React.Fragment>
+  }
+
+  if (!documentType) {
+    return <React.Fragment>All results matching <strong>{searchString}</strong></React.Fragment>
+  }
+
+  if (response == null) return null;
+
+  const docType = response.documentTypes.find(d => d.id === documentType);
+  const display = docType?.displayNamePlural ?? capitalize(documentType);
+
+  return <React.Fragment>{display} matching <strong>{searchString}</strong></React.Fragment>
+}
+
+function ResultInfo(props: ResultProps) {
+  const { numRecords, offset, response } = props;
+  const { searchResults: result } = response;
+  const firstRec = offset + 1;
+  const lastRec = Math.min(result.totalCount, offset + numRecords);
+  return (
+    <div className={cx('--ResultInfo')}>
+      {firstRec} - {lastRec} of {result.totalCount.toLocaleString()}
     </div>
   )
 }
@@ -89,7 +96,7 @@ export default function SiteSearch(props: Props) {
 function SearchCounts(props: ResultProps) {
   const { response, documentType, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
-  const [ onlyShowMatches, setOnlyShowMatches ] = useState(false);
+  const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
   const docTypesById = useMemo(() => keyBy(documentTypes, 'id'), [ documentTypes ]);
   const finalOrganismTree = useMemo(() => (
     onlyShowMatches
@@ -129,7 +136,7 @@ function SearchCounts(props: ResultProps) {
                 if (docType == null || (onlyShowMatches && docType.count === 0)) return null;
                 return (
                   <tr key={docType.id}>
-                    <td><button className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayName}</button></td>
+                    <td><button className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayNamePlural}</button></td>
                     <td>{docType.count ? docType.count.toLocaleString() : null}</td>
                   </tr>
                 );
@@ -209,17 +216,9 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
   )
 }
 
-function SearchResult(props: Props) {
-  const { numRecords, offset, response, searchString, onPageOffsetChange } = props;
+function SearchResult(props: ResultProps) {
+  const { response } = props;
   const documentTypesById = useMemo(() => keyBy(response?.documentTypes, 'id'), [ response]);
-  if (searchString == '') {
-    return (
-      <div>Type a search above and press Enter.</div>
-    )
-  }
-  if (response == null) return (
-    <div>Wating for results</div>
-  )
   if (response.searchResults.totalCount == 0) {
     return (
       <div>Nothing matched your search. Try something else.</div>
@@ -227,54 +226,52 @@ function SearchResult(props: Props) {
   }
 
   const { searchResults: result } = response;
-  const firstRec = offset + 1;
-  const lastRec = Math.min(result.totalCount, offset + numRecords);
-  const totalPages = Math.ceil(result.totalCount / numRecords);
-  const currentPage = Math.ceil((offset + 1) / numRecords)
   return (
     <React.Fragment>
-      <div className="MesaComponent">
-        <div className={cx('--ResultInfo')}>{firstRec} - {lastRec} of {result.totalCount.toLocaleString()} results for <strong>"{searchString}"</strong></div>
-        <PaginationMenu
-          totalRows={result.totalCount}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          rowsPerPage={numRecords}
-          onPageChange={(newPage: number) => {
-            onPageOffsetChange((newPage -1) * numRecords)
-          }}
-        />
-      </div>
+      <DirectHit {...props}/>
       <div className={cx('--ResultList')}>
-        {result.documents.map((document, index) => {
-          const documentType = documentTypesById[document.documentType];
-          const { link, summary } = resultDetails(document, documentType);
-          return (
-            <div key={index} className={cx('--Result')}>
-              <div className={cx('--ResultLink')}>
-                {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
-              </div>
-              <div className={cx('--ResultSummary')}>{summary}</div>
-            </div>
-          )
-        })}
+        {result.documents.map((document, index) => (
+          <Hit key={index} document={document} documentType={documentTypesById[document.documentType]} />
+        ))}
       </div>
-      <div className="MesaComponent">
-        <div className={cx('--ResultInfo')}>{firstRec} - {lastRec} of {result.totalCount.toLocaleString()} results for <strong>"{searchString}"</strong></div>
-        <PaginationMenu
-          totalRows={result.totalCount}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          rowsPerPage={numRecords}
-          onPageChange={(newPage: number) => {
-            onPageOffsetChange((newPage -1) * numRecords)
-          }}
-        />
-      </div>
-
     </React.Fragment>
   );
 }
+
+interface HitProps {
+  document: SiteSearchDocument;
+  documentType: SiteSearchDocumentType;
+  classNameModifier?: string;
+}
+
+function Hit(props: HitProps) {
+  const { classNameModifier, document, documentType } = props;
+  const { link, summary } = resultDetails(document, documentType);
+  return (
+    <div className={cx('--Result', classNameModifier)}>
+      <div className={cx('--ResultLink', classNameModifier)}>
+        {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
+      </div>
+      <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>
+    </div>
+  )
+}
+
+function DirectHit(props: ResultProps) {
+  const { response, searchString } = props;
+  // quote chars to "remove" when comparing
+  const quotes = [``, `'`, `"`];
+  const firstHit = response?.searchResults?.documents[0];
+  const firstHitDocType = response?.documentTypes.find(d => d.id === firstHit?.documentType);
+  const firstHitIsExact = firstHit != null && quotes.some(q => searchString === q + firstHit.wdkPrimaryKeyString + q);
+  
+  if (!response || !firstHit || !firstHitDocType || !firstHitIsExact) return null;
+
+  return (
+    <Hit classNameModifier="exact" document={firstHit} documentType={firstHitDocType}/>
+  );
+}
+
 
 function ResultTypeWidget(props: ResultProps) {
   const { response, documentType, filters = [], onFiltersChange } = props;
@@ -294,9 +291,17 @@ function ResultTypeWidget(props: ResultProps) {
   const showButtons = showResetButton || showApplyCancelButtons;
   return (
     <React.Fragment>
+      <div className={cx('--LinkOut')}>
+        <button type="button" onClick={() => alert('Coming soon')}>
+          View as a Search Strategy
+        </button>
+        <button type="button" className="link" onClick={() => alert("Coming soon")}>
+          <div className={cx('--StrategyImage')}/>
+        </button>
+      </div>
       <div className={cx('--ResultTypeWidget')}>
         <div className={cx('--FilterTitleContainer', 'widget')}>
-          <h2>Filter {docType.displayName} Fields</h2>
+          <h3>Limit matches to...</h3>
           <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
             {showApplyCancelButtons && (
               <React.Fragment>
@@ -322,14 +327,29 @@ function ResultTypeWidget(props: ResultProps) {
           onChange={setSelection}
         />
       </div>
-      <div className={cx('--LinkOut')}>
-        <button type="button" className="btn" onClick={() => alert('Coming soon')}>
-          View as a Search Strategy <i className="fa fa-2 fa-angle-double-right"/>
-        </button>
-      </div>
     </React.Fragment>
-  )
+  );
+}
 
+function Pagination(props: ResultProps) {
+  const { numRecords, offset, response, onPageOffsetChange } = props;
+  const { searchResults } = response;
+  const totalPages = Math.ceil(searchResults.totalCount / numRecords);
+  const currentPage = Math.ceil((offset + 1) / numRecords)
+  return (
+    <div className={`MesaComponent ${cx('--Pagination')}`}>
+    <ResultInfo {...props as ResultProps}/>
+    <PaginationMenu
+      totalRows={searchResults.totalCount}
+      totalPages={totalPages}
+      currentPage={currentPage}
+      rowsPerPage={numRecords}
+      onPageChange={(newPage: number) => {
+        onPageOffsetChange((newPage -1) * numRecords)
+      }}
+    />
+  </div>
+  )
 }
 
 interface ResultEntryDetails {
@@ -377,7 +397,7 @@ function makeRecordLink(document: SiteSearchDocument): ResultEntryDetails['link'
   return {
     isRoute: true,
     url: `/record/${document.documentType}/${document.primaryKey.join('/')}`,
-    text: document.primaryKey[0]
+    text: document.primaryKey.join(' - ')
   }
 }
 
@@ -392,10 +412,10 @@ function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSear
     });
   return (
     <React.Fragment>
-      {summaryFields.map(({ displayName, value }) => (
-        <div><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
+      {summaryFields.map(({ name, displayName, value }) => (
+        <div key={name}><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
       ))}
-      {foundInFields && foundInFields.length > 0 && <div><strong>Found in: </strong> {foundInFields.join('; ')}</div>}
+      {foundInFields && foundInFields.length > 0 && <div><strong>Matched: </strong> {foundInFields.join('; ')}</div>}
     </React.Fragment>
   );
 }
