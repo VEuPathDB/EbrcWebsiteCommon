@@ -223,6 +223,7 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
         isSelectable
         selectedList={selection}
         onSelectionChange={setSelection}
+        linksPosition={CheckboxTree.LinkPlacement.Top}
       />
     </React.Fragment>
   )
