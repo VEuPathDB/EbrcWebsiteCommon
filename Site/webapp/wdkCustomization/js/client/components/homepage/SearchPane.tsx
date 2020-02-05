@@ -1,13 +1,16 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { memoize, noop } from 'lodash';
+import { memoize, noop, keyBy } from 'lodash';
 
-import { CategoriesCheckboxTree, Link, Tooltip, Icon, Loading, IconAlt } from 'wdk-client/Components';
+import { CategoriesCheckboxTree, Link, Tooltip, Loading, IconAlt } from 'wdk-client/Components';
 import { LinksPosition } from 'wdk-client/Components/CheckboxTree/CheckboxTree';
+import { RootState } from 'wdk-client/Core/State/Types';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 import { CategoryTreeNode, getDisplayName, getTargetType, getRecordClassUrlSegment, getTooltipContent } from 'wdk-client/Utils/CategoryUtils';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { decode, arrayOf, string } from 'wdk-client/Utils/Json';
+import { Question } from 'wdk-client/Utils/WdkModel';
 
 import { combineClassNames, useAlphabetizedSearchTree } from 'ebrc-client/components/homepage/Utils';
 
@@ -64,6 +67,10 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
     []
   );
 
+  const questionsByUrlSegment = useSelector((state: RootState) => keyBy(state.globalData.questions, 'urlSegment'));
+
+  const renderNode = useMemo(() => renderNodeFactory(questionsByUrlSegment), [ questionsByUrlSegment ]);
+
   return !props.searchTree 
     ? <Loading />
     : <CategoriesCheckboxTree
@@ -84,10 +91,14 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
       />;
 }
 
-const renderNode = (node: any, path: number[] | undefined) => {
+const renderNodeFactory = (questionsByUrlSegment: Record<string, Question> | undefined = {}) => (node: any, path: number[] | undefined) => {
+  const isSearch = getTargetType(node) === 'search';
+  const baseUrlSegment  = isSearch ? node.wdkReference.urlSegment : null;
+  const urlSegment = questionsByUrlSegment[baseUrlSegment]?.paramNames.length === 0 ? `${baseUrlSegment}?autoRun` : baseUrlSegment;
+
   const displayName = getDisplayName(node);
-  const displayElement = getTargetType(node) === 'search'
-    ? <Link to={`/search/${getRecordClassUrlSegment(node)}/${node.wdkReference.urlSegment}`}>
+  const displayElement = isSearch
+    ? <Link to={`/search/${getRecordClassUrlSegment(node)}/${urlSegment}`}>
         <IconAlt fa="search" />
         {displayName}
       </Link>
@@ -114,7 +125,7 @@ const renderNoResults = (searchTerm: string) =>
     <p>
       Perhaps you meant to
       {' '}
-      <Link to={`/search?searchString=${encodeURIComponent(searchTerm)}`} onClick={() => alert('Site search is under construction')}>
+      <Link to={`/search?q=${encodeURIComponent(searchTerm)}`}>
         run a site-wide search for "{searchTerm}"
       </Link>
       ?
