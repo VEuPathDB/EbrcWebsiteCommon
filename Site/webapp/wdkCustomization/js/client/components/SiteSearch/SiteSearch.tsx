@@ -1,6 +1,6 @@
 import { capitalize, keyBy, add, isEqual } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { PaginationMenu } from 'wdk-client/Components/Mesa';
@@ -283,8 +283,9 @@ function DirectHit(props: ResultProps) {
 
 
 function ResultTypeWidget(props: ResultProps) {
-  const { response, documentType, filters = [], onFiltersChange } = props;
+  const { response, documentType, filters = [], onFiltersChange, filterOrganisms = [], searchString } = props;
   const [ selection, setSelection ] = useState(filters);
+  const history = useHistory();
   
   useEffect(() => {
     setSelection(filters);
@@ -298,13 +299,24 @@ function ResultTypeWidget(props: ResultProps) {
   const showResetButton = filters.length > 0;
   const showApplyCancelButtons = !isEqual(selection, filters);
   const showButtons = showResetButton || showApplyCancelButtons;
+
+  const paramFields = docType.wdkRecordTypeData.searchFields.flatMap(f =>
+    filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
+  const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
+  const strategyUrl = `/search/${docType.id}/${docType.wdkRecordTypeData.searchName}?autoRun&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}&param.text_expression=${encodeURIComponent(searchString)}&param.timestamp=${Date.now()}`;
   return (
     <React.Fragment>
       <div className={cx('--LinkOut')}>
-        <button type="button" onClick={() => alert('Coming soon')}>
+        <button type="button" onClick={() => {
+          if (documentType === 'gene') history.push(strategyUrl);
+          else alert('coming soon');
+        }}>
           View as a Search Strategy
         </button>
-        <button type="button" className="link" onClick={() => alert("Coming soon")}>
+        <button type="button" className="link" onClick={() => {
+          if (documentType === 'gene') history.push(strategyUrl);
+          else alert('coming soon');
+        }}>
           <div className={cx('--StrategyImage')}/>
         </button>
       </div>
