@@ -39,7 +39,7 @@ export default function SiteSearch(props: Props) {
 
   return (
     <div className={cx()}>
-      {props.loading && <div className={cx('--Loading')}>Loading...</div>}
+      {props.loading && <div className={cx('--Loading')}><div>Loading...</div></div>}
       <h1>{Title(props)}</h1>
       {props.response && <Results {...props as ResultProps} />}
     </div>
