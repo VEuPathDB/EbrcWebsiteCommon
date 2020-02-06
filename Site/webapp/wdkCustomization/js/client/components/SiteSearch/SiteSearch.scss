@@ -326,5 +326,19 @@
     height: 130px;
   }
 
+  &--GreenButton {
+    background: green !important;
+    color: white;
+    font-size: 1.2em;
+    border-radius: .5em;
+  }
+
+  &--RedButton {
+    background: #B71C1C !important;
+    color: white;
+    font-size: 1.2em;
+    border-radius: .5em;
+  }
+
 }
 

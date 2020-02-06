@@ -207,15 +207,15 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons && (
             <React.Fragment>
-              <button type="button" onClick={() => onOrganismsChange(selection)}>Apply</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" onClick={() => setSelection(filterOrganisms)}>Cancel</button>
+              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>Cancel</button>
             </React.Fragment>
           )}
           {showResetButton && (
             <React.Fragment>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" style={{ }} onClick={() => (onOrganismsChange([]),  setSelection([]))}>Clear filter</button>
+              <button type="button" onClick={() => (onOrganismsChange([]),  setSelection([]))}>Clear filter</button>
             </React.Fragment>
           )}
         </div>
@@ -337,15 +337,15 @@ function ResultTypeWidget(props: ResultProps) {
           <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
             {showApplyCancelButtons && (
               <React.Fragment>
-                <button type="button" onClick={() => onFiltersChange(selection)}>Apply</button>
+                <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" onClick={() => setSelection(filters)}>Cancel</button>
+                <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>Cancel</button>
               </React.Fragment>
             )}
             {showResetButton && (
               <React.Fragment>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" style={{ }} onClick={() => onFiltersChange([])}>Clear filter</button>
+                <button type="button" onClick={() => onFiltersChange([])}>Clear filter</button>
               </React.Fragment>
             )}
           </div>
