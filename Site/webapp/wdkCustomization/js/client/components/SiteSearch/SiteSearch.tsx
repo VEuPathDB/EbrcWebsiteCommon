@@ -39,6 +39,7 @@ export default function SiteSearch(props: Props) {
 
   return (
     <div className={cx()}>
+      {props.loading && <div className={cx('--Loading')}>Loading...</div>}
       <h1>{Title(props)}</h1>
       {props.response && <Results {...props as ResultProps} />}
     </div>
@@ -61,7 +62,6 @@ function Results(props: ResultProps) {
         <ResultTypeWidget {...props} />
       </div>
       <div className={cx('--ResultContainer')}>
-        {props.loading && <LoadingOverlay>Loading results...</LoadingOverlay>}
         <SearchResult {...props} />
       </div>
       <Pagination {...props}/>
