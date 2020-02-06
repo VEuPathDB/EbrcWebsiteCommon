@@ -118,7 +118,7 @@
   }
 
   &--ResultTypeWidget {
-    margin-top: 2em;
+    width: 24em;
     .wdk-CheckboxList {
       margin-top: 1em;
       padding-left: 1em;
@@ -142,7 +142,7 @@
     }
   }
 
-  &--Counts {
+  &--Counts, &--ResultTypeWidget {
     padding: 1em;
     // FIXME These two colors are based on site branding
     background: #efe8ec;
@@ -195,6 +195,12 @@
     &__exact &Link {
       font-weight: bold;
     }
+  }
+
+  &--FieldsHit {
+    margin-top: .5em;
+    color: #555;
+    font-size: 1.085em;
   }
 
   &--Counts {
@@ -267,6 +273,9 @@
   &--LinkOut {
     padding-left: 1em;
     width: 18em;
+    position: absolute;
+    top: 2em;
+    right: 6em;
     button {
       background: #1345bd;
       color: white;

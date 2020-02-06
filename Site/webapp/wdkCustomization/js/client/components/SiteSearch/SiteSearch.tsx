@@ -324,16 +324,16 @@ function ResultTypeWidget(props: ResultProps) {
         }}>
           View as a Search Strategy
         </button>
-        <button type="button" className="link" onClick={() => {
+        {/*<button type="button" className="link" onClick={() => {
           if (documentType === 'gene') history.push(strategyUrl);
           else alert('coming soon');
         }}>
           <div className={cx('--StrategyImage')}/>
-        </button>
+      </button>*/}
       </div>
       <div className={cx('--ResultTypeWidget')}>
         <div className={cx('--FilterTitleContainer', 'widget')}>
-          <h3>Limit matches to...</h3>
+          <h3>Filter by <em>Fields hit</em></h3>
           <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
             {showApplyCancelButtons && (
               <React.Fragment>
@@ -447,7 +447,7 @@ function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSear
       {summaryFields.map(({ name, displayName, value }) => (
         <div key={name}><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
       ))}
-      {foundInFields && foundInFields.length > 0 && <div><strong>Matched: </strong> {foundInFields.join('; ')}</div>}
+      {foundInFields && foundInFields.length > 0 && <div className={cx('--FieldsHit')}><strong><em>Fields hit: </em></strong> {foundInFields.join('; ')}</div>}
     </React.Fragment>
   );
 }
