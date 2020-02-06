@@ -83,8 +83,9 @@ public class ErrorHandlerHelpers {
     List<ErrorCategory> categories = new ArrayList<>();
     StringBuilder inJsonStr = new StringBuilder();
     try (BufferedReader br = new BufferedReader(new FileReader(categoryFile.toFile()))) {
-      while (br.ready()) {
-        inJsonStr.append(br.readLine().trim());
+      String s;
+      while ((s = br.readLine()) != null) {
+        inJsonStr.append(s.trim());
       }
     }
     for (JsonType categoryJson : JsonIterators.arrayIterable(new JSONArray(inJsonStr.toString()))) {
