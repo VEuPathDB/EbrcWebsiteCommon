@@ -106,29 +106,39 @@ export default function SiteSearchController() {
     )
   }
 
+  if (value == null && searchString === '') {
+    return (
+      <div>
+        <h1>No results</h1>
+        <div>Type a search expression in the box above to begin searching...</div>
+      </div>
+    );
+  }
+
   if (value && value.type === 'error') {
     return (
       <ErrorPage message={value.error.message}/>
     )
   }
 
-  if (loading && value == null) {
+  if (value == null) {
     return <LoadingOverlay>Loading results</LoadingOverlay>;
   }
 
   return (
     <React.Fragment>
       <SiteSearch
-        searchString={searchString}
-        documentType={documentType}
+        loading={loading}
+        searchString={value.searchSettings.searchString}
+        documentType={value.searchSettings.documentType}
         onDocumentTypeChange={setDocumentType}
-        filters={filters}
+        filters={value.searchSettings.filters}
         onFiltersChange={setFilters}
-        filterOrganisms={organisms}
+        filterOrganisms={value.searchSettings.organisms}
         onOrganismsChange={setOrganisms}
-        response={value}
-        offset={offset}
-        numRecords={numRecords}
+        response={value.response}
+        offset={value.resultSettings.offset}
+        numRecords={value.resultSettings.numRecords}
         organismTree={organismTree}
         onSearch={setSearchString}
         onPageOffsetChange={setOffset}
@@ -139,7 +149,7 @@ export default function SiteSearchController() {
 
 type Value =
   | { type: 'error', error: Error }
-  | { type: 'success' } & SiteSearchResponse;
+  | { type: 'success', response: SiteSearchResponse, searchSettings: SearchSettings, resultSettings: ResultSettings };
 
 type SearchSettings = {
   searchString: string;
@@ -154,10 +164,9 @@ type ResultSettings = {
   numRecords: number;
 }
 
-function useSiteSearchResponse(
-  { searchString, allOrganisms, organisms, documentType, filters }: SearchSettings,
-  { numRecords, offset }: ResultSettings
-) {
+function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: ResultSettings) {
+  const { searchString, allOrganisms, organisms, documentType, filters } = searchSettings;
+  const { numRecords, offset } = resultSettings
 
   const projectId = useWdkService(async wdkService => {
     const { projectId } = await wdkService.getConfig();
@@ -197,7 +206,9 @@ function useSiteSearchResponse(
       const validatedResonse = decode(siteSearchResponse, await response.text());
       return {
         type: 'success',
-        ...validatedResonse
+        response: validatedResonse,
+        searchSettings,
+        resultSettings
       }
     }
 

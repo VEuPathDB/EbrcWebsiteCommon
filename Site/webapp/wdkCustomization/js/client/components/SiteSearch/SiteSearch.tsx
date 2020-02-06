@@ -5,12 +5,13 @@ import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from '
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { PaginationMenu } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
-import { CheckboxTree, CheckboxList } from 'wdk-client/Components';
+import { CheckboxTree, CheckboxList, LoadingOverlay } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 
 import './SiteSearch.scss';
 
 interface Props {
+  loading: boolean;
   searchString: string;
   response?: SiteSearchResponse;
   offset: number;
@@ -60,6 +61,7 @@ function Results(props: ResultProps) {
         <ResultTypeWidget {...props} />
       </div>
       <div className={cx('--ResultContainer')}>
+        {props.loading && <LoadingOverlay>Loading results...</LoadingOverlay>}
         <SearchResult {...props} />
       </div>
       <Pagination {...props}/>
