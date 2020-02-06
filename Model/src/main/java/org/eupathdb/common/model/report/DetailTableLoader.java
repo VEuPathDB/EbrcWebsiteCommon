@@ -111,7 +111,7 @@ public class DetailTableLoader extends BaseCLI {
       String idSql = loadIdSql(sqlFile);
 
       logger.debug("getting tables...");
-      RecordClass recordClass = wdkModel.getRecordClassByName(recordClassName)
+      RecordClass recordClass = wdkModel.getRecordClassByFullName(recordClassName)
           .orElseThrow(() -> new WdkModelException("Cannot find record class with name " + recordClassName));
       Map<String, TableField> tables = recordClass.getTableFieldMap();
 

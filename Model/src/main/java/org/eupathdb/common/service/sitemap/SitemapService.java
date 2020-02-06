@@ -52,7 +52,7 @@ public class SitemapService extends AbstractWdkService {
         .filter(question -> question.getPropertyLists().containsKey("forSitemap"));
 
     Optional<RecordClass> maybeRecordClass = maybeQuestion
-        .flatMap(question -> getWdkModel().getRecordClassByName(question.getRecordClassName()));
+        .flatMap(question -> getWdkModel().getRecordClassByFullName(question.getRecordClassName()));
 
     Optional<List<String[]>> maybeAllIds = maybeQuestion
       .map(fSwallow(question ->
