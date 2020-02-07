@@ -121,7 +121,7 @@
     width: 24em;
     .wdk-CheckboxList {
       margin-top: 1em;
-      padding-left: 1em;
+      padding: 0 1em;
     }
   }
 
@@ -130,6 +130,7 @@
 
     h2 {
       padding: 0;
+      margin-bottom: .5em;
     }
 
     h3 {
@@ -155,7 +156,8 @@
   }
 
   &--CountsTitle {
-    justify-content: space-between;
+    display: flex;
+    justify-content: flex-end;
   }
 
   &--OnlyMatchesToggle {
@@ -215,7 +217,7 @@
 
     th {
       border: none;
-      padding: .5em 0 0 1.5em;
+      padding: .5em 0 0 .25em;
     }
 
     td {
@@ -224,7 +226,7 @@
 
     tr td:first-child {
       padding-right: 2em;
-      padding-left: 3em;
+      padding-left: 1em;
     }
 
     tr td:last-child {
@@ -261,6 +263,11 @@
     }
   }
 
+  &--ResultTypeWidget &--FilterButtons {
+    display: flex;
+    justify-content: center;
+  }
+
   &--OrganismFilterNode {
     display: flex;
     justify-content: space-between;
@@ -276,7 +283,9 @@
     position: absolute;
     top: 2em;
     right: 6em;
-    button {
+    a {
+      display: inline-block;
+      text-align: center;
       background: #1345bd;
       color: white;
       padding: .5em;
@@ -290,6 +299,7 @@
       &:first-child {
         &:hover, &:active, &:focus {
           background: #0c3aaa;
+          text-decoration: none;
           &:after {
             border-left-color: #0c3aaa;
           }
@@ -299,9 +309,9 @@
           content: '';
           position: absolute;
           left: 100%;
-          border-left: 1.2em solid #1345bd;
-          border-top: 1.155em solid transparent;
-          border-bottom: 1.155em solid transparent;
+          border-left: 2em solid #1345bd;
+          border-top: 1.8em solid transparent;
+          border-bottom: 1.8em solid transparent;
           top: 0;
         }
       }
@@ -338,6 +348,12 @@
     color: white;
     font-size: 1.2em;
     border-radius: .5em;
+  }
+
+  &--GreenButton, &--RedButton {
+    &:disabled {
+      opacity: .5;
+    }
   }
 
 }

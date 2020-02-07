@@ -59,6 +59,7 @@ function Results(props: ResultProps) {
         <SearchCounts {...props}/>
       </div>
       <div className={cx('--ResultTypeWidgetContainer')}>
+        <StrategyLinkout {...props}/>
         <ResultTypeWidget {...props} />
       </div>
       <div className={cx('--ResultContainer')}>
@@ -121,13 +122,12 @@ function SearchCounts(props: ResultProps) {
   return (
     <div className={cx('--Counts')}>
       <div className={(cx('--CountsTitle'))}>
-        <h2>Filter Results</h2>
         <label className={cx('--OnlyMatchesToggle')}>
-          <input type="checkbox" checked={onlyShowMatches} onChange={() => setOnlyShowMatches(!onlyShowMatches)}/> Only show matches
+          <input type="checkbox" checked={onlyShowMatches} onChange={() => setOnlyShowMatches(!onlyShowMatches)}/> Show matches only
         </label>
       </div>
       <div className={cx('--FilterTitleContainer', 'categories')}>
-        <h3>Categories</h3>
+        <h3>Filter Results</h3>
         <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
           <div><button type="button" onClick={() => onDocumentTypeChange()}>Clear filter</button></div>
         </div>
@@ -203,7 +203,7 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
   return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'organism')}>
-        <h3>Organisms</h3>
+        <h3>Filter Organisms</h3>
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons && (
             <React.Fragment>
@@ -292,77 +292,67 @@ function DirectHit(props: ResultProps) {
   );
 }
 
-
-function ResultTypeWidget(props: ResultProps) {
-  const { response, documentType, filters = [], onFiltersChange, filterOrganisms = [], searchString } = props;
-  const [ selection, setSelection ] = useState(filters);
-  const history = useHistory();
-
-  useEffect(() => {
-    setSelection(filters);
-  }, [ filters ])
-
-  const getFieldCount = (fieldName: string) =>
-    (!response.fieldCounts) ? 0 : (!response.fieldCounts[fieldName]) ? 0 : response.fieldCounts[fieldName];
-
-  if (documentType == null) return null;
-
+function StrategyLinkout(props: ResultProps) {
+  const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
   if (docType == null || !docType.isWdkRecordType) return null;
-
-  const showResetButton = filters.length > 0;
-  const showApplyCancelButtons = !isEqual(selection, filters);
-  const showButtons = showResetButton || showApplyCancelButtons;
 
   const paramFields = docType.wdkRecordTypeData.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
   const strategyUrl = `/search/${docType.id}/${docType.wdkRecordTypeData.searchName}?autoRun&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}&param.text_expression=${encodeURIComponent(searchString)}&param.timestamp=${Date.now()}`;
   return (
-    <React.Fragment>
-      <div className={cx('--LinkOut')}>
-        <button type="button" onClick={() => {
-          if (documentType === 'gene') history.push(strategyUrl);
-          else alert('coming soon');
-        }}>
-          View as a Search Strategy
-        </button>
-        {/*<button type="button" className="link" onClick={() => {
-          if (documentType === 'gene') history.push(strategyUrl);
-          else alert('coming soon');
-        }}>
-          <div className={cx('--StrategyImage')}/>
-      </button>*/}
+    <div className={cx('--LinkOut')}>
+      <Link to={strategyUrl} onClick={(event) => {
+        if (documentType !== 'gene') {
+          event.preventDefault();
+          alert('coming soon');
+        }
+      }}>
+        <div>View as a Search Strategy</div>
+        <div><small>to download or data mine</small></div>
+      </Link>
+    </div>
+  )
+
+}
+
+function ResultTypeWidget(props: ResultProps) {
+  const { response, documentType, onFiltersChange } = props;
+  const docType = response.documentTypes.find(d => d.id === documentType);
+  const allFields = useMemo(() => docType?.isWdkRecordType ? docType.wdkRecordTypeData.searchFields.map(f => f.name) : [], [ docType ]);
+  const filters = props.filters?.length === 0 ? allFields : props.filters || [];
+  const [ selection, setSelection ] = useState(filters);
+  
+  useEffect(() => {
+    setSelection(filters);
+  }, [ filters ])
+    
+
+  if (docType == null || !docType.isWdkRecordType) return null;
+
+  const isDisabled = selection.length === 0 || isEqual(filters, selection);
+  
+  return (
+    <div className={cx('--ResultTypeWidget')}>
+      <h2>Search Options</h2>
+      <div className={cx('--FilterTitleContainer', 'widget')}>
+        <h3>Fields to search</h3>
       </div>
-      <div className={cx('--ResultTypeWidget')}>
-        <div className={cx('--FilterTitleContainer', 'widget')}>
-          <h3>Filter by <em>Fields hit</em></h3>
-          <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
-            {showApplyCancelButtons && (
-              <React.Fragment>
-                <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>Cancel</button>
-              </React.Fragment>
-            )}
-            {showResetButton && (
-              <React.Fragment>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <button type="button" onClick={() => onFiltersChange([])}>Clear filter</button>
-              </React.Fragment>
-            )}
-          </div>
-        </div>
-        <CheckboxList
-          items={docType.wdkRecordTypeData.searchFields.map(field => ({
-            display: field.displayName + " " + getFieldCount(field.name),
-            value: field.name
-          }))}
-          value={selection}
-          onChange={setSelection}
-        />
+      <CheckboxList
+        items={docType.wdkRecordTypeData.searchFields.map(field => ({
+          display: field.displayName,
+          value: field.name
+        }))}
+        value={selection}
+        onChange={setSelection}
+      />
+      <div className={cx('--FilterButtons')}>
+        <button type="button" disabled={isDisabled} className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Update results</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" disabled={isDisabled} className={cx('--RedButton')} onClick={() => setSelection(filters)}>Cancel</button>
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 
@@ -450,7 +440,7 @@ function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSear
       {summaryFields.map(({ name, displayName, value }) => (
         <div key={name}><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
       ))}
-      {foundInFields && foundInFields.length > 0 && <div className={cx('--FieldsHit')}><strong><em>Fields hit: </em></strong> {foundInFields.join('; ')}</div>}
+      {foundInFields && foundInFields.length > 0 && <div className={cx('--FieldsHit')}><strong><em>Fields matched: </em></strong> {foundInFields.join('; ')}</div>}
     </React.Fragment>
   );
 }
