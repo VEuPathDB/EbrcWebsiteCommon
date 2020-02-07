@@ -31,12 +31,14 @@ export function SiteSearchInput() {
     const text = textSearch?.parameters.find(p => p.name === 'text_expression')?.initialDisplayValue;
     const examples = [ `*`, id, text, `"oxo group"` ].filter(v => v).join(' or ');
     return 'E.g.,' + examples;
-  })
+  });
+
   const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const input = event.currentTarget.elements.namedItem(SEARCH_TERM_PARAM);
     if (input instanceof HTMLInputElement) onSearch(input.value);
-  }, [ onSearch ])
+  }, [ onSearch ]);
+  
   return (
     <form onSubmit={handleSubmit} className={cx("--SearchBox")}>
       <input
