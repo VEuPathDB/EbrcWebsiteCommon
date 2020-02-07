@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper } from "wdk-client/Utils/ComponentUtils";
@@ -32,48 +32,23 @@ export function SiteSearchInput() {
     const examples = [ `*`, id, text, `"oxo group"` ].filter(v => v).join(' or ');
     return 'E.g.,' + examples;
   })
-
-  const inputRef = useRef<HTMLInputElement>(null);
+  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const input = event.currentTarget.elements.namedItem(SEARCH_TERM_PARAM);
+    if (input instanceof HTMLInputElement) onSearch(input.value);
+  }, [ onSearch ])
   return (
-    <div className={cx("--SearchBox")}>
+    <form onSubmit={handleSubmit} className={cx("--SearchBox")}>
       <input
         type="input"
-        ref={inputRef}
+        name={SEARCH_TERM_PARAM}
         key={searchString}
         defaultValue={searchString}
         placeholder={placeholderText}
-        onBlur={() => {
-          /* setShowSuggestions(false) */
-        }}
-        onFocus={() => {
-          /* setShowSuggestions(true) */
-        }}
-        onKeyPress={e => {
-          switch (e.key) {
-            case "Esc":
-            case "Escape":
-              // setShowSuggestions(false);
-              break;
-            case "Down":
-            case "ArrowDown":
-              // setShowSuggestions(true);
-              break;
-            case "Enter":
-              onSearch(e.currentTarget.value);
-              break;
-            default:
-              return;
-          }
-        }}
       />
-      <button
-        type="button"
-        onClick={() => {
-          inputRef.current && onSearch(inputRef.current.value);
-        }}
-      >
+      <button type="submit">
         <i className="fa fa-search" />
       </button>
-    </div>
+    </form>
   );
 }
