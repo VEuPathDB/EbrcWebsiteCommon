@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
 "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
-<urlrewrite>
+
+<urlrewrite use-query-string="true">
+
+ <rule>
+    <name>Old Import</name>
+    <note>Forward to new url</note>
+    <from>^/im.do\?s=(.+)$</from>
+    <to type="redirect">%{context-path}/app/workspace/strategies/import/$1</to>
+  </rule>
 
   <rule>
     <name>Dynamic cache headers</name>
@@ -44,6 +52,7 @@
     <from>^/sitemap-(.*).xml$</from>
     <to>/service/sitemap/$1?fmt=/app/record/{recordClass}/{id}</to>
   </rule>
+
 
 </urlrewrite>
 
