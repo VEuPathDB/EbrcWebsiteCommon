@@ -10,7 +10,7 @@ let util = Object.assign({}, ComponentUtils, ReporterUtils, CategoryUtils);
 
 let TabularReporterForm = props => {
 
-  let { scope, question, recordClass, formState, formUiState, updateFormState, updateFormUiState, onSubmit,  ontology } = props;
+  let { scope, question, recordClass, formState, formUiState, updateFormState, updateFormUiState, onSubmit,  ontology, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
   let getUiUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormUiState, formUiState);
 
@@ -54,9 +54,11 @@ let TabularReporterForm = props => {
               </label>
             </div>
           </div>
-          <div style={{margin:'2em 0'}}>
-            <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
-          </div>
+          { includeSubmit &&
+            <div style={{margin:'2em 0'}}>
+              <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
+            </div>
+          }
         </div>
       </div>
 

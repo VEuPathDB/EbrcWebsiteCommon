@@ -26,7 +26,7 @@ let GffInputs = props => {
 };
 
 let Gff3ReporterForm = props => {
-  let { formState, recordClass, updateFormState, onSubmit } = props;
+  let { formState, recordClass, updateFormState, onSubmit, includeSubmit  } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
   return (
     <div>
@@ -39,9 +39,11 @@ let Gff3ReporterForm = props => {
               onChange={getUpdateHandler('attachmentType')} items={attachmentTypes}/>
         </div>
       </div>
-      <div className="eupathdb-ReporterFormSubmit">
-      <button className="btn" type="submit" onClick={onSubmit}>Get GFF3 file</button>
-      </div>
+      { includeSubmit &&
+        <div className="eupathdb-ReporterFormSubmit">
+          <button className="btn" type="submit" onClick={onSubmit}>Get GFF3 file</button>
+        </div>
+      }
     </div>
   );
 };

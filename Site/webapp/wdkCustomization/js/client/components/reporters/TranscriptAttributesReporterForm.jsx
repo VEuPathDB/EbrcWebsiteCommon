@@ -10,7 +10,7 @@ let util = Object.assign({}, ComponentUtils, ReporterUtils, CategoryUtils);
 
 let TranscriptAttributesReporterForm = props => {
 
-  let { scope, question, recordClass, formState, formUiState, updateFormState, updateFormUiState, onSubmit, ontology } = props;
+  let { scope, question, recordClass, formState, formUiState, updateFormState, updateFormUiState, onSubmit, ontology, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
   let getUiUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormUiState, formUiState);
 
@@ -81,12 +81,12 @@ let TranscriptAttributesReporterForm = props => {
 
       </div>
 
-      <div className="eupathdb-ReporterFormSubmit">
-        <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
-      </div>
-
+      { includeSubmit &&
+        <div className="eupathdb-ReporterFormSubmit">
+          <TabularReporterFormSubmitButtons onSubmit={onSubmit} recordClass={recordClass}/>
+        </div>
+      }
       <hr/>
-
       <div style={{margin:'0.5em 2em'}}>
         <ExcelNote/>
       </div>

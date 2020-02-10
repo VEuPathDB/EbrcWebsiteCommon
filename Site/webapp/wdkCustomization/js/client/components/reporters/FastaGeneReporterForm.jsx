@@ -14,12 +14,12 @@ let sequenceTypes = [
 ];
 
 let defLineOptions = [
-  {  value: '1', display: 'Only Gene ID' }, 
+  {  value: '1', display: 'Only Gene ID' },
   {  value: '0', display: 'Full Fasta Header' }
 ];
 
 let singleLineOption = [
-  {  value: '1', display: 'Single line' }, 
+  {  value: '1', display: 'Single line' },
   {  value: '0', display: 'Default (60 chars on a line)' }
 ];
 
@@ -108,7 +108,7 @@ let SequenceRegionInputs = props => {
 };
 
 let FastaGeneReporterForm = props => {
-  let { formState, updateFormState, onSubmit } = props;
+  let { formState, updateFormState, onSubmit, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
   let typeUpdateHandler = function(newTypeValue) {
     // any time type changes, revert sourceIdFilter back to default value
@@ -149,9 +149,12 @@ let FastaGeneReporterForm = props => {
           onChange={getUpdateHandler('noLineBreaks')} items={singleLineOption}/>
       </div>
 
-      <div style={{margin:'0.8em'}}>
-        <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
-      </div>
+      { includeSubmit &&
+        <div style={{margin:'0.8em'}}>
+          <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
+        </div>
+      }
+
       <div>
         <hr/>
         <b>Note:</b><br/>
@@ -181,8 +184,8 @@ FastaGeneReporterForm.getInitialState = () => ({
     downstreamAnchor: 'End',
     downstreamSign: 'plus',
     downstreamOffset: 0,
-    onlyIdDefLine: '0', 
-    noLineBreaks: '0', 
+    onlyIdDefLine: '0',
+    noLineBreaks: '0',
 
 
     // sequence region inputs for 'protein'

@@ -8,7 +8,7 @@ let util = Object.assign({}, ComponentUtils, ReporterUtils);
 
 let FastaGenomicSequenceReporterForm = props => {
 
-  let { formState, updateFormState, onSubmit } = props;
+  let { formState, updateFormState, onSubmit, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
 
   return (
@@ -28,9 +28,11 @@ let FastaGenomicSequenceReporterForm = props => {
         <RadioList value={formState.attachmentType} items={util.attachmentTypes}
             onChange={getUpdateHandler('attachmentType')}/>
       </div>
-      <div style={{margin:'0.8em'}}>
-        <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
-      </div>
+      { includeSubmit &&
+        <div style={{margin:'0.8em'}}>
+          <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
+        </div>
+      }
       <div>
         <hr/>
         <h3>Options:</h3>

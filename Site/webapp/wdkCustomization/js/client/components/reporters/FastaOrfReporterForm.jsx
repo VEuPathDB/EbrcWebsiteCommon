@@ -52,7 +52,7 @@ let SequenceRegionInputs = props => {
 
 let FastaOrfReporterForm = props => {
 
-  let { formState, updateFormState, onSubmit } = props;
+  let { formState, updateFormState, onSubmit, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
 
   return (
@@ -69,9 +69,11 @@ let FastaOrfReporterForm = props => {
         <RadioList name="attachmentType" value={formState.attachmentType}
           onChange={getUpdateHandler('attachmentType')} items={util.attachmentTypes}/>
       </div>
-      <div style={{margin:'0.8em'}}>
-        <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
-      </div>
+      { includeSubmit &&
+        <div style={{margin:'0.8em'}}>
+          <button className="btn" type="submit" onClick={onSubmit}>Get Sequences</button>
+        </div>
+      }
       <SrtHelp/>
     </div>
   );
