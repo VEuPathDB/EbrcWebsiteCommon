@@ -7,7 +7,7 @@ import { useQueryParams } from 'ebrc-client/hooks/queryParams';
 import { LoadingOverlay, Error as ErrorPage } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
-import { SiteSearchResponse, SiteSerachRequest, siteSearchResponse } from 'ebrc-client/SiteSearch/Types';
+import { SiteSearchResponse, SiteSearchRequest, siteSearchResponse } from 'ebrc-client/SiteSearch/Types';
 import { siteSearchServiceUrl } from 'ebrc-client/config';
 import { decode } from 'wdk-client/Utils/Json';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
@@ -177,7 +177,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
     if (!siteSearchServiceUrl || searchString === '' || organisms == null || allOrganisms == null || projectId == null) return undefined;
 
     try {
-      const requestBody: SiteSerachRequest = {
+      const requestBody: SiteSearchRequest = {
         searchText: searchString,
         pagination: {
           offset,
@@ -190,7 +190,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
           documentType,
           foundOnlyInFields: filters
         }
-      };  
+      };
       const response = await fetch(`${siteSearchServiceUrl}`, {
         method: 'POST',
         body: JSON.stringify(requestBody),
@@ -215,6 +215,6 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
     catch(error) {
       return { type: 'error', error };
     }
-  
+
   }, [ searchString, offset, numRecords, organisms, allOrganisms, documentType, filters, projectId ]);
 }
