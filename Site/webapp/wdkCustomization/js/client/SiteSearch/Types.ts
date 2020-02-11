@@ -45,7 +45,7 @@ const siteSearchDocument = record({
   documentType: string,
   primaryKey: arrayOf(string),
   summaryFieldData: objectOf(oneOf(string, arrayOf(string))),
-  foundInFields: arrayOf(objectOf(arrayOf(string))),
+  foundInFields: objectOf(arrayOf(string)),
   wdkPrimaryKeyString: optional(string),
   organism: optional(string)
 });
