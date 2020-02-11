@@ -117,7 +117,7 @@ function SearchCounts(props: ResultProps) {
     ? documentTypes.filter(d => d.count > 0).some(d => d.hasOrganismField)
     : docTypesById[documentType]?.hasOrganismField;
   const totalOrgsCount = Object.values(organismCounts).reduce(add, 0);
-  
+
   return (
     <div className={cx('--Counts')}>
       <div className={(cx('--CountsTitle'))}>
@@ -178,7 +178,7 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
       ? response.organismCounts[node.data.term] ?? 0
       : getLeaves(node, node => node.children)
         .map(node => response.organismCounts[node.data.term] ?? 0)
-        .reduce(add, 0);  
+        .reduce(add, 0);
     return (
       <div className={cx('--OrganismFilterNode')}>
         <div>{node.data.display}</div>
@@ -284,7 +284,7 @@ function DirectHit(props: ResultProps) {
   const firstHit = response?.searchResults?.documents[0];
   const firstHitDocType = response?.documentTypes.find(d => d.id === firstHit?.documentType);
   const firstHitIsExact = firstHit != null && quotes.some(q => searchString.toLowerCase() === (q + firstHit.wdkPrimaryKeyString + q).toLowerCase());
-  
+
   if (!response || !firstHit || !firstHitDocType || !firstHitIsExact) return null;
 
   return (
@@ -297,11 +297,11 @@ function ResultTypeWidget(props: ResultProps) {
   const { response, documentType, filters = [], onFiltersChange, filterOrganisms = [], searchString } = props;
   const [ selection, setSelection ] = useState(filters);
   const history = useHistory();
-  
+
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
-  
+
   if (documentType == null) return null;
 
   const docType = response.documentTypes.find(d => d.id === documentType);
@@ -395,7 +395,7 @@ interface ResultEntryDetails {
 
 // For now, all entries will have a link and a summary
 function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDocumentType): ResultEntryDetails {
-  
+
   if (documentType.isWdkRecordType) {
     return {
       link: makeRecordLink(document),
@@ -435,7 +435,7 @@ function makeRecordLink(document: SiteSearchDocument): ResultEntryDetails['link'
 
 function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSearchDocumentType) {
   const foundInFields = documentType.isWdkRecordType && documentType.wdkRecordTypeData.searchFields
-    .filter(field => document.foundInFields.includes(field.name))
+    .filter(field => Object.keys(document.foundInFields).includes(field.name))
     .map(field => field.displayName);
   const summaryFields = documentType.summaryFields
     .flatMap(summaryField => {

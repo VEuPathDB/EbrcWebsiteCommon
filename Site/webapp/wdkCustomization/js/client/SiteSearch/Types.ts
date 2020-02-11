@@ -45,7 +45,7 @@ const siteSearchDocument = record({
   documentType: string,
   primaryKey: arrayOf(string),
   summaryFieldData: objectOf(oneOf(string, arrayOf(string))),
-  foundInFields: arrayOf(string),
+  foundInFields: arrayOf(objectOf(arrayOf(string))),
   wdkPrimaryKeyString: optional(string),
   organism: optional(string)
 });
@@ -67,7 +67,7 @@ export type SiteSearchDocumentType = Unpack<typeof siteSearchDocumentType>;
 export type SiteSearchResponse = Unpack<typeof siteSearchResponse>;
 
 
-export interface SiteSerachRequest {
+export interface SiteSearchRequest {
   searchText: string;
   pagination: {
     offset: number;
