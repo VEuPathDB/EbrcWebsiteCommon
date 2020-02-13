@@ -1,28 +1,25 @@
 import React, { useCallback, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { Tooltip } from 'wdk-client/Components';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper } from "wdk-client/Utils/ComponentUtils";
 import { DatasetParam } from 'wdk-client/Utils/WdkModel';
 import { SITE_SEARCH_ROUTE, SEARCH_TERM_PARAM } from './SiteSearchConstants';
-import { useQueryParams } from 'ebrc-client/hooks/queryParams';
 
 import './SiteSearch.scss';
-import { Tooltip } from 'wdk-client/Components';
 
 const cx = makeClassNameHelper("SiteSearch");
 
 export function SiteSearchInput() {
   const location = useLocation();
   const history = useHistory();
-  const [ params ] = useQueryParams(SEARCH_TERM_PARAM);
+  const searchParams = new URLSearchParams(location.search);
+  const searchString = location.pathname === SITE_SEARCH_ROUTE && searchParams.get(SEARCH_TERM_PARAM) || '';
 
-  const onSearch = useCallback((searchString: string) => {
-    history.push(`${SITE_SEARCH_ROUTE}?${SEARCH_TERM_PARAM}=${encodeURIComponent(searchString)}`);
+  const onSearch = useCallback((queryString: string) => {
+    history.push(`${SITE_SEARCH_ROUTE}?${queryString}`);
   }, [ history ]);
-
-  const searchString = location.pathname !== SITE_SEARCH_ROUTE ? ''
-    : Array.isArray(params.q) ? params.q[0] : params.q;
 
   const placeholderText = useWdkService(async wdkService => {
     const [ idSearch, textSearch ] = await Promise.all([
@@ -37,8 +34,9 @@ export function SiteSearchInput() {
 
   const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const input = event.currentTarget.elements.namedItem(SEARCH_TERM_PARAM);
-    if (input instanceof HTMLInputElement) onSearch(input.value);
+    const formData = new FormData(event.currentTarget);
+    const queryString = new URLSearchParams(formData as any).toString();
+    onSearch(queryString);
   }, [ onSearch ]);
   
   const [ lastSearchQueryString, setLastSearchQueryString] = useSessionBackedState<string>(
@@ -65,7 +63,7 @@ export function SiteSearchInput() {
       />
       {location.pathname !== SITE_SEARCH_ROUTE && lastSearchQueryString && (
         <Tooltip content="Go to your last search result view">
-          <button type="button" onClick={() => history.push(`${SITE_SEARCH_ROUTE}?${lastSearchQueryString}`)}>
+          <button type="button" onClick={() => onSearch(lastSearchQueryString)}>
             <i className="fa fa-long-arrow-left"/>
           </button>
         </Tooltip>

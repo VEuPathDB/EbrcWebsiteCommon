@@ -9,7 +9,8 @@ const siteSearchDocumentTypeField = record({
   name: string,
   displayName: string,
   // wdk search vocab term
-  term: string
+  term: string,
+  isSubtitle: boolean
 });
 
 const siteSearchDocumentTypeBase = record({
@@ -47,6 +48,7 @@ const siteSearchDocument = record({
   summaryFieldData: objectOf(oneOf(string, arrayOf(string))),
   foundInFields: objectOf(arrayOf(string)),
   wdkPrimaryKeyString: optional(string),
+  hyperlinkName: optional(string),
   organism: optional(string)
 });
 

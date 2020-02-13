@@ -199,10 +199,24 @@
     }
   }
 
+  &--ResultSubTitle {
+    font-size: 1.1em;
+    display: inline;
+    margin-left: 1em;
+  }
+
   &--FieldsHit {
-    margin-top: .5em;
-    color: #555;
-    font-size: 1.085em;
+    padding: .5em 0;
+    ul {
+      margin-left: 2.5em;
+    }
+  }
+
+  &--FieldHighlight {
+    em {
+      font-weight: bold;
+      font-style: normal;
+    }
   }
 
   &--Counts {
@@ -266,6 +280,9 @@
   &--ResultTypeWidget &--FilterButtons {
     display: flex;
     justify-content: center;
+    button {
+      white-space: nowrap;
+    }
   }
 
   &--OrganismFilterNode {
@@ -283,7 +300,7 @@
     position: absolute;
     top: 2em;
     right: 6em;
-    a {
+    a, button {
       display: inline-block;
       text-align: center;
       background: #1345bd;
@@ -295,6 +312,12 @@
       position: relative;
       border: 1px solid;
       border-radius: 0;
+
+      &:disabled {
+        opacity: .5;
+        background: #1345bd;
+        color: white;
+      }
 
       &:first-child {
         &:hover, &:active, &:focus {

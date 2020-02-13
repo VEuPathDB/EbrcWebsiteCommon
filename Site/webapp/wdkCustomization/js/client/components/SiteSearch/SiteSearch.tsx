@@ -3,9 +3,9 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
-import { PaginationMenu } from 'wdk-client/Components/Mesa';
+import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
-import { CheckboxTree, CheckboxList, LoadingOverlay } from 'wdk-client/Components';
+import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 
 import './SiteSearch.scss';
@@ -34,6 +34,10 @@ type ResultPropKeys =
 type ResultProps = Omit<Props, ResultPropKeys> &  Required<Pick<Props, ResultPropKeys>>;
 
 const cx = makeClassNameHelper('SiteSearch');
+
+const okIcon = <i className="fa fa-check"/>;
+
+const cancelIcon = <i className="fa fa-times"/>;
 
 export default function SiteSearch(props: Props) {
 
@@ -205,19 +209,18 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
       <div className={cx('--FilterTitleContainer', 'organism')}>
         <h3>Filter Organisms</h3>
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
-          {showApplyCancelButtons && (
+          {showApplyCancelButtons ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>{okIcon}</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>Cancel</button>
+              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
             </React.Fragment>
-          )}
-          {showResetButton && (
+          ) : showResetButton ? (
             <React.Fragment>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" onClick={() => (onOrganismsChange([]),  setSelection([]))}>Clear filter</button>
+              <button type="button" onClick={() => (onOrganismsChange([]))}>Clear filter</button>
             </React.Fragment>
-          )}
+          ) : null}
         </div>
       </div>
       <CheckboxTree<TreeBoxVocabNode>
@@ -238,6 +241,8 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
 
 function SearchResult(props: ResultProps) {
   const { response } = props;
+  const [ expandHighlights, updateExpandHightlights ] = useState(false);
+
   const documentTypesById = useMemo(() => keyBy(response?.documentTypes, 'id'), [ response]);
   if (response.searchResults.totalCount == 0) {
     return (
@@ -248,10 +253,16 @@ function SearchResult(props: ResultProps) {
   const { searchResults: result } = response;
   return (
     <React.Fragment>
-      <DirectHit {...props}/>
+      <DirectHit {...props} expandHighlights={expandHighlights} updateExpandHightlights={updateExpandHightlights}/>
       <div className={cx('--ResultList')}>
         {result.documents.map((document, index) => (
-          <Hit key={index} document={document} documentType={documentTypesById[document.documentType]} />
+          <Hit
+            key={index}
+            document={document}
+            documentType={documentTypesById[document.documentType]}
+            expandHighlights={expandHighlights}
+            updateExpandHightlights={updateExpandHightlights}
+          />
         ))}
       </div>
     </React.Fragment>
@@ -264,21 +275,30 @@ interface HitProps {
   classNameModifier?: string;
 }
 
-function Hit(props: HitProps) {
+interface ExpandeHighlightsProps {
+  expandHighlights: boolean;
+  updateExpandHightlights: (expand: boolean) => void;
+}
+
+function Hit(props: HitProps & ExpandeHighlightsProps) {
   const { classNameModifier, document, documentType } = props;
   const { link, summary } = resultDetails(document, documentType);
+  const subTitleField = documentType.summaryFields.find(f => f.isSubtitle);
+  const subTitle = subTitleField && document.summaryFieldData[subTitleField.name];
   return (
     <div className={cx('--Result', classNameModifier)}>
       <div className={cx('--ResultLink', classNameModifier)}>
         {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
+        {subTitle && <div className={cx('--ResultSubTitle')}>{formatSummaryFieldValue(subTitle)}</div>}
       </div>
       <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>
+      <FieldsHit {...props}/>
     </div>
   )
 }
 
-function DirectHit(props: ResultProps) {
-  const { response, searchString } = props;
+function DirectHit(props: ResultProps & ExpandeHighlightsProps) {
+  const { response, searchString, expandHighlights, updateExpandHightlights } = props;
   // quote chars to "remove" when comparing
   const quotes = [``, `'`, `"`];
   const firstHit = response?.searchResults?.documents[0];
@@ -288,33 +308,81 @@ function DirectHit(props: ResultProps) {
   if (!response || !firstHit || !firstHitDocType || !firstHitIsExact) return null;
 
   return (
-    <Hit classNameModifier="exact" document={firstHit} documentType={firstHitDocType}/>
+    <Hit
+      classNameModifier="exact"
+      document={firstHit}
+      documentType={firstHitDocType}
+      expandHighlights={expandHighlights}
+      updateExpandHightlights={updateExpandHightlights}
+    />
   );
+}
+
+function FieldsHit(props: HitProps & ExpandeHighlightsProps) {
+  const { document, documentType, expandHighlights, updateExpandHightlights } = props;
+  const foundInFields = documentType.isWdkRecordType && documentType.wdkRecordTypeData.searchFields
+    .filter(field => field.name in document.foundInFields);
+  if (!foundInFields || foundInFields.length === 0) return null;
+  const headerContent = expandHighlights
+    ? <strong>Fields matched</strong>
+    : <div>
+        <strong>Fields matched:</strong>&nbsp;
+        <em>{foundInFields.map(f => f.displayName).join('; ')}</em>
+      </div>
+  return (
+    <CollapsibleSection
+      className={cx('--FieldsHit')}
+      isCollapsed={!expandHighlights}
+      onCollapsedChange={isCollapsed => updateExpandHightlights(!isCollapsed)}
+      headerContent={headerContent}
+    >
+      <ul>
+        {foundInFields.map(f => (
+          <li key={f.name} className={cx('--FieldHighlight')}>
+            <strong>{f.displayName}: </strong>
+            {document.foundInFields[f.name].flatMap((value, index, array) =>
+              [ safeHtml(value, { key: index }), index < array.length - 1 && '...' ]
+              )}
+          </li>
+        ))}
+      </ul>
+    </CollapsibleSection>
+  )
 }
 
 function StrategyLinkout(props: ResultProps) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
-  if (docType == null || !docType.isWdkRecordType) return null;
+  if (docType == null || !docType.isWdkRecordType) return <StrategyLinkoutLink/>;
 
   const paramFields = docType.wdkRecordTypeData.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
   const strategyUrl = `/search/${docType.id}/${docType.wdkRecordTypeData.searchName}?autoRun&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}&param.text_expression=${encodeURIComponent(searchString)}&param.timestamp=${Date.now()}`;
+  return <StrategyLinkoutLink strategyUrl={strategyUrl} documentType={documentType} />;
+}
+
+function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: string }) {
+  const { strategyUrl, documentType } = props;
+  const history = useHistory();
+  const disabled = documentType !== 'gene' || strategyUrl == null;
+  const tooltipContent = disabled
+    ? 'To export, select a result type (like Genes) on the left.'
+    : 'Download or data mine using the search strategy system';
+
   return (
     <div className={cx('--LinkOut')}>
-      <Link to={strategyUrl} onClick={(event) => {
-        if (documentType !== 'gene') {
-          event.preventDefault();
-          alert('coming soon');
-        }
-      }}>
-        <div>View as a Search Strategy</div>
-        <div><small>to download or data mine</small></div>
-      </Link>
-    </div>
-  )
-
+      <AnchoredTooltip content={tooltipContent}>
+        <button disabled={disabled} type="button" onClick={(event) => {
+          if (strategyUrl) history.push(strategyUrl);
+        }}>
+          <div>Export as a Search Strategy</div>
+          <div><small>to download or data mine</small></div>
+        </button>
+      </AnchoredTooltip>
+    </div>    
+  );
+  
 }
 
 function ResultTypeWidget(props: ResultProps) {
@@ -331,13 +399,25 @@ function ResultTypeWidget(props: ResultProps) {
 
   if (docType == null || !docType.isWdkRecordType) return null;
 
-  const isDisabled = selection.length === 0 || isEqual(filters, selection);
+  const showApplyCancel = selection.length > 0 && !isEqual(filters, selection);
+  const showClear = selection.length > 0 && !isEqual(filters, allFields);
   
   return (
     <div className={cx('--ResultTypeWidget')}>
       <h2>Search Options</h2>
       <div className={cx('--FilterTitleContainer', 'widget')}>
-        <h3>Fields to search</h3>
+        <h3>Search in these {docType.displayName} fields...</h3>
+        <div className={cx('--FilterButtons')}>
+          {showApplyCancel ? (
+            <React.Fragment>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>{okIcon}</button>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
+            </React.Fragment>
+          ) : showClear ? (
+            <button type="button" onClick={() => onFiltersChange([])}>Clear filter</button>
+          ) : null}
+        </div>
       </div>
       <CheckboxList
         items={docType.wdkRecordTypeData.searchFields.map(field => ({
@@ -347,11 +427,6 @@ function ResultTypeWidget(props: ResultProps) {
         value={selection}
         onChange={setSelection}
       />
-      <div className={cx('--FilterButtons')}>
-        <button type="button" disabled={isDisabled} className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Update results</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="button" disabled={isDisabled} className={cx('--RedButton')} onClick={() => setSelection(filters)}>Cancel</button>
-      </div>
     </div>
   );
 }
@@ -402,7 +477,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
       link: {
         isRoute: true,
         url: `/search/${recordName}/${searchName}`,
-        text: formatSummaryFieldValue(document.summaryFieldData.TEXT__search_displayName)
+        text: document.hyperlinkName || document.primaryKey.join(' - ')
       },
       summary: makeGenericSummary(document, documentType)
     }
@@ -422,25 +497,23 @@ function makeRecordLink(document: SiteSearchDocument): ResultEntryDetails['link'
   return {
     isRoute: true,
     url: `/record/${document.documentType}/${document.primaryKey.join('/')}`,
-    text: document.primaryKey.join(' - ')
+    text: document.hyperlinkName || document.primaryKey.join(' - ')
   }
 }
 
 function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSearchDocumentType) {
-  const foundInFields = documentType.isWdkRecordType && documentType.wdkRecordTypeData.searchFields
-    .filter(field => Object.keys(document.foundInFields).includes(field.name))
-    .map(field => field.displayName);
   const summaryFields = documentType.summaryFields
     .flatMap(summaryField => {
+      if (summaryField.isSubtitle) return [];
       const value = formatSummaryFieldValue(document.summaryFieldData[summaryField.name]);
       return value == null ? [] : [ { ...summaryField, value } ]
     });
+  
   return (
     <React.Fragment>
       {summaryFields.map(({ name, displayName, value }) => (
-        <div key={name}><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
+        <div key={name} className={cx('--SummaryField')}><strong>{displayName}:</strong> {safeHtml(value, null, 'span')}</div>
       ))}
-      {foundInFields && foundInFields.length > 0 && <div className={cx('--FieldsHit')}><strong><em>Fields matched: </em></strong> {foundInFields.join('; ')}</div>}
     </React.Fragment>
   );
 }
