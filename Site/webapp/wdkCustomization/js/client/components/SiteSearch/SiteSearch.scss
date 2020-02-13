@@ -180,6 +180,14 @@
     row-gap: .5em;
     padding: .5em 0;
 
+    color: #444;
+
+    strong {
+      font-weight: 400;
+      color: black;
+      margin-right: .5ex;
+    }
+
     &List &:nth-child(2n + 1) {
       background-color: #fafafa;
     }
@@ -200,7 +208,6 @@
   }
 
   &--ResultSubTitle {
-    font-size: 1.1em;
     display: inline;
     margin-left: 1em;
   }
@@ -217,6 +224,10 @@
       font-weight: bold;
       font-style: normal;
     }
+    strong {
+      font-weight: normal;
+      font-style: italic;
+    }
   }
 
   &--Counts {
@@ -232,6 +243,7 @@
     th {
       border: none;
       padding: .5em 0 0 .25em;
+      font-weight: normal;
     }
 
     td {
@@ -343,7 +355,7 @@
 
   &--Result {
     &Link {
-      font-size: 1.1em;
+      font-size: 1.145em;
     }
     &DocumentTypePath {
       color: #3e3e3e;

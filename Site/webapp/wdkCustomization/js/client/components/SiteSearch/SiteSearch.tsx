@@ -415,7 +415,7 @@ function ResultTypeWidget(props: ResultProps) {
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
           ) : showClear ? (
-            <button type="button" onClick={() => onFiltersChange([])}>Clear filter</button>
+            <button type="button" onClick={() => onFiltersChange([])}>Clear options</button>
           ) : null}
         </div>
       </div>
