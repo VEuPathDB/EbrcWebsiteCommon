@@ -302,6 +302,9 @@ function ResultTypeWidget(props: ResultProps) {
     setSelection(filters);
   }, [ filters ])
 
+  const getFieldCount = (fieldName: string) =>
+    (!response.fieldCounts) ? 0 : (!response.fieldCounts[fieldName]) ? 0 : response.fieldCounts[fieldName];
+
   if (documentType == null) return null;
 
   const docType = response.documentTypes.find(d => d.id === documentType);
@@ -352,7 +355,7 @@ function ResultTypeWidget(props: ResultProps) {
         </div>
         <CheckboxList
           items={docType.wdkRecordTypeData.searchFields.map(field => ({
-            display: field.displayName,
+            display: field.displayName + " " + getFieldCount(field.name),
             value: field.name
           }))}
           value={selection}

@@ -59,6 +59,7 @@ export const siteSearchResponse = record({
   categories: arrayOf(siteSearchCategory),
   documentTypes: arrayOf(siteSearchDocumentType),
   organismCounts: objectOf(number),
+  fieldCounts: optional(objectOf(number)),
   searchResults: siteSearchResults
 });
 
