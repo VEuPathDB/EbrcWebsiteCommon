@@ -1,5 +1,5 @@
 import { castArray, isArray } from 'lodash';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import SiteSearch from 'ebrc-client/components/SiteSearch/SiteSearch';
 import { getLeaves } from 'wdk-client/Utils/TreeUtils';
 import { useOrganismTree } from 'ebrc-client/hooks/organisms';
@@ -21,7 +21,6 @@ export default function SiteSearchController() {
     ORGANISM_PARAM,
     FILTERS_PARAM
   );
-  const [ fieldFiltersByFieldId, updateFieldFiltersByFieldId ] = useState<Record<string, string[] | undefined>>({});
   const searchString = useMemo(() => isArray(params.q) ? params.q[0] : params.q || '', [ params.q ]);
   const offset = useMemo(() => Number(isArray(params.offset) ? params.offset[0] : params.offset) || 0, [ params.offset]);
   const documentType = useMemo(() => isArray(params.documentType) ? params.documentType[0] : params.documentType, [ params.documentType ]);
@@ -67,8 +66,7 @@ export default function SiteSearchController() {
     updateParams({
       [SEARCH_TERM_PARAM]: searchString,
       [DOCUMENT_TYPE_PARAM]: nextDocumentType,
-      [ORGANISM_PARAM]: organisms,
-      [FILTERS_PARAM]: nextDocumentType ? fieldFiltersByFieldId[nextDocumentType] : undefined
+      [ORGANISM_PARAM]: organisms
     })
   }, [ updateParams, searchString, organisms ]);
 
@@ -89,10 +87,6 @@ export default function SiteSearchController() {
       [ORGANISM_PARAM]: organisms,
       [FILTERS_PARAM]: filters
     });
-    updateFieldFiltersByFieldId({
-      ...fieldFiltersByFieldId,
-      [documentType]: filters
-    })
   }, [ updateParams, searchString, documentType, organisms ]);
 
   if (!siteSearchServiceUrl) {
