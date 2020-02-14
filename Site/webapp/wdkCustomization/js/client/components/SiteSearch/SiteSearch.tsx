@@ -13,25 +13,19 @@ import './SiteSearch.scss';
 interface Props {
   loading: boolean;
   searchString: string;
-  response?: SiteSearchResponse;
+  response: SiteSearchResponse;
   offset: number;
   numRecords: number;
   documentType?: string;
   filters?: string[];
   filterOrganisms?: string[];
-  organismTree?: TreeBoxVocabNode;
+  organismTree: TreeBoxVocabNode;
   onSearch: (searchString: string) => void;
   onPageOffsetChange: (offset: number) => void;
   onDocumentTypeChange: (documentType?: string) => void;
   onFiltersChange: (filters: string[]) => void;
   onOrganismsChange: (organisms: string[]) => void;
 }
-
-type ResultPropKeys =
-  | 'response'
-  | 'organismTree';
-
-type ResultProps = Omit<Props, ResultPropKeys> &  Required<Pick<Props, ResultPropKeys>>;
 
 const cx = makeClassNameHelper('SiteSearch');
 
@@ -45,34 +39,32 @@ export default function SiteSearch(props: Props) {
     <div className={cx()}>
       {props.loading && <div className={cx('--Loading')}><div>Loading...</div></div>}
       <h1>{Title(props)}</h1>
-      {props.response && <Results {...props as ResultProps} />}
+      <Results {...props} />
+      <StrategyLinkout {...props}/>
     </div>
   )
 }
 
-function Results(props: ResultProps) {
+function Results(props: Props) {
   if (props.response.searchResults.totalCount === 0) {
     return (
       <div style={{ fontSize: '1.5em', textAlign: 'center' }}>Nothing matched your search. Try something else.</div>
     )
   }
   return (
-    <React.Fragment>
-      <StrategyLinkout {...props}/>
-      <div className={cx('--Results')}>
-        <Pagination {...props} />
-        <div className={cx('--CountsContainer')}>
-          <SearchCounts {...props}/>
-        </div>
-        <div className={cx('--ResultTypeWidgetContainer')}>
-          <ResultTypeWidget {...props} />
-        </div>
-        <div className={cx('--ResultContainer')}>
-          <SearchResult {...props} />
-        </div>
-        <Pagination {...props}/>
+    <div className={cx('--Results')}>
+      <Pagination {...props} />
+      <div className={cx('--CountsContainer')}>
+        <SearchCounts {...props}/>
       </div>
-    </React.Fragment>
+      <div className={cx('--ResultTypeWidgetContainer')}>
+        <ResultTypeWidget {...props} />
+      </div>
+      <div className={cx('--ResultContainer')}>
+        <SearchResult {...props} />
+      </div>
+      <Pagination {...props}/>
+    </div>
   )
 }
 
@@ -95,7 +87,7 @@ function Title(props: Props) {
   return <React.Fragment>{display} matching <strong>{searchString}</strong></React.Fragment>
 }
 
-function ResultInfo(props: ResultProps) {
+function ResultInfo(props: Props) {
   const { numRecords, offset, response } = props;
   const { searchResults: result } = response;
   const firstRec = offset + 1;
@@ -107,7 +99,7 @@ function ResultInfo(props: ResultProps) {
   )
 }
 
-function SearchCounts(props: ResultProps) {
+function SearchCounts(props: Props) {
   const { response, documentType, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
   const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
@@ -173,7 +165,7 @@ function SearchCounts(props: ResultProps) {
   )
 }
 
-function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
+function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
   const { organismTree, filterOrganisms, onOrganismsChange, response } = props;
   const initialExpandedNodes = useMemo(() => organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [], [ organismTree ]);
   const [ expansion, setExpansion ] = useState<string[]>(initialExpandedNodes);
@@ -241,7 +233,7 @@ function OrgansimFilter(props: Required<Pick<ResultProps, 'organismTree' | 'filt
   )
 }
 
-function SearchResult(props: ResultProps) {
+function SearchResult(props: Props) {
   const { response } = props;
   const [ expandHighlights, updateExpandHightlights ] = useState(false);
 
@@ -299,7 +291,7 @@ function Hit(props: HitProps & ExpandeHighlightsProps) {
   )
 }
 
-function DirectHit(props: ResultProps & ExpandeHighlightsProps) {
+function DirectHit(props: Props & ExpandeHighlightsProps) {
   const { response, searchString, expandHighlights, updateExpandHightlights } = props;
   // quote chars to "remove" when comparing
   const quotes = [``, `'`, `"`];
@@ -352,7 +344,7 @@ function FieldsHit(props: HitProps & ExpandeHighlightsProps) {
   )
 }
 
-function StrategyLinkout(props: ResultProps) {
+function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
   if (docType == null || !docType.isWdkRecordType) return <StrategyLinkoutLink/>;
@@ -387,7 +379,7 @@ function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: strin
   
 }
 
-function ResultTypeWidget(props: ResultProps) {
+function ResultTypeWidget(props: Props) {
   const { response, documentType, onFiltersChange } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
   const allFields = useMemo(() => docType?.isWdkRecordType ? docType.wdkRecordTypeData.searchFields.map(f => f.name) : [], [ docType ]);
@@ -433,14 +425,14 @@ function ResultTypeWidget(props: ResultProps) {
   );
 }
 
-function Pagination(props: ResultProps) {
+function Pagination(props: Props) {
   const { numRecords, offset, response, onPageOffsetChange } = props;
   const { searchResults } = response;
   const totalPages = Math.ceil(searchResults.totalCount / numRecords);
   const currentPage = Math.ceil((offset + 1) / numRecords)
   return (
     <div className={`MesaComponent ${cx('--Pagination')}`}>
-    <ResultInfo {...props as ResultProps}/>
+    <ResultInfo {...props as Props}/>
     <PaginationMenu
       totalRows={searchResults.totalCount}
       totalPages={totalPages}

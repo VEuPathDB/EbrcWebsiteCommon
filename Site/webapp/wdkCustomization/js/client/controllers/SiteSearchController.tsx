@@ -115,7 +115,7 @@ export default function SiteSearchController() {
     )
   }
 
-  if (value == null) {
+  if (value == null || organismTree == null) {
     return <LoadingOverlay>Loading results</LoadingOverlay>;
   }
 
