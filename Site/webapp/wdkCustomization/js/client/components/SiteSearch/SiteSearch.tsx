@@ -57,20 +57,22 @@ function Results(props: ResultProps) {
     )
   }
   return (
-    <div className={cx('--Results')}>
-      <Pagination {...props} />
-      <div className={cx('--CountsContainer')}>
-        <SearchCounts {...props}/>
+    <React.Fragment>
+      <StrategyLinkout {...props}/>
+      <div className={cx('--Results')}>
+        <Pagination {...props} />
+        <div className={cx('--CountsContainer')}>
+          <SearchCounts {...props}/>
+        </div>
+        <div className={cx('--ResultTypeWidgetContainer')}>
+          <ResultTypeWidget {...props} />
+        </div>
+        <div className={cx('--ResultContainer')}>
+          <SearchResult {...props} />
+        </div>
+        <Pagination {...props}/>
       </div>
-      <div className={cx('--ResultTypeWidgetContainer')}>
-        <StrategyLinkout {...props}/>
-        <ResultTypeWidget {...props} />
-      </div>
-      <div className={cx('--ResultContainer')}>
-        <SearchResult {...props} />
-      </div>
-      <Pagination {...props}/>
-    </div>
+    </React.Fragment>
   )
 }
 
@@ -404,9 +406,8 @@ function ResultTypeWidget(props: ResultProps) {
   
   return (
     <div className={cx('--ResultTypeWidget')}>
-      <h3>Search Options</h3>
       <div className={cx('--FilterTitleContainer', 'widget')}>
-        <h4>Search in these {docType.displayName} fields...</h4>
+        <h3>Search Options</h3>
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
@@ -419,6 +420,7 @@ function ResultTypeWidget(props: ResultProps) {
           ) : null}
         </div>
       </div>
+        <h4>Search in these {docType.displayName} fields...</h4>
       <CheckboxList
         items={docType.wdkRecordTypeData.searchFields.map(field => ({
           display: field.displayName,

@@ -130,13 +130,20 @@
   &--ResultTypeWidget {
     width: 24em;
     .wdk-CheckboxList {
-      margin-top: 1em;
       padding: 0 1em;
     }
   }
 
-  &--Counts, &--ResultTypeWidget {
+  &--CountsContainer, &--ResultTypeWidgetContainer {
+    padding: 1em;
     max-width: 100%;
+    // FIXME These two colors are based on site branding
+    background: #efe8ec;
+    border: 1px solid #e2d6de;
+
+    > * {
+      background-color: inherit;
+    }
 
     h2 {
       padding: 0;
@@ -151,13 +158,6 @@
       border: none;
       background: none;
     }
-  }
-
-  &--Counts, &--ResultTypeWidget {
-    padding: 1em;
-    // FIXME These two colors are based on site branding
-    background: #efe8ec;
-    border: 1px solid #e2d6de;
   }
 
   &--ResultContainer {
@@ -191,7 +191,7 @@
     row-gap: .5em;
     padding: .5em 0;
 
-    color: #444;
+    color: #4e4e4e;
 
     strong {
       font-weight: 400;
@@ -215,6 +215,12 @@
     }
     &__exact &Link {
       font-weight: bold;
+    }
+  }
+
+  &--SummaryField {
+    strong {
+      font-weight: 500;
     }
   }
 
