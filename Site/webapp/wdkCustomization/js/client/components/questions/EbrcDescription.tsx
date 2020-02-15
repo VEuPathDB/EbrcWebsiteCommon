@@ -25,7 +25,7 @@ export const useEbrcDescription = (question: Question) => {
   }, [ question.fullName ]);
 
   const DescriptionComponent = React.useCallback(
-    (props: { description?: string, navigatingToDescription: boolean }) => 
+    (props: { description?: string, navigatingToDescription: boolean }) =>
       <div className={cx()}>
         {
           props.description !== undefined && (
@@ -70,9 +70,9 @@ const deriveAnswerSpec = (questionFullName: string) => (
   }
 );
 
-const REPORT_CONFIG = { 
+const REPORT_CONFIG = {
   attributes: ['summary'],
-  tables: ['Publications'] 
+  tables: ['Publications']
 };
 
 const recordToAttribution = (record: RecordInstance) => {
@@ -88,7 +88,7 @@ const recordToAttribution = (record: RecordInstance) => {
           {
             summaryText === null
               ? (
-                <RecordError 
+                <RecordError
                   message={`summary attribute '${record.attributes.summary}' for data set ${datasetId} is invalid`}
                 />
               )
@@ -97,7 +97,7 @@ const recordToAttribution = (record: RecordInstance) => {
         </div>
         {
           publications === null && (
-            <RecordError 
+            <RecordError
               message={`table 'Publications' is missing for data set ${datasetId}`}
             />
           )
@@ -115,13 +115,13 @@ const recordToAttribution = (record: RecordInstance) => {
 };
 
 const publicationToLink = ({ pubmed_link, dataset_id }: Record<string, AttributeValue>, i: number) => {
-  const publicationLink = pubmed_link === null || typeof pubmed_link === 'string' ? null : pubmed_link;
+  const publicationLink = pubmed_link == null || typeof pubmed_link === 'string' ? null : pubmed_link;
 
   return (
     <li className={cx('PublicationItem')} key={publicationLink === null ? i : publicationLink.url}>
       {
         publicationLink === null
-          ? <RecordError 
+          ? <RecordError
               message={`pubmed_link attribute '${pubmed_link}' for data set ${dataset_id} is invalid.`}
             />
           : <a href={publicationLink.url} target="_blank">{safeHtml(publicationLink.displayText || publicationLink.url)}</a>
@@ -130,7 +130,7 @@ const publicationToLink = ({ pubmed_link, dataset_id }: Record<string, Attribute
   );
 };
 
-const RecordError = (props: { message: string }) => 
+const RecordError = (props: { message: string }) =>
   <span className={cx('RecordError')}>
     ERROR: {props.message}
     Please <Link to="/contact-us" target="_blank" >contact us</Link> to report.
