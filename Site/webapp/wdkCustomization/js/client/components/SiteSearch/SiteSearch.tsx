@@ -408,7 +408,7 @@ function ResultTypeWidget(props: Props) {
   return (
     <div className={cx('--ResultTypeWidget')}>
       <div className={cx('--FilterTitleContainer', 'widget')}>
-        <h3>Search Options</h3>
+        <h3>{docType.displayName} Options</h3>
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
