@@ -127,7 +127,7 @@ function SearchCounts(props: Props) {
       <div className={cx('--FilterTitleContainer', 'categories')}>
         <h3>Filter Results</h3>
         <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
-          <div><button type="button" onClick={() => onDocumentTypeChange()}>Clear filter</button></div>
+          <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Back to All</button></div>
         </div>
       </div>
       <table className={cx('--SearchCounts')}>
@@ -144,7 +144,11 @@ function SearchCounts(props: Props) {
                 if (docType == null || (onlyShowMatches && docType.count === 0)) return null;
                 return (
                   <tr key={docType.id}>
-                    <td><button className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayNamePlural}</button></td>
+                    <td>
+                      {docType.id === documentType
+                        ? docType.displayNamePlural
+                        : <button className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayNamePlural}</button>}
+                    </td>
                     <td>{docType.count ? docType.count.toLocaleString() : null}</td>
                   </tr>
                 );
@@ -212,7 +216,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
           ) : showResetButton ? (
             <React.Fragment>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" onClick={() => (onOrganismsChange([]))}>Clear filter</button>
+              <button type="button" className="link" onClick={() => (onOrganismsChange([]))}>Clear filter</button>
             </React.Fragment>
           ) : null}
         </div>
@@ -408,7 +412,7 @@ function ResultTypeWidget(props: Props) {
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
           ) : showClear ? (
-            <button type="button" onClick={() => onFiltersChange([])}>Clear options</button>
+            <button type="button" className="link" onClick={() => onFiltersChange([])}>Clear options</button>
           ) : null}
         </div>
       </div>
