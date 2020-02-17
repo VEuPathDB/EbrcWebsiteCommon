@@ -128,7 +128,7 @@
   }
 
   &--ResultTypeWidget {
-    width: 24em;
+    max-width: 24em;
     .wdk-CheckboxList {
       padding: 0 1em;
     }
@@ -251,7 +251,7 @@
     .wdk-CheckboxTree {
       padding: 0;
     }
-    width: 25em;
+    max-width: 25em;
   }
 
   &--SearchCounts {
