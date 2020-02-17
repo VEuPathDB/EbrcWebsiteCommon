@@ -271,7 +271,8 @@
       padding-left: 1em;
     }
 
-    tr td:last-child {
+    tr td:last-child,
+    tr th:last-child {
       text-align: right;
     }
   }
@@ -311,6 +312,12 @@
     button {
       white-space: nowrap;
     }
+  }
+
+  &--ResultTypeWidgetItem {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 
   &--OrganismFilterNode {

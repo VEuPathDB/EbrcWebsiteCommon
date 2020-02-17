@@ -126,9 +126,6 @@ function SearchCounts(props: Props) {
       </div>
       <div className={cx('--FilterTitleContainer', 'categories')}>
         <h3>Filter Results</h3>
-        <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
-          <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Back to All</button></div>
-        </div>
       </div>
       <table className={cx('--SearchCounts')}>
         <tbody>
@@ -137,7 +134,16 @@ function SearchCounts(props: Props) {
             (documentType != null && documentType !== '' && !category.documentTypes.includes(documentType))
           ) ? null : (
             <React.Fragment key={category.name}>
-              <tr><th>{category.name}</th></tr>
+              <tr>
+                <th>{category.name}</th>
+                <th>
+                  {documentType && (
+                    <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
+                      <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Back to All</button></div>
+                    </div>
+                  )}
+                </th>
+              </tr>
               {category.documentTypes.map(id => {
                 if (documentType != null && documentType !== '' && id !== documentType) return null;
                 const docType = docTypesById[id];
@@ -393,13 +399,12 @@ function ResultTypeWidget(props: Props) {
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
-    
 
   if (docType == null || !docType.isWdkRecordType) return null;
 
   const showApplyCancel = selection.length > 0 && !isEqual(filters, selection);
   const showClear = selection.length > 0 && !isEqual(filters, allFields);
-  
+
   return (
     <div className={cx('--ResultTypeWidget')}>
       <div className={cx('--FilterTitleContainer', 'widget')}>
@@ -419,7 +424,14 @@ function ResultTypeWidget(props: Props) {
         <h4>Search in these {docType.displayName} fields...</h4>
       <CheckboxList
         items={docType.wdkRecordTypeData.searchFields.map(field => ({
-          display: field.displayName,
+          display: (
+            <div className={cx('--ResultTypeWidgetItem')}>
+              <div>{field.displayName}</div>
+              {response.fieldCounts &&
+                <div>{(response.fieldCounts[field.name] ?? 0).toLocaleString()}</div>
+              }
+            </div>
+          ),
           value: field.name
         }))}
         value={selection}
