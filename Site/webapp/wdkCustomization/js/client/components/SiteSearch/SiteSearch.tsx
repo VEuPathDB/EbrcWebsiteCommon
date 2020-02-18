@@ -245,7 +245,6 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
 
 function SearchResult(props: Props) {
   const { response } = props;
-  const [ expandHighlights, updateExpandHightlights ] = useState(false);
 
   const documentTypesById = useMemo(() => keyBy(response?.documentTypes, 'id'), [ response]);
   if (response.searchResults.totalCount == 0) {
@@ -257,15 +256,13 @@ function SearchResult(props: Props) {
   const { searchResults: result } = response;
   return (
     <React.Fragment>
-      <DirectHit {...props} expandHighlights={expandHighlights} updateExpandHightlights={updateExpandHightlights}/>
+      <DirectHit {...props}/>
       <div className={cx('--ResultList')}>
         {result.documents.map((document, index) => (
           <Hit
             key={index}
             document={document}
             documentType={documentTypesById[document.documentType]}
-            expandHighlights={expandHighlights}
-            updateExpandHightlights={updateExpandHightlights}
           />
         ))}
       </div>
@@ -279,12 +276,7 @@ interface HitProps {
   classNameModifier?: string;
 }
 
-interface ExpandeHighlightsProps {
-  expandHighlights: boolean;
-  updateExpandHightlights: (expand: boolean) => void;
-}
-
-function Hit(props: HitProps & ExpandeHighlightsProps) {
+function Hit(props: HitProps) {
   const { classNameModifier, document, documentType } = props;
   const { link, summary } = resultDetails(document, documentType);
   const subTitleField = documentType.summaryFields.find(f => f.isSubtitle);
@@ -301,8 +293,8 @@ function Hit(props: HitProps & ExpandeHighlightsProps) {
   )
 }
 
-function DirectHit(props: Props & ExpandeHighlightsProps) {
-  const { response, searchString, expandHighlights, updateExpandHightlights } = props;
+function DirectHit(props: Props) {
+  const { response, searchString } = props;
   // quote chars to "remove" when comparing
   const quotes = [``, `'`, `"`];
   const firstHit = response?.searchResults?.documents[0];
@@ -316,14 +308,13 @@ function DirectHit(props: Props & ExpandeHighlightsProps) {
       classNameModifier="exact"
       document={firstHit}
       documentType={firstHitDocType}
-      expandHighlights={expandHighlights}
-      updateExpandHightlights={updateExpandHightlights}
     />
   );
 }
 
-function FieldsHit(props: HitProps & ExpandeHighlightsProps) {
-  const { document, documentType, expandHighlights, updateExpandHightlights } = props;
+function FieldsHit(props: HitProps) {
+  const { document, documentType } = props;
+  const [ expandHighlights, updateExpandHightlights ] = useState(false);
   const foundInFields = documentType.isWdkRecordType && documentType.wdkRecordTypeData.searchFields
     .filter(field => field.name in document.foundInFields);
   if (!foundInFields || foundInFields.length === 0) return null;
