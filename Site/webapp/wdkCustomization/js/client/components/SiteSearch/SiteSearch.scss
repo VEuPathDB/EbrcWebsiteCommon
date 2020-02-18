@@ -185,7 +185,6 @@
   }
 
   &--Result {
-    font-weight: 500;
     border-top: 1px solid #bdbdbd;
     display: grid;
     row-gap: .5em;
@@ -232,18 +231,31 @@
   &--FieldsHit {
     padding: .5em 0;
     ul {
-      margin-left: 2.5em;
+      margin-left: 1em;
+      display: table;
+      > li {
+        display: table-row;
+        > * {
+          padding: .15em;
+          display: table-cell;
+          &:first-child {
+            white-space: nowrap;
+            text-align: right;
+            padding-right: 1ch;
+            color: black;
+            font-style: italic;
+            font-weight: normal;
+          }
+        }
+      }
     }
   }
 
   &--FieldHighlight {
     em {
-      font-weight: bold;
+      color: black;
+      font-weight: 500;
       font-style: normal;
-    }
-    strong {
-      font-weight: normal;
-      font-style: italic;
     }
   }
 
