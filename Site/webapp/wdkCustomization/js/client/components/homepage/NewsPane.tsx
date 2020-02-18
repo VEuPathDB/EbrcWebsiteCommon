@@ -75,6 +75,10 @@ export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Pro
             <div className={cx('DrawerContent')}>
               <button className="link" onClick={toggleNews}>
                 <IconAlt fa="angle-double-left" />
+                <div className={cx('DrawerLabel')}>
+                  News and Tweets
+                </div>
+                <IconAlt fa="angle-double-left" />
               </button>
             </div>
           </div>

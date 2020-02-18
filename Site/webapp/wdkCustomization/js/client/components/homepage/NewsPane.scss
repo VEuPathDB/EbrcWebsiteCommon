@@ -31,14 +31,21 @@
       border-left: 1.5em solid #b4babe;
       border-top: 1em solid transparent;
       border-bottom: 1em solid transparent;
-      height: 4em;
+      height: 15em;
+      position: relative;
 
       button {
-        position: relative;
-        left: -0.875em;
+        position: absolute;
+        left: -1em;
         color: white;
         font-size: 1.5em;
       }
+    }
+
+    &Label {
+      font-size: 0.8em;
+      -ms-writing-mode: tb-lr;
+      writing-mode: vertical-lr;
     }
   }
 }
