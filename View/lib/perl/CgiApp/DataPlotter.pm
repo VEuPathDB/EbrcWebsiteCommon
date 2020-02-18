@@ -126,6 +126,7 @@ sub run {
                                 'PiroplasmaDB' => 1,
                                 'MicrosporidiaDB' => 1,
                                 'HostDB' => 1,
+                                'VectorBase' => 1,
                                 'EuPathDB' => 1,
                                 'ClinEpiDB' => 1,
                                 'MicrobiomeDB' => 1,
