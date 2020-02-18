@@ -26,14 +26,13 @@ export default function ExternalContentController(props: Props) {
     if (content == null) return;
 
     try {
-      const parsedUrl = new URL(url, String(window.location));
       // scroll to element identified by hash
-      if (parsedUrl.hash) location.hash = parsedUrl.hash;
+      if (location.hash) location.assign(location.hash);
     }
     catch(error) {
       console.error(error);
     }
-  }, [ url, content ]);
+  }, [ location.hash, content ]);
 
   if (content == null) return <Loading/>;
 
