@@ -427,6 +427,7 @@ function ResultTypeWidget(props: Props) {
         }))}
         value={selection}
         onChange={setSelection}
+        linksPosition={CheckboxList.LinksPosition.Top}
       />
     </div>
   );
