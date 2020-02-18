@@ -1,4 +1,4 @@
-import { capitalize, keyBy, add, isEqual } from 'lodash';
+import { capitalize, keyBy, add, isEqual, xor } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
@@ -393,8 +393,8 @@ function ResultTypeWidget(props: Props) {
 
   if (docType == null || !docType.isWdkRecordType) return null;
 
-  const showApplyCancel = selection.length > 0 && !isEqual(filters, selection);
-  const showClear = selection.length > 0 && !isEqual(filters, allFields);
+  const showApplyCancel = selection.length > 0 && xor(filters, selection).length > 0;
+  const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
 
   return (
     <div className={cx('--ResultTypeWidget')}>
@@ -418,8 +418,8 @@ function ResultTypeWidget(props: Props) {
           display: (
             <div className={cx('--ResultTypeWidgetItem')}>
               <div>{field.displayName}</div>
-              {response.fieldCounts &&
-                <div>{(response.fieldCounts[field.name] ?? 0).toLocaleString()}</div>
+              {response.fieldCounts && response.fieldCounts[field.name] > 0 &&
+                <div>{(response.fieldCounts[field.name]).toLocaleString()}</div>
               }
             </div>
           ),

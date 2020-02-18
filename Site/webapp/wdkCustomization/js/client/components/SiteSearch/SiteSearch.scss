@@ -130,6 +130,9 @@
   &--ResultTypeWidget {
     .wdk-CheckboxList {
       padding: 0 1em;
+      &Item:hover {
+        font-weight: bold;
+      }
     }
   }
 
