@@ -31,16 +31,6 @@ export const SocialMediaControls = ({ isNewsExpanded, toggleNews }: Props) => {
           />
         </button>
       }
-      {
-        !isNewsExpanded &&
-        <div className="ebrc-SocialMediaLinks">
-          <button onClick={toggleNews} className="link">
-            <IconAlt fa="newspaper-o" />
-            <span>News</span>
-            <span>Tweets</span>
-          </button>
-        </div>
-      }
     </div>
   );
 };
