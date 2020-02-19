@@ -23,11 +23,11 @@
 
   &Drawer {
     position: absolute;
-    left: -.0625rem;
+    right: 0;
     top: 1.5rem;
 
     &Content {
-      border-left: 2.25em solid #a0a7ac;
+      border-right: 2.25em solid #a0a7ac;
       border-top: 1em solid transparent;
       border-bottom: 1em solid transparent;
       height: 18.5em;
@@ -36,7 +36,7 @@
       button {
         position: absolute;
         top: 0.1em;
-        left: -1.3em;
+        right: -1.4em;
         color: white;
         font-size: 1.5em;
         text-shadow: 1px 1px #00000052;
