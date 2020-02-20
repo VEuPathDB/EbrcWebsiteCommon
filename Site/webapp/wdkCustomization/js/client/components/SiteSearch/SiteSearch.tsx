@@ -139,7 +139,7 @@ function SearchCounts(props: Props) {
                 <th>
                   {documentType && (
                     <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
-                      <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Back to All</button></div>
+                      <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Clear filter</button></div>
                     </div>
                   )}
                 </th>
