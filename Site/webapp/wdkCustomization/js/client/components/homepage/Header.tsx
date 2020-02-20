@@ -5,7 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 
 import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
 import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
-import { Link, TextBox, IconAlt } from 'wdk-client/Components';
+import { Link, IconAlt } from 'wdk-client/Components';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { RootState } from 'wdk-client/Core/State/Types';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';

@@ -3,7 +3,6 @@ import { groupBy, noop } from 'lodash';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { Link, IconAlt } from 'wdk-client/Components';
 import {useWdkEffect} from 'wdk-client/Service/WdkService';
-import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 const stopIcon = (
   <span className="fa-stack" style={{ fontSize: '1.2em' }}>
@@ -177,7 +176,10 @@ Please <Link to="/contact-us"> Contact Us</Link> to let us know what you think. 
 /**
  * Info boxes containing announcements.
  */
-export default function Announcements(props) {
+export default function Announcements({
+  closedBanners = [],
+  setClosedBanners = noop
+}) {
   const [ data, setData ] = useState();
   useWdkEffect(wdkService => {
     let doUpdate = true;
@@ -189,13 +191,6 @@ export default function Announcements(props) {
     })();
     return () => { doUpdate = false };
   }, []);
-
-  const [ closedBanners, setClosedBanners ] = useSessionBackedState(
-    [],
-    'eupath-Announcements',
-    closedBanners => closedBanners.join(','),
-    closedBannersString => closedBannersString.split(/\s*,\s*/g)
-  );
 
   const onCloseFactory = useCallback(id => () => {
     setClosedBanners([ ...closedBanners, id ]);
