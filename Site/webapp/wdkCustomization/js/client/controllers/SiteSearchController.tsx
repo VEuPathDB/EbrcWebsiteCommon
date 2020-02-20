@@ -37,7 +37,7 @@ export default function SiteSearchController() {
   );
 
   const { value, loading } = useSiteSearchResponse(
-    { searchString, allOrganisms, organisms: organisms, documentType, filters },
+    { searchString, allOrganisms, organisms, documentType, filters },
     { offset, numRecords }
   );
 
@@ -179,7 +179,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
         },
         restrictToProject: projectId,
         restrictMetadataToOrganisms: allOrganisms,
-        restrictSearchToOrganisms: organisms,
+        restrictSearchToOrganisms: organisms.length === 0 ? allOrganisms : organisms,
         documentTypeFilter: documentType == null ? undefined : {
           documentType,
           foundOnlyInFields: filters
