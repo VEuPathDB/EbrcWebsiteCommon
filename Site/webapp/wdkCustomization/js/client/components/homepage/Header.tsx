@@ -215,10 +215,10 @@ const HeaderView = withRouter(({
             {branding}
           </div>
         </Link>
-        <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
-          <IconAlt fa="bars" />
-        </button>
       </div>
+      <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
+        <IconAlt fa="bars" />
+      </button>
       <div className={cx(
         'MenuBar', 
         showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden'

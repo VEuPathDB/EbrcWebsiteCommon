@@ -24,19 +24,19 @@
     margin: 0.5em;
 
     content: url('~eupathdb/images/partofveupath.png');
+
+    @media screen and (max-width: 1000px) {
+      display: none;
+    }
   }
 
   &BrandingContainer {
     grid-area: site-branding;
-    align-self: center;
-    
-    display: flex;
-    justify-content: space-between;
-
     margin-left: 1em;
 
     @media screen and (max-width: 1000px) {
       width: 100%;
+      margin-left: 0;
     }
   }
 
@@ -48,6 +48,8 @@
   }
 
   &Hamburger {
+    grid-area: hamburger;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -79,7 +81,7 @@
 
       &__hamburger-shown {
         display: block;
-        width: 95vw;
+        width: calc(100% - 1em);
       }
     }
   }
@@ -180,7 +182,8 @@
     width: 550px;
 
     @media screen and (max-width: 1000px) {
-      display: none;
+      width: calc(100% - 0.5em);
+      margin: 0;
     }
   }
 
@@ -199,6 +202,10 @@
         -2px -2px 2px #00000052, 
         2px -2px 2px #00000052, 
         -2px 2px 2px #00000052;
+    }
+
+    @media screen and (max-width: 1000px) {
+      display: none;
     }
   }
 
@@ -239,10 +246,6 @@
         -2px -2px 2px #00000052, 
         2px -2px 2px #00000052, 
         -2px 2px 2px #00000052;
-    }
-
-    @media screen and (max-width: 1000px) {
-      display: none;
     }
   }
 }
