@@ -1,5 +1,5 @@
-$mobile-width: 1000px;
-$desktop-width: 1001px;
+$mobile-width: 1200px;
+$desktop-width: 1201px;
 
 .ebrc-Header {
   position: fixed;
@@ -171,6 +171,10 @@ $desktop-width: 1001px;
       
       @media screen and (max-width: $mobile-width) {
         position: relative;
+
+        .ebrc-HeaderMenuItemGroup {
+          max-height: unset;
+        }
       }
     }
   }

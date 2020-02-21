@@ -26,7 +26,7 @@ const cx = makeClassNameHelper('ebrc-Header');
 
 export const todo = () => alert('Under construction');
 
-const SMALL_SCREEN_SIZE = 1000;
+const SMALL_SCREEN_SIZE = 1200;
 
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
