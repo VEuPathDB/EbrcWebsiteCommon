@@ -191,6 +191,7 @@ $desktop-width: 1201px;
     @media screen and (max-width: $mobile-width) {
       width: calc(100% - 0.5em);
       margin: 0;
+      max-width: 550px;
     }
   }
 
