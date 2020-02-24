@@ -198,6 +198,7 @@ const HeaderView = withRouter(({
   }, [ searchTerm ]);
 
   useEffect(() => {
+    setShowHamburgerMenu(false);
     setFocusType('unfocused');
     setSelectedMenuItems([]);
   }, [ location.pathname, location.pathname ]);
