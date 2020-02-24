@@ -61,28 +61,27 @@ export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Pro
   }, []);
 
   return (
-    <aside className={combineClassNames(cx(), containerClassName)}>
+    <aside className={combineClassNames(cx('', isNewsExpanded ? 'news-expanded' : 'news-collapsed'), containerClassName)}>
       <SocialMediaControls isNewsExpanded={isNewsExpanded} toggleNews={toggleNews} />
-      {isNewsExpanded 
-        ? <div className="News-Section">
-            <News
-              twitterUrl={twitterUrl}
-              webAppUrl={webAppUrl}
-              {...newsSidebarState}
-            />
-          </div>
-        : <div className={cx('Drawer')}>
-            <div className={cx('DrawerContent')}>
-              <button className="link" onClick={toggleNews}>
-                <IconAlt fa="angle-double-left" />
-                <div className={cx('DrawerLabel')}>
-                  News and Tweets
-                </div>
-                <IconAlt fa="angle-double-left" />
-              </button>
+      <hr />
+      <div className="News-Section">
+        <News
+          twitterUrl={twitterUrl}
+          webAppUrl={webAppUrl}
+          {...newsSidebarState}
+        />
+      </div>
+      <div className={cx('Drawer')}>
+        <div className={cx('DrawerContent')}>
+          <button className="link" onClick={toggleNews}>
+            <IconAlt fa="angle-double-left" />
+            <div className={cx('DrawerLabel')}>
+              News and Tweets
             </div>
-          </div>
-      }
+            <IconAlt fa="angle-double-left" />
+          </button>
+        </div>
+      </div>
     </aside>
   );
 };
