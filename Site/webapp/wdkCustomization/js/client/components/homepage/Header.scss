@@ -210,10 +210,6 @@ $desktop-width: 1201px;
         2px -2px 2px #00000052, 
         -2px 2px 2px #00000052;
     }
-
-    @media screen and (max-width: $mobile-width) {
-      display: none;
-    }
   }
 
   .UserMenu {
