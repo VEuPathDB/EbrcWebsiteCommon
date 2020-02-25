@@ -74,6 +74,7 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
   return !props.searchTree 
     ? <Loading />
     : <CategoriesCheckboxTree
+        containerClassName="wdk-SearchTree"
         selectedLeaves={noSelectedLeaves}
         onChange={noop}
         tree={props.searchTree}
