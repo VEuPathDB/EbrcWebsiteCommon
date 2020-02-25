@@ -123,7 +123,7 @@ function SearchCounts(props: Props) {
         </label>
       </div>
       <div className={cx('--FilterTitleContainer', 'categories')}>
-        <h3>Filter Results</h3>
+        <h3>Filter results</h3>
       </div>
       <table className={cx('--SearchCounts')}>
         <tbody>
@@ -210,7 +210,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
   return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'organism')}>
-        <h3>Filter Organisms</h3>
+        <h3>Filter organisms</h3>
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons ? (
             <React.Fragment>
@@ -405,7 +405,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
   return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'widget')}>
-        <h3>Filter {docType.displayName} Fields</h3>
+        <h3>Filter {docType.displayName} fields</h3>
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
