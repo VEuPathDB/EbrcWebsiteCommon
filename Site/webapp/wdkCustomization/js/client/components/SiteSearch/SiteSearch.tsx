@@ -348,25 +348,19 @@ function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
   if (docType == null || !docType.isWdkRecordType) return <StrategyLinkoutLink/>;
-
-  const question = useWdkService(wdkService =>
-    wdkService.findQuestion(q => q.urlSegment === docType.wdkRecordTypeData.searchName).catch(() => {}));
-
-  if (question == null) return <StrategyLinkoutLink/>
-
   const paramFields = docType.wdkRecordTypeData.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
   const strategyUrl = `/search/${docType.id}/${docType.wdkRecordTypeData.searchName}?autoRun` +
-    `&param.solr_doc_type=${encodeURIComponent(docType.id)}` +
-    `&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
-    (question.paramNames.includes('solr_search_organism') ? `&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` : '') +
+    `&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` + 
+    `&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` + 
     `&param.text_expression=${encodeURIComponent(searchString)}&param.timestamp=${Date.now()}`;
-  return <StrategyLinkoutLink strategyUrl={strategyUrl} documentType={documentType} />;
+
+  return <StrategyLinkoutLink strategyUrl={strategyUrl} />;
 }
 
-function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: string }) {
-  const { strategyUrl, documentType } = props;
+function StrategyLinkoutLink(props: { strategyUrl?: string }) {
+  const { strategyUrl } = props;
   const history = useHistory();
   const disabled = strategyUrl == null;
   const tooltipContent = disabled
