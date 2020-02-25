@@ -7,6 +7,11 @@ import './SocialMediaIcons.scss';
 
 const cx = makeClassNameHelper('ebrc-SocialMediaIcon');
 
+export const Announcements = () =>
+  <div className={cx()}>
+    <IconAlt fa="bell" />
+  </div>;
+
 export const ContactUs = () => 
   <div className={cx()}>
     <IconAlt fa="envelope-o" />
