@@ -29,7 +29,7 @@ export const SocialMediaLinks = ({
     <div className={cx()}>
       {
         showAnnouncementsToggle &&
-        <a href="#" onClick={onClickAnnouncementsToggle}>
+        <a className={cx('--AnnouncementsToggle')} href="#" onClick={onClickAnnouncementsToggle}>
           <Announcements />
         </a>
       }
