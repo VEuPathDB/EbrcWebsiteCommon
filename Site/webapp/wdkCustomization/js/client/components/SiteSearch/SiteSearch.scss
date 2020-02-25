@@ -323,6 +323,7 @@
   &--FilterButtons {
     font-weight: bold;
     transition: all 250ms ease-in-out;
+    white-space: nowrap;
 
     &__visible {
       visibility: visible;
