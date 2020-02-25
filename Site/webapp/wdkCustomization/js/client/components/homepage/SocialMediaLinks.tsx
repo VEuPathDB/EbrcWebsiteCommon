@@ -5,7 +5,7 @@ import { noop } from 'lodash';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { twitterUrl, facebookUrl, youtubeUrl } from 'ebrc-client/config';
-import { Announcements, Twitter, Facebook, YouTube } from './SocialMediaIcons';
+import { AnnouncementsToggle, Twitter, Facebook, YouTube } from './SocialMediaIcons';
 
 import './SocialMediaLinks.scss';
 
@@ -30,7 +30,7 @@ export const SocialMediaLinks = ({
       {
         showAnnouncementsToggle &&
         <a className={cx('--AnnouncementsToggle')} href="#" onClick={onClickAnnouncementsToggle}>
-          <Announcements />
+          <AnnouncementsToggle />
         </a>
       }
 

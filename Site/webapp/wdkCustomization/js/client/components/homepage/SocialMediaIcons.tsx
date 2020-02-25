@@ -7,7 +7,7 @@ import './SocialMediaIcons.scss';
 
 const cx = makeClassNameHelper('ebrc-SocialMediaIcon');
 
-export const Announcements = () =>
+export const AnnouncementsToggle = () =>
   <div className={cx()}>
     <IconAlt fa="bell" />
   </div>;
