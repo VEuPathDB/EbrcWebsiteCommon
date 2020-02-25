@@ -360,7 +360,7 @@ function StrategyLinkout(props: Props) {
 function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: string }) {
   const { strategyUrl, documentType } = props;
   const history = useHistory();
-  const disabled = documentType !== 'gene' || strategyUrl == null;
+  const disabled = strategyUrl == null;
   const tooltipContent = disabled
     ? 'To export, select a result type (like Genes) on the left.'
     : 'Download or data mine using the search strategy system';
@@ -375,9 +375,9 @@ function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: strin
           <div><small>to download or data mine</small></div>
         </button>
       </AnchoredTooltip>
-    </div>    
+    </div>
   );
-  
+
 }
 
 function ResultTypeWidget(props: Props) {
@@ -386,7 +386,7 @@ function ResultTypeWidget(props: Props) {
   const allFields = useMemo(() => docType?.isWdkRecordType ? docType.wdkRecordTypeData.searchFields.map(f => f.name) : [], [ docType ]);
   const filters = props.filters?.length === 0 ? allFields : props.filters || [];
   const [ selection, setSelection ] = useState(filters);
-  
+
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
@@ -510,7 +510,7 @@ function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSear
       const value = formatSummaryFieldValue(document.summaryFieldData[summaryField.name]);
       return value == null ? [] : [ { ...summaryField, value } ]
     });
-  
+
   return (
     <React.Fragment>
       {summaryFields.map(({ name, displayName, value }) => (
