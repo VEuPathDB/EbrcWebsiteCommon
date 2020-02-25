@@ -28,11 +28,13 @@
   &--Results {
     display: grid;
     grid:
-      "...... pagination-top ......."
-      "counts   result   widgets"
-      "...... pagination-bottom ......."
-      / 25% 1fr 25%;
-    grid-gap: 0em 2em;  
+      "...... pagination-top"
+      "counts result"
+      "...... pagination-bottom"
+      / auto 1fr;
+    grid-gap: 0em 2em;
+    max-width: 1800px;
+    margin: auto;
   }
 
   &--Pagination {
@@ -127,18 +129,22 @@
     justify-self: start;
   }
 
-  &--ResultTypeWidget {
-    .wdk-CheckboxList {
-      padding: 0 1em;
-      &Item:hover {
+  .wdk-CheckboxList {
+    &Item {
+      margin-left: 1em;
+      :hover {
         font-weight: bold;
       }
+    }
+    &Links {
+      text-align: left;
+      margin-left: 0;
     }
   }
 
   &--CountsContainer, &--ResultTypeWidgetContainer {
     padding: 1em;
-    width: 100%;
+    width: 24em;
     max-width: 24em;
     // FIXME These two colors are based on site branding
     background: #efe8ec;
@@ -265,6 +271,12 @@
   &--Counts {
     .wdk-CheckboxTree {
       padding: 0;
+      &Links {
+        margin-left: 0;
+        > div {
+          text-align: left;
+        }
+      }
     }
   }
 
@@ -275,6 +287,8 @@
       border: none;
       padding: .5em 0 0 .25em;
       font-weight: normal;
+      font-size: 1.1em;
+      color: #4f4f4f;
     }
 
     td {
@@ -301,7 +315,7 @@
     background: inherit;
     z-index: 1;
 
-    &__organism {
+    &__organism, &__widget {
       margin-top: 2em;
     }
   }

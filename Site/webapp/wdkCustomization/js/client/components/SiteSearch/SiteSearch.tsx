@@ -58,9 +58,6 @@ function Results(props: Props) {
       <div className={cx('--CountsContainer')}>
         <SearchCounts {...props}/>
       </div>
-      <div className={cx('--ResultTypeWidgetContainer')}>
-        <ResultTypeWidget {...props} />
-      </div>
       <div className={cx('--ResultContainer')}>
         <SearchResult {...props} />
       </div>
@@ -164,6 +161,7 @@ function SearchCounts(props: Props) {
           ))}
         </tbody>
       </table>
+      <WdkRecordFields {...props} onlyShowMatches={onlyShowMatches} />
       {totalOrgsCount > 0 && showOrganismFilter && organismTree && filterOrganisms && (
         <OrgansimFilter
           organismTree={finalOrganismTree}
@@ -389,13 +387,12 @@ function StrategyLinkoutLink(props: { strategyUrl?: string, documentType?: strin
 
 }
 
-function ResultTypeWidget(props: Props) {
-  const { response, documentType, onFiltersChange } = props;
+function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
+  const { response, documentType, onFiltersChange, onlyShowMatches, filters = [] } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
   const allFields = useMemo(() => docType?.isWdkRecordType ? docType.wdkRecordTypeData.searchFields.map(f => f.name) : [], [ docType ]);
-  const filters = props.filters?.length === 0 ? allFields : props.filters || [];
   const [ selection, setSelection ] = useState(filters);
-
+  
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
@@ -406,9 +403,9 @@ function ResultTypeWidget(props: Props) {
   const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
 
   return (
-    <div className={cx('--ResultTypeWidget')}>
+    <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'widget')}>
-        <h3>{docType.displayName} Options</h3>
+        <h3>Filter {docType.displayName} Fields</h3>
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
@@ -417,28 +414,30 @@ function ResultTypeWidget(props: Props) {
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
           ) : showClear ? (
-            <button type="button" className="link" onClick={() => onFiltersChange([])}>Clear options</button>
+            <button type="button" className="link" onClick={() => onFiltersChange([])}>Clear filter</button>
           ) : null}
         </div>
       </div>
-        <h4>Search in these {docType.displayName} fields...</h4>
       <CheckboxList
-        items={docType.wdkRecordTypeData.searchFields.map(field => ({
-          display: (
-            <div className={cx('--ResultTypeWidgetItem')}>
-              <div>{field.displayName}</div>
-              {response.fieldCounts && response.fieldCounts[field.name] > 0 &&
-                <div>{(response.fieldCounts[field.name]).toLocaleString()}</div>
-              }
-            </div>
-          ),
-          value: field.name
-        }))}
+        items={docType.wdkRecordTypeData.searchFields
+          .filter(field => onlyShowMatches ? response.fieldCounts && response.fieldCounts[field.name] > 0 : true)
+          .map(field => ({
+            display: (
+              <div className={cx('--ResultTypeWidgetItem')}>
+                <div>{field.displayName}</div>
+                {response.fieldCounts && response.fieldCounts[field.name] > 0 &&
+                  <div>{(response.fieldCounts[field.name]).toLocaleString()}</div>
+                }
+              </div>
+            ),
+            value: field.name
+          }))
+        }
         value={selection}
         onChange={setSelection}
         linksPosition={CheckboxList.LinksPosition.Top}
       />
-    </div>
+    </React.Fragment>
   );
 }
 
