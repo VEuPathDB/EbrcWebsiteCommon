@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { groupBy, noop } from 'lodash';
-import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
+
 import { Link, IconAlt } from 'wdk-client/Components';
-import {useWdkEffect} from 'wdk-client/Service/WdkService';
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
+import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 const stopIcon = (
   <span className="fa-stack" style={{ fontSize: '1.2em' }}>
@@ -25,16 +27,17 @@ const infoIcon = (
   </span>
 );
 
-// Array of announcements to show. Each element of the array is a function that takes props
-// and returns a React Element. Use props as an opportunity to determine if the message should
-// be displayed for the given context.
+// Array of announcements to show. Each element of the array is an object which specifies
+// a unique id for the announcement, a boolean flag indicating if the announcement can be
+// dismissed, and a function that takes props and returns a React Element. Use props as
+// an opportunity to determine if the message should be displayed for the given context.
 const siteAnnouncements = [
   // alpha
   {
     id: 'alpha',
     dismissible: false,
     renderDisplay: props => {
-      if (param('alpha', location) === 'true' || /^(alpha|a1|a2)/.test(location.hostname)) {
+      if (param('alpha', props.location) === 'true' || /^(alpha|a1|a2)/.test(window.location.hostname)) {
         return (
           <div key="alpha">
             This pre-release version of {props.projectId} is available for early community review.
@@ -54,7 +57,7 @@ const siteAnnouncements = [
     id: 'beta',
     dismissible: false,
     renderDisplay: props => {
-      if (param('beta', location) === 'true' || /^(beta|b1|b2)/.test(location.hostname)) {
+      if (param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname)) {
         return (
           <div key="beta">
             This pre-release version of {props.projectId} is available for early community review.
@@ -68,67 +71,34 @@ const siteAnnouncements = [
     }
   },
 
-  // Blast
-/*
-  (props) => {
-    if (props.projectId != 'OrthoMCL' && (/showQuestion\.do.+blast/i).test(location.href)) {
-      return (
-        <div key="blast">
-          As of 3 Feb 2014, this search uses NCBI-BLAST to determine sequence similarity.
-          Prior versions of the search used WU-BLAST.
-          <a target="_blank" href="http://www.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Web&PAGE_TYPE=BlastDocs">NCBI-BLAST help.</a>
-        </div>
-      );
+  // Clinepi home page
+  {
+    id: "clinepi-PERCH",
+    dismissible: false,
+    renderDisplay: (props) => {
+      if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && props.location.pathname.endsWith('/record/dataset/DS_1595200bb8') ) {
+        var divStyle = {
+          color: 'black',
+          fontSize: '120%'
+          };
+        return (
+          <div style={divStyle} key="clinepi-PERCH">
+            To request access to the PERCH data, please email Christine Prosperi at <a href = "mailto: cprospe1@jhu.edu">cprospe1@jhu.edu</a>.
+          </div>
+        );
+      }
+      return null;
     }
-    return null;
   },
-*/
- // Clinepi home page
- {
-   id: "clinepi-PERCH",
-   dismissible: false,
-   renderDisplay: (props) => {
-    if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && location.pathname.endsWith('/app/record/dataset/DS_1595200bb8') ) {
-      var divStyle = {
-        color: 'black',
-        fontSize: '120%'
-        };
-      return (
-        <div style={divStyle} key="clinepi-PERCH">
-          To request access to the PERCH data, please email Christine Prosperi at <a href = "mailto: cprospe1@jhu.edu">cprospe1@jhu.edu</a>.
-        </div>
-      );
-    }
-    return null;
-  }
- },
 
-// Fungi gene page for Cryptococcus neoformans KN99
-/*  (props) => { 
-    if ( (props.projectId == 'FungiDB') && 
-         ( (location.pathname.indexOf("/app/record/gene/CKF44_") > -1)    ||
-           (location.pathname.indexOf("/app/record/gene/cneoKN99_") > -1)
-         )  
-       ) 
-    {
-      return (
-        <div key="geneFungi">
-          <i>Cryptococcus neoformans</i> var. grubii KN99 GeneIDs and functional annotation were updated in FungiDB Release 41. To access new GeneIDs navigate to the <i>Names, Previous Identifiers, and Aliases</i> section located within the <i>Annotation, curation and identifiers</i> contents menu of the gene record pages. The genome will be reloaded in the Release 42 integrating the updated GeneIDs as default identifiers.
-        </div>
-      );
-    }
-    return null;
-  },
-*/
-
-// TriTryp gene page for Bodo saltans strain Lake Konstanz
+  // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
     id: 'geneFungi',
     dismissible: false,
     renderDisplay: props => { 
       if ( (props.projectId == 'TriTrypDB') && 
-           ( (location.pathname.indexOf("/app/record/gene/BS") > -1)    ||
-             (location.pathname.indexOf("/app/record/gene/BSAL_") > -1)
+           ( (props.location.pathname.indexOf("/record/gene/BS") > -1)    ||
+             (props.location.pathname.indexOf("/record/gene/BSAL_") > -1)
            )  
          ) 
       {
@@ -147,7 +117,7 @@ const siteAnnouncements = [
     id: 'ortho-enzyme',
     dismissible: false,
     renderDisplay: (props) => {
-      if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(location.href)) {
+      if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(window.location.href)) {
         return (
           <div key="ortho-enzyme">
             Note: the Enzyme Commission (EC) numbers associated with proteins were
@@ -160,18 +130,19 @@ const siteAnnouncements = [
     }
   }
 
-  // Alt-splice release
-/*
-  (props) => {
-    return props.projectId == 'OrthoMCL' ? null : (
-      <div key="alt-splice-release">
-Release 29 is an alpha release that includes significant updates to the underlying data and infrastructure. In addition to refreshing all data to the latest versions, we redesigned gene pages, incorporated alternative transcripts into gene pages and searches, and updated search categories.
-Please <Link to="/contact-us"> Contact Us</Link> to let us know what you think. Release 28 is still available and fully functional.
-      </div>
-    );
-  }
-*/
 ];
+
+const fetchAnnouncementsData = async wdkService => {
+  const [ { projectId }, announcements ] = await Promise.all([
+    wdkService.getConfig(),
+    wdkService.getSiteMessages()
+  ]);
+
+  return {
+    projectId,
+    announcements
+  };
+};
 
 /**
  * Info boxes containing announcements.
@@ -180,17 +151,8 @@ export default function Announcements({
   closedBanners = [],
   setClosedBanners = noop
 }) {
-  const [ data, setData ] = useState();
-  useWdkEffect(wdkService => {
-    let doUpdate = true;
-    (async () => {
-      const { projectId } = await wdkService.getConfig();
-      const announcements = await wdkService.getSiteMessages();
-      const location = window.location;
-      if (doUpdate) setData({ projectId, announcements, location });
-    })();
-    return () => { doUpdate = false };
-  }, []);
+  const location = useLocation();
+  const data = useWdkService(fetchAnnouncementsData);
 
   const onCloseFactory = useCallback(id => () => {
     setClosedBanners([ ...closedBanners, id ]);
@@ -209,13 +171,19 @@ export default function Announcements({
           ...information,
           ...siteAnnouncements
         ].map(announcementData => {
-          const category = announcementData.category || 'info';
-          const dismissible = announcementData.dismissible == null ? true : false;
+          const category = announcementData.category || 'information';
+
+          // "information" announcements are dismissible by default
+          const dismissible = category === 'information' && announcementData.dismissible == null
+            ? true: announcementData.dismissible;
           const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
+
           const display = typeof announcementData.renderDisplay === 'function' 
-            ? announcementData.renderDisplay({ projectId: data.projectId, location: data.location })
-            : toElement(announcementData);
+            ? announcementData.renderDisplay({ projectId: data.projectId, location })
+            : category !== 'information' || location.pathname === '/'
+            ? toElement(announcementData)
+            : null;
 
           return (
             <AnnouncementContainer
