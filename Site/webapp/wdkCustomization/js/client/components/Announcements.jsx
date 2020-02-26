@@ -28,14 +28,12 @@ const infoIcon = (
 );
 
 // Array of announcements to show. Each element of the array is an object which specifies
-// a unique id for the announcement, a boolean flag indicating if the announcement can be
-// dismissed, and a function that takes props and returns a React Element. Use props as
-// an opportunity to determine if the message should be displayed for the given context.
+// a unique id for the announcement, and a function that takes props and returns a React Element.
+// Use props as an opportunity to determine if the message should be displayed for the given context.
 const siteAnnouncements = [
   // alpha
   {
     id: 'alpha',
-    dismissible: false,
     renderDisplay: props => {
       if (param('alpha', props.location) === 'true' || /^(alpha|a1|a2)/.test(window.location.hostname)) {
         return (
@@ -55,7 +53,6 @@ const siteAnnouncements = [
   // beta
   {
     id: 'beta',
-    dismissible: false,
     renderDisplay: props => {
       if (param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname)) {
         return (
@@ -74,7 +71,6 @@ const siteAnnouncements = [
   // Clinepi home page
   {
     id: "clinepi-PERCH",
-    dismissible: false,
     renderDisplay: (props) => {
       if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && props.location.pathname.endsWith('/record/dataset/DS_1595200bb8') ) {
         var divStyle = {
@@ -94,7 +90,6 @@ const siteAnnouncements = [
   // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
     id: 'geneFungi',
-    dismissible: false,
     renderDisplay: props => { 
       if ( (props.projectId == 'TriTrypDB') && 
            ( (props.location.pathname.indexOf("/record/gene/BS") > -1)    ||
@@ -115,7 +110,6 @@ const siteAnnouncements = [
   // OrthoMCL enzyme/compound
   {
     id: 'ortho-enzyme',
-    dismissible: false,
     renderDisplay: (props) => {
       if (props.projectId == 'OrthoMCL' && (/(enzyme|compound)/i).test(window.location.href)) {
         return (
@@ -171,11 +165,10 @@ export default function Announcements({
           ...information,
           ...siteAnnouncements
         ].map(announcementData => {
-          const category = announcementData.category || 'information';
+          const category = announcementData.category || 'page-information';
 
-          // "information" announcements are dismissible by default
-          const dismissible = category === 'information' && announcementData.dismissible == null
-            ? true : announcementData.dismissible;
+          // Currently, only "information" announcements are dismissible
+          const dismissible = category === 'information';
           const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
 

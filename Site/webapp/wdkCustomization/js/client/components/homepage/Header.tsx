@@ -52,7 +52,8 @@ type OwnProps = {
   menuItems: HeaderMenuItem[],
   siteSearchSuggestions?: string[],
   additionalSuggestions?: AdditionalSuggestionItem[]
-  onShowAnnouncements: () => void
+  onShowAnnouncements: () => void,
+  showAnnouncementsToggle: boolean
 };
 
 type Props = StateProps & DispatchProps & RouteComponentProps<any> & OwnProps;
@@ -125,7 +126,8 @@ const HeaderView = withRouter(({
   actions,
   user,
   location,
-  onShowAnnouncements
+  onShowAnnouncements,
+  showAnnouncementsToggle
 }: Props) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
@@ -240,7 +242,7 @@ const HeaderView = withRouter(({
         user={user}
         actions={actions}
       />
-      <SocialMediaLinks showAnnouncementsToggle onShowAnnouncements={onShowAnnouncements} />
+      <SocialMediaLinks showAnnouncementsToggle={showAnnouncementsToggle} onShowAnnouncements={onShowAnnouncements} />
     </header>
   );
 });

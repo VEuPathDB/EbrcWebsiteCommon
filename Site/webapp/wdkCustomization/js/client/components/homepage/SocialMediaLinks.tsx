@@ -28,8 +28,11 @@ export const SocialMediaLinks = ({
   return (
     <div className={cx()}>
       {
-        showAnnouncementsToggle &&
-        <a className={cx('--AnnouncementsToggle')} href="#" onClick={onClickAnnouncementsToggle}>
+        <a
+          title="Reopen announcements you have closed"
+          className={cx('--AnnouncementsToggle', showAnnouncementsToggle ? 'shown' : 'hidden')}
+          href="#" onClick={onClickAnnouncementsToggle}
+        >
           <AnnouncementsToggle />
         </a>
       }

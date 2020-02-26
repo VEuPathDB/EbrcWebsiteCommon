@@ -9,7 +9,7 @@ const cx = makeClassNameHelper('ebrc-SocialMediaIcon');
 
 export const AnnouncementsToggle = () =>
   <div className={cx()}>
-    <IconAlt fa="bell" />
+    <IconAlt fa="bullhorn" />
   </div>;
 
 export const ContactUs = () => 
