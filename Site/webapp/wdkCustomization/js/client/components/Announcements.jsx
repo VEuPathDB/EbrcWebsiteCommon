@@ -175,7 +175,7 @@ export default function Announcements({
 
           // "information" announcements are dismissible by default
           const dismissible = category === 'information' && announcementData.dismissible == null
-            ? true: announcementData.dismissible;
+            ? true : announcementData.dismissible;
           const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
 
