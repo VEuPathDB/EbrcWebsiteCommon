@@ -19,6 +19,16 @@
     }
   }
 
+  &--TitleLine {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    > *:first-child {
+      margin-right: 1em;
+    }
+  }
+
   h1 {
     grid-area: title;
     padding: 0;
@@ -310,8 +320,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 5.25em;
+    // position: sticky;
+    // top: 5.25em;
     background: inherit;
     z-index: 1;
 
@@ -360,11 +370,9 @@
   }
 
   &--LinkOut {
+    flex: 0 0 19em;
+    padding-right: 2em;
     padding-left: 1em;
-    width: 18em;
-    position: absolute;
-    top: 2em;
-    right: 6em;
     a, button {
       display: inline-block;
       text-align: center;

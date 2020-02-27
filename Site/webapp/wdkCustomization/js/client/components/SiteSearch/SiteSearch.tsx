@@ -39,9 +39,11 @@ export default function SiteSearch(props: Props) {
   return (
     <div className={cx()}>
       {props.loading && <div className={cx('--Loading')}><div>Loading...</div></div>}
-      <h1>{Title(props)}</h1>
+      <div className={cx('--TitleLine')}>
+        <h1>{Title(props)}</h1>
+        <StrategyLinkout {...props}/>
+      </div>
       <Results {...props} />
-      <StrategyLinkout {...props}/>
     </div>
   )
 }
@@ -393,7 +395,16 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
     setSelection(filters);
   }, [ filters ])
 
-  if (docType == null || !docType.isWdkRecordType) return null;
+  if (docType == null || !docType.isWdkRecordType) return (
+    <React.Fragment>
+      <div className={cx('--FilterTitleContainer', 'widget')}>
+        <h3>Filter fields</h3>
+      </div>
+      <div>
+        <em style={{ color: '#666666' }}>Select a result filter above.</em>
+      </div>
+    </React.Fragment>
+  );
 
   const showApplyCancel = selection.length > 0 && xor(filters, selection).length > 0;
   const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
