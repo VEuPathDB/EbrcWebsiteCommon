@@ -7,18 +7,24 @@ import { IconAlt as Icon } from 'wdk-client/Components';
 class UserMenu extends React.Component {
   constructor (props) {
     super(props);
-    this.state = { isHovered: false };
+    this.state = { isEntered: false, isHovered: false };
     this.renderMenu = this.renderMenu.bind(this);
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
   }
 
   onMouseEnter (event) {
-    this.setState({ isHovered: true });
+    this.setState({ isEntered: true, isHovered: true });
   }
 
   onMouseLeave (event) {
-    this.setState({ isHovered: false });
+    this.setState({ isEntered: false });
+
+    setTimeout(() => {
+      if (!this.state.isEntered) {
+        this.setState({ isHovered: false });
+      }
+    }, 500);
   }
 
   renderMenu () {
