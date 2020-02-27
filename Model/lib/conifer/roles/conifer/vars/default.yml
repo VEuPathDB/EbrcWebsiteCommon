@@ -158,7 +158,7 @@ modelprop:
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
   REDMINE_TO_EMAIL: 'redmineto@notreal.edu'
   REDMINE_FROM_EMAIL: 'redminefrom@notreal.edu'
-  COMMUNITY_SITE: //qa.community.eupathdb.org/
+  COMMUNITY_SITE: //qa.static-content.veupathdb.org/
   VIMEO_URL:
   GOOGLE_ANALYTICS_ID:
   FACEBOOK_URL:
