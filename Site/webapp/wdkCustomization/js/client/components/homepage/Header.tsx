@@ -217,7 +217,6 @@ const HeaderView = withRouter(({
       <div className={cx('BrandingContainer')}>
         <Link to="/">
           <div className={cx('Branding')}>
-            {branding}
           </div>
         </Link>
       </div>
