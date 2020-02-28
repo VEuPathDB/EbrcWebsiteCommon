@@ -121,7 +121,7 @@ function SearchCounts(props: Props) {
     <div className={cx('--Counts')}>
       <div className={(cx('--CountsTitle'))}>
         <label className={cx('--OnlyMatchesToggle')}>
-          <input type="checkbox" checked={onlyShowMatches} onChange={() => setOnlyShowMatches(!onlyShowMatches)}/> Show matches only
+          <input type="checkbox" checked={onlyShowMatches} onChange={() => setOnlyShowMatches(!onlyShowMatches)}/> Hide zero counts
         </label>
       </div>
       <div className={cx('--FilterTitleContainer', 'categories')}>
