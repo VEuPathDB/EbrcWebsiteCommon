@@ -8,6 +8,7 @@
 <c:set var="assetsUrl" value="${model.modelConfig.assetsUrl ne null ? model.modelConfig.assetsUrl : webAppUrl}" />
 <c:set var="wdkServiceUrl" value="${webAppUrl}${initParam.wdkServiceEndpoint}"/>
 <c:set var="gaId" value="${applicationScope.wdkModel.properties['GOOGLE_ANALYTICS_ID']}"/>
+<c:set var="project" value="${props['PROJECT_ID']}"/>
 
 <c:set var="recordClassesWithProjectId">
   [
@@ -21,6 +22,16 @@
   ]
 </c:set>
 
+<c:choose>
+      <c:when test="${project eq 'ClinEpiDB' || project eq 'AllClinEpiDB' || project eq 'MicrobiomeDB'}">
+        <c:set var="room" value="VEuPathDB-clinepi"/>
+      </c:when>
+      <c:otherwise>
+        <c:set var="room" value="VEuPathDB-genomic"/>
+      </c:otherwise>
+</c:choose>
+
+
 <!doctype html>
 <html>
   <head>
@@ -31,8 +42,17 @@
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <imp:stylesheet rel="stylesheet" type="text/css" href="site-client.bundle.css"/>
     <imp:script charset="utf8" src="site-client.bundle.js" ></imp:script>
+
+<script>
+  ((window.gitter = {}).chat = {}).options = {
+    room: '${room}/community'
+  };
+</script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
   </head>
   <body>
+    <div>${applicationScope.wdkModel.properties['PROJECT_ID']}</div>
     <div class="main-stack">
       <div id="wdk-container">Loading...</div>
     </div>
