@@ -23,8 +23,11 @@
 </c:set>
 
 <c:choose>
-      <c:when test="${project eq 'ClinEpiDB' || project eq 'AllClinEpiDB' || project eq 'MicrobiomeDB'}">
+      <c:when test="${project eq 'ClinEpiDB' || project eq 'AllClinEpiDB'}">
         <c:set var="room" value="VEuPathDB-clinepi"/>
+      </c:when>
+      <c:when test="${project eq 'MicrobiomeDB'}">
+        <c:set var="room" value="VEuPathDB-microbiome"/>
       </c:when>
       <c:otherwise>
         <c:set var="room" value="VEuPathDB-genomic"/>
