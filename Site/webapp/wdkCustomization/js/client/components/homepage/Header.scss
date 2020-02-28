@@ -183,11 +183,10 @@ $mobile-width: 1200px;
   .SiteSearch--SearchBox {
     grid-area: searchbar;
     font-size: 1.2em;
-    /* max-width: 650px; */
     margin-left: 0.5em;
     margin-right: 0.5em;
     justify-self: center;
-    width: 550px;
+    width: 36em;
 
     @media screen and (max-width: $mobile-width) {
       width: calc(100% - 0.5em);
