@@ -52,7 +52,6 @@
 
   </head>
   <body>
-    <div>${applicationScope.wdkModel.properties['PROJECT_ID']}</div>
     <div class="main-stack">
       <div id="wdk-container">Loading...</div>
     </div>
