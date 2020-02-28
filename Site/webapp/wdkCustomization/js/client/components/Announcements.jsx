@@ -297,8 +297,8 @@ function invokeWith(...args) {
  * @param {Location} location
  * @return {string?}
  */
-function param(name, location) {
-  return location.search
+function param(name, { search = '' }) {
+  return search
     .slice(1)
     .split('&')
     .map(entry => entry.split('='))
