@@ -1,5 +1,4 @@
 $mobile-width: 1200px;
-$desktop-width: 1201px;
 
 @mixin shadowed {
   text-shadow:
@@ -62,7 +61,7 @@ $desktop-width: 1201px;
   &Hamburger {
     grid-area: hamburger;
 
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     font-size: 2em;
@@ -78,8 +77,8 @@ $desktop-width: 1201px;
       border: none;
     }
 
-    @media screen and (min-width: $desktop-width) {
-      display: none;
+    @media screen and (max-width: $mobile-width) {
+      display: flex;
     }
   }
 
