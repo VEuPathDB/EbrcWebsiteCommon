@@ -24,9 +24,7 @@ import './Header.scss';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
-const HAMBURGER_SCREEN_SIZE = 1060;
-// Use this when "Community" menu item is removed
-// const HAMBURGER_SCREEN_SIZE = 960;
+const HAMBURGER_SCREEN_SIZE = 960;
 
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
