@@ -346,7 +346,8 @@ function FieldsHit(props: HitProps) {
 function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
-  if (docType == null || !docType.isWdkRecordType) return <StrategyLinkoutLink/>;
+  if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
+  if (!docType.isWdkRecordType) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
   const paramFields = docType.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
@@ -357,21 +358,17 @@ function StrategyLinkout(props: Props) {
     `&param.text_expression=${encodeURIComponent(searchString)}` +
     `&param.timestamp=${Date.now()}`;
 
-  return <StrategyLinkoutLink strategyUrl={strategyUrl} />;
+  return <StrategyLinkoutLink strategyUrl={strategyUrl} tooltipContent="Download or data mine using the search strategy system." />;
 }
 
-function StrategyLinkoutLink(props: { strategyUrl?: string }) {
-  const { strategyUrl } = props;
+function StrategyLinkoutLink(props: { strategyUrl?: string, tooltipContent: string }) {
+  const { strategyUrl, tooltipContent } = props;
   const history = useHistory();
   const disabled = strategyUrl == null;
-  const tooltipContent = disabled
-    ? 'To export, select a result type (like Genes) on the left.'
-    : 'Download or data mine using the search strategy system';
-
   return (
     <div className={cx('--LinkOut')}>
       <AnchoredTooltip content={tooltipContent}>
-        <button disabled={disabled} type="button" onClick={(event) => {
+        <button disabled={disabled} type="button" onClick={() => {
           if (strategyUrl) history.push(strategyUrl);
         }}>
           <div>Export as a Search Strategy</div>
