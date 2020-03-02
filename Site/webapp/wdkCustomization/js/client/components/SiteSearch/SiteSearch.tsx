@@ -403,7 +403,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
     </React.Fragment>
   );
 
-  const showApplyCancel = selection.length > 0 && xor(filters, selection).length > 0;
+  const showApplyCancel = xor(filters, selection).length > 0;
   const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
 
   return (
