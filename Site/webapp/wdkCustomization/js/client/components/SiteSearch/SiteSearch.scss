@@ -55,13 +55,13 @@
       grid-area: pagination-bottom;
     }
     &.MesaComponent {
-      display: grid;
+      display: flex;
       min-height: 4.25em;
-      grid-template-columns: 1fr 1fr 1fr;
       align-items: center;
+      flex-wrap: wrap;
       
       .PaginationMenu {
-        justify-content: center;
+        margin: auto;
 
         .Pagination-Spacer {
           display: none;
