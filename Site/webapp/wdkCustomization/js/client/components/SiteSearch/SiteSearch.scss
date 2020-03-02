@@ -3,6 +3,9 @@
   z-index: 0;
   max-width: 1800px;
   margin: 0 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
 
   &--Loading {
     position: absolute;
@@ -40,11 +43,12 @@
   &--Results {
     display: grid;
     grid:
-      "...... pagination-top"
-      "counts result"
-      "...... pagination-bottom"
+      "...... pagination-top" auto
+      "counts result" 1fr
+      "counts pagination-bottom" auto
       / auto 1fr;
     grid-gap: 0em 2em;
+    flex-grow: 1;
   }
 
   &--Pagination {
