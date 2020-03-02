@@ -1,4 +1,4 @@
-import { capitalize, keyBy, add, isEqual, xor } from 'lodash';
+import { capitalize, keyBy, add, isEmpty, isEqual, xor } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
@@ -31,6 +31,11 @@ const cx = makeClassNameHelper('SiteSearch');
 
 const cancelIcon = <i className="fa fa-times"/>;
 
+function FilterTitleSegment(props: Props) {
+  const filters = [ !isEmpty(props.filters) && 'fields', !isEmpty(props.filterOrganisms) && 'organisms' ].filter(Boolean).join(' and ');
+  return filters.length > 0 ? <em>(filtered by {filters})</em> : null;
+}
+
 export default function SiteSearch(props: Props) {
 
   return (
@@ -47,8 +52,12 @@ export default function SiteSearch(props: Props) {
 
 function Results(props: Props) {
   if (props.response.searchResults.totalCount === 0) {
+    const docType = props.documentType ? props.response.documentTypes.find(d => d.id === props.documentType) : undefined;
+    const preface = docType ? `No ${docType.displayNamePlural}` : `Nothing`;
     return (
-      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>Nothing matched your search. Try something else.</div>
+      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>
+        {preface} matched <strong>{props.searchString}</strong> <FilterTitleSegment {...props}/>
+      </div>
     )
   }
   return (
@@ -73,7 +82,7 @@ function Title(props: Props) {
   }
 
   if (!documentType) {
-    return <React.Fragment>All results matching <strong>{searchString}</strong></React.Fragment>
+    return <React.Fragment>All results matching <strong>{searchString}</strong> <FilterTitleSegment {...props} /></React.Fragment>
   }
 
   if (response == null) return null;
@@ -81,7 +90,7 @@ function Title(props: Props) {
   const docType = response.documentTypes.find(d => d.id === documentType);
   const display = docType?.displayNamePlural ?? capitalize(documentType);
 
-  return <React.Fragment>{display} matching <strong>{searchString}</strong></React.Fragment>
+  return <React.Fragment>{display} matching <strong>{searchString}</strong> <FilterTitleSegment {...props} /></React.Fragment>
 }
 
 function ResultInfo(props: Props) {
@@ -285,7 +294,7 @@ function Hit(props: HitProps) {
         {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
         {subTitle && <div className={cx('--ResultSubTitle')}>{formatSummaryFieldValue(subTitle)}</div>}
       </div>
-      <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>
+      {summary && <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>}
       <FieldsHit {...props}/>
     </div>
   )
