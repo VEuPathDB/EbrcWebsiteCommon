@@ -97,5 +97,9 @@ $tablet-width: 1000px;
       margin-right: 1rem;
       margin-bottom: 1rem
     }
+
+    .NewsEntry:nth-child(n + 4) {
+      display: none;
+    }
   }
 }
