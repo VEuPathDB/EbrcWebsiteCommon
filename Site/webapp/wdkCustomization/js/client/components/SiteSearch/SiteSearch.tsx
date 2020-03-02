@@ -401,7 +401,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <h3>Filter fields</h3>
       </div>
       <div>
-        <em style={{ color: '#666666' }}>Select a result filter above.</em>
+        <em style={{ color: '#666666' }}>{docType == null ? 'Select a result filter above' : 'None available'}</em>
       </div>
     </React.Fragment>
   );
