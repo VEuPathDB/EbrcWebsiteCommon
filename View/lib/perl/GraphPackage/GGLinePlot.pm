@@ -1397,17 +1397,20 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(20);
 
   my $wantLogged = $self->getWantLogged();
   if(defined($wantLogged) && $wantLogged eq '1') {
     $self->addAdjustProfile('profile.df.full$VALUE <- log2(profile.df.full$VALUE + 1);');
-    $self->setYaxisLabel("log2(FPKM + 1)");
+    $self->setYaxisLabel("log2($exprMetric + 1)");
     $self->setDefaultYMax(4);
     $self->setIsLogged(1);
   }
@@ -1470,10 +1473,13 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
 
   return $self;
 }

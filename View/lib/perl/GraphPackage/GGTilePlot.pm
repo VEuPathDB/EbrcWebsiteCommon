@@ -451,10 +451,13 @@ sub new {
   my $self = $class->SUPER::new($args,$profileSets);
 
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
 
   return $self;
 }

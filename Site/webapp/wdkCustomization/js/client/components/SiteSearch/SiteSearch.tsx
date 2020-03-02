@@ -7,7 +7,6 @@ import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
-import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 
 import './SiteSearch.scss';
 
@@ -29,8 +28,6 @@ interface Props {
 }
 
 const cx = makeClassNameHelper('SiteSearch');
-
-const okIcon = <i className="fa fa-check"/>;
 
 const cancelIcon = <i className="fa fa-times"/>;
 
@@ -216,7 +213,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
             </React.Fragment>
@@ -402,12 +399,12 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <h3>Filter fields</h3>
       </div>
       <div>
-        <em style={{ color: '#666666' }}>Select a result filter above.</em>
+        <em style={{ color: '#666666' }}>{docType == null ? 'Select a result filter above' : 'None available'}</em>
       </div>
     </React.Fragment>
   );
 
-  const showApplyCancel = selection.length > 0 && xor(filters, selection).length > 0;
+  const showApplyCancel = xor(filters, selection).length > 0;
   const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
 
   return (
@@ -417,7 +414,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>

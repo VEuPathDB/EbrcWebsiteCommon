@@ -1,6 +1,11 @@
 .SiteSearch {
   position: relative;
   z-index: 0;
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
 
   &--Loading {
     position: absolute;
@@ -38,13 +43,12 @@
   &--Results {
     display: grid;
     grid:
-      "...... pagination-top"
-      "counts result"
-      "...... pagination-bottom"
+      "...... pagination-top" auto
+      "counts result" 1fr
+      "counts pagination-bottom" auto
       / auto 1fr;
     grid-gap: 0em 2em;
-    max-width: 1800px;
-    margin: auto;
+    flex-grow: 1;
   }
 
   &--Pagination {
@@ -55,13 +59,13 @@
       grid-area: pagination-bottom;
     }
     &.MesaComponent {
-      display: grid;
+      display: flex;
       min-height: 4.25em;
-      grid-template-columns: 1fr 1fr 1fr;
       align-items: center;
+      flex-wrap: wrap;
       
       .PaginationMenu {
-        justify-content: center;
+        margin: auto;
 
         .Pagination-Spacer {
           display: none;
@@ -320,9 +324,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // position: sticky;
-    // top: 5.25em;
     background: inherit;
+    position: relative;
     z-index: 1;
 
     &__organism, &__widget {
@@ -344,6 +347,13 @@
       visibility: hidden;
       opacity: 0;
     }
+  }
+
+  &--FilterTitleContainer &--FilterButtons {
+    position: absolute;
+    right: 0;
+    padding-left: 1em;
+    background: inherit;
   }
 
   &--ResultTypeWidget &--FilterButtons {
