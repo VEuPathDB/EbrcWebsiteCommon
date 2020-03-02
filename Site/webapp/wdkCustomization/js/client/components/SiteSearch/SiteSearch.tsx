@@ -7,7 +7,6 @@ import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
-import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 
 import './SiteSearch.scss';
 
