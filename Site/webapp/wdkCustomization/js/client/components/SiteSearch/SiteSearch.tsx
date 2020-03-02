@@ -390,7 +390,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
     setSelection(filters);
   }, [ filters ])
 
-  if (docType == null || !docType.isWdkRecordType) return (
+  if (docType == null || docType.searchFields.length === 0) return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'widget')}>
         <h3>Filter fields</h3>
