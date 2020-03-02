@@ -561,17 +561,20 @@ sub new {
 
   my $id = $self->getId();
   my $wantLogged = $self->getWantLogged();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
   $self->setIsStacked(0);
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(10);
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPlotTitle("$exprMetric - $id");
 
   if($wantLogged) {
     $self->setAdjustProfile('profile.df=profile.df + 1; profile.df = log2(profile.df);');
-    $self->setYaxisLabel('FPKM (log2)');
+    $self->setYaxisLabel("$exprMetric (log2)");
     $self->setIsLogged(1);
     $self->setDefaultYMax(4);
     $self->setSkipStdErr(1);
@@ -589,10 +592,13 @@ sub new {
   my $self = $class->SUPER::new(@_);
 
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
 
   # RUM RPKM Are Not logged in the db
   # JB:  Cannot take the log2 of the diff profiles then add
