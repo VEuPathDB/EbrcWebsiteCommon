@@ -177,6 +177,9 @@ sub setCompact                 { $_[0]->{'Compact'                     } = $_[1]
 sub getIdType                  { $_[0]->{'IdType'                      } }
 sub setIdType                  { $_[0]->{'IdType'                      } = $_[1]; $_[0] }
 
+sub getExpressionMetric          { $_[0]->{'_expr_metric'                    }}
+sub setExpressionMetric          { $_[0]->{'_expr_metric'                    } = $_[1]}
+
 
 sub declareParts {
   return "";
