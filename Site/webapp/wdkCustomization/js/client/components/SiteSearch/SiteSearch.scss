@@ -324,9 +324,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // position: sticky;
-    // top: 5.25em;
     background: inherit;
+    position: relative;
     z-index: 1;
 
     &__organism, &__widget {
@@ -348,6 +347,13 @@
       visibility: hidden;
       opacity: 0;
     }
+  }
+
+  &--FilterTitleContainer &--FilterButtons {
+    position: absolute;
+    right: 0;
+    padding-left: 1em;
+    background: inherit;
   }
 
   &--ResultTypeWidget &--FilterButtons {

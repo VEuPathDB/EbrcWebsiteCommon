@@ -29,8 +29,6 @@ interface Props {
 
 const cx = makeClassNameHelper('SiteSearch');
 
-const okIcon = <i className="fa fa-check"/>;
-
 const cancelIcon = <i className="fa fa-times"/>;
 
 export default function SiteSearch(props: Props) {
@@ -215,7 +213,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
             </React.Fragment>
@@ -415,7 +413,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
