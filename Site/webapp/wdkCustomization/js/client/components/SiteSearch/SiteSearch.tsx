@@ -1,4 +1,4 @@
-import { capitalize, keyBy, add, isEqual, xor } from 'lodash';
+import { capitalize, keyBy, add, isEmpty, isEqual, xor } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
@@ -7,7 +7,6 @@ import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
-import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 
 import './SiteSearch.scss';
 
@@ -30,9 +29,12 @@ interface Props {
 
 const cx = makeClassNameHelper('SiteSearch');
 
-const okIcon = <i className="fa fa-check"/>;
-
 const cancelIcon = <i className="fa fa-times"/>;
+
+function FilterTitleSegment(props: Props) {
+  const filters = [ !isEmpty(props.filters) && 'fields', !isEmpty(props.filterOrganisms) && 'organisms' ].filter(Boolean).join(' and ');
+  return filters.length > 0 ? <em>(filtered by {filters})</em> : null;
+}
 
 export default function SiteSearch(props: Props) {
 
@@ -50,8 +52,12 @@ export default function SiteSearch(props: Props) {
 
 function Results(props: Props) {
   if (props.response.searchResults.totalCount === 0) {
+    const docType = props.documentType ? props.response.documentTypes.find(d => d.id === props.documentType) : undefined;
+    const preface = docType ? `No ${docType.displayNamePlural}` : `Nothing`;
     return (
-      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>Nothing matched your search. Try something else.</div>
+      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>
+        {preface} matched <strong>{props.searchString}</strong> <FilterTitleSegment {...props}/>
+      </div>
     )
   }
   return (
@@ -76,7 +82,7 @@ function Title(props: Props) {
   }
 
   if (!documentType) {
-    return <React.Fragment>All results matching <strong>{searchString}</strong></React.Fragment>
+    return <React.Fragment>All results matching <strong>{searchString}</strong> <FilterTitleSegment {...props} /></React.Fragment>
   }
 
   if (response == null) return null;
@@ -84,7 +90,7 @@ function Title(props: Props) {
   const docType = response.documentTypes.find(d => d.id === documentType);
   const display = docType?.displayNamePlural ?? capitalize(documentType);
 
-  return <React.Fragment>{display} matching <strong>{searchString}</strong></React.Fragment>
+  return <React.Fragment>{display} matching <strong>{searchString}</strong> <FilterTitleSegment {...props} /></React.Fragment>
 }
 
 function ResultInfo(props: Props) {
@@ -216,7 +222,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
             </React.Fragment>
@@ -288,7 +294,7 @@ function Hit(props: HitProps) {
         {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
         {subTitle && <div className={cx('--ResultSubTitle')}>{formatSummaryFieldValue(subTitle)}</div>}
       </div>
-      <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>
+      {summary && <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>}
       <FieldsHit {...props}/>
     </div>
   )
@@ -316,7 +322,7 @@ function DirectHit(props: Props) {
 function FieldsHit(props: HitProps) {
   const { document, documentType } = props;
   const [ expandHighlights, updateExpandHightlights ] = useState(false);
-  const foundInFields = documentType.isWdkRecordType && documentType.wdkRecordTypeData.searchFields
+  const foundInFields = documentType.isWdkRecordType && documentType.searchFields
     .filter(field => field.name in document.foundInFields);
   if (!foundInFields || foundInFields.length === 0) return null;
   const headerContent = expandHighlights
@@ -349,31 +355,29 @@ function FieldsHit(props: HitProps) {
 function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
-  if (docType == null || !docType.isWdkRecordType) return <StrategyLinkoutLink/>;
-  const paramFields = docType.wdkRecordTypeData.searchFields.flatMap(f =>
+  if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
+  if (!docType.isWdkRecordType) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
+  const paramFields = docType.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
-  const strategyUrl = `/search/${docType.id}/${docType.wdkRecordTypeData.searchName}?autoRun` +
+  const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun` +
     `&param.solr_doc_type=${encodeURIComponent(docType.id)}` +
     `&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
     `&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` +
-    `&param.text_expression=${encodeURIComponent(searchString)}&param.timestamp=${Date.now()}`;
+    `&param.text_expression=${encodeURIComponent(searchString)}` +
+    `&param.timestamp=${Date.now()}`;
 
-  return <StrategyLinkoutLink strategyUrl={strategyUrl} />;
+  return <StrategyLinkoutLink strategyUrl={strategyUrl} tooltipContent="Download or data mine using the search strategy system." />;
 }
 
-function StrategyLinkoutLink(props: { strategyUrl?: string }) {
-  const { strategyUrl } = props;
+function StrategyLinkoutLink(props: { strategyUrl?: string, tooltipContent: string }) {
+  const { strategyUrl, tooltipContent } = props;
   const history = useHistory();
   const disabled = strategyUrl == null;
-  const tooltipContent = disabled
-    ? 'To export, select a result type (like Genes) on the left.'
-    : 'Download or data mine using the search strategy system';
-
   return (
     <div className={cx('--LinkOut')}>
       <AnchoredTooltip content={tooltipContent}>
-        <button disabled={disabled} type="button" onClick={(event) => {
+        <button disabled={disabled} type="button" onClick={() => {
           if (strategyUrl) history.push(strategyUrl);
         }}>
           <div>Export as a Search Strategy</div>
@@ -388,25 +392,25 @@ function StrategyLinkoutLink(props: { strategyUrl?: string }) {
 function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
   const { response, documentType, onFiltersChange, onlyShowMatches, filters = [] } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
-  const allFields = useMemo(() => docType?.isWdkRecordType ? docType.wdkRecordTypeData.searchFields.map(f => f.name) : [], [ docType ]);
+  const allFields = useMemo(() => docType?.isWdkRecordType ? docType.searchFields.map(f => f.name) : [], [ docType ]);
   const [ selection, setSelection ] = useState(filters);
 
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
 
-  if (docType == null || !docType.isWdkRecordType) return (
+  if (docType == null || docType.searchFields.length === 0) return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'widget')}>
         <h3>Filter fields</h3>
       </div>
       <div>
-        <em style={{ color: '#666666' }}>Select a result filter above.</em>
+        <em style={{ color: '#666666' }}>{docType == null ? 'Select a result filter above' : 'None available'}</em>
       </div>
     </React.Fragment>
   );
 
-  const showApplyCancel = selection.length > 0 && xor(filters, selection).length > 0;
+  const showApplyCancel = xor(filters, selection).length > 0;
   const showClear = selection.length > 0 && xor(filters, allFields).length > 0;
 
   return (
@@ -416,7 +420,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>{okIcon}</button>
+              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
@@ -426,7 +430,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         </div>
       </div>
       <CheckboxList
-        items={docType.wdkRecordTypeData.searchFields
+        items={docType.searchFields
           .filter(field => onlyShowMatches ? response.fieldCounts && response.fieldCounts[field.name] > 0 : true)
           .map(field => ({
             display: (

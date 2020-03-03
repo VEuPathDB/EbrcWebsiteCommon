@@ -798,10 +798,13 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(20);
 
@@ -824,10 +827,13 @@ sub new {
   my $class = shift;
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
 
   return $self;
 }

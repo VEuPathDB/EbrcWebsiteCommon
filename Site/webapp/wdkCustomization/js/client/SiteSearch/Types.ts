@@ -19,7 +19,8 @@ const siteSearchDocumentTypeBase = record({
   displayNamePlural: string,
   count: number,
   hasOrganismField: boolean,
-  summaryFields: arrayOf(siteSearchDocumentTypeField)
+  summaryFields: arrayOf(siteSearchDocumentTypeField),
+  searchFields: arrayOf(siteSearchDocumentTypeField)
 });
 
 const standardSiteSearchDocumentType = combine(
@@ -33,10 +34,7 @@ const wdkSiteSearchDocumentType = combine(
   siteSearchDocumentTypeBase,
   record({
     isWdkRecordType: constant(true),
-    wdkRecordTypeData: record({
-      searchFields: arrayOf(siteSearchDocumentTypeField),
-      searchName: string
-    })
+    wdkSearchName: string
   })
 );
 

@@ -1,4 +1,4 @@
-$mobile-width: 1200px;
+$tablet-width: 1000px;
 
 .ebrc-SocialMediaControls {
   .ebrc-SocialMediaLinks {
@@ -42,7 +42,7 @@ $mobile-width: 1200px;
     }
   }
 
-  @media screen and (max-width: $mobile-width) {
+  @media screen and (max-width: $tablet-width) {
     display: none;
   } 
 }

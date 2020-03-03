@@ -1,4 +1,4 @@
-$mobile-width: 1200px;
+$tablet-width: 1000px;
 
 .ebrc-NewsPane {
   position: relative;
@@ -80,7 +80,7 @@ $mobile-width: 1200px;
     display: none;
   }
 
-  @media screen and (max-width: $mobile-width) {
+  @media screen and (max-width: $tablet-width) {
     &__news-expanded, &__news-collapsed {
       .News-Section {
         display: block;
@@ -96,6 +96,10 @@ $mobile-width: 1200px;
       margin-left: calc(0.75em + 10px);
       margin-right: 1rem;
       margin-bottom: 1rem
+    }
+
+    .NewsEntry:nth-child(n + 4) {
+      display: none;
     }
   }
 }

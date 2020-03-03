@@ -2,12 +2,12 @@ package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot;
 
 use strict;
 use vars qw( @ISA );
+use Data::Dumper;
 
 @ISA = qw( EbrcWebsiteCommon::View::GraphPackage::PlotPart );
 use EbrcWebsiteCommon::View::GraphPackage::PlotPart;
 use EbrcWebsiteCommon::View::GraphPackage::Util;
 use EbrcWebsiteCommon::View::GraphPackage;
-use Data::Dumper;
 
 #--------------------------------------------------------------------------------
 
@@ -53,6 +53,7 @@ sub blankPlotPart {
   my ($self) = @_;
   $self->blankGGPlotPart(@_);
 }
+
 #--------------------------------------------------------------------------------
 
 sub new {
@@ -635,25 +636,33 @@ sub new {
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeq;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot );
 use strict;
+use Data::Dumper;
 
 sub new {
   my ($class,$args,$profileSets) = @_;
+  print STDERR Dumper $args;
 
   my $self = $class->SUPER::new($args,$profileSets);
 
   my $id = $self->getId();
   my $wantLogged = $self->getWantLogged();
+  my $exprMetric = $self->getExpressionMetric();
+  print STDERR "GGBarPlot\n";
+  print STDERR Dumper $exprMetric;
   
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
+  $exprMetric = defined($exprMetric)? $exprMetric : "fpkm";
+  
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
   $self->setIsStacked(1);
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(10);
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPlotTitle("$exprMetric - $id");
 
   if($wantLogged) {
     $self->addAdjustProfile('profile.df.full$VALUE = log2(profile.df.full$VALUE + 1);');
-    $self->setYaxisLabel('log2(FPKM + 1)');
+    $self->setYaxisLabel("log2($exprMetric + 1)");
     $self->setIsLogged(1);
     $self->setDefaultYMax(4);
     $self->setSkipStdErr(1);
@@ -661,6 +670,20 @@ sub new {
 
   return $self;
 }
+
+#sub resetYAxisLabels {
+#    my ($self, $exprMetric) = @_;
+#    $self->setExpressionMetric($exprMetric);
+#    $self->setPartName($exprMetric);
+#    $exprMetric -> uc($exprMetric);
+#    $self->setYaxisLabel($exprMetric);
+#    my $id = $self->getId();
+#    $self->setPlotTitle("$exprMetric - $id");
+#
+#    if ($self->getWantLogged) {
+#        $self->setYaxisLabel("log2(TPM + 1)");
+#    }
+#}
 
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeqSenseAntisense;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeq );
@@ -711,10 +734,13 @@ sub new {
   my $self = $class->SUPER::new(@_);
 
   my $id = $self->getId();
+  my $exprMetric = $self->getExpressionMetric();
+  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
 
-  $self->setPartName('fpkm');
-  $self->setYaxisLabel('FPKM');
-  $self->setPlotTitle("FPKM - $id");
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel($exprMetric);
+  $self->setPlotTitle("$exprMetric - $id");
 
   # RUM RPKM Are Not logged in the db
   # JB:  Cannot take the log2 of the diff profiles then add
@@ -727,6 +753,19 @@ sub new {
 
   return $self;
 }
+
+#sub resetYAxisLabels {
+#    my ($self, $exprMetric) = @_;
+#    $self->setPartName($exprMetric);
+#    $exprMetric -> uc($exprMetric);
+#    $self->setYaxisLabel($exprMetric);
+#    my $id = $self->getId();
+#    $self->setPlotTitle("$exprMetric - $id");
+#
+#    if ($self->getWantLogged) {
+#        $self->setYaxisLabel("log2(TPM + 1)");
+#    }
+#}
 
 #--------------------------------------------------------------------------------
 

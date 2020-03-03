@@ -24,9 +24,7 @@ import './Header.scss';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
-export const todo = () => alert('Under construction');
-
-const SMALL_SCREEN_SIZE = 1200;
+const HAMBURGER_SCREEN_SIZE = 960;
 
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
@@ -315,9 +313,9 @@ const HeaderMenuItemContent = ({
 
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
-        // Note that we don't open items on hover when we're mobile-width
+        // Note that we don't open items on hover when we're using the hamburger menu
         // FIXME Find a cleaner way to do this
-        if (focusType !== 'click' && document.documentElement.clientWidth > SMALL_SCREEN_SIZE) {
+        if (focusType !== 'click' && document.documentElement.clientWidth > HAMBURGER_SCREEN_SIZE) {
           setFocusType('hover');
           setSelectedItems(path);
         }
@@ -350,14 +348,14 @@ const HeaderMenuItemContent = ({
               {item.display}
             </Link>
           : item.type === 'webAppRoute'
-          ? <a 
+          ? <a title={item.tooltip}
               href={`${webAppUrl}${item.url}`} 
               target={item.target}
             >
               {item.display}
             </a>
           : item.type === 'externalLink'
-          ? <a 
+          ? <a title={item.tooltip}
               href={item.url} 
               target={item.target}
             >
@@ -369,7 +367,7 @@ const HeaderMenuItemContent = ({
               aria-haspopup
               aria-expanded={selected}
             >
-              <a
+              <a title={item.tooltip}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
