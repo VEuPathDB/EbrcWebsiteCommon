@@ -749,7 +749,7 @@ span.smallTitle {
 
 /** This is needed due to .fixed-menu css **/
 .wdk-RecordSidebar {
-  margin-top: 7em;
+  margin-top: 13em; /* it depends on the header width  */
 }
 
 
