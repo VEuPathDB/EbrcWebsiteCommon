@@ -31,6 +31,10 @@ function QuestionWizard(props) {
     additionalHeadingContent = null
   } = props;
 
+   const {
+    questionSummary = null
+  } = props;
+
   return (
     <div className={makeClassName()}>
       <div className={makeClassName('HeadingContainer')}>
@@ -50,6 +54,7 @@ function QuestionWizard(props) {
         <FilterSummary {...props} />
         {additionalHeadingContent}
       </div>
+      {questionSummary}
       <FilterFinder {...props} />
       <Navigation {...props} />
       {activeGroup == null ? (
