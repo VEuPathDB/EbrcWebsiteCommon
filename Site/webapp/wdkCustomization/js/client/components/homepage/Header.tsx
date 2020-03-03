@@ -348,14 +348,14 @@ const HeaderMenuItemContent = ({
               {item.display}
             </Link>
           : item.type === 'webAppRoute'
-          ? <a 
+          ? <a title={item.tooltip}
               href={`${webAppUrl}${item.url}`} 
               target={item.target}
             >
               {item.display}
             </a>
           : item.type === 'externalLink'
-          ? <a 
+          ? <a title={item.tooltip}
               href={item.url} 
               target={item.target}
             >
@@ -367,7 +367,7 @@ const HeaderMenuItemContent = ({
               aria-haspopup
               aria-expanded={selected}
             >
-              <a
+              <a title={item.tooltip}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
