@@ -1,3 +1,5 @@
+@import 'ebrc-client/styles/themes.scss';
+
 .SiteSearch {
   position: relative;
   z-index: 0;
@@ -160,9 +162,10 @@
     padding: 1em;
     width: 24em;
     max-width: 24em;
-    // FIXME These two colors are based on site branding
-    background: #efe8ec;
-    border: 1px solid #e2d6de;
+    @include themify() {
+      border: 1px solid scale-color(themed('primary-color'), $lightness: 80%);
+      background: desaturate(scale-color(themed('primary-color'), $lightness: 85%), 10%);
+    }
 
     > * {
       background-color: inherit;
