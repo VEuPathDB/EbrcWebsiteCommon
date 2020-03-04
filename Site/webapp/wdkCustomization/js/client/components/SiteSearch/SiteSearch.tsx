@@ -377,11 +377,16 @@ function StrategyLinkoutLink(props: { strategyUrl?: string, tooltipContent: stri
   return (
     <div className={cx('--LinkOut')}>
       <AnchoredTooltip content={tooltipContent}>
-        <button disabled={disabled} type="button" onClick={() => {
+        <button disabled={disabled} className="btn" type="button" onClick={() => {
           if (strategyUrl) history.push(strategyUrl);
         }}>
-          <div>Export as a Search Strategy</div>
-          <div><small>to download or data mine</small></div>
+          <div className={cx('--LinkOutText')}>
+            <div>Export as a Search Strategy</div>
+            <div><small>to download or data mine</small></div>
+          </div>
+          <div className={cx('--LinkOutArrow')}>
+            <i className="fa fa-caret-right"/>
+          </div>
         </button>
       </AnchoredTooltip>
     </div>

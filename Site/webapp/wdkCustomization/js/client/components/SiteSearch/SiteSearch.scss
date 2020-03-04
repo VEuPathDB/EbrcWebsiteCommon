@@ -383,22 +383,16 @@
   }
 
   &--LinkOut {
-    flex: 0 0 19em;
-    padding-right: 2em;
-    padding-left: 1em;
-    a, button {
-      display: inline-block;
+    a, button.btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       text-align: center;
       background: #1345bd;
       color: white;
-      padding: .5em;
       font-size: 1.2em;
-      height: 4em;
-      width: 100%;
       margin: 0;
       position: relative;
-      border: none;
-      border-radius: 0;
 
       &:disabled {
         opacity: .5;
@@ -410,20 +404,18 @@
         &:hover, &:active, &:focus {
           background: #0c3aaa;
           text-decoration: none;
-          &:after {
-            border-left-color: #0c3aaa;
-          }
         }
-  
-        &:after {
-          content: '';
-          position: absolute;
-          left: 100%;
-          border-left: 2em solid #1345bd;
-          border-top: 2em solid transparent;
-          border-bottom: 2em solid transparent;
-          top: 0;
-        }
+      }
+    }
+    &Text {
+      margin: 0 1.5em;
+    }
+    &Arrow {
+      font-size: 2em;
+      position: absolute;
+      right: 0;
+      .fa {
+        margin-right: 0;
       }
     }
   }
