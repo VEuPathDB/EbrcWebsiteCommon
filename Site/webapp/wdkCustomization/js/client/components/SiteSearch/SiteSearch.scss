@@ -164,7 +164,7 @@
     max-width: 24em;
     @include themify() {
       border: 1px solid scale-color(themed('primary-color'), $lightness: 80%);
-      background: desaturate(scale-color(themed('primary-color'), $lightness: 85%), 10%);
+      background: scale-color(themed('primary-color'), $lightness: 80%, $saturation: -60%);  
     }
 
     > * {
