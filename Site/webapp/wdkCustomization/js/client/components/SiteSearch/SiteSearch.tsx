@@ -535,6 +535,8 @@ function makeGenericSummary(document: SiteSearchDocument, documentType: SiteSear
       return value == null ? [] : [ { ...summaryField, value } ]
     });
 
+  if (summaryFields.length === 0) return null;
+  
   return (
     <React.Fragment>
       {summaryFields.map(({ name, displayName, value }) => (
