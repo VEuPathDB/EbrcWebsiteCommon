@@ -79,15 +79,17 @@ export function SiteSearchInput() {
         </Tooltip>
       )}
       {!isEmpty(docType) || !isEmpty(organisms) || !isEmpty(fields) ? (
-        <Tooltip content="Reset all search filters and options">
+        <Tooltip content="Run your search without any filters">
           <button className="reset" type="button" onClick={() => {
             onSearch(`q=${encodeURIComponent(inputRef.current?.value || '')}`);
-          }}>reset</button>
+          }}>clear filters</button>
         </Tooltip>
       ) : null}
-      <button type="submit">
-        <i className="fa fa-search" />
-      </button>
+      <Tooltip content="Run your search">
+        <button type="submit">
+          <i className="fa fa-search" />
+        </button>
+      </Tooltip>
     </form>
   );
 }
