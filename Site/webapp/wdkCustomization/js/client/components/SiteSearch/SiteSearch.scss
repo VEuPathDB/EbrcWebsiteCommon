@@ -395,21 +395,26 @@
       margin: 0;
       position: relative;
 
+      &, &:hover {
+        border: .1em solid white;
+        box-shadow: 0 0.2em 0.5em #00000073;
+      }
+
+      &:hover, &:active, &:focus {
+        background: #0c3aaa;
+        text-decoration: none;
+        outline: none;
+      }
+
       &:disabled {
         opacity: .5;
         background: #1345bd;
         color: white;
       }
 
-      &:first-child {
-        &:hover, &:active, &:focus {
-          background: #0c3aaa;
-          text-decoration: none;
-        }
-      }
     }
     &Text {
-      margin: 0 1.5em;
+      margin: .25em 1.5em;
     }
     &Arrow {
       font-size: 2em;
