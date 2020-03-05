@@ -21,6 +21,7 @@ export function SiteSearchInput() {
   const docType = location.pathname === SITE_SEARCH_ROUTE && searchParams.get(DOCUMENT_TYPE_PARAM) || '';
   const organisms = location.pathname === SITE_SEARCH_ROUTE && searchParams.getAll(ORGANISM_PARAM) || [];
   const fields = location.pathname === SITE_SEARCH_ROUTE && searchParams.getAll(FILTERS_PARAM) || [];
+  const hasFilters = !isEmpty(docType) || !isEmpty(organisms) || !isEmpty(fields);
 
   const onSearch = useCallback((queryString: string) => {
     history.push(`${SITE_SEARCH_ROUTE}?${queryString}`);
@@ -78,16 +79,18 @@ export function SiteSearchInput() {
           </button>
         </Tooltip>
       )}
-      {!isEmpty(docType) || !isEmpty(organisms) || !isEmpty(fields) ? (
-        <Tooltip content="Reset all search filters and options">
+      {hasFilters ? (
+        <Tooltip content="Run your search without any filters">
           <button className="reset" type="button" onClick={() => {
             onSearch(`q=${encodeURIComponent(inputRef.current?.value || '')}`);
-          }}>reset</button>
+          }}>clear filters</button>
         </Tooltip>
       ) : null}
-      <button type="submit">
-        <i className="fa fa-search" />
-      </button>
+      <Tooltip content={hasFilters ? "Update your search, keeping existing filters" : "Run your search"}>
+        <button type="submit">
+          <i className="fa fa-search" />
+        </button>
+      </Tooltip>
     </form>
   );
 }
