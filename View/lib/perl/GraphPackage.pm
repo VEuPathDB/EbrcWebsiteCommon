@@ -68,6 +68,7 @@ sub init {
 
    $Self->setWidthOverride        ( $Args->{WidthOverride        } );
    $Self->setHeightOverride       ( $Args->{HeightOverride       } );
+   $Self->setProject              ( $Args->{Project              } );
    $Self->setCompact              ( $Args->{Compact              } );
    $Self->setIdType               ( $Args->{IdType               } );
 
@@ -173,6 +174,9 @@ sub setHeightOverride          { $_[0]->{'HeightOverride'              } = $_[1]
 
 sub getCompact                 { $_[0]->{'Compact'                     } }
 sub setCompact                 { $_[0]->{'Compact'                     } = $_[1]; $_[0] }
+
+sub getProject                 { $_[0]->{'Project'                     } }
+sub setProject                 { $_[0]->{'Project'                     } = $_[1]; $_[0] }
 
 sub getIdType                  { $_[0]->{'IdType'                      } }
 sub setIdType                  { $_[0]->{'IdType'                      } = $_[1]; $_[0] }
