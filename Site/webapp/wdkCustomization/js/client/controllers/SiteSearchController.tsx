@@ -165,7 +165,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
   const projectId = useWdkService(async wdkService => {
     const { projectId } = await wdkService.getConfig();
     return projectId;
-  });
+  }, []);
 
   return usePromise(async (): Promise<Value|undefined> => {
     if (!siteSearchServiceUrl || searchString === '' || organisms == null || allOrganisms == null || projectId == null) return undefined;
