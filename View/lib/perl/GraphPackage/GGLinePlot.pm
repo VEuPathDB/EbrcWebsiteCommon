@@ -765,6 +765,13 @@ if (!$prtcpnt_timeline) {
     #  gp = gp + theme(legend.position=\"bottom\");
     } 
   
+    maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
+    if (!is.na(maxNumChar)) {
+      if (maxNumChar >= 18) {
+        gp = gp + theme(plot.margin = margin(l=40));
+      }
+    }
+
   }
   
   if(\"FACET\" %in% colnames(profile.df.full)) {
@@ -941,13 +948,6 @@ if ($prtcpnt_sum) {
 
     gp = gp + guides(color = guide_legend(order=1));
 
-}
-
-maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
-if (!is.na(maxNumChar)) {
-    if (maxNumChar >= 18) {
-        gp = gp + theme(plot.margin = margin(l=40));
-    }
 }
 
 

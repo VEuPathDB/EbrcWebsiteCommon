@@ -479,6 +479,10 @@ if($hideXAxisLabels) {
     gp = gp + theme(legend.position=\"none\");
   }
 
+  if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 12) {
+    gp = gp + theme(plot.margin = margin(l=45))
+  }
+
 }
 
 if($horiz) {
@@ -495,9 +499,6 @@ if($hasFacets) {
 
 #}
 
-if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 12) {
-  gp = gp + theme(plot.margin = margin(l=45))
-}
 
 #postscript
 $rPostscript
