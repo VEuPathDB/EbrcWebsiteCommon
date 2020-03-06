@@ -651,7 +651,7 @@ if (grepl(file_ext(\"$out_f\"), \"html\")) {
         if (tooltipy > maxY) {
                 tooltipy = maxY - 10;
         }
-        var tooltiplaby = tooltipy + offset;
+        var tooltiplaby = tooltipy + offset + 5;
         // Position tooltip rect and text
         text.setAttribute("transform",
                 "translate(" + tooltiplabx + ", " + tooltiplaby + ") " +
@@ -659,7 +659,7 @@ if (grepl(file_ext(\"$out_f\"), \"html\")) {
         rect.setAttribute("x", tooltipx);
         rect.setAttribute("y", tooltipy);
         rect.setAttribute("width", text.getBBox().width + 10);
-        rect.setAttribute("height", text.getBBox().height + 5);
+        rect.setAttribute("height", text.getBBox().height + 10);
         rect.setAttribute("stroke", "black");
         rect.setAttribute("fill", "ghostwhite");
         rect.setAttribute("rx", "5");
