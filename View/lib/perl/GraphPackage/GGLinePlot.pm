@@ -765,6 +765,13 @@ if (!$prtcpnt_timeline) {
     #  gp = gp + theme(legend.position=\"bottom\");
     } 
   
+    maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
+    if (!is.na(maxNumChar)) {
+      if (maxNumChar >= 18) {
+        gp = gp + theme(plot.margin = margin(l=40));
+      }
+    }
+
   }
   
   if(\"FACET\" %in% colnames(profile.df.full)) {
@@ -941,13 +948,6 @@ if ($prtcpnt_sum) {
 
     gp = gp + guides(color = guide_legend(order=1));
 
-}
-
-maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
-if (!is.na(maxNumChar)) {
-    if (maxNumChar >= 18) {
-        gp = gp + theme(plot.margin = margin(l=40));
-    }
 }
 
 
@@ -1139,6 +1139,11 @@ sub new {
   $self->setPlotTitle("RNASeq Transcription Summary - $id");
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
+  my $projectId = $self->getProject();
+  my $exprMetric = "FPKM";
+  if ($projectId eq 'VectorBase') {
+    $exprMetric = "TPM";
+  }
 
   my $adjust = "
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
@@ -1176,7 +1181,7 @@ profile.df.full <- merge(profile.df.full, colors.df, by = \"LEGEND\")
 profile.df.full\$COLOR <- paste0(profile.df.full\$COLOR, \"|\", profile.df.full\$DATASET_PRESENTER_ID)
 
 myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
-  layout(xaxis = list(title = \"log2(FPKM + 1)\", 
+  layout(xaxis = list(title = \"log2($exprMetric + 1)\", 
 		      range = c(log2(1), log2(x.max) + 2),
 		      dtick = 2),
          yaxis = list(title = \"Experiment\",
@@ -1281,7 +1286,7 @@ annotationJS <- \"function(el) {
         buttons: [
             {
                 args: [{x: xData},
-                       {xaxis: {title: 'log2(FPKM + 1)',
+                       {xaxis: {title: 'log2($exprMetric + 1)',
                                 range: range},
 			annotations: annotations}],
                 label: 'Log2 Scale',
@@ -1289,7 +1294,7 @@ annotationJS <- \"function(el) {
             },
             {
 		args: [{x: xFPKM},
-                       {xaxis: {title: 'FPKM',
+                       {xaxis: {title: '$exprMetric',
                                 range: [0, Math.pow(2,range[1]-2)]},
 			annotations: linearAnnotations}],
                 label: 'Linear Scale',
