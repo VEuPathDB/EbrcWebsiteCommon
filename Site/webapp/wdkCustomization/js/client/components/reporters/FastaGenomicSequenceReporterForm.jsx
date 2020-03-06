@@ -15,17 +15,17 @@ let FastaGenomicSequenceReporterForm = props => {
     <div>
       <h3>Choose the region of the sequence(s):</h3>
       <div style={{margin:"2em"}}>
-        <Checkbox value={formState.revComp} onChange={getUpdateHandler('revComp')}/> Reverse & Complement
+        <Checkbox name="revComp" value={formState.revComp} onChange={getUpdateHandler('revComp')}/> Reverse & Complement
       </div>
       <div style={{margin:"2em"}}>
         <b>Nucleotide positions:</b>
-        <TextBox value={formState.start} onChange={getUpdateHandler('start')} size="6"/> to
-        <TextBox value={formState.end} onChange={getUpdateHandler('end')} size="6"/> (0 = end)
+        <TextBox name="start" value={formState.start} onChange={getUpdateHandler('start')} size="6"/> to
+        <TextBox name="end" value={formState.end} onChange={getUpdateHandler('end')} size="6"/> (0 = end)
       </div>
       <hr/>
       <h3>Download Type:</h3>
       <div style={{marginLeft:"2em"}}>
-        <RadioList value={formState.attachmentType} items={util.attachmentTypes}
+        <RadioList name="attachmentType" value={formState.attachmentType} items={util.attachmentTypes}
             onChange={getUpdateHandler('attachmentType')}/>
       </div>
       { includeSubmit &&
