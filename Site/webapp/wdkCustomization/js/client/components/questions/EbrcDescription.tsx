@@ -14,13 +14,17 @@ export const useEbrcDescription = (question: Question) => {
   const [ datasetRecords, setDatasetRecords ] = React.useState(undefined as RecordInstance[] | undefined);
 
   useWdkEffect(wdkService => {
+    let active = true;
     (async () => {
       const answerJson = await wdkService.getAnswerJson(
         deriveAnswerSpec(question.fullName),
         REPORT_CONFIG
       );
 
-      setDatasetRecords(answerJson.records);
+      if (active) setDatasetRecords(answerJson.records);
+      return () => {
+        active = false;
+      }
     })();
   }, [ question.fullName ]);
 
@@ -82,7 +86,7 @@ const recordToAttribution = (record: RecordInstance) => {
 
   return (
     <li key={datasetId} className={cx('DatasetItem')}>
-      <Link to={`record/dataset/${datasetId}`}>{record.displayName}</Link>
+      <Link to={`/record/dataset/${datasetId}`}>{record.displayName}</Link>
       <div className={cx('Details')}>
         <div className={cx('Summary')}>
           {

@@ -36,7 +36,7 @@ export function SiteSearchInput() {
     const text = textSearch?.parameters.find(p => p.name === 'text_expression')?.initialDisplayValue;
     const examples = [ `*`, id, text, `"oxo group"` ].filter(v => v).join(' or ');
     return 'E.g.,' + examples;
-  });
+  }, []);
 
   const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

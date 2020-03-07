@@ -50,6 +50,7 @@ class Showcase extends React.Component {
     const cards = this.renderCardList(contentType, cardComponent, {
       attemptAction,
       contentNamePlural,
+      filters,
       isLoading,
       prefix,
       list,
@@ -68,7 +69,7 @@ class Showcase extends React.Component {
             {!description ? null : <p>{description}</p>}
           </div>
           <div className="box wdk-Showcase-HeadingControls">
-            {!filters ? null : <ShowcaseFilter filters={filters} onFilter={handleFilter} items={items} />}
+            {/*!filters ? null : <ShowcaseFilter filters={filters} onFilter={handleFilter} items={items} />*/}
             {!viewAllUrl && !viewAllAppUrl ? null : (
               <a href={viewAllAppUrl ? prefix + viewAllAppUrl : viewAllUrl}>
                 <button className="ViewAll">View All <Icon fa="angle-double-right" /></button>

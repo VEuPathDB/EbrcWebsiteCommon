@@ -4,7 +4,7 @@ import SiteSearch from 'ebrc-client/components/SiteSearch/SiteSearch';
 import { getLeaves } from 'wdk-client/Utils/TreeUtils';
 import { useOrganismTree } from 'ebrc-client/hooks/organisms';
 import { useQueryParams } from 'ebrc-client/hooks/queryParams';
-import { LoadingOverlay, Error as ErrorPage } from 'wdk-client/Components';
+import { Loading, Error as ErrorPage } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { SiteSearchResponse, SiteSearchRequest, siteSearchResponse } from 'ebrc-client/SiteSearch/Types';
@@ -116,7 +116,7 @@ export default function SiteSearchController() {
   }
 
   if (value == null || organismTree == null) {
-    return <LoadingOverlay>Loading results</LoadingOverlay>;
+    return <Loading/>;
   }
 
   return (
@@ -165,7 +165,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
   const projectId = useWdkService(async wdkService => {
     const { projectId } = await wdkService.getConfig();
     return projectId;
-  });
+  }, []);
 
   return usePromise(async (): Promise<Value|undefined> => {
     if (!siteSearchServiceUrl || searchString === '' || organisms == null || allOrganisms == null || projectId == null) return undefined;

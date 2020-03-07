@@ -170,6 +170,7 @@ sub run {
 
 	 my $fmt_f = "/tmp/dataPlotter-$$.$ext";
 
+         my $project = $pkg;
          my $core;
          if ($pkg eq 'ClinEpiDB' || $pkg eq 'Gates' || $pkg eq 'ICEMR' || $pkg eq 'AllClinEpiDB' ) {
            $core = 'ClinEpiWebsite::View::GraphPackage::';
@@ -222,6 +223,7 @@ sub run {
                         SampleInfo => \@sampleInfo,
                         Xmin => $xminOverride,
                         Xmax => $xmaxOverride,
+                        Project => $project,
                         CgiApp => $Cgi,
                         Save => $save_b,
                        });
