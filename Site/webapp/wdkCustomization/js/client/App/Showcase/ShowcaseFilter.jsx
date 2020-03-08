@@ -6,10 +6,15 @@ class ShowcaseFilter extends React.Component {
   constructor (props) {
     super(props);
     const { filters } = props;
-    const activeFilters = filters.map(({ id }) => id);
-    this.state = { activeFilters };
+    this.state = { activeFilters: [] };
     this.toggleFilter = this.toggleFilter.bind(this);
     this.applyFilterToList = this.applyFilterToList.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.filters !== prevProps.filters) {
+      this.setState({ activeFilters: [] });
+    }
   }
 
   toggleFilter (id) {
@@ -27,7 +32,7 @@ class ShowcaseFilter extends React.Component {
     const { activeFilters } = this.state;
     const { items, filters, onFilter } = this.props;
     if (!onFilter || !items || !filters) return;
-    const remainingItems = items.filter(item => {
+    const remainingItems = activeFilters.length === 0 ? items : items.filter(item => {
       return activeFilters.some(filterId => {
         const filterObj = filters.find(({ id }) => id === filterId);
         if (!filterObj) return false;

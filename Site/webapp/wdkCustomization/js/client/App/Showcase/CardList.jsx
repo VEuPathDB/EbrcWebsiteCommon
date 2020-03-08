@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
 import { Link, RealTimeSearchBox } from 'wdk-client/Components';
 
 import PlaceholderCard from './PlaceholderCard';
@@ -19,11 +20,12 @@ const FILTER_CLASS_NAME = `${CLASS_NAME}__FilterInput`;
 const ALLSTUDIES_LINK_CLASS_NAME = `${CLASS_NAME}__TableViewLink link`;
 
 export default function CardList(props) {
-  const { additionalClassName, isLoading, list, renderCard, isExpandable, tableViewLink, contentNamePlural, getSearchStringForItem = () => '', matchPredicate = defaultMatchPredicate } = props;
+  const { additionalClassName, isLoading, list, renderCard, filters, isExpandable, tableViewLink, contentNamePlural, getSearchStringForItem = () => '', matchPredicate = defaultMatchPredicate } = props;
 
   // state
   const [ isExpanded, setIsExpanded ] = React.useState(null);
   const [ filterString, setFilterString ] = React.useState(null);
+  const [ categoryFilter, setCategoryFilter ] = React.useState();
 
   // save state to session storage
   React.useEffect(() => {
@@ -63,6 +65,10 @@ export default function CardList(props) {
       const searchString = getSearchStringForItem(item);
 
       return matchPredicate(searchString, filterString);
+    })
+    .filter(item => {
+      if (categoryFilter == null) return true;
+      return item.categories.includes(categoryFilter);
     })
     .map((item, index) => renderCard(item, index));
 
@@ -106,6 +112,16 @@ export default function CardList(props) {
       helpText={`Find ${contentNamePlural} by searching the visible content.`}
     />
 
+  const categorySelector = filters &&
+    <Select
+      placeholder="Select a category"
+      isClearable
+      options={filters.map(filter => ({
+        value: filter.id,
+        label: <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ transform: 'scale(.75)' }}>{filter.display}</div> {filter.id}</div>
+      }))}
+      onChange={option => setCategoryFilter(option && option.value)}
+    />
   const tableLink = tableViewLink &&
     <Link to={tableViewLink} className={ALLSTUDIES_LINK_CLASS_NAME} title="View content as a table"><i className="fa fa-th-list" aria-hidden="true"></i> Table view</Link>
 
@@ -113,7 +129,10 @@ export default function CardList(props) {
     <div className={className}>
       {tableLink}
       {expandButton}
-      {filterInput}
+      <div className="filters">
+        {filterInput}
+        {categorySelector}
+      </div>
       {cardList}
       {loadingIndicator}
       {emptyIndicator}
