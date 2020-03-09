@@ -1,3 +1,4 @@
+import { upperFirst } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
@@ -118,7 +119,11 @@ export default function CardList(props) {
       isClearable
       options={filters.map(filter => ({
         value: filter.id,
-        label: <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ transform: 'scale(.75)' }}>{filter.display}</div> {filter.id}</div>
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ transform: 'scale(.75)' }}>{filter.display}</div> {upperFirst(filter.id)}
+          </div>
+        )
       }))}
       onChange={option => setCategoryFilter(option && option.value)}
     />

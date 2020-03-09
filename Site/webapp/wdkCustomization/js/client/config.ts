@@ -18,6 +18,7 @@ export const {
   webAppUrl = '',
   facebookUrl = '',
   twitterUrl = '',
+  twitterUrl2 = '',
   youtubeUrl = '',
   vimeoUrl = '',
   communitySite = '',

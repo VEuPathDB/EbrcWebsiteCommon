@@ -5,7 +5,7 @@ import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
-import { communitySite, projectId, twitterUrl, webAppUrl } from 'ebrc-client/config';
+import { communitySite, projectId, twitterUrl, twitterUrl2, webAppUrl } from 'ebrc-client/config';
 
 import { SocialMediaControls } from './SocialMediaControls';
 import { combineClassNames } from './Utils';
@@ -15,6 +15,8 @@ import 'ebrc-client/App/Showcase/Showcase.scss';
 import './NewsPane.scss';
 
 const cx = makeClassNameHelper('ebrc-NewsPane');
+
+const twitterUrls = twitterUrl2 ? [ twitterUrl2, twitterUrl ] : [ twitterUrl ];
 
 type NewsState =
   | {
@@ -66,7 +68,7 @@ export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Pro
       <hr />
       <div className="News-Section">
         <News
-          twitterUrl={twitterUrl}
+          twitterUrls={twitterUrls}
           webAppUrl={webAppUrl}
           {...newsSidebarState}
         />
