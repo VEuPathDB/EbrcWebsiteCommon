@@ -73,7 +73,7 @@ export function SiteSearchInput() {
         placeholder={placeholderText}
       />
       {location.pathname !== SITE_SEARCH_ROUTE && lastSearchQueryString && (
-        <Tooltip content="Go back to your last search">
+        <Tooltip content="Go back to your last search result">
           <button type="button" onClick={() => onSearch(lastSearchQueryString)}>
             <i className="fa fa-long-arrow-left"/>
           </button>
