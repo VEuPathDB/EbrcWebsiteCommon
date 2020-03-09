@@ -46,10 +46,7 @@ type DispatchProps = {
 type OwnProps = {
   branding: ReactNode,
   containerClassName?: string,
-  loadSuggestions: (searchTerm: string) => void,
   menuItems: HeaderMenuItem[],
-  siteSearchSuggestions?: string[],
-  additionalSuggestions?: AdditionalSuggestionItem[]
   onShowAnnouncements: () => void,
   showAnnouncementsToggle: boolean
 };
@@ -99,11 +96,6 @@ export type HeaderMenuItem<T = {}> =
   | SubmenuItem<T>
   | CustomMenuItem<T>;
 
-type AdditionalSuggestionItem = {
-  key: string,
-  display: ReactNode
-};
-
 const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
   if (e === ancestorCandidate) {
     return true;
@@ -117,10 +109,7 @@ const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
 const HeaderView = withRouter(({ 
   branding, 
   containerClassName, 
-  loadSuggestions, 
   menuItems,
-  siteSearchSuggestions,
-  additionalSuggestions,
   actions,
   user,
   location,
@@ -164,13 +153,6 @@ const HeaderView = withRouter(({
       window.removeEventListener('click', closeSubmenusOnClickout);
     };
   }, [ closeSubmenusOnClickout ]);
-
-  useEffect(() => {
-    if (searchTerm) {
-      // We're disabling suggestions for now
-    }
-    // loadSuggestions(searchTerm);
-  }, [ searchTerm ]);
 
   useEffect(() => {
     setShowHamburgerMenu(false);
@@ -391,31 +373,3 @@ const HeaderMenuItemContent = ({
     </div>
   );
 };
-
-type SuggestionsProps = {
-  siteSearchSuggestions: string[],
-  additionalSuggestions: AdditionalSuggestionItem[]
-};
-
-const Suggestions = ({
-  siteSearchSuggestions,
-  additionalSuggestions
-}: SuggestionsProps) => 
-  <div className={cx('Suggestions')}>
-    {
-      siteSearchSuggestions.map(
-        siteSearchSuggestion => 
-          <div key={siteSearchSuggestion} className={cx('SiteSearchSuggestion')}>
-            <IconAlt fa="search" />{siteSearchSuggestion}
-          </div>
-      )
-    }
-    {
-      additionalSuggestions && additionalSuggestions.length > 0 && additionalSuggestions.map(
-        additionalSuggestion =>
-        <div key={additionalSuggestion.key} className={cx('AdditionalSuggestion')}>
-          {additionalSuggestion.display}
-        </div>
-      )
-    }
-  </div>;
