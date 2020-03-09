@@ -127,7 +127,7 @@ const HeaderView = withRouter(({
   onShowAnnouncements,
   showAnnouncementsToggle
 }: Props) => {
-  const headerRef = useRef<HTMLDivElement>(null);
+  const menuBarRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
   const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
   // XXX Temporary until site search is done
@@ -160,29 +160,29 @@ const HeaderView = withRouter(({
   }, []);
 
   useEffect(() => {
-    if (headerRef.current) {
-      headerRef.current.addEventListener('click', onClickInsideSubmenu);
+    if (menuBarRef.current) {
+      menuBarRef.current.addEventListener('click', onClickInsideSubmenu);
     }
 
     return () => {
-      if (headerRef.current) {
-        headerRef.current.removeEventListener('click', onClickInsideSubmenu);
+      if (menuBarRef.current) {
+        menuBarRef.current.removeEventListener('click', onClickInsideSubmenu);
       }
     };
-  }, [ headerRef.current, onClickInsideSubmenu ]);
+  }, [ menuBarRef.current, onClickInsideSubmenu ]);
   
   const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
     if (
-      headerRef.current &&
+      menuBarRef.current &&
       e.target instanceof Element && 
-      !hasAsAncestor(e.target, headerRef.current)
+      !hasAsAncestor(e.target, menuBarRef.current)
     ) {
       if (selectedMenuItems.length) {
         setFocusType('unfocused');
         setSelectedMenuItems([]);
       }
     }
-  }, [ selectedMenuItems, headerRef.current ]);
+  }, [ selectedMenuItems, menuBarRef.current ]);
 
   useEffect(() => {
     window.addEventListener('click', closeSubmenusOnClickout);
@@ -208,7 +208,6 @@ const HeaderView = withRouter(({
   return (
     <header 
       className={combineClassNames(cx(), containerClassName)}
-      ref={headerRef}
     >
       <a href="https://veupathdb.org" className={cx('ProjectBranding')}>
       </a>
@@ -221,10 +220,13 @@ const HeaderView = withRouter(({
       <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
         <IconAlt fa="bars" />
       </button>
-      <div className={cx(
-        'MenuBar', 
-        showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden'
-      )}>
+      <div
+        ref={menuBarRef}
+        className={cx(
+          'MenuBar',
+          showHamburgerMenu ? 'hamburger-shown' : 'hamburger-hidden'
+        )}
+      >
       <MenuItemGroup
         menuItems={menuItems}
         selectedItems={selectedMenuItems}
