@@ -14,7 +14,7 @@ const transformNewItem = compose(
 const getProfileIdFromTwitterUrl =
   replace(/(?:.*)twitter.com\/(.*)$/, '$1')
 
-const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/static-content/${projectId}/news.html` }) =>
+const News = ({ twitterUrls, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/static-content/${projectId}/news.html` }) =>
   <React.Fragment>
     <div className="stack wdk-Showcase">
       <div className="row wdk-Showcase-HeadingRow">
@@ -45,7 +45,9 @@ const News = ({ twitterUrl, webAppUrl, news, error, newsUrl = `${webAppUrl}/app/
           </div>
           <a className="AllNewsLink" href={newsUrl}>See all news</a>
         </div>
-        <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId={getProfileIdFromTwitterUrl(twitterUrl)}/>
+        {twitterUrls.map(twitterUrl =>
+          <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId={getProfileIdFromTwitterUrl(twitterUrl)}/>
+        )}
       </div>
     </div>
   </React.Fragment>
