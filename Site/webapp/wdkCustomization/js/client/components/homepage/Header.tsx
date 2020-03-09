@@ -143,33 +143,6 @@ const HeaderView = withRouter(({
   const toggleHamburgerMenu = useCallback(() => {
     setShowHamburgerMenu(!showHamburgerMenu);
   }, [ showHamburgerMenu ]);
-
-  const onClickInsideSubmenu = useCallback((e: MouseEvent) => {
-    if (
-      e.target instanceof HTMLAnchorElement &&
-      (
-        !e.target.parentElement ||
-        !e.target.parentElement.className.includes('ebrc-HeaderSubmenuGroup')
-      )
-    ) {
-      setFocusType('unfocused');
-      setSelectedMenuItems([]);
-    } else {
-      setFocusType('click');
-    }
-  }, []);
-
-  useEffect(() => {
-    if (menuBarRef.current) {
-      menuBarRef.current.addEventListener('click', onClickInsideSubmenu);
-    }
-
-    return () => {
-      if (menuBarRef.current) {
-        menuBarRef.current.removeEventListener('click', onClickInsideSubmenu);
-      }
-    };
-  }, [ menuBarRef.current, onClickInsideSubmenu ]);
   
   const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
     if (
@@ -201,8 +174,6 @@ const HeaderView = withRouter(({
 
   useEffect(() => {
     setShowHamburgerMenu(false);
-    setFocusType('unfocused');
-    setSelectedMenuItems([]);
   }, [ location.pathname, location.pathname ]);
 
   return (
@@ -313,6 +284,11 @@ const HeaderMenuItemContent = ({
 }: HeaderMenuItemContentProps) => {
   const webAppUrl = useWebAppUrl();
 
+  const dismissSubmenus = () => {
+    setFocusType('unfocused');
+    setSelectedItems([]);
+  };
+
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
         // Note that we don't open items on hover when we're using the hamburger menu
@@ -327,8 +303,7 @@ const HeaderMenuItemContent = ({
   const onMouseLeave = item.type === 'subMenu'
     ? (e: React.MouseEvent) => {
         if (focusType === 'hover') {
-          setFocusType('unfocused');
-          setSelectedItems([]);
+          dismissSubmenus();
         }
       }
     : undefined;
@@ -346,6 +321,7 @@ const HeaderMenuItemContent = ({
           ? <Link 
               to={item.url} 
               target={item.target}
+              onClick={dismissSubmenus}
             >
               {item.display}
             </Link>
@@ -353,6 +329,7 @@ const HeaderMenuItemContent = ({
           ? <a title={item.tooltip}
               href={`${webAppUrl}${item.url}`} 
               target={item.target}
+              onClick={dismissSubmenus}
             >
               {item.display}
             </a>
@@ -360,6 +337,7 @@ const HeaderMenuItemContent = ({
           ? <a title={item.tooltip}
               href={item.url} 
               target={item.target}
+              onClick={dismissSubmenus}
             >
               {item.display}
             </a>
@@ -368,15 +346,24 @@ const HeaderMenuItemContent = ({
               className={cx('SubmenuGroup', selected ? 'selected' : 'unselected')}
               aria-haspopup
               aria-expanded={selected}
+              onClick={(e) => {
+                if (
+                  e.target instanceof HTMLAnchorElement &&
+                  focusType === 'click'
+                ) {
+                  dismissSubmenus();
+                } else {
+                  setFocusType('click');
+                }
+              }}
             >
               <a title={item.tooltip}
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
 
-                  if (isEqual(selectedItems, path)) {
-                    setFocusType('unfocused');
-                    setSelectedItems([]);
+                  if (isEqual(selectedItems, path) && focusType === 'click') {
+                    dismissSubmenus();
                   } else {
                     setFocusType('click');
                     setSelectedItems(path);
