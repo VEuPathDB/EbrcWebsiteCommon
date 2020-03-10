@@ -319,12 +319,7 @@ const HeaderMenuItemContent = ({
               aria-haspopup
               aria-expanded={selected}
               onClick={(e) => {
-                if (
-                  e.target instanceof HTMLAnchorElement &&
-                  focusType === 'click'
-                ) {
-                  dismissSubmenus();
-                } else {
+                if (!(e.target instanceof HTMLAnchorElement)) {
                   setFocusType('click');
                 }
               }}
