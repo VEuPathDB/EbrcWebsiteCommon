@@ -51,12 +51,6 @@ export function makeMenuItems(props) {
     webAppUrl,
   } = siteConfig;
 
-{/* in apicommon
-  const userDatasetsEnabled = config && 'userDatasetsEnabled' in config
-    ? config.userDatasetsEnabled
-    : false;
-*/}
-
   const totalBasketCount = reduce(basketCounts, add, 0);
 
   const isLoggedIn = user && !user.isGuest;
@@ -70,15 +64,6 @@ export function makeMenuItems(props) {
         ] : [])
     },
     { id: 'strategies', text: 'My Strategies',  route: '/workspace/strategies' },
-{/* in apicommon
-    userDatasetsEnabled ? {
-      id: 'workspace',
-      text: 'Workspace',
-      children: [
-        { id: 'userDatasets', text: 'User Datasets', route: '/workspace/datasets'}
-      ]
-    } : null,
-*/},
     {
       id: 'basket',
       text: <span>My Basket <span style={{ color: '#600000' }}>({totalBasketCount})</span></span>,
