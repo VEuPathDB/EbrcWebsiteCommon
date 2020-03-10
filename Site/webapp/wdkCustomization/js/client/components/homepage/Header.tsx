@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
 
 import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
-import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
 import { Link, IconAlt } from 'wdk-client/Components';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { RootState } from 'wdk-client/Core/State/Types';
@@ -37,8 +36,7 @@ type StateProps = {
 type DispatchProps = {
   actions: {
     showLoginForm: (url: string) => void,
-    showLogoutWarning: () => void,
-    goToGenePage: (geneId: string) => void
+    showLogoutWarning: () => void
   }
 };
 
@@ -122,7 +120,12 @@ const HeaderView = withRouter(({
   const toggleHamburgerMenu = useCallback(() => {
     setShowHamburgerMenu(!showHamburgerMenu);
   }, [ showHamburgerMenu ]);
-  
+
+  const dismissSubmenus = useCallback(() => {
+    setFocusType('unfocused');
+    setSelectedMenuItems([]);
+  }, []);
+
   const closeSubmenusOnClickout = useCallback((e: MouseEvent) => {
     if (
       menuBarRef.current &&
@@ -130,11 +133,10 @@ const HeaderView = withRouter(({
       !hasAsAncestor(e.target, menuBarRef.current)
     ) {
       if (selectedMenuItems.length) {
-        setFocusType('unfocused');
-        setSelectedMenuItems([]);
+        dismissSubmenus();
       }
     }
-  }, [ selectedMenuItems, menuBarRef.current ]);
+  }, [ selectedMenuItems, menuBarRef.current, dismissSubmenus ]);
 
   useEffect(() => {
     window.addEventListener('click', closeSubmenusOnClickout);
@@ -146,6 +148,7 @@ const HeaderView = withRouter(({
 
   useEffect(() => {
     setShowHamburgerMenu(false);
+    dismissSubmenus();
   }, [ location.pathname, location.pathname ]);
 
   return (
@@ -176,6 +179,7 @@ const HeaderView = withRouter(({
         setSelectedItems={setSelectedMenuItems}
         focusType={focusType}
         setFocusType={setFocusType}
+        dismissSubmenus={dismissSubmenus}
       />
       </div>
       <SiteSearchInput/>
@@ -196,8 +200,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 const mapDispatchToProps = (dispatch: DispatchAction): DispatchProps => ({
   actions: {
     showLoginForm: (url: string) => dispatch(showLoginForm(url)),
-    showLogoutWarning: () => dispatch(showLogoutWarning()),
-    goToGenePage: (geneId: string) => dispatch(transitionToInternalPage(`/record/gene/${geneId}`))
+    showLogoutWarning: () => dispatch(showLogoutWarning())
   }
 });
 
@@ -209,7 +212,8 @@ type MenuItemGroupProps = {
   selectedItems: string[],
   focusType: FocusType,
   setSelectedItems: (newSelectedItems: string[]) => void,
-  setFocusType: (newFocusType: FocusType) => void
+  setFocusType: (newFocusType: FocusType) => void,
+  dismissSubmenus: () => void
 };
 
 const MenuItemGroup = ({
@@ -218,7 +222,8 @@ const MenuItemGroup = ({
   selectedItems,
   focusType,
   setSelectedItems,
-  setFocusType
+  setFocusType,
+  dismissSubmenus
 }: MenuItemGroupProps) => 
   <div className={cx('MenuItemGroup')}>
     {
@@ -232,6 +237,7 @@ const MenuItemGroup = ({
             focusType={focusType}
             setSelectedItems={setSelectedItems}
             setFocusType={setFocusType}
+            dismissSubmenus={dismissSubmenus}
           />
       )
     }
@@ -243,7 +249,8 @@ type HeaderMenuItemContentProps = {
   selectedItems: string[],
   focusType: FocusType,
   setSelectedItems: (newSelectedItems: string[]) => void,
-  setFocusType: (newFocusType: FocusType) => void
+  setFocusType: (newFocusType: FocusType) => void,
+  dismissSubmenus: () => void
 };
 
 const HeaderMenuItemContent = ({
@@ -252,14 +259,10 @@ const HeaderMenuItemContent = ({
   selectedItems,
   focusType,
   setSelectedItems,
-  setFocusType
+  setFocusType,
+  dismissSubmenus
 }: HeaderMenuItemContentProps) => {
   const webAppUrl = useWebAppUrl();
-
-  const dismissSubmenus = () => {
-    setFocusType('unfocused');
-    setSelectedItems([]);
-  };
 
   const onMouseEnter = item.type === 'subMenu' 
     ? (e: React.MouseEvent) => {
@@ -359,6 +362,7 @@ const HeaderMenuItemContent = ({
                     focusType={focusType}
                     setSelectedItems={setSelectedItems}
                     setFocusType={setFocusType}
+                    dismissSubmenus={dismissSubmenus}
                   />
                 </div>
               }
