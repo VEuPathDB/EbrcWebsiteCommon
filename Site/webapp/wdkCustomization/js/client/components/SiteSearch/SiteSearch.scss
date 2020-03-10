@@ -446,17 +446,22 @@
 
   &--GreenButton {
     background: green !important;
-    color: white;
-    border-radius: .5em;
   }
 
   &--RedButton {
     background: #B71C1C !important;
-    color: white;
-    border-radius: .5em;
   }
 
-  &--GreenButton, &--RedButton {
+  &--GreenButton.btn, &--RedButton.btn {
+    color: white;
+    border-radius: .5em;
+    font-size: .9em;
+    padding: .5em .75em;
+    margin: 0;
+    .fa {
+      margin: 0;
+      font-size: 1em;
+    }
     &:disabled {
       opacity: .5;
     }

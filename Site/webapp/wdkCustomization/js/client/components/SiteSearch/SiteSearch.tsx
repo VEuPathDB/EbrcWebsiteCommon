@@ -222,9 +222,9 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         <div className={cx('--FilterButtons', showButtons ? 'visible' : 'hidden')}>
           {showApplyCancelButtons ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onOrganismsChange(selection)}>Apply</button>
+              <button type="button" className={cx('--GreenButton') + ' btn'} onClick={() => onOrganismsChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
+              <button type="button" className={cx('--RedButton') + ' btn'} onClick={() => setSelection(filterOrganisms)}>{cancelIcon}</button>
             </React.Fragment>
           ) : showResetButton ? (
             <React.Fragment>
@@ -425,9 +425,9 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
         <div className={cx('--FilterButtons')}>
           {showApplyCancel ? (
             <React.Fragment>
-              <button type="button" className={cx('--GreenButton')} onClick={() => onFiltersChange(selection)}>Apply</button>
+              <button type="button" className={cx('--GreenButton') + ' btn'} onClick={() => onFiltersChange(selection)}>Apply</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <button type="button" className={cx('--RedButton')} onClick={() => setSelection(filters)}>{cancelIcon}</button>
+              <button type="button" className={cx('--RedButton') + ' btn'} onClick={() => setSelection(filters)}>{cancelIcon}</button>
             </React.Fragment>
           ) : showClear ? (
             <button type="button" className="link" onClick={() => onFiltersChange([])}>Clear filter</button>
