@@ -46,7 +46,7 @@ const News = ({ twitterUrls, webAppUrl, news, error, newsUrl = `${webAppUrl}/app
           <a className="AllNewsLink" href={newsUrl}>See all news</a>
         </div>
         {twitterUrls.map(twitterUrl =>
-          <TwitterTimeline theme="light" linkColor="#0f5970" height={1140} profileId={getProfileIdFromTwitterUrl(twitterUrl)}/>
+          <TwitterTimeline key={twitterUrl} theme="light" linkColor="#0f5970" height={1140} profileId={getProfileIdFromTwitterUrl(twitterUrl)}/>
         )}
       </div>
     </div>
