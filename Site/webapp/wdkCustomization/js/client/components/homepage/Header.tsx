@@ -265,7 +265,7 @@ const HeaderMenuItemContent = ({
     ? (e: React.MouseEvent) => {
         // Note that we don't open items on hover when we're using the hamburger menu
         // FIXME Find a cleaner way to do this
-        if (focusType !== 'click' && document.documentElement.clientWidth > HAMBURGER_SCREEN_SIZE) {
+        if (focusType !== 'click' && !isHamburgerWidth()) {
           setFocusType('hover');
           setSelectedItems(path);
         }
@@ -329,10 +329,20 @@ const HeaderMenuItemContent = ({
                 onClick={(e) => {
                   e.preventDefault();
 
-                  if (isEqual(selectedItems, path) && focusType === 'click') {
-                    dismissSubmenus();
+                  if (isEqual(selectedItems, path)) {
+                    // We have clicked on a submenu header a second time
+                    if (focusType !== 'click') {
+                      setFocusType('click');
+                    } else {
+                      dismissSubmenus();
+                    }
                   } else {
-                    setFocusType('click');
+                    // We have clicked a different submenu header than the previous one
+                    if (isHamburgerWidth()) {
+                      setFocusType('click');
+                    } else {
+                      setFocusType('hover');
+                    }
                     setSelectedItems(path);
                   }
                 }}
@@ -358,3 +368,7 @@ const HeaderMenuItemContent = ({
     </div>
   );
 };
+
+function isHamburgerWidth() {
+  return document.documentElement.clientWidth <= HAMBURGER_SCREEN_SIZE;
+}

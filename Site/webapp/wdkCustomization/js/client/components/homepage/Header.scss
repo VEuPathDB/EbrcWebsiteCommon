@@ -109,7 +109,7 @@ $hamburger-width: 960px;
         color: #FAFAFA;
         font-weight: bold;
 
-        &:hover {
+        &:focus, &:active, &:hover {
           text-decoration: none;
         }
       }
