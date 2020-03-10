@@ -1,4 +1,4 @@
-import { identity, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
@@ -8,7 +8,6 @@ import { transitionToInternalPage } from 'wdk-client/Actions/RouterActions';
 import { Link, IconAlt } from 'wdk-client/Components';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { RootState } from 'wdk-client/Core/State/Types';
-import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { User } from 'wdk-client/Utils/WdkUser';
 
@@ -107,7 +106,6 @@ const hasAsAncestor = (e: Element, ancestorCandidate: Element): boolean => {
 };
 
 const HeaderView = withRouter(({ 
-  branding, 
   containerClassName, 
   menuItems,
   actions,
@@ -119,14 +117,6 @@ const HeaderView = withRouter(({
   const menuBarRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
   const [ focusType, setFocusType ] = useState<FocusType>('unfocused');
-  // XXX Temporary until site search is done
-  const [ searchTerm, setSearchTerm ] = useSessionBackedState<string>(
-    '',
-    'header-site-search-term',
-    identity,
-    identity
-  );
-  const [ isSearchBarSelected, setIsSearchBarSelected ] = useState(false);
   const [ showHamburgerMenu, setShowHamburgerMenu ] = useState(false);
 
   const toggleHamburgerMenu = useCallback(() => {
