@@ -83,7 +83,6 @@ let SequenceRegionInputs = props => {
     case 'genomic':
       return (
         <div>
-          <hr/>
           <h3>Choose the region of the sequence(s):</h3>
           <div
             style={{
@@ -104,7 +103,6 @@ let SequenceRegionInputs = props => {
     case 'protein':
       return (
         <div>
-          <hr/>
           <h3>Choose the region of the protein sequence(s):</h3>
           <div
             style={{
@@ -152,7 +150,6 @@ let FastaGeneReporterForm = props => {
         </div>
       }
       <SequenceRegionInputs formState={formState} getUpdateHandler={getUpdateHandler}/>
-      <hr/>
       <h3>Download Type:</h3>
       <div style={{marginLeft:"2em"}}>
         <RadioList name="attachmentType" value={formState.attachmentType}

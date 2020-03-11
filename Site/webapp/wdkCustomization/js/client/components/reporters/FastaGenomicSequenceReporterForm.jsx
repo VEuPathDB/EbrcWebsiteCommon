@@ -28,7 +28,6 @@ export let fastaGenomicSequenceReporterFormFactory = regionDescription => {
           <TextBox name="start" value={formState.start} onChange={getUpdateHandler('start')} size="6"/> to
           <TextBox name="end" value={formState.end} onChange={getUpdateHandler('end')} size="6"/> (0 = end)
         </div>
-        <hr/>
         <h3>Download Type:</h3>
         <div style={{marginLeft:"2em"}}>
           <RadioList name="attachmentType" value={formState.attachmentType} items={util.attachmentTypes}
