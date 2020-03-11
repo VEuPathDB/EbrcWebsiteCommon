@@ -58,6 +58,15 @@
     font-size: 120%;
     margin-left: auto !important;
     height: 0;
+    z-index: 1;
+  }
+
+  a.CardList__TableViewLink {
+    font-weight: 500;
+    font-size: 120%;
+    height: 0;
+    margin-right: auto !important;
+    z-index: 1;
   }
 
   &__FilterInput {
@@ -95,12 +104,6 @@
     background: #efefef80;
   }
 
-  a.CardList__TableViewLink {
-    font-weight: 500;
-    font-size: 120%;
-    height: 0;
-    margin-right: auto !important;
-  }
 }
 .Card {
   flex: 0 0 300px;
