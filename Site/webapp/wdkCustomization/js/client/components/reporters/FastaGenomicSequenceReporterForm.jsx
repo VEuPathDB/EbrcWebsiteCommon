@@ -17,7 +17,13 @@ export let fastaGenomicSequenceReporterFormFactory = regionDescription => {
         <div style={{margin:"2em"}}>
           <Checkbox name="revComp" value={formState.revComp} onChange={getUpdateHandler('revComp')}/> Reverse & Complement
         </div>
-        <div style={{margin:"2em"}}>
+        <div style={{
+          margin: '0 2em 2em 2em',
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(5, auto)',
+          alignItems: 'center',
+          gridGap: '0.5em'
+        }}>
           <b>Nucleotide positions:</b>
           <TextBox name="start" value={formState.start} onChange={getUpdateHandler('start')} size="6"/> to
           <TextBox name="end" value={formState.end} onChange={getUpdateHandler('end')} size="6"/> (0 = end)

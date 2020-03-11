@@ -50,7 +50,7 @@ let signs = [
 let SequenceRegionRange = props => {
   let { label, anchor, sign, offset, formState, getUpdateHandler } = props;
   return (
-    <div>
+    <React.Fragment>
       <span>{label}</span>
       <SingleSelect name={anchor} value={formState[anchor]}
           onChange={getUpdateHandler(anchor)} items={genomicAnchorValues}/>
@@ -59,21 +59,21 @@ let SequenceRegionRange = props => {
       <TextBox name={offset} value={formState[offset]}
           onChange={getUpdateHandler(offset)} size="6"/>
       nucleotides
-    </div>
+    </React.Fragment>
   );
 };
 
 let ProteinRegionRange = props => {
   let { label, anchor, offset, formState, getUpdateHandler } = props;
   return (
-    <div>
+    <React.Fragment>
       <span>{label}</span>
       <SingleSelect name={anchor} value={formState[anchor]}
           onChange={getUpdateHandler(anchor)} items={proteinAnchorValues}/>
       <TextBox name={offset} value={formState[offset]}
           onChange={getUpdateHandler(offset)} size="6"/>
       aminoacids
-    </div>
+    </React.Fragment>
   );
 };
 
@@ -85,10 +85,20 @@ let SequenceRegionInputs = props => {
         <div>
           <hr/>
           <h3>Choose the region of the sequence(s):</h3>
-          <SequenceRegionRange label="Begin at" anchor="upstreamAnchor" sign="upstreamSign"
-            offset="upstreamOffset" formState={formState} getUpdateHandler={getUpdateHandler}/>
-          <SequenceRegionRange label="End at" anchor="downstreamAnchor" sign="downstreamSign"
-            offset="downstreamOffset" formState={formState} getUpdateHandler={getUpdateHandler}/>
+          <div
+            style={{
+              display: 'inline-grid',
+              gridTemplateColumns: 'repeat(5, auto)',
+              alignItems: 'center',
+              gridGap: '0.5em',
+              marginLeft: '2em'
+            }}
+          >
+            <SequenceRegionRange label="Begin at" anchor="upstreamAnchor" sign="upstreamSign"
+              offset="upstreamOffset" formState={formState} getUpdateHandler={getUpdateHandler}/>
+            <SequenceRegionRange label="End at" anchor="downstreamAnchor" sign="downstreamSign"
+              offset="downstreamOffset" formState={formState} getUpdateHandler={getUpdateHandler}/>
+          </div>
         </div>
       );
     case 'protein':
@@ -96,10 +106,20 @@ let SequenceRegionInputs = props => {
         <div>
           <hr/>
           <h3>Choose the region of the protein sequence(s):</h3>
-          <ProteinRegionRange label="Begin at" anchor="startAnchor3" offset="startOffset3"
-            formState={formState} getUpdateHandler={getUpdateHandler}/>
-          <ProteinRegionRange label="End at" anchor="endAnchor3" offset="endOffset3"
-            formState={formState} getUpdateHandler={getUpdateHandler}/>
+          <div
+            style={{
+              display: 'inline-grid',
+              gridTemplateColumns: 'repeat(4, auto)',
+              alignItems: 'center',
+              gridGap: '0.5em',
+              marginLeft: '2em'
+            }}
+          >
+            <ProteinRegionRange label="Begin at" anchor="startAnchor3" offset="startOffset3"
+              formState={formState} getUpdateHandler={getUpdateHandler}/>
+            <ProteinRegionRange label="End at" anchor="endAnchor3" offset="endOffset3"
+              formState={formState} getUpdateHandler={getUpdateHandler}/>
+          </div>
         </div>
       );
     default:
