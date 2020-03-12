@@ -1,7 +1,7 @@
 import React, { useState }  from 'react';
 
 import WdkService, { useWdkEffect } from 'wdk-client/Service/WdkService';
-import { makeClassNameHelper, useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { alert } from 'wdk-client/Utils/Platform';
 
 import './ResetSession.scss';
@@ -11,8 +11,6 @@ const cx = makeClassNameHelper('ebrc-ResetSession')
 export function ResetSession() {
   const [ confirmed, setConfirmed ] = useState(false);
   const [ isResetSessionClicked, setIsResetSessionClicked ] = useState(false);
-
-  useSetDocumentTitle('Reset Session');
 
   useWdkEffect(wdkService => {
     (async function() {
