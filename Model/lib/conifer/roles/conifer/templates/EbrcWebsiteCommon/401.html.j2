@@ -1,0 +1,15 @@
+{% extends "appBase.html.j2" %}
+{% block title %} {{ super() }} - Unauthorized {% endblock %}
+{% block siteConfig %}
+  {{ super () }}
+  retainContainerContent: true
+{% endblock %}
+{% block content %}
+  <h1>The requested page requires user authentication.</h1>
+  <p>
+    Development and pre-release areas of <a href="http://{{ project }}.org">{{ project }}.org</a> are restricted.<br>
+    If you believe you should be permitted access, please 
+    contact <a href="mailto:help@{{ project }}.org" target="_blank">help@{{ project }}.org</a> 
+    for assistance and please provide the URL you tried to access.
+  </p>
+{% endblock %}

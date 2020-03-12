@@ -1,0 +1,13 @@
+{% extends "appBase.html.j2" %}
+{% block title %} {{ super() }} - Server Error {% endblock %}
+{% block siteConfig %}
+  {{ super () }}
+  retainContainerContent: true
+{% endblock %}
+{% block content %}
+  <h1>Server Error</h1>
+  <p>
+    We apologize for the inconvenience and are working to resume service as soon as possible.
+    If you have any questions please contact <a href="mailto:help@{{ project }}.org" target="_blank">help@{{ project }}.org</a>.
+   </p>
+{% endblock %}

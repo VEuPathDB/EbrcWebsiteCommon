@@ -23,7 +23,7 @@ import * as WdkComponents from 'wdk-client/Components';
 import * as WdkControllers from 'wdk-client/Controllers';
 
 import * as siteConfig from './config';
-import { rootUrl, rootElement, endpoint } from './config';
+import { rootUrl, rootElement, endpoint, retainContainerContent } from './config';
 import pluginConfig from './pluginConfig';
 import { loadSiteConfig } from './actioncreators/GlobalActionCreators';
 import * as EbrcComponentWrappers from './component-wrappers';
@@ -73,6 +73,7 @@ export function initialize(options = {}) {
     wrapWdkService: flow(ebrcWrapWdkService, wrapWdkService),
     rootUrl,
     rootElement,
+    retainContainerContent,
     endpoint,
     onLocationChange: makeLocationHandler(),
     pluginConfig: sitePluginConfig.concat(pluginConfig),

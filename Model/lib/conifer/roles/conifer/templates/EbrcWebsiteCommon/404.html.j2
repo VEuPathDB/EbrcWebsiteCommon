@@ -1,0 +1,16 @@
+{% extends "appBase.html.j2" %}
+{% block title %} {{ super() }} - Page Not Found {% endblock %}
+{% block siteConfig %}
+  {{ super () }}
+  retainContainerContent: true
+{% endblock %}
+{% block content %}
+  <h1>Page Not Found</h1>
+  <p>The requested page could not be found.</p>
+  <p>
+     If you believe the page you requested should exist, please 
+     contact <a href="mailto:help@{{ project }}.org" target="_blank">help@{{ project }}.org</a> 
+     and please provide the URL you tried to access or a description of what you are 
+     looking for.
+   </p>
+{% endblock %}

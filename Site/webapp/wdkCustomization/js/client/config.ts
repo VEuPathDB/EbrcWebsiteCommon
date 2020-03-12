@@ -23,4 +23,5 @@ export const {
   vimeoUrl = '',
   communitySite = '',
   siteSearchServiceUrl = '',
+  retainContainerContent = false
 } = window.__SITE_CONFIG__;
