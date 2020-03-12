@@ -5,6 +5,8 @@ import TreeDataViewerController from './controllers/TreeDataViewerController';
 import ContactUsController from './controllers/ContactUsController';
 import GalaxyTermsController from './controllers/GalaxyTermsController';
 import ExternalContentController from 'ebrc-client/controllers/ExternalContentController';
+import { ResetSessionController } from 'ebrc-client/controllers/ResetSessionController';
+
 export const STATIC_ROUTE_PATH = '/static-content';
 
 /**
@@ -75,6 +77,11 @@ export const wrapRoutes = wdkRoutes => [
           }
         }}
       />
+  },
+
+  {
+    path: '/reset-session',
+    component: ResetSessionController
   },
 
   ...wdkRoutes
