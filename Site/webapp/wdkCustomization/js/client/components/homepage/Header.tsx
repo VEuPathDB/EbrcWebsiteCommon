@@ -5,6 +5,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 
 import { showLoginForm, showLogoutWarning } from 'wdk-client/Actions/UserSessionActions';
 import { Link, IconAlt } from 'wdk-client/Components';
+import DeferredDiv from 'wdk-client/Components/Display/DeferredDiv';
 import { DispatchAction } from 'wdk-client/Core/CommonTypes';
 import { RootState } from 'wdk-client/Core/State/Types';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -316,7 +317,7 @@ const HeaderMenuItemContent = ({
             >
               {item.display}
             </a>
-          : item.type === 'subMenu'
+          : item.type === 'subMenu' && path.length === 1
           ? <div 
               className={cx('SubmenuGroup', selected ? 'selected' : 'unselected')}
               aria-haspopup
@@ -352,21 +353,39 @@ const HeaderMenuItemContent = ({
               >
                 {item.display}
               </a>
-              {
-                selected &&
-                <div className={cx('MenuItemGroupContainer')}>
-                  <MenuItemGroup 
-                    menuItems={item.items} 
-                    path={path}
-                    selectedItems={selectedItems}
-                    focusType={focusType}
-                    setSelectedItems={setSelectedItems}
-                    setFocusType={setFocusType}
-                    dismissSubmenus={dismissSubmenus}
-                  />
-                </div>
-              }
+              <DeferredDiv visible={selected} className={cx('MenuItemGroupContainer')}>
+                <MenuItemGroup
+                  menuItems={item.items}
+                  path={path}
+                  selectedItems={selectedItems}
+                  focusType={focusType}
+                  setSelectedItems={setSelectedItems}
+                  setFocusType={setFocusType}
+                  dismissSubmenus={dismissSubmenus}
+                />
+              </DeferredDiv>
             </div>
+          : item.type === 'subMenu'
+          ? <details>
+              <summary>
+                {item.display}
+              </summary>
+              {
+                item.items.map(
+                  subItem =>
+                    <HeaderMenuItemContent
+                      key={subItem.key}
+                      item={subItem}
+                      path={[...path, subItem.key]}
+                      selectedItems={selectedItems}
+                      focusType={focusType}
+                      setSelectedItems={setSelectedItems}
+                      setFocusType={setFocusType}
+                      dismissSubmenus={dismissSubmenus}
+                    />
+                )
+              }
+            </details>
           : item.display
       }
     </div>

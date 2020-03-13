@@ -122,6 +122,14 @@ $hamburger-width: 960px;
 
   &MenuItemContent {
     white-space: nowrap;
+
+    summary {
+      cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   &SubmenuGroup {
@@ -168,6 +176,15 @@ $hamburger-width: 960px;
   
       .ebrc-HeaderMenuItemContent {
         padding: 0.625em 1em;
+      }
+
+      details {
+        > .ebrc-HeaderMenuItemContent {
+          display: list-item;
+
+          padding: 0.25em 0;
+          margin-left: 2em;
+        }
       }
       
       @media screen and (max-width: $hamburger-width) {
