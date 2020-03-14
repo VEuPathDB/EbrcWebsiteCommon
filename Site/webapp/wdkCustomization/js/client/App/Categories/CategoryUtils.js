@@ -4,10 +4,14 @@ export function getCategoryColor (category) {
   if (!category) return null;
   switch (category.toLowerCase()) {
     case 'enteric':
-      return '#6738ff';
+      return '#6738ff';  //#8874a3'; more muted
     case 'malarial':
     case 'malaria':
       return '#ff6d0d';
+   case 'respiratory':
+      return '#00aedb';
+   case 'schistosomiasis':
+      return '#7bc043';
     default:
       return '#9b9c9c';
   }
@@ -20,6 +24,10 @@ export function getCategoryName (category = '') {
       return <span>A <b>Malaria</b> Study</span>;
     case 'enteric':
       return <span>An <b>Enteric</b> Disease Study</span>;
+    case 'respiratory':
+      return <span>A <b>Respiratory</b> Disease Study</span>;
+    case 'schistosomiasis':
+      return <span>A <b>Schistosomiasis</b> Study</span>;
     default:
       return <span>An <b>Epidemiological</b> Study</span>;
   }
