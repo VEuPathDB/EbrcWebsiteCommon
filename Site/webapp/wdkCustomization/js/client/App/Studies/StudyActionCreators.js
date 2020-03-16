@@ -120,7 +120,6 @@ function formatStudies(projectId, questions, recordClasses, answer) {
       // (1) in the cards and...
       // (2) in the "Search a study" menu
       if (record.attributes.build_number_introduced === '0') {
-        console.log('haaaahnratface');
         records.appearFirst.add(record.attributes.dataset_id);
       }
 
