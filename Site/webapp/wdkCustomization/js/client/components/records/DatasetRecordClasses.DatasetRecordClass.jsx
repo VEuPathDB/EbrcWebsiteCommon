@@ -11,7 +11,7 @@ function stripXML(str) {
   return div.textContent;
 }
 
-function formatLink(link, opts) {
+export function formatLink(link, opts) {
   opts = opts || {};
   let newWindow = !!opts.newWindow;
   return (
