@@ -368,7 +368,7 @@ const HeaderMenuItemContent = ({
           : item.type === 'subMenu'
           ? <details>
               <summary>
-                {item.display}
+                <span>{item.display}</span>
               </summary>
               {
                 item.items.map(

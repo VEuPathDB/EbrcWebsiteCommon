@@ -126,7 +126,21 @@ $hamburger-width: 960px;
     summary {
       cursor: pointer;
 
-      &:focus {
+      &::marker {
+        color: #aaa;
+      }
+
+      &::-webkit-details-marker {
+        color: #aaa;
+      }
+
+      &:hover {
+        > span {
+          text-decoration: underline;
+        }
+      }
+
+      &:focus, &:hover {
         outline: none;
       }
     }
