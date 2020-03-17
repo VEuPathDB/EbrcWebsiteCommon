@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindAll } from 'lodash';
 import { PageController } from 'wdk-client/Controllers';
 import { CheckboxTree } from 'wdk-client/Components';
-import { areTermsInString } from 'wdk-client/Utils/SearchUtils';
+import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
 
 class TreeDataViewer extends Component {
 
@@ -38,7 +38,7 @@ class TreeDataViewer extends Component {
           selectedList={[]}
           isSearchable={true}
           searchBoxPlaceholder="Search..."
-          searchBoxHelp="Search the structure below"
+          searchBoxHelp={makeSearchHelpText("the structure below")}
           searchTerm={this.state.searchTerm}
           onSearchTermChange={this.onSearchTermChange}
           searchPredicate={isNodeInSearch}/>
