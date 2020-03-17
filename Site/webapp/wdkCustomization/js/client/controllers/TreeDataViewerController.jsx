@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bindAll } from 'lodash';
 import { PageController } from 'wdk-client/Controllers';
 import { CheckboxTree } from 'wdk-client/Components';
+import { areTermsInString } from 'wdk-client/Utils/SearchUtils';
 
 class TreeDataViewer extends Component {
 
@@ -64,11 +65,7 @@ class TreeDataViewer extends Component {
 }
 
 function isNodeInSearch(node, terms) {
-  return terms
-    .map(term => term.toLowerCase())
-    .some(term => (
-      node.id.toLowerCase().includes(term) ||
-      node.display.toLowerCase().includes(term)));
+  return areTermsInString(terms, `${node.id} ${node.display}`);
 }
 
 function update(stateContainer, changedState) {
