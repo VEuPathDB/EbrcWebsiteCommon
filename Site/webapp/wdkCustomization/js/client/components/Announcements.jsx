@@ -54,17 +54,32 @@ const siteAnnouncements = [
   {
     id: 'beta',
     renderDisplay: props => {
-      if (param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname)) {
-        return (
-          <div key="beta">
-            This pre-release version of {props.projectId} is available for early community review.
-            Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
-            Note that any saved strategies in the beta sites will be lost once the
-            sites are fully released. Some of our sites remain under active development
-            during their Beta release which might require occasional site outages or data re-analysis.
-          </div>
-        );
-      }
+      const isBeta = param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
+      const isQa = param('qa', props.location) === 'true' || /^(qa|q1|q2)/.test(window.location.hostname);
+      if (isBeta || (isQa && isGenomicSite(props.projectId))) return (
+        <div key="beta">
+          This pre-release version of {props.projectId} is available for early community review.
+          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
+          Note that any saved strategies in the beta sites will be lost once the
+          sites are fully released. Some of our sites remain under active development
+          during their Beta release which might require occasional site outages or data re-analysis. <a href={`//${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Return to the stable site.</a>
+        </div>
+      );
+    }
+  },
+
+  {
+    id: 'strategies-beta',
+    category: 'degraded',
+    renderDisplay: props => {
+      const isStrategies = props.location.pathname.startsWith('/workspace/strategies');
+      const isBeta = param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
+      const isQa = param('qa', props.location) === 'true' || /^(qa|q1|q2)/.test(window.location.hostname);
+      if (isStrategies && (isBeta || (isQa && isGenomicSite(props.projectId)))) return (
+        <div key="strategies-beta">
+          Note that any saved strategies in the beta sites will be lost once the sites are fully released.
+        </div>
+      )
     }
   },
 
@@ -168,7 +183,7 @@ export default function Announcements({
           const category = announcementData.category || 'page-information';
 
           // Currently, only "information" announcements are dismissible
-          const dismissible = category === 'information';
+          const dismissible = category === 'information' || category === 'page-information';
           const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
 
@@ -306,4 +321,8 @@ function param(name, { search = '' }) {
     .map(entry => entry[1])
     .map(decodeURIComponent)
     .find(() => true);
+}
+
+function isGenomicSite(projectId) {
+  return !/ClinEpiDB|MicrobiomeDB/i.test(projectId);
 }
