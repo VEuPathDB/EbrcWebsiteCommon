@@ -176,9 +176,9 @@
 .ebrc-QuestionWizardActiveGroupDescription {
   max-width: 50%;
   margin-left: auto;
-  border: 1px solid #dadada;
+  /* border: 1px solid #dadada; 
   padding: .5em;
-  border-radius: 4px;
+  border-radius: 4px; */
   color: #666;
 }
 
