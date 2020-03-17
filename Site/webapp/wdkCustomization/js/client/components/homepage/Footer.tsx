@@ -19,14 +19,17 @@ export const projects = [
   'CryptoDB',
   'FungiDB',
   'GiardiaDB',
+  'HostDB',
   'MicrosporidiaDB',
   'PiroplasmaDB',
   'PlasmoDB',
   'ToxoDB',
   'TrichDB',
   'TriTrypDB',
+  'VectorBase',
   'OrthoMCL',
-  'VectorBase'
+  'ClinEpiDB',
+  'MicrobiomeDB'
 ];
 
 type Props = {
@@ -57,7 +60,13 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
 
       <div className={cx('ProjectLinks')}>
         {projects.map(projectId =>
-          <ProjectLink key={projectId} projectId={projectId} />
+          <React.Fragment key={projectId}>
+            <ProjectLink projectId={projectId} />
+            {
+              projectId === 'VectorBase' &&
+              <div className={cx('Divider')}></div>
+            }
+          </React.Fragment>
         )}
       </div>
 
