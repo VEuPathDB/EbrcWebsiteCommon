@@ -7,21 +7,21 @@ import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 const stopIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em', margin: '0 .5em' }}>
     <i className="fa fa-circle fa-stack-2x" style={{color: 'darkred'}}/>
     <i className="fa fa-times fa-stack-1x" style={{color: 'white'}}/>
   </span>
 );
 
 const warningIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em', margin: '0 .5em' }}>
     <i className="fa fa-exclamation-triangle fa-stack-2x" style={{color: '#ffeb3b'}}/>
     <i className="fa fa-exclamation fa-stack-1x" style={{color: 'black', fontSize: '1.3em', top: 2}}/>
   </span>
 );
 
 const infoIcon = (
-  <span className="fa-stack" style={{ fontSize: '1.2em' }}>
+  <span className="fa-stack" style={{ fontSize: '1.2em', margin: '0 .5em' }}>
     <i className="fa fa-circle fa-stack-2x" style={{color: '#004aff'}}/>
     <i className="fa fa-info fa-stack-1x" style={{color: 'white'}}/>
   </span>
@@ -231,7 +231,7 @@ function AnnouncementBanner({
     }}>
       <div style={{
         display: 'flex',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-start',
         alignItems: 'center'
       }}>
         {icon}
@@ -240,8 +240,8 @@ function AnnouncementBanner({
           width: 'calc(100% - 5.5em)',
           padding: '8px',
           verticalAlign: 'middle',
-          color: 'darkred',
-          fontSize: '1.1em'
+          color: 'black',
+          fontSize: '1.2em'
         }}>
           {display}
         </div>
