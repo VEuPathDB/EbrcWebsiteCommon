@@ -108,9 +108,10 @@
   font-size: 1em;
 }
 
-.wdk-PageContent__question .ebrc-QuestionWizardNavigationContainer__fixed {
+/* NB: This selector will not match the revise dialog, since dialogs are not rendered within .wdk-PageContent */
+.wdk-PageContent .ebrc-QuestionWizardNavigationContainer__fixed {
   position: fixed;
-  top: 28px;
+  top: 40px;
   left: 0;
   z-index: 2;
   background: white;
