@@ -62,7 +62,7 @@ const siteAnnouncements = [
           Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
           Note that any saved strategies in the beta sites will be lost once the
           sites are fully released. Some of our sites remain under active development
-          during their Beta release which might require occasional site outages or data re-analysis. <a href={`//${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Return to the stable site.</a>
+          during their Beta release which might require occasional site outages or data re-analysis. <a href={`//${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Return to the legacy site.</a>
         </div>
       );
     }
