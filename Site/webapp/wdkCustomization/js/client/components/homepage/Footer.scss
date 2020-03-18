@@ -71,4 +71,10 @@ $mobile-width: 575px;
       margin: 0.5rem 0 1rem 0;
     }
   }
+
+  &Divider {
+    width: 0.125rem;
+    margin: 0 0.5rem;
+    background-color: #d3d3d3;
+  }
 }

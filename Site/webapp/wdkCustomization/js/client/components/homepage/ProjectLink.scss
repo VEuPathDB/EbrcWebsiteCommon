@@ -2,6 +2,10 @@
   .AmoebaDB {
     content: url('~eupathdb/images/AmoebaDB/footer-logo.png');
   }
+
+  .ClinEpiDB {
+    content: url('https://clinepidb.org/ce/images/symbol-small.png');
+  }
   
   .CryptoDB {
     content: url('~eupathdb/images/CryptoDB/footer-logo.png');
@@ -13,6 +17,14 @@
 
   .GiardiaDB {
     content: url('~eupathdb/images/GiardiaDB/footer-logo.png');
+  }
+
+  .HostDB {
+    content: url('~eupathdb/images/HostDB/footer-logo.png');
+  }
+
+  .MicrobiomeDB {
+    content: url('https://eupathdb.org/oauth/assets/images/microbiome-icon.png');
   }
 
   .MicrosporidiaDB {
@@ -44,10 +56,10 @@
   }
 
   .VectorBase {
-    content: url('~eupathdb/images/temp_logos/vb-logo.png');
+    content: url('https://eupathdb.org/oauth/assets/images/vectorbase-icon.png');
   }
 
   .VEuPathDB {
-    content: url('~eupathdb/images/veupathdblink.png');
+    content: url('https://eupathdb.org/oauth/assets/images/veupath-icon.png');
   }
 }
