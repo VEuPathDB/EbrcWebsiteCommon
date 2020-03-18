@@ -52,17 +52,15 @@ const siteAnnouncements = [
 
   // beta
   {
-    id: 'beta',
+    id: 'beta-genomics',
     renderDisplay: props => {
-      const isBeta = param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
-      const isQa = param('qa', props.location) === 'true' || /^(qa|q1|q2)/.test(window.location.hostname);
-      if (isBeta || (isQa && isGenomicSite(props.projectId))) return (
+      // We want this to show on all beta sites, and all genomic sites running this code.
+      if (isBetaSite() || isGenomicSite(props.projectId)) return (
         <div key="beta">
-          This pre-release version of {props.projectId} is available for early community review.
-          Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
-          Note that any saved strategies in the beta sites will be lost once the
-          sites are fully released. Some of our sites remain under active development
-          during their Beta release which might require occasional site outages or data re-analysis. <a href={`//${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Return to the legacy site.</a>
+          {props.projectId} (beta) is available for early community review!
+          Please explore the site and <Link to="/contact-us">Contact Us</Link> with feedback.
+          Your <strong>saved strategies will not be retained</strong> when the
+          sites are fully released. <a href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the main site.</a>
         </div>
       );
     }
@@ -73,9 +71,7 @@ const siteAnnouncements = [
     category: 'degraded',
     renderDisplay: props => {
       const isStrategies = props.location.pathname.startsWith('/workspace/strategies');
-      const isBeta = param('beta', props.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
-      const isQa = param('qa', props.location) === 'true' || /^(qa|q1|q2)/.test(window.location.hostname);
-      if (isStrategies && (isBeta || (isQa && isGenomicSite(props.projectId)))) return (
+      if (isStrategies && isGenomicSite(props.projectId)) return (
         <div key="strategies-beta">
           Note that any saved strategies in the beta sites will be lost once the sites are fully released.
         </div>
@@ -325,4 +321,8 @@ function param(name, { search = '' }) {
 
 function isGenomicSite(projectId) {
   return !/ClinEpiDB|MicrobiomeDB/i.test(projectId);
+}
+
+function isBetaSite() {
+  return param('beta', window.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
 }
