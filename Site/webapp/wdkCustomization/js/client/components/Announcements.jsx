@@ -57,10 +57,9 @@ const siteAnnouncements = [
       // We want this to show on all beta sites, and all genomic sites running this code.
       if (isBetaSite() || isGenomicSite(props.projectId)) return (
         <div key="beta">
-          {props.projectId} (beta) is available for early community review!
+          {props.displayName} (beta) is available for early community review!
           Please explore the site and <Link to="/contact-us">Contact Us</Link> with feedback.
-          Your <strong>saved strategies will not be retained</strong> when the
-          sites are fully released. <a href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the main site.</a>
+          &nbsp;<a href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the main site.</a>
         </div>
       );
     }
@@ -73,7 +72,9 @@ const siteAnnouncements = [
       const isStrategies = props.location.pathname.startsWith('/workspace/strategies');
       if (isStrategies && isGenomicSite(props.projectId)) return (
         <div key="strategies-beta">
-          Note that any saved strategies in the beta sites will be lost once the sites are fully released.
+          Strategies you save on the beta site are not permanent.
+          They will be lost when the site is officially released.
+          Use the <a href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>main site</a> to save strategies permanently.
         </div>
       )
     }
@@ -138,13 +139,13 @@ const siteAnnouncements = [
 ];
 
 const fetchAnnouncementsData = async wdkService => {
-  const [ { projectId }, announcements ] = await Promise.all([
+  const [ config, announcements ] = await Promise.all([
     wdkService.getConfig(),
     wdkService.getSiteMessages()
   ]);
 
   return {
-    projectId,
+    config,
     announcements
   };
 };
@@ -184,7 +185,7 @@ export default function Announcements({
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
 
           const display = typeof announcementData.renderDisplay === 'function' 
-            ? announcementData.renderDisplay({ projectId: data.projectId, location })
+            ? announcementData.renderDisplay({ ...data.config, location })
             : category !== 'information' || location.pathname === '/'
             ? toElement(announcementData)
             : null;
