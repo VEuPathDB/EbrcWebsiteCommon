@@ -1,88 +1,148 @@
 package org.eupathdb.common.fix;
 
 import static java.util.Map.entry;
+import static org.gusdb.fgputil.FormatUtil.NL;
+import static org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat.KEY_PARAMS;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
+import org.gusdb.fgputil.ListBuilder;
+import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
 import org.gusdb.wdk.model.fix.table.TableRowUpdater;
 import org.gusdb.wdk.model.fix.table.steps.StepData;
+import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
+import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
+import org.gusdb.wdk.model.query.param.AbstractEnumParam;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<StepData> {
 
+  private static final Logger LOG = Logger.getLogger(MigrateTextSearchToSolrPlugin.class);
+
   private static class SolrSearch {
 
-    private final String _name;
+    private final String _questionName;
+    private final String _docType;
     private final Map<String,String> _fieldMap;
 
-    public SolrSearch(String name, Map<String,String> fieldMap) {
-      _name = name;
+    public SolrSearch(String questionName, String docType, Map<String,String> fieldMap) {
+      _questionName = questionName;
+      _docType = docType;
       _fieldMap = fieldMap;
     }
 
-    public String getName() { return _name; }
-    public Map<String,String> getFieldMap() { return _fieldMap; }
+    public String getQuestionName() {
+      return _questionName;
+    }
 
+    public String getDocType() {
+      return _docType;
+    }
+
+    public String getMappedFieldsStableValue(String currentStableValue) {
+      List<String> oldFields = AbstractEnumParam.convertToTerms(
+          AbstractEnumParam.standardizeStableValue(currentStableValue, true));
+      List<String> newFields = oldFields.stream()
+          .filter(val -> _fieldMap.containsKey(val))
+          .map(val -> _fieldMap.get(val))
+          .collect(Collectors.toList());
+      return new JSONArray(newFields).toString();
+    }
+  }
+
+  private static class TextSearchStepDataFactory extends StepDataFactory {
+
+    public TextSearchStepDataFactory() {
+      super(false);
+    }
+
+    @Override
+    public String getRecordsSql(String schema, String projectId) {
+      // find old text search steps that are non-Ortho and non-Guest and non-deleted
+      return
+          "select " + SELECT_COLS_TEXT +
+          " from " + schema + "steps s, " + schema + "users u" +
+          " where is_deleted = 0" +
+          " and question_name like '%Text%'" +
+          " and project_id != 'OrthoMCL'" +
+          " and u.user_id = s.user_id" +
+          " and u.is_guest = 0";
+    }
   }
 
   private static final Map<String, SolrSearch> QUESTION_CONVERSIONS = Map.ofEntries(
-    entry("GeneQuestions.GenesByTextSearchPhenotype", new SolrSearch("GeneQuestions.GenesByPhenotypeText", Map.ofEntries(
-      entry("Phenotype", ""),
-      entry("Rodent Malaria Phenotype", "")
-    ))),
-    entry("GeneQuestions.GenesByTextSearch", new SolrSearch("GeneQuestions.GenesByText", Map.ofEntries(
-      entry("Alias", ""),
-      entry("Cellular localization", ""),
-      entry("Community annotation", ""),
-      entry("EC descriptions", ""),
-      entry("Gene ID", ""),
-      entry("Gene notes", ""),
-      entry("Genes of previous release", ""),
-      entry("Gene product", ""),
-      entry("Gene name", ""),
-      entry("GO terms and definitions", ""),
-      entry("Metabolic pathway names and descriptions", ""),
-      entry("Phenotype", ""),
-      entry("Protein domain names and descriptions", ""),
-      entry("PubMed", ""),
-      entry("Rodent Malaria Phenotype", ""),
-      entry("Similar proteins (BLAST hits v. NRDB/PDB)", ""),
-      entry("User comments", "")
-    ))),
-    entry("PopsetQuestions.PopsetsByTextSearch", new SolrSearch("PopsetQuestions.PopsetsByText", Map.ofEntries(
-      entry("Organism", ""),
-      entry("Description", ""),
-      entry("Strain", ""),
-      entry("Host", ""),
-      entry("Note", ""),
-      entry("Isolation Source", ""),
-      entry("Geographic Location", ""),
-      entry("Reference", ""),
-      entry("Overlapping gene (ID or product)", "")
-    ))),
-    entry("CompoundQuestions.CompoundsByTextSearch", new SolrSearch("CompoundQuestions.CompoundsByText", Map.ofEntries(
-      entry("Compound Name", ""),
-      entry("Synonyms", ""),
-      entry("Metabolic Pathways", ""),
-      entry("Reactions and Enzymes", ""),
-      entry("Definition", ""),
-      entry("Secondary Identifiers", ""),
-      entry("IUPAC Names", ""),
-      entry("Properties (InChI, InChIKey, IUPAC Name, SMILES, Molecular Weight)", "")
-    )))
+    entry("GeneQuestions.GenesByTextSearchPhenotype", new SolrSearch(
+      "GeneQuestions.GenesByTextPhenotype",
+      "gene",
+      Map.ofEntries(
+        entry("Phenotype", "Phenotype"),
+        entry("Rodent Malaria Phenotype", "RodMalPhenotype")
+      )
+    )),
+    entry("GeneQuestions.GenesByTextSearch", new SolrSearch(
+      "GeneQuestions.GenesByText",
+      "gene",
+      Map.ofEntries(
+        entry("Alias", "Alias"),
+        entry("Cellular localization", "CellularLocalization"),
+        //entry("Community annotation", null),
+        entry("EC descriptions", "ECNumbers"),
+        entry("Gene ID", "primary_key"),
+        entry("Gene notes", "Notes"),
+        //entry("Genes of previous release", null),
+        entry("Gene product", "product"),
+        entry("Gene name", "name"),
+        entry("GO terms and definitions", "GOTerms"),
+        entry("Metabolic pathway names and descriptions", "MetabolicPathways"),
+        entry("Phenotype", "Phenotype"),
+        entry("Protein domain names and descriptions", "InterPro"),
+        entry("PubMed", "PubMed"),
+        entry("Rodent Malaria Phenotype", "RodMalPhenotype"),
+        //entry("Similar proteins (BLAST hits v. NRDB/PDB)", null),
+        entry("User comments", "UserCommentContent")
+      )
+    )),
+    entry("PopsetQuestions.PopsetsByTextSearch", new SolrSearch(
+      "PopsetQuestions.PopsetIsolatesByText",
+      "popsetSequence",
+      Map.ofEntries(
+        entry("Organism", "organism"),
+        entry("Description", "description"),
+        entry("Strain", "strain"),
+        entry("Host", "specific_host"),
+        entry("Note", "note"),
+        entry("Isolation Source", "isolation_source"),
+        entry("Geographic Location", "geographic_location"),
+        entry("Reference", "References"),
+        entry("Overlapping gene (ID or product)", "GeneOverlap")
+      )
+    )),
+    entry("CompoundQuestions.CompoundsByTextSearch", new SolrSearch(
+      "CompoundQuestions.CompoundsByText",
+      "compound",
+      Map.ofEntries(
+        entry("Compound Name", "compound_name"),
+        entry("Synonyms", "Synonyms"),
+        entry("Metabolic Pathways", "MetabolicPathways"),
+        entry("Reactions and Enzymes", "MetabolicPathwayReactions"),
+        entry("Definition", "definition"),
+        entry("Secondary Identifiers", "SecondaryIds"),
+        entry("IUPAC Names", "IupacNames"),
+        entry("Properties (InChI, InChIKey, IUPAC Name, SMILES, Molecular Weight)", "Properties")
+      )
+    ))
   );
 
-  private static final String OLD_DATASET_QUESTION = "DatasetQuestions.DatasetsByTextSearch";
-  private static final String NEW_DATASET_QUESTION = "DatasetQuestions.DatasetsByText";
-  private static final String[] DATASET_FIELD_VALUES = new String[] {
-      "name", "category", "usage", "caveat", "acknowledgement",
-      "type", "subtype", "summary", "description", "contact", "institution", "pubmed_id", "citation"
-  };
-
   private boolean _performUpdates = false;
+  private AtomicInteger _stepsConverted = new AtomicInteger(0);
 
   @Override
   public void configure(WdkModel wdkModel, List<String> additionalArgs) throws Exception {
@@ -91,25 +151,53 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
 
   @Override
   public TableRowUpdater<StepData> getTableRowUpdater(WdkModel wdkModel) {
-    return null;
-    /*
-    select distinct question_name
-    from userlogins5.steps
-    where question_name like '%Text%'
-    and project_id != 'OrthoMCL';
-    */
+    return new TableRowUpdater<StepData>(new TextSearchStepDataFactory(),
+        ListBuilder.asList(new StepDataWriter()), this, wdkModel);
   }
 
   @Override
   public RowResult<StepData> processRecord(StepData nextRow) throws Exception {
-    // TODO Auto-generated method stub
-    return null;
+    SolrSearch newSearch = QUESTION_CONVERSIONS.get(nextRow.getQuestionName());
+    if (newSearch == null) {
+      // not a search we are migrating; do not need to update
+      return new RowResult<>(nextRow);
+    }
+    JSONObject oldParamFiltersJson = nextRow.getParamFilters();
+    JSONObject oldParamJson = JsonUtil.clone(oldParamFiltersJson);
+    boolean isOldFormat = true;
+    if (oldParamFiltersJson.has(KEY_PARAMS)) {
+      oldParamJson = oldParamFiltersJson.getJSONObject(KEY_PARAMS);
+      isOldFormat = false;
+    }
+    // build new param JSON for this question
+    JSONObject newParamJson = new JSONObject()
+      .put("text_expression", oldParamJson.getString("text_expression"))
+      .put("timestamp", oldParamJson.getString("timestamp"))
+      .put("document_type", newSearch.getDocType())
+      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")));
+    if (oldParamJson.has("text_search_organism")) {
+      newParamJson.put("text_search_organism", oldParamJson.get("text_search_organism"));
+    }
+    JSONObject newParamFiltersJson;
+    if (isOldFormat) {
+      // only add params to create new format
+      newParamFiltersJson = new JSONObject().put(KEY_PARAMS, newParamJson);
+    }
+    else {
+      newParamFiltersJson = JsonUtil.clone(oldParamFiltersJson).put(KEY_PARAMS, newParamJson);
+    }
+    nextRow.setQuestionName(newSearch.getQuestionName());
+    nextRow.setParamFilters(newParamFiltersJson);
+    LOG.debug("Converting to question " + newSearch.getQuestionName() + NL +
+      "Old = " + oldParamFiltersJson.toString(2) + NL +
+      "New = " + newParamFiltersJson.toString(2));
+    _stepsConverted.incrementAndGet();
+    return new RowResult<>(nextRow).setShouldWrite(_performUpdates);
   }
 
   @Override
   public void dumpStatistics() {
-    // TODO Auto-generated method stub
-    
+    LOG.info("Converted a total of " + _stepsConverted.get() + " steps.");
   }
 
 }
