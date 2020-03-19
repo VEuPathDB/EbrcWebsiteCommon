@@ -361,9 +361,9 @@ function StrategyLinkout(props: Props) {
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
   const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
   const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun` +
-    `&param.solr_doc_type=${encodeURIComponent(docType.id)}` +
-    `&param.solr_text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
-    `&param.solr_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` +
+    `&param.document_type=${encodeURIComponent(docType.id)}` +
+    `&param.text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
+    `&param.text_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` +
     `&param.text_expression=${encodeURIComponent(searchString)}` +
     `&param.timestamp=${Date.now()}`;
 
