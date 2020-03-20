@@ -7,7 +7,7 @@ import './SiteSearch.scss';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 
 const cx = makeClassNameHelper("SiteSearch");
-const TEXT_SEARCH_NAME = 'GenesByTextSearch';
+const TEXT_SEARCH_NAME = 'GenesByText';
 const TEXT_SEARCH_ROUTE = `/search/transcript/${TEXT_SEARCH_NAME}`;
 
 export function GeneTextSearchInput() {
