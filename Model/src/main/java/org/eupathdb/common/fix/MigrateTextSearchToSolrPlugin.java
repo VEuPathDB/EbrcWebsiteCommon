@@ -141,7 +141,11 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     ))
   );
 
+  // configuration
   private boolean _performUpdates = false;
+
+  // statistics
+  private AtomicInteger _nonMigrateableSearchCount = new AtomicInteger(0);
   private AtomicInteger _stepsConverted = new AtomicInteger(0);
 
   @Override
@@ -160,6 +164,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     SolrSearch newSearch = QUESTION_CONVERSIONS.get(nextRow.getQuestionName());
     if (newSearch == null) {
       // not a search we are migrating; do not need to update
+      _nonMigrateableSearchCount.incrementAndGet();
       return new RowResult<>(nextRow);
     }
     JSONObject oldParamFiltersJson = nextRow.getParamFilters();
@@ -172,7 +177,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     // build new param JSON for this question
     JSONObject newParamJson = new JSONObject()
       .put("text_expression", oldParamJson.getString("text_expression"))
-      .put("timestamp", oldParamJson.getString("timestamp"))
+      //.put("timestamp", oldParamJson.getString("timestamp"))
       .put("document_type", newSearch.getDocType())
       .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")));
     if (oldParamJson.has("text_search_organism")) {
@@ -188,7 +193,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     }
     nextRow.setQuestionName(newSearch.getQuestionName());
     nextRow.setParamFilters(newParamFiltersJson);
-    LOG.debug("Converting to question " + newSearch.getQuestionName() + NL +
+    LOG.info("Converting to question " + newSearch.getQuestionName() + NL +
       "Old = " + oldParamFiltersJson.toString(2) + NL +
       "New = " + newParamFiltersJson.toString(2));
     _stepsConverted.incrementAndGet();
@@ -197,6 +202,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
 
   @Override
   public void dumpStatistics() {
+    LOG.info("Ignored (could not migrate) " + _nonMigrateableSearchCount.get() + " steps.");
     LOG.info("Converted a total of " + _stepsConverted.get() + " steps.");
   }
 
