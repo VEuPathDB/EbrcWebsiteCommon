@@ -114,7 +114,7 @@ class QuestionWizardController extends ViewController {
         ? await wdkService.findStep(submissionMetadata.stepId)
         : undefined;
       const question = await wdkService.getQuestionAndParameters(questionName);
-      const recordClass = await wdkService.findRecordClass(rc => rc.urlSegment === question.outputRecordClassName);
+      const recordClass = await wdkService.findRecordClass(question.outputRecordClassName);
       const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
       // FIXME Deal with invalid steps
       this.setState(createInitialState(question, recordClass, paramValues), () => {

@@ -30,7 +30,7 @@ export function SiteSearchInput() {
   const placeholderText = useWdkService(async wdkService => {
     const [ idSearch, textSearch ] = await Promise.all([
       wdkService.getQuestionAndParameters('GeneByLocusTag').catch(),
-      wdkService.getQuestionAndParameters('GenesByTextSearch').catch()
+      wdkService.getQuestionAndParameters('GenesByText').catch()
     ]);
     const id = idSearch?.parameters.find((p): p is DatasetParam => p.name === 'ds_gene_ids')?.defaultIdList;
     const text = textSearch?.parameters.find(p => p.name === 'text_expression')?.initialDisplayValue;

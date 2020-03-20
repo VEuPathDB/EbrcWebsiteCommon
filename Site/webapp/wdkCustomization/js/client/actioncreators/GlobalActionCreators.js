@@ -40,7 +40,7 @@ export function loadQuickSearches(quickSearchSpecs) {
     let requests = quickSearchSpecs
       .filter(spec => !spec.isDisabled)
       .map(spec =>
-        wdkService.findQuestion(q => q.urlSegment === spec.name)
+        wdkService.findQuestion(spec.name)
           .then(q => wdkService.getQuestionAndParameters(q.urlSegment)));
     return Promise.all(requests)
     .then(
