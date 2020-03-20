@@ -322,7 +322,7 @@ function DirectHit(props: Props) {
 function FieldsHit(props: HitProps) {
   const { document, documentType } = props;
   const [ expandHighlights, updateExpandHightlights ] = useState(false);
-  const foundInFields = documentType.isWdkRecordType && documentType.searchFields
+  const foundInFields = documentType.searchFields
     .filter(field => field.name in document.foundInFields);
   if (!foundInFields || foundInFields.length === 0) return null;
   const headerContent = expandHighlights
