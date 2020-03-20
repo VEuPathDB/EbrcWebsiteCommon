@@ -509,11 +509,22 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     }
   }
 
+  if (documentType.id === 'popbio-sample') {
+    return {
+      link: {
+        isRoute: false,
+        url: `/popbio-map/web/?sampleId=${document.primaryKey[0]}`,
+        text: document.hyperlinkName || document.primaryKey.join(' - ')
+      },
+      summary: makeGenericSummary(document, documentType)
+    }
+  }
+
   return {
     link: {
       isRoute: true,
       url: '',
-      text: document.primaryKey.join('/')
+      text: document.hyperlinkName || document.primaryKey.join('/')
     },
     summary: makeGenericSummary(document, documentType)
   }
