@@ -80,7 +80,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
 
   private static final Map<String, SolrSearch> QUESTION_CONVERSIONS = Map.ofEntries(
     entry("GeneQuestions.GenesByTextSearchPhenotype", new SolrSearch(
-      "GeneQuestions.GenesByTextPhenotype",
+      "GeneQuestions.GenesByPhenotypeText",
       "gene",
       Map.ofEntries(
         entry("Phenotype", "Phenotype"),
