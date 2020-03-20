@@ -57,8 +57,8 @@ const siteAnnouncements = [
       // We want this to show on all beta sites, and all genomic sites running this code.
       if (isBetaSite() || isGenomicSite(props.projectId)) return (
         <div key="beta">
-          {props.displayName} (beta) is available for early community review!
-          Please explore the site and <Link to="/contact-us">Contact Us</Link> with feedback.
+          {props.displayName} (beta) is available for early community review!  
+          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
           &nbsp;<a href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the main site.</a>
         </div>
       );
