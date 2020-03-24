@@ -1,7 +1,7 @@
 // The following was taken from https://medium.com/@dmitriy.borodiy/easy-color-theming-with-scss-bc38fd5734d1
 
 // TODO Figure out how to only include this for genomic sites.
-// TODO Remove "beta-position-left" from the theme once we're out of beta
+// TODO Remove "beta-*" from the theme once we're out of beta
 
 $themes: (
 
@@ -18,6 +18,17 @@ $themes: (
     bckgrnd-img: url('~site/images/CryptoDB/header-cryptoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/cryptoDB.png'),  /* crypto-logo-w.png, crypto-logo-2.png */
     beta-position-left: 17.75em,
+  ),
+
+  EuPathDB: (
+    primary-color: #02385a,
+    bckgrnd-img: url('~site/images/VEuPathDB/header-veupathDB.jpg'),
+    logo: url('~site/images/VEuPathDB/logos/VEuPathDB.png'),
+    small-logo: url('~site/images/VEuPathDB/veupath-logo-no-tag.png'),
+    beta-position-left: 17.25em,
+    beta-position-top-small: 1.3em,
+    beta-position-left-small: 15.75em,
+    beta-font-size-small: 1.9em,
   ),
   
   // eupath  bkgrnd 
