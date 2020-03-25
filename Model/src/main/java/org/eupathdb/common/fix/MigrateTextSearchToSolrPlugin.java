@@ -177,9 +177,9 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     // build new param JSON for this question
     JSONObject newParamJson = new JSONObject()
       .put("text_expression", oldParamJson.getString("text_expression"))
-      //.put("timestamp", oldParamJson.getString("timestamp"))
       .put("document_type", newSearch.getDocType())
-      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")));
+      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")))
+      .put("timestamp", String.valueOf(System.currentTimeMillis()));
     if (oldParamJson.has("text_search_organism")) {
       newParamJson.put("text_search_organism", oldParamJson.get("text_search_organism"));
     }
@@ -190,6 +190,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     }
     else {
       newParamFiltersJson = JsonUtil.clone(oldParamFiltersJson).put(KEY_PARAMS, newParamJson);
+      newParamFiltersJson.remove("viewFilters");
     }
     nextRow.setQuestionName(newSearch.getQuestionName());
     nextRow.setParamFilters(newParamFiltersJson);
