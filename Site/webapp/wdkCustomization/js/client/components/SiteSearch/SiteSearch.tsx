@@ -490,6 +490,7 @@ interface ResultEntryDetails {
 // For now, all entries will have a link and a summary
 function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDocumentType): ResultEntryDetails {
 
+  // wdk records
   if (documentType.isWdkRecordType) {
     return {
       link: makeRecordLink(document),
@@ -497,6 +498,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     }
   }
 
+  // searches
   if (documentType.id === 'search') {
     const [ searchName, recordName ] = document.primaryKey;
     return {
@@ -509,6 +511,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     }
   }
 
+  // mapveu
   if (documentType.id === 'popbio-sample') {
     return {
       link: {
@@ -518,6 +521,22 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
       },
       summary: makeGenericSummary(document, documentType)
     }
+  }
+
+  // static content
+  if (
+    documentType.id === 'news' ||
+    documentType.id === 'general' ||
+    documentType.id === 'tutorial'
+  ) {
+    return {
+      link: {
+        isRoute: true,
+        url: `/static-content/${document.primaryKey.join('/')}`,
+        text: document.hyperlinkName || document.primaryKey.join(' - ')
+      },
+      summary: makeGenericSummary(document, documentType)
+    };
   }
 
   return {
