@@ -161,7 +161,8 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
 
   @Override
   public RowResult<StepData> processRecord(StepData nextRow) throws Exception {
-    SolrSearch newSearch = QUESTION_CONVERSIONS.get(nextRow.getQuestionName());
+    String originalQuestionName = nextRow.getQuestionName();
+    SolrSearch newSearch = QUESTION_CONVERSIONS.get(originalQuestionName);
     if (newSearch == null) {
       // not a search we are migrating; do not need to update
       _nonMigrateableSearchCount.incrementAndGet();
@@ -194,7 +195,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     }
     nextRow.setQuestionName(newSearch.getQuestionName());
     nextRow.setParamFilters(newParamFiltersJson);
-    LOG.info("Converting to question " + newSearch.getQuestionName() + NL +
+    LOG.info("Converting question " + originalQuestionName + " to " + newSearch.getQuestionName() + NL +
       "Old = " + oldParamFiltersJson.toString(2) + NL +
       "New = " + newParamFiltersJson.toString(2));
     _stepsConverted.incrementAndGet();
