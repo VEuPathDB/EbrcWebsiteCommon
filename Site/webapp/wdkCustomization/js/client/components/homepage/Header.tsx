@@ -14,9 +14,8 @@ import { User } from 'wdk-client/Utils/WdkUser';
 import UserMenu from 'ebrc-client/App/UserMenu';
 import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
 import { SiteSearchInput } from 'ebrc-client/components/SiteSearch/SiteSearchInput';
-import { GeneTextSearchInput } from 'ebrc-client/components/SiteSearch/GeneTextSearchInput';
 
-import { webAppUrl, projectId } from 'ebrc-client/config';
+import { webAppUrl } from 'ebrc-client/config';
 
 import { combineClassNames } from './Utils';
 
@@ -184,7 +183,7 @@ const HeaderView = withRouter(({
         dismissSubmenus={dismissSubmenus}
       />
       </div>
-      {projectId === 'EuPathDB' ? <GeneTextSearchInput/> : <SiteSearchInput/>}
+      <SiteSearchInput/>
       <UserMenu
         webAppUrl={webAppUrl}
         user={user}

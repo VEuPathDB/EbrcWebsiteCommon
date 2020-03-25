@@ -1,12 +1,14 @@
 import { capitalize, keyBy, add, isEmpty, isEqual, xor } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
-import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
-import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
-import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
+import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
+import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
+import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
+import { useProjectUrls, ProjectUrls } from 'ebrc-client/hooks/projectUrls';
+import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 
 import './SiteSearch.scss';
 
@@ -291,7 +293,7 @@ function Hit(props: HitProps) {
   return (
     <div className={cx('--Result', classNameModifier)}>
       <div className={cx('--ResultLink', classNameModifier)}>
-        {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{link.text}</a>}
+        {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{documentType.displayName} - {link.text}</a>}
         {subTitle && <div className={cx('--ResultSubTitle')}>{formatSummaryFieldValue(subTitle)}</div>}
       </div>
       {summary && <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>}
@@ -490,10 +492,13 @@ interface ResultEntryDetails {
 // For now, all entries will have a link and a summary
 function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDocumentType): ResultEntryDetails {
 
+  const projectUrls = useProjectUrls();
+  const projectId = useWdkService(async wdkService => (await wdkService.getConfig()).projectId);
+
   // wdk records
   if (documentType.isWdkRecordType) {
     return {
-      link: makeRecordLink(document),
+      link: makeRecordLink(document, projectUrls, projectId),
       summary: makeGenericSummary(document, documentType)
     }
   }
@@ -549,10 +554,15 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
   }
 }
 
-function makeRecordLink(document: SiteSearchDocument): ResultEntryDetails['link'] {
+function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls, projectId?: string): ResultEntryDetails['link'] {
+  const isPortal = projectId === 'EuPathDB';
+  const route = `/record/${document.documentType}/${document.primaryKey.join('/')}`;
+  const url = projectId == null || projectUrls == null ? ''
+    : isPortal && document.project && document.project !== 'EuPathDB' && document.project in projectUrls ? `${new URL('app/' + route, projectUrls[document.project])}`
+    : route;
   return {
-    isRoute: true,
-    url: `/record/${document.documentType}/${document.primaryKey.join('/')}`,
+    isRoute: !isPortal,
+    url,
     text: document.hyperlinkName || document.primaryKey.join(' - ')
   }
 }

@@ -47,7 +47,8 @@ const siteSearchDocument = record({
   foundInFields: objectOf(arrayOf(string)),
   wdkPrimaryKeyString: optional(string),
   hyperlinkName: optional(string),
-  organism: optional(string)
+  organism: optional(string),
+  project: optional(string)
 });
 
 const siteSearchResults = record({
