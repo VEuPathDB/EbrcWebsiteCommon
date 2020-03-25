@@ -160,8 +160,9 @@ export default class DatasetGraph extends React.PureComponent {
     let baseUrlWithMetadata = `${baseUrlWithState}&facet=${facet}&contXAxis=${contXAxis}`;
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
-    let covImgUrl = dataTable && dataTable.record.attributes.CoverageGbrowseUrl + '%1E' + dataset_name + 'CoverageUnlogged';
-    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseUrl + dataset_name;
+    let covImgUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + '%2C' + dataset_name ;
+    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + dataset_name;
+
     let specialImgUrl = dataTable && dataTable.record.attributes.specialJbrowseUrl;
 
     let isUserDataset = module.startsWith("UserDatasets");
@@ -253,7 +254,7 @@ hook: HostResponseGraphs
                     View in genome browser
                 </a>
               </div>
-              <ExternalResource><img width="450" src={covImgUrl}/></ExternalResource>
+              <div><ExternalResource><iframe src={covImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="100%" scrolling="no" allowfullscreen="false" /></ExternalResource></div>
             </CollapsibleSection>
           : null}
 
