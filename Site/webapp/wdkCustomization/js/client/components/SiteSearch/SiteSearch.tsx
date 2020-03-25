@@ -532,7 +532,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       link: {
         isRoute: true,
-        url: `/static-content/${document.primaryKey.join('/')}`,
+        url: `/static-content/${document.primaryKey.join('/')}.html`,
         text: document.hyperlinkName || document.primaryKey.join(' - ')
       },
       summary: makeGenericSummary(document, documentType)
