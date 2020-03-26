@@ -219,12 +219,12 @@ public class ProjectMapper {
       ps = SqlUtils.getPreparedStatement(dataSource, sql);
       ps.setString(1, organism);
       resultSet = ps.executeQuery();
-      if (!resultSet.next()) {
+      String projectId;
+      if (!resultSet.next() || (projectId = resultSet.getString("project_id")) == null) {
         // this organism does not map to a project
         throw new WdkModelException("Organism '" + organism + "' does not map to any project ID.");
       }
-      // add to mapping and return
-      String projectId = resultSet.getString("project_id");
+      // found project; add to mapping and return
       organisms.put(organism, projectId);
       return projectId;
     }
