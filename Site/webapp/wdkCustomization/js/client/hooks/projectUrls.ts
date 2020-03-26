@@ -7,7 +7,7 @@ export function useProjectUrls() {
     const config = await wdkService.getConfig();
     const projectUrls = ((config as any).projectUrls || {}) as ProjectUrls;
     return projectUrls;
-  })
+  }, []);
 }
 
 export type OrganismToProject = Record<string, string>;
@@ -17,5 +17,5 @@ export function useOrganismToProject() {
     const config = await wdkService.getConfig();
     const organismToProject = ((config as any).organismToProject || {}) as OrganismToProject;
     return organismToProject;
-  });
+  }, []);
 }
