@@ -179,8 +179,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     JSONObject newParamJson = new JSONObject()
       .put("text_expression", oldParamJson.getString("text_expression"))
       .put("document_type", newSearch.getDocType())
-      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")))
-      .put("timestamp", String.valueOf(System.currentTimeMillis()));
+      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")));
     if (oldParamJson.has("text_search_organism")) {
       newParamJson.put("text_search_organism", oldParamJson.get("text_search_organism"));
     }
