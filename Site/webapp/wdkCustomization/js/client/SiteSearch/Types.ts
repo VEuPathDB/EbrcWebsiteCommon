@@ -48,7 +48,6 @@ const siteSearchDocument = record({
   wdkPrimaryKeyString: optional(string),
   hyperlinkName: optional(string),
   organism: optional(string),
-  project: optional(string)
 });
 
 const siteSearchResults = record({
