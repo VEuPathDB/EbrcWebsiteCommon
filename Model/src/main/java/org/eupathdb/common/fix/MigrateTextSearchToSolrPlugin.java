@@ -78,6 +78,8 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     }
   }
 
+  // NOTE: Commented out fields below are those we are no longer supporting;
+  //       they are kept below for documentation and their old values will be removed
   private static final Map<String, SolrSearch> QUESTION_CONVERSIONS = Map.ofEntries(
     entry("GeneQuestions.GenesByTextSearchPhenotype", new SolrSearch(
       "GeneQuestions.GenesByPhenotypeText",
@@ -98,7 +100,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
         entry("Gene ID", "primary_key"),
         entry("Gene notes", "Notes"),
         //entry("Genes of previous release", null),
-        entry("Gene product", "product"),
+        entry("Gene product", "Products"),
         entry("Gene name", "name"),
         entry("GO terms and definitions", "GOTerms"),
         entry("Metabolic pathway names and descriptions", "MetabolicPathways"),
@@ -121,8 +123,8 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
         entry("Note", "note"),
         entry("Isolation Source", "isolation_source"),
         entry("Geographic Location", "geographic_location"),
-        entry("Reference", "References"),
-        entry("Overlapping gene (ID or product)", "GeneOverlap")
+        entry("Reference", "References")
+        //entry("Overlapping gene (ID or product)", "null")
       )
     )),
     entry("CompoundQuestions.CompoundsByTextSearch", new SolrSearch(
@@ -179,8 +181,7 @@ public class MigrateTextSearchToSolrPlugin implements TableRowUpdaterPlugin<Step
     JSONObject newParamJson = new JSONObject()
       .put("text_expression", oldParamJson.getString("text_expression"))
       .put("document_type", newSearch.getDocType())
-      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")))
-      .put("timestamp", String.valueOf(System.currentTimeMillis()));
+      .put("text_fields", newSearch.getMappedFieldsStableValue(oldParamJson.getString("text_fields")));
     if (oldParamJson.has("text_search_organism")) {
       newParamJson.put("text_search_organism", oldParamJson.get("text_search_organism"));
     }

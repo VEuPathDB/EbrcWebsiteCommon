@@ -60,9 +60,8 @@ export function selectReporterComponent(reporterName, recordClassFullName) {
       return XmlReporterForm;
     case 'json':
       return JsonReporterForm;
-    // uncomment if adding service json reporter to model
-    //case 'wdk-service-json':
-    //  return WdkServiceJsonReporterForm;
+    case 'standard':
+      return WdkServiceJsonReporterForm;
     default:
       return EmptyReporter;
   }

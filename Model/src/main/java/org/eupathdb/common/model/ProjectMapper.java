@@ -204,8 +204,7 @@ public class ProjectMapper {
    * @return return projectId found by the organism. if no project id is found,
    *         return null instead.
    */
-  public String getProjectByOrganism(String organism)
-      throws SQLException {
+  public String getProjectByOrganism(String organism) throws WdkModelException {
     organism = organism.trim();
     // organism has been mapped before, return the project id.
     if (organisms.containsKey(organism))
@@ -220,13 +219,17 @@ public class ProjectMapper {
       ps = SqlUtils.getPreparedStatement(dataSource, sql);
       ps.setString(1, organism);
       resultSet = ps.executeQuery();
-      String projectId = null;
-      if (resultSet.next())
-        projectId = resultSet.getString("project_id");
-
-      // if no project is found, put null into the mapping.
+      String projectId;
+      if (!resultSet.next() || (projectId = resultSet.getString("project_id")) == null) {
+        // this organism does not map to a project
+        throw new WdkModelException("Organism '" + organism + "' does not map to any project ID.");
+      }
+      // found project; add to mapping and return
       organisms.put(organism, projectId);
       return projectId;
+    }
+    catch (SQLException e) {
+      throw new WdkModelException("Error while looking up project for organism '" + organism + "'");
     }
     finally {
       SqlUtils.closeResultSetAndStatement(resultSet, ps);

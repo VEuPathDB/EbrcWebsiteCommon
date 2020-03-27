@@ -7,7 +7,7 @@ import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
-import { useProjectUrls, ProjectUrls } from 'ebrc-client/hooks/projectUrls';
+import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } from 'ebrc-client/hooks/projectUrls';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 
 import './SiteSearch.scss';
@@ -493,12 +493,13 @@ interface ResultEntryDetails {
 function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDocumentType): ResultEntryDetails {
 
   const projectUrls = useProjectUrls();
-  const projectId = useWdkService(async wdkService => (await wdkService.getConfig()).projectId);
+  const organismToProject = useOrganismToProject();
+  const projectId = useWdkService(async wdkService => (await wdkService.getConfig()).projectId, []);
 
   // wdk records
   if (documentType.isWdkRecordType) {
     return {
-      link: makeRecordLink(document, projectUrls, projectId),
+      link: makeRecordLink(document, projectUrls, organismToProject, projectId),
       summary: makeGenericSummary(document, documentType)
     }
   }
@@ -554,15 +555,35 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
   }
 }
 
-function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls, projectId?: string): ResultEntryDetails['link'] {
-  const isPortal = projectId === 'EuPathDB';
+function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls, organismToProject?: OrganismToProject, projectId?: string): ResultEntryDetails['link'] {
+  const text = document.hyperlinkName || document.primaryKey.join(' - ');
   const route = `/record/${document.documentType}/${document.primaryKey.join('/')}`;
-  const url = projectId == null || projectUrls == null ? ''
-    : isPortal && document.project && document.project !== 'EuPathDB' && document.project in projectUrls ? `${new URL('app/' + route, projectUrls[document.project])}`
-    : route;
+
+  // use standard link if not in portal, or if no organism present
+  if (projectId !== 'EuPathDB' || document.organism == null) {
+    return {
+      isRoute: true,
+      url: route,
+      text
+    }
+  }
+
+  // stub url. these are nullish while loading
+  if (projectId == null || projectUrls == null || organismToProject == null) {
+    return {
+      isRoute: false,
+      url: '',
+      text
+    };
+  }
+
+  const documentProject = organismToProject[document.organism];
+  const baseUrl = projectUrls[documentProject];
+
+  // if baseUrl is not found, return standard link. we _could_ throw instead...
   return {
-    isRoute: !isPortal,
-    url,
+    isRoute: !baseUrl,
+    url: baseUrl ? new URL('app/' + route, baseUrl).toString() : route,
     text: document.hyperlinkName || document.primaryKey.join(' - ')
   }
 }
