@@ -5,6 +5,76 @@
 <urlrewrite use-query-string="true">
 
   <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=GeneQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/transcript/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=PopsetQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/popsetSequence/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=RflpIsolateQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/rflp-isolate/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=GenomicSequenceQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/genomic-sequence/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=SpanQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/genomic-segment/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=SnpQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/snp/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=SnpChipQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/snp-chip/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=EstQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/est/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=PathwayQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/pathway/$1</to>
+  </rule>
+
+  <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=CompoundQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/compound/$1</to>
+  </rule>
+
+  <rule>
     <name>Old Import</name>
     <note>Forward to new url</note>
     <from>^/im.do\?s=(.+)$</from>
