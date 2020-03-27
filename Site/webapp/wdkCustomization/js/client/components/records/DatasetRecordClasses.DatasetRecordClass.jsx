@@ -122,7 +122,7 @@ function References(props) {
     let name = row.target_name;
     let question = questions.find(q => q.name === name);
 
-    if (question == null) return null;
+    if (question == null) throw new Error("cannot find question with name:" + name) ;
 
     let recordClass = recordClasses.find(r => r.name === question.recordClassName);
     let searchName = `Identify ${recordClass.displayNamePlural} by ${question.displayName}`;
