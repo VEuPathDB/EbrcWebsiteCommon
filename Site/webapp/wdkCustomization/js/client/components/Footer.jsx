@@ -14,7 +14,7 @@ export default function Footer() {
           </span>
           <br/>
         </div>
-        <div className="copyright">©{new Date().getFullYear()} The EuPathDB Project Team</div>
+        <div className="copyright">©{new Date().getFullYear()} The VEuPathDB Project Team</div>
         <div className="twitter-footer">Follow us on 
           <a className="eupathdb-SocialMedia eupathdb-SocialMedia__twitter" href="https://twitter.com/MicrobiomeDB" target="_blank"></a>
         </div>
@@ -33,9 +33,9 @@ export default function Footer() {
       </div>
       <div className="bottom">
         <ul className="site-icons">
-          <li title="EuPathDB.org">
+          <li title="VEuPathDB.org">
             <a href="http://www.eupathdb.org">
-              <img alt="Link to EuPathDB homepage" src={webAppUrl + '/images/eupathdblink.png'}/>
+              <img alt="Link to VEuPathDB homepage" src={webAppUrl + '/images/VEuPathDB.png'}/>
             </a>
           </li>
           <li title="AmoebaDB.org" className="short-space">
