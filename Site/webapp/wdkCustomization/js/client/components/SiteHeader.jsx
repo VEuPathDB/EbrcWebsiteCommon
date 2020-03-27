@@ -45,7 +45,7 @@ function Header(props) {
             <div id="toplink">
               {isPartOfEuPathDB &&
                 <a href="http://veupathdb.org">
-                  <img alt="Link to VEuPathDB homepage" src={webAppUrl + '/images/' + projectId + 'project-branding.png'}/>
+                  <img alt="Link to VEuPathDB homepage" src={webAppUrl + '/images/project-branding.png'}/>
                 </a>
               }
             </div>
