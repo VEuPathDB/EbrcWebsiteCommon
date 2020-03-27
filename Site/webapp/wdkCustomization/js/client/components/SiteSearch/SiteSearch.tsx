@@ -494,7 +494,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
 
   const projectUrls = useProjectUrls();
   const organismToProject = useOrganismToProject();
-  const projectId = useWdkService(async wdkService => (await wdkService.getConfig()).projectId);
+  const projectId = useWdkService(async wdkService => (await wdkService.getConfig()).projectId, []);
 
   // wdk records
   if (documentType.isWdkRecordType) {

@@ -36,6 +36,8 @@ _host_frontends:
 _userdb_link_map:
   apicomms:    prods.login_comment
   apicommn:    prodn.login_comment
+  apicommbetas: betas.login_comment
+  apicommbetan: betan.login_comment
   apicommdevs: devs.login_comment
   apicommdevn: devn.login_comment
   cecomms:     ceprods.login_comment
