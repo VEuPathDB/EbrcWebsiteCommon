@@ -1700,33 +1700,27 @@ a.wdkLinkCell {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       gitter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-/*
 .gitter-open-chat-button {
   visibility: hidden; 
-  background-color: #e3f2fd;
-  color: black; 
-  text-transform: unset;
+  background-color: #36bc98; //#e3f2fd;
+  color: white; 
 }
 
 a.gitter-open-chat-button:hover {
-  background-color: #e3f2fd;
-  color: black; 
+  background-color: #36bc98;
+  color: white;
 }
 
 .gitter-open-chat-button:after {
-  content: "Click here to type a chat message";
+  content: "Community Chat";
   visibility: visible; 
-  background-color: #e3f2fd;
-  color: black; 
+  background-color: #36bc98;// e3f2fd;
+  color: white; 
   border-top-left-radius: .5em;
   border-top-right-radius: .5em;
   padding: 1em;
   font-size: 14px;
 }
-
-
-*/
 
 
 

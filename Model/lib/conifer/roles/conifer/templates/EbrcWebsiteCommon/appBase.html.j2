@@ -49,8 +49,8 @@
       </div>
     </div>
   </body>
-  {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' %}
-    {% set room = 'VEuPathDB-microbiome' if project == 'MicrobiomeDB' else 'VEuPathDB-genomic' %}
+  {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB'  %}
+    {% set room = 'VEuPathDB-genomic' %}
     <script>
       ((window.gitter = {}).chat = {}).options = {
         room: '{{ room }}/community'
