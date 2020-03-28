@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { Link } from 'wdk-client/Components';
 import {pure} from 'wdk-client/Utils/ComponentUtils';
 import DatasetGraph from 'ebrc-client/components/DatasetGraph';
 
@@ -112,23 +112,25 @@ const DatasetGraphTable = pure(function DatasetGraphTable(props) {
 });
 
 function References(props) {
-  let {questions, recordClasses, siteConfig} = props;
-  if (questions == null || recordClasses == null || siteConfig == null) {
+  let {questions, recordClasses} = props;
+  if (questions == null || recordClasses == null) {
     return null;
   }
   let value = props.value
   .filter(row => row.target_type === 'question')
   .map(row => {
     let name = row.target_name;
-    let question = questions.find(q => q.name === name);
+    let question = questions.find(q => q.fullName === name);
 
-    if (question == null) return null;
+    if (question == null) throw new Error("cannot find question with name:" + name) ;
 
     let recordClass = recordClasses.find(r => r.name === question.recordClassName);
-    let searchName = `Identify ${recordClass.displayNamePlural} by ${question.displayName}`;
+    let searchName = `Identify ${recordClass.displayNamePlural} based on ${question.displayName}`;
     return (
       <li key={name}>
-        <a href={`${siteConfig.webAppUrl}/showQuestion.do?questionFullName=${name}`}>{searchName}</a>
+        <Link to={`/search/${recordClass.urlSegment}/${question.urlSegment}`}>
+          {searchName}
+        </Link>
       </li>
     );
   });
@@ -138,8 +140,7 @@ function References(props) {
 const ConnectedReferences = connect(
   state => ({
     questions: state.globalData.questions,
-    recordClasses: state.globalData.recordClasses,
-    siteConfig: state.globalData.siteConfig
+    recordClasses: state.globalData.recordClasses
   }),
   null
 )(References);
