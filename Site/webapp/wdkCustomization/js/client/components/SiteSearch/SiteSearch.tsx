@@ -526,7 +526,8 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
       link: {
         isRoute: false,
         url: `/popbio-map/web/?sampleId=${document.primaryKey[0]}`,
-        text: document.hyperlinkName || document.primaryKey.join(' - ')
+        text: document.hyperlinkName || document.primaryKey.join(' - '),
+        target: '_blank'
       },
       summary: makeGenericSummary(document, documentType)
     }
