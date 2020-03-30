@@ -552,10 +552,15 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     documentType.id === 'general' ||
     documentType.id === 'tutorial'
   ) {
+    // Handle the special case of tutorials that are offered as home page cards
+    const url = documentType.id === 'tutorial' && document.primaryKey.length === 1 && document.primaryKey[0].startsWith('#')
+      ? `/${document.primaryKey[0]}`
+      : `/static-content/${document.primaryKey.join('/')}.html`;
+
     return {
       link: {
         isRoute: true,
-        url: `/static-content/${document.primaryKey.join('/')}.html`,
+        url,
         text: document.hyperlinkName || document.primaryKey.join(' - ')
       },
       summary: makeGenericSummary(document, documentType)
