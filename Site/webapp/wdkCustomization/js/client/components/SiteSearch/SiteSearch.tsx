@@ -293,7 +293,9 @@ function Hit(props: HitProps) {
   return (
     <div className={cx('--Result', classNameModifier)}>
       <div className={cx('--ResultLink', classNameModifier)}>
-        {link.isRoute ? <Link to={link.url}>{documentType.displayName} - {link.text}</Link> : <a href={link.url}>{documentType.displayName} - {link.text}</a>}
+        {link.isRoute ?
+          <Link to={link.url} target={link.target}>{documentType.displayName} - {link.text}</Link> :
+          <a href={link.url} target={link.target}>{documentType.displayName} - {link.text}</a>}
         {subTitle && <div className={cx('--ResultSubTitle')}>{formatSummaryFieldValue(subTitle)}</div>}
       </div>
       {summary && <div className={cx('--ResultSummary', classNameModifier)}>{summary}</div>}
@@ -485,6 +487,7 @@ interface ResultEntryDetails {
     isRoute: boolean;
     url: string;
     text: React.ReactNode;
+    target?: string;
   };
   summary: React.ReactNode;
 }
