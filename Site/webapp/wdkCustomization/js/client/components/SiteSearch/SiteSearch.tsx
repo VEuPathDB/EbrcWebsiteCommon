@@ -538,7 +538,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       link: {
         isRoute: false,
-        url: `/popbio-map/web/?sampleId=${document.primaryKey[0]}`,
+        url: `/popbio-map/web/?sampleID=${document.primaryKey[0]}`,
         text: document.hyperlinkName || document.primaryKey.join(' - '),
         target: '_blank'
       },
