@@ -1,5 +1,6 @@
 import { castArray, isArray } from 'lodash';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory } from 'react-router';
 import SiteSearch from 'ebrc-client/components/SiteSearch/SiteSearch';
 import { getLeaves } from 'wdk-client/Utils/TreeUtils';
 import { useOrganismTree } from 'ebrc-client/hooks/organisms';
@@ -162,6 +163,18 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
   const { searchString, allOrganisms, organisms, documentType, filters } = searchSettings;
   const { numRecords, offset } = resultSettings
 
+  const [ lastSearchSubmissionTime, setLastSearchSubmissionTime ] = useState(Date.now());
+
+  const history = useHistory();
+
+  useEffect(() => {
+    const stopListening = history.listen(() => {
+      setLastSearchSubmissionTime(Date.now());
+    });
+
+    return stopListening;
+  }, []);
+
   const projectId = useWdkService(async wdkService => {
     const { projectId } = await wdkService.getConfig();
     return projectId;
@@ -210,5 +223,5 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
       return { type: 'error', error };
     }
 
-  }, [ searchString, offset, numRecords, organisms, allOrganisms, documentType, filters, projectId ]);
+  }, [ searchString, offset, numRecords, organisms, allOrganisms, documentType, filters, projectId, lastSearchSubmissionTime ]);
 }
