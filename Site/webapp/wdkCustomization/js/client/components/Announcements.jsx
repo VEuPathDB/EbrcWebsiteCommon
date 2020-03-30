@@ -180,8 +180,8 @@ export default function Announcements({
         ].map(announcementData => {
           const category = announcementData.category || 'page-information';
 
-          // Currently, only "information" announcements are dismissible
-          const dismissible = category === 'information' || category === 'page-information';
+          // Currently, only announcements of category "information" are dismissible
+          const dismissible = category === 'information';
           const isOpen = dismissible ? !closedBanners.includes(`${announcementData.id}`) : true;
           const onClose = dismissible ? onCloseFactory(`${announcementData.id}`) : noop;
 
