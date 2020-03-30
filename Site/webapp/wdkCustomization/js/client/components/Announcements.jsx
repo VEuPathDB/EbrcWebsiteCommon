@@ -61,7 +61,7 @@ const siteAnnouncements = [
         <div key="beta">
           {props.displayName} (beta) is available for early community review!  
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
-          &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the main site.</a>
+          &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the legacy site.</a>
         </div>
       );
     }
@@ -75,7 +75,7 @@ const siteAnnouncements = [
         <div key="strategies-beta">
           Strategies you save on the beta site are not permanent.
           They will be lost when the site is officially released.
-          Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>main site</a> to save strategies permanently.
+          Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>legacy site</a> to save strategies permanently.
         </div>
       )
     }
