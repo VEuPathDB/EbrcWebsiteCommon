@@ -54,8 +54,10 @@ const siteAnnouncements = [
   {
     id: 'beta-genomics',
     renderDisplay: props => {
-      // We want this to show on all beta sites, and all genomic sites running this code.
-      if (isBetaSite() || isGenomicSite(props.projectId)) return (
+      // We want this to show on all beta sites, and all genomic sites running this code, UNLESS
+      // the user is currently in the strategies workspace, in which case we display the
+      // more relevant "strategies-beta" banner
+      if ((isBetaSite() || isGenomicSite(props.projectId)) && !isStrategies(props.location)) return (
         <div key="beta">
           {props.displayName} (beta) is available for early community review!  
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
@@ -69,8 +71,7 @@ const siteAnnouncements = [
     id: 'strategies-beta',
     category: 'degraded',
     renderDisplay: props => {
-      const isStrategies = props.location.pathname.startsWith('/workspace/strategies');
-      if (isStrategies && isGenomicSite(props.projectId)) return (
+      if (isStrategies(props.location) && isGenomicSite(props.projectId)) return (
         <div key="strategies-beta">
           Strategies you save on the beta site are not permanent.
           They will be lost when the site is officially released.
@@ -328,4 +329,8 @@ function isGenomicSite(projectId) {
 
 function isBetaSite() {
   return param('beta', window.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
+}
+
+function isStrategies(routerLocation) {
+  return routerLocation.pathname.startsWith('/workspace/strategies');
 }
