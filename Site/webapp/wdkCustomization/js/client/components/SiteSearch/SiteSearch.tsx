@@ -1,7 +1,7 @@
 import { capitalize, keyBy, add, isEmpty, isEqual, xor } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { CheckboxTree, CheckboxList, CollapsibleSection } from 'wdk-client/Components';
+import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
 import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
@@ -42,7 +42,7 @@ export default function SiteSearch(props: Props) {
 
   return (
     <div className={cx()}>
-      {props.loading && <div className={cx('--Loading')}><div>Loading...</div></div>}
+      {props.loading && <LoadingOverlay>Loading results...</LoadingOverlay>}
       <div className={cx('--TitleLine')}>
         <h1>{Title(props)}</h1>
         <StrategyLinkout {...props}/>

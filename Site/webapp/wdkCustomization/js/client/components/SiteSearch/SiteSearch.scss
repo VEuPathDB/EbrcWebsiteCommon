@@ -9,6 +9,15 @@
   flex-flow: column nowrap;
   height: 100%;
 
+  .LoadingOverlay {
+    z-index: 2;
+    background-color: unset;
+
+    &-Spinner {
+      top: 1em;
+    }
+  }
+
   &--Loading {
     position: absolute;
     left: 50%;

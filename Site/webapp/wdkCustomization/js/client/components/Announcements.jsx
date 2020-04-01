@@ -59,7 +59,7 @@ const siteAnnouncements = [
       // more relevant "strategies-beta" banner
       if ((isBetaSite() || isGenomicSite(props.projectId)) && !isStrategies(props.location)) return (
         <div key="beta">
-          {props.displayName} (beta) is available for early community review!  
+          {props.displayName} <em>beta</em> is available for early community review!
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
           &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the legacy site.</a>
         </div>
