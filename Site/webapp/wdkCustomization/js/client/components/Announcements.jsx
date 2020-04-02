@@ -73,7 +73,13 @@ const siteAnnouncements = [
         <div key="strategies-beta">
           Strategies you save on the beta site are not permanent.
           They will be lost when the site is officially released.
-          Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>legacy site</a> to save strategies permanently.
+          {
+            props.projectId !== 'VectorBase' &&
+            <React.Fragment>
+              {' '}
+              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>legacy site</a> to save strategies permanently.
+            </React.Fragment>
+          }
         </div>
       )
     }
