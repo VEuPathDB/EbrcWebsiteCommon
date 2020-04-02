@@ -54,10 +54,8 @@ const siteAnnouncements = [
   {
     id: 'beta-genomics',
     renderDisplay: props => {
-      // We want this to show on all beta sites, and all genomic sites running this code, UNLESS
-      // the user is currently in the strategies workspace, in which case we display the
-      // more relevant "strategies-beta" banner
-      if ((isBetaSite() || isGenomicSite(props.projectId)) && !isStrategies(props.location)) return (
+      // We want this to show on all beta sites, and all genomic home pages running this code
+      if (isBetaSite() || isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
@@ -333,4 +331,8 @@ function isBetaSite() {
 
 function isStrategies(routerLocation) {
   return routerLocation.pathname.startsWith('/workspace/strategies');
+}
+
+function isGenomicHomePage(projectId, routerLocation) {
+  return isGenomicSite(projectId) && routerLocation.pathname === '/';
 }
