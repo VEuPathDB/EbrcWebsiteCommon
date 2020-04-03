@@ -59,7 +59,7 @@ const siteAnnouncements = [
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
-          &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>Click here to return to the legacy site.</a>
+          &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}?useBetaSite=0`}>Click here to return to the legacy site.</a>
         </div>
       );
     }
@@ -77,7 +77,7 @@ const siteAnnouncements = [
             props.projectId !== 'VectorBase' &&
             <React.Fragment>
               {' '}
-              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.org?useBetaSite=0`}>legacy site</a> to save strategies permanently.
+              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}?useBetaSite=0`}>legacy site</a> to save strategies permanently.
             </React.Fragment>
           }
         </div>
