@@ -5,11 +5,14 @@
   retainContainerContent: true
 {% endblock %}
 {% block content %}
+  {% set domain = project + '.' + _topleveldomain if (project != 'EuPathDB') else 'VEuPathDB.org' %}
+  {% set supportEmail = modelconfig_supportEmail if (project != 'EuPathDB') else 'help@veupathdb.org' %}
+
   <h1>The requested page requires user authentication.</h1>
   <p>
-    Development and pre-release areas of <a href="http://{{ project }}.org">{{ project }}.org</a> are restricted.<br>
+    Development and pre-release areas of <a href="https://{{ domain }}">{{ domain }}</a> are restricted.<br>
     If you believe you should be permitted access, please 
-    contact <a href="mailto:help@{{ project }}.org" target="_blank">help@{{ project }}.org</a> 
+    contact <a href="mailto:{{ supportEmail }}" target="_blank">{{ supportEmail }}</a> 
     for assistance and please provide the URL you tried to access.
   </p>
 {% endblock %}

@@ -5,9 +5,11 @@
   retainContainerContent: true
 {% endblock %}
 {% block content %}
+  {% set supportEmail = modelconfig_supportEmail if (project != 'EuPathDB') else 'help@veupathdb.org' %}
+
   <h1>Server Error</h1>
   <p>
     We apologize for the inconvenience and are working to resume service as soon as possible.
-    If you have any questions please contact <a href="mailto:help@{{ project }}.org" target="_blank">help@{{ project }}.org</a>.
+    If you have any questions please contact <a href="mailto:{{ supportEmail }}" target="_blank">{{ supportEmail }}</a>.
    </p>
 {% endblock %}
