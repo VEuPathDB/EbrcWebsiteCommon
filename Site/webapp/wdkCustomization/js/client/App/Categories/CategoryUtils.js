@@ -13,13 +13,13 @@ export function getCategoryColor (category) {
     case 'schistosomiasis':
       return '#7bc043';
     case 'mixed':
-      return '#23cfb2';
+      return '#00aedb';
     case 'human':
       return '#6738ff';
     case 'insect':
       return '#ff6d0d';
     case 'veterinary':
-      return '#00aedb';
+      return '#e91e63';
     case 'rodent':
       return '#7bc043';
     default:
