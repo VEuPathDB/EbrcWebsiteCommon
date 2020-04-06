@@ -8,9 +8,19 @@ export function getCategoryColor (category) {
     case 'malarial':
     case 'malaria':
       return '#ff6d0d';
-   case 'respiratory':
+    case 'respiratory':
       return '#00aedb';
-   case 'schistosomiasis':
+    case 'schistosomiasis':
+      return '#7bc043';
+    case 'mixed':
+      return '#23cfb2';
+    case 'human':
+      return '#6738ff';
+    case 'insect':
+      return '#ff6d0d';
+    case 'veterinary':
+      return '#00aedb';
+    case 'rodent':
       return '#7bc043';
     default:
       return '#9b9c9c';
