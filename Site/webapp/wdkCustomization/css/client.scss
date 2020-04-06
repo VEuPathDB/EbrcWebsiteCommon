@@ -106,7 +106,8 @@ td.wdk-DataTableCell__thumbnail {
 .wdk-RecordAttributeSectionItem:before,
 .wdk-RecordTableContainer:before,
 .wdk-RecordSubsection:before,
-.wdk-RecordSection:before {
+.wdk-RecordSection:before,
+.ExternalContentController a[name]::before {
   content: '';
   display: block;
   height: 68px;

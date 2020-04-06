@@ -7,6 +7,8 @@ interface Props {
   url: string;
 }
 
+const EXTERNAL_CONTENT_CONTROLLER_CLASSNAME = 'ExternalContentController';
+
 export default function ExternalContentController(props: Props) {
   const { url } = props;
 
@@ -36,5 +38,9 @@ export default function ExternalContentController(props: Props) {
 
   if (content == null) return <Loading/>;
 
-  return safeHtml(content, null, 'div');
+  return safeHtml(
+    content,
+    { className: EXTERNAL_CONTENT_CONTROLLER_CLASSNAME },
+    'div'
+  );
 }
