@@ -19,7 +19,7 @@ const HomePage = ({ newsSidebar, twitterUrl, webAppUrl, projectId, siteData, att
       ))}
     </div>
     <div className="News-Section">
-      <News twitterUrls={[twitterUrl]} webAppUrl={webAppUrl} {...newsSidebar} />
+      <News twitterUrls={[twitterUrl]} {...newsSidebar} />
     </div>
   </div>
 
