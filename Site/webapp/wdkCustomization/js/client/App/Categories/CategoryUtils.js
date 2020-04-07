@@ -19,7 +19,7 @@ export function getCategoryColor (category) {
     case 'insect':
       return '#ff6d0d';
     case 'veterinary':
-      return '#e91e63';
+      return '#ffb6c1';
     case 'rodent':
       return '#7bc043';
     default:
