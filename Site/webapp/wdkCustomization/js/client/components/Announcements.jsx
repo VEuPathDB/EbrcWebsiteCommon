@@ -64,8 +64,7 @@ const siteAnnouncements = [
           Please explore the site and <a className="new-window" data-name="contact_us"
             href={props.webAppUrl + '/contact.do'}>contact us</a> with your feedback.
           Note that any saved strategies in the beta sites will be lost once the
-          sites are fully released. <a target="_blank" href="https://orthomcl.org/">Click here to
-	  return to the legacy site.</a> 
+          sites are fully released. <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}?useBetaSite=0`}>Click here to return to the legacy site.</a> 
         </div>
       );
     }
