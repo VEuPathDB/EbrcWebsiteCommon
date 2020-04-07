@@ -40,7 +40,8 @@
     <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/site-client.bundle.css"/>
     <script charset="utf8" src="/{{ webapp_ctx }}/site-client.bundle.js" ></script>
   </head>
-  <body>
+  {% set bodyClassName = 'vpdb-Body' if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB' else 'wdk-Body' %}
+  <body class="{{ bodyClassName }}">
     <div class="main-stack">
       <div id="wdk-container">
         {% block content %}
