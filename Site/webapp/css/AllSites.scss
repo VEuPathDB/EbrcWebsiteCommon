@@ -1712,7 +1712,7 @@ a.gitter-open-chat-button:hover {
 }
 
 .gitter-open-chat-button:after {
-  content: "Community Chat";
+  content: "  Community Chat";
   visibility: visible; 
   background-color: #36bc98;// e3f2fd;
   color: white; 
@@ -1720,8 +1720,18 @@ a.gitter-open-chat-button:hover {
   border-top-right-radius: .5em;
   padding: 1em;
   font-size: 12px;
+  padding-left: 2em;
 }
 
+.gitter-open-chat-button:before {
+  content: "\f086";
+  font-family: FontAwesome;
+  visibility: visible;
+  color: white;
+  font-size: 14px;
+  position: relative;
+  left: 7.2em;
+}
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
