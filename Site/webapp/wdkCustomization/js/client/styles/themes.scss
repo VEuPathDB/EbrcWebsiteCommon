@@ -7,6 +7,8 @@ $themes: (
 
   AmoebaDB: (
     primary-color: #4d8b91,
+    secondary-color: #e9eeec,
+    secondary-color-border: #dce5e2,
     bckgrnd-img: url('~site/images/AmoebaDB/header-amoebaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/amoebaDB.png'),
     beta-position-left: 18.75em,
@@ -15,6 +17,8 @@ $themes: (
   // bckgrnd dark 
   CryptoDB: (
     primary-color: #224C7C,
+    secondary-color: #edf0f2,
+    secondary-color-border: #e1e4e8,
     bckgrnd-img: url('~site/images/CryptoDB/header-cryptoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/cryptoDB.png'),  /* crypto-logo-w.png, crypto-logo-2.png */
     beta-position-left: 17.25em,
@@ -22,6 +26,8 @@ $themes: (
 
   EuPathDB: (
     primary-color: #02385a,
+    secondary-color: #e8ecef,
+    secondary-color-border: #d9e0e4,
     bckgrnd-img: url('~site/images/VEuPathDB/header-veupathDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/VEuPathDB.png'),
     small-logo: url('~site/images/VEuPathDB/veupath-logo-no-tag.png'),
@@ -34,6 +40,8 @@ $themes: (
   // eupath  bkgrnd 
   FungiDB: (
     primary-color: #407e91,
+    secondary-color: #e9eff1,
+    secondary-color-border: #dfe8eb,
     bckgrnd-img: url('~site/images/FungiDB/header-fungiDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/fungiDB.png'),
     beta-position-left: 14.5em,
@@ -42,6 +50,8 @@ $themes: (
   // eupath  bkgrnd w/one watermark,  Giardia: #569551,  veupathdb-banner-GADB.jpg 
   GiardiaDB: (
     primary-color: #448155,
+    secondary-color: #e7ede9,
+    secondary-color-border: #dae3e6,
     bckgrnd-img: url('~site/images/GiardiaDB/header-giardiaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/giardiaDB.png'),
     beta-position-left: 17.5em,
@@ -50,6 +60,8 @@ $themes: (
   // eupath  bkgrnd, default 
   HostDB: (
     primary-color: #298ba4,
+    secondary-color: #ebf3f5,
+    secondary-color-border: #d7e5e8,
     bckgrnd-img: url('~site/images/HostDB/header-hostDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/hostDB.png'),
     beta-position-left: 15em,
@@ -58,6 +70,8 @@ $themes: (
   // tinted bkgrnd  MicrosporidiaDB: #4d3c68 (same as header) or #7988b3 (second color), veupathdb-banner-MSDBtint.jpg 
   MicrosporidiaDB: (
     primary-color: #56698c,
+    secondary-color: #eaecef,
+    secondary-color-border: #e1e2e5,
     bckgrnd-img: url('~site/images/MicrosporidiaDB/header-microsporidiaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/microsporidiaDB.png'),
     beta-position-left: 19em,
@@ -66,6 +80,8 @@ $themes: (
   // tinted  bkgrnd  PiroplasmaDB: #8b465c (same as header) or #3a8c9f (second color), veupathdb-banner-PPDBtint.jpg 
   PiroplasmaDB: (
     primary-color: #6c657a,
+    secondary-color: #ebeaec,
+    secondary-color-border: #e4e3e6,
     bckgrnd-img: url('~site/images/PiroplasmaDB/header-piroplasmaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/piroplasmaDB.png'),
     beta-position-left: 21em,
@@ -74,6 +90,8 @@ $themes: (
   // bckgrnd light 
   PlasmoDB: (
     primary-color: #694b66,
+    secondary-color: #eae6e9,
+    secondary-color-border: #e4dfe3,
     bckgrnd-img: url('~site/images/PlasmoDB/header-plasmoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/plasmoDB.png'), 
     beta-position-left: 18em,
@@ -82,6 +100,8 @@ $themes: (
   // eupath bkgrnd 
   SchistoDB: (
     primary-color: #74577a,
+    secondary-color: #ede8ed,
+    secondary-color-border: #e2dce3,
     bckgrnd-img: url('~site/images/SchistoDB/header-schistoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/schistoDB.png'),
     beta-position-left: 17.5em,
@@ -90,6 +110,8 @@ $themes: (
   // eupath bkgrnd 
   ToxoDB: (
     primary-color: #699e58,
+    secondary-color: #e8eee6,
+    secondary-color-border: #d9e1d6,
     bckgrnd-img: url('~site/images/ToxoDB/header-toxoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/toxoDB.png'),
     beta-position-left: 14.75em,
@@ -98,6 +120,8 @@ $themes: (
   // eupath bkgrnd 
   TrichDB: (
     primary-color: #5f5953,
+    secondary-color: #efeeed,
+    secondary-color-border: #e2e1e0,
     bckgrnd-img: url('~site/images/TrichDB/header-trichDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/trichDB.png'),
     beta-position-left: 15.25em,
@@ -106,6 +130,8 @@ $themes: (
   // eupath bkgrnd w/one watermark, TriTrypDB: #c06530,  veupathdb-banner-TTDB.jpg 
   TriTrypDB: (
     primary-color: #c46f41,
+    secondary-color: #f2e8e2,
+    secondary-color-border: #ebdbd2,
     bckgrnd-img: url('~site/images/TriTrypDB/header-tritrypDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/tritrypDB.png'),
     beta-position-left: 16.5em,
@@ -114,6 +140,8 @@ $themes: (
   // bckgrnd dark 
   VectorBase: (
     primary-color: #27638c,
+    secondary-color: #e3e9ed,
+    secondary-color-border: #d8e0e6,
     bckgrnd-img: url('~site/images/VectorBase/header-vectorbase.jpg'),
     logo: url('~site/images/VEuPathDB/logos/vectorbase.png'),
     beta-position-left: 18em,
