@@ -12,9 +12,10 @@ let attachmentTypes = [
 
 let GffInputs = props => {
   let { recordClass, formState, getUpdateHandler } = props;
-  if (recordClass.fullName != "TranscriptRecordClasses.TranscriptRecordClass") {
+  // RRD 4/7/20: Hide sequence flags for transcripts too until GffCachedReporter fixed
+  //if (recordClass.fullName != "TranscriptRecordClasses.TranscriptRecordClass") {
     return ( <noscript/> );
-  }
+  /*}
   return (
     <div style={{marginLeft:'2em'}}>
       <Checkbox value={formState.hasTranscript} onChange={getUpdateHandler('hasTranscript')}/>
@@ -22,7 +23,7 @@ let GffInputs = props => {
       <Checkbox value={formState.hasProtein} onChange={getUpdateHandler('hasProtein')}/>
       Include Predicted Protein Sequence<br/>
     </div>
-  );
+  );*/
 };
 
 let Gff3ReporterForm = props => {
