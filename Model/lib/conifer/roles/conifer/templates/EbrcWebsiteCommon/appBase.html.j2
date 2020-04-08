@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>{% block title %}{{ project }}{% endblock %}</title>
+    {% set displayName = project if project != 'EuPathDB' else 'VEuPathDB' %}
+    <title>{% block title %}{{ displayName }}{% endblock %}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link href="/{{ webapp_ctx }}/images/{{ project }}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <link href="/{{ webapp_ctx }}/images/{{ displayName }}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
     <script>
       {# used for webpack. remove this when this can be set at build time. #}
       window.__asset_path_remove_me_please__ = "/{{ webapp_ctx }}/";
