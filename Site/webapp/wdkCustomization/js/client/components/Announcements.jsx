@@ -54,8 +54,8 @@ const siteAnnouncements = [
   {
     id: 'beta-genomics',
     renderDisplay: props => {
-      // We want this to show on all beta sites, and all genomic home pages running this code
-      if (isBetaSite() || isGenomicHomePage(props.projectId, props.location) ) return (
+      // We want this on all genomic home pages running this code
+      if (/*isBetaSite() || */ isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
