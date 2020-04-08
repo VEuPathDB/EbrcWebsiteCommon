@@ -177,8 +177,8 @@
     width: 24em;
     max-width: 24em;
     @include themify() {
-      border: 1px solid scale-color(themed('primary-color'), $lightness: 80%);
-      background: scale-color(themed('primary-color'), $lightness: 80%, $saturation: -60%);  
+      border: 1px solid themed('secondary-color-border');
+      background: themed('secondary-color')
     }
 
     > * {
