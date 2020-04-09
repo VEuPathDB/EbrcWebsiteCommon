@@ -1,3 +1,4 @@
+import { STANDARD_REPORTER_NAME } from 'wdk-client/Views/ReporterForm/reporterUtils';
 import WdkServiceJsonReporterForm from 'wdk-client/Views/ReporterForm/WdkServiceJsonReporterForm';
 
 // load individual reporter forms
@@ -60,7 +61,7 @@ export function selectReporterComponent(reporterName, recordClassFullName) {
       return XmlReporterForm;
     case 'json':
       return JsonReporterForm;
-    case 'standard':
+    case STANDARD_REPORTER_NAME:
       return WdkServiceJsonReporterForm;
     default:
       return EmptyReporter;
