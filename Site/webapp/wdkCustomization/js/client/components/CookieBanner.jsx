@@ -12,7 +12,7 @@ const UserAgreedStore = {
 };
 
 
-const privacyPolicyLink = '/documents/EuPathDB_Website_Privacy_Policy.shtml';
+const privacyPolicyLink = '/a/app/static-content/privacyPolicy.html';
 
 
 // Styles
