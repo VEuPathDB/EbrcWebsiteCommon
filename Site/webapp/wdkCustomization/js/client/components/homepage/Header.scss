@@ -232,6 +232,7 @@ $hamburger-width: 960px;
   .ebrc-SocialMediaLinks {
     grid-area: social;
     justify-self: flex-end;
+    height: 2.8125em;
 
     > a {
       @include shadowed;
@@ -244,6 +245,7 @@ $hamburger-width: 960px;
     grid-area: login;
     justify-self: flex-end;
     text-align: center;
+    height: 4.5em;
 
     margin-right: 0.5em;
     padding: unset;
