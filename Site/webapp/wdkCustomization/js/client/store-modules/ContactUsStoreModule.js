@@ -161,12 +161,13 @@ const observeSubmitDetails = (
 
       const attachmentIds = await Promise.all(temporaryFilePromises);
 
+      // FIXME: This should be spun off into a WdkService mixin
       const response = await jsonPostRequest(
         wdkService.serviceUrl,
         CONTACT_US_ENDPOINT,
         {
           ...parsedFormFields(contactUsState),
-          referrer: window.opener && window.opener.location.href,
+          referrer: (window.opener && window.opener.location.href) || undefined,
           attachmentIds
         }
       );
