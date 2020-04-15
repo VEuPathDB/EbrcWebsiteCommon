@@ -41,7 +41,7 @@ const siteAnnouncements = [
             This pre-release version of {props.projectId} is available for early community review.
             Your searches and strategies saved in this alpha release will not be available in the
             official release.
-            Please explore the site and <Link to="/contact-us">contact us</Link> with your feedback.
+            Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with your feedback.
             This site is under active development so there may be incomplete or
             inaccurate data and occasional site outages can be expected.
           </div>
@@ -58,7 +58,7 @@ const siteAnnouncements = [
       if (/*isBetaSite() || */ isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
-          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us">contact us</Link> with feedback.
+          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with feedback.
           &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}?useBetaSite=0`}>Click here to return to the legacy site.</a>
         </div>
       );
