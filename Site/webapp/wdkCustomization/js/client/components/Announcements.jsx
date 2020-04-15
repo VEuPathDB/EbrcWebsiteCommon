@@ -51,11 +51,13 @@ const siteAnnouncements = [
   },
 
   // beta
+  //  /*isBetaSite() || */
+/*
   {
     id: 'beta-genomics',
     renderDisplay: props => {
       // We want this on all genomic home pages running this code
-      if (/*isBetaSite() || */ isGenomicHomePage(props.projectId, props.location) ) return (
+      if ( isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
           &nbsp;&nbsp;Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with feedback.
@@ -64,6 +66,8 @@ const siteAnnouncements = [
       );
     }
   },
+*/
+
 
   {
     id: 'strategies-beta',
