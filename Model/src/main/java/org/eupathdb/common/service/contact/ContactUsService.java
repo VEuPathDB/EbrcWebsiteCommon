@@ -53,7 +53,7 @@ public class ContactUsService extends AbstractWdkService {
   //        "type": "string"
   //      },
   //      "referrer": {
-  //        "type": ["string", "null"]
+  //        "type": "string"
   //      },
   //      "reporterEmail": {
   //        "type": "string",
@@ -107,7 +107,7 @@ public class ContactUsService extends AbstractWdkService {
         requestData,
         wdkModel,
         Utilities::sendEmail
-      );  
+      );
     }
     catch(WdkRuntimeException ex) {
       throw new WdkModelException(ex);
