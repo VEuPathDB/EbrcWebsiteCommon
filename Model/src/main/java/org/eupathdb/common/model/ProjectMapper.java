@@ -1,5 +1,7 @@
 package org.eupathdb.common.model;
 
+import static org.gusdb.fgputil.FormatUtil.urlEncodeUtf8;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -14,9 +16,7 @@ import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.db.SqlUtils;
-import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.w3c.dom.Document;
@@ -141,13 +141,13 @@ public class ProjectMapper {
     return timeout;
   }
 
-  public String getRecordUrl(String recordClassName, String projectId,
-      String sourceId) throws WdkModelException {
-    String site = getWebAppUrl(projectId);
-    RecordClass recordClass = wdkModel.getRecordClassByFullName(recordClassName).get();
-    String recordClassUrlSegment = FormatUtil.urlEncodeUtf8(recordClass.getUrlSegment());
-    sourceId = FormatUtil.urlEncodeUtf8(sourceId);
-    return site + "app/record/" + recordClassUrlSegment + "/" + sourceId;
+  public String getRecordUrl(
+      String recordClassName, String projectId, String sourceId
+  ) throws WdkModelException {
+    String recordClassUrlSegment = wdkModel.getRecordClassByFullName(recordClassName).get().getUrlSegment();
+    return getWebAppUrl(projectId) + "app/record" +
+        "/" + urlEncodeUtf8(recordClassUrlSegment) +
+        "/" + urlEncodeUtf8(sourceId);
   }
 
   /**
