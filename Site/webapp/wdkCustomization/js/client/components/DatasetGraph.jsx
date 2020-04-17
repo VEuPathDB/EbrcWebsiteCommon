@@ -161,7 +161,7 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + '%2C' + dataset_name ;
-    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + dataset_name;
+    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + '%2C' + dataset_name;
 
     let specialImgUrl = dataTable && dataTable.record.attributes.specialJbrowseUrl;
 
