@@ -81,7 +81,7 @@ const siteAnnouncements = [
             props.projectId !== 'VectorBase' &&
             <React.Fragment>
               {' '}
-              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}?useBetaSite=0`}>legacy site</a> to save strategies permanently.
+              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>legacy site</a> to save strategies permanently.
             </React.Fragment>
           }
         </div>
