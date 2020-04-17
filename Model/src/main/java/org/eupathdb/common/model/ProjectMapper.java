@@ -146,7 +146,6 @@ public class ProjectMapper {
     String site = getWebAppUrl(projectId);
     RecordClass recordClass = wdkModel.getRecordClassByFullName(recordClassName).get();
     String recordClassUrlSegment = FormatUtil.urlEncodeUtf8(recordClass.getUrlSegment());
-    projectId = FormatUtil.urlEncodeUtf8(projectId);
     sourceId = FormatUtil.urlEncodeUtf8(sourceId);
     return site + "app/record/" + recordClassUrlSegment + "/" + sourceId;
   }
