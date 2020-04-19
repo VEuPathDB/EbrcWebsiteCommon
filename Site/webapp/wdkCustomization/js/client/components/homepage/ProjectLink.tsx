@@ -12,7 +12,7 @@ type ProjectLinkProps = {
 
 export const ProjectLink = ({ projectId }: ProjectLinkProps) =>
   <div title={`${projectId}.org`} className={cx()}>
-    <a href={`https://${projectId.toLowerCase()}.org`} className={projectId}>
+    <a target="_blank" href={`https://${projectId.toLowerCase()}.org`} className={projectId}>
       https://{projectId.toLowerCase()}.org
     </a>
   </div>;
