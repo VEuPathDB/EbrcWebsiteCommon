@@ -24,18 +24,18 @@ export default function GalaxySignUp(props) {
           <div className="eupathdb-GalaxySignUpScreenHeader">
             <strong>1. Create new or link existing Globus account.</strong>
           </div>
-          <img title="Option to link an existing Globus Account" src="/a/wdkCustomization/images/globus-02-link-account.jpg"/>
+          <img title="Option to link an existing Globus Account" src="/a/wdkCustomization/images/globus-02-link-account.png"/>
           <div className="eupathdb-GalaxySignUpScreenCaption">
             If you already have a Globus account, you may choose to link it to
             your VEuPathDB account. If you don't have an existing Globus account,
-            choose <strong>No thanks, continue</strong>.
+            choose <strong>Continue</strong>.
           </div>
         </div>
         <div>
           <div className="eupathdb-GalaxySignUpScreenHeader">
             <strong>2. Register your credentials.</strong>
           </div>
-          <img title="Agree to Globus account terms" src="/a/wdkCustomization/images/globus-03-account-terms.jpg"/>
+          <img title="Agree to Globus account terms" src="/a/wdkCustomization/images/globus-03-account-terms.png"/>
           <div className="eupathdb-GalaxySignUpScreenCaption">
             Tell Globus how you will use your account, read and agree to their
             Terms and Conditions, then click <strong>Continue</strong>
@@ -45,7 +45,7 @@ export default function GalaxySignUp(props) {
           <div className="eupathdb-GalaxySignUpScreenHeader">
             <strong>3. Grant VEuPathDB Galaxy access to your account.</strong>
           </div>
-          <img title="Grant permission to access your Globus account" src="/a/wdkCustomization/images/globus-04-oauth-perms.jpg"/>
+          <img title="Grant permission to access your Globus account" src="/a/wdkCustomization/images/globus-04-oauth-perms.png"/>
           <div className="eupathdb-GalaxySignUpScreenCaption">
             Click <strong>Allow</strong> to grant permission to share the
             account with us. We will only perform file transfers that you explicitly request.
