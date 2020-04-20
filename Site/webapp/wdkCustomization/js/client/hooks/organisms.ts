@@ -5,7 +5,7 @@ import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 // TODO Make these configurable via model.prop, and when not defined, always return an empty tree.
 // This way non-genomic sites can call this without effect, while keeping the thrown error if
 // the configuered search/param are not available.
-const TAXON_QUESTION_NAME = 'GenesByTaxon';
+const TAXON_QUESTION_NAME = 'SequencesByTaxon';
 const ORGANISM_PARAM_NAME = 'organism';
 
 
