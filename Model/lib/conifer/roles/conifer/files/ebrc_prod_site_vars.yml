@@ -60,29 +60,3 @@ modelprop:
   REDMINE_TO_EMAIL: 'redmine@apidb.org'
   REDMINE_FROM_EMAIL: 'websitesupportform@apidb.org'
   COMMUNITY_SITE: //static-content.veupathdb.org/
-
-
-# production irods UD config
-modelconfig_userDatasetStoreConfig_irods_host: irods.eupathdb.org
-modelconfig_userDatasetStoreConfig_irods_login: "wrkspuser"
-modelconfig_userDatasetStoreConfig_irods_password: "{{ lookup('euparc','attr=password xpath=workspaces/irods[@user=\"{}\"]'.format('wrkspuser') ) }}"
-modelconfig_userDatasetStoreConfig_irods_resource: ebrcResc
-modelconfig_userDatasetStoreConfig_irods_rootPath: /ebrc/workspaces/users
-modelconfig_userDatasetStoreConfig_irods_zone: ebrc
-modelconfig_userDatasetStoreConfig_irods_port: 1247
-
-modelconfig_userDatasetStoreConfig: >
- <userDatasetStore implementation="org.gusdb.wdk.model.user.dataset.irods.IrodsUserDatasetStore">
-   <property name="login">{{ modelconfig_userDatasetStoreConfig_irods_login }}</property>
-   <property name="password">{{ modelconfig_userDatasetStoreConfig_irods_password }}</property>
-   <property name="host">{{ modelconfig_userDatasetStoreConfig_irods_host }}</property>
-   <property name="port">{{ modelconfig_userDatasetStoreConfig_irods_port }}</property>
-   <property name="resource">{{ modelconfig_userDatasetStoreConfig_irods_resource }}</property>
-   <property name="zone">{{ modelconfig_userDatasetStoreConfig_irods_zone }}</property>
-   <property name="rootPath">{{ modelconfig_userDatasetStoreConfig_irods_rootPath }}</property>
-   <typeHandler type="example" version="1.0" implementation="org.gusdb.wdk.model.user.dataset.ExampleTypeHandler"/>
-   <typeHandler type="GeneList" version="1.0"  implementation="org.apidb.apicommon.model.userdataset.GeneListTypeHandler"/>
-   <typeHandler type="BigwigFiles" version="1.0"  implementation="org.apidb.apicommon.model.userdataset.BigwigFilesTypeHandler"/>
-   <typeHandler type="RnaSeq" version="1.0"  implementation="org.apidb.apicommon.model.userdataset.RnaSeqTypeHandler"/>
-  </userDatasetStore>
-
