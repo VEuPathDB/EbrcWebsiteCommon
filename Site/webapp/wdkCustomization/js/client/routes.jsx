@@ -54,6 +54,7 @@ export const wrapRoutes = wdkRoutes => [
           border: 'none'
         }}
         onLoad={event => {
+          window.scrollTo(0, 0);
           const iframe = event.target;
           const pathname = iframe.contentWindow.location.pathname.replace(/^\/common/, '');
           const { search, hash } = iframe.contentWindow.location;
