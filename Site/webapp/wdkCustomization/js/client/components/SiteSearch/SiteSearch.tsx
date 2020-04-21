@@ -256,6 +256,7 @@ function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         renderNode={renderNode}
         expandedList={expansion}
         onExpansionChange={setExpansion}
+        shouldExpandDescendantsWithOneChild
         isSelectable
         selectedList={selection}
         onSelectionChange={setSelection}
