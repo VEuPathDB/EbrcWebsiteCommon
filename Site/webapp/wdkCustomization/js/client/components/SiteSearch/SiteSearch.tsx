@@ -1,4 +1,4 @@
-import { capitalize, keyBy, add, isEmpty, isEqual, xor } from 'lodash';
+import { capitalize, keyBy, add, isEmpty, isEqual, xor, intersection } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
@@ -372,11 +372,24 @@ function FieldsHit(props: HitProps) {
 function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
+  const organismParam = useWdkService(async wdkService => {
+    if (docType == null || !docType.isWdkRecordType) return;
+    const question = await wdkService.getQuestionAndParameters(docType.wdkSearchName);
+    return question.parameters.find(param => param.name === 'text_search_organism');
+  }, [ docType ]);
   if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
-  if (!docType.isWdkRecordType) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
+    if (
+      !docType.isWdkRecordType ||
+      organismParam == null ||
+      organismParam.type !== 'multi-pick-vocabulary' 
+    ) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
   const paramFields = docType.searchFields.flatMap(f =>
     filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
-  const paramOrganisms = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts);
+  const paramSelection = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts); 
+  const searchOrganismList = organismParam.displayType === 'treeBox'
+    ? getLeaves(organismParam.vocabulary, node => node.children).map(n => n.data.term)
+    : organismParam.vocabulary.map(([ term ]) => term);
+  const paramOrganisms = intersection(paramSelection, searchOrganismList);
   const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun` +
     `&param.document_type=${encodeURIComponent(docType.id)}` +
     `&param.text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
