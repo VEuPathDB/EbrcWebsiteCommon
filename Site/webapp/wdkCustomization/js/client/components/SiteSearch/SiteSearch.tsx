@@ -595,7 +595,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
 }
 
 function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls, organismToProject?: OrganismToProject, projectId?: string): ResultEntryDetails['link'] {
-  const text = document.hyperlinkName || document.primaryKey.join(' - ');
+  const text = safeHtml(document.hyperlinkName || document.primaryKey.join(' - '));
   const route = `/record/${document.documentType}/${document.primaryKey.join('/')}`;
 
   // use standard link if not in portal, or if no organism present
