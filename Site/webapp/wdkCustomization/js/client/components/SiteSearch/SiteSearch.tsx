@@ -340,6 +340,9 @@ function DirectHit(props: Props) {
 function FieldsHit(props: HitProps) {
   const { document, documentType } = props;
   const [ expandHighlights, updateExpandHightlights ] = useState(false);
+  useEffect(() => {
+    updateExpandHightlights(false);
+  }, [ document ])
   const foundInFields = documentType.searchFields
     .filter(field => field.name in document.foundInFields);
   if (!foundInFields || foundInFields.length === 0) return null;
