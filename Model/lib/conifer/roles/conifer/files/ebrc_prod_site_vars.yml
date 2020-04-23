@@ -16,6 +16,7 @@ _hostname_project_map:
   icemr.clinepidb.org: ICEMR
   w1.icemr.clinepidb.org: ICEMR
   w2.icemr.clinepidb.org: ICEMR
+  integrate.clinepidb.org: AllClinEpiDB
   q1.restricted.clinepidb.org: AllClinEpiDB
   q2.restricted.clinepidb.org: AllClinEpiDB
   w1.restricted.clinepidb.org: AllClinEpiDB
