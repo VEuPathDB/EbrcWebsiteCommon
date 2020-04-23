@@ -1,7 +1,14 @@
-$hamburger-width: 960px;
+@import 'ebrc-client/styles/themes.scss';
 
-// Use this when "Community" menu item is removed
-// $hamburger-width: 960px;
+$hamburger-width: 1013px;
+
+@include themify() {
+  $special-hamburger-width: themed('special-hamburger-width');
+
+  @if ($special-hamburger-width) {
+    $hamburger-width: $special-hamburger-width !global;
+  }
+}
 
 @mixin shadowed {
   text-shadow:
