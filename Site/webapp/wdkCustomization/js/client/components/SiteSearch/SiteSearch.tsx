@@ -108,10 +108,9 @@ function ResultInfo(props: Props) {
 }
 
 function SearchCounts(props: Props) {
-  const { response, documentType, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange, searchString } = props;
+  const { response, documentType, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
   const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
-  const [ resultFilterLastAutoAppliedTo, setResultFilterLastAutoAppliedTo ] = useState<string | undefined>(undefined);
   const docTypesById = useMemo(() => keyBy(documentTypes, 'id'), [ documentTypes ]);
   const finalOrganismTree = useMemo(() => (
     onlyShowMatches
@@ -125,18 +124,6 @@ function SearchCounts(props: Props) {
     ? documentTypes.filter(d => d.count > 0).some(d => d.hasOrganismField)
     : docTypesById[documentType]?.hasOrganismField;
   const totalOrgsCount = Object.values(organismCounts).reduce(add, 0);
-
-  useEffect(() => {
-    const documentTypesWithNonzeroCounts = documentTypes.filter(({ count }) => count !== 0);
-    if (
-      documentType == null &&
-      documentTypesWithNonzeroCounts.length === 1 &&
-      resultFilterLastAutoAppliedTo !== searchString
-    ) {
-      onDocumentTypeChange(documentTypesWithNonzeroCounts[0].id);
-      setResultFilterLastAutoAppliedTo(searchString);
-    }
-  }, [ documentTypes ]);
 
   return (
     <div className={cx('--Counts')}>
