@@ -43,7 +43,7 @@ const linkStyle = {
 const positStyle = {
   position: 'relative',
   bottom: '0.75em',
-  marginLeft: '1em;'
+  marginLeft: '1em'
 };
 
 /**
