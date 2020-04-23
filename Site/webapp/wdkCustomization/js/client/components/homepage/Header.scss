@@ -265,6 +265,10 @@ $hamburger-width: 960px;
       @include shadowed;
       opacity: 0.8;
       font-weight: bold;
+      max-width: 7em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
