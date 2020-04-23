@@ -19,6 +19,7 @@ interface Props {
   offset: number;
   numRecords: number;
   documentType?: string;
+  hideDocumentTypeClearButton?: boolean;
   filters?: string[];
   filterOrganisms?: string[];
   organismTree: TreeBoxVocabNode;
@@ -108,7 +109,7 @@ function ResultInfo(props: Props) {
 }
 
 function SearchCounts(props: Props) {
-  const { response, documentType, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
+  const { response, documentType, hideDocumentTypeClearButton, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
   const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
   const docTypesById = useMemo(() => keyBy(documentTypes, 'id'), [ documentTypes ]);
@@ -145,7 +146,7 @@ function SearchCounts(props: Props) {
               <tr>
                 <th>{category.name}</th>
                 <th>
-                  {documentType && (
+                  {documentType && !hideDocumentTypeClearButton && (
                     <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
                       <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Clear filter</button></div>
                     </div>

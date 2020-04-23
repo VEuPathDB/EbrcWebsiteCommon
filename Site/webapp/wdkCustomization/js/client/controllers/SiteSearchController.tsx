@@ -81,14 +81,18 @@ export default function SiteSearchController() {
   }, [ updateParams, searchString, documentType, filters ]);
 
   const setFilters = useCallback((filters: string[]) => {
-    if (documentType == null || documentType == '') return;
+    const effectiveFilter = value && value.type === 'success' ? value.effectiveFilter : undefined;
+    if (
+      (documentType == null || documentType == '') &&
+      effectiveFilter == null
+    ) return;
     updateParams({
       [SEARCH_TERM_PARAM]: searchString,
-      [DOCUMENT_TYPE_PARAM]: documentType,
+      [DOCUMENT_TYPE_PARAM]: documentType || effectiveFilter,
       [ORGANISM_PARAM]: organisms,
       [FILTERS_PARAM]: filters
     });
-  }, [ updateParams, searchString, documentType, organisms ]);
+  }, [ updateParams, searchString, documentType, organisms, value ]);
 
   if (!siteSearchServiceUrl) {
     return (
@@ -121,30 +125,29 @@ export default function SiteSearchController() {
   }
 
   return (
-    <React.Fragment>
-      <SiteSearch
-        loading={loading}
-        searchString={value.searchSettings.searchString}
-        documentType={value.searchSettings.documentType}
-        onDocumentTypeChange={setDocumentType}
-        filters={value.searchSettings.filters}
-        onFiltersChange={setFilters}
-        filterOrganisms={value.searchSettings.organisms}
-        onOrganismsChange={setOrganisms}
-        response={value.response}
-        offset={value.resultSettings.offset}
-        numRecords={value.resultSettings.numRecords}
-        organismTree={organismTree}
-        onSearch={setSearchString}
-        onPageOffsetChange={setOffset}
-      />
-    </React.Fragment>
+    <SiteSearch
+      loading={loading}
+      searchString={value.searchSettings.searchString}
+      documentType={value.effectiveFilter || value.searchSettings.documentType}
+      hideDocumentTypeClearButton={value.effectiveFilter != null}
+      onDocumentTypeChange={setDocumentType}
+      filters={value.searchSettings.filters}
+      onFiltersChange={setFilters}
+      filterOrganisms={value.searchSettings.organisms}
+      onOrganismsChange={setOrganisms}
+      response={value.response}
+      offset={value.resultSettings.offset}
+      numRecords={value.resultSettings.numRecords}
+      organismTree={organismTree}
+      onSearch={setSearchString}
+      onPageOffsetChange={setOffset}
+    />
   )
 }
 
 type Value =
   | { type: 'error', error: Error }
-  | { type: 'success', response: SiteSearchResponse, searchSettings: SearchSettings, resultSettings: ResultSettings };
+  | { type: 'success', response: SiteSearchResponse, searchSettings: SearchSettings, resultSettings: ResultSettings, effectiveFilter?: string };
 
 type SearchSettings = {
   searchString: string;
@@ -198,24 +201,44 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
           foundOnlyInFields: filters
         }
       };
-      const response = await fetch(`${siteSearchServiceUrl}`, {
-        method: 'POST',
-        body: JSON.stringify(requestBody),
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors'
-      });
+      const responseText = await runRequest(requestBody);
+      const validatedResonse = decode(siteSearchResponse, responseText);
 
-      if (!response.ok) {
-        throw new Error(response.statusText);
+      // The following logic adds a docType filter if the following conditions are met:
+      //   1. `documentType` is not specified
+      //   2. Exactly 1 document type has results
+      //
+      // We will also mark the result as having an effective filter set.
+
+      const docTypesWithCounts = validatedResonse.documentTypes.filter(d => d.count > 0);
+
+      if (documentType != null || docTypesWithCounts.length !== 1) {
+        return {
+          type: 'success',
+          response: validatedResonse,
+          searchSettings,
+          resultSettings,
+        }
       }
-      const validatedResonse = decode(siteSearchResponse, await response.text());
+
+      const effectiveFilter = docTypesWithCounts[0].id;
+
+      // Get results with effective filter
+      const requestBody2 = {
+        ...requestBody,
+        documentTypeFilter: {
+          documentType: effectiveFilter,
+          foundOnlyInFields: []
+        }
+      };
+      const responseText2 = await runRequest(requestBody2);
+      const validatedResonse2 = decode(siteSearchResponse, responseText2);
       return {
         type: 'success',
-        response: validatedResonse,
+        response: validatedResonse2,
         searchSettings,
-        resultSettings
+        resultSettings,
+        effectiveFilter
       }
     }
 
@@ -224,4 +247,20 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
     }
 
   }, [ searchString, offset, numRecords, organisms, allOrganisms, documentType, filters, projectId, lastSearchSubmissionTime ]);
+}
+
+async function runRequest(requestBody: SiteSearchRequest): Promise<string> {
+  const response = await fetch(`${siteSearchServiceUrl}`, {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    mode: 'cors'
+  });
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return await response.text();
 }
