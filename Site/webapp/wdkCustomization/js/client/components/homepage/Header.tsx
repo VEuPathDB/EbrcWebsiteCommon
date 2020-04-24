@@ -74,8 +74,9 @@ interface WebAppMenuItem<T> extends HeaderMenuItemBase<T> {
 
 interface ExternalLinkMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'externalLink',
-  url: string
-  target?: string
+  url: string;
+  ref?: string;
+  target?: string;
 }
 
 interface SubmenuItem<T> extends HeaderMenuItemBase<T> {
