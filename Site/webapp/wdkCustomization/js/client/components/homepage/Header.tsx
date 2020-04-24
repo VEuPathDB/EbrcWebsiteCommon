@@ -23,7 +23,7 @@ import './Header.scss';
 
 const cx = makeClassNameHelper('ebrc-Header');
 
-const HAMBURGER_SCREEN_SIZE = 960;
+const HAMBURGER_SCREEN_SIZE = 1013;
 
 const useWebAppUrl = (): string => {
   // FIXME: Pull this from global data
