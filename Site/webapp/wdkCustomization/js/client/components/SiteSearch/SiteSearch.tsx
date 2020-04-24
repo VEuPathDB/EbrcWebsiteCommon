@@ -174,7 +174,7 @@ function SearchCounts(props: Props) {
       </table>
       <WdkRecordFields {...props} onlyShowMatches={onlyShowMatches} />
       {totalOrgsCount > 0 && showOrganismFilter && organismTree && filterOrganisms && (
-        <OrgansimFilter
+        <OrganismFilter
           organismTree={finalOrganismTree}
           filterOrganisms={filterOrganisms}
           response={response}
@@ -185,7 +185,7 @@ function SearchCounts(props: Props) {
   )
 }
 
-function OrgansimFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
+function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
   const { organismTree, filterOrganisms, onOrganismsChange, response } = props;
   const initialExpandedNodes = useMemo(() => organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [], [ organismTree ]);
   const [ expansion, setExpansion ] = useState<string[]>(initialExpandedNodes);
