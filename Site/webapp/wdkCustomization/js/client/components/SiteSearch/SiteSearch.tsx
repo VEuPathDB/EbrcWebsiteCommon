@@ -11,6 +11,7 @@ import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } 
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 
 import './SiteSearch.scss';
+import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
 
 interface Props {
   loading: boolean;
@@ -109,7 +110,7 @@ function ResultInfo(props: Props) {
 }
 
 function SearchCounts(props: Props) {
-  const { response, documentType, hideDocumentTypeClearButton, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
+  const { searchString, response, documentType, hideDocumentTypeClearButton, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
   const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
   const docTypesById = useMemo(() => keyBy(documentTypes, 'id'), [ documentTypes ]);
@@ -179,17 +180,19 @@ function SearchCounts(props: Props) {
           filterOrganisms={filterOrganisms}
           response={response}
           onOrganismsChange={onOrganismsChange}
+          searchString={searchString}
         />
       )}
     </div>
   )
 }
 
-function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response'>>) {
-  const { organismTree, filterOrganisms, onOrganismsChange, response } = props;
+function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response' | 'searchString'>>) {
+  const { organismTree, filterOrganisms, onOrganismsChange, response, searchString } = props;
   const initialExpandedNodes = useMemo(() => organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [], [ organismTree ]);
   const [ expansion, setExpansion ] = useState<string[]>(initialExpandedNodes);
   const [ selection, setSelection ] = useState<string[]>(filterOrganisms);
+  const [ filterTerm, setFilterTerm ] = useState<string>('');
   const pendingFilter = !isEqual(selection, filterOrganisms);
   const renderNode = useCallback((node: TreeBoxVocabNode) => {
     const count = node.children.length === 0
@@ -206,6 +209,9 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
   }, [ response ]);
   const getNodeId = useCallback((node: TreeBoxVocabNode) => node.data.term, []);
   const getNodeChildren = useCallback((node: TreeBoxVocabNode) => node.children, []);
+  const searchPredicate = useCallback((node: TreeBoxVocabNode, searchTerms: string[]) => {
+    return areTermsInString(searchTerms, node.data.display);
+  }, []);
   const showResetButton = filterOrganisms.length > 0;
   const showApplyCancelButtons = pendingFilter;
   const showButtons = showResetButton || showApplyCancelButtons;
@@ -217,6 +223,10 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
   useEffect(() => {
     setSelection(filterOrganisms);
   }, [ filterOrganisms ]);
+
+  useEffect(() => {
+    setFilterTerm('');
+  }, [ searchString ]);
 
   return (
     <React.Fragment>
@@ -241,6 +251,11 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         tree={organismTree}
         getNodeId={getNodeId}
         getNodeChildren={getNodeChildren}
+        isSearchable
+        searchTerm={filterTerm}
+        onSearchTermChange={setFilterTerm}
+        searchPredicate={searchPredicate}
+        searchBoxHelp={makeSearchHelpText("the list below")}
         renderNode={renderNode}
         expandedList={expansion}
         onExpansionChange={setExpansion}
