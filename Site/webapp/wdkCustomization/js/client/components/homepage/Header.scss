@@ -2,14 +2,6 @@
 
 $hamburger-width: 1013px;
 
-@include themify() {
-  $special-hamburger-width: themed('special-hamburger-width');
-
-  @if ($special-hamburger-width) {
-    $hamburger-width: $special-hamburger-width !global;
-  }
-}
-
 @mixin shadowed {
   text-shadow:
     1px 1px 1px #00000052,
