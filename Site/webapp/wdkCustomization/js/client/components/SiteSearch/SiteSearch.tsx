@@ -256,6 +256,7 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         onSearchTermChange={setFilterTerm}
         searchPredicate={searchPredicate}
         searchBoxHelp={makeSearchHelpText("the list below")}
+        searchBoxPlaceholder="Type a taxonomic name"
         renderNode={renderNode}
         expandedList={expansion}
         onExpansionChange={setExpansion}
