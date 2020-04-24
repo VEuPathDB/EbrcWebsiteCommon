@@ -41,7 +41,7 @@ const News = ({ twitterUrls, news, error }) => {
             {error && <div className="NewsLoadError"><em>Error loading news items.</em></div>}
             {Seq.from(news ? news.records : Seq.empty())
                 .map(({ attributes }) => (
-                  <div className="NewsEntry" key={attributes.tag}>
+                  <div className="NewsEntry" key={attributes.id}>
                     <h4 className="NewsHeadline">
                       <Link to={`${newsUrl}#${attributes.tag}`}>
                         {attributes.headline}
