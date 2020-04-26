@@ -75,7 +75,7 @@ const siteAnnouncements = [
     renderDisplay: props => {
       if ( isGenomicSite(props.projectId) && ( isStrategies(props.location) || isBasket(props.location) || isFavorites(props.location) ) ) return (
         <div key="strategies-beta">
-          Strategies, baskets and favorites you save on the beta site are not permanent. 
+          Strategies, baskets and favorites you save on this <i>beta</i> site are not permanent. 
           {
             props.projectId !== 'VectorBase' &&
             <React.Fragment>
