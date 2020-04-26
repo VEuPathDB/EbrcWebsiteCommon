@@ -5,13 +5,13 @@ import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from '
 import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
+import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } from 'ebrc-client/hooks/projectUrls';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 
 import './SiteSearch.scss';
-import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
 
 interface Props {
   loading: boolean;
@@ -380,31 +380,51 @@ function FieldsHit(props: HitProps) {
 function StrategyLinkout(props: Props) {
   const { response, documentType, filters = [], filterOrganisms = [], searchString } = props;
   const docType = response.documentTypes.find(d => d.id === documentType);
-  const organismParam = useWdkService(async wdkService => {
-    if (docType == null || !docType.isWdkRecordType) return;
-    const question = await wdkService.getQuestionAndParameters(docType.wdkSearchName);
-    return question.parameters.find(param => param.name === 'text_search_organism');
-  }, [ docType ]);
+  const question = useWdkService(async wdkService =>
+    docType == null || !docType.isWdkRecordType ? undefined :
+    wdkService.getQuestionAndParameters(docType.wdkSearchName), [ docType ]);
   if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
-    if (
-      !docType.isWdkRecordType ||
-      organismParam == null ||
-      organismParam.type !== 'multi-pick-vocabulary' 
-    ) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
-  const paramFields = docType.searchFields.flatMap(f =>
-    filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
-  const paramSelection = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts); 
-  const searchOrganismList = organismParam.displayType === 'treeBox'
-    ? getLeaves(organismParam.vocabulary, node => node.children).map(n => n.data.term)
-    : organismParam.vocabulary.map(([ term ]) => term);
-  const paramOrganisms = intersection(paramSelection, searchOrganismList);
-  const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun` +
-    `&param.document_type=${encodeURIComponent(docType.id)}` +
-    `&param.text_fields=${encodeURIComponent(JSON.stringify(paramFields))}` +
-    `&param.text_search_organism=${encodeURIComponent(JSON.stringify(paramOrganisms))}` +
-    `&param.text_expression=${encodeURIComponent(searchString)}` +
-    `&param.timestamp=${Date.now()}`;
+  if (!docType.isWdkRecordType || question == null) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
 
+  const searchParams = question.parameters.reduce((searchParams, parameter) => {
+    let value: string;
+    switch(parameter.name) {
+      case 'document_type':
+        value = docType.id;
+        break;
+      case 'text_fields':
+        const paramFields = docType.searchFields.flatMap(f =>
+          filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
+        value = JSON.stringify(paramFields);
+        break;
+      case 'text_search_organism': {
+        if (parameter.type !== 'multi-pick-vocabulary') {
+          value = parameter.initialDisplayValue || '';
+        }
+        else {
+          // take the intersection of the organism filter selection and the questions's organism param vocabulary
+          const paramSelection = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts); 
+          const searchOrganismList = parameter.displayType === 'treeBox' ? getLeaves(parameter.vocabulary, node => node.children).map(n => n.data.term)
+            : parameter.vocabulary.map(([ term ]) => term);
+          const paramOrganisms = intersection(paramSelection, searchOrganismList);
+          value = JSON.stringify(paramOrganisms);
+        }
+        break;
+      }
+      case 'text_expression':
+        value = searchString;
+        break;
+      case 'timestamp':
+        value = Date.now().toString();
+        break;
+      default:
+        value = parameter.initialDisplayValue || '';
+        break;
+    }
+    return searchParams + `&param.${parameter.name}=${encodeURIComponent(value)}`;
+  }, '');
+
+  const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun${searchParams}`;
   return <StrategyLinkoutLink strategyUrl={strategyUrl} tooltipContent="Download or data mine using the search strategy system." />;
 }
 
