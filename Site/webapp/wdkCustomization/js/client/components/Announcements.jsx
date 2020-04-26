@@ -73,15 +73,14 @@ const siteAnnouncements = [
     id: 'strategies-beta',
     category: 'degraded',
     renderDisplay: props => {
-      if (isStrategies(props.location) && isGenomicSite(props.projectId)) return (
+      if ( isGenomicSite(props.projectId) && ( isStrategies(props.location) || isBasket(props.location) || isFavorites(props.location) ) ) return (
         <div key="strategies-beta">
-          Strategies you save on the beta site are not permanent.
-          They will be lost when the site is officially released.
+          Strategies, baskets and favorites you save on the beta site are not permanent. 
           {
             props.projectId !== 'VectorBase' &&
             <React.Fragment>
               {' '}
-              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>legacy site</a> to save strategies permanently.
+              Use the <a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>legacy site</a> to save them permanently.
             </React.Fragment>
           }
         </div>
@@ -341,6 +340,12 @@ function isBetaSite() {
 
 function isStrategies(routerLocation) {
   return routerLocation.pathname.startsWith('/workspace/strategies');
+}
+function isBasket(routerLocation) {
+  return routerLocation.pathname.startsWith('/workspace/basket');
+}
+function isFavorites(routerLocation) {
+  return routerLocation.pathname.startsWith('/workspace/favorites');
 }
 
 function isGenomicHomePage(projectId, routerLocation) {
