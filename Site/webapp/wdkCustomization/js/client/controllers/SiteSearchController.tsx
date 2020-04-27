@@ -193,7 +193,7 @@ function useSiteSearchResponse(searchSettings: SearchSettings, resultSettings: R
           offset,
           numRecords
         },
-        restrictToProject: (projectId === 'EuPathDB' ? undefined : projectId),
+        restrictToProject: (projectId === 'EuPathDB' ? 'VEuPathDB' : projectId),
         restrictMetadataToOrganisms: allOrganisms,
         restrictSearchToOrganisms: organisms.length === 0 ? allOrganisms : organisms,
         documentTypeFilter: documentType == null ? undefined : {
