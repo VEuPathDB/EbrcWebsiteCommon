@@ -29,7 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       descriptionCollapsed: true,
       dataTableCollapsed: true,
       coverageCollapsed: true,
-      showLogScale: (this.props.rowData.assay_type == 'RNA-seq')? false:true,
+      showLogScale: (this.props.rowData.assay_type == 'RNA-Seq')? false:true,
       showSpecialGraph: this.props.rowData.has_special_jbrowse,
       graphId: graphIds[0],
       contXAxis: 'na',
@@ -161,7 +161,7 @@ export default class DatasetGraph extends React.PureComponent {
     let imgUrl = baseUrlWithMetadata + '&fmt=svg';
     // let pngUrl = baseUrlWithMetadata + '&fmt=png';
     let covImgUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + '%2C' + dataset_name ;
-    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseIntUrl + dataset_name;
+    let covImgJbrowseUrl = dataTable && dataTable.record.attributes.CoverageJbrowseUrl + '%2C' + dataset_name;
 
     let specialImgUrl = dataTable && dataTable.record.attributes.specialJbrowseUrl;
 
@@ -233,13 +233,13 @@ hook: HostResponseGraphs
          {graphId !== source_id? <div><b><font color="firebrick">WARNING</font></b>: This Gene ({source_id} ) does not have data for this experiment. Instead, we are showing data for this same gene(s) from the reference strain for this species. This may or may NOT accurately represent the gene you are interested in. </div>
            : null}
 
-           {assay_type == 'RNA-seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl && !isUserDataset ?
+           {assay_type == 'RNA-Seq'  && (paralog_number > 0) && module !== 'SpliceSites' && covImgUrl && !isUserDataset ?
              <div>
              <b><font color="firebrick">Warning: This gene has {safeHtml(paralog_number, {}, 'b')} paralogs!</font></b>
 <br></br>Please consider non-unique aligned reads in the expression graph and coverage plots in the genome browser (<a href={tutorial_link}><b>tutorial</b></a>).</div>
           : null}
 
-          {assay_type == 'RNA-seq' && module !== 'SpliceSites' && !isUserDataset && covImgUrl ?
+          {assay_type == 'RNA-Seq' && module !== 'SpliceSites' && !isUserDataset && covImgUrl ?
             <CollapsibleSection
               id={dataset_name + "Coverage"}
               className="eupathdb-GbrowseContext"

@@ -1136,7 +1136,7 @@ sub new {
 
   $self->setPartName('transcription.summary');
   $self->setYaxisLabel('');
-  $self->setPlotTitle("RNASeq Transcription Summary - $id");
+  $self->setPlotTitle("RNA-Seq Transcription Summary - $id");
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
@@ -1197,7 +1197,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  xref=\"paper\", 
                  y=1.1, 
                  x=0, 
-                 text=\"RNASeq Transcription Summary - $id\", 
+                 text=\"RNA-Seq Transcription Summary - $id\", 
                  showarrow=F, 
                  font=list(size=14,
                            color=\"red\")) %>%
