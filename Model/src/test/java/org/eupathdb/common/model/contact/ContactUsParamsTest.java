@@ -1,9 +1,9 @@
 package org.eupathdb.common.model.contact;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.gusdb.wdk.model.Attachment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ContactUsParamsTest {
 
@@ -15,7 +15,7 @@ public class ContactUsParamsTest {
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
     Attachment[] attachments = new Attachment[] {};
-    
+
     ContactUsParams params = new ContactUsParams(
       subject,
       reporterEmail,
@@ -24,7 +24,7 @@ public class ContactUsParamsTest {
       message,
       attachments
     );
-    
+
     assertSame(subject, params.subject);
     assertSame(reporterEmail, params.reporterEmail);
     assertSame(ccEmails, params.ccEmails);
