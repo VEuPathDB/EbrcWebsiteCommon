@@ -20,31 +20,28 @@ sub run {
   push @{ $ua->requests_redirectable }, 'POST';
 
 
-
-  my $server_endpoint = "http://$lcProjectId.org/a/service/answer";
+#TODO revisit once beta sites are live
+  my $server_endpoint = "http://beta.$lcProjectId.org/a/service/record-types/dataset/searches/AllDatasets/reports/standard";
 
   my $req = HTTP::Request->new(POST => $server_endpoint);
   $req->header('content-type' => 'application/json');
 
   my $post_data = "{
-  'answerSpec': {
-    'questionName': 'DatasetQuestions.AllDatasets',
-    'parameters': {},
-    'filters': []
+  \"reportConfig\": {
+    \"pagination\": {
+      \"offset\": 0,
+      \"numRecords\": 2000
+    },
+    \"sorting\": [{
+      \"attributeName\": \"primary_key\",
+      \"direction\": \"ASC\"
+    }],
+    \"tables\": [
+      \"ExampleGraphs\"
+    ]
   },
-  'formatting': {
-    'formatConfig': {
-      'pagination': {
-        'offset': 0,
-        'numRecords': 10
-      },
-      'tables': [
-        'ExampleGraphs'
-      ]
-    }
-  }
-}
-";
+  \"searchConfig\": {\"parameters\": {}}
+}";
 
   my @urls;
 
@@ -58,7 +55,7 @@ sub run {
 
   if ($resp->is_success) {
     my $message = $resp->decoded_content;
-    # print "Received reply: $message\n";
+#     print "Received reply: $message\n";
 
 # experimentIdentifier,species,displayName,description,type,uri,significance
     # parse JSON string
