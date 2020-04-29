@@ -74,8 +74,9 @@ interface WebAppMenuItem<T> extends HeaderMenuItemBase<T> {
 
 interface ExternalLinkMenuItem<T> extends HeaderMenuItemBase<T> {
   type: 'externalLink',
-  url: string
-  target?: string
+  url: string;
+  rel?: string;
+  target?: string;
 }
 
 interface SubmenuItem<T> extends HeaderMenuItemBase<T> {
@@ -311,7 +312,8 @@ const HeaderMenuItemContent = ({
             </a>
           : item.type === 'externalLink'
           ? <a title={item.tooltip}
-              href={item.url} 
+              href={item.url}
+              rel={item.rel} 
               target={item.target}
               onClick={dismissSubmenus}
             >

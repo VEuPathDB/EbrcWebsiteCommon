@@ -5,7 +5,8 @@ import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
-import { communitySite, projectId, twitterUrl, twitterUrl2 } from 'ebrc-client/config';
+import { twitterUrl, twitterUrl2 } from 'ebrc-client/config';
+import { useCommunitySiteUrl, useDisplayName } from 'ebrc-client/hooks/staticData';
 
 import { SocialMediaControls } from './SocialMediaControls';
 import { combineClassNames } from './Utils';
@@ -13,6 +14,8 @@ import { combineClassNames } from './Utils';
 import 'ebrc-client/App/Showcase/Showcase.scss';
 
 import './NewsPane.scss';
+
+const NEWS_URL_SEGMENT = '/news.json';
 
 const cx = makeClassNameHelper('ebrc-NewsPane');
 
@@ -37,30 +40,34 @@ type Props = {
 };
 
 export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Props) => {
+  const communitySiteUrl = useCommunitySiteUrl();
+  const displayName = useDisplayName();
   const [ newsSidebarState, setNewsSidebarState ] = useState<NewsState>({ status: 'idle', news: null, error: null });
 
   useEffect(() => {
     let cancelLoading = false;
 
-    setNewsSidebarState({ status: 'loading', ...newsSidebarState });
+    if (communitySiteUrl != null && displayName != null) {
+      setNewsSidebarState({ status: 'loading', ...newsSidebarState });
 
-    fetch(`https://${communitySite}/${projectId}/news.json`, { mode: 'cors' }).then(res=> res.json()).then(
-      news => {
-        if (!cancelLoading) {
-          setNewsSidebarState({ status: 'idle', news, error: null });
+      fetch(`https://${communitySiteUrl}${displayName}${NEWS_URL_SEGMENT}`, { mode: 'cors' }).then(res=> res.json()).then(
+        news => {
+          if (!cancelLoading) {
+            setNewsSidebarState({ status: 'idle', news, error: null });
+          }
+        },
+        error => {
+          if (!cancelLoading) {
+            setNewsSidebarState({ status: 'idle', news: null, error });
+          }
         }
-      },
-      error => {
-        if (!cancelLoading) {
-          setNewsSidebarState({ status: 'idle', news: null, error });
-        }
-      }
-    );
+      );
+    }
 
     return () => {
       cancelLoading = true;
     };
-  }, []);
+  }, [ communitySiteUrl, displayName ]);
 
   return (
     <aside className={combineClassNames(cx('', isNewsExpanded ? 'news-expanded' : 'news-collapsed'), containerClassName)}>
