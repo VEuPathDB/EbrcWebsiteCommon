@@ -5,8 +5,7 @@ import { IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { News } from 'ebrc-client/App/NewsSidebar';
-import { twitterUrl, twitterUrl2 } from 'ebrc-client/config';
-import { useCommunitySiteUrl, useDisplayName } from 'ebrc-client/hooks/staticData';
+import { communitySite, projectId, twitterUrl, twitterUrl2 } from 'ebrc-client/config';
 
 import { SocialMediaControls } from './SocialMediaControls';
 import { combineClassNames } from './Utils';

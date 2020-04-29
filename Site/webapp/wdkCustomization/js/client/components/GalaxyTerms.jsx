@@ -24,7 +24,7 @@ export default function GalaxyTerms(props) {
 
       <div className="eupathdb-GalaxyWelcomeGrid">
         <div>
-          <p>Use Galaxy to analyze RNA-seq, ChIP-seq, Variants, and many other data sets.</p>
+          <p>Use Galaxy to analyze RNA-Seq, ChIP-Seq, Variants, and many other data sets.</p>
           <p>Some analysis results will be available as tracks and searches in {displayName}.</p>
         </div>
         <div>
