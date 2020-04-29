@@ -20,8 +20,7 @@ sub run {
   push @{ $ua->requests_redirectable }, 'POST';
 
 
-#TODO revisit once beta sites are live
-  my $server_endpoint = "http://beta.$lcProjectId.org/a/service/record-types/dataset/searches/AllDatasets/reports/standard";
+  my $server_endpoint = "http://$lcProjectId.org/a/service/record-types/dataset/searches/AllDatasets/reports/standard";
 
   my $req = HTTP::Request->new(POST => $server_endpoint);
   $req->header('content-type' => 'application/json');
