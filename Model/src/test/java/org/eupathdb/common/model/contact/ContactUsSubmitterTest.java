@@ -16,14 +16,13 @@ public class ContactUsSubmitterTest {
 
   @Test
   public void testCreateAndSendEmail() throws WdkModelException {
-    String subject = "My brain hurts!";
-    String reporterEmail = "johndoe@aol.com";
-    String referrer = "http://brokenpage.com";
-    String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
-    String message = "If you could make my brain stop hurting, that'd be greeeeat.";
-    Attachment[] attachments = new Attachment[] {};
-
-    ContactUsParams params = new ContactUsParams(
+    var subject = "My brain hurts!";
+    var reporterEmail = "johndoe@aol.com";
+    var referrer = "http://brokenpage.com";
+    var ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
+    var message = "If you could make my brain stop hurting, that'd be greeeeat.";
+    var attachments = new Attachment[] {};
+    var params = new ContactUsParams(
         subject,
         reporterEmail,
         referrer,

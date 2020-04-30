@@ -13,8 +13,8 @@ import static org.testng.Assert.assertTrue;
 public class SmokeTests {
 
   static final WebClient browser;
-  public String baseurl;
-  public String webappname;
+  public String baseUrl;
+  public String webAppName;
 
   static {
     browser = new WebClient();
@@ -26,8 +26,8 @@ public class SmokeTests {
   }
 
   public SmokeTests() {
-    baseurl = System.getProperty("baseurl");
-    webappname = System.getProperty("webappname");
+    baseUrl = System.getProperty("baseurl");
+    webAppName = System.getProperty("webappname");
   }
 
   /**
@@ -38,35 +38,35 @@ public class SmokeTests {
   @Test(description = "Assert HTTP header status is 200 OK for home page.", groups = {
     "_" })
   public void HomePage_HttpHeaderStatusIsOK() throws Exception {
-    var url = baseurl + "/" + webappname + "/";
+    var url = baseUrl + "/" + webAppName + "/";
     assertHeaderStatusMessageIsOK(url);
   }
 
   @Test(description = "Assert HTTP header status is 200 OK for _test.jsp page.", groups = {
     "deployment" })
   public void TestJsp_HttpHeaderStatusIsOK() throws Exception {
-    var url = baseurl + "/" + webappname + "/wdk/jsp/_test.jsp";
+    var url = baseUrl + "/" + webAppName + "/wdk/jsp/_test.jsp";
     assertHeaderStatusMessageIsOK(url);
   }
 
   @Test(description = "Assert HTTP header status is 200 OK for WsfService url as test of Axis installation.", groups = {
     "webservice" })
   public void WsfServicePage_HttpHeaderStatusIsOK() throws Exception {
-    var url = baseurl + "/" + webappname + Utilities.WSF_PATH;
+    var url = baseUrl + "/" + webAppName + Utilities.WSF_PATH;
     assertHeaderStatusMessageIsOK(url);
   }
 
   @Test(description = "Assert HTTP header status is 200 OK for News url as test of valid XML record.", groups = {
     "xmlrecord" })
   public void News_HttpHeaderStatusIsOK() throws Exception {
-    var url = baseurl + "/" + webappname + Utilities.NEWS_PATH;
+    var url = baseUrl + "/" + webAppName + Utilities.NEWS_PATH;
     assertHeaderStatusMessageIsOK(url);
   }
 
   @Test(description = "Assert HTTP header status is 200 OK for Methods url as test of valid XML record.", groups = {
     "xmlrecord" })
   public void Methods_HttpHeaderStatusIsOK() throws Exception {
-    var url = baseurl + "/" + webappname + Utilities.METHODS_PATH;
+    var url = baseUrl + "/" + webAppName + Utilities.METHODS_PATH;
     assertHeaderStatusMessageIsOK(url);
   }
 
@@ -77,9 +77,9 @@ public class SmokeTests {
   throws Exception {
     if (geneId == null)
       throw new Exception("unable to get gene id for testing");
-    var url = baseurl
+    var url = baseUrl
       + "/"
-      + webappname
+      + webAppName
       + Utilities.GENE_RECORD_PATH_TMPL
       + geneId;
     assertHeaderStatusMessageIsOK(url);
@@ -88,7 +88,7 @@ public class SmokeTests {
   @Test(description = "Assert valid JSON from /dashboard/json API.", groups = {
     "dashboard" })
   public void Dashboard_JsonApiIsValid() throws Exception {
-    var url = baseurl + "/dashboard/json";
+    var url = baseUrl + "/dashboard/json";
     var page = browser.getPage(url);
     var response = page.getWebResponse();
     assertEquals(response.getStatusMessage(), "OK",
@@ -102,7 +102,7 @@ public class SmokeTests {
   @Test(description = "Assert valid XML from /dashboard/xml API.", groups = {
     "dashboard" })
   public void Dashboard_XmlApiIsValid() throws Exception {
-    var url = baseurl + "/dashboard/xml";
+    var url = baseUrl + "/dashboard/xml";
     var page = browser.getPage(url);
     var response = page.getWebResponse();
     assertEquals(response.getStatusMessage(), "OK",
@@ -120,7 +120,7 @@ public class SmokeTests {
   @DataProvider(name = "defaultGeneId")
   private Object[][] getDefaultGeneIdFromQuickSearchForm() throws Exception {
     try {
-      var url = baseurl + "/";
+      var url = baseUrl + "/";
       var request = new WebRequest(new URL(url), HttpMethod.GET);
       var page = (HtmlPage) browser.getPage(request);
       for (var element : page.getElementsByTagName("input")) {
