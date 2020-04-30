@@ -60,4 +60,3 @@ password:
 modelprop:
   REDMINE_TO_EMAIL: 'redmine@apidb.org'
   REDMINE_FROM_EMAIL: 'websitesupportform@apidb.org'
-  COMMUNITY_SITE: //static-content.veupathdb.org/
