@@ -47,13 +47,6 @@ public class SmokeTests {
         assertHeaderStatusMessageIsOK(url);
     }
 
-    @Test(description="Assert HTTP header status is 200 OK for _test.jsp page.",
-          groups = { "deployment" })
-    public void TestJsp_HttpHeaderStatusIsOK() throws Exception {
-        String url = baseurl + "/" + webappname + "/wdk/jsp/_test.jsp";
-        assertHeaderStatusMessageIsOK(url);
-    }
-
     @Test(description="Assert HTTP header status is 200 OK for WsfService url as test of Axis installation.",
           groups = { "webservice" })
     public void WsfServicePage_HttpHeaderStatusIsOK() throws Exception {

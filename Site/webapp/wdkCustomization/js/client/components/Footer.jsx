@@ -68,11 +68,6 @@ export default enhance(function Footer(props) {
 
       <div>
         <div>
-          <a href="http://code.google.com/p/strategies-wdk/">
-            <img width="120" src={webAppUrl + '/wdk/images/stratWDKlogo.png'} />
-          </a>
-        </div>
-        <div>
           Please <NewWindowLink href={webAppUrl + '/app/contact-us'}>Contact Us</NewWindowLink> with any questions or comments
         </div>
       </div>

@@ -1,5 +1,4 @@
 var path = require('path');
-var wdkRoot = path.resolve(__dirname, '../../WDKWebsite/View');
 var baseConfig = require('../../install/base.webpack.config');
 
 var scriptRoot = path.join(__dirname, '../../WDKClient/Dependencies/lib');
@@ -32,7 +31,6 @@ var alias = scripts.reduce(function(alias, script) {
   alias[script.alias + '$'] = script.path;
   return alias;
 }, {
-  wdk: wdkRoot + '/webapp/wdk',
   'wdk-client': path.resolve(__dirname, '../../WDKClient/Client/src'),
   eupathdb: __dirname + '/webapp',
   site: process.cwd() + '/webapp',

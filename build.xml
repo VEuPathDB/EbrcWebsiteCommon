@@ -4,14 +4,14 @@
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <import file="${projectsDir}/WDKWebsite/build.xml" />
+  <import file="${projectsDir}/WDK/build.xml" />
 
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-Installation" depends="WDKWebsite-Installation,
+  <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
                                                         EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
@@ -71,7 +71,7 @@
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
-  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDKWebsite-WebInstallation,
+  <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
                                                            EbrcWebsiteCommon-Installation,
                                                            EbrcWebsiteCommon/Site-WebInstallation">
   </target>
@@ -106,10 +106,8 @@
   <!-- Target to be used by implementing sites -->
   <target name="eupathWebComponentInstall">
     <echo message="Building ${project}/${component} assets"/>
-    <ant target="eupath-merge-tags"/>
     <ant target="defaultWebComponentInstall"/>
     <ant target="siteLog4j"/>
-    <ant target="generate-assets-manifest"/>
   </target>
 
   <target name="siteLog4j">
@@ -136,25 +134,6 @@
              token="@WEBAPP@" value="${webapp}" />
   </target>
 
-  <target name="eupath-merge-tags">
-    <mkdir dir="${webappTargetDir}/WEB-INF/tags/site" />
-    <delete>
-      <fileset dir="${webappTargetDir}/WEB-INF/tags/site" includes="*.tag" />
-    </delete>
-    <copy todir="${webappTargetDir}/WEB-INF/tags/site">
-      <fileset
-        dir="${projectsDir}/EbrcWebsiteCommon/Site/webapp/WEB-INF/tags/site-common">
-        <include name="*.tag" />
-      </fileset>
-    </copy>
-    <copy todir="${webappTargetDir}/WEB-INF/tags/site" overwrite="true">
-      <fileset
-        dir="${projectsDir}/${project}/${component}/webapp/WEB-INF/tags/site">
-        <include name="*.tag" />
-      </fileset>
-    </copy>
-  </target>
-
   <target name="dashboardDoc" if="dashboard.present">
     <echo message="Compiling phpdoc" />
     <!-- errors to /dev/null due to Smarty bug: https://bugzilla.redhat.com/show_bug.cgi?id=1352882 -->
@@ -171,35 +150,6 @@
       <arg line="-o HTML:Smarty:PHP" />
       <arg value="-q" />
     </exec>
-  </target>
-
-  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
-  <!-- Projects which depend on this one should call this after defaultWebComponentInstal -->
-  <!-- oooooooooooooooooooooooooooooooooooo IMPORTANT ooooooooooooooooooooooooooooooooooo -->
-  <target name="generate-assets-manifest">
-
-    <echo>Generating assets-manifest.json</echo>
-
-    <apply dir="${webappTargetDir}"
-           relative="true"
-           executable="node"
-           parallel="true"
-           verbose="true"
-           output="${webappTargetDir}/assets-manifest.json">
-      <arg
-        line="${projectsDir}/EbrcWebsiteCommon/Site/scripts/generateAssetsManifest.js" />
-      <fileset dir="${webappTargetDir}" casesensitive="false">
-        <include name="**/*.ico" />
-        <include name="**/*.js" />
-        <include name="**/*.css" />
-        <include name="**/*.jpg" />
-        <include name="**/*.jpeg" />
-        <include name="**/*.png" />
-        <include name="**/*.gif" />
-        <exclude name="jbrowse/**" />
-      </fileset>
-    </apply>
-
   </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
