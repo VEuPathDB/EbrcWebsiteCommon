@@ -9,7 +9,6 @@
 
   <modules>
     <module>Model</module>
-    <module>Watar</module>
     <module>Site</module>
   </modules>
 
