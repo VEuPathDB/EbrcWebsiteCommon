@@ -15,8 +15,7 @@
                                                         EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
-                                                        EbrcWebsiteCommon/View-Installation,
-                                                        EbrcWebsiteCommon/Watar-Installation">
+                                                        EbrcWebsiteCommon/View-Installation">
     <ant target="defaultProjectInstall">
       <property name="project" value="EbrcWebsiteCommon" />
     </ant>
@@ -60,12 +59,6 @@
     </ant>
   </target>
 
-  <target name="EbrcWebsiteCommon/Watar-Installation">
-    <ant target="defaultComponentInstall">
-      <property name="project" value="EbrcWebsiteCommon" />
-      <property name="component" value="Watar" />
-    </ant>
-  </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooo  Web Installation  oooooooooooooooooooooooo -->
