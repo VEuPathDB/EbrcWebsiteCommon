@@ -126,60 +126,17 @@ sub makeRPlotString {
     
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE';
   my $isWidget = lc($self->getFormat()) eq 'html' ? 'TRUE' : 'FALSE';   
- 
   my $colors = $self->getColors();
         
-  my $defaultPch = [ '15', '16', '17', '18', '7:10', '0:6'];
-    
-  my $pointsPch = $self->getPointsPch();
-  $pointsPch = $defaultPch unless $pointsPch;
-    
-  my ($profileFiles, $elementNamesFiles, $stderrFiles);
+  my ($profileUrls, $elementNamesUrls, $stderrUrls);
     
   my $blankGraph = $self->blankPlotPart();
     
   eval{
-	($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
-    };
-  if($@) {
-	return $blankGraph;
-    }
+	($profileUrls, $elementNamesUrls, $stderrUrls) = $self->makeServiceUrlsForR($idType);
+  };
     
-  my $profileSets = $self->getProfileSets();
-  my @skipProfileSets;
-  my $skipped = 0;
-  
-  for(my $i = 0; $i < scalar @$profileSets; $i++) {
-      my $profileSet = $profileSets->[$i];
-	
-      if(scalar @{$profileSet->errors()} > 0) {
-	  $skipProfileSets[$i] = "TRUE";
-	  $skipped++;
-	  if ($skipped == 1) {
-	      splice @$colors, $i, 1;
-	   } else {
-		#this because the size/ indexing of $colors shrinks as values removed.
-	       my $j = $i - $skipped + 1;
-	       splice @$colors, $j, 1;
-	   }
-	   next;
-	}
-	
-	$skipProfileSets[$i] = "FALSE";
-   }
-  #print STDERR Dumper($colors);
-  if(scalar @$profileSets == $skipped) {
-      return $blankGraph;
-  }
-    
-  my @profileFileStrings = split(/,/, $profileFiles);
-  my $numProfiles = scalar @profileFileStrings;
-    
-  my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
-  my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
-    
-  my $pointsPchString = EbrcWebsiteCommon::View::GraphPackage::Util::rNumericVectorFromArray($pointsPch, 'points.pch');
     
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
@@ -356,14 +313,12 @@ sub makeRPlotString {
 # ---------------------------- LINE PLOT ----------------------------
 
 
-$profileFiles
-$elementNamesFiles
+$profileUrls
+$elementNamesUrls
 $colorsString
-$pointsPchString
 $sampleLabelsString
-$stderrFiles
+$stderrUrls
 $legendLabelsString
-$skipProfilesString
 $profileTypesString
 
 
@@ -372,8 +327,8 @@ is.thumbnail=$isThumbnail;
 
 #-------------------------------------------------
 
-if(length(profile.files) != length(element.names.files)) {
-  stop(\"profile.files length not equal to element.names.files length\");
+if(length(profile.urls) != length(element.names.urls)) {
+  stop(\"profile.urls length not equal to element.names.urls length\");
 }
 
 
@@ -386,21 +341,21 @@ y.max = $yMax;
 
 profile.df.full = data.frame();
 
-for(ii in 1:length(profile.files)) {
+for(ii in 1:length(profile.urls)) {
   skip.stderr = FALSE;
 
-  if(skip.profiles[ii]) {
-    next;
-  };
-
-  profile.df = read.table(profile.files[ii], header=T, sep=\"\\t\");
+  profile.df = stream_in(url(URLencode(profile.urls[ii])));
+  if (length(profile.df) == 0) {
+    the.colors <- the.colors[-ii]
+    next
+  }
   profile.df\$Group.1=NULL
+  if (\"VALUE\" %in% names(profile.df)) {
+    profile.df\$VALUE <- as.numeric(profile.df\$VALUE)
+  }
 
   if(!is.null(profile.df\$ELEMENT_ORDER)) {
     eo.count = length(profile.df\$ELEMENT_ORDER);
-    if(!is.numeric(profile.df\$ELEMENT_ORDER)) {
-      stop(\"Element order must be numeric for aggregation\");
-    }
 
    if (!$prtcpnt_sum) {
       profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
@@ -412,17 +367,21 @@ for(ii in 1:length(profile.files)) {
     if (!is.null(legend.label)) {
       profile.df\$LEGEND = legend.label[ii];
     }
-    profile.df\$PROFILE_FILE = profile.files[ii];
+    profile.df\$PROFILE_FILE = profile.urls[ii];
     profile.df\$PROFILE_TYPE = profile.types[ii];
   }
 
-  if (element.names.files[ii] != \"\") {
-    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\", quote=\"\");
+  if (element.names.urls[ii] != \"\") {
+    element.names.df = stream_in(url(URLencode(element.names.urls[ii])));
+    if (length(element.names.df) == 0) {
+      the.colors <- the.colors[-ii]
+      next
+    }
 
     if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
+      message(paste(\"Warning: profile file \", profile.urls[ii], \" contains more rows than element names file\", element.names.urls[ii], \". Additional entries will be ignored.\"));
     } else if(length(element.names.df\$ELEMENT_ORDER) > length(profile.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: element names file \", element.names.files[ii], \" contains more rows than profile file\", profile.files[ii], \". Additional entries will be ignored.\"));
+      message(paste(\"Warning: element names file \", element.names.urls[ii], \" contains more rows than profile file\", profile.urls[ii], \". Additional entries will be ignored.\"));
     }
 
     profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
@@ -440,11 +399,14 @@ for(ii in 1:length(profile.files)) {
   profile.df\$ELEMENT_NAMES_NUMERIC = element.names.numeric;
 
 
-  if(!skip.stderr && !is.na(stderr.files[ii]) && stderr.files[ii] != '') {
-    stderr.tmp = read.table(stderr.files[ii], header=T, sep=\"\\t\");
-    profile.df\$STDERR = stderr.tmp\$VALUE;
-  }
-  else {
+  if(!skip.stderr && !is.na(stderr.urls[ii]) && stderr.urls[ii] != '') {
+    stderr.tmp = stream_in(url(URLencode(stderr.urls[ii])));
+    if (length(stderr.tmp) == 0) {
+      the.colors <- the.colors[-ii]
+      next
+    }
+    profile.df\$STDERR = as.numeric(stderr.tmp\$VALUE);
+  } else {
     profile.df\$STDERR = NA;
   }
 
@@ -453,503 +415,500 @@ for(ii in 1:length(profile.files)) {
   profile.df.full = rbind.fill(profile.df.full, profile.df);
 }
 
-#if no y values, make a placeholder (ex: timelines)
-if (!\"VALUE\" %in% colnames(profile.df.full)) {
-  profile.df.full\$VALUE = NA
-}
+if(nrow(profile.df.full) == 0){
+  d = data.frame(VALUE=0.5, LABEL=\"None\");
+  gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
+} else {
 
-#allow adjustments
-$rAdjustProfile
-
-if ($prtcpnt_sum) {
-  if (\"STATUS\" %in% colnames(profile.df.full)) {
-    status.df = completeDF(profile.df.full, \"STATUS\");
+  #if no y values, make a placeholder (ex: timelines)
+  if (!\"VALUE\" %in% colnames(profile.df.full)) {
+    profile.df.full\$VALUE = NA
   }
-  if (\"DURATION\" %in% colnames(profile.df.full)) {
-    annotate.df = completeDF(profile.df.full, \"DURATION\");
-  }
-  if (\"EVENT\" %in% colnames(profile.df.full)) {
-    event.df = completeDF(profile.df.full, \"EVENT\")
-  }
-  if (any(grepl(\"WHO Standards\", unique(profile.df.full\$LEGEND)))){
-     generic.df = completeDF(profile.df.full, \"VALUE\")
-
-     who.df = generic.df[grepl(\"WHO Standards\", generic.df\$LEGEND),]
-
-     profile.df.clean = generic.df[!(grepl(\"WHO Standards\", generic.df\$LEGEND)),]
-     
-  }else{
-
-     profile.df.clean = completeDF(profile.df.full, \"VALUE\");
-  }
-
-}
-
-if(\"FACET\" %in% colnames(profile.df.full)) {
-  profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
-}
-if (!exists(\"profile.is.numeric\")) {
-  profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
-}
-
-#will need to look again at this if ever dates come in with a different format than R's default.
-profile.is.date = all(!is.na(as.Date(as.character(profile.df.full\$ELEMENT_NAMES), format='%Y-%m-%d')));
-
-coord.cartesian = $coordCartesian
-if($removeNaN){
-  if(profile.is.numeric) {
-    x.max = max(profile.df.full\$ELEMENT_NAMES_NUMERIC);
-    x.min = min(profile.df.full\$ELEMENT_NAMES_NUMERIC);
-    profile.df.full = completeDF(profile.df.full, \"VALUE\");
-    coord.cartesian = TRUE;
-  } else {
-    profile.df.full = completeDF(profile.df.full, \"VALUE\");
-  }
-}
-
-if (!all(is.na(profile.df.full\$VALUE))) {
+  
+  #allow adjustments
+  $rAdjustProfile
+  
   if ($prtcpnt_sum) {
-    profile.df.full = profile.df.clean;
+    if (\"STATUS\" %in% colnames(profile.df.full)) {
+      status.df = completeDF(profile.df.full, \"STATUS\");
+    }
+    if (\"DURATION\" %in% colnames(profile.df.full)) {
+      annotate.df = completeDF(profile.df.full, \"DURATION\");
+    }
+    if (\"EVENT\" %in% colnames(profile.df.full)) {
+      event.df = completeDF(profile.df.full, \"EVENT\")
+    }
+    if (any(grepl(\"WHO Standards\", unique(profile.df.full\$LEGEND)))){
+       generic.df = completeDF(profile.df.full, \"VALUE\")
+  
+       who.df = generic.df[grepl(\"WHO Standards\", generic.df\$LEGEND),]
+  
+       profile.df.clean = generic.df[!(grepl(\"WHO Standards\", generic.df\$LEGEND)),]
+       
+    }else{
+  
+       profile.df.clean = completeDF(profile.df.full, \"VALUE\");
+    }
+  
   }
-}
-
-if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
-  myX <- \"CONTXAXIS\"
-} else if (profile.is.numeric) {
-  myX <- \"ELEMENT_NAMES_NUMERIC\"
-} else {
-  myX <- \"ELEMENT_NAMES\"
-}
-
-hideLegend = FALSE
-if (is.null(profile.df.full\$LEGEND)) {
-  profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
-  hideLegend = TRUE
-}
-
-#if ($isWidget) {
-#  profile.df.full <- highlight_key(profile.df.full, ~LEGEND, \"Select Legend entry\")
-#  profile.df.full <- SharedData\$new(profile.df.full)
-#}
-
-gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
-
-if ($prtcpnt_sum) {
-  if (all(is.na(profile.df.full\$VALUE))) {
-    #this for the case where no real y values are to be plotted (ex: timelines)
-    y.max = 2;
-    y.min = 0;
-    y.scale = 1;
+  
+  if(\"FACET\" %in% colnames(profile.df.full)) {
+    profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
+  }
+  if (!exists(\"profile.is.numeric\")) {
+    profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
+  }
+  
+  #will need to look again at this if ever dates come in with a different format than R's default.
+  profile.is.date = all(!is.na(as.Date(as.character(profile.df.full\$ELEMENT_NAMES), format='%Y-%m-%d')));
+  
+  coord.cartesian = $coordCartesian
+  if($removeNaN){
+    if(profile.is.numeric) {
+      x.max = max(profile.df.full\$ELEMENT_NAMES_NUMERIC);
+      x.min = min(profile.df.full\$ELEMENT_NAMES_NUMERIC);
+      profile.df.full = completeDF(profile.df.full, \"VALUE\");
+      coord.cartesian = TRUE;
+    } else {
+      profile.df.full = completeDF(profile.df.full, \"VALUE\");
+    }
+  }
+  
+  if (!all(is.na(profile.df.full\$VALUE))) {
+    if ($prtcpnt_sum) {
+      profile.df.full = profile.df.clean;
+    }
+  }
+  
+  if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
+    myX <- \"CONTXAXIS\"
+  } else if (profile.is.numeric) {
+    myX <- \"ELEMENT_NAMES_NUMERIC\"
   } else {
-     #may have to change this from determining scale, to determine the order of magnitude of the scale
-     #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
-     y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
-     y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
-     y.scale = abs(round((y.max - y.temp) / 3));
-     if (y.scale < 1) {
-       y.scale = 1;
-     }
-   y.min = y.temp - (2.25 * y.scale);
- }
-} else {
-  y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
-  y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
-}
-
-if ($adjustXYScalesTogether) {
-   x.max = max(as.numeric(x.max), max(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
-   x.min = min(as.numeric(x.min), min(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
-   maxValue <- max(c(abs(y.max),abs(y.min),abs(x.max),abs(x.min)));
-   y.max=x.max=maxValue;
-   y.min=x.min=-1*maxValue;
-   if ($antisenseFoldChange>0) {y.end=y.max}
-   else {y.end=y.min}
-   if ($senseFoldChange>0) {x.end=x.max}
-   else {x.end=x.min}
-   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=$senseFoldChange,yend=y.end),linetype=\"dashed\",color=\"red\");
-   gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=x.end,yend=$antisenseFoldChange),linetype=\"dashed\",color=\"red\");
-   gp = gp + geom_abline(intercept=0,slope=1,linetype=\"dashed\",color=\"red\");
-}
-
-
-if($isSVG | $isWidget) {
-  useTooltips=TRUE;
-}else{
-  useTooltips=FALSE;
-}
-
-if (!$prtcpnt_timeline) {
-  if (!$forceNoPoints) {
-    if(useTooltips){
-      if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
-	if ($isWidget) {
-          gp = gp + geom_point(aes(text=TOOLTIP))
+    myX <- \"ELEMENT_NAMES\"
+  }
+  
+  hideLegend = FALSE
+  if (is.null(profile.df.full\$LEGEND)) {
+    profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
+    hideLegend = TRUE
+  }
+  
+  #if ($isWidget) {
+  #  profile.df.full <- highlight_key(profile.df.full, ~LEGEND, \"Select Legend entry\")
+  #  profile.df.full <- SharedData\$new(profile.df.full)
+  #}
+  
+  gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
+  
+  if ($prtcpnt_sum) {
+    if (all(is.na(profile.df.full\$VALUE))) {
+      #this for the case where no real y values are to be plotted (ex: timelines)
+      y.max = 2;
+      y.min = 0;
+      y.scale = 1;
+    } else {
+       #may have to change this from determining scale, to determine the order of magnitude of the scale
+       #ex. instead of finding diff between max and min, find number of places (10s, 100s etc)
+       y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE) + 1;
+       y.temp = min(y.min, min(profile.df.full\$VALUE, na.rm=T), na.rm=TRUE);
+       y.scale = abs(round((y.max - y.temp) / 3));
+       if (y.scale < 1) {
+         y.scale = 1;
+       }
+     y.min = y.temp - (2.25 * y.scale);
+   }
+  } else {
+    y.max = max(y.max, max(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
+    y.min = min(y.min, min(profile.df.full\$VALUE, na.rm=TRUE), na.rm=TRUE);
+  }
+  
+  if ($adjustXYScalesTogether) {
+     x.max = max(as.numeric(x.max), max(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+     x.min = min(as.numeric(x.min), min(profile.df.full\$CONTXAXIS, na.rm=TRUE), na.rm=TRUE);
+     maxValue <- max(c(abs(y.max),abs(y.min),abs(x.max),abs(x.min)));
+     y.max=x.max=maxValue;
+     y.min=x.min=-1*maxValue;
+     if ($antisenseFoldChange>0) {y.end=y.max}
+     else {y.end=y.min}
+     if ($senseFoldChange>0) {x.end=x.max}
+     else {x.end=x.min}
+     gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=$senseFoldChange,yend=y.end),linetype=\"dashed\",color=\"red\");
+     gp = gp + geom_segment(aes(x=$senseFoldChange,y=$antisenseFoldChange,xend=x.end,yend=$antisenseFoldChange),linetype=\"dashed\",color=\"red\");
+     gp = gp + geom_abline(intercept=0,slope=1,linetype=\"dashed\",color=\"red\");
+  }
+  
+  
+  if($isSVG | $isWidget) {
+    useTooltips=TRUE;
+  }else{
+    useTooltips=FALSE;
+  }
+  
+  if (!$prtcpnt_timeline) {
+    if (!$forceNoPoints) {
+      if(useTooltips){
+        if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
+  	if ($isWidget) {
+            gp = gp + geom_point(aes(text=TOOLTIP))
+          } else {
+            gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
+          }
         } else {
-          gp = gp + geom_tooltip(aes(tooltip=TOOLTIP), real.geom=geom_point);
+          if (myX == \"CONTXAXIS\") {
+            gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
+          } else {
+            if (\"SIZE\" %in% colnames(profile.df.full)) {
+              gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \", get(myX), \", y: \", VALUE), size=SIZE), real.geom=geom_point);
+              gp = gp + scale_size_manual(values=seq(length(unique(profile.df.full\$SIZE))), breaks=unique(profile.df.full\$SIZE), labels=unique(profile.df.full\$SIZE))
+            } else {
+              gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+            }
+          }
+        }
+      }else{
+        gp = gp + geom_point();
+      }
+    }
+    
+    if (!$hasColorVals) {
+      if (\"GROUP\" %in% colnames(profile.df.full)) {
+        count = length(unique(profile.df.full\$GROUP));
+        if (count < length(force(the.colors))) {
+          stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
         }
       } else {
-        if (myX == \"CONTXAXIS\") {
-          gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE, \"|Sample: \", ELEMENT_NAMES)), real.geom=geom_point);
-        } else {
-          if (\"SIZE\" %in% colnames(profile.df.full)) {
-            gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \", get(myX), \", y: \", VALUE), size=SIZE), real.geom=geom_point);
-            gp = gp + scale_size_manual(values=seq(length(unique(profile.df.full\$SIZE))), breaks=unique(profile.df.full\$SIZE), labels=unique(profile.df.full\$SIZE))
+       if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
+        count = length(unique(profile.df.full\$LEGEND));
+       } else {
+        count = uniqueN(profile.df.full\$PROFILE_FILE)
+       }
+        if (count < length(force(the.colors))) {
+          stop(\"Too many colors provided. Please only provide the same number of colors as profile.urls.\");
+        }
+      }
+    }
+    
+    if(!$forceNoLines) {
+      #override earlier group setting if group column exists
+      if (\"GROUP\" %in% colnames(profile.df.full)) {
+        if (!hideLegend && useTooltips && !any(grepl(\"service\", profile.df.full\$LEGEND, fixed=TRUE))) {
+          if ($colorPointsOnly) {
+            gp = gp + aes(group=GROUP)
+            gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
           } else {
-            gp = gp + geom_tooltip(aes(tooltip=paste0(\"x: \",get(myX), \", y: \", VALUE)), real.geom=geom_point);  
+            gp = gp + aes(group=GROUP)
+            gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
+          }
+        } else {
+          if ($colorPointsOnly) {
+            gp = gp + aes(group=GROUP)
+            gp = gp + geom_line(color=\"black\")
+          } else {
+            gp = gp + aes(group=GROUP)
+            gp = gp + geom_line();
+          }
+        }
+      } else {
+        if (!hideLegend && useTooltips && !any(grepl(\"service\", profile.df.full\$LEGEND, fixed=TRUE))) {
+          if ($colorPointsOnly) {
+            gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+          } else {
+             
+            gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
+    
+          }
+        } else {
+          if ($colorPointsOnly) {
+            gp = gp + geom_line(color=\"black\")
+          } else {
+            gp = gp + geom_line();
           }
         }
       }
-    }else{
-      gp = gp + geom_point();
-    }
-  }
-  
-  if (!$hasColorVals) {
-    if (\"GROUP\" %in% colnames(profile.df.full)) {
-      count = length(unique(profile.df.full\$GROUP));
-      if (count < length($colorsStringNotNamed)) {
-        stop(\"Too many colors provided. Please only provide the same number of colors as groups.\");
-      }
-    } else {
-     if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
-      count = length(unique(profile.df.full\$LEGEND));
-     } else {
-      count = $numProfiles;
-     }
-      if (count < length($colorsStringNotNamed)) {
-        stop(\"Too many colors provided. Please only provide the same number of colors as profile files.\");
-      }
-    }
-  }
-  
-  if(!$forceNoLines) {
-    #override earlier group setting if group column exists
-    if (\"GROUP\" %in% colnames(profile.df.full)) {
-      if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-        if ($colorPointsOnly) {
-          gp = gp + aes(group=GROUP)
-          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
+      if($fillBelowLine) {
+        if(length(unique(profile.df.full\$LEGEND)) > 1 & useTooltips) {
+          gp = gp + geom_tooltip(aes(fill=LEGEND, tooltip=LEGEND, group=LEGEND), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep(force(the.colors), count/length(force(the.colors))));
         } else {
-          gp = gp + aes(group=GROUP)
-          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line);
-        }
-      } else {
-        if ($colorPointsOnly) {
-          gp = gp + aes(group=GROUP)
-          gp = gp + geom_line(color=\"black\")
-        } else {
-          gp = gp + aes(group=GROUP)
-          gp = gp + geom_line();
+          gp = gp + geom_area(aes(fill=LEGEND, group=LEGEND), position=\"identity\") + scale_fill_manual(values=rep(force(the.colors), count/length(force(the.colors))));
         }
       }
-    } else {
-      if (!hideLegend && useTooltips && !any(grepl(\".tab\", profile.df.full\$LEGEND, fixed=TRUE))) {
-        if ($colorPointsOnly) {
-          gp = gp + geom_tooltip(aes(tooltip=LEGEND), real.geom=geom_line, color=\"black\")
-        } else {
-           
-          gp = gp + geom_tooltip(aes(tooltip=LEGEND),real.geom=geom_line)     
-  
-        }
-      } else {
-        if ($colorPointsOnly) {
-          gp = gp + geom_line(color=\"black\")
-        } else {
-          gp = gp + geom_line();
-        }
-      }
-    }
-    if($fillBelowLine) {
-      if(length(unique(profile.df.full\$LEGEND)) > 1) {
-        gp = gp + geom_tooltip(aes(fill=LEGEND, tooltip=LEGEND, group=LEGEND), position=\"identity\", real.geom=geom_area) + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
-      } else {
-        gp = gp + geom_area(aes(fill=LEGEND, group=LEGEND), position=\"identity\") + scale_fill_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)));
-      }
-    }
-  
-  }
-
-  if($smoothLines) {
-    if(profile.is.numeric && nrow(profile.df.full) > 10) {
-      if(length(levels(factor(profile.df.full\$PROFILE_FILE))) == 1) {
-        gp = gp + geom_smooth(method=\"loess\");
-      }
-      if(length(levels(factor(profile.df.full\$PROFILE_FILE))) > 1) {
-         gp = gp + geom_smooth(method=\"loess\", se=FALSE);
-      }
-    } else {
-      df2smooth = completeDF(profile.df.full, \"ELEMENT_NAMES_NUMERIC\");
-      gp = gp + geom_smooth(data = df2smooth, method=\"loess\", se=FALSE, colour = \"black\", size = .5);
-    }
-  }
-  
-  if (coord.cartesian) {
-    if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
-      gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
-    } else {
-      gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
-    }
-  }
-  
-  # TODO actually fix this by setting count in perl rather than R, or figure something else out. 
-  # then wont need the if statement. cause though fine now, this still may eventually cause problems.
-  if ($hasColorVals) {
-     gp = gp + scale_color_manual(values = $colorVals)
-  } else {
-    if (count/length($colorsStringNotNamed) == 1) {
-      gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
-    } else {
-      gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
-    }
-  }
-  
-  
-  
-  
-  if( $fillBelowLine) {
-    hideLegend=TRUE;
-  }
-  
-  xAxisCount = length(profile.df.full\$ELEMENT_NAMES);
-  
-  if(is.compact) {
-    gp = gp + theme_void() + theme(legend.position=\"none\");
-  } else if(is.thumbnail) {
-    gp = gp + theme_bw();
     
-    if ($adjustXYScalesTogether) {
-       gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
-    } else {
-       gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
     }
   
-    gp = gp + ylim(y.min, y.max);
-  
-    if(!profile.is.numeric) {
-      gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-      if(xAxisCount > 3) {
-        gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
+    if($smoothLines) {
+      if(profile.is.numeric && nrow(profile.df.full) > 10) {
+        if(length(levels(factor(profile.df.full\$PROFILE_FILE))) == 1) {
+          gp = gp + geom_smooth(method=\"loess\");
+        }
+        if(length(levels(factor(profile.df.full\$PROFILE_FILE))) > 1) {
+           gp = gp + geom_smooth(method=\"loess\", se=FALSE);
+        }
       } else {
-        gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+        df2smooth = completeDF(profile.df.full, \"ELEMENT_NAMES_NUMERIC\");
+        gp = gp + geom_smooth(data = df2smooth, method=\"loess\", se=FALSE, colour = \"black\", size = .5);
       }
-    } else {
-      gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
     }
-    gp = gp + theme(legend.position=\"none\");
-  } else {
-    gp = gp + theme_bw();
-    gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
-    gp = gp + ylim(y.min, y.max);
-    gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
-  
-    if (myX == \"CONTXAXIS\") {
-      if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
-        gp = gp + theme(axis.text.x = element_blank());    
+    
+    if (coord.cartesian) {
+      if (!is.na(as.Date(as.character(x.max), format='%Y-%m-%d'))) {
+        gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
+      } else {
+        gp = gp + coord_cartesian(xlim=c(as.numeric(x.min),as.numeric(x.max)));
       }
+    }
+    
+    if ($hasColorVals) {
+      gp = gp + scale_color_manual(values = $colorVals)
     } else {
+      gp = gp + scale_colour_manual(values=rep(force(the.colors), count/length(force(the.colors))), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+    }
+    
+    if( $fillBelowLine) {
+      hideLegend=TRUE;
+    }
+    
+    xAxisCount = length(profile.df.full\$ELEMENT_NAMES);
+    
+    if(is.compact) {
+      gp = gp + theme_void() + theme(legend.position=\"none\");
+    } else if(is.thumbnail) {
+      gp = gp + theme_bw();
+      
+      if ($adjustXYScalesTogether) {
+         gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
+      } else {
+         gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+      }
+    
+      gp = gp + ylim(y.min, y.max);
+    
       if(!profile.is.numeric) {
         gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-        if (xAxisCount > 50) {
-          gp = gp + theme(axis.text.x = element_blank())
-        } else if(xAxisCount > 3) {
+        if(xAxisCount > 3) {
           gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
         } else {
           gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
         }
+      } else {
+        gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
       }
-    }
-  
-    if(hideLegend) {
       gp = gp + theme(legend.position=\"none\");
-    #} else if(\$horizontalLegend) {
-    #  gp = gp + theme(legend.position=\"bottom\");
-    } 
-  
-    maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
-    if (!is.na(maxNumChar)) {
-      if (maxNumChar >= 18) {
-        gp = gp + theme(plot.margin = margin(l=40));
-      }
-    }
-
-  }
-  
-  if(\"FACET\" %in% colnames(profile.df.full)) {
-    if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
-      numLevels=nlevels(profile.df.full\$FACET_ns);
-      if ($facetNumCols != 0) {
-        numCols = $facetNumCols
-      } else {
-        numCols=ceiling(numLevels / 2);
-      }
-      if (numLevels > 3) {
-        gp = gp + facet_wrap( ~ FACET_ns, ncol=numCols);
-      } else {
-        gp = gp + facet_grid(. ~ FACET_ns);
-      }
-    }
-  }else if($hasFacets) {
-    gp = gp + facet_grid($facetString);
-  }
-  
-  if($hideXAxisLabels) {                                                                                                                                                                                      
-      gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
-  }
-
-}
-
-if ($prtcpnt_sum) {
-
-  if (\"YLABEL\" %in% colnames(profile.df.full)) {
-    if (length(unique(profile.df.full\$YLABEL)) > 1 & all(grepl(\"z-score\", unique(profile.df.full\$YLABEL)))) {
-      myYLab <- \"Z-score\" 
     } else {
-      myYLab <- unique(profile.df.full\$YLABEL)[1]
-    }
-  } else {
-    myYLab <- \"$yAxisLabel\"
-  }
-
-  if (\"XLABEL\" %in% colnames(profile.df.full)) {
-    if (length(unique(profile.df.full\$XLABEL)) > 1) {
-      myXLab <- \"$xAxisLabel\"
-    } else {
-      myXLab <- unique(profile.df.full\$XLABEL)[1]
-    }
-  } else {
-    myXLab <- \"$xAxisLabel\"
-  }
-
-
-  if (grepl(\"z-score\", myYLab) | grepl(\"Z-score\", myYLab)) {
-    gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
-    gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
- 
-    gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
-  }
-
-  #should only ever have either event.dur OR event.start. otherwise fix legend
-  event.dur = exists(\"annotate.df\") && nrow(annotate.df) > 0;
-  if (event.dur) {
-
-    #this to appease ggplot. otherwise wont plot a single point
-    if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
-      annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
-    }
- 
-    #this to remove consecutive rows, only need start date and duration
-    annotate.df\$DIFF <- c(0, abs(diff(annotate.df\$START_DATE)) == 1)
-    annotate.df <- annotate.df[annotate.df\$DIFF == 0,]
-
-    annotate.df\$TOOLTIP <- paste0(\"Start: \", annotate.df\$START_DATE, \"|Duration: \", annotate.df\$DURATION)
-    annotate.df\$TOOLTIP[is.na(annotate.df\$DURATION)] <- NA
-    gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - y.scale, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = TOOLTIP, size = as.factor(7)), real.geom = geom_segment)
-
-    #custom legend
-    gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
-    if ($hasColorVals) {
-      colorVector <- $colorVals
-      gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(annotate.df\$LEGEND)[1]])))))
-    } else {
-      gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
-    }
-  }
-
-  event.start = exists(\"event.df\") 
-  if (event.start) {
-    event.start = nrow(event.df) > 0
-  }
-  if (event.start) {
-    event.df\$END <- event.df\$ELEMENT_NAMES_NUMERIC + 1
-    
-    gp = gp + geom_tooltip(data = event.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - y.scale, xend = END, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = EVENT, size = as.factor(7)), real.geom = geom_segment)
-  
-    gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
-    if ($hasColorVals) {
-      colorVector <- $colorVals
-      gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(event.df\$LEGEND)[1]])))))
-    } else {
-      gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
-    }
-  }
-
-
-  who_standards = exists(\"who.df\") 
-  if (who_standards) {
-    who_standards = nrow(who.df) > 0
-  }
-
-  if (who_standards){
-   
-     gp = gp + geom_tooltip(data=who.df,aes(x=get(myX), y=VALUE, tooltip=LEGEND),real.geom = geom_line)
-   
-   }
-
-
-  status = exists(\"status.df\") && nrow(status.df) > 0;
-
-  if (status) {
-
-    if ($prtcpnt_timeline) {
-
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
-
-      gp = gp + scale_color_manual(name=\"Legend\", breaks = $customBreaks, values=$colorVals)
-      gp = gp + scale_fill_manual(name=\"\", breaks = $customBreaks, na.value = NA, values = $fillVals)
-
-      if (coord.cartesian) {
-        gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
-      }
       gp = gp + theme_bw();
-      if (is.thumbnail) {
-        gp = gp + labs(title=NULL, x=NULL, y=NULL);
-        gp = gp + theme(legend.position = \"none\")
-      } else {
-        gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=NULL);
-        gp = gp + guides(fill = guide_legend(override.aes = list(color =\"white\" )))
-        gp = gp + theme(legend.position=\"bottom\"); 
-      }
+      gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=\"$xAxisLabel\");
       gp = gp + ylim(y.min, y.max);
       gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
-
-    } else {
-      status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
-      status.df\$COLOR = as.character(status.df\$COLOR)
-      numColors = length(unique(status.df\$COLOR))
-      if (numColors > 1) {
-        myColors = rainbow(numColors);
+    
+      if (myX == \"CONTXAXIS\") {
+        if (all(is.na(as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full[[myX]], perl=T))))) {
+          gp = gp + theme(axis.text.x = element_blank());    
+        }
       } else {
-        myColors = \"cyan\";
+        if(!profile.is.numeric) {
+          gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
+          if (xAxisCount > 50) {
+            gp = gp + theme(axis.text.x = element_blank())
+          } else if(xAxisCount > 3) {
+            gp = gp + theme(axis.text.x  = element_text(angle=45, vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"));
+          } else {
+            gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"));
+          }
+        }
       }
-      status.df\$TOOLTIP <- paste0(\"Day: \", status.df\$ELEMENT_NAMES_NUMERIC, \"|Status: \", status.df\$STATUS)
-      status.df\$TOOLTIP[is.na(status.df\$STATUS)] <- NA      
-      gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
-
-      if ($hasColorVals) {
-        gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\");
-      } else {
-        gp = gp + scale_colour_manual(values=c($colorsStringNotNamed, myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
+    
+      if(hideLegend) {
+        gp = gp + theme(legend.position=\"none\");
+      #} else if(\$horizontalLegend) {
+      #  gp = gp + theme(legend.position=\"bottom\");
+      } 
+    
+      maxNumChar = max(nchar(as.character(profile.df.full[[myX]])),na.rm=T);
+      if (!is.na(maxNumChar)) {
+        if (maxNumChar >= 18) {
+          gp = gp + theme(plot.margin = margin(l=40));
+        }
       }
-
-      #create custom legend
-      gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"));
+  
     }
+    
+    if(\"FACET\" %in% colnames(profile.df.full)) {
+      if(!all(profile.df.full\$FACET_ns == \"Unknown\")){
+        numLevels=nlevels(profile.df.full\$FACET_ns);
+        if ($facetNumCols != 0) {
+          numCols = $facetNumCols
+        } else {
+          numCols=ceiling(numLevels / 2);
+        }
+        if (numLevels > 3) {
+          gp = gp + facet_wrap( ~ FACET_ns, ncol=numCols);
+        } else {
+          gp = gp + facet_grid(. ~ FACET_ns);
+        }
+      }
+    }else if($hasFacets) {
+      gp = gp + facet_grid($facetString);
+    }
+    
+    if($hideXAxisLabels) {                                                                                                                                                                                      
+        gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
+    }
+  
   }
-
-    if (!$prtcpnt_timeline) {
-      if (is.thumbnail) {
-        gp = gp + labs(title=NULL, x=myXLab, y=myYLab, subtitle=\"$subtitle\");
-        gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+  
+  if ($prtcpnt_sum) {
+  
+    if (\"YLABEL\" %in% colnames(profile.df.full)) {
+      if (length(unique(profile.df.full\$YLABEL)) > 1 & all(grepl(\"z-score\", unique(profile.df.full\$YLABEL)))) {
+        myYLab <- \"Z-score\" 
       } else {
-        gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=myYLab, subtitle=\"$subtitle\");
-        gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+        myYLab <- unique(profile.df.full\$YLABEL)[1]
+      }
+    } else {
+      myYLab <- \"$yAxisLabel\"
+    }
+  
+    if (\"XLABEL\" %in% colnames(profile.df.full)) {
+      if (length(unique(profile.df.full\$XLABEL)) > 1) {
+        myXLab <- \"$xAxisLabel\"
+      } else {
+        myXLab <- unique(profile.df.full\$XLABEL)[1]
+      }
+    } else {
+      myXLab <- \"$xAxisLabel\"
+    }
+  
+  
+    if (grepl(\"z-score\", myYLab) | grepl(\"Z-score\", myYLab)) {
+      gp = gp + geom_hline(aes(yintercept=2, linetype = as.factor(1)), colour = \"red\");
+      gp = gp + geom_hline(aes(yintercept=-2, linetype = as.factor(1)), colour = \"red\");  
+   
+      gp = gp + scale_linetype_manual(name=\"Red Lines\", values = c(1), labels = c(\"+/- 2 SD\"))
+    }
+  
+    #should only ever have either event.dur OR event.start. otherwise fix legend
+    event.dur = exists(\"annotate.df\") && nrow(annotate.df) > 0;
+    if (event.dur) {
+  
+      #this to appease ggplot. otherwise wont plot a single point
+      if (annotate.df\$START_DATE == annotate.df\$END_DATE) {
+        annotate.df\$END_DATE = annotate.df\$END_DATE + 1;
+      }
+   
+      #this to remove consecutive rows, only need start date and duration
+      annotate.df\$DIFF <- c(0, abs(diff(annotate.df\$START_DATE)) == 1)
+      annotate.df <- annotate.df[annotate.df\$DIFF == 0,]
+  
+      annotate.df\$TOOLTIP <- paste0(\"Start: \", annotate.df\$START_DATE, \"|Duration: \", annotate.df\$DURATION)
+      annotate.df\$TOOLTIP[is.na(annotate.df\$DURATION)] <- NA
+      gp = gp + geom_tooltip(data = annotate.df, aes(x = START_DATE, y = min(profile.df.clean\$VALUE) - y.scale, xend = END_DATE, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = TOOLTIP, size = as.factor(7)), real.geom = geom_segment)
+  
+      #custom legend
+      gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
+      if ($hasColorVals) {
+        colorVector <- $colorVals
+        gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(annotate.df\$LEGEND)[1]])))))
+      } else {
+        gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
       }
     }
-
-    gp = gp + guides(color = guide_legend(order=1));
-
-}
-
+  
+    event.start = exists(\"event.df\") 
+    if (event.start) {
+      event.start = nrow(event.df) > 0
+    }
+    if (event.start) {
+      event.df\$END <- event.df\$ELEMENT_NAMES_NUMERIC + 1
+      
+      gp = gp + geom_tooltip(data = event.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - y.scale, xend = END, yend = min(profile.df.clean\$VALUE) - y.scale, tooltip = EVENT, size = as.factor(7)), real.geom = geom_segment)
+    
+      gp = gp + scale_size_manual(name = \"Bars\", values = c(7), labels = c(\"$eventDurLegend\"))
+      if ($hasColorVals) {
+        colorVector <- $colorVals
+        gp = gp + guides(size = guide_legend(override.aes = list(color = c(unname(colorVector[names(colorVector) == unique(event.df\$LEGEND)[1]])))))
+      } else {
+        gp = gp + guides(size = guide_legend(override.aes = list(color = c(the.colors[length(the.colors)]))))
+      }
+    }
+  
+  
+    who_standards = exists(\"who.df\") 
+    if (who_standards) {
+      who_standards = nrow(who.df) > 0
+    }
+  
+    if (who_standards){
+     
+       gp = gp + geom_tooltip(data=who.df,aes(x=get(myX), y=VALUE, tooltip=LEGEND),real.geom = geom_line)
+     
+     }
+  
+  
+    status = exists(\"status.df\") && nrow(status.df) > 0;
+  
+    if (status) {
+  
+      if ($prtcpnt_timeline) {
+  
+        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES, y = 1, tooltip = TOOLTIP, color = COLOR, fill = FILL), size = 4, shape = 21, real.geom = geom_point)
+  
+        gp = gp + scale_color_manual(name=\"Legend\", breaks = $customBreaks, values=$colorVals)
+        gp = gp + scale_fill_manual(name=\"\", breaks = $customBreaks, na.value = NA, values = $fillVals)
+  
+        if (coord.cartesian) {
+          gp = gp + scale_x_date(limits=c(as.Date(x.min),as.Date(x.max)));
+        }
+        gp = gp + theme_bw();
+        if (is.thumbnail) {
+          gp = gp + labs(title=NULL, x=NULL, y=NULL);
+          gp = gp + theme(legend.position = \"none\")
+        } else {
+          gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=NULL);
+          gp = gp + guides(fill = guide_legend(override.aes = list(color =\"white\" )))
+          gp = gp + theme(legend.position=\"bottom\"); 
+        }
+        gp = gp + ylim(y.min, y.max);
+        gp = gp + theme(plot.title = element_text(colour=\"#b30000\"));
+  
+      } else {
+        status.df = transform(status.df, \"COLOR\"=ifelse(grepl(\"\\\\|\", STATUS), \"black\", as.character(STATUS)));
+        status.df\$COLOR = as.character(status.df\$COLOR)
+        numColors = length(unique(status.df\$COLOR))
+        if (numColors > 1) {
+          myColors = rainbow(numColors);
+        } else {
+          myColors = \"cyan\";
+        }
+        status.df\$TOOLTIP <- paste0(\"Day: \", status.df\$ELEMENT_NAMES_NUMERIC, \"|Status: \", status.df\$STATUS)
+        status.df\$TOOLTIP[is.na(status.df\$STATUS)] <- NA      
+        gp = gp + geom_tooltip(data = status.df, aes(x = ELEMENT_NAMES_NUMERIC, y = min(profile.df.clean\$VALUE) - (2 * y.scale), tooltip = TOOLTIP, color=COLOR, shape=as.factor(16)), real.geom = geom_point);
+  
+        if ($hasColorVals) {
+          gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\");
+        } else {
+          gp = gp + scale_colour_manual(values=c(force(the.colors), myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
+        }
+  
+        #create custom legend
+        gp = gp + scale_shape_manual(name=\"Points\", values=c(16), labels = c(\"$statusLegend\"));
+      }
+    }
+  
+      if (!$prtcpnt_timeline) {
+        if (is.thumbnail) {
+          gp = gp + labs(title=NULL, x=myXLab, y=myYLab, subtitle=\"$subtitle\");
+          gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+        } else {
+          gp = gp + labs(title=\"$plotTitle\", x=myXLab, y=myYLab, subtitle=\"$subtitle\");
+          gp = gp + theme(plot.subtitle=element_text(size=12, color=\"black\"));
+        }
+      }
+  
+      gp = gp + guides(color = guide_legend(order=1));
+  
+  }
+ 
+} 
 
 #postscript
 $rPostscript

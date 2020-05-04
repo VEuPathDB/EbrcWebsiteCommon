@@ -77,7 +77,7 @@ if($mode eq 'cgi') {
 }
 
 if($mode eq 'graph') {
-  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld EbrcWebsiteCommon/Model; bld $svnPrefix\Website/Model; $injectTemplates";
+  $cmd = "$dieOnError;  bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld $svnPrefix\Website/Service; $injectTemplates $reloadWebapp";
 }
 
 if($mode eq 'gbrowse') {

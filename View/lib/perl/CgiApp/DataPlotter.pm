@@ -60,7 +60,9 @@ use Data::Dumper;
 sub run {
 	 my $Self = shift;
 	 my $Cgi  = shift;
+         my $baseUrl = $Cgi->param('baseUrl') ? $Cgi->param('baseUrl') : $Cgi->url( -base => 1 );
 
+#TODO remove this once everything is switched over
 	 my $_qh         = $Self->getQueryHandle($Cgi);
 
 	 my $pkg          = $Cgi->param('project_id');
@@ -225,6 +227,7 @@ sub run {
                         Xmax => $xmaxOverride,
                         Project => $project,
                         CgiApp => $Cgi,
+		        BaseUrl => $baseUrl,
                         Save => $save_b,
                        });
          };

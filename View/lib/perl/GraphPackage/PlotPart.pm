@@ -227,6 +227,20 @@ sub makeFilesForR {
   return $self->profileFilesAsRVectors($profileSets);
 }
 
+sub makeServiceUrlsForR {
+  my ($self, $idType) = @_;
+
+  my $id = $self->getId();
+
+  my $profileSets = $self->getProfileSets(); 
+  for(my $i = 0; $i < scalar @$profileSets; $i++) {
+    my $profileSet = $profileSets->[$i];
+    $profileSet->getServiceUrls($id, $idType);
+  }
+
+  return $self->profileUrlsAsRVectors($profileSets);
+}
+
 sub profileFilesAsRVectors {
   my ($self, $profileSets) = @_;
 
@@ -246,6 +260,30 @@ sub profileFilesAsRVectors {
 #  print STDERR Dumper \@stderrFiles;
 
   return($profileFilesString, $elementNamesString, $stderrString);
+
+}
+
+sub profileUrlsAsRVectors {
+  my ($self, $profileSets) = @_;
+
+  my $baseUrl = $self->getBaseUrl();
+  #print STDERR Dumper("base url: " . $baseUrl);
+
+  my @profileUrls = map { $baseUrl . $_->getProfileServiceUrl() } @$profileSets;
+  my @elementNamesUrls = map { $baseUrl . $_->getElementNamesServiceUrl() } @$profileSets;
+
+  my @stderrProfileSets = map { $_->getRelatedProfileSet() } @$profileSets;
+  my @stderrUrls = map { $baseUrl . $_->getProfileServiceUrl() if($_) } @stderrProfileSets;
+
+  my $profileString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@profileUrls, 'profile.urls');
+  my $elementNamesString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@elementNamesUrls, 'element.names.urls');
+  my $stderrString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@stderrUrls, 'stderr.urls');
+
+#  print STDERR Dumper \@profileUrls;
+#  print STDERR Dumper \@elementNamesUrls;
+#  print STDERR Dumper \@stderrUrls;
+
+  return($profileString, $elementNamesString, $stderrString);
 
 }
 

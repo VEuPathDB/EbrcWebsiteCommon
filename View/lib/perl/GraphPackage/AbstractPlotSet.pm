@@ -197,35 +197,6 @@ sub makeRLegendString {
 
 sub useLegacy {return 0}
 
-sub getSplitScreenInit {
-  my ($self) = @_;
-  if($self->useLegacy()) {
-
-    return "screens     <- split.screen(screen.dims, erase=T);
-screens;
-screen.i    <- 1;
-";
-  }
-
-  return "plotlist = list();
-plotlist.i = 1;
-";
-}
-
-
-sub getSplitScreenFinish {
-  my ($self) = @_;
-  if($self->useLegacy()) {
-
-    return "close.screen(all.screens=T);";
-  }
-
-  return "multiplot(plotlist = plotlist, cols = 1)";
-
-}
-
-
-
 sub makeR {
   my ($self, $rPlotStringsHash) = @_;
 
@@ -312,46 +283,39 @@ sub makeR {
   my @rStrings = @{$self->makeRPlotStrings()};
   my $rStrings = join("\n", @rStrings);
 
-  my $splitScreenInit = $self->getSplitScreenInit();
-  my $splitScreenFinish = $self->getSplitScreenFinish();
   my $rcode =  <<RCODE;
 
 # ------------------------------- Prepare --------------------------------
 
 $preamble_R
 
-library(grid);
-library(gridExtra);
-library(ggplot2);
-suppressPackageStartupMessages(library(gridSVG));
-library(tools);
-library(gtools);
-library(plyr);
-library(dplyr);
-library(purrr)
-library(scales);
-library(viridisLite);
-library(tidyr)
-library(plotly)
-library(htmltools)
-library(htmlwidgets)
-library(crosstalk)
-library(data.table)
-library(DT)
+suppressPackageStartupMessages(require(grid))
+suppressPackageStartupMessages(require(gridExtra))
+suppressPackageStartupMessages(require(ggplot2))
+suppressPackageStartupMessages(require(tools))
+suppressPackageStartupMessages(require(gtools))
+suppressPackageStartupMessages(require(plyr))
+suppressPackageStartupMessages(require(dplyr))
+suppressPackageStartupMessages(require(purrr))
+suppressPackageStartupMessages(require(scales))
+suppressPackageStartupMessages(require(viridisLite))
+suppressPackageStartupMessages(require(tidyr))
+suppressPackageStartupMessages(require(data.table))
+suppressPackageStartupMessages(require(jsonlite))
+if (grepl(file_ext(\"$out_f\"), \"svg\")) {
+  suppressPackageStartupMessages(require(gridSVG))
+}
+if (grepl(file_ext(\"$out_f\"), \"html\")) {
+  suppressPackageStartupMessages(require(plotly))
+  suppressPackageStartupMessages(require(htmltools))
+  suppressPackageStartupMessages(require(htmlwidgets))
+  suppressPackageStartupMessages(require(crosstalk))
+}
 
 $open_R
 
-#plasmodb.par();
-
-# screen.dimis only used for legacy
-screen.dims <- t(array(c($screens),dim=c(4,$parts_n)));
-$splitScreenInit
-
-ticks <- function() {
-  axis(1, at=seq(x.min, x.max, 1), labels=F, col="gray75");
-  axis(1, at=seq(5*floor(x.min/5+0.5), x.max, 5), labels=F, col="gray50");
-  axis(1);
-}
+plotlist = list()
+plotlist.i = 1
 
   customAbbreviate <- function(labels, allowedLength=20) {
 
@@ -580,7 +544,7 @@ $rStrings
 
 # --------------------------------- Done ---------------------------------
 
-$splitScreenFinish
+multiplot(plotlist = plotlist, cols = 1)
 
 if (grepl(file_ext(\"$out_f\"), \"html\")) {
   Sys.setenv(HOME = \"$ENV{"HOME"}\")

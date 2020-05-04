@@ -20,9 +20,6 @@ sub setForceHorizontalXAxis      { $_[0]->{'_force_x_horizontal'             } =
 sub getIsHorizontal              { $_[0]->{'_is_horizontal'                  }}
 sub setIsHorizontal              { $_[0]->{'_is_horizontal'                  } = $_[1]}
 
-sub getHighlightMissingValues    { $_[0]->{'_highlight_missing_values'       }}
-sub setHighlightMissingValues    { $_[0]->{'_highlight_missing_values'       } = $_[1]}
-
 sub getSpaceBetweenBars          { $_[0]->{'_space_between_bars'             }}
 sub setSpaceBetweenBars          { $_[0]->{'_space_between_bars'             } = $_[1]}
 
@@ -78,71 +75,17 @@ sub makeRPlotString {
 
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE'; 
 
-  my ($profileFiles, $elementNamesFiles, $stderrFiles);
+  my ($profileUrls, $elementNamesUrls, $stderrUrls);
 
-  my $blankGraph = $self->blankPlotPart();
+  my $blankGraph = $self->blankGGPlotPart();
 
   eval{
-   ($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
+   ($profileUrls, $elementNamesUrls, $stderrUrls) = $self->makeServiceUrlsForR($idType);
   };
-
-  if($@) {
-    print STDERR $@;
-    return $blankGraph;
-  }
-
-  my $profileSets = $self->getProfileSets();
-  my @skipProfileSets;
-  my $skipped = 0;
 
   my $colors = $self->getColors();
 
-  for(my $i = 0; $i < scalar @$profileSets; $i++) {
-    my $profileSet = $profileSets->[$i];
-
-    if(scalar @{$profileSet->errors()} > 0) {
-      $skipProfileSets[$i] = "TRUE";
-      $skipped++;
-      if ($skipped == 1) {
-        splice @$colors, $i, 1;
-      } else {
-        #this because the size/ indexing of $colors shrinks as values removed.
-        my $j = $i - $skipped + 1;
-        splice @$colors, $j, 1;
-      }
-      next;
-    }
-    $skipProfileSets[$i] = "FALSE";
-  }
-  #print STDERR Dumper($colors);
-  if(scalar @$profileSets == $skipped) {
-    return $blankGraph;
-  }
-
-  #foreach(@{$self->getProfileSets()}) {
-  #  if(scalar @{$_->errors()} > 0) {
-  #    return $blankGraph;
-  # 
-  #  }
-  #}
-
-  #count number of profiles for current plot part
-  my @elemFileStrings = split(/,/, $elementNamesFiles);
-  my $lines = 0;
-  foreach my $i (@elemFileStrings) {
-    my ($elemFile) = $i =~ /"(.*?)"/;
-    open(FILE, $elemFile) or die "Can't open `$elemFile`: $!";
-    while (sysread FILE, my $buffer, 4096) {
-      $lines += ($buffer =~ tr/\n//);
-    }
-    close FILE;
-    $lines = $lines - 1;
-  }
-  my $numProfiles = $lines;
-
-  my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
-  my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
 
   my $forceAutoColors = defined($self->forceAutoColors()) ? 'TRUE' : 'FALSE';
 
@@ -152,14 +95,6 @@ sub makeRPlotString {
 
   my $yMax = $self->getDefaultYMax();
   my $yMin = $self->getDefaultYMin();
-
-  my $axisLty = $self->getAxisLty();
-  my $axisLtyString = defined($axisLty) ? 'TRUE' : 'FALSE';
-  $axisLty = defined($axisLty)? $axisLty : 'NULL';
-
-  my $las = $self->getLas();
-  my $lasString = defined($las) ? 'TRUE' : 'FALSE';
-  $las = defined($las) ? $las : 'NULL';
 
   my $out_f = $self->getOutputFile();
 
@@ -180,18 +115,11 @@ sub makeRPlotString {
 
   my $horizontalXAxisLabels = $self->getForceHorizontalXAxis();
 
-  my $yAxisFoldInductionFromM = $self->getMakeYAxisFoldInduction();
-  my $highlightMissingValues = $self->getHighlightMissingValues();
-
-  $highlightMissingValues = $highlightMissingValues ? 'TRUE' : 'FALSE';
-
   $rAdjustProfile = $rAdjustProfile ? $rAdjustProfile : "";
   my $rPostscript = $self->getRPostscript();
   $rPostscript = $rPostscript ? $rPostscript : "";
 
   $horizontalXAxisLabels = $horizontalXAxisLabels ? 'TRUE' : 'FALSE';
-
-  $yAxisFoldInductionFromM = $yAxisFoldInductionFromM ? 'TRUE' : 'FALSE';
 
   my $horiz = $isHorizontal && !$self->isCompact() ? 'TRUE' : 'FALSE';
 
@@ -255,23 +183,22 @@ sub makeRPlotString {
   my $rv = "
 # ---------------------------- BAR PLOT ----------------------------
 
-$profileFiles
-$elementNamesFiles
-$stderrFiles
+$profileUrls
+$elementNamesUrls
+$stderrUrls
 $colorsString
 $sampleLabelsString
 $legendLabelsString
 $legendColorsString
 $profileTypesString
-$skipProfilesString
 
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
 
 #-------------------------------------------------------------------
 
-if(length(profile.files) != length(element.names.files)) {
-  stop(\"profile.files length not equal to element.names.files length\");
+if(length(profile.urls) != length(element.names.urls)) {
+  stop(\"profile.urls length not equal to element.names.urls length\");
 }
 
 y.min = $yMin;
@@ -279,40 +206,39 @@ y.max = $yMax;
 
 profile.df.full = data.frame();
 
-for(ii in 1:length(profile.files)) {
-  skip.stderr = FALSE;
-  if ($skipStdErr) {
-    skip.stderr = TRUE
+for(ii in 1:length(profile.urls)) {
+  skip.stderr = $skipStdErr 
+
+  profile.df = stream_in(url(URLencode(profile.urls[ii])));
+  if (length(profile.df) == 0) {
+    the.colors <- the.colors[-ii]
+    next
   }
-
-  if(skip.profiles[ii]) {
-    next;
-  };
-
-  profile.df = read.table(profile.files[ii], header=T, sep=\"\\t\");
   profile.df\$Group.1=NULL
+  profile.df\$VALUE <- as.numeric(profile.df\$VALUE)
 
   if(!is.null(profile.df\$ELEMENT_ORDER)) {
     eo.count = length(profile.df\$ELEMENT_ORDER);
-    if(!is.numeric(profile.df\$ELEMENT_ORDER)) {
-      stop(\"Element order must be numeric for aggregation\");
-    }
 
     profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
     if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
       skip.stderr = TRUE;
     }
 
-    profile.df\$PROFILE_FILE = profile.files[ii];
+    profile.df\$PROFILE_FILE = profile.urls[ii];
     profile.df\$PROFILE_TYPE = profile.types[ii];
 
-    if(length(profile.files) > 1) {
+    if(length(profile.urls) > 1) {
       profile.df\$LEGEND = legend.label[ii];
     }
 
   }
 
-  element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
+  element.names.df = stream_in(url(URLencode(element.names.urls[ii])));
+  if (length(element.names.df) == 0) {
+    the.colors <- the.colors[-ii]
+    next
+  }
 
   #this assumes that the manual override has the right number of entries and in the right order
   if(length(x.axis.label) == length(element.names.df\$NAME) && $overrideXAxisLabels){
@@ -321,11 +247,16 @@ for(ii in 1:length(profile.files)) {
 
   profile.df = merge(profile.df, element.names.df[, c(\"ELEMENT_ORDER\", \"NAME\")], by=\"ELEMENT_ORDER\")
 
-  if(!skip.stderr && !is.na(stderr.files[ii]) && stderr.files[ii] != '') {
-    stderr.df = read.table(stderr.files[ii], header=T, sep=\"\\t\");
+  if(!skip.stderr && !is.na(stderr.urls[ii]) && stderr.urls[ii] != '') {
+    stderr.df = stream_in(url(URLencode(stderr.urls[ii])));
+    if (length(stderr.df) == 0) {
+      the.colors <- the.colors[-ii]
+      next
+    }
     names(stderr.df)[names(stderr.df) == \"VALUE\"] <- \"STDERR\"
 
     profile.df = merge(profile.df, stderr.df[, c(\"ELEMENT_ORDER\", \"STDERR\")], by=\"ELEMENT_ORDER\", all=TRUE);
+    profile.df\$STDERR <- as.numeric(profile.df\$STDERR)
   } else {
     profile.df\$STDERR = NA;
   }
@@ -333,171 +264,172 @@ for(ii in 1:length(profile.files)) {
   profile.df.full = rbind(profile.df.full, profile.df);
 }
 
-#if(abs(sum(profile.df.full\$VALUE, na.rm=TRUE)) <= 0){
-#  d = data.frame(VALUE=0.5, LABEL=\"None\");
-#  gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
-#} else {
-
-profile.df.full\$MIN_ERR = profile.df.full\$VALUE - profile.df.full\$STDERR;
-profile.df.full\$MAX_ERR = profile.df.full\$VALUE + profile.df.full\$STDERR;
-
-if(length(profile.files) == 1) {
-  profile.df.full\$LEGEND = legend.label;
-  if($overrideXAxisLabels) {
-    profile.df.full\$NAME = x.axis.label;    
-  }
-}
-
-profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels = unique(profile.df.full\$NAME[order(profile.df.full\$ELEMENT_ORDER)]))
-
-expandColors = FALSE;
-hideLegend = FALSE;
-
-if ($numProfiles > length($colorsStringNotNamed)) {
-  expandColors=TRUE;
-}
-
-if(is.null(profile.df.full\$LEGEND)) {
-  profile.df.full\$LEGEND = as.factor(profile.df.full\$NAME)
-  expandColors = TRUE;
-  hideLegend = TRUE;
+if(nrow(profile.df.full) == 0){
+  d = data.frame(VALUE=0.5, LABEL=\"None\");
+  gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
 } else {
-  profile.df.full\$LEGEND = as.factor(profile.df.full\$LEGEND);
-}
 
-if ($hasColorVals) {
-  hideLegend = FALSE
-}
-
-if ($isStack) {
-    profile.df.full\$STACK = profile.df.full\$LEGEND;
-}
-
-# allow minor adjustments to profile
-$rAdjustProfile
-
-if ($isStack) {
-  temp.df = aggregate(VALUE ~ NAME, profile.df.full, sum)
-  y.max = max(y.max, temp.df\$VALUE);
-  y.max = max(y.max, profile.df.full\$MAX_ERR, na.rm = TRUE);
-  y.min = min(y.min, temp.df\$VALUE);
-  y.min = min(y.min, profile.df.full\$MAX_ERR, na.rm = TRUE);
-} else {
-  y.max = max(c(y.max, profile.df.full\$VALUE, profile.df.full\$MAX_ERR), na.rm=TRUE);
-  y.min = min(c(y.min, profile.df.full\$VALUE, profile.df.full\$MIN_ERR), na.rm=TRUE);
-}
-
-gp = ggplot(profile.df.full, aes(x=NAME, y=VALUE, fill=LEGEND, colour=LEGEND));
-
-if($isSVG) {
-  useTooltips=TRUE;
-}else{
-  useTooltips=FALSE;
-}
-
-if(useTooltips) {
-   if($isStack) {
-     gp = gp + geom_tooltip(aes(tooltip=STACK), real.geom=geom_bar, position=\"stack\", colour=\"black\");
-   } else {
-     gp = gp + geom_tooltip(aes(tooltip=NAME), real.geom=geom_bar, position=\"dodge\");
-   } 
-} else {
-   if($isStack) {
-     gp = gp + geom_bar(stat=\"identity\", position=\"stack\", colour=\"black\");
-   } else {
-     gp = gp + geom_bar(stat=\"identity\", position=\"dodge\");
-   }
-}
-
-if($hasColorVals) {
-  gp = gp + scale_fill_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
-  gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
-} else if (expandColors) {
- #!!!!!!!!!!!!!!!!! i believe the below will only work when length(NAME)/length(colorstring) divides evenly
-  gp = gp + scale_fill_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
-  gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, $numProfiles/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, name=NULL);
-} else {
-  if($forceAutoColors) {
-#    numColors = length(levels(as.factor(profile.df.full\$LEGEND)));
-#    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);  
-#    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);
-
-     gp = gp + scale_fill_brewer(palette=\"Set1\");
-     gp = gp + scale_colour_brewer(palette=\"Set1\");
+  profile.df.full\$MIN_ERR = profile.df.full\$VALUE - profile.df.full\$STDERR;
+  profile.df.full\$MAX_ERR = profile.df.full\$VALUE + profile.df.full\$STDERR;
+  
+  if(length(profile.urls) == 1) {
+    profile.df.full\$LEGEND = legend.label;
+    if($overrideXAxisLabels) {
+      profile.df.full\$NAME = x.axis.label;    
+    }
   }
-  else {
-    gp = gp + scale_fill_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);  
-    gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, name=NULL);
+  
+  profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels = unique(profile.df.full\$NAME[order(profile.df.full\$ELEMENT_ORDER)]))
+  
+  expandColors = FALSE;
+  hideLegend = FALSE;
+  
+  numElements <- uniqueN(profile.df.full\$NAME)
+  if (force(numElements) > length(force(the.colors))) {
+    expandColors=TRUE;
   }
-}
-
-if($isStack) {
-    gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1);
-} else {
-    gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1,position = position_dodge(.9));
-}
-
-
-barCount = length(profile.df.full\$NAME);
-
-if(is.compact) {
-  gp = gp + theme_void() + theme(legend.position=\"none\");
-} else if(is.thumbnail) {
-  gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
-  gp = gp + ylim(y.min, y.max);
-  gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-
-  if(barCount < 3) {
-    gp = gp + theme(axis.text.x  = element_text(size=9), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+  
+  if(is.null(profile.df.full\$LEGEND)) {
+    profile.df.full\$LEGEND = as.factor(profile.df.full\$NAME)
+  #  expandColors = TRUE;
+    hideLegend = TRUE;
+  } else {
+    profile.df.full\$LEGEND = as.factor(profile.df.full\$LEGEND);
   }
-  else {
-    gp = gp + theme(axis.text.x  = element_text(angle=45,vjust=1, hjust=1, size=9), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+  
+  if ($hasColorVals) {
+    hideLegend = FALSE
   }
-  gp = gp + theme(legend.position=\"none\");
-} else {
-  gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
-  gp = gp + ylim(y.min, y.max);
-  gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
-
-  if(barCount < 3) {
-    gp = gp + theme(axis.text.x  = element_text(size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+  
+  if ($isStack) {
+      profile.df.full\$STACK = profile.df.full\$LEGEND;
   }
-  else {
-    gp = gp + theme(axis.text.x  = element_text(angle=45,vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
- #  gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+  
+  # allow minor adjustments to profile
+  $rAdjustProfile
+  
+  if ($isStack) {
+    temp.df = aggregate(VALUE ~ NAME, profile.df.full, sum)
+    y.max = max(y.max, temp.df\$VALUE);
+    y.max = max(y.max, profile.df.full\$MAX_ERR, na.rm = TRUE);
+    y.min = min(y.min, temp.df\$VALUE);
+    y.min = min(y.min, profile.df.full\$MAX_ERR, na.rm = TRUE);
+  } else {
+    y.max = max(c(y.max, profile.df.full\$VALUE, profile.df.full\$MAX_ERR), na.rm=TRUE);
+    y.min = min(c(y.min, profile.df.full\$VALUE, profile.df.full\$MIN_ERR), na.rm=TRUE);
   }
-
-
-
-if($hideXAxisLabels) {
-    gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
-}
-
-  if(hideLegend) {
+  
+  gp = ggplot(profile.df.full, aes(x=NAME, y=VALUE, fill=LEGEND, colour=LEGEND));
+  
+  if($isSVG) {
+    useTooltips=TRUE;
+  }else{
+    useTooltips=FALSE;
+  }
+  
+  if(useTooltips) {
+     if($isStack) {
+       gp = gp + geom_tooltip(aes(tooltip=STACK), real.geom=geom_bar, position=\"stack\", colour=\"black\");
+     } else {
+       gp = gp + geom_tooltip(aes(tooltip=NAME), real.geom=geom_bar, position=\"dodge\");
+     } 
+  } else {
+     if($isStack) {
+       gp = gp + geom_bar(stat=\"identity\", position=\"stack\", colour=\"black\");
+     } else {
+       gp = gp + geom_bar(stat=\"identity\", position=\"dodge\");
+     }
+  }
+  
+  if($hasColorVals) {
+    gp = gp + scale_fill_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
+    gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
+  } else if (expandColors) {
+   #!!!!!!!!!!!!!!!!! i believe the below will only work when length(NAME)/length(colorstring) divides evenly
+    gp = gp + scale_fill_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=profile.df.full\$LEGEND, name=NULL);
+    gp = gp + scale_colour_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=profile.df.full\$LEGEND, name=NULL);
+  } else {
+    if($forceAutoColors) {
+  #    numColors = length(levels(as.factor(profile.df.full\$LEGEND)));
+  #    gp = gp + scale_fill_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);  
+  #    gp = gp + scale_colour_manual(values=viridis(numColors), breaks=profile.df.full\$LEGEND, name=NULL);
+  
+       gp = gp + scale_fill_brewer(palette=\"Set1\");
+       gp = gp + scale_colour_brewer(palette=\"Set1\");
+    }
+    else {
+      gp = gp + scale_fill_manual(values=force(the.colors), breaks=profile.df.full\$LEGEND, name=NULL);  
+      gp = gp + scale_colour_manual(values=force(the.colors), breaks=profile.df.full\$LEGEND, name=NULL);
+    }
+  }
+  
+  if($isStack) {
+      gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1);
+  } else {
+      gp = gp + geom_errorbar(aes(ymin=MIN_ERR, ymax=MAX_ERR), colour=\"black\", width=.1,position = position_dodge(.9));
+  }
+  
+  
+  barCount = length(profile.df.full\$NAME);
+  
+  if(is.compact) {
+    gp = gp + theme_void() + theme(legend.position=\"none\");
+  } else if(is.thumbnail) {
+    gp = gp + theme_bw();
+    gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+    gp = gp + ylim(y.min, y.max);
+    gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
+  
+    if(barCount < 3) {
+      gp = gp + theme(axis.text.x  = element_text(size=9), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+    }
+    else {
+      gp = gp + theme(axis.text.x  = element_text(angle=45,vjust=1, hjust=1, size=9), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+    }
     gp = gp + theme(legend.position=\"none\");
+  } else {
+    gp = gp + theme_bw();
+    gp = gp + labs(title=\"$plotTitle\", y=\"$yAxisLabel\", x=NULL);
+    gp = gp + ylim(y.min, y.max);
+    gp = gp + scale_x_discrete(label=function(x) customAbbreviate(x));
+  
+    if(barCount < 3) {
+      gp = gp + theme(axis.text.x  = element_text(size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+    }
+    else {
+      gp = gp + theme(axis.text.x  = element_text(angle=45,vjust=1, hjust=1, size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+   #  gp = gp + theme(axis.text.x  = element_text(angle=90,vjust=0.5, size=12), plot.title = element_text(colour=\"#b30000\"), panel.grid.major.x = element_blank());
+    }
+  
+  
+  
+  if($hideXAxisLabels) {
+      gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
+  }
+  
+    if(hideLegend) {
+      gp = gp + theme(legend.position=\"none\");
+    }
+  
+    if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 12) {
+      gp = gp + theme(plot.margin = margin(l=45))
+    }
+  
+  }
+  
+  if($horiz) {
+    gp = gp + coord_flip();
+  }
+  
+  
+  gp = gp + geom_hline(yintercept = 0, colour=\"grey\")
+  
+  
+  if($hasFacets) {
+    gp = gp + facet_grid($facetString);
   }
 
-  if (nchar(levels(as.factor(profile.df.full\$NAME))[1]) >= 12) {
-    gp = gp + theme(plot.margin = margin(l=45))
-  }
-
 }
-
-if($horiz) {
-  gp = gp + coord_flip();
-}
-
-
-gp = gp + geom_hline(yintercept = 0, colour=\"grey\")
-
-
-if($hasFacets) {
-  gp = gp + facet_grid($facetString);
-}
-
-#}
 
 
 #postscript
@@ -648,8 +580,6 @@ sub new {
   my $id = $self->getId();
   my $wantLogged = $self->getWantLogged();
   my $exprMetric = $self->getExpressionMetric();
-  print STDERR "GGBarPlot\n";
-  print STDERR Dumper $exprMetric;
   
   $exprMetric = defined($exprMetric)? $exprMetric : "fpkm";
   

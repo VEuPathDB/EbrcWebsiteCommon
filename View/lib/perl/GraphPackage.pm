@@ -57,6 +57,7 @@ sub init {
    $Self->setThumbnail            ( $Args->{Thumbnail            } );
    $Self->setDefaultPlotPart      ( $Args->{DefaultPlotPart      } );
    $Self->setCgiApp               ( $Args->{CgiApp               } ); 
+   $Self->setBaseUrl              ( $Args->{BaseUrl              } );
 
    $Self->setVisibleParts         ( $Args->{VisibleParts         } );
 
@@ -94,6 +95,9 @@ sub setSave                    { $_[0]->{'Save'                        } = $_[1]
 
 sub getCgiApp                  { $_[0]->{'CgiApp'                      } }
 sub setCgiApp                  { $_[0]->{'CgiApp'                      } = $_[1]; $_[0] }
+
+sub getBaseUrl                 { $_[0]->{'BaseUrl'                     } }
+sub setBaseUrl                 { $_[0]->{'BaseUrl'                     } = $_[1]; $_[0] }
 
 sub getQueryHandle             { $_[0]->{'QueryHandle'                 } }
 sub setQueryHandle             { $_[0]->{'QueryHandle'                 } = $_[1]; $_[0] }
@@ -222,7 +226,7 @@ sub run {
 
    unless($Self->getFormat() eq 'table') {
      #my $rvs_t   = time();
-     system "$rProg --vanilla --slave < $r_f >/dev/null 2>&1";
+     system "$rProg --vanilla --slave < $r_f > /dev/null 2>&1";
      #print STDERR join("\t", 'RVS', time() - $rvs_t), "\n";
  }
 
@@ -298,11 +302,7 @@ sub rOpenFile {
            # do nothing 
          }
 	 elsif(lc($fmt) eq 'svg') {
-	   if($Self->useLegacy()){
-	     $Rv = qq{svg(file="$out_f", width=$w, height=$h)};
-	   }else{
-	     $Rv = qq{gridsvg(name="$out_f", width=$w, height=$h)};
-	   }
+	   $Rv = qq{gridsvg(name="$out_f", width=$w, height=$h)};
 	 }
          elsif(lc($fmt) eq 'html') {
            # do nothing
@@ -315,7 +315,6 @@ sub rOpenFile {
 }
 
 # ------------------------- _rStandardComponents -------------------------
-
 sub _rStandardComponents {
    my $Self = shift;
    $Self->_rPreamble(@_)
@@ -328,69 +327,7 @@ sub _rPreamble {
    my $scale = $Self->getScalingFactor;
 
    my $Rv = <<StandardComponents;
-
-# -------------------------------- colors --------------------------------
-
-options(warn=-1);
-
-plasmodb.pct.color   <- rgb(0.4, 0.4, 0.8);
-
-plasmodb.title.color <- rgb(0.75, 0.00, 0.00);
-
-plasmodb.ring.color        <- rgb(1,0.5,0.5);
-plasmodb.schizont.color    <- rgb(0.5,0.5,1.0);
-plasmodb.trophozoite.color <- rgb(1.0,0.5,1.0);
-
-# -------------------------------- titles --------------------------------
-
-plasmodb.title <- function ( title.string, line=0.5 ) {
-  title(title.string, font.main = 2, col.main = plasmodb.title.color, adj=0, line=line);
-}
-
-# ----------------------------- plot margins -----------------------------
-
-plasmodb.par   <- function ( ... ) {
-
-
-  par(mar      = c(0,0,0,0),
-      cex      = $scale,
-      cex.main = 1.00,
-      cex.lab  = 1.14,
-      cex.axis = 1.00,
-      las      = 1,
-      ...
-     );
-}
-plasmodb.par.last <- function () {
-   par(mar     = c(0,0,0,0)
-      );
-}
-
-# ------------------------ complete set of ticks -------------------------
-
-plasmodb.ticks <- function (axis.index, axis.min, axis.max, axis.gap ) {
-#  axis(axis.index);
-  axis(axis.index, at=seq( axis.min, axis.max, 1), labels=F, col="gray75");
-  axis(axis.index,
-       at     = seq( axis.gap*floor(axis.min/axis.gap + 0.5), axis.max, axis.gap),
-       labels = F,
-       col    = "gray50"
-      );
-}
-
-plasmodb.grid <- function (...) {
-  grid(col="gray75", ... );
-}
-
-# ----------------------------- filled plots -----------------------------
-
-plasmodb.filled.plot <- function ( x.data, y.data, ... ) {
-  polygon( c( x.data[1], x.data, x.data[length(x.data)]),
-           c( 0,         y.data, 0),
-           ...
-         );
-}
-
+options(warn=-1)
 StandardComponents
 
    return $Rv;
@@ -417,9 +354,6 @@ sub reportErrorsAndBlankGraph {
 
 $preamble_R
 $open_R
-#par(yaxs="i", xaxs="i", xaxt="n", yaxt="n", mar=c(0.1,0.1,0.1,0.1));
-#plot(c(0,1,1,0),c(0,1,0,1), xlab='', ylab='',type="l",col="orange");
-#text(0.5, 0.5, "no plot");
 par(yaxs="i", xaxs="i", xaxt="n", yaxt="n", bty="n", mar=c(0.1,0.1,0.1,0.1));
 plot(c(0),c(0), xlab='', ylab='',type="l",col="orange", xlim=c(0,1),ylim=c(0,1));
 text(0.5, 0.5, "none",col="black",cex=1.0);
