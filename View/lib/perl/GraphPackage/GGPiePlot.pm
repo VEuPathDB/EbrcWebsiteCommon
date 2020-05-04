@@ -132,7 +132,6 @@ $colorsString
 $sampleLabelsString
 $stderrUrls
 $legendLabelsString
-$skipProfilesString
 $profileTypesString
 
 is.compact=$isCompactString;
