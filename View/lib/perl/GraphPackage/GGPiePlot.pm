@@ -35,8 +35,6 @@ sub new {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#a lot of the following before the R code is copied from other files. review before commit TODO !!
-
 sub makeRPlotString {
   my ($self, $idType) = @_;
 
@@ -50,43 +48,13 @@ sub makeRPlotString {
 
   my $colors = $self->getColors();
 
-  my ($profileFiles, $elementNamesFiles, $stderrFiles);
-
-  my $blankGraph = $self->blankPlotPart();
+  my ($profileUrls, $elementNamesUrls, $stderrUrls);
 
   eval{
-   ($profileFiles, $elementNamesFiles, $stderrFiles) = $self->makeFilesForR($idType);
+   ($profileUrls, $elementNamesUrls, $stderrUrls) = $self->makeServiceUrlsForR($idType);
   };
-  if($@) {
-    return $blankGraph;
-  }
 
-  my $profileSets = $self->getProfileSets();
-  my @skipProfileSets;
-  my $skipped = 0;
-
-  for(my $i = 0; $i < scalar @$profileSets; $i++) {
-    my $profileSet = $profileSets->[$i];
-
-    if(scalar @{$profileSet->errors()} > 0) {
-      $skipProfileSets[$i] = "TRUE";
-      $skipped++;
-      next;
-    }
-
-    $skipProfileSets[$i] = "FALSE";
-  }
-
-  if(scalar @$profileSets == $skipped) {
-    return $blankGraph;
-  }
-
-  my @profileFileStrings = split(/,/, $profileFiles);
-  my $numProfiles = scalar @profileFileStrings;
-
-  my $skipProfilesString = EbrcWebsiteCommon::View::GraphPackage::Util::rBooleanVectorFromArray(\@skipProfileSets, 'skip.profiles');
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
-  my $colorsStringNotNamed = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArrayNotNamed($colors);
 
   my $rAdjustProfile = $self->getAdjustProfile();
   my $yAxisLabel = $self->getYaxisLabel();
@@ -158,11 +126,11 @@ sub makeRPlotString {
   my $rv = "
 #-------------------------- PIE PLOT ------------------------------
 
-$profileFiles
-$elementNamesFiles
+$profileUrls
+$elementNamesUrls
 $colorsString
 $sampleLabelsString
-$stderrFiles
+$stderrUrls
 $legendLabelsString
 $skipProfilesString
 $profileTypesString
@@ -172,45 +140,47 @@ is.thumbnail=$isThumbnail;
 
 #-------------------------------------------------
 
-if(length(profile.files) != length(element.names.files)) {
-  stop(\"profile.files length not equal to element.names.files length\");
+if(length(profile.urls) != length(element.names.urls)) {
+  stop(\"profile.urls length not equal to element.names.urls length\");
 }
 
 profile.df.full = data.frame();
 
-for(ii in 1:length(profile.files)) {
+for(ii in 1:length(profile.urls)) {
   skip.stderr = FALSE;
 
-  if(skip.profiles[ii]) {
-    next;
-  };
-
-  profile.df = read.table(profile.files[ii], header=T, sep=\"\\t\");
+  profile.df = stream_in(url(URLencode(profile.urls[ii])));
+  if (length(profile.df) == 0) {
+    the.colors <- the.colors[-ii]
+    next
+  }
   profile.df\$Group.1=NULL
+  profile.df\$VALUE <- as.numeric(profile.df\$VALUE)
 
   if(!is.null(profile.df\$ELEMENT_ORDER)) {
     eo.count = length(profile.df\$ELEMENT_ORDER);
-    if(!is.numeric(profile.df\$ELEMENT_ORDER)) {
-      stop(\"Element order must be numeric for aggregation\");
+
+    profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
+    if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
+      skip.stderr = TRUE;
     }
 
-      profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
-      if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
-        skip.stderr = TRUE;
-      }
-
     profile.df\$LEGEND = legend.label[ii];
-    profile.df\$PROFILE_FILE = profile.files[ii];
+    profile.df\$PROFILE_FILE = profile.urls[ii];
     profile.df\$PROFILE_TYPE = profile.types[ii];
   }
 
-  if (element.names.files[ii] != \"\") {
-    element.names.df = read.table(element.names.files[ii], header=T, sep=\"\\t\");
+  if (element.names.urls[ii] != \"\") {
+    element.names.df = stream_in(url(URLencode(element.names.urls[ii])));
+    if (length(element.names.df) == 0) {
+      the.colors <- the.colors[-ii]
+      next
+    }
 
     if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: profile file \", profile.files[ii], \" contains more rows than element names file\", element.names.files[ii], \". Additional entries will be ignored.\"));
+      message(paste(\"Warning: profile file \", profile.urls[ii], \" contains more rows than element names file\", element.names.urls[ii], \". Additional entries will be ignored.\"));
     } else if(length(element.names.df\$ELEMENT_ORDER) > length(profile.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: element names file \", element.names.files[ii], \" contains more rows than profile file\", profile.files[ii], \". Additional entries will be ignored.\"));
+      message(paste(\"Warning: element names file \", element.names.urls[ii], \" contains more rows than profile file\", profile.urls[ii], \". Additional entries will be ignored.\"));
     }
 
     profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
@@ -224,15 +194,16 @@ for(ii in 1:length(profile.files)) {
   element.names.numeric = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df\$NAME, perl=T));
   profile.df\$ELEMENT_NAMES_NUMERIC = element.names.numeric;
 
-  if(!skip.stderr && !is.na(stderr.files[ii]) && stderr.files[ii] != '') {
-    stderr.tmp = read.table(stderr.files[ii], header=T, sep=\"\\t\");
-    profile.df\$STDERR = stderr.tmp\$VALUE;
-  }
-  else {
+  if(!skip.stderr && !is.na(stderr.urls[ii]) && stderr.urls[ii] != '') {
+    stderr.tmp = stream_in(url(URLencode(stderr.urls[ii])));
+    if (length(stderr.tmp) == 0) {
+      the.colors <- the.colors[-ii]
+      next
+    }
+    profile.df\$STDERR = as.numeric(stderr.tmp\$VALUE);
+  } else {
     profile.df\$STDERR = NA;
   }
-
-  #profile.df = profile.df[, !(names(profile.df) %in% \"NAME\")];
 
   profile.df.full = rbind(profile.df.full, profile.df);
 }
@@ -244,138 +215,142 @@ if($removeNaN){
   profile.df.full = completeDF(profile.df.full, \"VALUE\");
 }
 
-if($isSVG) {
-  useTooltips=TRUE;
-}else{
-  useTooltips=FALSE;
-}
-
-#temporary while testing with derisi, want just a single profile file
-profile.df.full <- profile.df.full[profile.df.full\$PROFILE_FILE == profile.df.full\$PROFILE_FILE[1] ,]
-
-#determine how many levels there are to NAME col so we can set pie plot into equal parts
-profile.df.full\$FRAC <- 100*(1/length(profile.df.full\$NAME));
-#rescale values from 0 to 1 so they can be understood by the gradient color palette
-profile.df.full\$RESCALE <- rescale(profile.df.full\$VALUE);
-
-if ($isDonut) {
-  gp = ggplot(profile.df.full, aes(x=2, y=FRAC, fill=RESCALE)) + xlim(0.5, 2.5);
+if(nrow(profile.df.full) == 0){
+  d = data.frame(VALUE=0.5, LABEL=\"None\");
+  gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
 } else {
-  gp = ggplot(profile.df.full, aes(x=\"\", y=FRAC, fill=RESCALE));
-}
 
-#if (useTooltips) {
-#  gp = gp + geom_tooltip(aes(tooltip=NAME), real.geom=geom_bar, stat = \"identity\");
-#} else {
-  gp = gp + geom_bar(stat = \"identity\");
-#}
-
-gp = gp + coord_polar(theta = \"y\");
-
-
-#in order to map red to >1 and green to <-1 will need to know how these values map to the rescaled values
-
-#find rescaled val where normal val reaches < -1
-if (any(profile.df.full\$VALUE < -1)) {
-  low <- sort(profile.df.full\$RESCALE)[length(profile.df.full\$VALUE[profile.df.full\$VALUE < -1])]
-  llab <- sort(profile.df.full\$VALUE)[length(profile.df.full\$VALUE[profile.df.full\$VALUE < -1])]
-} else {
-  low <- 0
-  llab <- min(profile.df.full\$VALUE)
-}
-
-#find rescaled val which is median between normal 1 and -1 vals
-if (any(profile.df.full\$VALUE == 0)) {
-  mid <- profile.df.full\$RESCALE[profile.df.full\$VALUE == 0][1]
-  mlab <- 0 
-} else {
-  val <- min(abs(profile.df.full\$VALUE - 0))
-  if (!any(profile.df.full\$VALUE == val)) {
+  if($isSVG) {
+    useTooltips=TRUE;
+  }else{
+    useTooltips=FALSE;
+  }
+  
+  #determine how many levels there are to NAME col so we can set pie plot into equal parts
+  profile.df.full\$FRAC <- 100*(1/length(profile.df.full\$NAME));
+  #rescale values from 0 to 1 so they can be understood by the gradient color palette
+  profile.df.full\$RESCALE <- rescale(profile.df.full\$VALUE);
+  
+  if ($isDonut) {
+    gp = ggplot(profile.df.full, aes(x=2, y=FRAC, fill=RESCALE)) + xlim(0.5, 2.5);
+  } else {
+    gp = ggplot(profile.df.full, aes(x=\"\", y=FRAC, fill=RESCALE));
+  }
+  
+  #if (useTooltips) {
+  #  gp = gp + geom_tooltip(aes(tooltip=NAME), real.geom=geom_bar, stat = \"identity\");
+  #} else {
+    gp = gp + geom_bar(stat = \"identity\");
+  #}
+  
+  gp = gp + coord_polar(theta = \"y\");
+  
+  
+  #in order to map red to >1 and green to <-1 will need to know how these values map to the rescaled values
+  
+  #find rescaled val where normal val reaches < -1
+  if (any(profile.df.full\$VALUE < -1)) {
+    low <- sort(profile.df.full\$RESCALE)[length(profile.df.full\$VALUE[profile.df.full\$VALUE < -1])]
+    llab <- sort(profile.df.full\$VALUE)[length(profile.df.full\$VALUE[profile.df.full\$VALUE < -1])]
+  } else {
+    low <- 0
+    llab <- min(profile.df.full\$VALUE)
+  }
+  
+  #find rescaled val which is median between normal 1 and -1 vals
+  if (any(profile.df.full\$VALUE == 0)) {
+    mid <- profile.df.full\$RESCALE[profile.df.full\$VALUE == 0][1]
+    mlab <- 0 
+  } else {
+    val <- min(abs(profile.df.full\$VALUE - 0))
+    if (!any(profile.df.full\$VALUE == val)) {
+      val = val * -1
+    }
+    mid <- profile.df.full\$RESCALE[profile.df.full\$VALUE == val][1]
+    mlab <- profile.df.full\$VALUE[profile.df.full\$VALUE == val][1]
+  }
+  
+  #find rescaled val where normal val reaches > 1
+  if (any(profile.df.full\$VALUE > 1)) {
+    high <- sort(profile.df.full\$RESCALE)[length(profile.df.full\$VALUE) - length(profile.df.full\$VALUE[profile.df.full\$VALUE > 1] + 1)]
+    hlab <- sort(profile.df.full\$VALUE)[length(profile.df.full\$VALUE) - length(profile.df.full\$VALUE[profile.df.full\$VALUE > 1] + 1)]
+  } else {
+    high <- 1
+    hlab <- max(profile.df.full\$VALUE)
+  }
+  
+  #plot some ticks in the legend for the points midway between high and mid and low and mid
+  hmtarget <- (hlab - mlab) / 2
+  lmtarget <- (llab - mlab) / 2
+  #now find the actual VALUEs nearest to these ones and set to labs, then their RESCALE equivalents to hm and lm
+  val <- min(abs(profile.df.full\$VALUE - hmtarget))
+  if (!any(hmtarget == (profile.df.full\$VALUE + val))) {
     val = val * -1
   }
-  mid <- profile.df.full\$RESCALE[profile.df.full\$VALUE == val][1]
-  mlab <- profile.df.full\$VALUE[profile.df.full\$VALUE == val][1]
-}
-
-#find rescaled val where normal val reaches > 1
-if (any(profile.df.full\$VALUE > 1)) {
-  high <- sort(profile.df.full\$RESCALE)[length(profile.df.full\$VALUE) - length(profile.df.full\$VALUE[profile.df.full\$VALUE > 1] + 1)]
-  hlab <- sort(profile.df.full\$VALUE)[length(profile.df.full\$VALUE) - length(profile.df.full\$VALUE[profile.df.full\$VALUE > 1] + 1)]
-} else {
-  high <- 1
-  hlab <- max(profile.df.full\$VALUE)
-}
-
-#plot some ticks in the legend for the points midway between high and mid and low and mid
-hmtarget <- (hlab - mlab) / 2
-lmtarget <- (llab - mlab) / 2
-#now find the actual VALUEs nearest to these ones and set to labs, then their RESCALE equivalents to hm and lm
-val <- min(abs(profile.df.full\$VALUE - hmtarget))
-if (!any(hmtarget == (profile.df.full\$VALUE + val))) {
-  val = val * -1
-}
-hm <- profile.df.full\$RESCALE[hmtarget == (profile.df.full\$VALUE + val)][1]
-hmlab <- profile.df.full\$VALUE[hmtarget == (profile.df.full\$VALUE + val)][1]
-val <- min(abs(profile.df.full\$VALUE - lmtarget))
-if (!any(lmtarget == (profile.df.full\$VALUE + val))) {
-  val = val * -1
-}
-lm <- profile.df.full\$RESCALE[lmtarget == (profile.df.full\$VALUE + val)][1]
-lmlab <- profile.df.full\$VALUE[lmtarget == (profile.df.full\$VALUE + val)][1]
-
-if (low == 0) {
-  if (high == 1) {
-    myColors = c(\"red\", \"yellow\", \"green\")
-    myValues = c(high, mid, low)
-    myBreaks = c(high, hm, mid, lm, low)
-    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab), digits=4)
+  hm <- profile.df.full\$RESCALE[hmtarget == (profile.df.full\$VALUE + val)][1]
+  hmlab <- profile.df.full\$VALUE[hmtarget == (profile.df.full\$VALUE + val)][1]
+  val <- min(abs(profile.df.full\$VALUE - lmtarget))
+  if (!any(lmtarget == (profile.df.full\$VALUE + val))) {
+    val = val * -1
+  }
+  lm <- profile.df.full\$RESCALE[lmtarget == (profile.df.full\$VALUE + val)][1]
+  lmlab <- profile.df.full\$VALUE[lmtarget == (profile.df.full\$VALUE + val)][1]
+  
+  if (low == 0) {
+    if (high == 1) {
+      myColors = c(\"red\", \"yellow\", \"green\")
+      myValues = c(high, mid, low)
+      myBreaks = c(high, hm, mid, lm, low)
+      myLabels = round(c(hlab, hmlab, mlab, lmlab, llab), digits=4)
+    } else {
+      myColors = c(\"darkred\", \"red\", \"yellow\", \"green\")
+      myValues = c(1, high, mid, low)
+      myBreaks = c(1, high, hm, mid, lm, low)
+      myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab), digits=4)
+    }
   } else {
-    myColors = c(\"darkred\", \"red\", \"yellow\", \"green\")
-    myValues = c(1, high, mid, low)
-    myBreaks = c(1, high, hm, mid, lm, low)
-    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab), digits=4)
+    if (high == 1) {
+      myColors = c(\"red\", \"yellow\", \"green\", \"darkgreen\")
+      myValues = c(high, mid, low, 0)
+      myBreaks = c(high, hm, mid, lm, low, 0)
+      myLabels = round(c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
+    } else {
+      myColors = c(\"darkred\", \"red\", \"yellow\", \"green\", \"darkgreen\")
+      myValues = c(1, high, mid, low, 0)
+      myBreaks = c(1, high, hm, mid, lm, low, 0)
+      myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
+    }
   }
-} else {
-  if (high == 1) {
-    myColors = c(\"red\", \"yellow\", \"green\", \"darkgreen\")
-    myValues = c(high, mid, low, 0)
-    myBreaks = c(high, hm, mid, lm, low, 0)
-    myLabels = round(c(hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
+  
+  gp = gp + scale_fill_gradientn(name = \"$yAxisLabel\", colors = myColors, values = myValues, breaks = myBreaks, labels = myLabels)
+  
+  if(is.compact) {
+    gp = gp + theme_void() + theme(legend.position=\"none\");
+  } else if(is.thumbnail) {
+    gp = gp + theme_bw();
+    gp = gp + labs(title=\"$plotTitle\", y=\"\", x=NULL);
+    gp = gp + theme(legend.position=\"none\");
+    gp = gp + theme(panel.grid = element_blank());
+    gp = gp + theme(axis.text = element_blank());
+    gp = gp + theme(axis.ticks = element_blank());
   } else {
-    myColors = c(\"darkred\", \"red\", \"yellow\", \"green\", \"darkgreen\")
-    myValues = c(1, high, mid, low, 0)
-    myBreaks = c(1, high, hm, mid, lm, low, 0)
-    myLabels = round(c(max(profile.df.full\$VALUE), hlab, hmlab, mlab, lmlab, llab, min(profile.df.full\$VALUE)), digits=4)
+    gp = gp + theme_bw();
+    gp = gp + labs(title=\"$plotTitle\", y=\"\", x=NULL);
+    gp = gp + theme(panel.grid = element_blank());
+    gp = gp + theme(axis.text = element_blank());
+    gp = gp + theme(axis.ticks = element_blank());
+    if($hideXAxisLabels) {
+      gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
+    }
   }
-}
-
-gp = gp + scale_fill_gradientn(name = \"$yAxisLabel\", colors = myColors, values = myValues, breaks = myBreaks, labels = myLabels)
-
-if(is.compact) {
-  gp = gp + theme_void() + theme(legend.position=\"none\");
-} else if(is.thumbnail) {
-  gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"\", x=NULL);
-  gp = gp + theme(legend.position=\"none\");
-  gp = gp + theme(panel.grid = element_blank());
-  gp = gp + theme(axis.text = element_blank());
-  gp = gp + theme(axis.ticks = element_blank());
-} else {
-  gp = gp + theme_bw();
-  gp = gp + labs(title=\"$plotTitle\", y=\"\", x=NULL);
-  gp = gp + theme(panel.grid = element_blank());
-  gp = gp + theme(axis.text = element_blank());
-  gp = gp + theme(axis.ticks = element_blank());
-  if($hideXAxisLabels) {
-    gp = gp + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank());
+  
+  if($hasFacets) {
+    gp = gp + facet_grid($facetString);
   }
-}
+  
+  $rPostscript
 
-if($hasFacets) {
-  gp = gp + facet_grid($facetString);
 }
-
-$rPostscript
 
 plotlist[[plotlist.i]] = gp;
 plotlist.i = plotlist.i + 1;
