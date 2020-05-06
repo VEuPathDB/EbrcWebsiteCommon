@@ -20,7 +20,7 @@ sub run {
   push @{ $ua->requests_redirectable }, 'POST';
 
 
-  my $server_endpoint = "http://$lcProjectId.org/a/service/record-types/dataset/searches/AllDatasets/reports/standard";
+  my $server_endpoint = "https://$lcProjectId.org/a/service/record-types/dataset/searches/AllDatasets/reports/standard";
 
   my $req = HTTP::Request->new(POST => $server_endpoint);
   $req->header('content-type' => 'application/json');
@@ -83,7 +83,7 @@ sub run {
   print STDOUT $cgi->table( {}, (
               map {
                 $cgi->Tr(
-                $cgi->td("<img src=\"$_\""), $cgi->td("<img src=\"http://$lcProjectId.org$_\">")
+                $cgi->td("<img src=\"$_\""), $cgi->td("<img src=\"https://$lcProjectId.org$_\">")
             )
               } @urls
 
