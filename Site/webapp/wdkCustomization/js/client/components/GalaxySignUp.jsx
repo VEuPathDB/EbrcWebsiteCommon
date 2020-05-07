@@ -54,7 +54,7 @@ export default function GalaxySignUp(props) {
 
       <div className="eupathdb-GalaxyTermsContinueLink">
         <p style={{ fontSize: 'small', textAlign: 'justify' }}>
-          EuPathDB Galaxy workspaces are provided free of charge. We encrypt
+          EuPathDB Galaxy workspaces are provided free of charge. Note that data will be purged after 90 days of inactivity. We encrypt
           data transfers and storage but ultimately we cannot guarantee the
           security of data transmissions between EuPathDB, Globus and
           affiliates, Amazon Cloud Services, and the user. It is your
