@@ -1,34 +1,60 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-import { Link } from 'wdk-client/Components';
+import { Link, Loading } from 'wdk-client/Components';
 import { useWdkEffect } from 'wdk-client/Service/WdkService';
 import { Question, RecordInstance, AttributeValue } from 'wdk-client/Utils/WdkModel';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './EbrcDescription.scss';
+import { RootState } from 'wdk-client/Core/State/Types';
 
 const cx = makeClassNameHelper('ebrc-Description');
 const defaultFormCx = makeClassNameHelper('wdk-QuestionForm');
 
+const DATASETS_BY_QUESTION_NAME = 'DatasetsByQuestionName';
+
+type DatasetRecords =
+  | {
+      status: 'absent'
+    }
+  | {
+      status: 'loading'
+    }
+  | {
+      status: 'present',
+      records: RecordInstance[]
+    };
+
 export const useEbrcDescription = (question: Question) => {
-  const [ datasetRecords, setDatasetRecords ] = React.useState(undefined as RecordInstance[] | undefined);
+  const [ datasetRecords, setDatasetRecords ] = useState({ status: 'absent' } as DatasetRecords);
+  const shouldLoadDatasetRecords = useSelector(
+    (state: RootState) => state.globalData.questions?.find(
+      q => q.urlSegment === DATASETS_BY_QUESTION_NAME
+    ) != null
+  );
 
   useWdkEffect(wdkService => {
-    let active = true;
-    (async () => {
-      const answerJson = await wdkService.getAnswerJson(
-        deriveAnswerSpec(question.fullName),
-        REPORT_CONFIG
-      );
+    if (shouldLoadDatasetRecords) {
+      setDatasetRecords({ status: 'loading' });
 
-      if (active) setDatasetRecords(answerJson.records);
-      return () => {
-        active = false;
-      }
-    })();
-  }, [ question.fullName ]);
+      let active = true;
+      (async () => {
+        const answerJson = await wdkService.getAnswerJson(
+          deriveAnswerSpec(question.fullName),
+          REPORT_CONFIG
+        );
 
-  const DescriptionComponent = React.useCallback(
+        if (active) setDatasetRecords({ status: 'present', records: answerJson.records });
+
+        return () => {
+          active = false;
+        };
+      })();
+    }
+  }, [ question.fullName, shouldLoadDatasetRecords ]);
+
+  const DescriptionComponent = useCallback(
     (props: { description?: string, navigatingToDescription: boolean }) =>
       <div className={cx()}>
         {
@@ -43,12 +69,16 @@ export const useEbrcDescription = (question: Question) => {
           )
         }
         {
-          datasetRecords !== undefined && datasetRecords.length > 0 && (
+          datasetRecords.status === 'loading' &&
+          <Loading />
+        }
+        {
+          datasetRecords.status === 'present' && datasetRecords.records.length > 0 && (
             <div className={defaultFormCx('DescriptionSection')}>
               <hr/>
               <h2 className={cx('SearchDatasetsHeader')}>Data Sets used by this search</h2>
               <ul className={cx('DatasetsList')}>
-                {datasetRecords.map(recordToAttribution)}
+                {datasetRecords.records.map(recordToAttribution)}
               </ul>
             </div>
           )
@@ -57,15 +87,12 @@ export const useEbrcDescription = (question: Question) => {
     [ datasetRecords ]
   );
 
-  return {
-    descriptionLoading: datasetRecords === undefined,
-    DescriptionComponent
-  };
+  return DescriptionComponent;
 };
 
 const deriveAnswerSpec = (questionFullName: string) => (
   {
-    searchName: 'DatasetsByQuestionName',
+    searchName: DATASETS_BY_QUESTION_NAME,
     searchConfig: {
       parameters: {
         question_name: questionFullName

@@ -1,19 +1,16 @@
 import React from 'react';
 
-import { Loading } from 'wdk-client/Components';
 import DefaultQuestionForm, { Props } from 'wdk-client/Views/Question/DefaultQuestionForm';
 
-import { useEbrcDescription } from './EbrcDescription';
+import { useEbrcDescription } from 'ebrc-client/components/questions/EbrcDescription';
 
-export const EbrcDefaultQuestionForm = (props: Props) => {
-  const { descriptionLoading, DescriptionComponent } = useEbrcDescription(props.state.question);
+export function EbrcDefaultQuestionForm(props: Props) {
+  const DescriptionComponent = useEbrcDescription(props.state.question);
 
-  return descriptionLoading
-    ? <Loading />
-    : (
-      <DefaultQuestionForm 
-        {...props}
-        DescriptionComponent={DescriptionComponent}
-      />
-    );
+  return (
+    <DefaultQuestionForm
+      {...props}
+      DescriptionComponent={DescriptionComponent}
+    />
+  );
 };
