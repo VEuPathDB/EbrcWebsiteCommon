@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Link, Loading } from 'wdk-client/Components';
+import { RootState } from 'wdk-client/Core/State/Types';
 import { useWdkEffect } from 'wdk-client/Service/WdkService';
 import { Question, RecordInstance, AttributeValue } from 'wdk-client/Utils/WdkModel';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './EbrcDescription.scss';
-import { RootState } from 'wdk-client/Core/State/Types';
 
 const cx = makeClassNameHelper('ebrc-Description');
 const defaultFormCx = makeClassNameHelper('wdk-QuestionForm');
