@@ -42,7 +42,6 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-  branding: ReactNode,
   containerClassName?: string,
   menuItems: HeaderMenuItem[],
   onShowAnnouncements: () => void,
