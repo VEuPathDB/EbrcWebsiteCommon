@@ -15,6 +15,7 @@
 /out/
 /target/
 /*/target/
+/dist/
 
 # Dependencies
 node_modules/
