@@ -3,11 +3,11 @@
     src: {{{ src }}};
 }
 
-{{ baseTag }}[class^="{{classPrefix}}"]:before, {{ baseTag }}[class*=" {{classPrefix}}"]:before {
-    font-family: {{ fontName }} !important;
-    font-style: normal;
-    font-weight: normal !important;
-    font-variant: normal;
+[class^="{{classPrefix}}"], [class*=" {{classPrefix}}"] {
+    display: inline-block;
+    position: relative;
+    bottom: -0.1em;
+    font: normal normal normal 1em/1 {{ fontName }};
     text-transform: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
