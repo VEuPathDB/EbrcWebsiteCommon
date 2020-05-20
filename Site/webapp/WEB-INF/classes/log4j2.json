@@ -1,0 +1,199 @@
+{
+  "Configuration": {
+    "properties": {
+      "property": [{
+        "name": "logDir",
+        "value": "${sys:catalina.base}/logs/@WEBAPP@"
+      },{
+        "name": "standardLogPattern",
+        "value" : "[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"
+      }]
+    },
+    "Appenders": {
+      "appender": [{
+        "type": "RollingFile",
+        "name": "debug-log",
+        "append": "true",
+        "fileName": "${logDir}/wdk.log4j",
+        "filePattern": "${logDir}/${date:yyyy-MM}/wdk-%d{MM-dd-yyyy}-%i.log4j.gz",
+        "PatternLayout": { "pattern": "${standardLogPattern}" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "service-access-log",
+        "append": "true",
+        "fileName": "${logDir}/wdk-service-access.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/wdk-service-access-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "${standardLogPattern}" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "http-response-log",
+        "append": "true",
+        "fileName": "${logDir}/http-response-log.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/http-response-log-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "${standardLogPattern}" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "errors-ignored",
+        "append": "true",
+        "fileName": "${logDir}/errors-ignored.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/errors-ignored-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "%m%n" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "errors-retained",
+        "append": "true",
+        "fileName": "${logDir}/errors-retained.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/errors-retained-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "%m%n" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "errors-client-ignored",
+        "append": "true",
+        "fileName": "${logDir}/errors-client-ignored.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/errors-client-ignored-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "%m%n" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "errors-client-retained",
+        "append": "true",
+        "fileName": "${logDir}/errors-client-retained.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/errors-client-retained-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout": { "pattern": "%m%n" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "example-sql-log",
+        "append": "true",
+        "fileName": "${logDir}/exampleQueries.log4j",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/exampleQueries-%d{MM-dd-yyyy}-%i.log4j.gz",
+        "PatternLayout": { "pattern": "${standardLogPattern}" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "5 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "RollingFile",
+        "name": "slow-sql-log",
+        "append": "true",
+        "fileName": "${logDir}/slowQueries.log",
+        "filePattern": "${logDir}/$${date:yyyy-MM}/slowQueries-%d{MM-dd-yyyy}-%i.log4j.gz",
+        "PatternLayout": { "pattern": "${standardLogPattern}" },
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "10 MB" }
+        },
+        "DefaultRolloverStrategy": { "max": "3" }
+      },{
+        "type": "Console",
+        "name": "STDOUT",
+        "target": "SYSTEM_OUT",
+        "PatternLayout": { "pattern": "${standardLogPattern}" }
+      }]
+    },
+    "Loggers": {
+      "logger": [{
+        "name": "org.gusdb",
+        "level":"info"
+      },{
+        "name": "org.eupathdb",
+        "level": "info"
+      },{
+        "name": "org.apidb",
+        "level": "info"
+      },{
+        "name": "org.orthomcl",
+        "level": "info"
+      },{
+        "name": "org.gusdb.fgputil.db.slowquery.QueryLogger.ExampleQueryLog",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "example-sql-log" }
+      },{
+        "name": "org.gusdb.fgputil.db.slowquery.QueryLogger.SlowQueryLog",
+        "additivity": "false",
+        "level": "warn",
+        "AppenderRef": { "ref": "slow-sql-log" }
+      },{
+        "name": "org.gusdb.wdk.service.filter.RequestLoggingFilter",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "service-access-log" }
+      },{
+        "name": "org.gusdb.wdk.service.filter.RequestCompleteFilter",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "service-access-log" }
+      },{
+        "name": "org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "http-response-log" }
+      },{
+        "name": "org.eupathdb.common.errors.ErrorHandler.IgnoredErrorLog",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "errors-ignored" }
+      },{
+        "name": "org.eupathdb.common.errors.ErrorHandler.RetainedErrorLog",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "errors-retained" }
+      },{
+        "name": "org.eupathdb.common.errors.ErrorHandler.IgnoredClientErrorLog",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "errors-client-ignored" }
+      },{
+        "name": "org.eupathdb.common.errors.ErrorHandler.RetainedClientErrorLog",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "errors-client-retained" }
+      },{
+        "name": "org.apache",
+        "level": "warn"
+      },{
+        "name": "org.apache.catalina.core",
+        "level": "info"
+      }],
+      "root" : {
+        "level": "warn",
+        "AppenderRef": { "ref": "debug-log" }
+      }
+    }
+  }
+}

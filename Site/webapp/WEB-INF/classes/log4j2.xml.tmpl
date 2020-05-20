@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+
+    <!--=================-->
+    <!-- Primary WDK Log -->
+    <!--=================-->
+
+    <RollingFile name="debug-log" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/wdk.log4j"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/wdk-%d{MM-dd-yyyy}-%i.log4j.gz">
+      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <!--====================-->
+    <!-- Service Access Log -->
+    <!--====================-->
+
+    <RollingFile name="service-access-log" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/wdk-service-access.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/wdk-service-access-%d{MM-dd-yyyy}-%i.log.gz">
+      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <!--===========================================-->
+    <!-- Service Response Log (usually turned off) -->
+    <!--===========================================-->
+
+    <RollingFile name="http-response-log" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/http-responses.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/http-response-%d{MM-dd-yyyy}-%i.log.gz">
+      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <!--===========================-->
+    <!-- Various Error Detail Logs -->
+    <!--===========================-->
+
+    <RollingFile name="errors-ignored" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/errors-ignored.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/errors-ignored-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout pattern="%m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+    <RollingFile name="errors-retained" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/errors-retained.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/errors-retained-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout pattern="%m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+    <RollingFile name="errors-client-ignored" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/errors-client-ignored.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/errors-client-ignored-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout pattern="%m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+    <RollingFile name="errors-client-retained" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/errors-client-retained.log"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/errors-client-retained-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout pattern="%m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="100 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <!--========================-->
+    <!-- Slow Query System Logs -->
+    <!--========================-->
+
+    <RollingFile name="example-sql-log" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/exampleQueries.log4j"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/exampleQueries-%d{MM-dd-yyyy}-%i.log4j.gz">
+      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="5 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+    <RollingFile name="slow-sql-log" append="true"
+        fileName="${sys:catalina.base}/logs/@WEBAPP@/slowQueries.log4j"
+        filePattern="${sys:catalina.base}/logs/@WEBAPP@/$${date:yyyy-MM}/slowQueries-%d{MM-dd-yyyy}-%i.log4j.gz">
+      <!-- ipAddress provided by org.apidb.apicommon.controller.log4j.MDCServletFilter -->
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="3"/>
+    </RollingFile>
+
+    <!--=====================-->
+    <!-- Standard Output Log -->
+    <!--=====================-->
+
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9X{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"/>
+    </Console>
+
+  </Appenders>
+  <Loggers>
+
+    <Logger name="org.gusdb" level="info"/>
+    <Logger name="org.eupathdb" level="info"/>
+    <Logger name="org.apidb" level="info"/>
+    <Logger name="org.orthomcl" level="info"/>
+    <Logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.ExampleQueryLog" additivity="false" level="info"><AppenderRef ref="example-sql-log"/></Logger>
+    <Logger name="org.gusdb.fgputil.db.slowquery.QueryLogger.SlowQueryLog" additivity="false" level="warn"><AppenderRef ref="slow-sql-log"/></Logger>
+    <Logger name="org.gusdb.wdk.service.filter.RequestLoggingFilter" additivity="false" level="info"><AppenderRef ref="service-access-log"/></Logger>
+    <Logger name="org.gusdb.wdk.service.filter.RequestCompleteFilter" additivity="false" level="info"><AppenderRef ref="service-access-log" /></Logger>
+    <Logger name="org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger" additivity="false" level="info"><AppenderRef ref="http-response-log" /></Logger>
+    <Logger name="org.eupathdb.common.errors.ErrorHandler.IgnoredErrorLog" additivity="false" level="info"><AppenderRef ref="errors-ignored" /></Logger>
+    <Logger name="org.eupathdb.common.errors.ErrorHandler.RetainedErrorLog" additivity="false" level="info"><AppenderRef ref="errors-retained" /></Logger>
+    <Logger name="org.eupathdb.common.errors.ErrorHandler.IgnoredClientErrorLog" additivity="false" level="info"><AppenderRef ref="errors-client-ignored" /></Logger>
+    <Logger name="org.eupathdb.common.errors.ErrorHandler.RetainedClientErrorLog" additivity="false" level="info"><AppenderRef ref="errors-client-retained" /></Logger>
+
+    <Logger name="org.apache" level="warn"/>
+    <!-- info level required to log stdout/stderr -->
+    <Logger name="org.apache.catalina.core" level="info"/>
+
+    <!-- everything else goes to debug log -->
+    <Root level="warn">
+      <AppenderRef ref="debug-log"/>
+    </Root>
+
+  </Loggers>
+</Configuration>
