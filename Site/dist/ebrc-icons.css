@@ -1,0 +1,31 @@
+@font-face {
+    font-family: "ebrc-icons";
+    src: url("./ebrc-icons.eot?e8b5988b9a494dd04959ee0d60cc6526?#iefix") format("embedded-opentype"),
+url("./ebrc-icons.woff2?e8b5988b9a494dd04959ee0d60cc6526") format("woff2"),
+url("./ebrc-icons.woff?e8b5988b9a494dd04959ee0d60cc6526") format("woff"),
+url("./ebrc-icons.ttf?e8b5988b9a494dd04959ee0d60cc6526") format("truetype"),
+url("./ebrc-icons.svg?e8b5988b9a494dd04959ee0d60cc6526#ebrc-icons") format("svg");
+}
+
+[class^="ebrc-icon-"], [class*=" ebrc-icon-"] {
+    display: inline-block;
+    position: relative;
+    bottom: -0.1em;
+    font: normal normal normal 1em/1 ebrc-icons;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ebrc-icon-sampleDetails_dark:before {
+    content: "\f101";
+}
+.ebrc-icon-sampleDetails_light:before {
+    content: "\f102";
+}
+.ebrc-icon-taxaQuery_dark:before {
+    content: "\f103";
+}
+.ebrc-icon-taxaQuery_light:before {
+    content: "\f104";
+}
