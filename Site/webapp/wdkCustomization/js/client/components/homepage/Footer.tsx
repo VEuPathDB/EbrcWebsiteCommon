@@ -47,7 +47,8 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
 
     <div className={cx('SiteFamilyRow')}>
       <div className={cx('Copyright')}>
-        <div className={cx('Brand')}>
+         <div><img width="80%" src="/assets/images/BRC_Logo_transparent-01.png"></img></div>
+  {/*      <div className={cx('Brand')}>
           <Link to="/new-home-page">{displayName}</Link>
         </div>
         <div>
@@ -56,8 +57,9 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
         <div>
           ©{new Date().getFullYear()} The VEuPathDB Project Team
         </div>
+*/}
       </div>
-
+      <div className="footer-center"> 
       <div className={cx('ProjectLinks')}>
         {projects.map(projectId =>
           <React.Fragment key={projectId}>
@@ -68,6 +70,10 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
             }
           </React.Fragment>
         )}
+      </div>
+      <div className="footer-center-copyright">
+          ©{new Date().getFullYear()} The VEuPathDB Project Team
+      </div>
       </div>
 
       <SocialMediaLinks />
