@@ -75,6 +75,13 @@
   </rule>
 
   <rule>
+    <name>Old question page</name>
+    <note>Forward to new url</note>
+    <from>^/showQuestion.do\?questionFullName=SampleQuestions\.(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/search/sample/$1</to>
+  </rule>
+
+  <rule>
     <name>Old Import</name>
     <note>Forward to new url</note>
     <from>^/im.do\?s=(.+)$</from>

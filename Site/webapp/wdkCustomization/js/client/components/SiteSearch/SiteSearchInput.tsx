@@ -35,7 +35,7 @@ export function SiteSearchInput() {
     const id = idSearch?.parameters.find((p): p is DatasetParam => p.name === 'ds_gene_ids')?.defaultIdList;
     const text = textSearch?.parameters.find(p => p.name === 'text_expression')?.initialDisplayValue;
     const examples = [ `*`, id, text, `"oxo group"` ].filter(v => v).join(' or ');
-    return 'E.g.,' + examples;
+    return 'Site Search e.g.,' + examples;
   }, []);
 
   const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
