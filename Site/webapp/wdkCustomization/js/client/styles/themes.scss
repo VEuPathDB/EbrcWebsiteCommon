@@ -1,7 +1,6 @@
 // The following was taken from https://medium.com/@dmitriy.borodiy/easy-color-theming-with-scss-bc38fd5734d1
 
 // TODO Figure out how to only include this for genomic sites.
-// TODO Remove "beta-*" from the theme once we're out of beta
 
 $themes: (
 
@@ -11,7 +10,7 @@ $themes: (
     secondary-color-border: #dce5e2,
     bckgrnd-img: url('~site/images/AmoebaDB/header-amoebaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/amoebaDB.png'),
-    beta-position-left: 18.75em,
+    superscript-position-left: 18.75em,
   ),
   
   // bckgrnd dark 
@@ -21,7 +20,7 @@ $themes: (
     secondary-color-border: #e1e4e8,
     bckgrnd-img: url('~site/images/CryptoDB/header-cryptoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/cryptoDB.png'),  /* crypto-logo-w.png, crypto-logo-2.png */
-    beta-position-left: 17.25em,
+    superscript-position-left: 17.25em,
   ),
 
   EuPathDB: (
@@ -31,10 +30,10 @@ $themes: (
     bckgrnd-img: url('~site/images/VEuPathDB/header-veupathDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/VEuPathDB.png'),
     small-logo: url('~site/images/VEuPathDB/veupath-logo-no-tag.png'),
-    beta-position-left: 16.75em,
-    beta-position-top-small: 0.6em,
-    beta-position-left-small: 15.5em,
-    beta-font-size-small: 1.9em,
+    superscript-position-left: 16.75em,
+    superscript-position-top-small: 0.6em,
+    superscript-position-left-small: 15.5em,
+    superscript-font-size-small: 1.9em,
   ),
   
   // eupath  bkgrnd 
@@ -44,7 +43,7 @@ $themes: (
     secondary-color-border: #dfe8eb,
     bckgrnd-img: url('~site/images/FungiDB/header-fungiDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/fungiDB.png'),
-    beta-position-left: 14.5em,
+    superscript-position-left: 14.5em,
   ),
   
   // eupath  bkgrnd w/one watermark,  Giardia: #569551,  veupathdb-banner-GADB.jpg 
@@ -54,7 +53,7 @@ $themes: (
     secondary-color-border: #dae3e6,
     bckgrnd-img: url('~site/images/GiardiaDB/header-giardiaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/giardiaDB.png'),
-    beta-position-left: 17.5em,
+    superscript-position-left: 17.5em,
   ),
   
   // eupath  bkgrnd, default 
@@ -64,7 +63,7 @@ $themes: (
     secondary-color-border: #d7e5e8,
     bckgrnd-img: url('~site/images/HostDB/header-hostDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/hostDB.png'),
-    beta-position-left: 15em,
+    superscript-position-left: 15em,
   ),
   
   // tinted bkgrnd  MicrosporidiaDB: #4d3c68 (same as header) or #7988b3 (second color), veupathdb-banner-MSDBtint.jpg 
@@ -74,7 +73,7 @@ $themes: (
     secondary-color-border: #e1e2e5,
     bckgrnd-img: url('~site/images/MicrosporidiaDB/header-microsporidiaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/microsporidiaDB.png'),
-    beta-position-left: 19em,
+    superscript-position-left: 19em,
   ),
   
   // tinted  bkgrnd  PiroplasmaDB: #8b465c (same as header) or #3a8c9f (second color), veupathdb-banner-PPDBtint.jpg 
@@ -84,7 +83,7 @@ $themes: (
     secondary-color-border: #e4e3e6,
     bckgrnd-img: url('~site/images/PiroplasmaDB/header-piroplasmaDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/piroplasmaDB.png'),
-    beta-position-left: 21em,
+    superscript-position-left: 21em,
   ),
   
   // bckgrnd light 
@@ -94,7 +93,7 @@ $themes: (
     secondary-color-border: #e4dfe3,
     bckgrnd-img: url('~site/images/PlasmoDB/header-plasmoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/plasmoDB.png'), 
-    beta-position-left: 18em,
+    superscript-position-left: 18em,
   ),
   
   // eupath bkgrnd 
@@ -104,7 +103,7 @@ $themes: (
     secondary-color-border: #e2dce3,
     bckgrnd-img: url('~site/images/SchistoDB/header-schistoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/schistoDB.png'),
-    beta-position-left: 17.5em,
+    superscript-position-left: 17.5em,
   ),
   
   // eupath bkgrnd 
@@ -114,7 +113,7 @@ $themes: (
     secondary-color-border: #d9e1d6,
     bckgrnd-img: url('~site/images/ToxoDB/header-toxoDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/toxoDB.png'),
-    beta-position-left: 14.75em,
+    superscript-position-left: 14.75em,
   ),
   
   // eupath bkgrnd 
@@ -124,7 +123,7 @@ $themes: (
     secondary-color-border: #e2e1e0,
     bckgrnd-img: url('~site/images/TrichDB/header-trichDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/trichDB.png'),
-    beta-position-left: 15.25em,
+    superscript-position-left: 15.25em,
   ),
   
   // eupath bkgrnd w/one watermark, TriTrypDB: #c06530,  veupathdb-banner-TTDB.jpg 
@@ -134,7 +133,7 @@ $themes: (
     secondary-color-border: #ebdbd2,
     bckgrnd-img: url('~site/images/TriTrypDB/header-tritrypDB.jpg'),
     logo: url('~site/images/VEuPathDB/logos/tritrypDB.png'),
-    beta-position-left: 16.5em,
+    superscript-position-left: 16.5em,
   ),
   
   // bckgrnd dark 
@@ -144,7 +143,7 @@ $themes: (
     secondary-color-border: #d8e0e6,
     bckgrnd-img: url('~site/images/VectorBase/header-vectorbase.jpg'),
     logo: url('~site/images/VEuPathDB/logos/vectorbase.png'),
-    beta-position-left: 18em,
+    superscript-position-left: 18em,
   ),
 
 );
