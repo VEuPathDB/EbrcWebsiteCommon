@@ -45,7 +45,8 @@ type OwnProps = {
   containerClassName?: string,
   menuItems: HeaderMenuItem[],
   onShowAnnouncements: () => void,
-  showAnnouncementsToggle: boolean
+  showAnnouncementsToggle: boolean,
+  branding: ReactNode
 };
 
 type Props = StateProps & DispatchProps & RouteComponentProps<any> & OwnProps;
@@ -111,7 +112,8 @@ const HeaderView = withRouter(({
   user,
   location,
   onShowAnnouncements,
-  showAnnouncementsToggle
+  showAnnouncementsToggle,
+  branding
 }: Props) => {
   const menuBarRef = useRef<HTMLDivElement>(null);
   const [ selectedMenuItems, setSelectedMenuItems ] = useState<string[]>([]);
@@ -159,10 +161,7 @@ const HeaderView = withRouter(({
       <a href="https://veupathdb.org" className={cx('ProjectBranding')}>
       </a>
       <div className={cx('BrandingContainer')}>
-        <Link to="/">
-          <div className={cx('Branding')}>
-          </div>
-        </Link>
+        {branding}
       </div>
       <button className={cx('Hamburger')} type="button" onClick={toggleHamburgerMenu}>
         <IconAlt fa="bars" />
