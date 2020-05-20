@@ -25,7 +25,6 @@
 
     <!-- remove conflicting jar file -->
     <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
-    <delete file="${targetDir}/lib/java/jsp-api-2.0.jar" />
 
   </target>
 
@@ -115,26 +114,26 @@
   </target>
 
   <target name="siteLog4j">
-    <available file="${targetDir}/config/log4j.xml.custom-web"
+    <available file="${targetDir}/config/log4j2.xml.custom-web"
                property="custom.weblog4j.present" />
     <antcall target="installCustomWebLog4j" />
-    <available file="${webappTargetDir}/WEB-INF/classes/log4j.xml"
+    <available file="${webappTargetDir}/WEB-INF/classes/log4j2.json"
                property="weblog4j.present" />
     <antcall target="setLog4j" />
   </target>
 
   <target name="installCustomWebLog4j" if="custom.weblog4j.present">
-    <echo message="Installing custom log4j.xml from" />
-    <echo message="${targetDir}/config/log4j.xml.custom-web" />
+    <echo message="Installing custom log4j2.xml from" />
+    <echo message="${targetDir}/config/log4j2.xml.custom-web" />
     <copy overwrite="true"
-          file="${targetDir}/config/log4j.xml.custom-web"
-          tofile="${webappTargetDir}/WEB-INF/classes/log4j.xml" />
+          file="${targetDir}/config/log4j2.xml.custom-web"
+          tofile="${webappTargetDir}/WEB-INF/classes/log4j2.xml" />
   </target>
 
   <target name="setLog4j" if="weblog4j.present">
     <dirname property="webappDir" file="${webappTargetDir}" />
     <basename property="webapp" file="${webappDir}" />
-    <replace file="${webappTargetDir}/WEB-INF/classes/log4j.xml"
+    <replace file="${webappTargetDir}/WEB-INF/classes/log4j2.json"
              token="@WEBAPP@" value="${webapp}" />
   </target>
 

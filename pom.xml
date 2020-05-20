@@ -10,7 +10,6 @@
   <modules>
     <module>Model</module>
     <module>Watar</module>
-    <module>Site</module>
   </modules>
 
   <dependencyManagement>
@@ -18,11 +17,6 @@
       <dependency>
         <groupId>org.gusdb</groupId>
         <artifactId>wdk-website-controller</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gusdb</groupId>
-        <artifactId>fgputil-server</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

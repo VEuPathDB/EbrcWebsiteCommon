@@ -17,11 +17,7 @@ public class ServletVersions extends BeanBase implements ServletVersionsMBean   
    *  version number of the JSP specification that is supported by the JSP engine
    */
   @Override
-  public String getJspSpecVersion()  {
-    javax.servlet.jsp.JspFactory f = javax.servlet.jsp.JspFactory.getDefaultFactory();
-    if ( f != null) {
-      return f.getEngineInfo().getSpecificationVersion();
-    }
+  public String getJspSpecVersion() {
     return null;
   }
   
