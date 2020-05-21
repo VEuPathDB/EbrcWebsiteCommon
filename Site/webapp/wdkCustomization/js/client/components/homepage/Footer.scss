@@ -7,7 +7,7 @@ $mobile-width: 575px;
   text-align: center;
 }
 .footer-center-copyright {
-  padding-top: 0.4em;
+  padding-top: 0.7em;
 }
 
 .ebrc-Footer {
@@ -17,11 +17,11 @@ $mobile-width: 575px;
 //  padding: 1rem 0;
 
   &PageDescriptionRow {
-    padding: 0 0.9375rem;
+    padding: 0.5rem 0.9375rem;
   }
 
   &SiteFamilyRow {
-    padding: 0 0.9375rem;
+    padding: 0.5rem 0.9375rem;
 
     display: flex;
     justify-content: space-between;
@@ -33,10 +33,11 @@ $mobile-width: 575px;
   }
 
   &Copyright {
-    max-width: 20%;
+    max-width: 25%;
     position: relative;
-    bottom: 0.8em;
+    bottom: 0.7em;
     left: 1em;
+    margin-right: 1em;
    
     div a img {
       height: 3.8rem;
