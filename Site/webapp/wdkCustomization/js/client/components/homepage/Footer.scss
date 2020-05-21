@@ -33,7 +33,14 @@ $mobile-width: 575px;
   }
 
   &Copyright {
-    max-width: 15%;
+    max-width: 20%;
+    position: relative;
+    bottom: 0.8em;
+    left: 1em;
+   
+    div a img {
+      height: 3.8rem;
+    }
 
     @media screen and (max-width: $mobile-width) {
       max-width: 100%;
@@ -60,7 +67,7 @@ $mobile-width: 575px;
 //    max-width: 70%;
 
     a {
-      height: 1.25rem;
+      height: 1.7rem;
       padding: 0 0.3rem;
     }
 
