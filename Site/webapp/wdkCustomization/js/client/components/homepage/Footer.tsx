@@ -48,7 +48,7 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
     <div className={cx('SiteFamilyRow')}>
       <div className={cx('Copyright')}>
          <div><a href="https://www.niaid.nih.gov/research/bioinformatics-resource-centers">
-                <img title="NAIAD Bioinformatics Resource Centers" src="/assets/images/BRC_Logo_transparent-01.png">
+                <img title="NIAID Bioinformatics Resource Centers" src="/assets/images/BRC_Logo_transparent-01.png">
                 </img>
          </a></div>
   {/*      <div className={cx('Brand')}>
