@@ -183,6 +183,12 @@ input[type]:not([type=button]):not([type=checkbox]):not([type=file]):not([type=h
 ::-moz-placeholder          { color: #333; }
 :-moz-placeholder           { color: #333; }
 
+
+::placeholder {
+  font-style: italic;
+}
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   =SEMANTIC: sematic-based rules, using HTML5 elements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
