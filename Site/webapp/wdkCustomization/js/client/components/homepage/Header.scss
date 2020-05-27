@@ -217,8 +217,11 @@ $hamburger-width: 1013px;
     margin-left: 0.5em;
     margin-right: 0.5em;
     justify-self: center;
-    width: 36em;
-    font-style: italic;
+    width: 37em;
+
+    ::placeholder {
+      font-style: italic;
+    }
 
     @media screen and (max-width: $hamburger-width) {
       width: calc(100% - 0.5em);
