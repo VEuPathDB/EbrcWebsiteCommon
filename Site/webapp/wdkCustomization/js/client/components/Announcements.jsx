@@ -68,7 +68,20 @@ const siteAnnouncements = [
   },
 */
 
-
+  {
+    id: 'beta-genomics',
+    renderDisplay: props => {
+      // We want this on all genomic home pages running this code
+      if ( isGenomicHomePage(props.projectId, props.location) ) return (
+        <div key="beta">
+          {props.displayName} <em>beta</em> is available for early community review!
+          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with feedback.
+          &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>Click here to return to the legacy site.</a>
+        </div>
+      );
+    }
+  },
+      
   {
     id: 'strategies-beta',
     category: 'degraded',
