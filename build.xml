@@ -144,6 +144,7 @@
           failonerror="false"
           failifexecutionfails="false"
           error="/dev/null"
+          output="/dev/null"
     >
       <arg line="--ignore phpdoc/,css/,js/,config/,test/,images/,doc/" />
       <arg line="--defaultpackagename dashboard" />
