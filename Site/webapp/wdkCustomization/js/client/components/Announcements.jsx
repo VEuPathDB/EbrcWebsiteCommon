@@ -71,12 +71,14 @@ const siteAnnouncements = [
     }
   },
 
+
+
   (props) => {
-    if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl)  ) {
+    if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/')  ) {
       return (
-        <div key="beta">
+        <div style={{fontSize: '120%'}} key="beta">
           <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
-            {props.displayName} <em>beta</em>
+            {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} <em>beta</em>
           </a> is available for early community review!  Be the first to try our updated interface, backed up by our new infrastructure.
         </div>
       );
@@ -224,7 +226,6 @@ function AnnouncementGroup(props) {
           width: 'calc(100% - 70px)',
           padding: '8px',
           verticalAlign: 'middle',
-          color: 'darkred',
           fontSize: '1.1em'
         }}>
           {finalAnnouncements}
