@@ -1,0 +1,31 @@
+@font-face {
+    font-family: "ebrc-icons";
+    src: url("./ebrc-icons.eot?33cc7163f22d6d9a5c5e71183e1761f9?#iefix") format("embedded-opentype"),
+url("./ebrc-icons.woff2?33cc7163f22d6d9a5c5e71183e1761f9") format("woff2"),
+url("./ebrc-icons.woff?33cc7163f22d6d9a5c5e71183e1761f9") format("woff"),
+url("./ebrc-icons.ttf?33cc7163f22d6d9a5c5e71183e1761f9") format("truetype"),
+url("./ebrc-icons.svg?33cc7163f22d6d9a5c5e71183e1761f9#ebrc-icons") format("svg");
+}
+
+i[class^="ebrc-"]:before, i[class*=" ebrc-"]:before {
+    font-family: ebrc-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ebrc-sampleDetails_dark:before {
+    content: "\f101";
+}
+.ebrc-sampleDetails_light:before {
+    content: "\f102";
+}
+.ebrc-taxaQuery_dark:before {
+    content: "\f103";
+}
+.ebrc-taxaQuery_light:before {
+    content: "\f104";
+}

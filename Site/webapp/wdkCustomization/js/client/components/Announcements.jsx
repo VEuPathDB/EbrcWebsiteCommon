@@ -159,7 +159,6 @@ function AnnouncementGroup(props) {
           width: 'calc(100% - 70px)',
           padding: '8px',
           verticalAlign: 'middle',
-          color: 'darkred',
           fontSize: '1.1em'
         }}>
           {finalAnnouncements}
