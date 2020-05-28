@@ -76,7 +76,7 @@ const siteAnnouncements = [
   (props) => {
     if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/')  ) {
       return (
-        <div style={{fontSize: '120%'}} key="beta">
+        <div key="beta">
           <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
             {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} <em>beta</em>
           </a> is available for early community review!  Be the first to try our updated interface, backed up by our new infrastructure.
@@ -226,7 +226,7 @@ function AnnouncementGroup(props) {
           width: 'calc(100% - 70px)',
           padding: '8px',
           verticalAlign: 'middle',
-          fontSize: '1.1em'
+          fontSize: '1.5em'
         }}>
           {finalAnnouncements}
         </div>
