@@ -77,9 +77,13 @@ const siteAnnouncements = [
     if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/')  ) {
       return (
         <div style={{fontWeight: 'bold'}} key="beta">
+          <span style={{color:darkred}}> >> >> </span>
           <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
             {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} <em>beta</em>
-          </a> is available for community review! Be the first to try our updated interface, backed up by new infrastructure.
+          </a>
+          <span style={{color:darkred}}> << << </span>
+          is now available for review!
+          <span style={{fontWeight:'400'}}>Try our updated interface, backed up by new infrastructure!!</span>
         </div>
       );
     }
