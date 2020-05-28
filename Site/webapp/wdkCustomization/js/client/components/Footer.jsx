@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="left">
         <div className="build-info">
           <span>
-            <a href={'http://' + projectId.toLowerCase() + '.org'}>{displayName}</a>
+            <a href={'https://beta.' + projectId.toLowerCase() + '.org'}>{displayName}</a>
             <span> {buildNumber} &nbsp;&nbsp; {formatReleaseDate(releaseDate)}</span>
           </span>
           <br/>
@@ -33,63 +33,63 @@ export default function Footer() {
       </div>
       <div className="bottom">
         <ul className="site-icons">
-          <li title="VEuPathDB.org">
-            <a href="http://www.eupathdb.org">
+          <li title="beta.VEuPathDB.org">
+            <a href="https://beta.veupathdb.org">
               <img alt="Link to VEuPathDB homepage" src={webAppUrl + '/images/VEuPathDB.png'}/>
             </a>
           </li>
-          <li title="AmoebaDB.org" className="short-space">
-            <a href="http://amoebadb.org">
+          <li title="beta.AmoebaDB.org" className="short-space">
+            <a href="https://beta.amoebadb.org">
               <img src={webAppUrl + '/images/AmoebaDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="CryptoDB.org" className="short-space">
-            <a href="http://cryptodb.org">
+          <li title="beta.CryptoDB.org" className="short-space">
+            <a href="https://beta.cryptodb.org">
               <img src={webAppUrl + '/images/CryptoDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="FungiDB.org" className="short-space">
-            <a href="http://fungidb.org">
+          <li title="beta.FungiDB.org" className="short-space">
+            <a href="https://beta.fungidb.org">
               <img src={webAppUrl + '/images/FungiDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="GiardiaDB.org" className="short-space">
-            <a href="http://giardiadb.org">
+          <li title="beta.GiardiaDB.org" className="short-space">
+            <a href="https://beta.giardiadb.org">
               <img src={webAppUrl + '/images/GiardiaDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="MicrosporidiaDB.org" className="long-space">
-            <a href="http://microsporidiadb.org">
+          <li title="beta.MicrosporidiaDB.org" className="long-space">
+            <a href="https://beta.microsporidiadb.org">
               <img src={webAppUrl + '/images/MicrosporidiaDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="PiroplasmaDB.org" className="short-space">
-            <a href="http://piroplasmadb.org">
+          <li title="beta.PiroplasmaDB.org" className="short-space">
+            <a href="https://beta.piroplasmadb.org">
               <img src={webAppUrl + '/images/PiroplasmaDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="PlasmoDB.org" className="long-space">
-            <a href="http://plasmodb.org">
+          <li title="beta.PlasmoDB.org" className="long-space">
+            <a href="https://beta.plasmodb.org">
               <img src={webAppUrl + '/images/PlasmoDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="ToxoDB.org" className="long-space">
-            <a href="http://toxodb.org">
+          <li title="beta.ToxoDB.org" className="long-space">
+            <a href="https://beta.toxodb.org">
               <img src={webAppUrl + '/images/ToxoDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="TrichDB.org" className="short-space">
-            <a href="http://trichdb.org">
+          <li title="beta.TrichDB.org" className="short-space">
+            <a href="https://beta.trichdb.org">
               <img src={webAppUrl + '/images/TrichDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="TriTrypDB.org" className="short-space">
-            <a href="http://tritrypdb.org">
+          <li title="beta.TriTrypDB.org" className="short-space">
+            <a href="https://beta.tritrypdb.org">
               <img src={webAppUrl + '/images/TriTrypDB/footer-logo.png'}/>
             </a>
           </li>
-          <li title="OrthoMCL.org" className="short-space">
-            <a href="http://orthomcl.org">
+          <li title="beta.OrthoMCL.org" className="short-space">
+            <a href="https://beta.orthomcl.org">
               <img src={webAppUrl + '/images/OrthoMCL/footer-logo.png'}/>
             </a>
           </li>
