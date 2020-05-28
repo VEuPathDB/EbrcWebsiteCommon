@@ -79,7 +79,7 @@ const siteAnnouncements = [
         <div style={{fontWeight: 'bold'}} key="beta">
           <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
             {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} <em>beta</em>
-          </a> is available for early community review!  Be the first to try our updated interface, backed up by our new infrastructure.
+          </a> is available for community review! Be the first to try our updated interface, backed up by new infrastructure.
         </div>
       );
     }
