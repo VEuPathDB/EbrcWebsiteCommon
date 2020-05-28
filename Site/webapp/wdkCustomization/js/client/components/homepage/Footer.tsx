@@ -1,13 +1,10 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent } from 'react';
 
-import { Link } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { ProjectLink } from 'ebrc-client/components/homepage/ProjectLink';
 import { SocialMediaLinks } from 'ebrc-client/components/homepage/SocialMediaLinks';
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
-
-import { formatReleaseDate } from 'ebrc-client/util/formatters';
 
 import './Footer.scss';
 
@@ -34,12 +31,9 @@ export const projects = [
 
 type Props = {
   containerClassName?: string;
-  buildNumber: string | undefined;
-  releaseDate: string | undefined;
-  displayName: string | undefined;
 };
 
-export const Footer: FunctionComponent<Props> = ({ children, containerClassName, buildNumber, releaseDate, displayName }) => (
+export const Footer: FunctionComponent<Props> = ({ children, containerClassName }) => (
   <footer className={combineClassNames(cx(), containerClassName)}>
     <div className={cx('PageDescriptionRow')}>
       {children}
@@ -50,16 +44,6 @@ export const Footer: FunctionComponent<Props> = ({ children, containerClassName,
          <div><a href="https://www.niaid.nih.gov/research/bioinformatics-resource-centers">
                 <img src="/assets/images/BRC_Logo_transparent-01.png"></img>
          </a></div>
-  {/*      <div className={cx('Brand')}>
-          <Link to="/new-home-page">{displayName}</Link>
-        </div>
-        <div>
-          Release {buildNumber} | {releaseDate && formatReleaseDate(releaseDate)}
-        </div>
-        <div>
-          ©{new Date().getFullYear()} The VEuPathDB Project Team
-        </div>
-*/}
       </div>
       <div className="footer-center"> 
       <div className={cx('ProjectLinks')}>
