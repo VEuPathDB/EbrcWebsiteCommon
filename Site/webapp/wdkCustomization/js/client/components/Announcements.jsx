@@ -71,6 +71,18 @@ const siteAnnouncements = [
     }
   },
 
+  (props) => {
+    if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl)  ) {
+      return (
+        <div key="beta">
+          <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
+            {props.displayName} <em>beta</em>
+          </a> is available for early community review!  Be the first to try our updated interface, backed up by our new infrastructure.
+        </div>
+      );
+    }
+  },
+
   // Blast
 /*
   (props) => {
