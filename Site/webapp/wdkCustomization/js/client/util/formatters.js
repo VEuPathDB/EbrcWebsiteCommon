@@ -5,8 +5,8 @@ let MONTHS = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', '
  */
 export function formatReleaseDate(releaseDateString, format) {
   const date = new Date(releaseDateString);
-  return (typeof format === 'string' ? format : 'd m y')
-    .replace('d', date.getDate())
-    .replace('m', MONTHS[date.getMonth()])
-    .replace('y', date.getFullYear());
+  return (typeof format === 'string' ? format : 'dd mm yy')
+    .replace('dd', date.getDate())
+    .replace('mm', MONTHS[date.getMonth()])
+    .replace('yy', date.getFullYear());
 }
