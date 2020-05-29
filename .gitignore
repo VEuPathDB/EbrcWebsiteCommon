@@ -4,6 +4,7 @@
 
 
 # Eclipse Project Junk
+.factorypath
 .settings/
 .project
 .classpath
