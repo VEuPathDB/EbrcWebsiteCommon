@@ -118,17 +118,21 @@ sub writeFiles {
   }
 }
 
-sub getServiceUrls {
-  my ($self, $id, $idType) = @_;
+sub getJsonForService {
+  my ($self) = @_;
 
-  $id = $self->getAlternateSourceId() ? $self->getAlternateSourceId() : $id;
+  my $profileSetName = $self->getName();
+  my $profileSetType = $self->getType();
 
-  $self->getProfileServiceUrl($id, $idType);
-  $self->getElementNamesServiceUrl($id);
+  my $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\"}";
 
   if(my $relatedProfileSet = $self->getRelatedProfileSet()) {
-    $relatedProfileSet->getProfileServiceUrl($id, $idType);
-  } 
+    my $relatedName = $relatedProfileSet->getName();
+    my $relatedType = $relatedProfileSet->getType();
+    $jsonString = "$jsonString,{\"profileSetName\":\"$relatedName\",\"profileType\":\"$relatedType\"}";
+  }
+
+  return $jsonString;
 }
 
 sub writeProfileFile{
@@ -180,8 +184,6 @@ sub writeElementNamesFile {
 
 }
 
-
-
 sub setProfileCannedQuery {
   my ($self, $cannedQuery) = @_;
   $self->{_profile_canned_query} = $cannedQuery;
@@ -193,19 +195,6 @@ sub getProfileCannedQuery {
 
   return $self->makeProfileCannedQuery($suffix, $idType, $id);
 }
-
-sub setProfileServiceUrl {
-  my ($self, $profileServiceUrl) = @_;
-  $self->{_profile_service_url} = $profileServiceUrl;
-}
-
-sub getProfileServiceUrl {
-  my ($self, $id, $idType) = @_;
-  return $self->{_profile_service_url} if($self->{_profile_service_url});
-
-  return $self->makeProfileServiceUrl($idType, $id);
-}
-
 
 sub makeProfileCannedQuery {
   my ($self, $suffix, $idType, $id) = @_;
@@ -264,32 +253,6 @@ sub makeProfileCannedQuery {
   }
 }
 
-sub makeProfileServiceUrl {
-  my ($self, $idType, $id) = @_;
-  my $profileSetName = $self->getName();
-  my $profileSetType = $self->getType();
-  my $subId = $self->getSubId();
-  my $idOverride = $self->getIdOverride();
-
-  if ($idOverride) {
-    $id = $idOverride;
-  }
-
-  my $profileUrl;
-  if(($idType) && lc($idType) eq 'ec') {
-    $profileUrl = "/a/service/profileSet/ProfileByEC/$id/$profileSetName/$profileSetType";
-  } else {
-    if ($subId) {
-      $id = "$id|$subId";
-    }
-    $profileUrl = "/a/service/profileSet/Profile/$id/$profileSetName/$profileSetType";
-  }
-
-  $self->setProfileServiceUrl($profileUrl);
-
-  return $profileUrl;
-}
-
 sub setProfileNamesCannedQuery {
   my ($self, $cannedQuery) = @_;
   $self->{_profile_names_canned_query} = $cannedQuery;
@@ -300,18 +263,6 @@ sub getProfileNamesCannedQuery {
   return $self->{_profile_names_canned_query} if($self->{_profile_names_canned_query});
 
   return $self->makeProfileNamesCannedQuery($suffix, $id);
-}
-
-sub setElementNamesServiceUrl {
-  my ($self, $elementNamesServiceUrl) = @_;
-  $self->{_element_names_service_url} = $elementNamesServiceUrl;
-}
-
-sub getElementNamesServiceUrl {
-  my ($self, $id) = @_;
-  return $self->{_element_names_service_url} if($self->{_element_names_service_url});
-
-  return $self->makeElementNamesServiceUrl($id);
 }
 
 sub makeProfileNamesCannedQuery {
@@ -358,27 +309,4 @@ sub makeProfileNamesCannedQuery {
 
 }
 
-sub makeElementNamesServiceUrl {
-  my ($self, $id) = @_;
-
-  my $profileSetName = $self->getName();
-  my $profileSetType = $self->getType();
-  my $facet = $self->getFacet();
-  my $contXAxis = $self->getContXAxis();
-  my $displayName = $self->getDisplayName();
-
-  my $elementNamesUrl;
-  if($facet || $contXAxis) {
-    $elementNamesUrl = "/a/service/profileSet/ElementNames/$profileSetName/$profileSetType?facet=$facet&xAxis=$contXAxis";
-  #} elsif ($displayName ne $profileSetName) {
-#TODO revisit once i write the service
-  #  $elementNamesUrl = "/a/service/RNASeqTranscriptionSummary/ElementNames/$profileSetName/$profileSetType/$displayName";
-   } else {
-     $elementNamesUrl = "/a/service/profileSet/ElementNames/$profileSetName/$profileSetType";
-   }
-
-  $self->setElementNamesServiceUrl($elementNamesUrl);
-
-  return $elementNamesUrl;
-}
 1;

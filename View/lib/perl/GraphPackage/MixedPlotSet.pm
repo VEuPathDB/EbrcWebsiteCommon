@@ -128,33 +128,35 @@ sub makeRPlotStrings {
 
     push @rv, $plotPart->makeRPlotString($idType);
 
-    my $profileSets = $plotPart->getProfileSets();
-
-    my @profileFiles = map { $_->getProfileFile() } @$profileSets;
-
-
-    my @profileSetNames = map { $_->getDisplayName() } @$profileSets;
-
-    my @elementNamesFiles = map { $_->getElementNamesFile() } @$profileSets;
-
-    my @stderrProfileSets = map { $_->getRelatedProfileSet() } @$profileSets;
-    my @stderrFiles;
-    foreach(@stderrProfileSets) {
-      if($_) {
-        push @stderrFiles, $_->getProfileFile();
+    if ($self->useLegacy()) {
+      my $profileSets = $plotPart->getProfileSets();
+  
+      my @profileFiles = map { $_->getProfileFile() } @$profileSets;
+  
+  
+      my @profileSetNames = map { $_->getDisplayName() } @$profileSets;
+  
+      my @elementNamesFiles = map { $_->getElementNamesFile() } @$profileSets;
+  
+      my @stderrProfileSets = map { $_->getRelatedProfileSet() } @$profileSets;
+      my @stderrFiles;
+      foreach(@stderrProfileSets) {
+        if($_) {
+          push @stderrFiles, $_->getProfileFile();
+        }
+      }
+  
+      foreach my $file (@profileFiles, @elementNamesFiles, @stderrFiles) {
+        $self->addTempFile($file) if($file);
+      }
+      if($self->getFormat() eq 'table') {
+        $self->addToProfileDataMatrix(\@profileFiles, \@elementNamesFiles, \@profileSetNames);
       }
     }
-
-    foreach my $file (@profileFiles, @elementNamesFiles, @stderrFiles) {
-      $self->addTempFile($file) if($file);
-    }
+    
     if($self->getFormat() eq 'table') {
-      $self->addToProfileDataMatrix(\@profileFiles, \@elementNamesFiles, \@profileSetNames);
+      $self->makeHtmlStringFromMatrix();
     }
-  }
-  
-  if($self->getFormat() eq 'table') {
-    $self->makeHtmlStringFromMatrix();
   }
 
   return \@rv;
