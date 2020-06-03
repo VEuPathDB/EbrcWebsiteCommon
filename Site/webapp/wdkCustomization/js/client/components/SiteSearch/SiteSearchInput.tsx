@@ -93,7 +93,7 @@ export function SiteSearchInput() {
       )}
       {hasFilters ? (
         <Tooltip content="Update your search, keeping your existing filters">
-          <button className="reset" type="button" onClick={handleSubmitWithFilters}>keep filters</button>
+          <button className="reset" type="button" onClick={handleSubmitWithFilters}>Keep filters</button>
         </Tooltip>
       ) : null}
       <Tooltip content="Run a new search">
