@@ -227,18 +227,36 @@ sub makeFilesForR {
   return $self->profileFilesAsRVectors($profileSets);
 }
 
-sub makeServiceUrlsForR {
+#TODO figure out what idtype does
+sub makePlotDataRequestForR {
   my ($self, $idType) = @_;
 
   my $id = $self->getId();
+  my $baseUrl = $self->getBaseUrl();
+  my $jsonString;
 
-  my $profileSets = $self->getProfileSets(); 
+  my $profileSets = $self->getProfileSets();
   for(my $i = 0; $i < scalar @$profileSets; $i++) {
     my $profileSet = $profileSets->[$i];
-    $profileSet->getServiceUrls($id, $idType);
+    if (defined $jsonString) {
+      my $addString = $profileSet->getJsonForService();
+      $jsonString = "$jsonString,$addString"; 
+    } else {
+      $jsonString = $profileSet->getJsonForService();
+    }
   }
 
-  return $self->profileUrlsAsRVectors($profileSets);
+  $id = @$profileSets[0]->getAlternateSourceId ? @$profileSets[0]->getAlternateSourceId: $id;
+
+  my $body = "{\"profileSets\": [$jsonString]}";
+  print STDERR Dumper('request body: ' . $body);
+  my $url = "$baseUrl/a/service/profileSet/PlotData/$id";
+
+  my $req = HTTP::Request->new(POST => $url);
+  $req->header('content-type' => 'application/json');
+  $req->content($body);
+
+  return $req;
 }
 
 sub profileFilesAsRVectors {
@@ -260,30 +278,6 @@ sub profileFilesAsRVectors {
 #  print STDERR Dumper \@stderrFiles;
 
   return($profileFilesString, $elementNamesString, $stderrString);
-
-}
-
-sub profileUrlsAsRVectors {
-  my ($self, $profileSets) = @_;
-
-  my $baseUrl = $self->getBaseUrl();
-  #print STDERR Dumper("base url: " . $baseUrl);
-
-  my @profileUrls = map { $baseUrl . $_->getProfileServiceUrl() } @$profileSets;
-  my @elementNamesUrls = map { $baseUrl . $_->getElementNamesServiceUrl() } @$profileSets;
-
-  my @stderrProfileSets = map { $_->getRelatedProfileSet() } @$profileSets;
-  my @stderrUrls = map { $baseUrl . $_->getProfileServiceUrl() if($_) } @stderrProfileSets;
-
-  my $profileString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@profileUrls, 'profile.urls');
-  my $elementNamesString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@elementNamesUrls, 'element.names.urls');
-  my $stderrString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray(\@stderrUrls, 'stderr.urls');
-
-#  print STDERR Dumper \@profileUrls;
-#  print STDERR Dumper \@elementNamesUrls;
-#  print STDERR Dumper \@stderrUrls;
-
-  return($profileString, $elementNamesString, $stderrString);
 
 }
 
