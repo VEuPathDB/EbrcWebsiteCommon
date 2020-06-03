@@ -1,6 +1,7 @@
 package org.eupathdb.common.fix;
 
 import static org.gusdb.fgputil.json.JsonUtil.Jackson;
+import static org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat.KEY_PARAMS;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.FormatUtil.Style;
 import org.gusdb.fgputil.functional.Result;
+import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
@@ -251,6 +253,14 @@ public class MigrateLegacyAnswerFiltersPlugin implements TableRowUpdaterPlugin<S
     final String value,
     final JSONObject paramsAndFilters
   ) {
+
+    // handle old params format; convert if not already there
+    if (!paramsAndFilters.has(KEY_PARAMS)) {
+      JSONObject paramsObject = JsonUtil.clone(paramsAndFilters);
+      JsonUtil.clear(paramsAndFilters);
+      paramsAndFilters.put(KEY_PARAMS, paramsObject);
+    }
+
     var columnFilters = require(KEY_COL_FILTER, paramsAndFilters, JSONObject::new);
     var filterConfigs = require(column, columnFilters, JSONObject::new);
 
