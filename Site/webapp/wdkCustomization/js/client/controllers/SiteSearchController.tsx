@@ -80,6 +80,15 @@ export default function SiteSearchController() {
     });
   }, [ updateParams, searchString, documentType, filters ]);
 
+  const clearFilters = useCallback(() => {
+    updateParams({
+      [SEARCH_TERM_PARAM]: searchString,
+      [DOCUMENT_TYPE_PARAM]: undefined,
+      [ORGANISM_PARAM]: undefined,
+      [FILTERS_PARAM]: undefined
+    });
+  }, [ updateParams, searchString ]);
+
   const setFilters = useCallback((filters: string[]) => {
     const effectiveFilter = value && value.type === 'success' ? value.effectiveFilter : undefined;
     if (
@@ -135,6 +144,7 @@ export default function SiteSearchController() {
       onFiltersChange={setFilters}
       filterOrganisms={value.searchSettings.organisms}
       onOrganismsChange={setOrganisms}
+      onClearFilters={clearFilters}
       response={value.response}
       offset={value.resultSettings.offset}
       numRecords={value.resultSettings.numRecords}
