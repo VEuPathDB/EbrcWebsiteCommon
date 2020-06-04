@@ -12,6 +12,9 @@ use EbrcWebsiteCommon::View::GraphPackage::Util;
 
 use Data::Dumper;
 use FileHandle;
+use DBI;
+use DBD::Oracle;
+use WDK::Model::ModelConfig;
 
 #--------------------------------------------------------------------------------
 
@@ -94,6 +97,23 @@ sub init {
   my ($self) = @_;
 
   $self->SUPER::init(@_);
+
+  if ($self->useLegacy()) {
+    print STDERR "setting query handle for legacy plot\n";
+    my $Rv;
+    my $_config = new WDK::Model::ModelConfig($self->getProject());
+    $Rv = DBI->connect( $_config->getAppDbDbiDsn(),
+                        $_config->getAppDbLogin(),
+                        $_config->getAppDbPassword()
+                      )
+    || die "unable to open db handle to ", $_config->getAppDbDbiDsn();
+
+    # solve oracle clob problem; not that we're liable to need it...
+    $Rv->{LongTruncOk} = 0;
+    $Rv->{LongReadLen} = 10000000;
+    
+    $self->setQueryHandle($Rv);
+  }
 
   my $r_f = $self->getOutputFile(). '.R';
   my $r_fh = FileHandle->new(">$r_f") || die "Can not open R file '$r_f': $!";

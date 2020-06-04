@@ -51,6 +51,7 @@ use EbrcWebsiteCommon::View::CgiApp;
 
 use JSON;
 use Data::Dumper;
+use Time::HiRes qw(time);
 # ========================================================================
 # --------------------------- Required Methods ---------------------------
 # ========================================================================
@@ -61,9 +62,6 @@ sub run {
 	 my $Self = shift;
 	 my $Cgi  = shift;
          my $baseUrl = $Cgi->param('baseUrl') ? $Cgi->param('baseUrl') : $Cgi->url( -base => 1 );
-
-#TODO remove this once everything is switched over
-	 my $_qh         = $Self->getQueryHandle($Cgi);
 
 	 my $pkg          = $Cgi->param('project_id');
 	 my $type           = $Cgi->param('type');
@@ -200,7 +198,6 @@ sub run {
 
          my $_gp = eval {
            $class->new({dataPlotterArg => $typeArg,
-                        QueryHandle => $_qh,
                         Id => $id,
                         SecondaryId => $sid,
                         DatasetId => $datasetId,

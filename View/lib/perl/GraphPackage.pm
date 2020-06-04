@@ -41,7 +41,6 @@ sub init {
    my $Args = ref $_[0] ? shift : {@_};
 
    $Self->setName                 ( $Args->{Name                 } );
-   $Self->setQueryHandle          ( $Args->{QueryHandle          } );
    $Self->setFormat               ( $Args->{Format               } );
    $Self->setContXAxis            ( $Args->{ContXAxis            } );
    $Self->setStatus               ( $Args->{Status               } );
