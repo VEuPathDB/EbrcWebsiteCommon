@@ -77,7 +77,11 @@ if($mode eq 'cgi') {
 }
 
 if($mode eq 'graph') {
-  $cmd = "$dieOnError;  bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld $svnPrefix\Website/Service; $injectTemplates $reloadWebapp";
+  if ($svnPrefix eq 'ApiCommon') {
+    $cmd = "$dieOnError;  bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; bld $svnPrefix\Website/Service; $injectTemplates $reloadWebapp";
+  } else {
+    $cmd = "$dieOnError;  bld EbrcWebsiteCommon/View; bld $svnPrefix\Website/View; $injectTemplates $reloadWebapp";
+  }
 }
 
 if($mode eq 'gbrowse') {
