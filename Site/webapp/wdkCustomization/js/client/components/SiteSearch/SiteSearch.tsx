@@ -1,4 +1,4 @@
-import { capitalize, keyBy, add, isEmpty, isEqual, xor, intersection } from 'lodash';
+import { capitalize, keyBy, add, isEmpty, isEqual, xor, intersection, truncate } from 'lodash';
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
@@ -29,6 +29,7 @@ interface Props {
   onDocumentTypeChange: (documentType?: string) => void;
   onFiltersChange: (filters: string[]) => void;
   onOrganismsChange: (organisms: string[]) => void;
+  onClearFilters: () => void;
 }
 
 const cx = makeClassNameHelper('SiteSearch');
@@ -40,15 +41,32 @@ function FilterTitleSegment(props: Props) {
   return filters.length > 0 ? <em>(filtered by {filters})</em> : null;
 }
 
+function FiltersOverview(props: Props) {
+  const { documentType, filters = [], filterOrganisms = [], response } = props;
+  const docType = documentType ? response.documentTypes.find(d => d.id === documentType) : undefined;
+  if (docType == null) return null;
+  return (
+    <div style={{ width: '30em', margin: '2em auto', padding: '1em',borderRadius: '.5em', boxShadow: '0 0 3px 0px #0000008a', fontSize: '1.2em' }}>
+      <div style={{ fontSize: '1.2em', margin: '.5em 0' }}>Filters you applied:</div>
+      {docType && <div><strong>{docType.displayNamePlural}</strong> only</div>}
+      <div>Fields: {filters.length === 0 ? 'all' : truncate(filters.map(name => {
+        const field = docType.searchFields.find(field => field.name === name);
+        return field ? field.displayName : 'Unknown';
+      }).join(', '))}</div>
+      <div>Organisms: {filterOrganisms.length === 0 ? 'all' : truncate(filterOrganisms.join(', '))}</div>
+      <br/>
+      <div style={{ textAlign: 'center' }}>
+        <button className="btn" type="button" onClick={() => props.onClearFilters()}>Clear filters</button>
+      </div>
+    </div>
+  );
+}
+
 export default function SiteSearch(props: Props) {
 
   return (
     <div className={cx()}>
       {props.loading && <LoadingOverlay>Loading results...</LoadingOverlay>}
-      <div className={cx('--TitleLine')}>
-        <h1>{Title(props)}</h1>
-        <StrategyLinkout {...props}/>
-      </div>
       <Results {...props} />
     </div>
   )
@@ -56,25 +74,30 @@ export default function SiteSearch(props: Props) {
 
 function Results(props: Props) {
   if (props.response.searchResults.totalCount === 0) {
-    const docType = props.documentType ? props.response.documentTypes.find(d => d.id === props.documentType) : undefined;
-    const preface = docType ? `No ${docType.displayNamePlural}` : `Nothing`;
     return (
-      <div style={{ fontSize: '1.5em', textAlign: 'center' }}>
-        {preface} matched <strong>{props.searchString}</strong> <FilterTitleSegment {...props}/>
-      </div>
+      <>
+        <h1 style={{ textAlign: 'center', fontSize: '2.2em' }}>No results for <strong>{props.searchString}</strong></h1>
+        <FiltersOverview {...props}/>
+      </>
     )
   }
   return (
-    <div className={cx('--Results')}>
-      <Pagination {...props} />
-      <div className={cx('--CountsContainer')}>
-        <SearchCounts {...props}/>
+    <>
+      <div className={cx('--TitleLine')}>
+        <h1>{Title(props)}</h1>
+        <StrategyLinkout {...props}/>
       </div>
-      <div className={cx('--ResultContainer')}>
-        <SearchResult {...props} />
+      <div className={cx('--Results')}>
+        <Pagination {...props} />
+        <div className={cx('--CountsContainer')}>
+          <SearchCounts {...props}/>
+        </div>
+        <div className={cx('--ResultContainer')}>
+          <SearchResult {...props} />
+        </div>
+        <Pagination {...props}/>
       </div>
-      <Pagination {...props}/>
-    </div>
+    </>
   )
 }
 
@@ -163,9 +186,9 @@ function SearchCounts(props: Props) {
                     <td>
                       {docType.id === documentType
                         ? docType.displayNamePlural
-                        : <button className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayNamePlural}</button>}
+                        : <button disabled={docType.count === 0} className="link" type="button" onClick={() => onDocumentTypeChange(id)}>{docType.displayNamePlural}</button>}
                     </td>
-                    <td>{docType.count ? docType.count.toLocaleString() : null}</td>
+                    <td className={docType.count === 0 ? 'muted' : ''}>{docType.count.toLocaleString()}</td>
                   </tr>
                 );
               })}
@@ -203,7 +226,7 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
     return (
       <div className={cx('--OrganismFilterNode')}>
         <div>{node.data.display}</div>
-        <div>{count ? count.toLocaleString() : null}</div>
+        <div>{count.toLocaleString()}</div>
       </div>
     )
   }, [ response ]);
@@ -440,7 +463,7 @@ function StrategyLinkoutLink(props: { strategyUrl?: string, tooltipContent: stri
         }}>
           <div className={cx('--LinkOutText')}>
             <div>Export as a Search Strategy</div>
-            <div><small>to download or data mine</small></div>
+            <div><small>to download or mine your results</small></div>
           </div>
           <div className={cx('--LinkOutArrow')}>
             <i className="fa fa-caret-right"/>
@@ -499,9 +522,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
             display: (
               <div className={cx('--ResultTypeWidgetItem')}>
                 <div>{field.displayName}</div>
-                {response.fieldCounts && response.fieldCounts[field.name] > 0 &&
-                  <div>{(response.fieldCounts[field.name]).toLocaleString()}</div>
-                }
+                {response.fieldCounts && <div>{(response.fieldCounts[field.name]).toLocaleString()}</div> }
               </div>
             ),
             value: field.name
