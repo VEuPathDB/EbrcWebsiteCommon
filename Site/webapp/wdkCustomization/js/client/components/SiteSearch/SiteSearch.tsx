@@ -41,27 +41,6 @@ function FilterTitleSegment(props: Props) {
   return filters.length > 0 ? <em>(filtered by {filters})</em> : null;
 }
 
-function FiltersOverview(props: Props) {
-  const { documentType, filters = [], filterOrganisms = [], response } = props;
-  const docType = documentType ? response.documentTypes.find(d => d.id === documentType) : undefined;
-  if (docType == null) return null;
-  return (
-    <div style={{ width: '30em', margin: '2em auto', padding: '1em',borderRadius: '.5em', boxShadow: '0 0 3px 0px #0000008a', fontSize: '1.2em' }}>
-      <div style={{ fontSize: '1.2em', margin: '.5em 0' }}>Filters you applied:</div>
-      {docType && <div><strong>{docType.displayNamePlural}</strong> only</div>}
-      <div>Fields: {filters.length === 0 ? 'all' : truncate(filters.map(name => {
-        const field = docType.searchFields.find(field => field.name === name);
-        return field ? field.displayName : 'Unknown';
-      }).join(', '))}</div>
-      <div>Organisms: {filterOrganisms.length === 0 ? 'all' : truncate(filterOrganisms.join(', '))}</div>
-      <br/>
-      <div style={{ textAlign: 'center' }}>
-        <button className="btn" type="button" onClick={() => props.onClearFilters()}>Clear filters</button>
-      </div>
-    </div>
-  );
-}
-
 export default function SiteSearch(props: Props) {
 
   return (
@@ -73,19 +52,25 @@ export default function SiteSearch(props: Props) {
 }
 
 function Results(props: Props) {
-  if (props.response.searchResults.totalCount === 0) {
+  const { response, documentType, filters = [], filterOrganisms = [] } = props;
+
+  if (response.searchResults.totalCount === 0 && documentType == null && filters.length === 0 && filterOrganisms.length === 0) {
     return (
       <>
-        <h1 style={{ textAlign: 'center', fontSize: '2.2em' }}>No results for <strong>{props.searchString}</strong></h1>
-        <FiltersOverview {...props}/>
+        <h1><Title {...props}/></h1>
+        <div style={{ textAlign: 'center', fontSize: '1.2em' }}>
+          <p style={{ fontSize: '1.2em' }}>Your search term did not yield results.</p>
+        </div>
+
       </>
-    )
+    );
   }
+
   return (
     <>
       <div className={cx('--TitleLine')}>
         <h1>{Title(props)}</h1>
-        <StrategyLinkout {...props}/>
+        {response.searchResults.totalCount > 0 && <StrategyLinkout {...props}/>}
       </div>
       <div className={cx('--Results')}>
         <Pagination {...props} />
@@ -93,7 +78,15 @@ function Results(props: Props) {
           <SearchCounts {...props}/>
         </div>
         <div className={cx('--ResultContainer')}>
-          <SearchResult {...props} />
+          {response.searchResults.totalCount === 0
+            ? (
+              <div style={{ textAlign: 'center', fontSize: '1.2em' }}>
+                <p style={{ fontSize: '1.2em' }}>Your search term and filters did not yield results.</p>
+                <p>Try a different search term, or clearing your filters in the panel on the left.</p>
+              </div>
+            )
+            : <SearchResult {...props} />
+          }
         </div>
         <Pagination {...props}/>
       </div>
@@ -106,6 +99,10 @@ function Title(props: Props) {
 
   if (!searchString) {
     return <React.Fragment>No results</React.Fragment>
+  }
+
+  if (response.searchResults.totalCount === 0) {
+    return <>No results for <strong>{searchString}</strong></>
   }
 
   if (!documentType) {
@@ -125,9 +122,10 @@ function ResultInfo(props: Props) {
   const { searchResults: result } = response;
   const firstRec = offset + 1;
   const lastRec = Math.min(result.totalCount, offset + numRecords);
+  const info = result.totalCount === 0 ? null : `${firstRec} - ${lastRec} of ${result.totalCount.toLocaleString()}`;
   return (
     <div className={cx('--ResultInfo')}>
-      {firstRec} - {lastRec} of {result.totalCount.toLocaleString()}
+      {info}
     </div>
   )
 }
@@ -140,15 +138,14 @@ function SearchCounts(props: Props) {
   const finalOrganismTree = useMemo(() => (
     onlyShowMatches
       ? pruneDescendantNodes(
-          node => node.children.length > 0 || organismCounts[node.data.term] > 0,
+          node => node.children.length > 0 || organismCounts[node.data.term] > 0 || Boolean(filterOrganisms && filterOrganisms.includes(node.data.term)),
           organismTree
         )
       : organismTree
     ), [ organismTree, organismCounts, onlyShowMatches ]);
   const showOrganismFilter = documentType == null
-    ? documentTypes.filter(d => d.count > 0).some(d => d.hasOrganismField)
+    ? documentTypes.some(d => d.hasOrganismField)
     : docTypesById[documentType]?.hasOrganismField;
-  const totalOrgsCount = Object.values(organismCounts).reduce(add, 0);
 
   return (
     <div className={cx('--Counts')}>
@@ -163,14 +160,13 @@ function SearchCounts(props: Props) {
       <table className={cx('--SearchCounts')}>
         <tbody>
           {categories.map(category => (
-            (onlyShowMatches && category.documentTypes.every(docType => docTypesById[docType]?.count === 0)) ||
-            (documentType != null && documentType !== '' && !category.documentTypes.includes(documentType))
+            (onlyShowMatches && category.documentTypes.every(docType => docTypesById[docType]?.count === 0 && docType !== documentType))
           ) ? null : (
             <React.Fragment key={category.name}>
               <tr>
                 <th>{category.name}</th>
                 <th>
-                  {documentType && !hideDocumentTypeClearButton && (
+                  {documentType && category.documentTypes.includes(documentType) && !hideDocumentTypeClearButton && (
                     <div className={cx('--FilterButtons', documentType == null ? 'hidden' : 'visible')}>
                       <div><button type="button" className="link" onClick={() => onDocumentTypeChange()}>Clear filter</button></div>
                     </div>
@@ -178,9 +174,9 @@ function SearchCounts(props: Props) {
                 </th>
               </tr>
               {category.documentTypes.map(id => {
-                if (documentType != null && documentType !== '' && id !== documentType) return null;
                 const docType = docTypesById[id];
-                if (docType == null || (onlyShowMatches && docType.count === 0)) return null;
+                if (docType == null) return null;
+                if (onlyShowMatches && id !== documentType && docType.count === 0) return null;
                 return (
                   <tr key={docType.id}>
                     <td>
@@ -197,21 +193,22 @@ function SearchCounts(props: Props) {
         </tbody>
       </table>
       <WdkRecordFields {...props} onlyShowMatches={onlyShowMatches} />
-      {totalOrgsCount > 0 && showOrganismFilter && organismTree && filterOrganisms && (
+      {showOrganismFilter && organismTree && filterOrganisms && (
         <OrganismFilter
           organismTree={finalOrganismTree}
           filterOrganisms={filterOrganisms}
           response={response}
           onOrganismsChange={onOrganismsChange}
           searchString={searchString}
+          onlyShowMatches={onlyShowMatches}
         />
       )}
     </div>
   )
 }
 
-function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response' | 'searchString'>>) {
-  const { organismTree, filterOrganisms, onOrganismsChange, response, searchString } = props;
+function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrganisms' | 'onOrganismsChange' | 'response' | 'searchString'>> & { onlyShowMatches: boolean }) {
+  const { organismTree, filterOrganisms, onOrganismsChange, response, searchString, onlyShowMatches } = props;
   const initialExpandedNodes = useMemo(() => organismTree.children.length === 1 ? organismTree.children.map(node => node.data.term) : [], [ organismTree ]);
   const [ expansion, setExpansion ] = useState<string[]>(initialExpandedNodes);
   const [ selection, setSelection ] = useState<string[]>(filterOrganisms);
@@ -250,6 +247,19 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
   useEffect(() => {
     setFilterTerm('');
   }, [ searchString ]);
+
+  const totalOrgsCount = Object.values(response.organismCounts).reduce(add, 0);
+
+  if (onlyShowMatches && filterOrganisms.length === 0 && totalOrgsCount === 0) {
+    return (
+      <>
+        <div className={cx('--FilterTitleContainer', 'organism')}>
+          <h3>Filter organisms</h3>
+        </div>
+        <div><em style={{ color: '#666666' }}>None available</em></div>
+      </>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -480,12 +490,17 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
   const docType = response.documentTypes.find(d => d.id === documentType);
   const allFields = useMemo(() => docType?.isWdkRecordType ? docType.searchFields.map(f => f.name) : [], [ docType ]);
   const [ selection, setSelection ] = useState(filters);
+  const fieldCountTotal = response.fieldCounts ? Object.values(response.fieldCounts).reduce(add, 0) : 0;
 
   useEffect(() => {
     setSelection(filters);
   }, [ filters ])
 
-  if (docType == null || docType.searchFields.length === 0) return (
+  if (
+    docType == null ||
+    docType.searchFields.length === 0 ||
+    (filters.length === 0 && onlyShowMatches && fieldCountTotal === 0)
+  ) return (
     <React.Fragment>
       <div className={cx('--FilterTitleContainer', 'widget')}>
         <h3>Filter fields</h3>
@@ -517,7 +532,7 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
       </div>
       <CheckboxList
         items={docType.searchFields
-          .filter(field => onlyShowMatches ? response.fieldCounts && response.fieldCounts[field.name] > 0 : true)
+          .filter(field => filters.includes(field.name) || ( onlyShowMatches ? response.fieldCounts && response.fieldCounts[field.name] > 0 : true ))
           .map(field => ({
             display: (
               <div className={cx('--ResultTypeWidgetItem')}>
