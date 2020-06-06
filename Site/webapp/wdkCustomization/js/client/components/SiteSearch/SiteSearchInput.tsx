@@ -71,7 +71,7 @@ export function SiteSearchInput() {
   }, [ location ]);
 
   return (
-    <form ref={formRef} action={SITE_SEARCH_ROUTE} onSubmit={preventEventWith(handleSubmitWithoutFilters)} className={cx("--SearchBox")}>
+    <form ref={formRef} action={SITE_SEARCH_ROUTE} onSubmit={preventEventWith(handleSubmitWithFilters)} className={cx("--SearchBox")}>
       {docType && <input type="hidden" name={DOCUMENT_TYPE_PARAM} value={docType}/>}
       {organisms.map(organism => <input key={organism} type="hidden" name={ORGANISM_PARAM} value={organism}/>)}
       {fields.map(field => <input key={field} type="hidden" name={FILTERS_PARAM} value={field}/>)}
@@ -92,11 +92,11 @@ export function SiteSearchInput() {
         </Tooltip>
       )}
       {hasFilters ? (
-        <Tooltip content="Update your search, keeping your existing filters">
-          <button className="reset" type="button" onClick={handleSubmitWithFilters}>Keep filters</button>
+        <Tooltip content="Run a new search, without your existing filters">
+          <button className="reset" type="button" onClick={handleSubmitWithoutFilters}>Clear filters</button>
         </Tooltip>
       ) : null}
-      <Tooltip content="Run a new search">
+      <Tooltip content={hasFilters ? 'Update your search, keeping existing filters' : 'Run a new search'}>
         <button type="submit">
           <i className="fa fa-search" />
         </button>
