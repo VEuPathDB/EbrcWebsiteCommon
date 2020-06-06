@@ -9,7 +9,7 @@ export function Error(DefaultComponent: React.ComponentType<Props>) {
         {
           props.children ||
           <p>
-            Something went wrong. Please try again later, and <Link to="/contact-us" target="_blank">contact us</Link> if the problem persists.
+            Please try again later, and <Link to="/contact-us" target="_blank">contact us</Link> if the problem persists.
             <br />
             {props.message}
           </p>
