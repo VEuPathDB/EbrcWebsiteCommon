@@ -21,7 +21,7 @@ const EXPANDED_BRANCHES_SESSION_KEY = 'homepage-left-panel-expanded-branch-ids';
 
 type Props = {
   containerClassName?: string,
-  searchTree?: CategoryTreeNode
+  searchTree: CategoryTreeNode | undefined
 };
 
 export const SearchPane = (props: Props) => {

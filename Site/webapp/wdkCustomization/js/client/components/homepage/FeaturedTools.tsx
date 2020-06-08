@@ -4,7 +4,7 @@ import { keyBy } from 'lodash';
 import { Loading, IconAlt } from 'wdk-client/Components';
 
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
-import { useCommunitySiteUrl, useDisplayName } from 'ebrc-client/hooks/staticData';
+import { useCommunitySiteProjectUrl } from 'ebrc-client/hooks/staticData';
 import { useIsRefOverflowingVertically } from 'wdk-client/Hooks/Overflow';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
@@ -33,15 +33,14 @@ type FeaturedToolEntry = {
 };
 
 function useFeaturedToolMetadata(): FeaturedToolMetadata | undefined {
-  const communitySiteUrl = useCommunitySiteUrl();
-  const displayName = useDisplayName();
+  const communitySiteUrl = useCommunitySiteProjectUrl();
   const [ featuredToolResponseData, setFeaturedToolResponseData ] = useState<FeaturedToolResponseData | undefined>(undefined);
   
   useEffect(() => {
-    if (communitySiteUrl != null && displayName != null) {
+    if (communitySiteUrl != null) {
       (async () => {
         // FIXME Add basic error-handling 
-        const response = await fetch(`https://${communitySiteUrl}${displayName}${FEATURED_TOOL_URL_SEGMENT}`, { mode: 'cors' });
+        const response = await fetch(`https://${communitySiteUrl}${FEATURED_TOOL_URL_SEGMENT}`, { mode: 'cors' });
 
         // FIXME Validate this JSON using a Decoder
         const responseData = await response.json() as FeaturedToolResponseData;
@@ -49,7 +48,7 @@ function useFeaturedToolMetadata(): FeaturedToolMetadata | undefined {
         setFeaturedToolResponseData(responseData);
       })();
     }
-  }, [ communitySiteUrl, displayName ]);
+  }, [ communitySiteUrl ]);
 
   const featuredToolMetadata = useMemo(
     () => 

@@ -1,18 +1,25 @@
 import { useSelector } from 'react-redux';
 import { RootState } from 'wdk-client/Core/State/Types';
 
-export function useCommunitySiteUrl(): string | undefined {
-  const communitySiteUrl = useSelector(
+export function useCommunitySiteRootUrl(): string | undefined {
+  const communitySiteRootUrl = useSelector(
     (state: RootState) => state.globalData.siteConfig?.communitySite
   );
 
-  return communitySiteUrl;
+  return communitySiteRootUrl;
 };
 
-export function useDisplayName(): string | undefined {
+export function useCommunitySiteProjectUrl(): string | undefined {
+  const communitySiteRootUrl = useCommunitySiteRootUrl();
+
   const displayName = useSelector(
     (state: RootState) => state.globalData.config?.displayName
   );
 
-  return displayName;
+  // FIXME: Remove the OrthoMCL-related hardcoding
+  return displayName == null || communitySiteRootUrl == null
+    ? undefined
+    : displayName === 'OrthoMCL'
+    ? `${communitySiteRootUrl}VEuPathDB`
+    : `${communitySiteRootUrl}${displayName}`;
 };

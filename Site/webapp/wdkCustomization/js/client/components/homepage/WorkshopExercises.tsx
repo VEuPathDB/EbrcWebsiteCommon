@@ -4,7 +4,7 @@ import { Loading, IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
-import { useCommunitySiteUrl } from 'ebrc-client/hooks/staticData';
+import { useCommunitySiteRootUrl } from 'ebrc-client/hooks/staticData';
 
 import './WorkshopExercises.scss';
 
@@ -55,7 +55,7 @@ type ExerciseEntry = {
 };
 
 function useCardMetadata(): CardMetadata | undefined {
-  const communitySiteUrl = useCommunitySiteUrl();
+  const communitySiteUrl = useCommunitySiteRootUrl();
   const [ workshopExercisesResponseData, setWorkshopExercisesResponseData ] = useState<WorkshopExercisesResponseData | undefined>(undefined);
 
   useEffect(() => {
