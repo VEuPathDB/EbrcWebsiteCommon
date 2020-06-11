@@ -75,8 +75,7 @@ const siteAnnouncements = [
       if ( isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="beta">
           {props.displayName} <em>beta</em> is available for early community review!
-          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with feedback
-          or visit the <Link to={`/static-content/${props.displayName}/news.html#${props.displayName}47Released`}>{props.displayName} News</Link> to complete a survey.
+          &nbsp;&nbsp;Please explore the site and <Link to="/contact-us" target="_blank">contact us</Link> with feedback.
           &nbsp;<a rel="noreferrer" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>Click here to return to the legacy site.</a>
         </div>
       );
