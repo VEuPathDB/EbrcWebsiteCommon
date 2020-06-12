@@ -12,10 +12,16 @@ import './SiteSearch.scss';
 
 const cx = makeClassNameHelper("SiteSearch");
 
+const preventEventWith = (callback: () => void) => (event: React.FormEvent) => {
+  event.preventDefault();
+  callback();
+}
+
 export function SiteSearchInput() {
   const location = useLocation();
   const history = useHistory();
   const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const searchParams = new URLSearchParams(location.search);
   const searchString = location.pathname === SITE_SEARCH_ROUTE && searchParams.get(SEARCH_TERM_PARAM) || '';
   const docType = location.pathname === SITE_SEARCH_ROUTE && searchParams.get(DOCUMENT_TYPE_PARAM) || '';
@@ -38,10 +44,16 @@ export function SiteSearchInput() {
     return 'Site search, e.g. ' + examples;
   }, []);
 
-  const handleSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const handleSubmitWithFilters = useCallback(() => {
+    const { current } = formRef;
+    if (current == null) return;
+    const formData = new FormData(current);
     const queryString = new URLSearchParams(formData as any).toString();
+    onSearch(queryString);
+  }, [ onSearch ]);
+
+  const handleSubmitWithoutFilters = useCallback(() => {
+    const queryString = `q=${encodeURIComponent(inputRef.current?.value || '')}`;
     onSearch(queryString);
   }, [ onSearch ]);
   
@@ -59,7 +71,7 @@ export function SiteSearchInput() {
   }, [ location ]);
 
   return (
-    <form action={SITE_SEARCH_ROUTE} onSubmit={handleSubmit} className={cx("--SearchBox")}>
+    <form ref={formRef} action={SITE_SEARCH_ROUTE} onSubmit={preventEventWith(handleSubmitWithFilters)} className={cx("--SearchBox")}>
       {docType && <input type="hidden" name={DOCUMENT_TYPE_PARAM} value={docType}/>}
       {organisms.map(organism => <input key={organism} type="hidden" name={ORGANISM_PARAM} value={organism}/>)}
       {fields.map(field => <input key={field} type="hidden" name={FILTERS_PARAM} value={field}/>)}
@@ -80,13 +92,11 @@ export function SiteSearchInput() {
         </Tooltip>
       )}
       {hasFilters ? (
-        <Tooltip content="Run your search without any filters">
-          <button className="reset" type="button" onClick={() => {
-            onSearch(`q=${encodeURIComponent(inputRef.current?.value || '')}`);
-          }}>clear filters</button>
+        <Tooltip content="Run a new search, without your existing filters">
+          <button className="reset" type="button" onClick={handleSubmitWithoutFilters}>Clear filters</button>
         </Tooltip>
       ) : null}
-      <Tooltip content={hasFilters ? "Update your search, keeping existing filters" : "Run your search"}>
+      <Tooltip content={hasFilters ? 'Update your search, keeping existing filters' : 'Run a new search'}>
         <button type="submit">
           <i className="fa fa-search" />
         </button>

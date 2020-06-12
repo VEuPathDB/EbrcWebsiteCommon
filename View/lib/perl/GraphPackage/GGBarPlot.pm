@@ -9,6 +9,8 @@ use EbrcWebsiteCommon::View::GraphPackage::PlotPart;
 use EbrcWebsiteCommon::View::GraphPackage::Util;
 use EbrcWebsiteCommon::View::GraphPackage;
 
+use LWP::UserAgent;
+
 #--------------------------------------------------------------------------------
 
 sub getIsStacked                 { $_[0]->{'_stack_bars'                     }}
@@ -75,13 +77,20 @@ sub makeRPlotString {
 
   my $isSVG = lc($self->getFormat()) eq 'svg' ? 'TRUE' : 'FALSE'; 
 
-  my ($profileUrls, $elementNamesUrls, $stderrUrls);
-
   my $blankGraph = $self->blankGGPlotPart();
 
-  eval{
-   ($profileUrls, $elementNamesUrls, $stderrUrls) = $self->makeServiceUrlsForR($idType);
-  };
+  my $profileSetsRequest = $self->makePlotDataRequestForR();
+  my $plotDataJson;
+  my $ua = LWP::UserAgent->new;
+  push @{ $ua->requests_redirectable }, 'POST';
+  my $resp = $ua->request($profileSetsRequest);
+  if ($resp->is_success) {
+    $plotDataJson = $resp->decoded_content;
+  } else {
+    print "HTTP POST error code: ", $resp->code, "\n";
+    print "HTTP POST error message: ", $resp->message, "\n";
+    return $blankGraph
+  }
 
   my $colors = $self->getColors();
 
@@ -137,9 +146,6 @@ sub makeRPlotString {
 
   my ($legendLabelsString, $legendColors, $legendColorsString);
 
-  my $profileTypes = $self->getProfileTypes();
-  my $profileTypesString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($profileTypes, 'profile.types');
-
   my $facets = $self->getFacets();
   my $facetString = ". ~ DUMMY";
   my $hasFacets = "FALSE";
@@ -183,103 +189,67 @@ sub makeRPlotString {
   my $rv = "
 # ---------------------------- BAR PLOT ----------------------------
 
-$profileUrls
-$elementNamesUrls
-$stderrUrls
 $colorsString
 $sampleLabelsString
 $legendLabelsString
 $legendColorsString
-$profileTypesString
 
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
 
 #-------------------------------------------------------------------
 
-if(length(profile.urls) != length(element.names.urls)) {
-  stop(\"profile.urls length not equal to element.names.urls length\");
-}
-
 y.min = $yMin;
 y.max = $yMax;
 
-profile.df.full = data.frame();
+profile.df.full = fromJSON('$plotDataJson');
 
-for(ii in 1:length(profile.urls)) {
-  skip.stderr = $skipStdErr 
+if(class(profile.df.full) == 'list'){
 
-  profile.df = stream_in(url(URLencode(profile.urls[ii])));
-  if (length(profile.df) == 0) {
-    the.colors <- the.colors[-ii]
-    next
-  }
-  profile.df\$Group.1=NULL
-  profile.df\$VALUE <- as.numeric(profile.df\$VALUE)
-
-  if(!is.null(profile.df\$ELEMENT_ORDER)) {
-    eo.count = length(profile.df\$ELEMENT_ORDER);
-
-    profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
-    if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
-      skip.stderr = TRUE;
-    }
-
-    profile.df\$PROFILE_FILE = profile.urls[ii];
-    profile.df\$PROFILE_TYPE = profile.types[ii];
-
-    if(length(profile.urls) > 1) {
-      profile.df\$LEGEND = legend.label[ii];
-    }
-
-  }
-
-  element.names.df = stream_in(url(URLencode(element.names.urls[ii])));
-  if (length(element.names.df) == 0) {
-    the.colors <- the.colors[-ii]
-    next
-  }
-
-  #this assumes that the manual override has the right number of entries and in the right order
-  if(length(x.axis.label) == length(element.names.df\$NAME) && $overrideXAxisLabels){
-    element.names.df\$NAME = x.axis.label
-  }
-
-  profile.df = merge(profile.df, element.names.df[, c(\"ELEMENT_ORDER\", \"NAME\")], by=\"ELEMENT_ORDER\")
-
-  if(!skip.stderr && !is.na(stderr.urls[ii]) && stderr.urls[ii] != '') {
-    stderr.df = stream_in(url(URLencode(stderr.urls[ii])));
-    if (length(stderr.df) == 0) {
-      the.colors <- the.colors[-ii]
-      next
-    }
-    names(stderr.df)[names(stderr.df) == \"VALUE\"] <- \"STDERR\"
-
-    profile.df = merge(profile.df, stderr.df[, c(\"ELEMENT_ORDER\", \"STDERR\")], by=\"ELEMENT_ORDER\", all=TRUE);
-    profile.df\$STDERR <- as.numeric(profile.df\$STDERR)
-  } else {
-    profile.df\$STDERR = NA;
-  }
-
-  profile.df.full = rbind(profile.df.full, profile.df);
-}
-
-if(nrow(profile.df.full) == 0){
   d = data.frame(VALUE=0.5, LABEL=\"None\");
   gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
+
 } else {
+
+  if (\"standard_error\" %in% profile.df.full\$PROFILE_TYPE) {
+    if ($skipStdErr) {
+      profile.df.full <- profile.df.full[profile.df.full\$PROFILE_TYPE != 'standard_error',]
+      profile.df.full\$STDERR <- NA
+    } else {
+      profile.values <- profile.df.full[profile.df.full\$PROFILE_TYPE != 'standard_error',]
+      profile.stderr <- profile.df.full[profile.df.full\$PROFILE_TYPE == 'standard_error',]
+      profile.stderr\$PROFILE_TYPE <- NULL
+      profile.stderr\$PROFILE_ORDER <- NULL
+      names(profile.stderr)[names(profile.stderr) == 'VALUE'] <- 'STDERR'
+      profile.df.full <- merge(profile.values, profile.stderr, by = c('PROFILE_SET_NAME', 'NAME', 'ELEMENT_ORDER'), all.x = TRUE)
+      profile.df.full <- profile.df.full[order(profile.df.full\$PROFILE_ORDER, profile.df.full\$ELEMENT_ORDER),]
+      profile.df.full\$STDERR <- as.numeric(profile.df.full\$STDERR)
+    }
+  } else {
+    profile.df.full\$STDERR <- NA
+  }
+  
+  profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME))
+  profile.df.full\$VALUE <- as.numeric(profile.df.full\$VALUE)
+  profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
+  profile.df.full\$PROFILE_SET_NAME <- NULL
+  
+  if (!is.null(legend.label)) {
+    if (uniqueN(profile.df.full\$PROFILE_SET) > 1) {
+      profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_SET, levels=unique(profile.df.full\$PROFILE_SET), labels=legend.label)
+    } else if (nrow(profile.df.full) == length(legend.label)) {
+      profile.df.full\$LEGEND <- factor(legend.label)
+    } else {
+      warning(\"legend.label provided, but unused.\")
+    }
+  }
+  
+  if($overrideXAxisLabels && !is.null(x.axis.label)) {
+    profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME), labels=x.axis.label)
+  }
 
   profile.df.full\$MIN_ERR = profile.df.full\$VALUE - profile.df.full\$STDERR;
   profile.df.full\$MAX_ERR = profile.df.full\$VALUE + profile.df.full\$STDERR;
-  
-  if(length(profile.urls) == 1) {
-    profile.df.full\$LEGEND = legend.label;
-    if($overrideXAxisLabels) {
-      profile.df.full\$NAME = x.axis.label;    
-    }
-  }
-  
-  profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels = unique(profile.df.full\$NAME[order(profile.df.full\$ELEMENT_ORDER)]))
   
   expandColors = FALSE;
   hideLegend = FALSE;
@@ -291,7 +261,6 @@ if(nrow(profile.df.full) == 0){
   
   if(is.null(profile.df.full\$LEGEND)) {
     profile.df.full\$LEGEND = as.factor(profile.df.full\$NAME)
-  #  expandColors = TRUE;
     hideLegend = TRUE;
   } else {
     profile.df.full\$LEGEND = as.factor(profile.df.full\$LEGEND);
@@ -346,8 +315,8 @@ if(nrow(profile.df.full) == 0){
     gp = gp + scale_color_manual(values = $colorVals, breaks = names($colorVals), name=NULL)
   } else if (expandColors) {
    #!!!!!!!!!!!!!!!!! i believe the below will only work when length(NAME)/length(colorstring) divides evenly
-    gp = gp + scale_fill_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=profile.df.full\$LEGEND, name=NULL);
-    gp = gp + scale_colour_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=profile.df.full\$LEGEND, name=NULL);
+    gp = gp + scale_fill_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=levels(profile.df.full\$LEGEND), name=NULL);
+    gp = gp + scale_colour_manual(values=rep(force(the.colors), force(numElements)/length(force(the.colors))), breaks=levels(profile.df.full\$LEGEND), name=NULL);
   } else {
     if($forceAutoColors) {
   #    numColors = length(levels(as.factor(profile.df.full\$LEGEND)));
@@ -358,8 +327,8 @@ if(nrow(profile.df.full) == 0){
        gp = gp + scale_colour_brewer(palette=\"Set1\");
     }
     else {
-      gp = gp + scale_fill_manual(values=force(the.colors), breaks=profile.df.full\$LEGEND, name=NULL);  
-      gp = gp + scale_colour_manual(values=force(the.colors), breaks=profile.df.full\$LEGEND, name=NULL);
+      gp = gp + scale_fill_manual(values=force(the.colors), breaks=levels(profile.df.full\$LEGEND), name=NULL);  
+      gp = gp + scale_colour_manual(values=force(the.colors), breaks=levels(profile.df.full\$LEGEND), name=NULL);
     }
   }
   
@@ -429,11 +398,10 @@ if(nrow(profile.df.full) == 0){
     gp = gp + facet_grid($facetString);
   }
 
+  #postscript
+  $rPostscript
+
 }
-
-
-#postscript
-$rPostscript
 
 plotlist[[plotlist.i]] = gp;
 plotlist.i = plotlist.i + 1;
@@ -573,7 +541,7 @@ use Data::Dumper;
 
 sub new {
   my ($class,$args,$profileSets) = @_;
-  print STDERR Dumper $args;
+  #print STDERR Dumper $args;
 
   my $self = $class->SUPER::new($args,$profileSets);
 
@@ -628,24 +596,23 @@ sub new {
     my $strandDictionaryHash = $self->getStrandDictionaryHash();
     my @legendNames=();
     for(my $i = 0; $i < scalar @$profileSets; $i++) {
-       my $profileSet = $profileSets->[$i];
-       my $profileSetName = $profileSet->getName();
-       my $strandType = "";
-       if ($profileSetName =~ /(\w*strande?d?)/) {
-	   $strandType = $1;
-       }
-       my $sample = $strandDictionaryHash->{$strandType};
-       if ($sample eq "sense") {
-	   $sample="  sense";
-	   if ($i == 1) {
-	       my $newProfileSets=[];
-	       $newProfileSets->[0] = $profileSets->[1];
-	       $newProfileSets->[1] = $profileSets->[0];
-	       $self->setProfileSets($newProfileSets);
-	   }
-       }
-       push @legendNames, $sample; 
-
+      my $profileSet = $profileSets->[$i];
+      my $profileSetName = $profileSet->getName();
+      my $strandType = "";
+      if ($profileSetName =~ /(\w*strande?d?)/) {
+        $strandType = $1;
+      }
+      my $sample = $strandDictionaryHash->{$strandType};
+      if ($sample eq "sense") {
+        $sample="  sense";
+        if ($i == 1) {
+          my $newProfileSets=[];
+          $newProfileSets->[0] = $profileSets->[1];
+          $newProfileSets->[1] = $profileSets->[0];
+          $self->setProfileSets($newProfileSets);
+	}
+      }
+      push @legendNames, $sample;
     }
     
     @legendNames = sort {$a cmp $b} @legendNames;
@@ -654,7 +621,6 @@ sub new {
 
     return $self;
 }
-
 
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::PairedEndRNASeqStacked;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::RNASeq);

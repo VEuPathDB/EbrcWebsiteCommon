@@ -104,6 +104,7 @@
 
     input {
       border: none !important;
+      border-radius: 0;
       padding: .4em .9em !important;
       width: 100%;
       &:focus {
@@ -122,6 +123,10 @@
       padding-left: .9em;
       padding-right: 1em;
 
+      &:not(:last-of-type) {
+        border-right: 1px solid #00000042;
+      }
+
       &:focus, &:hover {
         background: #2b2d2f;
         outline: none;
@@ -136,13 +141,12 @@
       }
     }
 
-    button.reset {
-      background: #fafaf9;
-      color: #069;
+    .reset {
       font-size: .85em;
       white-space: nowrap;
-      &:hover, &:focus {
-        background: #2b2d2f;
+      background: #fafaf9;
+      color: #069;
+      &:hover {
         color: white;
       }
     }

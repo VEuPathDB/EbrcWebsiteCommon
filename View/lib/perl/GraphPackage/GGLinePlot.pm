@@ -128,13 +128,20 @@ sub makeRPlotString {
   my $isWidget = lc($self->getFormat()) eq 'html' ? 'TRUE' : 'FALSE';   
   my $colors = $self->getColors();
         
-  my ($profileUrls, $elementNamesUrls, $stderrUrls);
+  my $blankGraph = $self->blankGGPlotPart();
     
-  my $blankGraph = $self->blankPlotPart();
-    
-  eval{
-	($profileUrls, $elementNamesUrls, $stderrUrls) = $self->makeServiceUrlsForR($idType);
-  };
+  my $profileSetsRequest = $self->makePlotDataRequestForR();
+  my $plotDataJson;
+  my $ua = LWP::UserAgent->new;
+  push @{ $ua->requests_redirectable }, 'POST';
+  my $resp = $ua->request($profileSetsRequest);
+  if ($resp->is_success) {
+    $plotDataJson = $resp->decoded_content;
+  } else {
+    print "HTTP POST error code: ", $resp->code, "\n";
+    print "HTTP POST error message: ", $resp->message, "\n";
+    return $blankGraph
+  }
     
   my $colorsString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($colors, 'the.colors');
     
@@ -261,9 +268,6 @@ sub makeRPlotString {
 
   my $bottomMargin = $self->getElementNameMarginSize();
 
-  my $profileTypes = $self->getProfileTypes();
-  my $profileTypesString = EbrcWebsiteCommon::View::GraphPackage::Util::rStringVectorFromArray($profileTypes, 'profile.types');
-
   my $facets = $self->getFacets();
   my $facetString = "DUMMY";
   my $hasFacets = "FALSE";
@@ -313,24 +317,15 @@ sub makeRPlotString {
 # ---------------------------- LINE PLOT ----------------------------
 
 
-$profileUrls
-$elementNamesUrls
 $colorsString
 $sampleLabelsString
-$stderrUrls
 $legendLabelsString
-$profileTypesString
 
 
 is.compact=$isCompactString;
 is.thumbnail=$isThumbnail;
 
 #-------------------------------------------------
-
-if(length(profile.urls) != length(element.names.urls)) {
-  stop(\"profile.urls length not equal to element.names.urls length\");
-}
-
 
 x.min = \"$xMin\";
 x.max = \"$xMax\";
@@ -339,87 +334,56 @@ y.min = $yMin;
 y.max = $yMax;  
 
 
-profile.df.full = data.frame();
+profile.df.full = fromJSON('$plotDataJson')
 
-for(ii in 1:length(profile.urls)) {
-  skip.stderr = FALSE;
+if(class(profile.df.full) == 'list'){
 
-  profile.df = stream_in(url(URLencode(profile.urls[ii])));
-  if (length(profile.df) == 0) {
-    the.colors <- the.colors[-ii]
-    next
-  }
-  profile.df\$Group.1=NULL
-  if (\"VALUE\" %in% names(profile.df)) {
-    profile.df\$VALUE <- as.numeric(profile.df\$VALUE)
-  }
-
-  if(!is.null(profile.df\$ELEMENT_ORDER)) {
-    eo.count = length(profile.df\$ELEMENT_ORDER);
-
-   if (!$prtcpnt_sum) {
-      profile.df = aggregate(profile.df, list(profile.df\$ELEMENT_ORDER), mean, na.rm=T)
-      if(length(profile.df\$ELEMENT_ORDER) != eo.count) {
-        skip.stderr = TRUE;
-      }
-    }
-
-    if (!is.null(legend.label)) {
-      profile.df\$LEGEND = legend.label[ii];
-    }
-    profile.df\$PROFILE_FILE = profile.urls[ii];
-    profile.df\$PROFILE_TYPE = profile.types[ii];
-  }
-
-  if (element.names.urls[ii] != \"\") {
-    element.names.df = stream_in(url(URLencode(element.names.urls[ii])));
-    if (length(element.names.df) == 0) {
-      the.colors <- the.colors[-ii]
-      next
-    }
-
-    if(length(profile.df\$ELEMENT_ORDER) > length(element.names.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: profile file \", profile.urls[ii], \" contains more rows than element names file\", element.names.urls[ii], \". Additional entries will be ignored.\"));
-    } else if(length(element.names.df\$ELEMENT_ORDER) > length(profile.df\$ELEMENT_ORDER)) {
-      message(paste(\"Warning: element names file \", element.names.urls[ii], \" contains more rows than profile file\", profile.urls[ii], \". Additional entries will be ignored.\"));
-    }
-
-    profile.df = merge(profile.df, element.names.df, by = \"ELEMENT_ORDER\");
-
-    if (\"FACET\" %in% colnames(element.names.df)){
-      profile.df\$FACET <- as.character(profile.df\$FACET)
-      profile.df\$FACET[is.na(profile.df\$FACET)] <- \"Unknown\"
-      profile.df\$FACET[profile.df\$FACET == \"\"] <- \"Unknown\"
-      profile.df\$FACET = as.factor(profile.df\$FACET)
-    }
-  }
-
-  profile.df\$ELEMENT_NAMES = as.character(profile.df\$NAME);
-  element.names.numeric = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df\$NAME, perl=T));
-  profile.df\$ELEMENT_NAMES_NUMERIC = element.names.numeric;
-
-
-  if(!skip.stderr && !is.na(stderr.urls[ii]) && stderr.urls[ii] != '') {
-    stderr.tmp = stream_in(url(URLencode(stderr.urls[ii])));
-    if (length(stderr.tmp) == 0) {
-      the.colors <- the.colors[-ii]
-      next
-    }
-    profile.df\$STDERR = as.numeric(stderr.tmp\$VALUE);
-  } else {
-    profile.df\$STDERR = NA;
-  }
-
-  profile.df = profile.df[, !(names(profile.df) %in% \"NAME\")];
-
-  profile.df.full = rbind.fill(profile.df.full, profile.df);
-}
-
-if(nrow(profile.df.full) == 0){
   d = data.frame(VALUE=0.5, LABEL=\"None\");
   gp = ggplot() + geom_blank() + geom_text(data=d, mapping=aes(x=VALUE, y=VALUE, label=LABEL), size=10) + theme_void() + theme(legend.position=\"none\");
+
 } else {
 
+  if (\"standard_error\" %in% profile.df.full\$PROFILE_TYPE) {
+  #  if (skip.stderr) {
+  #    profile.df.full <- profile.df.full[profile.df.full\$PROFILE_TYPE != 'standard_error',]
+  #     profile.df.full\$STDERR <- NA
+  #  } else {
+      profile.values <- profile.df.full[profile.df.full\$PROFILE_TYPE != 'standard_error',]
+      profile.stderr <- profile.df.full[profile.df.full\$PROFILE_TYPE == 'standard_error',]
+      profile.stderr\$PROFILE_TYPE <- NULL
+      profile.stderr\$PROFILE_ORDER <- NULL
+      names(profile.stderr)[names(profile.stderr) == 'VALUE'] <- 'STDERR'
+      profile.df.full <- merge(profile.values, profile.stderr, by = c('PROFILE_SET_NAME', 'NAME', 'ELEMENT_ORDER'), all.x=TRUE)
+      profile.df.full <- profile.df.full[order(profile.df.full\$PROFILE_ORDER, profile.df.full\$ELEMENT_ORDER),]
+      profile.df.full\$STDERR <- as.numeric(profile.df.full\$STDERR)
+  #  }
+  } else {
+    profile.df.full\$STDERR <- NA
+  }
+  
+  profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME))
+  profile.df.full\$VALUE <- as.numeric(profile.df.full\$VALUE)
+  profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
+  profile.df.full\$PROFILE_SET_NAME <- NULL
+  
+  if (!is.null(legend.label)) {
+    if (uniqueN(profile.df.full\$PROFILE_SET) > 1) {
+      profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_SET, levels=unique(profile.df.full\$PROFILE_SET), labels=legend.label)
+    } else if (nrow(profile.df.full) == length(legend.label)) {
+      profile.df.full\$LEGEND <- factor(legend.label)
+    } else {
+      warning(\"legend.label provided, but unused.\")
+    }
+  }
+  
+  if($overrideXAxisLabels && !is.null(x.axis.label)) {
+    profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME), labels=x.axis.label)
+  }
+  
+  names(profile.df.full)[names(profile.df.full) == \"NAME\"] <- \"ELEMENT_NAMES\"
+  
+  profile.df.full\$ELEMENT_NAMES_NUMERIC = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full\$ELEMENT_NAMES, perl=T))
+  
   #if no y values, make a placeholder (ex: timelines)
   if (!\"VALUE\" %in% colnames(profile.df.full)) {
     profile.df.full\$VALUE = NA
@@ -490,7 +454,7 @@ if(nrow(profile.df.full) == 0){
   
   hideLegend = FALSE
   if (is.null(profile.df.full\$LEGEND)) {
-    profile.df.full\$LEGEND <- profile.df.full\$PROFILE_FILE
+    profile.df.full\$LEGEND <- profile.df.full\$PROFILE_SET
     hideLegend = TRUE
   }
   
@@ -499,7 +463,7 @@ if(nrow(profile.df.full) == 0){
   #  profile.df.full <- SharedData\$new(profile.df.full)
   #}
   
-  gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_FILE, color=LEGEND))
+  gp = ggplot(profile.df.full, aes(x=get(myX), y=VALUE, group=PROFILE_SET, color=LEGEND))
   
   if ($prtcpnt_sum) {
     if (all(is.na(profile.df.full\$VALUE))) {
@@ -581,7 +545,7 @@ if(nrow(profile.df.full) == 0){
        if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
         count = length(unique(profile.df.full\$LEGEND));
        } else {
-        count = uniqueN(profile.df.full\$PROFILE_FILE)
+        count = uniqueN(profile.df.full\$PROFILE_SET)
        }
         if (count < length(force(the.colors))) {
           stop(\"Too many colors provided. Please only provide the same number of colors as profile.urls.\");
@@ -638,10 +602,10 @@ if(nrow(profile.df.full) == 0){
   
     if($smoothLines) {
       if(profile.is.numeric && nrow(profile.df.full) > 10) {
-        if(length(levels(factor(profile.df.full\$PROFILE_FILE))) == 1) {
+        if(length(levels(factor(profile.df.full\$PROFILE_SET))) == 1) {
           gp = gp + geom_smooth(method=\"loess\");
         }
-        if(length(levels(factor(profile.df.full\$PROFILE_FILE))) > 1) {
+        if(length(levels(factor(profile.df.full\$PROFILE_SET))) > 1) {
            gp = gp + geom_smooth(method=\"loess\", se=FALSE);
         }
       } else {
@@ -886,7 +850,7 @@ if(nrow(profile.df.full) == 0){
         if ($hasColorVals) {
           gp = gp + scale_colour_manual(values=$colorVals, breaks = $customBreaks, name=\"Legend\");
         } else {
-          gp = gp + scale_colour_manual(values=c(force(the.colors), myColors), breaks=c(profile.df.full\$PROFILE_FILE, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
+          gp = gp + scale_colour_manual(values=c(force(the.colors), myColors), breaks=c(profile.df.full\$PROFILE_SET, status.df\$COLOR), labels=c(as.character(profile.df.full\$LEGEND), as.character(status.df\$COLOR)), name=\"Legend\");
         }
   
         #create custom legend
@@ -907,11 +871,11 @@ if(nrow(profile.df.full) == 0){
       gp = gp + guides(color = guide_legend(order=1));
   
   }
- 
-} 
 
-#postscript
-$rPostscript
+  #postscript
+  $rPostscript
+
+}
 
 if ($isWidget) {
   if (\"TOOLTIP\" %in% colnames(profile.df.full)) {
