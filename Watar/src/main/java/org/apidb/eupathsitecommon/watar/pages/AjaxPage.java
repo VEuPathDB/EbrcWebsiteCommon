@@ -8,8 +8,6 @@ public abstract class AjaxPage extends Page {
     super(driver);
   }
 
-  
   public abstract void waitForPageToLoad();
-  
   
 }

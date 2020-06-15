@@ -15,6 +15,16 @@
   <dependencies>
 
     <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.gusdb</groupId>
+      <artifactId>fgputil-json</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
       <artifactId>htmlunit</artifactId>
     </dependency>

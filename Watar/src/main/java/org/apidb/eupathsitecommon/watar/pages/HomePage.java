@@ -1,18 +1,14 @@
 package org.apidb.eupathsitecommon.watar.pages;
 
-
-import javax.xml.datatype.Duration;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Wait;
+
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class HomePage extends AjaxPage{
   
   private By checkBoxTreeItem = By.cssSelector(".wdk-CheckboxTreeList:nth-child(3) > .wdk-CheckboxTreeItem:nth-child(1) > .wdk-CheckboxTreeNodeWrapper span");
-
 
   private By selectedToolBody = By.cssSelector(".vpdb-FeaturedToolsSelectionBody");
 
@@ -40,7 +36,6 @@ public class HomePage extends AjaxPage{
   public void waitForPageToLoad() {
     new WebDriverWait(driver, 30, 3)
     .until(ExpectedConditions.presenceOfElementLocated(checkBoxTreeItem));
-    //wait.until(ExpectedConditions.presenceOfElementLocated(checkBoxTreeItem));
   }
   
   public String selectedToolHeaderText() {
