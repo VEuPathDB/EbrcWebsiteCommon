@@ -10,6 +10,7 @@ public class ContactUsParams {
   public final String referrer;
   public final String[] ccEmails;
   public final String message;
+  public final String context;
   public final Attachment[] attachments;
   
   public ContactUsParams(
@@ -18,12 +19,14 @@ public class ContactUsParams {
       String referrer,
       String[] ccEmails,
       String message,
+      String context,
       Attachment[] attachments) {
     this.subject = subject;
     this.reporterEmail = reporterEmail;
     this.referrer = referrer;
     this.ccEmails = ccEmails;
     this.message = message;
+    this.context = context;
     this.attachments = attachments;
   }
 }

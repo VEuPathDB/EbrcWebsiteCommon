@@ -28,6 +28,7 @@ export const subjectValue = propSelectorFactory('subject');
 export const reporterEmailValue = propSelectorFactory('reporterEmail');
 export const ccEmailsValue = propSelectorFactory('ccEmails');
 export const messageValue = propSelectorFactory('message');
+export const contextValue = propSelectorFactory('context');
 export const attachmentMetadata = propSelectorFactory('attachmentMetadata');
 
 export const submitDisabled = submittingStatus;
@@ -110,10 +111,12 @@ export const parsedFormFields = createSelector(
   reporterEmailValue,
   parsedCcEmails,
   messageValue,
-  (subject, reporterEmail, ccEmails, message) => ({
+  contextValue,
+  (subject, reporterEmail, ccEmails, message, context) => ({
     subject,
     reporterEmail,
     ccEmails,
-    message
+    message,
+    context
   })
 );

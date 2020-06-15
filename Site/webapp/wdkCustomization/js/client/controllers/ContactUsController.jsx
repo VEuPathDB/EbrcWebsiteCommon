@@ -42,6 +42,14 @@ class ContactUsView extends PageController {
     return displayName && user;
   }
 
+  loadData(prevProps) {
+    if (prevProps == null) {
+      const { context = '' } = this.props;
+      const { updateContext } = this.props.dispatchProps;
+      updateContext(context);
+    }
+  }
+
   getTitle() { 
     const { displayName } = this.props.stateProps
 
@@ -141,6 +149,7 @@ const mapDispatchToProps = {
   updateReporterEmail: compose(updateField('reporterEmail'), targetValue),
   updateCcEmails: compose(updateField('ccEmails'), targetValue),
   updateMessage: compose(updateField('message'), targetValue),
+  updateContext: updateField('context'),
   changeFile: (index, files) => {
     return files.length === 0
       ? changeAttachmentMetadata(index, { file: null })
@@ -154,7 +163,8 @@ const mapDispatchToProps = {
 const mergeProps = (stateProps, dispatchProps, ownProps) => ({
   stateProps,
   dispatchProps,
-  specialInstructions: ownProps.specialInstructions || null
+  specialInstructions: ownProps.specialInstructions || null,
+  context: ownProps.context || ''
 });
 
 const ContactUsController = connect(

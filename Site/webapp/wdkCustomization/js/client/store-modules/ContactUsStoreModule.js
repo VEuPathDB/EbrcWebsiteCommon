@@ -24,7 +24,8 @@ import {
   UPDATE_SUBMITTING_STATUS,
   updateField,
   updateSubmittingStatus,
-  finishRequest
+  finishRequest,
+  CHANGE_CONTEXT
 } from '../actioncreators/ContactUsActionCreators';
 
 import { files, parsedFormFields } from '../selectors/ContactUsSelectors';
@@ -42,6 +43,7 @@ const initialState = {
   reporterEmail: '',
   ccEmails: '',
   message: '',
+  context: '',
   attachmentMetadata: [],
   submittingStatus: false,
   submissionStatus: SUBMISSION_PENDING,
@@ -74,6 +76,12 @@ export function reduce(state = initialState, { type, payload }) {
         ...state,
         message: payload.message
       };
+
+    case CHANGE_CONTEXT:
+      return {
+        ...state,
+        context: payload.context
+      }
 
     case CHANGE_ATTACHMENT_METADATA:
       return {
@@ -167,7 +175,7 @@ const observeSubmitDetails = (
         CONTACT_US_ENDPOINT,
         {
           ...parsedFormFields(contactUsState),
-          referrer: (window.opener && window.opener.location.href) || undefined,
+          // referrer: (window.opener && window.opener.location.href) || undefined,
           attachmentIds
         }
       );
