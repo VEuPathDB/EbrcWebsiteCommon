@@ -3,8 +3,6 @@ package org.eupathdb.common.service.sitemap;
 import static org.gusdb.fgputil.functional.Functions.fSwallow;
 import static org.gusdb.fgputil.functional.Functions.toJavaFunction;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.Tuples.ThreeTuple;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.question.Question;
@@ -27,8 +25,6 @@ import org.gusdb.wdk.service.service.AbstractWdkService;
 
 @Path("sitemap")
 public class SitemapService extends AbstractWdkService {
-
-  private static final Logger LOG = Logger.getLogger(SitemapService.class);
 
   @GET
   @Produces(MediaType.TEXT_XML)
@@ -66,11 +62,12 @@ public class SitemapService extends AbstractWdkService {
 
     return maybeData.map(data -> {
       String urls = data.getThird().stream().map(id -> {
-        String idPart = Arrays.stream(id).map(part ->
-          URLEncoder.encode(part, StandardCharsets.UTF_8)).collect(Collectors.joining("/"));
+        String idPart = Arrays.stream(id)
+            .map(part -> FormatUtil.urlEncodeUtf8(part))
+            .collect(Collectors.joining("/"));
 
         String url = urlBase + fmt
-          .replace("{recordClass}", URLEncoder.encode(data.getSecond().getUrlSegment(), StandardCharsets.UTF_8))
+          .replace("{recordClass}", FormatUtil.urlEncodeUtf8(data.getSecond().getUrlSegment()))
           .replace("{id}", idPart);
 
         return "<url><loc>" + url + "</loc></url>";
