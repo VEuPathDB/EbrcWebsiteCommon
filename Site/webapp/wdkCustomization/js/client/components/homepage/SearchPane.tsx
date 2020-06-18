@@ -21,7 +21,7 @@ const EXPANDED_BRANCHES_SESSION_KEY = 'homepage-left-panel-expanded-branch-ids';
 
 type Props = {
   containerClassName?: string,
-  searchTree?: CategoryTreeNode
+  searchTree: CategoryTreeNode | undefined
 };
 
 export const SearchPane = (props: Props) => {
@@ -58,7 +58,9 @@ type SearchCheckboxTreeProps = {
   searchTerm: string,
   expandedBranches: string[],
   setSearchTerm: (newSearchTerm: string) => void,
-  setExpandedBranches: (newExpandedBranches: string[]) => void
+  setExpandedBranches: (newExpandedBranches: string[]) => void,
+  linksPosition?: LinksPosition
+  showSearchBox?: boolean
 };
 
 export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
@@ -87,8 +89,8 @@ export const SearchCheckboxTree = (props: SearchCheckboxTreeProps) => {
         renderNoResults={renderNoResults}
         onUiChange={props.setExpandedBranches}
         onSearchTermChange={props.setSearchTerm}
-        showSearchBox   
-        linksPosition={LinksPosition.Top}
+        showSearchBox={props.showSearchBox != null ? props.showSearchBox : true}
+        linksPosition={props.linksPosition != null ? props.linksPosition : LinksPosition.Top}
       />;
 }
 
