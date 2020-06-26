@@ -7,7 +7,7 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { News } from 'ebrc-client/App/NewsSidebar';
 
 import { twitterUrl, twitterUrl2 } from 'ebrc-client/config';
-import { useCommunitySiteUrl, useDisplayName } from 'ebrc-client/hooks/staticData';
+import { useCommunitySiteProjectUrl } from 'ebrc-client/hooks/staticData';
 
 import { SocialMediaControls } from './SocialMediaControls';
 import { combineClassNames } from './Utils';
@@ -41,17 +41,16 @@ type Props = {
 };
 
 export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Props) => {
-  const communitySiteUrl = useCommunitySiteUrl();
-  const displayName = useDisplayName();
+  const communitySiteUrl = useCommunitySiteProjectUrl();
   const [ newsSidebarState, setNewsSidebarState ] = useState<NewsState>({ status: 'idle', news: null, error: null });
 
   useEffect(() => {
     let cancelLoading = false;
 
-    if (communitySiteUrl != null && displayName != null) {
+    if (communitySiteUrl != null) {
       setNewsSidebarState({ status: 'loading', ...newsSidebarState });
 
-      fetch(`https://${communitySiteUrl}${displayName}${NEWS_URL_SEGMENT}`, { mode: 'cors' }).then(res=> res.json()).then(
+      fetch(`https://${communitySiteUrl}${NEWS_URL_SEGMENT}`, { mode: 'cors' }).then(res=> res.json()).then(
         news => {
           if (!cancelLoading) {
             setNewsSidebarState({ status: 'idle', news, error: null });
@@ -68,7 +67,7 @@ export const NewsPane = ({ containerClassName, isNewsExpanded, toggleNews }: Pro
     return () => {
       cancelLoading = true;
     };
-  }, [ communitySiteUrl, displayName ]);
+  }, [ communitySiteUrl ]);
 
   return (
     <aside className={combineClassNames(cx('', isNewsExpanded ? 'news-expanded' : 'news-collapsed'), containerClassName)}>

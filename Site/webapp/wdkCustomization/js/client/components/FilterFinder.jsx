@@ -173,7 +173,7 @@ function makeOptions(question) {
     return getLeaves(node, node => node.children).map(node => node.field) // multiFilter children
       .concat(path)
       .concat([node.field])
-      .flatMap(field => [field.display, field.description])
+      .flatMap(field => [field.display, field.description, field.variableName])
       .concat(values)
       .join(' ');
   }
