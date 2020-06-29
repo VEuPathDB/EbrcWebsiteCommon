@@ -227,13 +227,13 @@ sub makeFilesForR {
   return $self->profileFilesAsRVectors($profileSets);
 }
 
-#TODO figure out what idtype does
 sub makePlotDataRequestForR {
   my ($self, $idType) = @_;
 
   my $id = $self->getId();
   my $baseUrl = $self->getBaseUrl();
   my $jsonString;
+  my $sqlName;
 
   my $profileSets = $self->getProfileSets();
   for(my $i = 0; $i < scalar @$profileSets; $i++) {
@@ -243,12 +243,13 @@ sub makePlotDataRequestForR {
       $jsonString = "$jsonString,$addString"; 
     } else {
       $jsonString = $profileSet->getJsonForService();
+      $sqlName = $profileSet->getSqlName($idType);
     }
   }
 
   $id = @$profileSets[0]->getAlternateSourceId ? @$profileSets[0]->getAlternateSourceId: $id;
 
-  my $body = "{\"profileSets\": [$jsonString]}";
+  my $body = "{\"profileSets\": [$jsonString], \"sqlName\": \"$sqlName\"}";
   print STDERR Dumper('request body: ' . $body);
   my $url = "$baseUrl/a/service/profileSet/PlotData/$id";
 

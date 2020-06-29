@@ -135,6 +135,21 @@ sub getJsonForService {
   return $jsonString;
 }
 
+sub getSqlName {
+  my ($self, $idType) = @_;
+
+  my $sqlName;
+
+  #TODO add conditions for facets, etc
+  if(($idType) && lc($idType) eq 'ec') {
+    $sqlName = "ProfileByEC";
+  } else {
+    $sqlName = "Profile";
+  }
+
+  return $sqlName;
+}
+
 sub writeProfileFile{
   my ($self, $id, $qh, $suffix, $idType) = @_;
 
