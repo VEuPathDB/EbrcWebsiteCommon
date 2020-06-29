@@ -79,7 +79,7 @@ sub makeRPlotString {
 
   my $blankGraph = $self->blankGGPlotPart();
 
-  my $profileSetsRequest = $self->makePlotDataRequestForR();
+  my $profileSetsRequest = $self->makePlotDataRequestForR($idType);
   my $plotDataJson;
   my $ua = LWP::UserAgent->new;
   push @{ $ua->requests_redirectable }, 'POST';
