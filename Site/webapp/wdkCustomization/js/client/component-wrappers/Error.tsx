@@ -1,18 +1,31 @@
+import { capitalize, groupBy, uniq } from 'lodash';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'wdk-client/Components';
 import { Props } from 'wdk-client/Components/PageStatus/Error';
+import { UnhandledError } from 'wdk-client/Actions/UnhandledErrorActions';
+import { RootState } from 'wdk-client/Core/State/Types';
 
 export function Error(DefaultComponent: React.ComponentType<Props>) {
   return function VEuPathError(props: Props) {
+    const errors = useSelector((state: RootState) => state.unhandledErrors.errors)
+    const errorTypes = uniq(errors.map(e => e.type));
+    const groupedErrors = groupBy(errors, 'type');
+
+    const contactUsMessage = errorTypes.map(errorType => {
+      const typedErrors: UnhandledError[] | undefined = groupedErrors[errorType];
+      if (typedErrors == null) return '';
+      return '# ' + capitalize(errorType) +' errors: ' + typedErrors.map(te => te.id).join(', ');
+    }).join('\n')
     return (
       <DefaultComponent message={props.message}>
         {
-          props.children ||
-          <p>
-            Please try again later, and <Link to="/contact-us" target="_blank">contact us</Link> if the problem persists.
-            <br />
-            {props.message}
-          </p>
+          props.children || (<>
+            <p>
+              Please try again later, and <Link to={`/contact-us?ctx=${encodeURIComponent(contactUsMessage)}`} target="_blank">contact us</Link> if the problem persists.
+            </p>
+            <div>{props.message}</div>
+          </>)
         }
       </DefaultComponent>
     );
