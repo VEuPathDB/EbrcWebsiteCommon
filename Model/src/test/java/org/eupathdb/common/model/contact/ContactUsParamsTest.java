@@ -14,6 +14,7 @@ public class ContactUsParamsTest {
     String referrer = "http://brokenpage.com";
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
+    String context = "foo context";
     Attachment[] attachments = new Attachment[] {};
     
     ContactUsParams params = new ContactUsParams(
@@ -22,6 +23,7 @@ public class ContactUsParamsTest {
       referrer,
       ccEmails,
       message,
+      context,
       attachments
     );
     
@@ -30,6 +32,7 @@ public class ContactUsParamsTest {
     assertSame(ccEmails, params.ccEmails);
     assertSame(message, params.message);
     assertSame(attachments, params.attachments);
+    assertSame(context, params.context);
   }
 
 }
