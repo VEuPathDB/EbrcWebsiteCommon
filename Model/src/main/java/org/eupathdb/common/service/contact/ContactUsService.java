@@ -114,7 +114,7 @@ public class ContactUsService extends AbstractWdkService {
   
   public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, RequestData requestData, SessionProxy session) {
     String message = jsonBody.getString("message");
-    
+    String context = getStringOrDefault(jsonBody, "context", null);
     String subject = getStringOrDefault(jsonBody, "subject", "");
     String reporterEmail = getStringOrDefault(jsonBody, "reporterEmail", "");
     String referrer = getStringOrDefault(jsonBody, "referrer", requestData.getReferrer());
@@ -140,6 +140,7 @@ public class ContactUsService extends AbstractWdkService {
       referrer,
       ccEmails,
       message,
+      context,
       attachments
     );
   }

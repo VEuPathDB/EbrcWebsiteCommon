@@ -40,19 +40,24 @@ public class ContactUsSubmitter {
         "Referrer page: " + params.referrer + "\n" +
         "WDK Model version: " + version;
 
-    String redmineContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
+    String emailContent = "****THIS IS NOT A REPLY**** \nThis is an automatic" +
         " response, that includes your message for your records, to let you" +
         " know that we have received your email and will get back to you as" +
         " soon as possible. Thanks so much for contacting us!\n\nThis was" +
-        " your message:\n\n---------------------\n" + params.message + 
+        " your message:\n---------------------\n" + params.message + 
         "\n---------------------";
+
+    String contextContent = "Context:\n---------------------\n" +
+      (params.context == null ? "None" : params.context) + "\n" +
+      "---------------------";
 
     String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + 
         website + "\n" + "\n" +
         metaInfo + "\n" + 
         "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" +
         "Request URL: " + requestData.getFullRequestUri() + "\n" +
-        "WDK Host: " + requestData.getLocalHost() + " (" + requestData.getLocalIpAddress() + ")\n";
+        "WDK Host: " + requestData.getLocalHost() + " (" + requestData.getLocalIpAddress() + ")\n\n" +
+        contextContent + "\n";
     
     String smtpServer = modelConfig.getSmtpServer();
     
@@ -62,7 +67,7 @@ public class ContactUsSubmitter {
         replyEmail, 
         supportEmail, 
         params.subject,
-        escapeHtml(metaInfo + "\n\n" + redmineContent + "\n\n"), 
+        escapeHtml(metaInfo + "\n\n" + contextContent + "\n\n" + emailContent + "\n\n"), 
         ccField,null, 
         params.attachments
     );
@@ -73,7 +78,7 @@ public class ContactUsSubmitter {
         supportEmail, 
         replyEmail, 
         params.subject,
-        escapeHtml(metaInfo + "\n\n" + params.message + "\n\n"), 
+        escapeHtml(metaInfo + "\n\n" + contextContent + "\n\n" + params.message + "\n\n"), 
         null, null,
         params.attachments
     );

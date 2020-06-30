@@ -22,6 +22,7 @@ public class ContactUsSubmitterTest {
     String referrer = "http://brokenpage.com";
     String[] ccEmails = new String[] { "janedoe@hotmail.com", "jimmydoe@gmail.com" };
     String message = "If you could make my brain stop hurting, that'd be greeeeat.";
+    String context = "foo context";
     Attachment[] attachments = new Attachment[] {};
     
     ContactUsParams params = new ContactUsParams(
@@ -30,6 +31,7 @@ public class ContactUsSubmitterTest {
         referrer,
         ccEmails,
         message,
+        context,
         attachments
     );
     

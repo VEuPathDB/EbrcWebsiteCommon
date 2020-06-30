@@ -2,6 +2,7 @@ export const CHANGE_SUBJECT = 'contact-us/change-subject';
 export const CHANGE_REPORTER_EMAIL = 'contact-us/change-email';
 export const CHANGE_CC_EMAILS = 'contact-us/change-cc-emails';
 export const CHANGE_MESSAGE = 'contact-us/change-message';
+export const CHANGE_CONTEXT = 'contact-us/change-context';
 export const CHANGE_ATTACHMENT_METADATA = 'contact-us/change-attachment-metadata';
 export const ADD_ATTACHMENT_METADATA = 'contact-us/add-attachment-metadata';
 export const REMOVE_ATTACHMENT_METADATA = 'contact-us/remove-attachment-metadata';
@@ -13,7 +14,8 @@ const fieldToTypeMap = {
   subject: CHANGE_SUBJECT,
   reporterEmail: CHANGE_REPORTER_EMAIL,
   ccEmails: CHANGE_CC_EMAILS,
-  message: CHANGE_MESSAGE
+  message: CHANGE_MESSAGE,
+  context: CHANGE_CONTEXT
 };
 
 /**
