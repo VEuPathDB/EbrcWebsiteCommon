@@ -33,6 +33,7 @@ public class HomePage extends AjaxPage{
   }
 
   
+  @Override
   public void waitForPageToLoad() {
     new WebDriverWait(driver, 30, 3)
     .until(ExpectedConditions.presenceOfElementLocated(checkBoxTreeItem));
