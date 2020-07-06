@@ -1,0 +1,24 @@
+.ImageUploadDialog {
+  &--Content {
+    
+  }
+
+  &--PasteZone {
+    height: 80vh;
+    width: 85vw;
+    box-sizing: content-box;
+
+    border: 0.5em solid #aaaaaa;
+    padding: 0.5em;
+
+    background-color: #dddddd;
+  }
+
+  .ReactCrop {
+    &__image {
+      max-height: 80vh;
+      max-width: 85vw;
+      object-fit: 'scale-down';
+    }
+  }
+}
