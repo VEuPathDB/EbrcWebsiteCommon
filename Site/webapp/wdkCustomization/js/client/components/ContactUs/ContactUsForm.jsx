@@ -1,6 +1,7 @@
 import React from 'react';
 import ContactUsAttachments from './ContactUsAttachments';
 import ContactUsFooter from './ContactUsFooter';
+import ContactUsScreenshots from './ContactUsScreenshots';
 import SupportFormField from '../SupportForm/SupportFormField';
 import ValidatedInput from '../ValidatedInput';
 import ValidatedTextArea from '../ValidatedTextArea';
@@ -17,6 +18,7 @@ const ContactUsForm = ({
   ccEmailsValidity,
   messageValidity,
   validatedAttachmentMetadata,
+  screenshotMetadata,
   updateSubject,
   updateReporterEmail,
   updateCcEmails,
@@ -24,6 +26,8 @@ const ContactUsForm = ({
   changeFile,
   addFile,
   removeFile,
+  addScreenshot,
+  removeScreenshot,
   submitDetails
 }) => (
   <form onSubmit={event => {
@@ -64,6 +68,16 @@ const ContactUsForm = ({
                 validity={ccEmailsValidity}
                 onChange={updateCcEmails} 
                 size={80} 
+              />
+            }
+          />
+          <SupportFormField
+            label="Screenshots:"
+            inputElement={
+              <ContactUsScreenshots
+                addScreenshot={addScreenshot}
+                removeScreenshot={removeScreenshot}
+                screenshotMetadata={screenshotMetadata}
               />
             }
           />

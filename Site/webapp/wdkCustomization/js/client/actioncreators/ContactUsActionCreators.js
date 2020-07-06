@@ -6,6 +6,8 @@ export const CHANGE_CONTEXT = 'contact-us/change-context';
 export const CHANGE_ATTACHMENT_METADATA = 'contact-us/change-attachment-metadata';
 export const ADD_ATTACHMENT_METADATA = 'contact-us/add-attachment-metadata';
 export const REMOVE_ATTACHMENT_METADATA = 'contact-us/remove-attachment-metadata';
+export const ADD_SCREENSHOT_METADATA = 'contact-us/add-screenshot-metadata';
+export const REMOVE_SCREENSHOT_METADATA = 'contact-us/remove-screenshot-metadata';
 export const UPDATE_SUBMITTING_STATUS = 'contact-us/update-submitting-status';
 export const SUBMIT_DETAILS = 'contact-us/submit-details';
 export const FINISH_REQUEST = 'contact-us/finish-request';
@@ -54,6 +56,26 @@ export const addAttachmentMetadata = metadata => ({
  */
 export const removeAttachmentMetadata = index => ({
   type: REMOVE_ATTACHMENT_METADATA,
+  payload: {
+    index
+  }
+});
+
+/**
+ * Add metadata for a screenshot
+ */
+export const addScreenshotMetadata = metadata => ({
+  type: ADD_SCREENSHOT_METADATA,
+  payload: {
+    metadata
+  }
+});
+
+/**
+ * Remove metadata for a screenshot
+ */
+export const removeScreenshotMetadata = index => ({
+  type: REMOVE_SCREENSHOT_METADATA,
   payload: {
     index
   }

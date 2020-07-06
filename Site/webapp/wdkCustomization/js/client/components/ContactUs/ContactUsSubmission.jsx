@@ -19,10 +19,13 @@ const ContactUsSubmission = ({
   changeFile,
   addFile,
   removeFile,
+  addScreenshot,
+  removeScreenshot,
   reporterEmailValidity,
   ccEmailsValidity,
   messageValidity,
   validatedAttachmentMetadata,
+  screenshotMetadata,
   submitDetails,
   specialInstructions
 }) => (
@@ -46,10 +49,13 @@ const ContactUsSubmission = ({
         changeFile={changeFile}
         addFile={addFile}
         removeFile={removeFile}
+        addScreenshot={addScreenshot}
+        removeScreenshot={removeScreenshot}
         reporterEmailValidity={reporterEmailValidity}
         ccEmailsValidity={ccEmailsValidity}
         messageValidity={messageValidity}
         validatedAttachmentMetadata={validatedAttachmentMetadata}
+        screenshotMetadata={screenshotMetadata}
         submitDetails={submitDetails}
       />
     </SupportFormBody>

@@ -1,5 +1,6 @@
 import { 
   compose,
+  concat,
   filter, 
   isEqual, 
   length,
@@ -30,6 +31,7 @@ export const ccEmailsValue = propSelectorFactory('ccEmails');
 export const messageValue = propSelectorFactory('message');
 export const contextValue = propSelectorFactory('context');
 export const attachmentMetadata = propSelectorFactory('attachmentMetadata');
+export const screenshotMetadata = propSelectorFactory('screenshotMetadata');
 
 export const submitDisabled = submittingStatus;
 
@@ -83,7 +85,11 @@ export const ccEmailsValidity = createSelector(
 
 export const files = createSelector(
   attachmentMetadata,
-  map('file')
+  screenshotMetadata,
+  compose(
+    map('file'),
+    concat
+  )
 );
 
 export const validatedAttachmentMetadata = createSelector(
