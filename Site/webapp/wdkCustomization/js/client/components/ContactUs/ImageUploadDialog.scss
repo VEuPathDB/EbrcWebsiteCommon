@@ -4,6 +4,10 @@
   }
 
   &--PasteZone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     height: 80vh;
     width: 85vw;
     box-sizing: content-box;
