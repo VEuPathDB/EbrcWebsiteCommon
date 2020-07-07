@@ -3,9 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'wdk-client/Components';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
-import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
-import { makeClassNameHelper } from "wdk-client/Utils/ComponentUtils";
-import { DatasetParam } from 'wdk-client/Utils/WdkModel';
+import { makeClassNameHelper, wrappable } from "wdk-client/Utils/ComponentUtils";
 import { SITE_SEARCH_ROUTE, SEARCH_TERM_PARAM, DOCUMENT_TYPE_PARAM, ORGANISM_PARAM, FILTERS_PARAM } from './SiteSearchConstants';
 
 import './SiteSearch.scss';
@@ -17,7 +15,11 @@ const preventEventWith = (callback: () => void) => (event: React.FormEvent) => {
   callback();
 }
 
-export function SiteSearchInput() {
+export interface Props {
+  placeholderText?: string;
+}
+
+export const SiteSearchInput = wrappable(function ({ placeholderText }: Props) {
   const location = useLocation();
   const history = useHistory();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,17 +34,6 @@ export function SiteSearchInput() {
   const onSearch = useCallback((queryString: string) => {
     history.push(`${SITE_SEARCH_ROUTE}?${queryString}`);
   }, [ history ]);
-
-  const placeholderText = useWdkService(async wdkService => {
-    const [ idSearch, textSearch ] = await Promise.all([
-      wdkService.getQuestionAndParameters('GeneByLocusTag').catch(),
-      wdkService.getQuestionAndParameters('GenesByText').catch()
-    ]);
-    const id = idSearch?.parameters.find((p): p is DatasetParam => p.name === 'ds_gene_ids')?.defaultIdList;
-    const text = textSearch?.parameters.find(p => p.name === 'text_expression')?.initialDisplayValue;
-    const examples = [ id, text, `"binding protein"` ].filter(v => v).join(' or ');
-    return 'Site search, e.g. ' + examples;
-  }, []);
 
   const handleSubmitWithFilters = useCallback(() => {
     const { current } = formRef;
@@ -103,4 +94,4 @@ export function SiteSearchInput() {
       </Tooltip>
     </form>
   );
-}
+});

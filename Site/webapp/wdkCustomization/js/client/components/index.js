@@ -9,3 +9,4 @@ export { default as ActiveGroup } from './ActiveGroup';
 export { default as SiteHeader } from './SiteHeader';
 export { default as QuickSearch } from './QuickSearch';
 export { default as TabularReporterFormSubmitButtons } from './reporters/TabularReporterFormSubmitButtons';
+export { SiteSearchInput } from 'ebrc-client/components/SiteSearch/SiteSearchInput';
