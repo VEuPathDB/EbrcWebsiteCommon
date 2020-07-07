@@ -1,6 +1,8 @@
 import React from 'react';
 import ValidatedInput from '../../components/ValidatedInput';
 
+import { MAX_ATTACHMENT_SIZE_DESCRIPTION } from 'ebrc-client/selectors/ContactUsSelectors';
+
 import './ContactUsAttachments.scss';
 
 const ContactUsAttachments = ({ 
@@ -10,7 +12,7 @@ const ContactUsAttachments = ({
   validatedAttachmentMetadata
 }) => 
   <div className="contact-us-files">
-    Attach up to three screenshots (maximum 5Mb per file).
+    Attach up to three files (maximum {MAX_ATTACHMENT_SIZE_DESCRIPTION} per file).
     <br />
     <br />
     {

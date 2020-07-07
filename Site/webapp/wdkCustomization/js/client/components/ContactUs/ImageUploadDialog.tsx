@@ -4,6 +4,11 @@ import ReactCrop, { Crop } from 'react-image-crop';
 import { Dialog } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
+import {
+  MAX_ATTACHMENT_SIZE,
+  MAX_ATTACHMENT_SIZE_DESCRIPTION
+} from 'ebrc-client/selectors/ContactUsSelectors';
+
 import 'react-image-crop/lib/ReactCrop.scss';
 
 import './ImageUploadDialog.scss';
@@ -140,6 +145,11 @@ function submitCroppedImg(
     crop.height == null ||
     crop.width == null
   ) {
+    if (uncroppedFile.size > MAX_ATTACHMENT_SIZE) {
+      alert(`Please submit a screenshot which is under ${MAX_ATTACHMENT_SIZE_DESCRIPTION}`);
+      return;
+    }
+
     onSubmit(uncroppedFile);
     return;
   }
@@ -170,6 +180,11 @@ function submitCroppedImg(
   canvas.toBlob(blob => {
     if (blob == null) {
       throw new Error('Could not write the cropped screenshot canvas to a file');
+    }
+
+    if (blob.size > MAX_ATTACHMENT_SIZE) {
+      alert(`Please submit a cropping which is under ${MAX_ATTACHMENT_SIZE_DESCRIPTION}`);
+      return;
     }
 
     const croppedFile = new File([ blob ], uncroppedFile.name);

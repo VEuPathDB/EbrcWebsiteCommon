@@ -18,7 +18,8 @@ import {
 // Source: emailregex.com (which implements the RFC 5322 standard)
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const MAX_ATTACHMENT_SIZE = 5000000;
+export const MAX_ATTACHMENT_SIZE = 5000000;
+export const MAX_ATTACHMENT_SIZE_DESCRIPTION = '5Mb';
 
 const propSelectorFactory = prop => state => state[prop];
 
@@ -101,7 +102,7 @@ const validateMetadatum = metadatum => {
   if (!metadatum.file) {
     return addValidityToAttachmentMetadatum(metadatum, 'Please choose a file to upload.')
   } else if (metadatum.file.size > MAX_ATTACHMENT_SIZE) {
-    return addValidityToAttachmentMetadatum(metadatum, 'Please choose a file which is under 5 Mb.');
+    return addValidityToAttachmentMetadatum(metadatum, `Please choose a file which is under ${MAX_ATTACHMENT_SIZE_DESCRIPTION}.`);
   } else {
     return addValidityToAttachmentMetadatum(metadatum, '');
   }    

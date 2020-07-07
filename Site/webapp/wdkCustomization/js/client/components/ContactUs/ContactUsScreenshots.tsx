@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
-import { ImageUploadDialog } from './ImageUploadDialog';
+import { ImageUploadDialog } from 'ebrc-client/components/ContactUs/ImageUploadDialog';
+import { MAX_ATTACHMENT_SIZE_DESCRIPTION } from 'ebrc-client/selectors/ContactUsSelectors';
 
 import './ContactUsScreenshots.scss';
 
@@ -43,7 +44,7 @@ const ContactUsScreenshots = ({
           onClose={onImageUploadDialogClose}
         />
       }
-      Attach up to three screenshots from your clipboard (maximum 5Mb per image).
+      Attach up to three screenshots from your clipboard (maximum {MAX_ATTACHMENT_SIZE_DESCRIPTION} per image).
       <div className={cx('--ScreenshotPreviews')}>
         {
           screenshotMetadata.map(
