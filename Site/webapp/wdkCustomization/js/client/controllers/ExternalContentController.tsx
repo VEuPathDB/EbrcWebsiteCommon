@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
-import {Loading} from 'wdk-client/Components';
+import { Loading } from 'wdk-client/Components';
 
 interface Props {
   url: string;
@@ -11,6 +11,7 @@ const EXTERNAL_CONTENT_CONTROLLER_CLASSNAME = 'ExternalContentController';
 
 export default function ExternalContentController(props: Props) {
   const { url } = props;
+  const ref = useRef<HTMLDivElement>(null);
 
   const { value: content } = usePromise(async () => {
     try {
@@ -25,11 +26,18 @@ export default function ExternalContentController(props: Props) {
   }, [ url ]);
 
   useEffect(() => {
-    if (content == null) return;
+    if (content == null || ref.current == null) return;
 
     try {
-      // scroll to element identified by hash
-      if (location.hash) location.assign(location.hash);
+      if (location.hash) {
+        // open detail with id matching location.hash
+        const target = ref.current.querySelector(location.hash);
+        if (target instanceof HTMLDetailsElement) {
+          target.open = true;
+        }
+        // scroll to element identified by hash
+        location.assign(location.hash);
+      }
     }
     catch(error) {
       console.error(error);
@@ -40,7 +48,10 @@ export default function ExternalContentController(props: Props) {
 
   return safeHtml(
     content,
-    { className: EXTERNAL_CONTENT_CONTROLLER_CLASSNAME },
+    {
+      className: EXTERNAL_CONTENT_CONTROLLER_CLASSNAME,
+      ref
+    },
     'div'
   );
 }
