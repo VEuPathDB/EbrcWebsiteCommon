@@ -1,6 +1,22 @@
 .ImageUploadDialog {
-  &--Content {
-    
+  .wdk-DialogHeader {
+    background: white;
+  }
+
+  .wdk-DialogContent {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    font-size: 1.4em;
+
+    margin-left: 0.75em;
+    margin-right: 0.75em;
+  }
+
+  &--Instructions {
+    font-size: 1.5em;
   }
 
   &--PasteZone {
@@ -23,5 +39,9 @@
       max-height: 80vh;
       max-width: 85vw;
     }
+  }
+
+  &--Footer {
+    margin-top: 1em;
   }
 }

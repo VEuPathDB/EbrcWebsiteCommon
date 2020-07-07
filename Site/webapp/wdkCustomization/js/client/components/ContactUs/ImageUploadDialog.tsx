@@ -48,22 +48,23 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
   }, [ fullImageRef.current, previewImageRef.current, crop, onSubmit, imageFile ]);
 
   return (
-    <Dialog open modal className={cx()} onClose={onClose}>
+    <Dialog open modal className={cx()} title="Add A Screenshot From Your Clipboard" onClose={onClose}>
       <div className={cx('--PasteZone')}>
         {
-          imageUrl &&
-          <ReactCrop
-            onImageLoaded={onPreviewImageLoaded}
-            src={imageUrl}
-            crop={crop}
-            onChange={setCrop}
-          />
+          imageUrl == null
+            ? <p className={cx('--Instructions')}>Paste a screenshot into this window using Ctrl/Command + V</p>
+            : <ReactCrop
+                onImageLoaded={onPreviewImageLoaded}
+                src={imageUrl}
+                crop={crop}
+                onChange={setCrop}
+              />
         }
         <img ref={fullImageRef} src={imageUrl} style={{ display: 'none' }} />
       </div>
       <div className={cx('--Footer')}>
-        <button disabled={imageFile == null} onClick={onClickOk} type="button">OK</button>
-        <button onClick={onClose} type="button">Cancel</button>
+        <button className="btn" disabled={imageFile == null} onClick={onClickOk} type="button">OK</button>
+        <button className="btn" onClick={onClose} type="button">Cancel</button>
       </div>
     </Dialog>
   );
