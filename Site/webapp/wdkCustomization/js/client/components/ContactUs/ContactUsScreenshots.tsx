@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
+
 import { ImageUploadDialog } from './ImageUploadDialog';
+
+import './ContactUsScreenshots.scss';
+
+const cx = makeClassNameHelper('ContactUsScreenshots');
 
 interface Props {
   addScreenshot: (file: File) => void;
@@ -29,7 +35,7 @@ const ContactUsScreenshots = ({
   }, []);
 
   return (
-    <div className="contact-us-files">
+    <div className={cx()}>
       {
         imageUploadDialogOpen &&
         <ImageUploadDialog
@@ -38,22 +44,24 @@ const ContactUsScreenshots = ({
         />
       }
       Attach up to three screenshots from your clipboard (maximum 5Mb per image).
-      {
-        screenshotMetadata.map(
-          (screenshotMetadatum, i) => (
-            <ScreenshotPreview
-              key={screenshotMetadatum.id}
-              onRemoveScreenshot={() => {
-                removeScreenshot(i);
-              }}
-              imageFile={screenshotMetadatum.file}
-            />
+      <div className={cx('--ScreenshotPreviews')}>
+        {
+          screenshotMetadata.map(
+            (screenshotMetadatum, i) => (
+              <ScreenshotPreview
+                key={screenshotMetadatum.id}
+                onRemoveScreenshot={() => {
+                  removeScreenshot(i);
+                }}
+                imageFile={screenshotMetadatum.file}
+              />
+            )
           )
-        )
-      }
+        }
+      </div>
       {
         screenshotMetadata.length < 3 &&
-        <button type="button" onClick={onImageUploadDialogOpen}>{
+        <button className={cx('--AddScreenshot')} type="button" onClick={onImageUploadDialogOpen}>{
           screenshotMetadata.length === 0
             ? 'Add a screenshot'
             : 'Add another screenshot'
@@ -82,7 +90,7 @@ function ScreenshotPreview({ imageFile, onRemoveScreenshot }: ScreenshotProps) {
   }, [ imageUrl ] );
 
   return (
-    <div>
+    <div className={cx('--ScreenshotPreview')}>
       <img src={imageUrl} />
       <button type="button" onClick={onRemoveScreenshot}>Remove this screenshot</button>
     </div>

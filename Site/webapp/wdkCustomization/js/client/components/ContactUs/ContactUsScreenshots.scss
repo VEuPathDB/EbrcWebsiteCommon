@@ -1,0 +1,43 @@
+.ContactUsScreenshots {
+  &--ScreenshotPreviews {
+    margin-top: 0.4em;
+  }
+
+  &--ScreenshotPreview {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 1em;
+
+    > * {
+      flex: 0 0 auto;
+    }
+
+    img {
+      width: 15em;
+      border: 0.2em solid #aaaaaa;
+    }
+
+    button {
+      margin-left: 1em;
+    }
+  }
+
+  &--AddScreenshot {
+    margin-bottom: 1em;
+  }
+
+  button {
+    background: lightyellow;
+    color: #069;
+
+    border: 0.0625rem solid gray;
+    border-radius: 0.8em;
+    padding: 0.5em;
+
+    &:hover {
+      background: lightyellow;
+      text-decoration: underline;
+    }
+  }
+}
