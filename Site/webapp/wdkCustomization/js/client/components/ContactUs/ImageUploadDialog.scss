@@ -36,7 +36,7 @@
 
   .ReactCrop {
     &__image {
-      max-height: 80vh;
+      max-height: calc(80vh - 5em);
       max-width: 85vw;
     }
   }
