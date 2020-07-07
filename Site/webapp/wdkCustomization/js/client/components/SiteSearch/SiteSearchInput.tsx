@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'wdk-client/Components';
 import { useSessionBackedState } from 'wdk-client/Hooks/SessionBackedState';
-import { makeClassNameHelper, wrappable } from "wdk-client/Utils/ComponentUtils";
+import { makeClassNameHelper, wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { SITE_SEARCH_ROUTE, SEARCH_TERM_PARAM, DOCUMENT_TYPE_PARAM, ORGANISM_PARAM, FILTERS_PARAM } from './SiteSearchConstants';
 
 import './SiteSearch.scss';
