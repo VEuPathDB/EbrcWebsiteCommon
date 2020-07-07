@@ -104,18 +104,7 @@ const ContactUsForm = ({
             />
             }
           />
-  {/*     <SupportFormField
-            label="Attachments:"
-            inputElement={
-              <ContactUsAttachments
-                changeFile={changeFile}
-                addFile={addFile}
-                removeFile={removeFile}
-                validatedAttachmentMetadata={validatedAttachmentMetadata}
-              />
-            }
-          />
-    */}       <ContactUsFooter 
+          <ContactUsFooter
             submitDisabled={submitDisabled}
             submissionFailed={submissionFailed}
             responseMessage={responseMessage}
