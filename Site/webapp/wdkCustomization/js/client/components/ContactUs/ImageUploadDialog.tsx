@@ -87,13 +87,16 @@ function useImageFromClipboard() {
       const pastedItems = [...event.clipboardData.items];
       const pastedImageItem = pastedItems.find(({ type }) => type.startsWith('image'));
 
-      if (pastedImageItem != null) {
-        const pastedImageFile = pastedImageItem.getAsFile();
+      if (pastedImageItem == null) {
+        alert("No image was found in your clipboard. You can add a screenshot to your clipboard using your computer's 'Print Screen' functionality.");
+        return;
+      }
 
-        if (pastedImageFile != null) {
-          setPastedImage(pastedImageFile);
-          setPastedImageUrl(URL.createObjectURL(pastedImageFile));
-        }
+      const pastedImageFile = pastedImageItem.getAsFile();
+
+      if (pastedImageFile != null) {
+        setPastedImage(pastedImageFile);
+        setPastedImageUrl(URL.createObjectURL(pastedImageFile));
       }
     }
   }, []);
