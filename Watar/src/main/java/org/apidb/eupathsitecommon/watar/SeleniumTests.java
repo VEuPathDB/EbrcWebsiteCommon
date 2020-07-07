@@ -2,7 +2,7 @@ package org.apidb.eupathsitecommon.watar;
 
 //import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
+//import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.Dimension;
 
@@ -24,7 +24,7 @@ import java.net.URL;
 
 import org.apidb.eupathsitecommon.watar.pages.HomePage;
 import org.apidb.eupathsitecommon.watar.pages.SearchForm;
-import org.gusdb.fgputil.json.JsonIterators;
+//import org.gusdb.fgputil.json.JsonIterators;
 
 public class SeleniumTests {
   private WebDriver driver;
@@ -86,7 +86,7 @@ public class SeleniumTests {
       for(int j = 0; j < searchesArray.length(); j++) {
         JSONObject search = (JSONObject) searchesArray.get(j);
         String urlSegment = (String) search.get("urlSegment");
-        String fullName = (String) search.get("fullName");
+        //String fullName = (String) search.get("fullName");
         JSONArray paramNames = (JSONArray) search.get("paramNames");
 
         if(urlSegment.equals("GenesByUserDatasetAntisense") || 
