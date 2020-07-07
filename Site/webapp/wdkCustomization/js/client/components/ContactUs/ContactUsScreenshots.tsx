@@ -62,7 +62,7 @@ const ContactUsScreenshots = ({
       </div>
       {
         screenshotMetadata.length < 3 &&
-        <button className={cx('--AddScreenshot')} type="button" onClick={onImageUploadDialogOpen}>{
+        <button className={`${cx('--AddScreenshot')} btn`} type="button" onClick={onImageUploadDialogOpen}>{
           screenshotMetadata.length === 0
             ? 'Add a screenshot'
             : 'Add another screenshot'
@@ -93,7 +93,7 @@ function ScreenshotPreview({ imageFile, onRemoveScreenshot }: ScreenshotProps) {
   return (
     <div className={cx('--ScreenshotPreview')}>
       <img src={imageUrl} />
-      <button type="button" onClick={onRemoveScreenshot}>Remove this screenshot</button>
+      <button className="btn" type="button" onClick={onRemoveScreenshot}>Remove this screenshot</button>
     </div>
   );
 }
