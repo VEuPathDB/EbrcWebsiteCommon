@@ -25,7 +25,6 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
 
   const initialCrop = { unit: '%', x: 25, y: 25, height: 50, width: 50, aspect: undefined } as const;
   const [ crop, setCrop ] = useState<Crop | undefined>(initialCrop);
-  const fullImageRef = useRef<HTMLImageElement>(null);
   const previewImageRef = useRef<HTMLImageElement>();
 
   const resetCrop = useCallback(() => {
@@ -49,8 +48,8 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
   }, [ previewImageRef.current ]);
 
   const onClickOk = useCallback(() => {
-    submitCroppedImg(fullImageRef.current, previewImageRef.current, crop, onSubmit, imageFile);
-  }, [ fullImageRef.current, previewImageRef.current, crop, onSubmit, imageFile ]);
+    submitCroppedImg(previewImageRef.current, crop, onSubmit, imageFile);
+  }, [ previewImageRef.current, crop, onSubmit, imageFile ]);
 
   return (
     <Dialog open modal className={cx()} title="Add A Screenshot From Your Clipboard" onClose={onClose}>
@@ -65,7 +64,6 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
                 onChange={setCrop}
               />
         }
-        <img ref={fullImageRef} src={imageUrl} style={{ display: 'none' }} />
       </div>
       <div className={cx('--Footer')}>
         <button className="btn" disabled={imageFile == null} onClick={onClickOk} type="button">OK</button>
@@ -123,16 +121,11 @@ function useImageFromClipboard() {
 
 // Adaptation of https://github.com/DominicTobias/react-image-crop#what-about-showing-the-crop-on-the-client
 function submitCroppedImg(
-  fullImage: HTMLImageElement | null,
   previewImage: HTMLImageElement | undefined,
   crop: Crop | undefined,
   onSubmit: (file: File) => void,
   uncroppedFile: File | undefined
 ) {
-  if (fullImage == null) {
-    throw new Error('Could not obtain the image containing the pasted screenshot.');
-  }
-
   if (previewImage == null) {
     throw new Error('Could not obtain preview image for the pasted screenshot.');
   }
@@ -157,11 +150,13 @@ function submitCroppedImg(
     return;
   }
 
+  const devicePixelRatio = window.devicePixelRatio || 1;
+
   const canvas = document.createElement('canvas');
-  const scaleX = fullImage.naturalWidth / previewImage.width;
-  const scaleY = fullImage.naturalHeight / previewImage.height;
-  canvas.width = crop.width * scaleX / window.devicePixelRatio;
-  canvas.height = crop.height * scaleY / window.devicePixelRatio;
+  const scaleX = previewImage.naturalWidth / previewImage.width;
+  const scaleY = previewImage.naturalHeight / previewImage.height;
+  canvas.width = crop.width * scaleX / devicePixelRatio;
+  canvas.height = crop.height * scaleY / devicePixelRatio;
   const ctx = canvas.getContext('2d');
 
   if (ctx == null) {
@@ -169,15 +164,15 @@ function submitCroppedImg(
   }
 
   ctx.drawImage(
-    fullImage,
+    previewImage,
     crop.x * scaleX,
     crop.y * scaleY,
     crop.width * scaleX,
     crop.height * scaleY,
     0,
     0,
-    crop.width * scaleX / window.devicePixelRatio,
-    crop.height * scaleY / window.devicePixelRatio
+    crop.width * scaleX / devicePixelRatio,
+    crop.height * scaleY / devicePixelRatio
   );
 
   canvas.toBlob(blob => {
