@@ -37,9 +37,11 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
 
   useEffect(() => {
     window.addEventListener('resize', resetCrop);
+    window.addEventListener('zoom', resetCrop);
 
     return () => {
       window.removeEventListener('resize', resetCrop);
+      window.removeEventListener('zoom', resetCrop);
     };
   }, [ resetCrop ]);
 
