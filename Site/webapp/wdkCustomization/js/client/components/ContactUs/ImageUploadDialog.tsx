@@ -58,7 +58,7 @@ export function ImageUploadDialog({ onSubmit, onClose }: Props) {
       <div className={cx('--PasteZone')}>
         {
           imageUrl == null
-            ? <p className={cx('--Instructions')}>Paste a screenshot into this window using Ctrl/Command + V</p>
+            ? <p className={cx('--Instructions')}>Paste a screenshot into this window using Ctrl/Cmd + V</p>
             : <ReactCrop
                 onImageLoaded={onPreviewImageLoaded}
                 src={imageUrl}
