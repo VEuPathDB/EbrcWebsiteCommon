@@ -10,6 +10,8 @@ import {
   changeAttachmentMetadata,
   addAttachmentMetadata,
   removeAttachmentMetadata,
+  addScreenshotMetadata,
+  removeScreenshotMetadata,
   submitDetails  
 } from  '../actioncreators/ContactUsActionCreators';
 
@@ -29,7 +31,8 @@ import {
   messageValidity,
   reporterEmailValidity,
   ccEmailsValidity,
-  validatedAttachmentMetadata
+  validatedAttachmentMetadata,
+  screenshotMetadata
 } from '../selectors/ContactUsSelectors';
 
 class ContactUsView extends PageController {
@@ -70,7 +73,8 @@ class ContactUsView extends PageController {
       reporterEmailValidity,
       ccEmailsValidity,
       messageValidity,
-      validatedAttachmentMetadata
+      validatedAttachmentMetadata,
+      screenshotMetadata
     } = this.props.stateProps;
 
     const {
@@ -81,6 +85,8 @@ class ContactUsView extends PageController {
       changeFile,
       addFile,
       removeFile,
+      addScreenshot,
+      removeScreenshot,
       submitDetails
     } = this.props.dispatchProps;
 
@@ -109,10 +115,13 @@ class ContactUsView extends PageController {
                 changeFile={changeFile}
                 addFile={addFile}
                 removeFile={removeFile}
+                addScreenshot={addScreenshot}
+                removeScreenshot={removeScreenshot}
                 reporterEmailValidity={reporterEmailValidity}
                 ccEmailsValidity={ccEmailsValidity}
                 messageValidity={messageValidity}
                 validatedAttachmentMetadata={validatedAttachmentMetadata}
+                screenshotMetadata={screenshotMetadata}
                 submitDetails={submitDetails}
                 specialInstructions={this.props.specialInstructions}
               />
@@ -141,7 +150,8 @@ const mapStateToProps = ({
   reporterEmailValidity: reporterEmailValidity(contactUsState),
   ccEmailsValidity: ccEmailsValidity(contactUsState),
   messageValidity: messageValidity(contactUsState),
-  validatedAttachmentMetadata: validatedAttachmentMetadata(contactUsState)
+  validatedAttachmentMetadata: validatedAttachmentMetadata(contactUsState),
+  screenshotMetadata: screenshotMetadata(contactUsState)
 });
 
 const mapDispatchToProps = {
@@ -157,6 +167,8 @@ const mapDispatchToProps = {
   },
   addFile: () => addAttachmentMetadata({}),
   removeFile: index => removeAttachmentMetadata(index),
+  addScreenshot: file => addScreenshotMetadata({ file }),
+  removeScreenshot: index => removeScreenshotMetadata(index),
   submitDetails
 };
 

@@ -19,6 +19,8 @@ import {
   CHANGE_ATTACHMENT_METADATA,
   ADD_ATTACHMENT_METADATA,
   REMOVE_ATTACHMENT_METADATA,
+  ADD_SCREENSHOT_METADATA,
+  REMOVE_SCREENSHOT_METADATA,
   SUBMIT_DETAILS,
   FINISH_REQUEST,
   UPDATE_SUBMITTING_STATUS,
@@ -45,10 +47,12 @@ const initialState = {
   message: '',
   context: '',
   attachmentMetadata: [],
+  screenshotMetadata: [],
   submittingStatus: false,
   submissionStatus: SUBMISSION_PENDING,
   responseMessage: '',
-  nextAttachmentId: 0
+  nextAttachmentId: 0,
+  nextScreenshotId: 0
 };
 
 export function reduce(state = initialState, { type, payload }) {
@@ -115,6 +119,28 @@ export function reduce(state = initialState, { type, payload }) {
         attachmentMetadata: [
           ...state.attachmentMetadata.slice(0, payload.index),
           ...state.attachmentMetadata.slice(payload.index + 1)
+        ]
+      };
+
+    case ADD_SCREENSHOT_METADATA:
+      return {
+        ...state,
+        screenshotMetadata: [
+          ...state.screenshotMetadata,
+          {
+            ...payload.metadata,
+            id: state.nextScreenshotId
+          }
+        ],
+        nextScreenshotId: state.nextScreenshotId + 1
+      };
+
+    case REMOVE_SCREENSHOT_METADATA:
+      return {
+        ...state,
+        screenshotMetadata: [
+          ...state.screenshotMetadata.slice(0, payload.index),
+          ...state.screenshotMetadata.slice(payload.index + 1)
         ]
       };
 
