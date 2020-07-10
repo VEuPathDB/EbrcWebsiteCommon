@@ -34,11 +34,9 @@
     background-color: #dddddd;
   }
 
-  .ReactCrop {
-    &__image {
-      max-height: calc(80vh - 5em);
-      max-width: 85vw;
-    }
+  img {
+    max-height: calc(80vh - 5em);
+    max-width: 85vw;
   }
 
   &--Footer {
