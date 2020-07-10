@@ -4,6 +4,7 @@ export function getCategoryColor (category) {
   if (!category) return null;
   switch (category.toLowerCase()) {
     case 'enteric':
+    case 'diarrhea':
       return '#6738ff';  //#8874a3'; more muted
     case 'malarial':
     case 'malaria':
