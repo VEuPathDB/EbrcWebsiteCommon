@@ -171,7 +171,9 @@ if(class(profile.df.full) == 'list'){
   
   profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME))
   profile.df.full\$VALUE <- as.numeric(profile.df.full\$VALUE)
-  profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
+  if (!\"PROFILE_SET\" %in% names(profile.df.full)) {
+    profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
+  }
   profile.df.full\$PROFILE_SET_NAME <- NULL
   
   if (!is.null(legend.label)) {

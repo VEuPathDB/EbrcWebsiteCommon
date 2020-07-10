@@ -8,6 +8,7 @@ use EbrcWebsiteCommon::View::GraphPackage::PlotPart;
 use EbrcWebsiteCommon::View::GraphPackage::Util;
 use EbrcWebsiteCommon::View::GraphPackage;
 
+use LWP::UserAgent;
 use Data::Dumper;
 #--------------------------------------------------------------------------------
 
@@ -363,18 +364,29 @@ if(class(profile.df.full) == 'list'){
   
   profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME))
   profile.df.full\$VALUE <- as.numeric(profile.df.full\$VALUE)
-  profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
-  profile.df.full\$PROFILE_SET_NAME <- NULL
+  if (!\"PROFILE_SET\" %in% names(profile.df.full)) {
+    profile.df.full\$PROFILE_SET <- paste(profile.df.full\$PROFILE_SET_NAME, '-', profile.df.full\$PROFILE_TYPE)
+  }
+
+  if (all(is.na(profile.df.full\$FACET))) {
+    profile.df.full\$FACET <- \"Unknown\"
+  }
   
   if (!is.null(legend.label)) {
     if (uniqueN(profile.df.full\$PROFILE_SET) > 1) {
-      profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_SET, levels=unique(profile.df.full\$PROFILE_SET), labels=legend.label)
+      if (uniqueN(profile.df.full\$PROFILE_SET) != length(legend.label)) {
+        profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_SET, levels=unique(profile.df.full\$PROFILE_SET), labels=legend.label[legend.label %in% profile.df.full\$PROFILE_SET_NAME])
+        the.colors <- the.colors[legend.label %in% profile.df.full\$PROFILE_SET_NAME]
+      } else {  
+        profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_SET, levels=unique(profile.df.full\$PROFILE_SET), labels=legend.label)
+      }
     } else if (nrow(profile.df.full) == length(legend.label)) {
       profile.df.full\$LEGEND <- factor(legend.label)
     } else {
       warning(\"legend.label provided, but unused.\")
     }
   }
+  profile.df.full\$PROFILE_SET_NAME <- NULL
   
   if($overrideXAxisLabels && !is.null(x.axis.label)) {
     profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME), labels=x.axis.label)
@@ -417,6 +429,7 @@ if(class(profile.df.full) == 'list'){
   }
   
   if(\"FACET\" %in% colnames(profile.df.full)) {
+    profile.df.full\$FACET <- as.factor(profile.df.full\$FACET)
     profile.df.full\$FACET_ns=factor(profile.df.full\$FACET,levels=mixedsort(levels(profile.df.full\$FACET)));
   }
   if (!exists(\"profile.is.numeric\")) {
@@ -446,6 +459,7 @@ if(class(profile.df.full) == 'list'){
   
   if(\"CONTXAXIS\" %in% colnames(profile.df.full) && !all(is.na(profile.df.full\$CONTXAXIS))){
     myX <- \"CONTXAXIS\"
+    profile.df.full\$CONTXAXIS <- as.numeric(profile.df.full\$CONTXAXIS)
   } else if (profile.is.numeric) {
     myX <- \"ELEMENT_NAMES_NUMERIC\"
   } else {

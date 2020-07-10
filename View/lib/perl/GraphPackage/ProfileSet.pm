@@ -58,7 +58,6 @@ sub setIdOverride                { $_[0]->{'_id_override'         }  = $_[1]}
 sub logError                     { push @{$_[0]->{'_errors'}}, $_[1] }
 sub errors                       { $_[0]->{'_errors'               }}
 
-
 sub new {
   my ($class, $name, $type, $elementNames, $alternateSourceId, $scale, $facet, $displayName, $subId, $contXAxis, $idOverride) = @_;
 
@@ -82,10 +81,10 @@ sub new {
   if (defined $facet) {
     $self->setFacet($facet);
   }
-
   if (defined $contXAxis) {
     $self->setContXAxis($contXAxis);
   }
+
   if (defined $idOverride) {
     $self->setIdOverride($idOverride);
   }
@@ -118,13 +117,28 @@ sub writeFiles {
   }
 }
 
+sub setJsonForService {
+  my ($self, $json) = @_;
+  $self->{_json} = $json;
+}
+
 sub getJsonForService {
   my ($self) = @_;
 
+  return $self->{_json} if($self->{_json});
+
   my $profileSetName = $self->getName();
   my $profileSetType = $self->getType();
+  my $facet = $self->getFacet();
+  my $contXAxis = $self->getContXAxis();
 
-  my $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\"}";
+  my $jsonString;
+
+  if ($facet || $contXAxis) {
+    $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\",\"facet\":\"@$facet[0]\",\"xAxis\":\"$contXAxis\"}";
+  } else {
+    $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\"}";
+  }
 
   if(my $relatedProfileSet = $self->getRelatedProfileSet()) {
     my $relatedName = $relatedProfileSet->getName();
@@ -135,14 +149,24 @@ sub getJsonForService {
   return $jsonString;
 }
 
+sub setSqlName {
+  my ($self, $sqlName) = @_;
+  $self->{_sql_name} = $sqlName;
+}
+
 sub getSqlName {
   my ($self, $idType) = @_;
 
+  return $self->{_sql_name} if($self->{_sql_name});
+
+  my $facet = $self->getFacet();
+  my $contXAxis = $self->getContXAxis();
   my $sqlName;
 
-  #TODO add conditions for facets, etc
   if(($idType) && lc($idType) eq 'ec') {
     $sqlName = "ProfileByEC";
+  } elsif ($facet || $contXAxis) {
+    $sqlName = "ProfileWithMetadata"
   } else {
     $sqlName = "Profile";
   }
