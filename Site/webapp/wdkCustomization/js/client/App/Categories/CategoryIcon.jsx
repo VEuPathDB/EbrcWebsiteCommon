@@ -19,7 +19,7 @@ class CategoryIcon extends React.Component {
       <div style={{ position: 'relative' }}>
         <AnchoredTooltip
           debug={true}
-          content={<div><strong>{categoryName}</strong> study</div>}
+          content={<div><strong>{categoryName}</strong></div>}
           style={{ width: 'auto', textTransform: 'capitalize' }}>
           <span className="CategoryIcon" style={categoryStyle}>
             {category[0].toUpperCase()}

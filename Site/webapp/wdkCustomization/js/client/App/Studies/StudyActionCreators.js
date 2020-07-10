@@ -1,4 +1,4 @@
-import { get, identity, keyBy, mapValues, orderBy, spread } from 'lodash';
+import { get, identity, keyBy, mapValues, words, orderBy, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
@@ -84,7 +84,7 @@ const parseStudy = mapProps({
   name: ['attributes.display_name'],
   id: ['attributes.dataset_id'],
   route: ['attributes.dataset_id', id => `/record/dataset/${id}`],
-  categories: ['attributes.study_categories', JSON.parse],
+  categories: [record => 'disease' in record.attributes ? words(record.attributes.disease || 'Unknown') : JSON.parse(record.attributes.study_categories)],
   access: ['attributes.study_access'],
   policyUrl: ['attributes.policy_url'],
   downloadUrl: ['attributes.bulk_download_url'],
@@ -180,6 +180,7 @@ function mapProps(propMap) {
   return function mapper(source) {
     return mapValues(propMap, ([ sourcePath, valueMapper = identity ]) => {
       try {
+        if (typeof sourcePath === 'function') return valueMapper(sourcePath(source));
         return valueMapper(get(source, sourcePath))
       }
       catch(error) {
