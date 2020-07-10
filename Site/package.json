@@ -5,11 +5,9 @@
   "repository": {},
   "license": "MIT",
   "dependencies": {
-    "@types/react-image-crop": "^8.1.2",
     "custom-event-polyfill": "^1.0.7",
     "icon-font-generator": "^2.1.8",
     "md5": "^2.2.1",
-    "react-image-crop": "^8.6.4",
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
