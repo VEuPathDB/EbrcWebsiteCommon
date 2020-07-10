@@ -1,62 +1,8 @@
-export function getSearchIconByType (type = '') {
-  switch (type.toLowerCase()) {
-    case 'participant':
-    case 'participants':
-      return 'male';
-    case 'household':
-    case 'households':
-      return 'home';
-    case 'observation':
-    case 'observations':
-      return 'stethoscope';
-    case 'vector':
-    case 'vectors':
-    case 'lighttraps':
-    case 'lights':
-      return 'bug';
-    default:
-      return 'globe';
-  }
-}
-
-export function getSearchNameByType (type) {
-  switch (type.toLowerCase()) {
-    case 'participant':
-    case 'participants':
-      return 'Participants';
-    case 'household':
-    case 'households':
-      return 'Households';
-    case 'observation':
-    case 'observations':
-      return 'Observations';
-    case 'vector':
-    case 'vectors':
-      return 'Vectors';
-    case 'lighttraps':
-    case 'lights':
-      return 'Light Traps';
-    default:
-      return type;
-  }
-}
-
 // FIXME Replace w/ stable random color assignment
 export function getBodyClassByType (type = '') {
-  switch (type.toLowerCase()) {
-    case 'participant':
-    case 'participants':
-      return 'red-fade-bg';
-    case 'household':
-    case 'households':
-      return 'yellow-fade-bg';
-    case 'observation':
-    case 'observations':
-      return 'blue-fade-bg';
-    case 'vector':
-    case 'vectors':
-      return 'green-fade-bg';
-    default:
-      return 'grey-fade-bg';
-  }
+  return /participant/i.test(type) ? 'red-fade-bg'
+       : /household/i.test(type)   ? 'yellow-fade-bg'
+       : /observation/i.test(type) ? 'blue-fade-bg'
+       : /vector/i.test(type)      ? 'green-fade-bg'
+       : /* default */               'grey-fade-bg';
 }
