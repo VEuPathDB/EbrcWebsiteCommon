@@ -6,7 +6,7 @@ my $baseGus = $ENV{BASE_GUS};
 my $projectHome = $ENV{PROJECT_HOME};
 my $gusHome = $ENV{GUS_HOME};
 
-my ($projectName, $webapp) = $baseGus =~ /\/(\w+)\/([\w\.]+)\/?$/;
+my ($projectName, $webapp) = $baseGus =~ /\/(\w+)\/([\w\.-]+)\/?$/;
 my $tomcatName = $projectName;
 
 ##deal with change Mark made so that Gates and ICEMR sites are run out of the ClinEpiDB tomcat
