@@ -131,11 +131,14 @@ sub getJsonForService {
   my $profileSetType = $self->getType();
   my $facet = $self->getFacet();
   my $contXAxis = $self->getContXAxis();
+  my $displayName = $self->getDisplayName(); 
 
   my $jsonString;
 
   if ($facet || $contXAxis) {
     $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\",\"facet\":\"@$facet[0]\",\"xAxis\":\"$contXAxis\"}";
+  } elsif ($displayName ne $profileSetName) {
+    $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\",\"name\":\"$displayName\"}";
   } else {
     $jsonString = "{\"profileSetName\":\"$profileSetName\",\"profileType\":\"$profileSetType\"}";
   }

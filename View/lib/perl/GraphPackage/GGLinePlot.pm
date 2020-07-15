@@ -1084,7 +1084,7 @@ sub new {
 
   my $adjust = "
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
-profile.df.full\$LEGEND <- profile.df.full\$DISPLAY_NAME
+profile.df.full\$LEGEND <- as.factor(profile.df.full\$DISPLAY_NAME)
 profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.full\$VALUE)
 #exptOrder <- unique(profile.df.full\$LEGEND)
 #profile.df.full <- profile.df.full[order(match(profile.df.full\$LEGEND, exptOrder), profile.df.full\$VALUE),]
