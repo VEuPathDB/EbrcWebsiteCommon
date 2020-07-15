@@ -17,13 +17,17 @@ export function Error(DefaultComponent: React.ComponentType<Props>) {
       if (typedErrors == null) return '';
       return '# ' + capitalize(errorType) +' errors: ' + typedErrors.map(te => te.id).join(', ');
     }).join('\n')
+
+    const contactUsLink = <Link to={`/contact-us?ctx=${encodeURIComponent(contactUsMessage)}`} target="_blank">contact us</Link>;
+
     return (
       <DefaultComponent message={props.message}>
         {
           props.children || (<>
-            <p>
-              Please try again later, and <Link to={`/contact-us?ctx=${encodeURIComponent(contactUsMessage)}`} target="_blank">contact us</Link> if the problem persists.
-            </p>
+            <ul style={{ fontSize: '1.2em', margin: '1em 2em' }}>
+              <li>Please try again.</li>
+              <li>If the problem persists, {contactUsLink}.</li>
+            </ul>
             <div>{props.message}</div>
           </>)
         }
