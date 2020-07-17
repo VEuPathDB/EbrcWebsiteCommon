@@ -1,17 +1,19 @@
 import {
-  HistogramAnalysisPlugin, 
-  WordCloudAnalysisPlugin, 
+  HistogramAnalysisPlugin,
+  WordCloudAnalysisPlugin,
   StepAnalysisViewPlugin,
-  ResultTableSummaryViewPlugin, 
+  ResultTableSummaryViewPlugin,
   StepAnalysisDefaultForm,
   StepAnalysisDefaultResult,
   StepAnalysisEupathExternalResult,
 } from 'wdk-client/Plugins';
+import { ClientPluginRegistryEntry } from 'wdk-client/Utils/ClientPlugin';
 
-import { EbrcDefaultQuestionForm } from './components/questions/EbrcDefaultQuestionForm';
-import QuestionWizardPlugin from './plugins/QuestionWizardPlugin';
+import { EbrcDefaultQuestionForm } from 'ebrc-client/components/questions/EbrcDefaultQuestionForm';
+import { RadioParams } from 'ebrc-client/plugins/RadioParams';
+import QuestionWizardPlugin from 'ebrc-client/plugins/QuestionWizardPlugin';
 
-export default [
+const ebrcPluginConfig: ClientPluginRegistryEntry<any>[] = [
   {
     type: 'attributeAnalysis',
     name: 'wordCloud',
@@ -34,8 +36,15 @@ export default [
   },
   {
     type: 'questionController',
-    test: ({ question }) => question && question.properties.websiteProperties && question.properties.websiteProperties.includes('useWizard'),
+    test: ({ question }) =>
+      question?.properties?.websiteProperties?.includes('useWizard') ?? false,
     component: QuestionWizardPlugin
+  },
+  {
+    type: 'questionForm',
+    test: ({ question }) =>
+      question?.properties?.['radio-params'] != null,
+    component: RadioParams
   },
   {
     type: 'questionForm',
@@ -100,3 +109,5 @@ export default [
     component: StepAnalysisDefaultResult
   },
 ];
+
+export default ebrcPluginConfig;
