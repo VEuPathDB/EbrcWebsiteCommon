@@ -53,6 +53,16 @@ export const strictActions = [ Action.search, Action.analysis, Action.results, A
 // the value  'login' or 'approval' will affect the message to the user: what is required. 
 // https://docs.google.com/presentation/d/1Cmf2GcmGuKbSTcH4wdeTEvRHTi9DDoh5-MnPm1MkcEA/edit?pli=1#slide=id.g3d955ef9d5_3_2
 export const accessLevels = {
+  "public": {
+    [Action.search]: Require.allow,
+    [Action.analysis]: Require.allow,
+    [Action.results]: Require.allow,
+    [Action.paginate]: Require.allow,
+    [Action.record]: Require.allow,
+    [Action.recordPage]: Require.allow,
+    [Action.download]: Require.allow,
+    [Action.basket]: Require.allow
+  },
   "controlled": {
     [Action.search]: Require.allow,
     [Action.analysis]: Require.allow,
@@ -161,6 +171,7 @@ export function getRestrictionMessage ({ action, study }) {
 
 export function isAllowedAccess ({ user, action, study }) {
   if (sessionStorage.getItem('restriction_override') === 'true') return true;
+  if (!(study.access in accessLevels)) throw new Error(`Unknown access level "${study.access}".`);
   // assuming approvedStudies only contain public studies for this user (in CineEpiWebsite CustomProfileService.java)
   if (user.properties.approvedStudies == null) return true;
   if (user.properties.approvedStudies.includes(study.id)) return true;
