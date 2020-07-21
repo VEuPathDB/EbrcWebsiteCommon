@@ -85,7 +85,8 @@ const parseStudy = mapProps({
   id: ['attributes.dataset_id'],
   route: ['attributes.dataset_id', id => `/record/dataset/${id}`],
   categories: [record => 'disease' in record.attributes ? words(record.attributes.disease || 'Unknown') : JSON.parse(record.attributes.study_categories)],
-  access: ['attributes.study_access'],
+  // TODO Remove .toLowerCase() when attribute display value is updated
+  access: ['attributes.study_access', access => access && access.toLowerCase()],
   policyUrl: ['attributes.policy_url'],
   downloadUrl: ['attributes.bulk_download_url'],
   projectAvailability: ['attributes.project_availability', JSON.parse],
