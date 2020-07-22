@@ -6,7 +6,7 @@ import { getFilterFields } from 'wdk-client/Views/Question/Params/FilterParamNew
 /**
  * Create initial wizard state object
  */
-export function createInitialState(question, recordClass, paramValues) {
+export function createInitialState(question, recordClass, paramValues, defaultParamValues) {
 
   const paramUIState = question.parameters.reduce(function(uiState, param) {
     return Object.assign(uiState, { [param.name]: createInitialParamState(param) });
@@ -29,6 +29,7 @@ export function createInitialState(question, recordClass, paramValues) {
 
   return {
     question,
+    defaultParamValues,
     paramValues,
     paramUIState,
     groupUIState,
@@ -86,9 +87,7 @@ export function createInitialParamState(param) {
  * @return {Record<string, string>}
  */
 export function getDefaultParamValues(wizardState) {
-  return wizardState.question.parameters.reduce(function(defaultParamValues, param) {
-    return Object.assign(defaultParamValues, { [param.name]: param.initialDisplayValue });
-  }, {});
+  return wizardState.defaultParamValues;
 }
 
 /**

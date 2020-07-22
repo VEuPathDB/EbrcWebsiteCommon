@@ -111,18 +111,22 @@ class QuestionWizardController extends ViewController {
     const step = submissionMetadata.type === 'edit-step'
       ? await wdkService.findStep(submissionMetadata.stepId)
       : undefined;
-    const question = await wdkService.getQuestionAndParameters(questionName);
-    // TODO If there is a step, get updated parameters and update question object
+    const question = step
+      ? await wdkService.getQuestionGivenParameters(questionName, step.searchConfig.parameters)
+      : await wdkService.getQuestionAndParameters(questionName);
     const recordClass = await wdkService.findRecordClass(question.outputRecordClassName);
-    const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
+    const defaultParamValues = await wdkService.getQuestionAndParameters(questionName)
+      .then(question => question.parameters.reduce((defaultParamValues, param) => Object.assign(defaultParamValues, {
+        [param.name]: param.initialDisplayValue
+      }), {}));
+    const paramValues = step ? step.searchConfig.parameters : defaultParamValues;
     // FIXME Deal with invalid steps
-    this.setState(createInitialState(question, recordClass, paramValues), () => {
+    this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues), () => {
       document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
 
       // store <string, Parameter>Map for quick lookup
       this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
 
-      const defaultParamValues = getDefaultParamValues(this.state);
       const lastConfiguredGroup = Seq.from(question.groups)
         .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
         .last();
