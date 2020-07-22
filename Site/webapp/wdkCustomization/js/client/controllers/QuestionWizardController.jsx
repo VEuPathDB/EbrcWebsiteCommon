@@ -106,50 +106,43 @@ class QuestionWizardController extends ViewController {
   async loadQuestion() {
     // clear state
     this.setState(state => mapValues(state, () => undefined));
-    
+
     const { questionName, wdkService, submissionMetadata } = this.props;
+    const step = submissionMetadata.type === 'edit-step'
+      ? await wdkService.findStep(submissionMetadata.stepId)
+      : undefined;
+    const question = await wdkService.getQuestionAndParameters(questionName);
+    // TODO If there is a step, get updated parameters and update question object
+    const recordClass = await wdkService.findRecordClass(question.outputRecordClassName);
+    const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
+    // FIXME Deal with invalid steps
+    this.setState(createInitialState(question, recordClass, paramValues), () => {
+      document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
 
-    try {
-      const step = submissionMetadata.type === 'edit-step'
-        ? await wdkService.findStep(submissionMetadata.stepId)
-        : undefined;
-      const question = await wdkService.getQuestionAndParameters(questionName);
-      const recordClass = await wdkService.findRecordClass(question.outputRecordClassName);
-      const paramValues = step ? step.searchConfig.parameters : getDefaultParamValues({ question });
-      // FIXME Deal with invalid steps
-      this.setState(createInitialState(question, recordClass, paramValues), () => {
-        document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
-  
-        // store <string, Parameter>Map for quick lookup
-        this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
-  
-        const defaultParamValues = getDefaultParamValues(this.state);
-        const lastConfiguredGroup = Seq.from(question.groups)
-          .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
-          .last();
-        const configuredGroups = lastConfiguredGroup == null ? []
-          : Seq.from(question.groups)
-              .takeWhile(group => group !== lastConfiguredGroup)
-              .concat(Seq.of(lastConfiguredGroup));
-  
-        this._updateGroupCounts(configuredGroups);
-        this._getAnswerCount({
-          searchName: question.urlSegment,
-          searchConfig: {
-            parameters: defaultParamValues
-          }
-        }).then(initialCount => {
-          this.setState({ initialCount });
-        });
-  
-        this.onGroupSelect(question.groups[0]);
+      // store <string, Parameter>Map for quick lookup
+      this.parameterMap = new Map(question.parameters.map(p => [ p.name, p ]))
+
+      const defaultParamValues = getDefaultParamValues(this.state);
+      const lastConfiguredGroup = Seq.from(question.groups)
+        .filter(group => group.parameters.some(paramName => paramValues[paramName] !== defaultParamValues[paramName]))
+        .last();
+      const configuredGroups = lastConfiguredGroup == null ? []
+        : Seq.from(question.groups)
+            .takeWhile(group => group !== lastConfiguredGroup)
+            .concat(Seq.of(lastConfiguredGroup));
+
+      this._updateGroupCounts(configuredGroups);
+      this._getAnswerCount({
+        searchName: question.urlSegment,
+        searchConfig: {
+          parameters: defaultParamValues
+        }
+      }).then(initialCount => {
+        this.setState({ initialCount });
       });
-    }
 
-    catch(error) {
-      this.setState({ error });
-    }
-      
+      this.onGroupSelect(question.groups[0]);
+    });
   }
 
   // Top level action creator methods
@@ -670,12 +663,7 @@ class QuestionWizardController extends ViewController {
     const formatConfig = {
       pagination: { offset: 0, numRecords: 0 }
     };
-    return this.props.wdkService.getAnswerJson(answerSpec, formatConfig).then(
-      answer => answer.meta.totalCount,
-      error => {
-        this.setState({ error });
-      }
-    );
+    return this.props.wdkService.getAnswerJson(answerSpec, formatConfig).then(answer => answer.meta.totalCount);
   }
 
   _getFilterCounts(paramName, filters, paramValues) {
@@ -698,9 +686,6 @@ class QuestionWizardController extends ViewController {
             unfilteredCount: counts.nativeUnfiltered
           })
         ));
-      },
-      error => {
-        this.setState({ error });
       }
     );
   }
@@ -763,7 +748,6 @@ class QuestionWizardController extends ViewController {
           ));
         },
         error => {
-          this.setState({ error });
           this.setState(update(
             ['paramUIState', paramName, 'fieldStates', ontologyTerm],
             fieldState => ({
@@ -771,6 +755,7 @@ class QuestionWizardController extends ViewController {
               loading: false
             })
           ));
+          throw error;
         }
       );
     }
@@ -803,11 +788,11 @@ class QuestionWizardController extends ViewController {
         ));
       },
       error => {
-        this.setState({ error });
         this.setState(update(
           ['paramUIState', paramName, 'fieldStates', ontologyTerm],
           fieldState => ({ ...fieldState, loading: false })
         ))
+        throw error;
       }
     );
   }
