@@ -189,10 +189,16 @@ if(class(profile.df.full) == 'list'){
   if($overrideXAxisLabels && !is.null(x.axis.label)) {
     profile.df.full\$NAME <- factor(profile.df.full\$NAME, levels=unique(profile.df.full\$NAME), labels=x.axis.label)
   }
-  
+ 
+  profile.df.full\$ELEMENT_NAMES_NUMERIC = as.numeric(gsub(\" *[a-z-A-Z()+-]+ *\", \"\", profile.df.full\$NAME, perl=T))
+ 
   #allow adjustments
   $rAdjustProfile
   
+  if (!exists(\"profile.is.numeric\")) {
+    profile.is.numeric = sum(!is.na(profile.df.full\$ELEMENT_NAMES_NUMERIC)) == nrow(profile.df.full);
+  }
+
   if($removeNaN){
     profile.df.full = completeDF(profile.df.full, \"VALUE\");
   }
