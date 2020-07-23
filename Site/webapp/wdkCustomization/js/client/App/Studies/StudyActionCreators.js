@@ -50,9 +50,7 @@ const requiredAttributes = [
   'display_name',
   'project_availability',
   'study_access',
-  'study_categories',
   'bulk_download_url',
-  'eupath_release',
 ];
 
 
