@@ -111,14 +111,15 @@ class QuestionWizardController extends ViewController {
     const step = submissionMetadata.type === 'edit-step'
       ? await wdkService.findStep(submissionMetadata.stepId)
       : undefined;
+    const questionAndParameters = await wdkService.getQuestionAndParameters(questionName);
     const question = step
       ? await wdkService.getQuestionGivenParameters(questionName, step.searchConfig.parameters)
-      : await wdkService.getQuestionAndParameters(questionName);
+      : questionAndParameters;
+
     const recordClass = await wdkService.findRecordClass(question.outputRecordClassName);
-    const defaultParamValues = await wdkService.getQuestionAndParameters(questionName)
-      .then(question => question.parameters.reduce((defaultParamValues, param) => Object.assign(defaultParamValues, {
+    const defaultParamValues = questionAndParameters.parameters.reduce((defaultParamValues, param) => Object.assign(defaultParamValues, {
         [param.name]: param.initialDisplayValue
-      }), {}));
+      }), {});
     const paramValues = step ? step.searchConfig.parameters : defaultParamValues;
     // FIXME Deal with invalid steps
     this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues), () => {
