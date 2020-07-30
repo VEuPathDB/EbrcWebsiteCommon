@@ -1,11 +1,17 @@
 package org.eupathdb.common.model.report.summaryview;
 
+import org.gusdb.fgputil.SortDirection;
+import org.gusdb.fgputil.SortDirectionSpec;
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.answer.AnswerValue;
+import org.gusdb.wdk.model.question.Question;
+import org.gusdb.wdk.model.record.attribute.AttributeField;
 import org.gusdb.wdk.model.report.Reporter;
 import org.gusdb.wdk.model.report.ReporterConfigException;
 import org.gusdb.wdk.model.report.ReporterConfigException.ErrorType;
+import org.gusdb.wdk.model.report.config.AnswerDetails;
+import org.gusdb.wdk.model.report.config.AnswerDetailsFactory;
 import org.gusdb.wdk.model.report.reporter.DefaultJsonReporter;
 import org.json.JSONObject;
 
@@ -20,17 +26,26 @@ public class BlastViewReporter extends DefaultJsonReporter {
 
   public static final String BLAST_META = "blastMeta";
 
+  public static final String SCORE_ATTRIBUTE_NAME = "score";
+
   public BlastViewReporter(AnswerValue answerValue) {
     super(answerValue);
   }
-  
+
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
-    String questionName = _baseAnswer.getAnswerSpec().getQuestionName();
+    Question question = _baseAnswer.getAnswerSpec().getQuestion();
+    String questionName = question.getName();
     if (!(questionName.contains("Similarity") || questionName.contains("Blast"))) {
       throw new ReporterConfigException("Only BLAST searches can use this report", ErrorType.DATA_VALIDATION);
     }
-    return super.configure(config);
+    // explicitly sort by score (desc) in case caller does not
+    AttributeField scoreAttr = question.getAttributeField(SCORE_ATTRIBUTE_NAME)
+        .orElseThrow(() -> new WdkModelException("BLAST question " +
+            question.getFullName() + " does not contain score attribute."));
+    AnswerDetails details = AnswerDetailsFactory.createFromJson(config, _baseAnswer.getAnswerSpec().getQuestion());
+    details.getSorting().add(0, new SortDirectionSpec<AttributeField>(scoreAttr, SortDirection.DESC));
+    return configure(details);
   }
 
   @Override
