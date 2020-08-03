@@ -301,7 +301,7 @@ sub rOpenFile {
            # do nothing 
          }
 	 elsif(lc($fmt) eq 'svg') {
-	   $Rv = qq{gridsvg(name="$out_f", width=$w, height=$h)};
+	   $Rv = qq{gridsvg(name="$out_f", width=$w, height=$h, xmldecl="<?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>\\n")};
 	 }
          elsif(lc($fmt) eq 'html') {
            # do nothing
