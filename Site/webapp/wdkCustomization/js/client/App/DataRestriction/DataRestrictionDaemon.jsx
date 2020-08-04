@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useLocation } from 'react-router';
 
 import { UserSessionActions } from 'wdk-client/Actions';
 
@@ -18,11 +19,16 @@ function DataRestrictionDaemon(props) {
     showLoginForm,
   } = props;
 
+  const location = useLocation();
+
+  useEffect(() => {
+    clearRestrictions();
+  }, [location.pathname]);
+
   if (dataRestriction == null || user == null) return null;
 
   return !dataRestriction ? null : (
     <DataRestrictionModal
-      when={true}
       user={user}
       study={dataRestriction.study}
       action={dataRestriction.action}

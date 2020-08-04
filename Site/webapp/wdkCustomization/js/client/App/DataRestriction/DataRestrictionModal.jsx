@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { getPolicyUrl, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import Modal from 'ebrc-client/App/Modal';
-import { IconAlt as Icon } from 'wdk-client/Components';
+import { IconAlt as Icon, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 
 import './DataRestrictionModal.scss';
@@ -66,13 +66,18 @@ class DataRestrictionModal extends React.Component {
               <Icon fa="times right-side" />
             </button>
           )
-          : (
-            <a href="/" title="Go Home">
-              <button className="btn">
-                Return to Home Page
-                <Icon fa="home right-side" />
+          : window.history.length > 1 
+            ? (
+              <button className="btn" title="Go Back" type="button" onClick={() => window.history.go(-1)}>
+                Go Back
+                <Icon fa="long-arrow-left right-side" />
               </button>
-            </a>
+            )
+            : (
+              <Link className="btn" to="/" title="Go Home">
+                Go Home
+                <Icon fa="home right-side" />
+              </Link>
             )
           }
         </div>
@@ -106,14 +111,19 @@ class DataRestrictionModal extends React.Component {
               <Icon fa="times right-side" />
             </button>
           )
-          : (
-            <a href="/" title="Go Home">
-              <button className="btn">
-                Return to Home Page
-                <Icon fa="home right-side" />
+          : strict && window.history.length > 1
+            ? (
+              <button className="btn" title="Go Back" type="button" onClick={() => window.history.go(-1)}>
+                Go Back
+                <Icon fa="long-arrow-left right-side" />
               </button>
-            </a>
-          )
+            )
+            : (
+              <Link className="btn" to="/" title="Go Home">
+                Go Home
+                <Icon fa="home right-side" />
+              </Link>
+            )
         }
       </div>
     )
