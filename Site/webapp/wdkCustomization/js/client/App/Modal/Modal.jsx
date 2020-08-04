@@ -1,27 +1,21 @@
 import React from 'react';
-import { filterKeysFromObject } from 'ebrc-client/App/Utils/Utils';
 import { Mesa } from 'wdk-client/Components';
+import { useBodyScrollManager } from 'wdk-client/Components/Overlays/BodyScrollManager';
 
 import './Modal.scss';
 
-class Modal extends React.Component {
-  constructor (props) {
-    super(props);
-  }
-
-  render () {
-    const { when, wrapperClass } = this.props;
-    const active = typeof when === 'undefined' ? true : when;
-    const wrapperClassName = 'Modal-Wrapper'
-      + (active ? ' Modal-Wrapper--Active' : '')
-      + (wrapperClass ? ' ' + wrapperClass : '');
-    const props = filterKeysFromObject(this.props, [ 'when', 'wrapperClassName' ]);
-    return (
-      <Mesa.BodyLayer className={wrapperClassName}>
-        <div {...props} />
-      </Mesa.BodyLayer>
-    );
-  }
-};
+function Modal(props) {
+  const { when, wrapperClassName, ...divProps } = props;
+  const active = typeof when === 'undefined' ? true : when;
+  const finalWrapperClassName = 'Modal-Wrapper'
+    + (active ? ' Modal-Wrapper--Active' : '')
+    + (wrapperClassName ? ' ' + wrapperClassName : '');
+  useBodyScrollManager(active);
+  return (
+    <Mesa.BodyLayer className={finalWrapperClassName}>
+      <div {...divProps} />
+    </Mesa.BodyLayer>
+  );
+}
 
 export default Modal;
