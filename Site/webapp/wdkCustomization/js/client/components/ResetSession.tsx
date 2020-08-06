@@ -1,6 +1,6 @@
 import React, { useState }  from 'react';
 
-import WdkService, { useWdkEffect } from 'wdk-client/Service/WdkService';
+import { useWdkDependenciesEffect, WdkDependencies } from 'wdk-client/Hooks/WdkDependenciesEffect';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import { alert } from 'wdk-client/Utils/Platform';
 
@@ -12,10 +12,10 @@ export function ResetSession() {
   const [ confirmed, setConfirmed ] = useState(false);
   const [ isResetSessionClicked, setIsResetSessionClicked ] = useState(false);
 
-  useWdkEffect(wdkService => {
+  useWdkDependenciesEffect(wdkDependencies => {
     (async function() {
       if (isResetSessionClicked) {
-        await resetSession(wdkService);
+        await resetSession(wdkDependencies);
         await alert('Your session has been reset', 'You will now be redirected to the home page.');
         window.location.href = '/';
       }
@@ -61,7 +61,7 @@ export function ResetSession() {
   );
 }
 
-function resetSession(wdkService: WdkService) {
+function resetSession({ paramValueStore, wdkService }: WdkDependencies) {
   deleteCookies('/');
   deleteCookies('/cgi-bin/');
 
@@ -73,7 +73,10 @@ function resetSession(wdkService: WdkService) {
     window.localStorage.clear();
   }
 
-  return wdkService._clearCache();
+  return Promise.all([
+    paramValueStore.clearParamValues(),
+    wdkService._clearCache()
+  ]);;
 }
 
 function deleteCookies(path: string) {
