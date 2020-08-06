@@ -1,4 +1,4 @@
-import { get, identity, keyBy, mapValues, words, orderBy, spread } from 'lodash';
+import { get, identity, keyBy, mapValues, orderBy, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
@@ -82,7 +82,9 @@ const parseStudy = mapProps({
   name: ['attributes.display_name'],
   id: ['attributes.dataset_id'],
   route: ['attributes.dataset_id', id => `/record/dataset/${id}`],
-  categories: [record => 'disease' in record.attributes ? words(record.attributes.disease || 'Unknown') : JSON.parse(record.attributes.study_categories)],
+  categories: [record => 'disease' in record.attributes
+    ? (record.attributes.disease || 'Unknown').split(/,\s*/g)
+    : JSON.parse(record.attributes.study_categories)],
   // TODO Remove .toLowerCase() when attribute display value is updated
   access: ['attributes.study_access', access => access && access.toLowerCase()],
   policyUrl: ['attributes.policy_url'],
