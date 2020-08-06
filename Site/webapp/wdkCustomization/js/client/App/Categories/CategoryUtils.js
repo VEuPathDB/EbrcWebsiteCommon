@@ -10,6 +10,7 @@ export function getCategoryColor (category) {
     case 'malaria':
       return '#ff6d0d';
     case 'respiratory':
+    case 'respiratory condition':
       return '#00aedb';
     case 'schistosomiasis':
       return '#7bc043';
