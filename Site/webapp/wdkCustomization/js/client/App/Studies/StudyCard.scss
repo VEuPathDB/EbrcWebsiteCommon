@@ -88,6 +88,10 @@ $myStripeBgColor: #e8e8e8;
     background-color: $myLinkFooterColor;
     padding: 0;
     margin: 0;
+    
+    .emptybox {
+      padding: 5px 12px;
+    }
 
     .box {
       flex: 0;

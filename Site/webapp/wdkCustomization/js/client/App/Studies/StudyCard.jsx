@@ -27,7 +27,7 @@ class StudyCard extends React.Component {
   render () {
     const { card, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
-    const { id, name, categories, route, headline, points, searches, disabled } = card;
+    const { id, access, name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
 
     return (
@@ -54,15 +54,17 @@ class StudyCard extends React.Component {
             {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
           </ul>
         </div>
-        <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
+        <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
-          {searchType
-            ? <span>by <b>{searchType}</b></span>
-            : <span title="Click on an Icon">{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
+          { card.access === 'noaccessreq'
+            ? <span title="Please check the study page">Coming Soon!</span>
+            : searchType
+              ? <span>by <b>{searchType}</b></span>
+              : <span title="Click on an Icon">{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
           }
         </div>
         <div className="box StudyCard-Footer">
-          {searches.length
+          { (card.access != 'noaccessreq' && searches.length)
             ? searches.map(({ icon, displayName, path }) => {
               const route = `/search/${path}`;
               return (
@@ -78,7 +80,7 @@ class StudyCard extends React.Component {
               );
             })
             : (
-              <div className="box">
+              <div className="emptybox">
                 &nbsp;
               </div>
             )}

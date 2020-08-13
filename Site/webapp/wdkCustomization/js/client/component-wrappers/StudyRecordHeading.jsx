@@ -14,7 +14,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
   return (
     <React.Fragment>
       <props.DefaultComponent {...props}/>
-      {showSearches && (
+      {showSearches && (study.access != 'noaccessreq') && (
         <div className={cx()}>
           <div className={cx('Label')}>Search the data</div>
           {loading ? null :
@@ -29,7 +29,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           }
         </div>
       )}
-      {showDownload && (
+      {showDownload && (study.access != 'noaccessreq') && (
         <div className={cx()}>
           <div className={cx('Label')}>Download the data</div>
           { study && showDownload && <DownloadLink className="StudySearchIconLinksItem" studyId={study.id} studyUrl={study.downloadUrl.url} attemptAction={attemptAction}/> }

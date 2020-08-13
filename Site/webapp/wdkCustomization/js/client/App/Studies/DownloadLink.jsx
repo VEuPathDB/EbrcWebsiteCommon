@@ -4,11 +4,12 @@ import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionAc
 import { connect } from 'react-redux'
 
 function DownloadLink(props) {
-  const { attemptAction, studyId, studyUrl, className, linkText = '' } = props;
+  const { attemptAction, studyAccess, studyId, studyUrl, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
-      <Mesa.AnchoredTooltip
+      { studyAccess != 'noaccessreq'
+        ? <Mesa.AnchoredTooltip
         fadeOut
         content={myDownloadTitle}>
         <button
@@ -26,7 +27,9 @@ function DownloadLink(props) {
           }}>
           {linkText} <Icon fa="download" />
         </button>
-      </Mesa.AnchoredTooltip>
+        </Mesa.AnchoredTooltip>
+        : <span>&nbsp;</span>
+      }
     </div>
   );
 }
