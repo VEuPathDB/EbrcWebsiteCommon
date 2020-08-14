@@ -88,8 +88,11 @@ const renderCellContent = props => {
       <strong>{disease}</strong>
     </div>;
   }
-  if (props.attribute.name === 'card_questions') { 
-     return <StudySearchCellContent {...props}/> 
+  if (props.attribute.name === 'card_questions' && props.record.attributes.study_access != 'Noaccessreq') {
+     return <StudySearchCellContent {...props}/>;
+  }
+  if (props.attribute.name === 'card_questions' && props.record.attributes.study_access === 'Noaccessreq') { 
+     return <div>&nbsp;</div>; 
   }
   if (props.attribute.name === 'bulk_download_url') {
     return <DownloadLink studyId={props.record.id[0].value} studyUrl= {props.record.attributes.bulk_download_url.url}/>;

@@ -49,7 +49,14 @@ class StudyMenuItem extends React.Component {
           </Link>
         </div>
         <div className="row StudyMenuItem-Links">
-          {searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)}
+        { (study.access != 'noaccessreq') 
+          ? searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)
+          : (
+             <div>
+               &nbsp;
+             </div>
+            )
+        }
         </div>
       </div>
     )

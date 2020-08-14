@@ -157,11 +157,13 @@ function formatStudies(projectId, questions, recordClasses, answer) {
     [
       ({ disabled }) => disabled,
       ({ id }) => records.appearFirst.has(id),
+      ({ access }) => access === 'noaccessreq',
       ({ name }) => name
     ],
     [
       'asc',
       'desc',
+      'asc', 
       'asc'
     ]
   );
