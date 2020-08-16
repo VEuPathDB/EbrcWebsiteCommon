@@ -4,6 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import CategoryIcon from 'ebrc-client/App/Categories/CategoryIcon';
 import StudySearchIconLinks from 'ebrc-client/App/Studies/StudySearches';
+import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 
 // wrapping WDKClient AnswerController for specific rendering on certain columns
 function StudyAnswerController(props) {
@@ -89,7 +90,7 @@ const renderCellContent = props => {
     </div>;
   }
   if (props.attribute.name === 'card_questions') { 
-    return (props.record.attributes.study_access != 'Noaccessreq')
+    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase()))
       ? (
           <StudySearchCellContent {...props}/>
         )

@@ -3,7 +3,7 @@ import { CategoryIcon } from 'ebrc-client/App/Categories';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import DownloadLink from './DownloadLink';
-
+import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import './StudyCard.scss';
 
 
@@ -56,7 +56,7 @@ class StudyCard extends React.Component {
         </div>
         <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
-          { card.access === 'noaccessreq'
+          { isPrereleaseStudy(card.access)
             ? <span title="Please check the study page">Coming Soon!</span>
             : searchType
               ? <span>by <b>{searchType}</b></span>
@@ -64,7 +64,7 @@ class StudyCard extends React.Component {
           }
         </div>
         <div className="box StudyCard-Footer">
-          { (card.access != 'noaccessreq' && searches.length)
+          { (!isPrereleaseStudy(card.access) && searches.length)
             ? searches.map(({ icon, displayName, path }) => {
               const route = `/search/${path}`;
               return (

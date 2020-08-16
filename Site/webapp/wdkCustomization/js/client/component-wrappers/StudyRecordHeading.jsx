@@ -5,7 +5,7 @@ import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import StudySearches from 'ebrc-client/App/Studies/StudySearches';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators';
-
+import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import './StudyRecordHeading.scss';
 
 const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
@@ -14,7 +14,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
   return (
     <React.Fragment>
       <props.DefaultComponent {...props}/>
-      {showSearches && (study.access != 'noaccessreq') && (
+      {showSearches && (!isPrereleaseStudy(study.access)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Search the data</div>
           {loading ? null :
@@ -29,7 +29,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           }
         </div>
       )}
-      {showDownload && (study.access != 'noaccessreq') && (
+      {showDownload && (!isPrereleaseStudy(study.access)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Download the data</div>
           { study && showDownload && <DownloadLink className="StudySearchIconLinksItem" studyId={study.id} studyUrl={study.downloadUrl.url} attemptAction={attemptAction}/> }

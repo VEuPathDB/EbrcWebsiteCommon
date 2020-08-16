@@ -2,13 +2,14 @@ import React from 'react';
 import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators'
 import { connect } from 'react-redux'
+import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 
 function DownloadLink(props) {
   const { attemptAction, studyAccess, studyId, studyUrl, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
-      { studyAccess != 'noaccessreq'
+      { !isPrereleaseStudy(studyAccess)
         ? <Mesa.AnchoredTooltip
         fadeOut
         content={myDownloadTitle}>

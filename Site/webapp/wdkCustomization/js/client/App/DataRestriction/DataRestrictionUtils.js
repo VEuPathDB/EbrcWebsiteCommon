@@ -103,7 +103,7 @@ export const accessLevels = {
     [Action.download]: Require.approval,
     [Action.basket]: Require.approval
   },
-  "noaccessreq": {
+  "prerelease": {
     [Action.search]: Require.notready,
     [Action.analysis]: Require.notready,
     [Action.results]: Require.notready,
@@ -179,6 +179,13 @@ export function isAllowedAccess ({ user, action, study }) {
   if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
   // access not allowed, we need to build the modal popup
   return false;
+}
+
+// the UI on home page study card, study menu, study record page is different when the study.access is prerelease
+export function isPrereleaseStudy (access) {
+  if (access === 'prerelease') 
+    return true;
+  else return false;
 }
 
 // we will request the user to login if (1) guest and (2) explicit approval not needed 
