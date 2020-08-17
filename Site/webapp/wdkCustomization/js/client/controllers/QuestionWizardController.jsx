@@ -69,7 +69,7 @@ class QuestionWizardController extends ViewController {
 
   constructor(props) {
     super(props);
-    this.state = { customName: '' };
+    this.state = { };
     this.parameterMap = null;
     this.wizardEventHandlers = mapValues(this.getWizardEventHandlers(), handler => handler.bind(this));
     this.parameterEventHandlers = mapValues(this.getParameterEventHandlers(), handler => handler.bind(this));
@@ -124,7 +124,7 @@ class QuestionWizardController extends ViewController {
       }), {});
     const paramValues = step ? step.searchConfig.parameters : defaultParamValues;
     // FIXME Deal with invalid steps
-    this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues), () => {
+    this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues, step && step.customName), () => {
       document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
 
       // store <string, Parameter>Map for quick lookup
@@ -379,16 +379,27 @@ class QuestionWizardController extends ViewController {
         //   | "submit-custom-form"
         //   | "edit-step"
 
+        const customName = this.state.customName || this.state.question.shortDisplayName;
+
         if (submissionMetadata.type === 'edit-step') {
           // patch step's searchConfig
-          return StrategyActions.requestUpdateStepSearchConfig(
-            submissionMetadata.strategyId,
-            submissionMetadata.stepId,
-            {
-              ...submissionMetadata.previousSearchConfig,
-              parameters: this.state.paramValues
-            }
-          );
+          return [
+            StrategyActions.requestUpdateStepProperties(
+              submissionMetadata.strategyId,
+              submissionMetadata.stepId,
+              {
+                customName
+              }
+            ),
+            StrategyActions.requestUpdateStepSearchConfig(
+              submissionMetadata.strategyId,
+              submissionMetadata.stepId,
+              {
+                ...submissionMetadata.previousSearchConfig,
+                parameters: this.state.paramValues
+              }
+            )
+          ]
         }
 
         // Each case below requires a new step to be created...
@@ -398,7 +409,7 @@ class QuestionWizardController extends ViewController {
             parameters: this.state.paramValues,
             wdkWeight: DEFAULT_STEP_WEIGHT
           },
-          customName: this.state.customName || this.state.question.shortDisplayName
+          customName
         };
 
         const stepResponse = await wdkService.createStep(searchSpec);

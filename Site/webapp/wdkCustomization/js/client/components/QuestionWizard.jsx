@@ -213,7 +213,7 @@ function Navigation(props) {
               )*/}
               <TextBox
                 className={makeClassName('CustomNameInput')}
-                value={customName}
+                value={customName || ''}
                 onChange={setCustomName}
                 type="text"
                 name="customName"
