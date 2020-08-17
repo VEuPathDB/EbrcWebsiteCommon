@@ -6,6 +6,7 @@ import {
   IconAlt as Icon,
   Loading,
   Sticky,
+  TextBox,
 } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { Seq } from 'wdk-client/Utils/IterableUtils';
@@ -96,6 +97,7 @@ function Navigation(props) {
       onSubmit
     },
     customName,
+    setCustomName,
     showHelpText,
     isAddingStep
   } = props;
@@ -209,7 +211,14 @@ function Navigation(props) {
                 >Analyze results
                 </button>
               )*/}
-              <input className={makeClassName('CustomNameInput')} defaultValue={customName} type="text" name="customName" placeholder="Name this search"/>
+              <TextBox
+                className={makeClassName('CustomNameInput')}
+                value={customName || ''}
+                onChange={setCustomName}
+                type="text"
+                name="customName"
+                placeholder="Name this search"
+              />
             </div>
             {invalid && (
               <div className={makeClassName('InvalidCounts')}>
