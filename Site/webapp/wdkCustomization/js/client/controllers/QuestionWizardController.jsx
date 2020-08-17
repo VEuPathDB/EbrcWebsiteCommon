@@ -69,7 +69,7 @@ class QuestionWizardController extends ViewController {
 
   constructor(props) {
     super(props);
-    this.state = { };
+    this.state = { customName: '' };
     this.parameterMap = null;
     this.wizardEventHandlers = mapValues(this.getWizardEventHandlers(), handler => handler.bind(this));
     this.parameterEventHandlers = mapValues(this.getParameterEventHandlers(), handler => handler.bind(this));
@@ -78,6 +78,8 @@ class QuestionWizardController extends ViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = synchronized(debounce(this._commitParamValueChange, 750));
+
+    this.setCustomName = this.setCustomName.bind(this);
   }
 
   getWizardEventHandlers() {
@@ -359,6 +361,10 @@ class QuestionWizardController extends ViewController {
       );
       this.onParamStateChange(param, Object.assign({}, paramState, { fieldStates }));
     }
+  }
+
+  setCustomName(newCustomName) {
+    this.setState({ customName: newCustomName });
   }
 
   onSubmit() {
@@ -843,7 +849,8 @@ class QuestionWizardController extends ViewController {
             wizardState={this.state}
             wizardEventHandlers={this.wizardEventHandlers}
             parameterEventHandlers={this.parameterEventHandlers}
-            customName={this.props.customName}
+            customName={this.state.customName}
+            setCustomName={this.setCustomName}
             isAddingStep={this.props.submissionMetadata.type.startsWith('add-')}
             showHelpText={!this.props.submissionMetadata.type === 'edit-step'}
           />
