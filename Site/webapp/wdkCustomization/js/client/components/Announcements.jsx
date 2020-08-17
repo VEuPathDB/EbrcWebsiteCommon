@@ -88,25 +88,6 @@ const siteAnnouncements = [
     }
   },
 
-  // Clinepi home page
-  {
-    id: "clinepi-PERCH",
-    renderDisplay: (props) => {
-      if ( (props.projectId == 'AllClinEpiDB' || props.projectId == 'ClinEpiDB') && props.location.pathname.endsWith('/record/dataset/DS_1595200bb8') ) {
-        var divStyle = {
-          color: 'black',
-          fontSize: '120%'
-          };
-        return (
-          <div style={divStyle} key="clinepi-PERCH">
-            To request access to the PERCH data, please email Christine Prosperi at <a href = "mailto: cprospe1@jhu.edu">cprospe1@jhu.edu</a>.
-          </div>
-        );
-      }
-      return null;
-    }
-  },
-
   // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
     id: 'geneFungi',

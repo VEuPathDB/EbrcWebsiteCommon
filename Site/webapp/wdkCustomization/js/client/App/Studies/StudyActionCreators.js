@@ -88,6 +88,7 @@ const parseStudy = mapProps({
     : JSON.parse(record.attributes.study_categories)],
   // TODO Remove .toLowerCase() when attribute display value is updated
   access: ['attributes.study_access', access => access && access.toLowerCase()],
+  email: ['attributes.email'],
   policyUrl: ['attributes.policy_url'],
   downloadUrl: ['attributes.bulk_download_url'],
   projectAvailability: ['attributes.project_availability', JSON.parse],
