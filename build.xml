@@ -45,10 +45,10 @@
       <property name="project" value="EbrcWebsiteCommon" />
       <property name="component" value="Model" />
     </ant>
-   <exec executable="bash">
-     <arg value="-c"/>
-     <arg value="chmod 777 ${targetDir}/test/results ${targetDir}/test/working-dir"/>
-   </exec>
+    <exec executable="bash">
+      <arg value="-c"/>
+      <arg value="chmod 777 ${targetDir}/test/results ${targetDir}/test/working-dir"/>
+    </exec>
   </target>
 
   <target name="EbrcWebsiteCommon/Site-Installation">
