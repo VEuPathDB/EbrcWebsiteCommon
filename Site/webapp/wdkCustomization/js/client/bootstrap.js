@@ -1,8 +1,9 @@
 // Bootstrap the WDK client application
 // ====================================
 
-// placeholder used by webpack when making xhr's for code chunks
-__webpack_public_path__ = window.__asset_path_remove_me_please__; // eslint-disable-line
+// ### THIS NEEDS TO BE FIRST
+import './publicPath';
+// ###
 
 import '@babel/polyfill';
 import 'custom-event-polyfill';
