@@ -42,6 +42,9 @@ function runTests {
     workingDir="$(pwd)"
   fi
 
+  # clean out output dir; can assume its sole purpose is to hold test results
+  rm -rf $outputDir/*
+
   # run Java unit tests on FgpUtil
   cd $projectHome/FgpUtil; mvn test >& $outputDir/java-unit-tests.out
   cat $outputDir/java-unit-tests.out

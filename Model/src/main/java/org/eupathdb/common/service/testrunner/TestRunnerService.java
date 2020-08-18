@@ -3,7 +3,6 @@ package org.eupathdb.common.service.testrunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -13,7 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.gusdb.fgputil.IoUtil;
 import org.gusdb.fgputil.runtime.GusHome;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.service.service.AbstractWdkService;
@@ -46,8 +44,6 @@ public class TestRunnerService extends AbstractWdkService {
     WdkModel wdkModel = getWdkModel();
     String outputDirectory = gusHome + "/test/results";
     String workingDirectory = gusHome + "/test/working-dir";
-    deleteIfPresent(outputDirectory);
-    deleteIfPresent(workingDirectory);
     String[] command = new String[] {
         gusHome + "/bin/testRunner.sh",
         wdkModel.getProjectId(),
@@ -63,14 +59,6 @@ public class TestRunnerService extends AbstractWdkService {
     int exitCode = process.waitFor();
     return Response.ok(exitCode).build();
   }
-
-
-  private void deleteIfPresent(String dirPath) throws IOException {
-    if (new File(dirPath).exists()) {
-      IoUtil.deleteDirectoryTree(Paths.get(dirPath));
-    }
-  }
-
 
   @GET
   @Path("result/{result-name}")
