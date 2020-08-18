@@ -46,8 +46,8 @@ public class TestRunnerService extends AbstractWdkService {
     WdkModel wdkModel = getWdkModel();
     String outputDirectory = gusHome + "/test/results";
     String workingDirectory = gusHome + "/test/working-dir";
-    IoUtil.deleteDirectoryTree(Paths.get(outputDirectory));
-    IoUtil.deleteDirectoryTree(Paths.get(workingDirectory));
+    deleteIfPresent(outputDirectory);
+    deleteIfPresent(workingDirectory);
     String[] command = new String[] {
         gusHome + "/bin/testRunner.sh",
         wdkModel.getProjectId(),
@@ -62,6 +62,13 @@ public class TestRunnerService extends AbstractWdkService {
         .start();
     int exitCode = process.waitFor();
     return Response.ok(exitCode).build();
+  }
+
+
+  private void deleteIfPresent(String dirPath) throws IOException {
+    if (new File(dirPath).exists()) {
+      IoUtil.deleteDirectoryTree(Paths.get(dirPath));
+    }
   }
 
 
