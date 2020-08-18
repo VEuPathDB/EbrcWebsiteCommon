@@ -29,15 +29,14 @@ class StudyCard extends React.Component {
     const { searchType } = this.state;
     const { id, access, name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
+    const primaryCategory = categories[0];
 
     return (
       <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
         <div className="box StudyCard-Heading">
           <h2 title={myStudyTitle}><Link to={route}>{safeHtml(name)}</Link></h2>
           <div className="box StudyCard-Categories">
-            {categories.map(cat => (
-              <CategoryIcon category={cat} key={cat} />
-            ))}
+            {primaryCategory && <CategoryIcon category={primaryCategory}/>}
           </div>
           {/*<Link to={route} target="_blank" title={myStudyTitle}>
             <Icon fa="angle-double-right" /> 
