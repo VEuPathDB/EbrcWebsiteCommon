@@ -14,8 +14,11 @@ function checkInputVar {
     echo "Required $2: $1"
     exit 2
   elif [ "$4" = "dir" ] && [ ! -e $5 ]; then
-    echo "$1 $5 must be an existing directory"
-    exit 3
+    mkdir -p $5
+    if [ ! -e $5 ]; then
+      echo "$1 $5 must be an existing directory"
+      exit 3
+    fi
   fi
 }
 
@@ -51,8 +54,8 @@ function runTests {
   cd $workingDir
   git clone https://github.com/VEuPathDB/wdk-api-test.git
   cd wdk-api-test
-  ./run -c -u $siteUrl/a/service >& $outputDir/wdk-api-tests.out
-  cat $outputDir/wdk-api-tests.out
+  ./run -c -u $siteUrl/a/service >& $outputDir/service-api-tests.out
+  cat $outputDir/service-api-tests.out
 
   # run selenium tests
   cd $projectHome
