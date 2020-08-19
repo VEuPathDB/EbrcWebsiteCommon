@@ -3,6 +3,7 @@ package org.eupathdb.common.service.testrunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -51,11 +52,14 @@ public class TestRunnerService extends AbstractWdkService {
         outputDirectory,
         workingDirectory
     };
-    Process process = new ProcessBuilder()
+    ProcessBuilder builder = new ProcessBuilder()
         .command(command)
         .redirectOutput(new File(workingDirectory + "/testRunner.out"))
-        .redirectError(new File(workingDirectory + "/testRunner.err"))
-        .start();
+        .redirectError(new File(workingDirectory + "/testRunner.err"));
+    Map<String,String> env = builder.environment();
+    env.put("GUS_HOME", gusHome);
+    env.put("PROJECT_HOME", gusHome + "/../project_home");
+    Process process = builder.start();
     int exitCode = process.waitFor();
     return Response.ok(exitCode).build();
   }
