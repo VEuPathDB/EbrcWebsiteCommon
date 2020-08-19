@@ -47,7 +47,7 @@
     </ant>
     <exec executable="bash">
       <arg value="-c"/>
-      <arg value="chmod 777 ${targetDir}/test/results ${targetDir}/test/working-dir"/>
+      <arg value="chmod 777 ${targetDir}/test/EbrcWebsiteCommon/Model/results ${targetDir}/test/EbrcWebsiteCommon/Model/working-dir"/>
     </exec>
   </target>
 

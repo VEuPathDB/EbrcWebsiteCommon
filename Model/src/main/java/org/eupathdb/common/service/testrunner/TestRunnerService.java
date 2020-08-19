@@ -42,8 +42,8 @@ public class TestRunnerService extends AbstractWdkService {
   public Response runTests() throws IOException, InterruptedException {
     String gusHome = GusHome.getGusHome();
     WdkModel wdkModel = getWdkModel();
-    String outputDirectory = gusHome + "/test/results";
-    String workingDirectory = gusHome + "/test/working-dir";
+    String outputDirectory = gusHome + "/test/EbrcWebsiteCommon/Model/results";
+    String workingDirectory = gusHome + "/test/EbrcWebsiteCommon/Model/working-dir";
     String[] command = new String[] {
         gusHome + "/bin/testRunner.sh",
         wdkModel.getProjectId(),
@@ -64,7 +64,7 @@ public class TestRunnerService extends AbstractWdkService {
   @Path("result/{result-name}")
   @Produces(MediaType.TEXT_PLAIN)
   public Response runTests(@PathParam("result-name") ResultType resultType) throws IOException {
-    String fileLocation = GusHome.getGusHome() + "/test/results/" + resultType.getFileNamePrefix() + "-tests.out";
+    String fileLocation = GusHome.getGusHome() + "/test/EbrcWebsiteCommon/Model/results/" + resultType.getFileNamePrefix() + "-tests.out";
     if (!new File(fileLocation).exists()) {
       throw new NotFoundException("This resource has not yet been generated.");
     }
