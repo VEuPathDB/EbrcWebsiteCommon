@@ -188,7 +188,7 @@ public class BrcService extends AbstractWdkService {
     Client client = ClientBuilder.newBuilder().build();
     Response response = client
         .target(getBaseUri() +
-            "record-classes/" +
+            "record-types/" +
             question.getRecordClass().getUrlSegment() +
             "/searches/" +
             question.getName() +
