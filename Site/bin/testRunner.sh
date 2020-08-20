@@ -16,7 +16,7 @@ function checkInputVar {
   elif [ "$4" = "dir" ] && [ ! -e $5 ]; then
     mkdir -p $5
     if [ ! -e $5 ]; then
-      echo "$1 $5 must be an existing directory"
+      echo "$1 $5 must be an existing directory; cannot create"
       exit 3
     fi
   fi
@@ -37,34 +37,42 @@ function runTests {
   checkInputVar "working_dir"  "argument" "optional" "dir" $workingDir
   checkInputVar "GUS_HOME"     "env var"  "required" "dir" $gusHome
   checkInputVar "PROJECT_HOME" "env var"  "required" "dir" $projectHome
-  
+
+  outputDir=$(realpath $outputDir)
   if [ "$workingDir" = "" ]; then
     workingDir="$(pwd)"
+  else
+    workingDir=$(realpath $workingDir)
   fi
 
   # clean out output dir; can assume its sole purpose is to hold test results
   rm -rf $outputDir/*
+  rm -rf $workingDir/wdk-api-test
 
   # run Java unit tests on FgpUtil
-  cd $projectHome/FgpUtil; mvn test >& $outputDir/java-unit-tests.out
-  cat $outputDir/java-unit-tests.out
+  echo "Running Java unit tests..."
+  cd $projectHome/FgpUtil; mvn test 2>&1 | tee $outputDir/java-unit-tests.out
 
   # run JavaScript unit tests on WDKClient
-  cd $projectHome/WDKClient/Client; yarn test >& $outputDir/javascript-unit-tests.out
-  cat $outputDir/javascript-unit-tests.out
+  echo "Running JavaScript unit tests..."
+  cd $projectHome/WDKClient/Client; yarn test 2>&1 | tee $outputDir/javascript-unit-tests.out
 
   # run service API tests
+  echo "Downloading API test framework"
   cd $workingDir
   git clone https://github.com/VEuPathDB/wdk-api-test.git
   cd wdk-api-test
-  ./run -c -u $siteUrl/a/service >& $outputDir/service-api-tests.out
-  cat $outputDir/service-api-tests.out
+  apiTestCmd="./run -c $siteUrl/a"
+  echo "Running API tests with command: $apiTestCmd"
+  $($apiTestCmd) 2>&1 | tee $outputDir/service-api-tests.out
 
   # run selenium tests
+  echo "Building Water"
   cd $projectHome
   build EbrcWebsiteCommon/Watar-Installation install -append
   # TODO: add run of selenium tests; John B will tell me how
 
+  echo "Testing complete."
 }
 
 if [ ! $# -eq 3 ] && [ ! $# -eq 4 ]; then
