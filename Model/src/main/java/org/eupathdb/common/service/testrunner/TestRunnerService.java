@@ -3,7 +3,9 @@ package org.eupathdb.common.service.testrunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -13,62 +15,64 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.gusdb.fgputil.runtime.GusHome;
-import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.service.service.AbstractWdkService;
+import org.json.JSONArray;
 
 @Path("/site-tests")
 public class TestRunnerService extends AbstractWdkService {
 
   private enum ResultType {
-    java("java-unit"),
-    javascript_unit("javascript-unit"),
-    api("service-api"),
-    selenium("site-availability");
+    java("java-unit", "java-unit-tests.out"),
+    javascript("javascript-unit", "javascript-unit-tests.out"),
+    api("service-api", "service-api-tests.out");
+    //site("site-availability");
 
-    private final String _fileNamePrefix;
+    private final String _urlSegment;
+    private final String _fileName;
 
-    private ResultType(String fileNamePrefix) {
-      _fileNamePrefix = fileNamePrefix;
+    private ResultType(String urlSegment, String fileName) {
+      _urlSegment = urlSegment;
+      _fileName = fileName;
     }
 
-    public String getFileNamePrefix() {
-      return _fileNamePrefix;
+    public static Optional<ResultType> findByUrlSegment(String urlSegment) {
+      for (ResultType rt : values()) {
+        if (rt._urlSegment.equals(urlSegment)) return Optional.of(rt);
+      }
+      return Optional.empty();
+    }
+
+    public String getUrlSegment() {
+      return _urlSegment;
+    }
+
+    public String getFileName() {
+      return _fileName;
     }
   }
 
   @GET
-  @Path("run")
-  @Produces(MediaType.TEXT_PLAIN)
-  public Response runTests() throws IOException, InterruptedException {
-    String gusHome = GusHome.getGusHome();
-    WdkModel wdkModel = getWdkModel();
-    String outputDirectory = gusHome + "/test/EbrcWebsiteCommon/Model/results";
-    String workingDirectory = gusHome + "/test/EbrcWebsiteCommon/Model/working-dir";
-    String[] command = new String[] {
-        gusHome + "/bin/testRunner.sh",
-        wdkModel.getProjectId(),
-        wdkModel.getProperties().get("LOCALHOST"),
-        outputDirectory,
-        workingDirectory
-    };
-    ProcessBuilder builder = new ProcessBuilder()
-        .command(command)
-        .redirectOutput(new File(workingDirectory + "/testRunner.out"))
-        .redirectError(new File(workingDirectory + "/testRunner.err"));
-    Map<String,String> env = builder.environment();
-    env.put("GUS_HOME", gusHome);
-    env.put("PROJECT_HOME", gusHome + "/../project_home");
-    Process process = builder.start();
-    int exitCode = process.waitFor();
-    return Response.ok(exitCode).build();
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getTestTypes() {
+    return Response.ok(
+      new JSONArray(
+        Arrays.stream(ResultType.values())
+          .map(ResultType::getUrlSegment)
+          .collect(Collectors.toList())
+      ).toString()
+    ).build();
   }
 
   @GET
-  @Path("result/{result-name}")
+  @Path("result/{result-type}")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response runTests(@PathParam("result-name") ResultType resultType) throws IOException {
-    String fileLocation = GusHome.getGusHome() + "/test/EbrcWebsiteCommon/Model/results/" + resultType.getFileNamePrefix() + "-tests.out";
+  public Response getResult(
+      @PathParam("result-type") String resultTypeStr
+  ) throws IOException {
+    ResultType resultType = ResultType.findByUrlSegment(resultTypeStr)
+        .orElseThrow(() -> new NotFoundException("Invalid result type."));
+    // FIXME: get the file wherever it lands (TBD by Jenkins/Bob)
+    String fileLocation = "???/" + resultType.getFileName();
     if (!new File(fileLocation).exists()) {
       throw new NotFoundException("This resource has not yet been generated.");
     }
