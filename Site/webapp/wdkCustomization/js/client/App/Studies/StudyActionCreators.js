@@ -71,13 +71,14 @@ export function fetchStudies(wdkService) {
     wdkService.getConfig().then(config => config.projectId),
     wdkService.getQuestions(),
     wdkService.getRecordClasses(),
-    wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__')
+    wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__'),
+    wdkService.getCurrentUser()
   ]).then(spread(formatStudies))
 }
 
 
 // Helpers
-// -------
+//
 
 const parseStudy = mapProps({
   name: ['attributes.display_name'],
@@ -98,7 +99,7 @@ const parseStudy = mapProps({
 });
   
 
-function formatStudies(projectId, questions, recordClasses, answer) {
+function formatStudies(projectId, questions, recordClasses, answer, user) {
   const questionsByName = keyBy(questions, 'fullName');
   const recordClassesByName = keyBy(recordClasses, 'urlSegment');
 
@@ -159,7 +160,7 @@ function formatStudies(projectId, questions, recordClasses, answer) {
     [
       ({ disabled }) => disabled,
       ({ id }) => records.appearFirst.has(id),
-      ({ access }) => isPrereleaseStudy(access),
+      ({ access }) => isPrereleaseStudy(access,user),
       ({ name }) => name
     ],
     [

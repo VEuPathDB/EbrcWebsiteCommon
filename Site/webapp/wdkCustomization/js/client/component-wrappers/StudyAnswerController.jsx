@@ -8,6 +8,8 @@ import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestricti
 
 // wrapping WDKClient AnswerController for specific rendering on certain columns
 function StudyAnswerController(props) {
+  const projectId = useSelector(state => state.globalData.siteConfig.projectId);
+  const user = useSelector(state => state.globalData.user);
   const studyEntities = useSelector(state => state.studies && state.studies.entities);
 
   const { visibleRecords, totalCount } = useMemo(
@@ -90,7 +92,7 @@ const renderCellContent = props => {
     </div>;
   }
   if (props.attribute.name === 'card_questions') { 
-    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase()))
+    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), user))
       ? (
           <StudySearchCellContent {...props}/>
         )
@@ -131,12 +133,4 @@ function mapStateToProps(state,props) {
   return { study, webAppUrl };
 }
 
-
-
-function mapStateToProps2(state) {
-  const { projectId } = state.globalData.siteConfig;
-  return { projectId };
-}
-
-
-export default connect(mapStateToProps2, null)(StudyAnswerController);
+export default StudyAnswerController;

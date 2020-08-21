@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { CategoryIcon } from 'ebrc-client/App/Categories';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
@@ -25,7 +26,7 @@ class StudyCard extends React.Component {
   }
 
   render () {
-    const { card, prefix, attemptAction } = this.props;
+    const { card, user, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
     const { id, access, name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
@@ -56,7 +57,7 @@ class StudyCard extends React.Component {
         </div>
         <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
-          { isPrereleaseStudy(card.access)
+          { isPrereleaseStudy(card.access, user)
             ? <span title="Please check the study page">Coming Soon!</span>
             : searchType
               ? <span>by <b>{searchType}</b></span>
@@ -64,7 +65,7 @@ class StudyCard extends React.Component {
           }
         </div>
         <div className="box StudyCard-Footer">
-          { (!isPrereleaseStudy(card.access) && searches.length)
+          { (!isPrereleaseStudy(card.access, user) && searches.length)
             ? searches.map(({ icon, displayName, path }) => {
               const route = `/search/${path}`;
               return (
@@ -90,4 +91,4 @@ class StudyCard extends React.Component {
   }
 }
 
-export default StudyCard;
+export default connect( state => ({user: state.globalData.user}) )(StudyCard);

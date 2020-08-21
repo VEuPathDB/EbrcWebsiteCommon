@@ -36,7 +36,7 @@ class StudyMenuItem extends React.Component {
   }
 
   render () {
-    const { study } = this.props;
+    const { study, user } = this.props;
     const { name, id, disabled, route, searches } = study;
     const SearchLink = this.renderSearchLink;
 
@@ -49,7 +49,7 @@ class StudyMenuItem extends React.Component {
           </Link>
         </div>
         <div className="row StudyMenuItem-Links">
-        { (!isPrereleaseStudy(study.access)) 
+        { (!isPrereleaseStudy(study.access, user)) 
           ? searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)
           : (
              <div>

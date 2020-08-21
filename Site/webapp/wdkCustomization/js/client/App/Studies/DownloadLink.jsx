@@ -5,11 +5,11 @@ import { connect } from 'react-redux'
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 
 function DownloadLink(props) {
-  const { attemptAction, studyAccess, studyId, studyUrl, className, linkText = '' } = props;
+  const { attemptAction, studyAccess, studyId, studyUrl, user, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
-      { !isPrereleaseStudy(studyAccess)
+      { !isPrereleaseStudy(studyAccess, user)
         ? <Mesa.AnchoredTooltip
         fadeOut
         content={myDownloadTitle}>
@@ -38,4 +38,4 @@ function DownloadLink(props) {
 // arg1: mapStateToProps: take state from store and pass to component as props
 // arg2: mapDispatchToProps: pass an object with one property 'attemptAction' which is an actionCreator (because it returns a run() function) see DataRestrictionActionCreators
 // attemptAction gets bound to the store, the store receives the action, which will get executed when user clicks.
-export default connect(null,{ attemptAction })(DownloadLink);
+export default connect( state => ({user: state.globalData.user}) ,{ attemptAction })(DownloadLink);

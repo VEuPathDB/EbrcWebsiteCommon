@@ -181,8 +181,11 @@ export function isAllowedAccess ({ user, action, study }) {
   return false;
 }
 
-// the UI on home page study card, study menu, study record page is different when the study.access is prerelease
-export function isPrereleaseStudy (access) {
+// the UI in (1) home page study card, (2) study menu, (3) study record page is different when
+// - the study.access is prerelease
+// - the user doesnt have access
+export function isPrereleaseStudy (access, user) {
+  if ( (access === 'prerelease') && (!user.properties.approvedStudies.includes(study.id))  ) 
   if (access === 'prerelease') 
     return true;
   else return false;
