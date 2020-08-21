@@ -9,6 +9,7 @@ import org.openqa.selenium.Dimension;
 import org.testng.annotations.Test;
 
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.AfterTest;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,10 +22,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apidb.eupathsitecommon.watar.pages.HomePage;
 import org.apidb.eupathsitecommon.watar.pages.SearchForm;
 //import org.gusdb.fgputil.json.JsonIterators;
+import org.apidb.eupathsitecommon.watar.pages.StaticContent;
 
 public class SeleniumTests {
   private WebDriver driver;
@@ -35,11 +39,11 @@ public class SeleniumTests {
 //  private boolean isPortal;
 
   public SeleniumTests() {
-    //String websiteBase = "https://beta.plasmodb.org";
-    //String webappName = "plasmo.beta";
+    String websiteBase = "https://beta.plasmodb.org";
+    String webappName = "plasmo.beta";
 
-    String websiteBase = System.getProperty("baseurl");
-    String webappName = System.getProperty("webappname");
+    //String websiteBase = System.getProperty("baseurl");
+    //String webappName = System.getProperty("webappname");
     
     this.baseurl = websiteBase + "/" + webappName;
     
@@ -58,22 +62,12 @@ public class SeleniumTests {
    driver.quit();
   }
 
-  @Test(description="Assert home page loads and the featured tool section is there.",
-      groups = { "_" })
-  public void homePage () {
-    driver.get(this.baseurl);
-    HomePage homePage = new HomePage(driver);
-    homePage.waitForPageToLoad();
-    assertTrue(homePage.selectedToolBodyCount() == 1, "assert Selected Tool Body was present");
-    String initialSelectedToolText = homePage.selectedToolHeaderText();
-    homePage.changeSelectedTool();
-    String changedSelectedToolText = homePage.selectedToolHeaderText();
-    assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
-  }
   
-  @Test(description="",
-      groups = { "_" })
-  public void questionForms() {
+  @DataProvider(name = "searches")
+  public Iterator<Object[]> createSearches() {
+
+    ArrayList<Object[]> searchesArrayList = new ArrayList<Object[]>();
+    
     JSONObject recordTypesJson = parseEndpoint(baseurl + "/service/record-types", 1000, "record-types");
     JSONArray recordTypesArray = (JSONArray) recordTypesJson.get("record-types");
 
@@ -86,7 +80,7 @@ public class SeleniumTests {
       for(int j = 0; j < searchesArray.length(); j++) {
         JSONObject search = (JSONObject) searchesArray.get(j);
         String urlSegment = (String) search.get("urlSegment");
-        //String fullName = (String) search.get("fullName");
+        String fullName = (String) search.get("fullName");
         JSONArray paramNames = (JSONArray) search.get("paramNames");
 
         if(urlSegment.equals("GenesByUserDatasetAntisense") || 
@@ -94,23 +88,92 @@ public class SeleniumTests {
             urlSegment.equals("GenesByeQTL") ||
             urlSegment.equals("GenesFromTranscripts") ||
             urlSegment.equals("GenesByPlasmoDbDataset") ||
-            urlSegment.equals("boolean_question_TranscriptRecordClasses_TranscriptRecordClass")
+            urlSegment.contains("boolean_question")
             )
           continue;
 
         boolean hasParameters = paramNames.length() > 0;
         String queryPage = this.baseurl + "/app/search/" + recordType + "/" + urlSegment;
-        driver.get(queryPage);
 
-        SearchForm searchForm = new SearchForm(driver, hasParameters);
-        searchForm.waitForPageToLoad();
+        Object[] sa = new Object[3];
+        sa[0] = queryPage;
+        sa[1] = fullName;
+        sa[2] = hasParameters;
 
-        assertTrue(!searchForm.containsError(), "Search form Contained Error: " + urlSegment);
+        searchesArrayList.add(sa);
       }
+
     }
+    return searchesArrayList.iterator();
+  }
+  
+  @Test(dataProvider = "searches")
+  public void searchPage(String queryPage, String fullName, boolean hasParameters) {
+    driver.get(queryPage);
+
+    SearchForm searchForm = new SearchForm(driver, hasParameters);
+    searchForm.waitForPageToLoad();
+
+    assertTrue(!searchForm.containsError(), "Search form Contained Error: " + fullName);
+  }
+
+  
+  
+  
+  @Test(description="Assert home page loads and the featured tool section is there.",
+      groups = { "functional_tests" })
+  public void homePage () {
+    driver.get(this.baseurl);
+    HomePage homePage = new HomePage(driver);
+    homePage.waitForPageToLoad();
+    assertTrue(homePage.selectedToolBodyCount() == 1, "assert Selected Tool Body was present");
+    String initialSelectedToolText = homePage.selectedToolHeaderText();
+    homePage.changeSelectedTool();
+    String changedSelectedToolText = homePage.selectedToolHeaderText();
+    assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
   }
   
   
+  @Test(description="Assert News page loads",
+      groups = { "static_content" })
+  public void newsPage () {
+    String staticPageUrl = this.baseurl + Utilities.NEWS_PATH;
+    driver.get(staticPageUrl);
+    StaticContent staticContentPage = new StaticContent(driver);
+    staticContentPage.waitForPageToLoad();
+  }
+
+  
+  @Test(description="Assert Related Sites page loads",
+      groups = { "static_content" })
+  public void relatedSitesPage () {
+    String staticPageUrl = this.baseurl + Utilities.RELATED_SITES;
+    driver.get(staticPageUrl);
+    StaticContent staticContentPage = new StaticContent(driver);
+    staticContentPage.waitForPageToLoad();
+  }
+
+  
+  @Test(description="Assert Publications page loads",
+      groups = { "static_content" })
+  public void publicationsPage () {
+    String staticPageUrl = this.baseurl + Utilities.PUBLICATIONS;
+    driver.get(staticPageUrl);
+    StaticContent staticContentPage = new StaticContent(driver);
+    staticContentPage.waitForPageToLoad();
+  }
+
+  @Test(description="Assert Data Submission page loads",
+      groups = { "static_content" })
+  public void dataSubmissionPage () {
+    String staticPageUrl = this.baseurl + Utilities.DATA_SUBMISSION;
+    driver.get(staticPageUrl);
+    StaticContent staticContentPage = new StaticContent(driver);
+    staticContentPage.waitForPageToLoad();
+  }
+
+  
+ 
 
   public static JSONObject parseEndpoint (String url, int timeout, String rootName)  {
       HttpURLConnection c = null;
