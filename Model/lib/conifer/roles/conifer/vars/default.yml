@@ -138,12 +138,12 @@ modelconfig_webServiceUrl: local
 
 modelconfig_emailSubject: >
   <![CDATA[
-    Your {{ product }}/EuPathDB Password
+    Your {{ product }}/VEuPathDB Password
   ]]>
 
 modelconfig_emailContent: >
   <![CDATA[
-    <p>Thank you for registering at {{ product }}.{{ _topleveldomain }}, a member site of the EuPathDB Bioinformatics Resource Center.</p>
+    <p>Thank you for registering at {{ product }}.{{ _topleveldomain }}, a member site of the VEuPathDB Bioinformatics Resource Center.</p>
     <p>Your temporary password is: $$PASSWORD$$</p>
     <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other EuPathDB member site.</p>
   ]]>
