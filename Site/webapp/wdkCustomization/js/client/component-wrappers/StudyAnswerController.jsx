@@ -42,6 +42,7 @@ function StudyAnswerController(props) {
     <React.Fragment>
       <props.DefaultComponent 
         {...props}
+        user={user}
         stateProps={{
           ...props.stateProps,
           records: visibleRecords,
@@ -92,16 +93,22 @@ const renderCellContent = props => {
     </div>;
   }
   if (props.attribute.name === 'card_questions') { 
-    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), user))
+    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), props.record.attributes.dataset_id))
       ? (
           <StudySearchCellContent {...props}/>
         )
       : (
           <div>&nbsp;</div>
         );
- }
+  }
   if (props.attribute.name === 'bulk_download_url') {
-    return <DownloadLink studyId={props.record.id[0].value} studyUrl= {props.record.attributes.bulk_download_url.url}/>;
+    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), props.record.attributes.dataset_id))
+      ? (
+          <DownloadLink studyId={props.record.id[0].value} studyUrl= {props.record.attributes.bulk_download_url.url}/>
+        )
+      : (
+          <div>&nbsp;</div>
+        );
   }
   return <props.CellContent {...props}/>
 };
@@ -116,7 +123,7 @@ const renderCellContent = props => {
 function mapStateToProps(state,props) {
   const { record } = props;
   const { globalData, studies } = state;
-  const { siteConfig } = globalData;
+  const { siteConfig, user } = globalData;
   const { webAppUrl } = siteConfig;
 
   if (studies.loading) {
@@ -130,7 +137,7 @@ function mapStateToProps(state,props) {
   const study = get(studies, 'entities', [])
     .find(study => study.id === studyId);
 
-  return { study, webAppUrl };
+  return { study, webAppUrl, user };
 }
 
 export default StudyAnswerController;

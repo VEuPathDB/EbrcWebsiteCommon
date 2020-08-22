@@ -160,7 +160,7 @@ function formatStudies(projectId, questions, recordClasses, answer, user) {
     [
       ({ disabled }) => disabled,
       ({ id }) => records.appearFirst.has(id),
-      ({ access }) => isPrereleaseStudy(access,user),
+      ({ access, id }) => isPrereleaseStudy(access, id, user),
       ({ name }) => name
     ],
     [

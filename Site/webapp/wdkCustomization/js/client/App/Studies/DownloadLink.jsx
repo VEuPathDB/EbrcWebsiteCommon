@@ -9,7 +9,7 @@ function DownloadLink(props) {
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
-      { !isPrereleaseStudy(studyAccess, user)
+      { !isPrereleaseStudy(studyAccess, studyId, user)
         ? <Mesa.AnchoredTooltip
         fadeOut
         content={myDownloadTitle}>
