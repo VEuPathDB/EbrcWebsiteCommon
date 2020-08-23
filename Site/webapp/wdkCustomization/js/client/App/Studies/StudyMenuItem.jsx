@@ -53,8 +53,8 @@ class StudyMenuItem extends React.Component {
         { (!isPrereleaseStudy(study.access, study.id, user)) 
           ? searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)
           : (
-             <div>
-               &nbsp;
+             <div className="prerelease">
+               <small>(coming soon)</small>
              </div>
             )
         }
