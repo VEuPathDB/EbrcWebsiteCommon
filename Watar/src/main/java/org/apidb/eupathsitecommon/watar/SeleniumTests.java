@@ -38,7 +38,6 @@ public class SeleniumTests {
 //  private boolean isPortal;
 
   public SeleniumTests() {
-
     String websiteBase = System.getProperty("baseurl");
     String webappName = System.getProperty("webappname");
     String username = System.getProperty("username");
@@ -152,7 +151,6 @@ public class SeleniumTests {
 
     assertTrue(!searchForm.containsError(), "Search form Contained Error: " + fullName);
   }
-  
   @Test(description="Assert home page loads and the featured tool section is present.",
       groups = { "functional_tests" })
   public void homePage () {
@@ -166,6 +164,7 @@ public class SeleniumTests {
     assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
   }
   
+
   @Test(dataProvider="staticPages", 
       description="Assert static content page loads without error and static-content element is present",
       groups = { "static_content" })

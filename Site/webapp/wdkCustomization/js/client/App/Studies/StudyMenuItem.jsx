@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { IconAlt as Icon, Link, Mesa } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
@@ -36,7 +37,7 @@ class StudyMenuItem extends React.Component {
   }
 
   render () {
-    const { study } = this.props;
+    const { study, user } = this.props;
     const { name, id, disabled, route, searches } = study;
     const SearchLink = this.renderSearchLink;
 
@@ -49,11 +50,11 @@ class StudyMenuItem extends React.Component {
           </Link>
         </div>
         <div className="row StudyMenuItem-Links">
-        { (!isPrereleaseStudy(study.access)) 
+        { (!isPrereleaseStudy(study.access, study.id, user)) 
           ? searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)
           : (
-             <div>
-               &nbsp;
+             <div className="prerelease">
+               <small>(coming soon)</small>
              </div>
             )
         }
@@ -63,4 +64,5 @@ class StudyMenuItem extends React.Component {
   }
 }
 
-export default StudyMenuItem;
+export default connect( state => ({user: state.globalData.user}) )(StudyMenuItem);
+

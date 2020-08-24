@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 import StudySearches from 'ebrc-client/App/Studies/StudySearches';
 import DownloadLink from 'ebrc-client/App/Studies/DownloadLink';
@@ -11,10 +11,12 @@ import './StudyRecordHeading.scss';
 const cx = makeClassNameHelper('StudyRecordHeadingSearchLinks');
 
 function StudyRecordHeading({ showSearches = false, showDownload = false, entries, loading, study, attemptAction, ...props }) {
+  const user = useSelector(state => state.globalData.user);
+
   return (
     <React.Fragment>
       <props.DefaultComponent {...props}/>
-      {showSearches && (!isPrereleaseStudy(study.access)) && (
+      {showSearches && (!isPrereleaseStudy(study.access, study.id, user)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Search the data</div>
           {loading ? null :
@@ -29,13 +31,13 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           }
         </div>
       )}
-      {isPrereleaseStudy(study.access) && (
+      {isPrereleaseStudy(study.access, study.id, user) && (
         <div style={{backgroundColor:'lightblue',padding:'0.5em', fontSize:'1.8em',margin:'1.5em 0 0'}} className='record-page-banner'>
           This study has not yet been released. <span style={{fontSize:'80%'}}>
             For more information, please email {props.record.attributes.contact} at <a href={"mailto:" + study.email}>{study.email}</a>.</span>
         </div>
       )}
-      {showDownload && (!isPrereleaseStudy(study.access)) && (
+      {showDownload && (!isPrereleaseStudy(study.access, study.id, user)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Download the data</div>
           { study && showDownload && <DownloadLink className="StudySearchIconLinksItem" studyId={study.id} studyUrl={study.downloadUrl.url} attemptAction={attemptAction}/> }

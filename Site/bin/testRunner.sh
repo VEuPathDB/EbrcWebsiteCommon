@@ -45,17 +45,22 @@ function runTests {
     workingDir=$(realpath $workingDir)
   fi
 
-  # clean out output dir; can assume its sole purpose is to hold test results
+  # clean entire output dir; can assume its sole purpose is to hold test results
   rm -rf $outputDir/*
   rm -rf $workingDir/wdk-api-test
+  rm -rf $workingDir/target
 
   # run Java unit tests on FgpUtil
   echo "Running Java unit tests..."
-  cd $projectHome/FgpUtil; mvn test 2>&1 | tee $outputDir/java-unit-tests.out
+  cd $projectHome/FgpUtil/Test
+  mvn -Dalt.build.dir=$workingDir/target package
+  cd ..
+  mvn -Dalt.build.dir=$workingDir/target test 2>&1 | tee $outputDir/java-unit-tests.out
 
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."
-  cd $projectHome/WDKClient/Client; yarn test 2>&1 | tee $outputDir/javascript-unit-tests.out
+  cd $projectHome/WDKClient/Client
+  yarn test 2>&1 | tee $outputDir/javascript-unit-tests.out
 
   # run service API tests
   echo "Downloading API test framework"
@@ -64,13 +69,11 @@ function runTests {
   cd wdk-api-test
   apiTestCmd="./run -c $siteUrl/a"
   echo "Running API tests with command: $apiTestCmd"
-  $($apiTestCmd) 2>&1 | tee $outputDir/service-api-tests.out
+  $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.out
 
-  # run selenium tests
-  echo "Building Water"
-  cd $projectHome
-  build EbrcWebsiteCommon/Watar-Installation install -append
-  # TODO: add run of selenium tests; John B will tell me how
+  # run smoke/selenium tests
+  echo "Running Smoke/Selenium tests..."
+  # TODO: add run of smoke/selenium tests; need to figure out how
 
   echo "Testing complete."
 }
