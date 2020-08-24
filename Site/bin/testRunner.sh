@@ -45,9 +45,10 @@ function runTests {
     workingDir=$(realpath $workingDir)
   fi
 
-  # clean out output dir; can assume its sole purpose is to hold test results
+  # clean entire output dir; can assume its sole purpose is to hold test results
   rm -rf $outputDir/*
   rm -rf $workingDir/wdk-api-test
+  rm -rf $workingDir/target
 
   # run Java unit tests on FgpUtil
   echo "Running Java unit tests..."
