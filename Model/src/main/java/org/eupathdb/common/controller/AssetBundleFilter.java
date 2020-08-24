@@ -2,9 +2,7 @@ package org.eupathdb.common.controller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,6 +13,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.gusdb.fgputil.runtime.GusHome;
 
 /**
@@ -23,7 +22,9 @@ import org.gusdb.fgputil.runtime.GusHome;
  */
 public class AssetBundleFilter implements Filter {
 
+  private static final Logger LOG = Logger.getLogger(AssetBundleFilter.class);
   private static final String BASE_PATH = "/bundles/";
+  private static final String DEFAULT_SUB_PATH = "modern/";
   private static final String virtualBundlePattern = BASE_PATH + "(?!(modern|legacy)/)(.*)";
 
   @Override
@@ -60,6 +61,7 @@ public class AssetBundleFilter implements Filter {
   }
 
   private static String getSubPath(String userAgentString) throws IOException {
+    if (userAgentString == null) return DEFAULT_SUB_PATH;
     String gusHome = GusHome.getGusHome();
     System.out.println("gusHome: " + gusHome);
     String[] command = new String[] {
@@ -78,12 +80,14 @@ public class AssetBundleFilter implements Filter {
       pr.waitFor();
     }
     catch (Exception ex) {
-      throw new RuntimeException(ex);
+      LOG.warn("Unable to execute script getBundlesSubPath. Using default sub path.", ex);
+      return DEFAULT_SUB_PATH;
     }
-    if (pr.exitValue() == 0) {
-      return output.toString();
+    if (pr.exitValue() != 0) {
+      LOG.warn("Script getBundlesSubPath did not return normally. Using sub path.\n" + output);
+      return DEFAULT_SUB_PATH;
     }
-    throw new RuntimeException("Error from `bundleSubDirectory`: " + output);
+    return output.toString();
   }
   
 }
