@@ -39,8 +39,8 @@ public class SeleniumTests {
 //  private boolean isPortal;
 
   public SeleniumTests() {
-    String websiteBase = "https://beta.plasmodb.org";
-    String webappName = "plasmo.beta";
+    String websiteBase = "https://beta.trichdb.org"; //plasmodb.org";
+    String webappName = "trichdb.beta"; // "plasmo.beta";
 
     //String websiteBase = System.getProperty("baseurl");
     //String webappName = System.getProperty("webappname");
@@ -117,9 +117,8 @@ public class SeleniumTests {
     assertTrue(!searchForm.containsError(), "Search form Contained Error: " + fullName);
   }
 
-  
-  
-  
+
+
   @Test(description="Assert home page loads and the featured tool section is there.",
       groups = { "functional_tests" })
   public void homePage () {
@@ -133,46 +132,98 @@ public class SeleniumTests {
     assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
   }
   
+ 
   
-  @Test(description="Assert News page loads",
-      groups = { "static_content" })
-  public void newsPage () {
-    String staticPageUrl = this.baseurl + Utilities.NEWS_PATH;
-    driver.get(staticPageUrl);
-    StaticContent staticContentPage = new StaticContent(driver);
-    staticContentPage.waitForPageToLoad();
+  @DataProvider(name = "staticContent")
+  public Iterator<Object[]> createStaticContent() {
+
+    ArrayList<Object[]> staticArrayList = new ArrayList<Object[]>();
+
+    Object[] sa = new Object[2];
+    sa[0] =  this.baseurl + Utilities.NEWS_PATH; 
+    sa[1] = "News page"; 
+    
+    staticArrayList.add(sa);
+    return staticArrayList.iterator();
+  }
+  
+  @Test(dataProvider = "staticContent")
+  public void pageNews(String queryPage, String name) { 
+    driver.get(queryPage);
+
+    StaticContent searchForm = new StaticContent(driver);
+    searchForm.waitForPageToLoad();
+  }
+  
+ 
+  @DataProvider(name = "staticRSContent")
+  public Iterator<Object[]> createStaticContent2() {
+
+    ArrayList<Object[]> staticArrayList = new ArrayList<Object[]>();
+
+    Object[] sa = new Object[2];
+    sa[0] =  this.baseurl + Utilities.RELATED_SITES;
+    sa[1] = "Related Sites page"; 
+    
+    staticArrayList.add(sa);
+    return staticArrayList.iterator();
+  }
+  
+  @Test(dataProvider = "staticRSContent")
+  public void pageRelatedSites(String queryPage, String name) {
+    driver.get(queryPage);
+
+    StaticContent searchForm = new StaticContent(driver);
+    searchForm.waitForPageToLoad();
   }
 
   
-  @Test(description="Assert Related Sites page loads",
-      groups = { "static_content" })
-  public void relatedSitesPage () {
-    String staticPageUrl = this.baseurl + Utilities.RELATED_SITES;
-    driver.get(staticPageUrl);
-    StaticContent staticContentPage = new StaticContent(driver);
-    staticContentPage.waitForPageToLoad();
-  }
 
+  @DataProvider(name = "staticPubContent")
+  public Iterator<Object[]> createStaticContent3() {
+
+    ArrayList<Object[]> staticArrayList = new ArrayList<Object[]>();
+
+    Object[] sa = new Object[2];
+    sa[0] =  this.baseurl + Utilities.PUBLICATIONS;
+    sa[1] = "Publications page"; 
+    
+    staticArrayList.add(sa);
+    return staticArrayList.iterator();
+  }
   
-  @Test(description="Assert Publications page loads",
-      groups = { "static_content" })
-  public void publicationsPage () {
-    String staticPageUrl = this.baseurl + Utilities.PUBLICATIONS;
-    driver.get(staticPageUrl);
-    StaticContent staticContentPage = new StaticContent(driver);
-    staticContentPage.waitForPageToLoad();
+  @Test(dataProvider = "staticPubContent")
+  public void pagePublications(String queryPage, String name) {
+    driver.get(queryPage);
+
+    StaticContent searchForm = new StaticContent(driver);
+    searchForm.waitForPageToLoad();
   }
 
-  @Test(description="Assert Data Submission page loads",
-      groups = { "static_content" })
-  public void dataSubmissionPage () {
-    String staticPageUrl = this.baseurl + Utilities.DATA_SUBMISSION;
-    driver.get(staticPageUrl);
-    StaticContent staticContentPage = new StaticContent(driver);
-    staticContentPage.waitForPageToLoad();
-  }
+ 
 
+  @DataProvider(name = "staticDSContent")
+  public Iterator<Object[]> createStaticContent4() {
+
+    ArrayList<Object[]> staticArrayList = new ArrayList<Object[]>();
+
+    Object[] sa = new Object[2];
+    sa[0] =  this.baseurl + Utilities.DATA_SUBMISSION;
+    sa[1] = "Data Submission page"; 
+    
+    staticArrayList.add(sa);
+    return staticArrayList.iterator();
+  }
   
+  @Test(dataProvider = "staticDSContent")
+  public void pageDataSubmission(String queryPage, String name) {
+    driver.get(queryPage);
+
+    StaticContent searchForm = new StaticContent(driver);
+    searchForm.waitForPageToLoad();
+  }
+  
+ 
  
 
   public static JSONObject parseEndpoint (String url, int timeout, String rootName)  {

@@ -181,11 +181,19 @@ export function isAllowedAccess ({ user, action, study }) {
   return false;
 }
 
-// the UI on home page study card, study menu, study record page is different when the study.access is prerelease
-export function isPrereleaseStudy (access) {
-  if (access === 'prerelease') 
-    return true;
-  else return false;
+// the UI in (1) home page study card, (2) study menu, (3) study record page is different when
+// - the study.access is prerelease
+// - the user doesnt have access
+export function isPrereleaseStudy (access, studyId, user) {
+  if (typeof(user) != "undefined") {
+    if ( (access === 'prerelease') && (!user.properties.approvedStudies.includes(studyId))  ) 
+      return true;
+    else return false;
+  }
+  else {
+    console.log("ATTENTION: user undefined in isPrerelease(),  study ID: " + studyId + " -- access: " + access + " --  showing searches");
+    return false;
+  }
 }
 
 // we will request the user to login if (1) guest and (2) explicit approval not needed 
