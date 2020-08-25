@@ -50,7 +50,7 @@
       <id>eupathdb</id>
       <name>EuPathDB Project Dependencies</name>
       <layout>default</layout>
-      <url>https://raw.githubusercontent.com/EuPathDB/FgpUtil/master/Dependencies/</url>
+      <url>https://cbilsvn.pmacs.upenn.edu/svn/gus/FgpUtil/trunk/Dependencies/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
