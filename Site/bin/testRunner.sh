@@ -53,7 +53,7 @@ function runTests {
   # run Java unit tests on FgpUtil
   echo "Running Java unit tests..."
   cd $projectHome/FgpUtil/Test
-  mvn -Dalt.build.dir=$workingDir/target package
+  mvn -Dalt.build.dir=$workingDir/target install
   cd ..
   mvn -Dalt.build.dir=$workingDir/target test 2>&1 | tee $outputDir/java-unit-tests.out
 
