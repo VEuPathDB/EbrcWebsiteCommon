@@ -49,12 +49,6 @@ var scriptLoaders = scripts.map(function(script) {
 module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
     context: process.cwd(),
-    output: {
-      path: path.join(process.cwd(), 'dist'),
-      filename: '[name].bundle.js',
-      chunkFilename: 'ebrc-chunk-[name].bundle.js',
-      library: 'Ebrc'
-    },
     module: {
       rules: [ ].concat(scriptLoaders),
     },

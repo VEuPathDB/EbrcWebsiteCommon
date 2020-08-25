@@ -5,7 +5,6 @@
 import './publicPath';
 // ###
 
-import '@babel/polyfill';
 import 'custom-event-polyfill';
 import 'whatwg-fetch';
 import 'lib/jquery';

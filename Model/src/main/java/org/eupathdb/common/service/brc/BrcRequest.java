@@ -32,6 +32,8 @@ public class BrcRequest {
   private String datasetCutoffType;
   private double datasetCutoff;
 
+  private String datasetSelection;
+
   private Long datasetId;
 
   /**
@@ -50,14 +52,15 @@ public class BrcRequest {
       ObjectMapper mapper = new ObjectMapper();
       TypeReference<Set<String>> setType = new TypeReference<Set<String>>() {};
       request.ids = mapper.readValue(idSet, setType);
+      request.datasetSelection = json.getString("datasetSelection");
       request.thresholdType = json.getString("thresholdType");
       request.threshold = json.getDouble("threshold");
-
 
       request.useOrthology = json.getJSONObject("additionalFlags").getBoolean("useOrthology");
 
       request.datasetCutoff = json.getJSONObject("additionalFlags").getDouble("datasetCutoff");
       request.datasetCutoffType = json.getJSONObject("additionalFlags").getString("datasetCutoffType");
+
 
       return request;
     }
@@ -133,7 +136,8 @@ public class BrcRequest {
         .put("ds_gene_ids", String.valueOf(datasetId))
         .put("threshold", String.valueOf(threshold))
         .put("datasetCutoff", String.valueOf(datasetCutoff))
-        .put("datasetCutoffType", String.valueOf(datasetCutoffType));
+        .put("datasetCutoffType", String.valueOf(datasetCutoffType))
+        .put("datasetSelection", String.valueOf(datasetSelection));
   }
 
   public String getType() {
@@ -163,6 +167,10 @@ public class BrcRequest {
 
   public double getDatasetCutoff() {
     return datasetCutoff;
+  }
+
+  public String getDatasetSelection() {
+    return datasetSelection;
   }
 
 

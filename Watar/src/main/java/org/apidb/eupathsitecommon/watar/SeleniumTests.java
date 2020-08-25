@@ -4,11 +4,13 @@ package org.apidb.eupathsitecommon.watar;
 import org.openqa.selenium.WebDriver;
 //import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+//import org.openqa.selenium.htmlunit.HtmlUnitDriver;     
 import org.openqa.selenium.Dimension;
 
 import org.testng.annotations.Test;
 
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.AfterTest;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,33 +18,34 @@ import org.json.JSONObject;
 //import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.io.BufferedReader;
-
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apidb.eupathsitecommon.watar.pages.HomePage;
+import org.apidb.eupathsitecommon.watar.pages.LoginPage;
 import org.apidb.eupathsitecommon.watar.pages.SearchForm;
-//import org.gusdb.fgputil.json.JsonIterators;
+import org.apidb.eupathsitecommon.watar.pages.Service;
+import org.apidb.eupathsitecommon.watar.pages.StaticContent;
 
 public class SeleniumTests {
   private WebDriver driver;
   //private JavascriptExecutor js;
 
   private String baseurl;
+  private String username;
+  private String password;
   
 //  private boolean isPortal;
 
   public SeleniumTests() {
-    //String websiteBase = "https://beta.plasmodb.org";
-    //String webappName = "plasmo.beta";
-
     String websiteBase = System.getProperty("baseurl");
     String webappName = System.getProperty("webappname");
+    String username = System.getProperty("username");
+    String password = System.getProperty("password");
     
     this.baseurl = websiteBase + "/" + webappName;
-    
+    this.username = username;
+    this.password = password;
     //    isPortal = baseurl.toLowerCase().contains("eupathdb");
     
   }
@@ -51,6 +54,11 @@ public class SeleniumTests {
   public void setUp() {
    this.driver = new ChromeDriver();
    driver.manage().window().setSize(new Dimension(1000, 1000));
+   
+   LoginPage loginPage = new LoginPage(driver, username, password);
+   loginPage.login();
+
+   
    //js = (JavascriptExecutor) driver;
   }
   @AfterTest
@@ -58,22 +66,41 @@ public class SeleniumTests {
    driver.quit();
   }
 
-  @Test(description="Assert home page loads and the featured tool section is there.",
-      groups = { "_" })
-  public void homePage () {
-    driver.get(this.baseurl);
-    HomePage homePage = new HomePage(driver);
-    homePage.waitForPageToLoad();
-    assertTrue(homePage.selectedToolBodyCount() == 1, "assert Selected Tool Body was present");
-    String initialSelectedToolText = homePage.selectedToolHeaderText();
-    homePage.changeSelectedTool();
-    String changedSelectedToolText = homePage.selectedToolHeaderText();
-    assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
+  
+  @DataProvider(name = "staticPages")
+  public Iterator<Object[]> createStaticPages() {
+    ArrayList<Object[]> staticPages = new ArrayList<Object[]>();
+
+    Object[] ds = { Utilities.DATA_SUBMISSION, "Data Submission" }; 
+    Object[] news = { Utilities.NEWS_PATH, "News" }; 
+    Object[] pubs = { Utilities.PUBLICATIONS, "Publications" }; 
+    Object[] rel_sites = { Utilities.RELATED_SITES, "Related Sites" }; 
+    Object[] about = { Utilities.ABOUT, "About"}; 
+    Object[] privacy = { Utilities.PRIVACY_POLICY, "Privacy Policy"}; 
+    Object[] personnel = { Utilities.PERSONNEL, "Personnel"}; 
+    Object[] acks = { Utilities.ACKS, "Acknowledgements"}; 
+    Object[] methods = { Utilities.METHODS, "Methods"}; 
+    Object[] infra = { Utilities.INFRASTRUCTURE, "Infrastructure"}; 
+
+    staticPages.add(ds);
+    staticPages.add(news);
+    staticPages.add(pubs);
+    staticPages.add(rel_sites);
+    staticPages.add(about);
+    staticPages.add(privacy);
+    staticPages.add(personnel);
+    staticPages.add(acks);
+    staticPages.add(methods);
+    staticPages.add(infra);
+    
+    return staticPages.iterator();
   }
   
-  @Test(description="",
-      groups = { "_" })
-  public void questionForms() {
+  @DataProvider(name = "searches")
+  public Iterator<Object[]> createSearches() {
+   
+    ArrayList<Object[]> searchesArrayList = new ArrayList<Object[]>();
+    
     JSONObject recordTypesJson = parseEndpoint(baseurl + "/service/record-types", 1000, "record-types");
     JSONArray recordTypesArray = (JSONArray) recordTypesJson.get("record-types");
 
@@ -86,72 +113,74 @@ public class SeleniumTests {
       for(int j = 0; j < searchesArray.length(); j++) {
         JSONObject search = (JSONObject) searchesArray.get(j);
         String urlSegment = (String) search.get("urlSegment");
-        //String fullName = (String) search.get("fullName");
+        String fullName = (String) search.get("fullName");
         JSONArray paramNames = (JSONArray) search.get("paramNames");
 
         if(urlSegment.equals("GenesByUserDatasetAntisense") || 
             urlSegment.equals("GenesByRNASeqUserDataset") || 
-            urlSegment.equals("GenesByeQTL") ||
+            urlSegment.equals("Gendescription=\"Assert home page loads and the featured tool section is there.\",esByeQTL") ||
             urlSegment.equals("GenesFromTranscripts") ||
             urlSegment.equals("GenesByPlasmoDbDataset") ||
-            urlSegment.equals("boolean_question_TranscriptRecordClasses_TranscriptRecordClass")
+            urlSegment.contains("boolean_question")
             )
           continue;
 
         boolean hasParameters = paramNames.length() > 0;
         String queryPage = this.baseurl + "/app/search/" + recordType + "/" + urlSegment;
-        driver.get(queryPage);
 
-        SearchForm searchForm = new SearchForm(driver, hasParameters);
-        searchForm.waitForPageToLoad();
+        Object[] sa = new Object[3];
+        sa[0] = queryPage;
+        sa[1] = fullName;
+        sa[2] = hasParameters;
 
-        assertTrue(!searchForm.containsError(), "Search form Contained Error: " + urlSegment);
+        searchesArrayList.add(sa);
       }
+
     }
+    return searchesArrayList.iterator();
   }
   
+  @Test(dataProvider = "searches",
+      description="Assert search page loads without error",
+      groups = {"functional_tests"})
+  public void searchPage(String queryPage, String fullName, boolean hasParameters) {
+    driver.get(queryPage);
+
+    SearchForm searchForm = new SearchForm(driver, hasParameters);
+    searchForm.waitForPageToLoad();
+
+    assertTrue(!searchForm.containsError(), "Search form Contained Error: " + fullName);
+  }
+  @Test(description="Assert home page loads and the featured tool section is present.",
+      groups = { "functional_tests" })
+  public void homePage () {
+    driver.get(this.baseurl);
+    HomePage homePage = new HomePage(driver);
+    homePage.waitForPageToLoad();
+    assertTrue(homePage.selectedToolBodyCount() == 1, "assert Selected Tool Body was present");
+    String initialSelectedToolText = homePage.selectedToolHeaderText();
+    homePage.changeSelectedTool();
+    String changedSelectedToolText = homePage.selectedToolHeaderText();
+    assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
+  }
   
 
-  public static JSONObject parseEndpoint (String url, int timeout, String rootName)  {
-      HttpURLConnection c = null;
+  @Test(dataProvider="staticPages", 
+      description="Assert static content page loads without error and static-content element is present",
+      groups = { "static_content" })
+  public void staticPage (String url, String name) {
+    String staticPageUrl = this.baseurl + url;
+    driver.get(staticPageUrl);
+    StaticContent staticContentPage = new StaticContent(driver);
+    staticContentPage.waitForPageToLoad();
+  }
 
-      try {
-          URL u = new URL(url);
-          c = (HttpURLConnection) u.openConnection();
-          c.setRequestMethod("GET");
-          c.setRequestProperty("Content-length", "0");
-          c.setUseCaches(false);
-          c.setAllowUserInteraction(false);
-          c.setConnectTimeout(timeout);
-          c.setReadTimeout(timeout);
-          c.connect();
-          int status = c.getResponseCode();
 
-          switch (status) {
-              case 200:
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
-                  StringBuilder sb = new StringBuilder();
-                  String line;
-                  while ((line = br.readLine()) != null) {
-                      sb.append(line+"\n");
-                  }
-                  br.close();
-                  return new JSONObject("{ \"" + rootName + "\":" + sb.toString() + "}");
-
-          }
-      } catch (Exception e) {
-        e.printStackTrace();
-      } finally {
-         if (c != null) {
-            try {
-                c.disconnect();
-            } catch (Exception ex) {
-
-            }
-         }
-      }
-      return null;
+  public JSONObject parseEndpoint (String url, int timeout, String rootName)  {
+    this.driver.get(url);
+    Service servicePage = new Service(driver);
+    String jsonContent = servicePage.jsonContent();
+    return new JSONObject("{ \"" + rootName + "\":" + jsonContent + "}");
   }
   
 }

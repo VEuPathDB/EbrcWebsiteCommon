@@ -38,44 +38,24 @@ public class SmokeTests {
     }
 
     public SmokeTests() {
+
       baseurl = System.getProperty("baseurl");
       webappname = System.getProperty("webappname");
       isPortal = baseurl.toLowerCase().contains("eupathdb");
     }
 
-    /** the home page for EuPathDB portal may depend on functionality
-        of component websites, and those may be offline for rebuild.
-        So it's an unreliable test for deployment. Use _test.jsp instead.
-    **/
-    @Test(description="Assert HTTP header status is 200 OK for home page.",
-          groups = { "_" })
-    public void HomePage_HttpHeaderStatusIsOK() throws Exception {
-        String url = baseurl + "/" + webappname + "/";
-        assertHeaderStatusMessageIsOK(url);
-    }
-
     @Test(description="Assert HTTP header status is 200 OK for WsfService url as test of Axis installation.",
-          groups = { "webservice" })
+          groups = { "deployment" })
     public void WsfServicePage_HttpHeaderStatusIsOK() throws Exception {
         String url = baseurl + "/" + webappname + Utilities.WSF_PATH;
         assertJsonStatusMessageIsOK(url);
         //assertHeaderStatusMessageIsOK(url);
     }
 
-    @Test(description="Assert HTTP header status is 200 OK for News url as test of valid XML record.", 
-          groups = { "xmlrecord" })
-    public void News_HttpHeaderStatusIsOK() throws Exception {
-        String url = baseurl + "/" + webappname + Utilities.NEWS_PATH;
-        assertHeaderStatusMessageIsOK(url);
-    }
 
-    @Test(description="Assert HTTP header status is 200 OK for Methods url as test of valid XML record.", 
-          groups = { "xmlrecord" })
-    public void Methods_HttpHeaderStatusIsOK() throws Exception {
-        String url = baseurl + "/" + webappname + Utilities.METHODS_PATH;
-        assertHeaderStatusMessageIsOK(url);
-    }
-
+    
+    
+/**
     @Test(description="Assert HTTP header status is 200 OK for GeneRecord page.",
           groups = { "wdkrecord" },
           dataProvider="defaultGeneId",
@@ -87,6 +67,8 @@ public class SmokeTests {
           assertHeaderStatusMessageIsOK(url);
         }   
     }
+**/
+
 
     @Test(description="Assert valid JSON from /dashboard/json API.", 
           groups = { "dashboard" })
@@ -98,6 +80,7 @@ public class SmokeTests {
         assertTrue(response.getContentType().equals("application/json"), "Content-Type is 'application/json'");
         String pageSource = response.getContentAsString();
         assertTrue(pageSource.contains("\"wdk\":"), "JSON contains '\"wdk\"'");
+
     }
 
     @Test(description="Assert valid XML from /dashboard/xml API.", 
@@ -115,7 +98,9 @@ public class SmokeTests {
     /** 
      * Returns the default value from the Gene ID Quick Search form on the front page.
    **/
-   @DataProvider(name="defaultGeneId")
+
+    /**
+    @DataProvider(name="defaultGeneId")
    private Object[][] getDefaultGeneIdFromQuickSearchForm() throws Exception {
      try {
        String url = baseurl + "/" + webappname + Utilities.GENE_ID_SEARCH;
@@ -136,7 +121,7 @@ public class SmokeTests {
        }
    
    }
-
+**/
    
    
     /** 
