@@ -53,9 +53,9 @@ function runTests {
   # run Java unit tests on FgpUtil
   echo "Building FgpUtil Test project..."
   cd $projectHome/FgpUtil
-  mvn -Dalt.build.dir=$workingDir/target clean install
+  mvn clean install
   echo "Running Java unit tests..."
-  mvn -Dalt.build.dir=$workingDir/target test 2>&1 | tee $outputDir/java-unit-tests.out
+  mvn test 2>&1 | tee $outputDir/java-unit-tests.out
 
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."
