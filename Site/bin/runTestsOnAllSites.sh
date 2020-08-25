@@ -29,11 +29,20 @@ sites=(\
 
 function runTestsOnSite {
   local domain=$1
-  echo "Running tests on $domain with output dir $2"
-  #cd /var/www/$domain
-  #source etc/setenv
-  #local projectId=$WDK_MODEL # environment var set by setenv
-  #local outputDir=$3/$projectId
+  local siteDir=/var/www/$domain
+  if [ ! -e $siteDir ]; then
+    echo "Skipping $domain. $siteDir does not exist"
+    return
+  fi
+  cd /var/www/$domain
+  source etc/setenv
+  local projectId=$WDK_MODEL # environment var set by setenv
+  local outputDir=$2/$projectId
+  local siteUrl=https://$domain
+  # USAGE: testRunner.sh <project_id> <site_url> <output_dir> [<working_dir>]
+  cmd="testRunner.sh $projectId $siteUrl $outputDir/results $outputDir/work"
+  echo "$cmd"
+  $cmd
 }
 
 if [ ! $# -eq 2 ]; then
@@ -41,8 +50,14 @@ if [ ! $# -eq 2 ]; then
   exit 1
 fi
 
+outputDir=$(realpath $2)
+if [ ! -e $outputDir ]; then
+  echo "Specified output directory '$outputDir' does not exist"
+  exit 2
+fi
+
 echo "Running tests on ${#sites[@]} sites"
 for site in "${sites[@]}"; do
   domain="$1.$site"
-  runTestsOnSite $domain $2
+  runTestsOnSite $domain $outputDir
 done

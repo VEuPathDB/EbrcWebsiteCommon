@@ -36,8 +36,20 @@ $red: #DD314E;
   }
 }
 
+span:has(> div.StudyMenuItem--disabled) { 
+  display: none;
+}
+
 .StudyMenuItem--disabled {
-  cursor: not-allowed;
+  /* cursor: not-allowed;
   opacity: 0.5;
   * { pointer-events: none !important; }
+  */
+  display: none; 
 }
+
+div.prerelease {
+  font-style: italic;
+  padding: 0.4em; /* try consistent with .SiteMenuItem-Text in SiteMenuItem.scss*/
+}
+
