@@ -14,11 +14,14 @@ public class Utilities {
     
   // Submit Data
   public static final String DATA_SUBMISSION = "/app/static-content/dataSubmission.html";
+  public static final String ABOUT = "/app/static-content/about.html";
+  public static final String PRIVACY_POLICY = "/app/static-content/privacyPolicy.html";
+  public static final String PERSONNEL = "/app/static-content/personnel.html";
+  public static final String ACKS = "/app/static-content/acks.html";
   
-//  public static final String METHODS_PATH = "/wdkCustomization/jsp/questions/XmlQuestions.Methods.jsp";
-  //public static final String GENE_ID_SEARCH = "/showQuestion.do?questionFullName=GeneQuestions.GeneByLocusTag";
-  
+  public static final String METHODS = "/app/static-content/methods.html";
+  public static final String INFRASTRUCTURE = "/app/static-content/infrastructure.html";
 
-  
+  public static final String LOGIN_PAGE = "https://eupathdb.org/auth/bin/autologin";
   
 }
