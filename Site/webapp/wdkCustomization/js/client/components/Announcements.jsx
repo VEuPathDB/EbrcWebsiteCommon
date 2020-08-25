@@ -68,7 +68,7 @@ const siteAnnouncements = [
   },
 */
 
-
+/*
   {
     id: 'strategies-beta',
     category: 'degraded',
@@ -87,6 +87,7 @@ const siteAnnouncements = [
       )
     }
   },
+*/
 
   // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
