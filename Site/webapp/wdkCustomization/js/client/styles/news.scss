@@ -2,6 +2,7 @@
 
 body.vpdb-Body .vpdb-RootContainer {
   .vpdb-NewsPane {
+    overflow: auto; // fixes https://redmine.apidb.org/issues/41643
     grid-area: side;
 
     border-left: 0.0625rem solid;
