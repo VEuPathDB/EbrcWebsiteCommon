@@ -53,7 +53,7 @@ function runTests {
   # run Java unit tests on FgpUtil
   echo "Building FgpUtil Test project..."
   cd $projectHome/FgpUtil
-  mvn clean install
+  mvn clean install -Dmaven.test.skip=true
   echo "Running Java unit tests..."
   mvn test 2>&1 | tee $outputDir/java-unit-tests.out
 
