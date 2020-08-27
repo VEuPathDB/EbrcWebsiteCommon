@@ -31,13 +31,13 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
           }
         </div>
       )}
-      {isPrereleaseStudy(study.access, study.id, user) && (
+      {study != null && isPrereleaseStudy(study.access, study.id, user) && (
         <div style={{backgroundColor:'lightblue',padding:'0.5em', fontSize:'1.8em',margin:'1.5em 0 0'}} className='record-page-banner'>
           This study has not yet been released. <span style={{fontSize:'80%'}}>
             For more information, please email {props.record.attributes.contact} at <a href={"mailto:" + study.email}>{study.email}</a>.</span>
         </div>
       )}
-      {showDownload && (!isPrereleaseStudy(study.access, study.id, user)) && (
+      {study != null && showDownload && (!isPrereleaseStudy(study.access, study.id, user)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Download the data</div>
           { study && showDownload && <DownloadLink className="StudySearchIconLinksItem" studyId={study.id} studyUrl={study.downloadUrl.url} attemptAction={attemptAction}/> }
