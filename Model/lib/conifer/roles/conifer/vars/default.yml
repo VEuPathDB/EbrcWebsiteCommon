@@ -36,8 +36,8 @@ _host_frontends:
 _userdb_link_map:
   apicomms:    prods.login_comment
   apicommn:    prodn.login_comment
-  apicommlegacys:    prods.login_comment
-  apicommlegacyn:    prodn.login_comment
+  apicommlegacys:    legacys.login_comment
+  apicommlegacyn:    legacyn.login_comment
   apicommdevs: devs.login_comment
   apicommdevn: devn.login_comment
   cecomms:     ceprods.login_comment
