@@ -383,23 +383,17 @@ class QuestionWizardController extends ViewController {
 
         if (submissionMetadata.type === 'edit-step') {
           // patch step's searchConfig
-          return [
-            StrategyActions.requestUpdateStepProperties(
-              submissionMetadata.strategyId,
-              submissionMetadata.stepId,
-              {
-                customName
-              }
-            ),
-            StrategyActions.requestUpdateStepSearchConfig(
-              submissionMetadata.strategyId,
-              submissionMetadata.stepId,
-              {
-                ...submissionMetadata.previousSearchConfig,
-                parameters: this.state.paramValues
-              }
-            )
-          ]
+          return StrategyActions.requestReviseStep(
+            submissionMetadata.strategyId,
+            submissionMetadata.stepId,
+            {
+              customName
+            },
+            {
+              ...submissionMetadata.previousSearchConfig,
+              parameters: this.state.paramValues
+            }
+          );
         }
 
         // Each case below requires a new step to be created...
