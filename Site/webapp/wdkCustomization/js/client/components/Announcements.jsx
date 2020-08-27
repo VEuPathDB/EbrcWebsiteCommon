@@ -50,6 +50,22 @@ const siteAnnouncements = [
     }
   },
 
+ { 
+    id: 'live-beta',
+    renderDisplay: props => {
+      if ( isGenomicHomePage(props.projectId, props.location) ) return (
+        <div key="live-beta">
+          Welcome to {props.displayName} beta where you will find the newest versions of our interface, features, tools and data.  
+          While we transition to making this beta site permanent, <a target="_blank" href={`https://legacy.${props.displayName.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
+            legacy.{props.displayName.toLowerCase()}.org</a> is still available. 
+          Here is a <a target="_blank" href="https://upenn.co1.qualtrics.com/jfe/form/SV_9N2RTXq7ljpZnDv">form for sending your feedback</a> on the beta sites.
+        </div>
+      )
+    }
+  },
+
+
+
   // beta
   //  /*isBetaSite() || */
 /*
@@ -224,9 +240,11 @@ function AnnouncementBanner({
 
   return (
     <div className="eupathdb-Announcement" style={{
+      margin: '3px',
       padding: '.5em',
-      borderWidth: '0 1px 1px 1px',
-      borderColor: '#bbbbbb',
+      borderRadius: '0.5em',
+      borderWidth: '1px',
+      borderColor: 'black',
       borderStyle: 'solid',
       background: '#E3F2FD',
       display: isOpen ? 'block' : 'none'
@@ -238,6 +256,7 @@ function AnnouncementBanner({
       }}>
         {icon}
         <div style={{
+          marginLeft: '1em',
           display: 'inline-block',
           width: 'calc(100% - 5.5em)',
           padding: '8px',
