@@ -78,7 +78,7 @@ const siteAnnouncements = [
       return (
         <div style={{fontWeight: 'bold'}} key="beta">
           You are currently using the legacy {props.projectId} site. 
-          We encourage you to visit the <a target="_blank" href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
+          We encourage you to visit the <a target="_blank" href={`https://${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
             {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} beta site</a> to experience our latest features and access any data updates. 
           The legacy sites will be phased out soon.
         </div>
