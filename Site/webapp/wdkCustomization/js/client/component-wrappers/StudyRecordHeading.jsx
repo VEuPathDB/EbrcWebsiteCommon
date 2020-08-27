@@ -16,7 +16,7 @@ function StudyRecordHeading({ showSearches = false, showDownload = false, entrie
   return (
     <React.Fragment>
       <props.DefaultComponent {...props}/>
-      {showSearches && (!isPrereleaseStudy(study.access, study.id, user)) && (
+      {study != null &&  showSearches && (!isPrereleaseStudy(study.access, study.id, user)) && (
         <div className={cx()}>
           <div className={cx('Label')}>Search the data</div>
           {loading ? null :
