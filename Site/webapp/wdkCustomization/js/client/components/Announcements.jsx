@@ -74,13 +74,13 @@ const siteAnnouncements = [
 
 
   (props) => {
-    if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB') && (location.pathname == props.webAppUrl + '/')  ) {
+    if ( (props.projectId != 'MicrobiomeDB') && ( props.projectId != 'ClinEpiDB')  ) {
       return (
         <div style={{fontWeight: 'bold'}} key="beta">
-          <a href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}> 
-            {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} <em>beta</em>
-          </a> &nbsp;is now available for review!
-          &nbsp;<span style={{fontWeight:'400'}}>Try our updated interface, backed up by new infrastructure!!</span>
+          You are currently using the legacy {props.projectId} site. 
+          We encourage you to visit the <a target="_blank" href={`https://beta.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
+            {props.projectId !== 'EuPathDB' ? props.projectId : 'VEuPathDB'} beta site</a> to experience our latest features and access any data updates. 
+          The legacy sites will be phased out soon.
         </div>
       );
     }
