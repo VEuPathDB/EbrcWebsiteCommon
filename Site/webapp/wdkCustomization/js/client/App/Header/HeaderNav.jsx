@@ -89,7 +89,7 @@ class HeaderNav extends React.Component {
             <small>
               {/* <code>Prototype</code>  */}
               Release {buildNumber} &nbsp; &nbsp;
-              {formatReleaseDate(releaseDate, 'm d y')}
+              {formatReleaseDate(releaseDate)}
             </small>
           </p>
         </div>
