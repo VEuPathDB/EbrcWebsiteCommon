@@ -382,7 +382,7 @@ class QuestionWizardController extends ViewController {
         const customName = this.state.customName || this.state.question.shortDisplayName;
 
         if (submissionMetadata.type === 'edit-step') {
-          // patch step's searchConfig
+          // update step's customName and searchConfig
           return StrategyActions.requestReviseStep(
             submissionMetadata.strategyId,
             submissionMetadata.stepId,
