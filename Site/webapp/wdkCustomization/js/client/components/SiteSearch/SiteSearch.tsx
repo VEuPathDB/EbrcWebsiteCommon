@@ -706,7 +706,7 @@ function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls,
   // if baseUrl is not found, return standard link. we _could_ throw instead...
   return {
     isRoute: !baseUrl,
-    url: baseUrl ? new URL('app/' + route, baseUrl).toString() : route,
+    url: baseUrl ? new URL('app' + route, baseUrl).toString() : route,
     text: document.hyperlinkName || document.primaryKey.join(' - ')
   }
 }
