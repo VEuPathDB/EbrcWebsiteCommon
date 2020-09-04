@@ -28,6 +28,8 @@ _host_frontends:
   a2: alpha
   b1: beta
   b2: beta
+  l1: legacy
+  l2: legacy
   q1: qa
   q2: qa
   w1: ''
