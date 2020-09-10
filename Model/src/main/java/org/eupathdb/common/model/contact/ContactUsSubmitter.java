@@ -3,6 +3,7 @@ package org.eupathdb.common.model.contact;
 import static org.gusdb.fgputil.FormatUtil.escapeHtml;
 import static org.gusdb.fgputil.FormatUtil.join;
 
+import org.apache.log4j.Logger;
 import org.gusdb.fgputil.web.RequestData;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
@@ -10,6 +11,7 @@ import org.gusdb.wdk.model.config.ModelConfig;
 import org.gusdb.wdk.model.user.User;
 
 public class ContactUsSubmitter {  
+  private static final Logger LOG = Logger.getLogger(ContactUsSubmitter.class);
   
   private ContactUsSubmitter() {}
   
@@ -73,7 +75,8 @@ public class ContactUsSubmitter {
     );
 
     // Send support email
-    emailSender.sendEmail(
+    LOG.debug("SUBJECT: " + params.subject +  " -----TO: " + supportEmail);
+    emailSender.sendEmail( 
         smtpServer, 
         supportEmail, 
         replyEmail, 

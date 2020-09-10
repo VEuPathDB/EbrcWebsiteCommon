@@ -2,6 +2,7 @@ import { get, identity, keyBy, mapValues, orderBy, spread } from 'lodash';
 import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
+import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
@@ -70,13 +71,14 @@ export function fetchStudies(wdkService) {
     wdkService.getConfig().then(config => config.projectId),
     wdkService.getQuestions(),
     wdkService.getRecordClasses(),
-    wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__')
+    wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__'),
+    wdkService.getCurrentUser()
   ]).then(spread(formatStudies))
 }
 
 
 // Helpers
-// -------
+//
 
 const parseStudy = mapProps({
   name: ['attributes.display_name'],
@@ -87,6 +89,7 @@ const parseStudy = mapProps({
     : JSON.parse(record.attributes.study_categories)],
   // TODO Remove .toLowerCase() when attribute display value is updated
   access: ['attributes.study_access', access => access && access.toLowerCase()],
+  email: ['attributes.email'],
   policyUrl: ['attributes.policy_url'],
   downloadUrl: ['attributes.bulk_download_url'],
   projectAvailability: ['attributes.project_availability', JSON.parse],
@@ -96,7 +99,7 @@ const parseStudy = mapProps({
 });
   
 
-function formatStudies(projectId, questions, recordClasses, answer) {
+function formatStudies(projectId, questions, recordClasses, answer, user) {
   const questionsByName = keyBy(questions, 'fullName');
   const recordClassesByName = keyBy(recordClasses, 'urlSegment');
 
@@ -157,11 +160,13 @@ function formatStudies(projectId, questions, recordClasses, answer) {
     [
       ({ disabled }) => disabled,
       ({ id }) => records.appearFirst.has(id),
+      ({ access, id }) => isPrereleaseStudy(access, id, user),
       ({ name }) => name
     ],
     [
       'asc',
       'desc',
+      'asc', 
       'asc'
     ]
   );

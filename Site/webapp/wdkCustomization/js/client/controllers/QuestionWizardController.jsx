@@ -78,6 +78,8 @@ class QuestionWizardController extends ViewController {
     this._getFilterCounts = memoize(this._getFilterCounts, (...args) => JSON.stringify(args));
     this._updateGroupCounts = synchronized(this._updateGroupCounts);
     this._commitParamValueChange = synchronized(debounce(this._commitParamValueChange, 750));
+
+    this.setCustomName = this.setCustomName.bind(this);
   }
 
   getWizardEventHandlers() {
@@ -122,7 +124,7 @@ class QuestionWizardController extends ViewController {
       }), {});
     const paramValues = step ? step.searchConfig.parameters : defaultParamValues;
     // FIXME Deal with invalid steps
-    this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues), () => {
+    this.setState(createInitialState(question, recordClass, paramValues, defaultParamValues, step && step.customName), () => {
       document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
 
       // store <string, Parameter>Map for quick lookup
@@ -361,6 +363,10 @@ class QuestionWizardController extends ViewController {
     }
   }
 
+  setCustomName(newCustomName) {
+    this.setState({ customName: newCustomName });
+  }
+
   onSubmit() {
     this.props.dispatch(async ({ wdkService }) => {
       try {
@@ -373,11 +379,16 @@ class QuestionWizardController extends ViewController {
         //   | "submit-custom-form"
         //   | "edit-step"
 
+        const customName = this.state.customName || this.state.question.shortDisplayName;
+
         if (submissionMetadata.type === 'edit-step') {
-          // patch step's searchConfig
-          return StrategyActions.requestUpdateStepSearchConfig(
+          // update step's customName and searchConfig
+          return StrategyActions.requestReviseStep(
             submissionMetadata.strategyId,
             submissionMetadata.stepId,
+            {
+              customName
+            },
             {
               ...submissionMetadata.previousSearchConfig,
               parameters: this.state.paramValues
@@ -392,7 +403,7 @@ class QuestionWizardController extends ViewController {
             parameters: this.state.paramValues,
             wdkWeight: DEFAULT_STEP_WEIGHT
           },
-          customName: this.state.customName || this.state.question.shortDisplayName
+          customName
         };
 
         const stepResponse = await wdkService.createStep(searchSpec);
@@ -843,7 +854,8 @@ class QuestionWizardController extends ViewController {
             wizardState={this.state}
             wizardEventHandlers={this.wizardEventHandlers}
             parameterEventHandlers={this.parameterEventHandlers}
-            customName={this.props.customName}
+            customName={this.state.customName}
+            setCustomName={this.setCustomName}
             isAddingStep={this.props.submissionMetadata.type.startsWith('add-')}
             showHelpText={!this.props.submissionMetadata.type === 'edit-step'}
           />

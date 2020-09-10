@@ -1,5 +1,5 @@
-import { capitalize, keyBy, add, isEmpty, isEqual, xor, intersection, truncate } from 'lodash';
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import { capitalize, keyBy, add, isEmpty, isEqual, xor, intersection } from 'lodash';
+import React, { useMemo, useState, useCallback, useContext, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
 import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
@@ -10,6 +10,9 @@ import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } from 'ebrc-client/hooks/projectUrls';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
+import { NewStrategySpec, NewStepSpec } from 'wdk-client/Utils/WdkUser';
+import { WdkServiceContext } from 'wdk-client/Service/WdkService';
+import { DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
 
 import './SiteSearch.scss';
 
@@ -416,61 +419,82 @@ function StrategyLinkout(props: Props) {
   const question = useWdkService(async wdkService =>
     docType == null || !docType.isWdkRecordType ? undefined :
     wdkService.getQuestionAndParameters(docType.wdkSearchName), [ docType ]);
+
+  const history = useHistory();
+  const wdkService = useContext(WdkServiceContext);
+  const onClick = useCallback(async () => {
+    if (wdkService == null || question == null || docType == null) return;
+    const parameters = question.parameters.reduce((parameters, parameter) => {
+      let value: string;
+      switch(parameter.name) {
+        case 'document_type':
+          value = docType.id;
+          break;
+        case 'text_fields':
+          value = JSON.stringify(docType.searchFields.flatMap(f =>
+            filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []));
+          break;
+        case 'text_search_organism': {
+          if (parameter.type !== 'multi-pick-vocabulary') {
+            value = parameter.initialDisplayValue || '';
+            break;
+          }
+          else {
+            // take the intersection of the organism filter selection and the questions's organism param vocabulary
+            const paramSelection = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts); 
+            const searchOrganismList = parameter.displayType === 'treeBox' ? getLeaves(parameter.vocabulary, node => node.children).map(n => n.data.term)
+              : parameter.vocabulary.map(([ term ]) => term);
+            value = JSON.stringify(intersection(paramSelection, searchOrganismList));
+            break;
+          }
+        }
+        case 'text_expression':
+          value = searchString;
+          break;
+        case 'timestamp':
+          value = Date.now().toString();
+          break;
+        default:
+          value = parameter.initialDisplayValue || '';
+          break;
+      }
+      parameters[parameter.name] = value;
+      return parameters;
+    }, {} as Record<string, string>);
+
+    const stepSpec: NewStepSpec = {
+      customName: question.shortDisplayName,
+      searchName: question.urlSegment,
+      searchConfig: {parameters }
+    };
+    const stepResp = await wdkService.createStep(stepSpec);
+    const strategySpec: NewStrategySpec = {
+      stepTree: { stepId: stepResp.id },
+      name: DEFAULT_STRATEGY_NAME,
+      isSaved: false,
+      isPublic: false
+    };
+    const strategyResp = await wdkService.createStrategy(strategySpec);
+    history.push(`/workspace/strategies/${strategyResp.id}`);
+  }, [question, docType, filters, filterOrganisms, searchString]);
+
   if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
   if (!docType.isWdkRecordType || question == null) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
-
-  const searchParams = question.parameters.reduce((searchParams, parameter) => {
-    let value: string;
-    switch(parameter.name) {
-      case 'document_type':
-        value = docType.id;
-        break;
-      case 'text_fields':
-        const paramFields = docType.searchFields.flatMap(f =>
-          filters.length === 0 || filters.includes(f.name) ? [ f.term ] : []);
-        value = JSON.stringify(paramFields);
-        break;
-      case 'text_search_organism': {
-        if (parameter.type !== 'multi-pick-vocabulary') {
-          value = parameter.initialDisplayValue || '';
-        }
-        else {
-          // take the intersection of the organism filter selection and the questions's organism param vocabulary
-          const paramSelection = filterOrganisms.length > 0 ? filterOrganisms : Object.keys(response.organismCounts); 
-          const searchOrganismList = parameter.displayType === 'treeBox' ? getLeaves(parameter.vocabulary, node => node.children).map(n => n.data.term)
-            : parameter.vocabulary.map(([ term ]) => term);
-          const paramOrganisms = intersection(paramSelection, searchOrganismList);
-          value = JSON.stringify(paramOrganisms);
-        }
-        break;
-      }
-      case 'text_expression':
-        value = searchString;
-        break;
-      case 'timestamp':
-        value = Date.now().toString();
-        break;
-      default:
-        value = parameter.initialDisplayValue || '';
-        break;
-    }
-    return searchParams + `&param.${parameter.name}=${encodeURIComponent(value)}`;
-  }, '');
-
-  const strategyUrl = `/search/${docType.id}/${docType.wdkSearchName}?autoRun${searchParams}`;
-  return <StrategyLinkoutLink strategyUrl={strategyUrl} tooltipContent="Download or data mine using the search strategy system." />;
+  return <StrategyLinkoutLink onClick={onClick} tooltipContent="Download or data mine using the search strategy system." />;
 }
 
-function StrategyLinkoutLink(props: { strategyUrl?: string, tooltipContent: string }) {
-  const { strategyUrl, tooltipContent } = props;
-  const history = useHistory();
-  const disabled = strategyUrl == null;
+function StrategyLinkoutLink(props: { onClick?: () => void, tooltipContent: string }) {
+  const [ loading, setLoading ] = useState(false);
+  const handleClick = () => {
+    setLoading(true);
+    onClick && onClick();
+  }
+  const { onClick, tooltipContent } = props;
+  const disabled = loading || onClick == null;
   return (
     <div className={cx('--LinkOut')}>
       <AnchoredTooltip content={tooltipContent}>
-        <button disabled={disabled} className="btn" type="button" onClick={() => {
-          if (strategyUrl) history.push(strategyUrl);
-        }}>
+        <button disabled={disabled} className="btn" type="button" onClick={handleClick}>
           <div className={cx('--LinkOutText')}>
             <div>Export as a Search Strategy</div>
             <div><small>to download or mine your results</small></div>
@@ -682,7 +706,7 @@ function makeRecordLink(document: SiteSearchDocument, projectUrls?: ProjectUrls,
   // if baseUrl is not found, return standard link. we _could_ throw instead...
   return {
     isRoute: !baseUrl,
-    url: baseUrl ? new URL('app/' + route, baseUrl).toString() : route,
+    url: baseUrl ? new URL('app' + route, baseUrl).toString() : route,
     text: document.hyperlinkName || document.primaryKey.join(' - ')
   }
 }

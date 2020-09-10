@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getPolicyUrl, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
+import { getPolicyUrl, isPrereleaseStudy, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import Modal from 'ebrc-client/App/Modal';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
@@ -17,10 +17,10 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderRestrictionMessage () {
-    const { study, action, webAppUrl } = this.props;
+    const { study, user, action, webAppUrl } = this.props;
     const message = getRestrictionMessage({ study, action });
     const studyPageUrl = webAppUrl + '/app' + study.route;
-    return (study.access === 'noaccessreq') 
+    return (isPrereleaseStudy(study.access, study.id, user)) 
       ? (
         <div>
           <h2>The {safeHtml(study.name)} study is not yet publicly available.</h2>
@@ -38,9 +38,9 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderPolicyNotice () {
-    const { study, webAppUrl } = this.props;
+    const { study, user, webAppUrl } = this.props;
     const policyUrl = getPolicyUrl(study, webAppUrl);
-    return (study.access === 'noaccessreq')
+    return (isPrereleaseStudy(study.access, study.id, user))
       ? null
       : !policyUrl
         ? null
@@ -56,7 +56,7 @@ class DataRestrictionModal extends React.Component {
     const { action, study, user, showLoginForm, onClose, webAppUrl } = this.props;
     const strict = isActionStrict(action);
     const approvalRequired = actionRequiresApproval({ action, study });
-    return (study.access === 'noaccessreq') 
+    return (isPrereleaseStudy(study.access, study.id, user)) 
       ? (
         <div className="DataRestrictionModal-Buttons">
           {!strict

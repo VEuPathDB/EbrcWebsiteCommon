@@ -464,8 +464,3 @@ button.ebrc-QuestionWizardParamGroupButton__active:hover {
 .ebrc-QuestionWizardParamLabel__date-range {
   align-self: flex-start;
 }
-
-.ebrc-QuestionWizard div.range-filter div.head input {
-  width : 90px;
-  text-align: right;
-}

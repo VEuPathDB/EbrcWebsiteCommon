@@ -124,7 +124,7 @@ function References(props) {
 
     if (question == null) throw new Error("cannot find question with name:" + name) ;
 
-    let recordClass = recordClasses.find(r => r.name === question.recordClassName);
+    let recordClass = recordClasses.find(r => r.urlSegment === question.outputRecordClassName);
     let searchName = `Identify ${recordClass.displayNamePlural} based on ${question.displayName}`;
     return (
       <li key={name}>

@@ -29,8 +29,11 @@ public class BrcRequest {
   private double threshold;
   private boolean useOrthology;
 
-  private String datasetCutoffType;
-  private double datasetCutoff;
+    //  private String datasetCutoffType;
+    //private double datasetCutoff;
+
+  private String datasetSelection;
+  private String enrichmentType;
 
   private Long datasetId;
 
@@ -50,14 +53,16 @@ public class BrcRequest {
       ObjectMapper mapper = new ObjectMapper();
       TypeReference<Set<String>> setType = new TypeReference<Set<String>>() {};
       request.ids = mapper.readValue(idSet, setType);
+      request.datasetSelection = json.getString("datasetSelection");
+      request.enrichmentType = json.getString("enrichmentType");
       request.thresholdType = json.getString("thresholdType");
       request.threshold = json.getDouble("threshold");
 
-
       request.useOrthology = json.getJSONObject("additionalFlags").getBoolean("useOrthology");
 
-      request.datasetCutoff = json.getJSONObject("additionalFlags").getDouble("datasetCutoff");
-      request.datasetCutoffType = json.getJSONObject("additionalFlags").getString("datasetCutoffType");
+      // request.datasetCutoff = json.getJSONObject("additionalFlags").getDouble("datasetCutoff");
+      //request.datasetCutoffType = json.getJSONObject("additionalFlags").getString("datasetCutoffType");
+
 
       return request;
     }
@@ -132,8 +137,10 @@ public class BrcRequest {
         .put("orthologyFlag", useOrthology ? "yes" : "no")
         .put("ds_gene_ids", String.valueOf(datasetId))
         .put("threshold", String.valueOf(threshold))
-        .put("datasetCutoff", String.valueOf(datasetCutoff))
-        .put("datasetCutoffType", String.valueOf(datasetCutoffType));
+        //.put("datasetCutoff", String.valueOf(datasetCutoff))
+        //.put("datasetCutoffType", String.valueOf(datasetCutoffType))
+        .put("datasetSelection", String.valueOf(datasetSelection))
+        .put("enrichmentType", String.valueOf(enrichmentType));
   }
 
   public String getType() {
@@ -157,12 +164,20 @@ public class BrcRequest {
   }
 
 
-  public String getDatasetCutoffType() {
-    return datasetCutoffType;
+    //  public String getDatasetCutoffType() {
+    //return datasetCutoffType;
+    // }
+
+    // public double getDatasetCutoff() {
+    //return datasetCutoff;
+    // }
+
+  public String getDatasetSelection() {
+    return datasetSelection;
   }
 
-  public double getDatasetCutoff() {
-    return datasetCutoff;
+  public String getEnrichmentType() {
+    return enrichmentType;
   }
 
 
