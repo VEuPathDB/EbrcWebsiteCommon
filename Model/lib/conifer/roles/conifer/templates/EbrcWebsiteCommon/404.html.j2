@@ -6,13 +6,30 @@
 {% endblock %}
 {% block content %}
   {% set supportEmail = modelconfig_supportEmail if (project != 'EuPathDB') else 'help@veupathdb.org' %}
-
-  <h1>Page Not Found</h1>
-  <p>The requested page could not be found.</p>
-  <p>
-     If you believe the page you requested should exist, please 
-     contact <a href="mailto:{{ supportEmail }}" target="_blank">{{ supportEmail }}</a> 
-     and please provide the URL you tried to access or a description of what you are 
-     looking for.
-   </p>
+  {% if (project != 'VectorBase') %}
+    <h1>Page Not Found</h1>
+    <p>The requested page could not be found.</p>
+    <p>
+      If you believe the page you requested should exist, please
+      contact <a href="mailto:{{ supportEmail }}" target="_blank">{{ supportEmail }}</a>
+      and please provide the URL you tried to access or a description of what you are
+      looking for.
+    </p>
+  {% else %}
+    <h1>Page Not Found</h1>
+    <h3>
+      Please note in August 2020 VectorBase merged with EuPathDB to become the new VEuPathDB BRC.
+      <br>As a result we have a new website and some of the VectorBase legacy links will no longer work. 
+    </h3>
+    <p>
+      Please visit our homepage here (<a href="/">VectorBase.org</a>) to find what you are looking for, 
+      or try the site search at the top of this page.
+    </p>
+    <p>
+      If you believe the page you requested should exist, or you are having difficulty 
+      locating what you are looking for on our new site, please contact 
+      <a href="mailto:{{ supportEmail }}" target="_blank">{{ supportEmail }}</a>.<br>
+      <b>Please provide the URL you tried to access or a description of what you are looking for.</b> 
+    </p>
+  {% endif %}
 {% endblock %}
