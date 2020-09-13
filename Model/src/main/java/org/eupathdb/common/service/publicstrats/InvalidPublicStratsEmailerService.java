@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -45,16 +47,18 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   private static final String EMAIL_MESSAGE_TEXT =
       "Due to changes in a recent release, the following search strategies" +
       " you have set as 'public' have become invalid.  Other users will not" +
-      " see meaningful results when clicking on them until they are revised. " +
+      " be able to see them in the Public tab until they are revised. " +
       NL + NL +
-      " Please log in to " + SITE_URL_MACRO + ", visit each of the links" +
+      "Please log in to " + SITE_URL_MACRO + ", visit each of the links" +
       " below, and revise any steps covered by a red 'X'.  You may also" +
       " unpublish a strategy by clicking its ‘Public’ checkbox." +
       NL + NL;
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response notifyInvalidPublicStratsOwners() throws WdkModelException {
+  public Response notifyInvalidPublicStratsOwners(
+      @QueryParam("sendEmail") @DefaultValue("false") boolean sendEmail
+  ) throws WdkModelException {
     if (!adminCredentialsSubmitted()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -111,13 +115,15 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
       if (TEST) {
         LOG.info(
-          "Sending email to '" + userEmail +
-          "' with cc/reply-to '" + supportEmail +
-          "', subject '" + subject +
-          "' and body:" + NL + content.toString()
+          "Sending email via '" + smtpServer + "'" + NL + NL +
+          "To: " + userEmail + NL +
+          "Cc: " + supportEmail + NL +
+          "Reply-to: " + supportEmail + NL +
+          "Subject: " + subject + NL + NL +
+          content.toString() + NL
         );
       }
-      else {
+      else if (sendEmail) {
         Utilities.sendEmail(
           smtpServer,
           userEmail,
@@ -136,7 +142,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     List<String> authHeaders = getHeaders().get(AUTH_CODE_HEADER);
     String[] loginCreds;
     if (authHeaders == null || authHeaders.isEmpty() || authHeaders.get(0) == null ||
-        (loginCreds = authHeaders.get(0).split("|", 2)).length == 1) {
+        (loginCreds = authHeaders.get(0).split("\\|", 2)).length == 1) {
       return false;
     }
     return
