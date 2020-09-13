@@ -5,6 +5,7 @@ import java.util.Set;
 import org.eupathdb.common.service.announce.SiteMessagesService;
 import org.eupathdb.common.service.brc.BrcService;
 import org.eupathdb.common.service.contact.ContactUsService;
+import org.eupathdb.common.service.publicstrats.InvalidPublicStratsEmailerService;
 import org.eupathdb.common.service.sitemap.SitemapService;
 import org.eupathdb.common.service.testrunner.TestRunnerService;
 import org.gusdb.fgputil.SetBuilder;
@@ -21,6 +22,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(SiteMessagesService.class)
     .add(SitemapService.class)
     .add(TestRunnerService.class)
+    .add(InvalidPublicStratsEmailerService.class)
     .toSet();
   }
 }
