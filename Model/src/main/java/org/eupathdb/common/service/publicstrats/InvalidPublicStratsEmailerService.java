@@ -29,12 +29,12 @@ import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-@Path("/invalid-public-strats-notification")
+@Path("/invalid-public-strats-report")
 public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(InvalidPublicStratsEmailerService.class);
 
-  private static final boolean TEST = true;
+  private static final boolean TEST = false;
 
   private static final String AUTH_CODE_HEADER = "auth-code";
 
@@ -47,7 +47,8 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   private static final String EMAIL_MESSAGE_TEXT =
       "Due to changes in a recent release, the following search strategies" +
       " you have set as 'public' have become invalid.  Other users will not" +
-      " be able to see them in the Public tab until they are revised. " +
+      " be able to see them in the Public tab, nor will bookmarked links to" +
+      " these strategies provide meaningful results, until they are revised." +
       NL + NL +
       "Please log in to " + SITE_URL_MACRO + ", visit each of the links" +
       " below, and revise any steps covered by a red 'X'.  You may also" +
@@ -57,7 +58,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response notifyInvalidPublicStratsOwners(
-      @QueryParam("sendEmail") @DefaultValue("false") boolean sendEmail
+      @QueryParam("notifyUsers") @DefaultValue("false") boolean sendEmail
   ) throws WdkModelException {
     if (!adminCredentialsSubmitted()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -110,6 +111,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
       responseJson.put(new JSONObject()
         .put("userId", userId)
+        .put("siteName", siteName)
         .put("email", userEmail)
         .put("invalidPublicStrategies", stratJsons));
 
