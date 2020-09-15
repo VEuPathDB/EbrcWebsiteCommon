@@ -10,10 +10,14 @@ sites=(
   https://microsporidiadb.org
   https://piroplasmadb.org
   https://plasmodb.org
+  https://schistodb.net
   https://toxodb.org
   https://trichdb.org
   https://tritrypdb.org
   https://vectorbase.org
+  https://orthomcl.org
+  https://clinepidb.org
+  https://microbiomedb.org
 )
 
 if [ $# -ne 1 ]; then
@@ -26,15 +30,13 @@ if [ $# -ne 1 ]; then
 fi
 
 authCode=$1
-notifyUsers="false"
+notifyUsers=false
 
 for site in "${sites[@]}"; do
   url="$site/a/service/invalid-public-strats-report?notifyUsers=$notifyUsers"
-  cmd="curl -H \"auth-code: $authCode\" -X GET $url"
   echo "##############################################"
   echo "$site"
-  echo "> $cmd"
   echo "##############################################"
-  $cmd
+  curl -H "auth-code: $authCode" -X GET $url
   echo
 done
