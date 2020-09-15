@@ -1,14 +1,11 @@
 package org.eupathdb.common.service.publicstrats;
 
 import static org.gusdb.fgputil.FormatUtil.NL;
+import static org.gusdb.fgputil.functional.Functions.binItems;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -60,6 +57,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   public Response notifyInvalidPublicStratsOwners(
       @QueryParam("notifyUsers") @DefaultValue("false") boolean sendEmail
   ) throws WdkModelException {
+
     if (!adminCredentialsSubmitted()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -150,21 +148,5 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     return
       getWdkModel().getUserFactory().isCorrectPassword(loginCreds[0], loginCreds[1]) &&
       getWdkModel().getModelConfig().getAdminEmails().contains(loginCreds[0]);
-  }
-
-  private static <S,T> Map<S,List<T>> binItems(Collection<T> items,
-      Function<T,S> getCharacteristicFunction, Predicate<T> test) {
-    return Functions.reduce(items, (acc, next) -> {
-      if (test.test(next)) {
-        S key = getCharacteristicFunction.apply(next);
-        List<T> bin = acc.get(key);
-        if (bin == null) {
-          bin = new ArrayList<>();
-          acc.put(key, bin);
-        }
-        bin.add(next);
-      }
-      return acc;
-    }, new LinkedHashMap<S,List<T>>());
   }
 }
