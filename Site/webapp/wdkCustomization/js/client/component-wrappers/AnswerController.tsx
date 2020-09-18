@@ -2,7 +2,9 @@ import React from 'react';
 
 import { memoize } from 'lodash';
 
+import { AnswerOptions } from 'wdk-client/Actions/AnswerActions';
 import { Props as AnswerControllerProps } from 'wdk-client/Controllers/AnswerController';
+import { WdkService } from 'wdk-client/Core';
 import { AttributeValue, RecordInstance } from 'wdk-client/Utils/WdkModel';
 
 import { MONTHS } from 'ebrc-client/util/formatters';
@@ -47,3 +49,34 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
     Number(versionStr)
   ];
 });
+
+export function downloadAnswer(
+  wdkService: WdkService,
+  searchName: string,
+  {
+    displayInfo: {
+      attributes,
+      pagination,
+      sorting
+    },
+    parameters = {}
+  }: AnswerOptions
+){
+  return wdkService.downloadAnswer({
+    answerSpec: {
+      searchName,
+      searchConfig: {
+        parameters
+      }
+    },
+    formatting: {
+      format: 'attributesTabular',
+      formatConfig: {
+        attachmentType: 'csv',
+        attributes,
+        pagination,
+        sorting
+      }
+    }
+  });
+}
