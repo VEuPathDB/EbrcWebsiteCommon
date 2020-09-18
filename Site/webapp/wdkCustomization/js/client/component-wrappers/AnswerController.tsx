@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { memoize } from 'lodash';
 
 import { AnswerOptions } from 'wdk-client/Actions/AnswerActions';
+import { IconAlt } from 'wdk-client/Components';
 import {
   DEFAULT_PAGINATION,
   DEFAULT_SORTING,
@@ -17,7 +18,17 @@ import { AttributeValue, RecordInstance, ParameterValues } from 'wdk-client/Util
 import { MONTHS } from 'ebrc-client/util/formatters';
 
 export function AnswerController(DefaultComponent: React.ComponentType<AnswerControllerProps>) {
-  return (props: AnswerControllerProps) => <DefaultComponent {...props} customSortBys={ebrcCustomSortBys} />;
+  return (props: AnswerControllerProps) => {
+    const additionalActions = useAdditionalActions(props.ownProps.parameters);
+
+    return (
+      <DefaultComponent
+        {...props}
+        customSortBys={ebrcCustomSortBys}
+        additionalActions={additionalActions}
+      />
+    );
+  };
 }
 
 const ebrcCustomSortBys = {
@@ -56,6 +67,25 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
     Number(versionStr)
   ];
 });
+
+function useAdditionalActions(parameters?: ParameterValues) {
+  const onDownloadButtonClick = useOnDownloadButtonClick(parameters);
+
+  return useMemo(
+    () => [
+      {
+        key: 'download',
+        display: (
+          <button className="btn" onClick={onDownloadButtonClick}>
+            <IconAlt fa="download" />
+            Download
+          </button>
+        )
+      }
+    ],
+    [ onDownloadButtonClick ]
+  )
+}
 
 function useOnDownloadButtonClick(parameters?: ParameterValues) {
   const wdkService = useContext(WdkServiceContext);
