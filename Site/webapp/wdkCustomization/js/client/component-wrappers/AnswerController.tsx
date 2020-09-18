@@ -17,6 +17,8 @@ import { AttributeValue, RecordInstance, ParameterValues } from 'wdk-client/Util
 
 import { MONTHS } from 'ebrc-client/util/formatters';
 
+import './AnswerController.scss';
+
 export function AnswerController(DefaultComponent: React.ComponentType<AnswerControllerProps>) {
   return (props: AnswerControllerProps) => {
     const additionalActions = useAdditionalActions(props.ownProps.parameters);
