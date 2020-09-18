@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 
 import { memoize } from 'lodash';
 
 import { AnswerOptions } from 'wdk-client/Actions/AnswerActions';
-import { Props as AnswerControllerProps } from 'wdk-client/Controllers/AnswerController';
+import {
+  DEFAULT_PAGINATION,
+  DEFAULT_SORTING,
+  Props as AnswerControllerProps
+} from 'wdk-client/Controllers/AnswerController';
 import { WdkService } from 'wdk-client/Core';
-import { AttributeValue, RecordInstance } from 'wdk-client/Utils/WdkModel';
+import { RootState } from 'wdk-client/Core/State/Types';
+import { WdkServiceContext } from 'wdk-client/Service/WdkService';
+import { AttributeValue, RecordInstance, ParameterValues } from 'wdk-client/Utils/WdkModel';
 
 import { MONTHS } from 'ebrc-client/util/formatters';
 
@@ -49,6 +56,35 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
     Number(versionStr)
   ];
 });
+
+function useOnDownloadButtonClick(parameters?: ParameterValues) {
+  const wdkService = useContext(WdkServiceContext);
+
+  const allAttributes = useSelector((state: RootState) => state.answerView.allAttributes);
+  const question = useSelector((state: RootState) => state.answerView.question);
+
+  if (wdkService == null || allAttributes == null || question == null) {
+    return undefined;
+  }
+
+  return () => {
+    downloadAnswer(
+      wdkService,
+      question.urlSegment,
+      {
+        parameters,
+        displayInfo: {
+          attributes: allAttributes
+            .filter(({ isDisplayable }) => isDisplayable)
+            .map(({ name }) => name),
+          customName: '',
+          pagination: DEFAULT_PAGINATION,
+          sorting: DEFAULT_SORTING
+        }
+      }
+    );
+  };
+}
 
 export function downloadAnswer(
   wdkService: WdkService,
