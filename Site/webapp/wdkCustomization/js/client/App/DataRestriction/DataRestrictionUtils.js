@@ -68,8 +68,8 @@ export const accessLevels = {
     [Action.analysis]: Require.allow,
     [Action.results]: Require.allow,
     [Action.paginate]: Require.allow,
-    [Action.record]: Require.allow,
-    [Action.recordPage]: Require.allow,
+    [Action.record]: Require.approval,
+    [Action.recordPage]: Require.approval,
     [Action.download]: Require.approval,
     [Action.basket]: Require.approval
   },
