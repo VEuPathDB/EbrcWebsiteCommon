@@ -119,7 +119,9 @@ function useOnDownloadButtonClick(props: AnswerControllerProps) {
 
       // We only offer a download button for answers whose
       // record class offers the nececessary reporter
-      const reporterAvailable = recordClass?.formats.some(
+      // FIXME: Should probably also check whether the reporter
+      // is offered in "download" scope
+      const reporterAvailable = recordClass.formats.some(
         ({ name }) => name === DOWNLOAD_REPORTER_NAME
       );
 
@@ -132,6 +134,8 @@ function useOnDownloadButtonClick(props: AnswerControllerProps) {
           wdkService,
           question.urlSegment,
           parameters ?? {},
+          // FIXME: The downloaded attributes should be
+          // precisely those with "download" scope
           allAttributes
             .filter(({ isDisplayable }) => isDisplayable)
             .map(({ name }) => name),
