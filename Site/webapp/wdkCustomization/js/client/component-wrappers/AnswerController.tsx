@@ -72,8 +72,9 @@ function useAdditionalActions(props: AnswerControllerProps) {
   const onDownloadButtonClick = useOnDownloadButtonClick(props);
 
   return useMemo(
-    () => onDownloadButtonClick
-      ? [
+    () => onDownloadButtonClick == null
+      ? []
+      : [
           {
             key: 'download',
             display: (
@@ -83,8 +84,7 @@ function useAdditionalActions(props: AnswerControllerProps) {
               </button>
             )
           }
-        ]
-      : [],
+        ],
     [ onDownloadButtonClick ]
   )
 }
