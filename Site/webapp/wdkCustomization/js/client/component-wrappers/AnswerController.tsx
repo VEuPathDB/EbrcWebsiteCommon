@@ -2,7 +2,6 @@ import React, { useContext, useMemo } from 'react';
 
 import { memoize } from 'lodash';
 
-import { AnswerOptions } from 'wdk-client/Actions/AnswerActions';
 import { IconAlt } from 'wdk-client/Components';
 import {
   DEFAULT_PAGINATION,
@@ -11,11 +10,18 @@ import {
 } from 'wdk-client/Controllers/AnswerController';
 import { WdkService } from 'wdk-client/Core';
 import { WdkServiceContext } from 'wdk-client/Service/WdkService';
-import { AttributeValue, RecordInstance } from 'wdk-client/Utils/WdkModel';
+import {
+  AttributeValue,
+  ParameterValues,
+  RecordInstance
+} from 'wdk-client/Utils/WdkModel';
 
 import { MONTHS } from 'ebrc-client/util/formatters';
 
 import './AnswerController.scss';
+
+const DOWNLOAD_REPORTER_NAME = 'attributesTabular';
+const DOWNLOAD_FORMAT = 'csv';
 
 export function AnswerController(DefaultComponent: React.ComponentType<AnswerControllerProps>) {
   return (props: AnswerControllerProps) => {
@@ -96,48 +102,52 @@ function useOnDownloadButtonClick(props: AnswerControllerProps) {
 
   const {
     allAttributes,
-    question
+    question,
+    recordClass
   } = props.stateProps;
 
-  if (
-    wdkService == null ||
-    allAttributes == null ||
-    question == null
-  ) {
-    return undefined;
-  }
+  return useMemo(
+    () => {
+      if (
+        wdkService == null ||
+        allAttributes == null ||
+        recordClass == null ||
+        question == null
+      ) {
+        return undefined;
+      }
 
-  return () => {
-    downloadAnswer(
-      wdkService,
-      question.urlSegment,
-      {
-        parameters,
-        displayInfo: {
-          attributes: allAttributes
+      // We only offer a download button for answers whose
+      // record class offers the nececessary reporter
+      const reporterAvailable = recordClass?.formats.some(
+        ({ name }) => name === DOWNLOAD_REPORTER_NAME
+      );
+
+      if (!reporterAvailable) {
+        return undefined;
+      }
+
+      return () => {
+        downloadAnswer(
+          wdkService,
+          question.urlSegment,
+          parameters ?? {},
+          allAttributes
             .filter(({ isDisplayable }) => isDisplayable)
             .map(({ name }) => name),
-          customName: '',
-          pagination: DEFAULT_PAGINATION,
-          sorting: DEFAULT_SORTING
-        }
+        );
       }
-    );
-  };
+    },
+    [ wdkService, question?.urlSegment, parameters, allAttributes ]
+  )
 }
 
 export function downloadAnswer(
   wdkService: WdkService,
   searchName: string,
-  {
-    displayInfo: {
-      attributes,
-      pagination,
-      sorting
-    },
-    parameters = {}
-  }: AnswerOptions
-){
+  parameters: ParameterValues,
+  attributes: string[]
+) {
   return wdkService.downloadAnswer({
     answerSpec: {
       searchName,
@@ -146,12 +156,12 @@ export function downloadAnswer(
       }
     },
     formatting: {
-      format: 'attributesTabular',
+      format: DOWNLOAD_REPORTER_NAME,
       formatConfig: {
-        attachmentType: 'csv',
+        attachmentType: DOWNLOAD_FORMAT,
         attributes,
-        pagination,
-        sorting
+        pagination: DEFAULT_PAGINATION,
+        sorting: DEFAULT_SORTING
       }
     }
   });
