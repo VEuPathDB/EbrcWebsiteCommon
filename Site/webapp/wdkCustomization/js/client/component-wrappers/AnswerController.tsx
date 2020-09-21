@@ -1,5 +1,4 @@
 import React, { useContext, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { memoize } from 'lodash';
 
@@ -11,9 +10,8 @@ import {
   Props as AnswerControllerProps
 } from 'wdk-client/Controllers/AnswerController';
 import { WdkService } from 'wdk-client/Core';
-import { RootState } from 'wdk-client/Core/State/Types';
 import { WdkServiceContext } from 'wdk-client/Service/WdkService';
-import { AttributeValue, RecordInstance, ParameterValues } from 'wdk-client/Utils/WdkModel';
+import { AttributeValue, RecordInstance } from 'wdk-client/Utils/WdkModel';
 
 import { MONTHS } from 'ebrc-client/util/formatters';
 
@@ -21,7 +19,7 @@ import './AnswerController.scss';
 
 export function AnswerController(DefaultComponent: React.ComponentType<AnswerControllerProps>) {
   return (props: AnswerControllerProps) => {
-    const additionalActions = useAdditionalActions(props.ownProps.parameters);
+    const additionalActions = useAdditionalActions(props);
 
     return (
       <DefaultComponent
@@ -70,32 +68,42 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
   ];
 });
 
-function useAdditionalActions(parameters?: ParameterValues) {
-  const onDownloadButtonClick = useOnDownloadButtonClick(parameters);
+function useAdditionalActions(props: AnswerControllerProps) {
+  const onDownloadButtonClick = useOnDownloadButtonClick(props);
 
   return useMemo(
-    () => [
-      {
-        key: 'download',
-        display: (
-          <button className="btn" onClick={onDownloadButtonClick}>
-            <IconAlt fa="download" />
-            Download
-          </button>
-        )
-      }
-    ],
+    () => onDownloadButtonClick
+      ? [
+          {
+            key: 'download',
+            display: (
+              <button className="btn" onClick={onDownloadButtonClick}>
+                <IconAlt fa="download" />
+                Download
+              </button>
+            )
+          }
+        ]
+      : [],
     [ onDownloadButtonClick ]
   )
 }
 
-function useOnDownloadButtonClick(parameters?: ParameterValues) {
+function useOnDownloadButtonClick(props: AnswerControllerProps) {
   const wdkService = useContext(WdkServiceContext);
 
-  const allAttributes = useSelector((state: RootState) => state.answerView.allAttributes);
-  const question = useSelector((state: RootState) => state.answerView.question);
+  const { parameters } = props.ownProps;
 
-  if (wdkService == null || allAttributes == null || question == null) {
+  const {
+    allAttributes,
+    question
+  } = props.stateProps;
+
+  if (
+    wdkService == null ||
+    allAttributes == null ||
+    question == null
+  ) {
     return undefined;
   }
 
