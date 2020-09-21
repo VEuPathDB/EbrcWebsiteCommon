@@ -31,6 +31,7 @@ const enhance = connect(state => state.globalData, null)
 /** Application footer */
 export default enhance(function Footer(props) {
   const {
+    siteAck,
     siteConfig: { webAppUrl },
     config: { buildNumber, displayName, releaseDate } = {}
   } = props;
@@ -71,6 +72,14 @@ export default enhance(function Footer(props) {
           Please <NewWindowLink href={webAppUrl + '/app/contact-us'}>Contact Us</NewWindowLink> with any questions or comments
         </div>
       </div>
+  
+      {siteAck != null && (<div className="siteAck">
+        <a href={siteAck.linkTo}>
+          <img width="120" src={siteAck.imageLocation}/>
+        </a>
+      </div>
+      )}
+ 
     </div>
   );
 });
