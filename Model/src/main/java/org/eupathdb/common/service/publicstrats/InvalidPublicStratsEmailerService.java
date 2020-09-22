@@ -1,14 +1,14 @@
 package org.eupathdb.common.service.publicstrats;
 
 import static org.gusdb.fgputil.FormatUtil.NL;
+import static org.gusdb.fgputil.functional.Functions.binItems;
+import static org.gusdb.fgputil.functional.Functions.reduce;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -34,19 +34,17 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(InvalidPublicStratsEmailerService.class);
 
-  private static final boolean TEST = false;
-
   private static final String AUTH_CODE_HEADER = "auth-code";
 
   private static final String SITE_NAME_MACRO = "%%SITE_NAME%%";
   private static final String SITE_URL_MACRO = "%%SITE_URL%%";
 
   private static final String EMAIL_MESSAGE_SUBJECT =
-      "Invalid public strategies on " + SITE_NAME_MACRO;
+      "Outdated public strategies on " + SITE_NAME_MACRO;
 
   private static final String EMAIL_MESSAGE_TEXT =
-      "Due to changes in a recent release, the following search strategies" +
-      " you have set as 'public' have become invalid.  Other users will not" +
+      "Due to data updates in a recent release, the following search strategies" +
+      " you have set as 'public' have become outdated.  Other users will not" +
       " be able to see them in the Public tab, nor will bookmarked links to" +
       " these strategies provide meaningful results, until they are revised." +
       NL + NL +
@@ -58,8 +56,11 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response notifyInvalidPublicStratsOwners(
-      @QueryParam("notifyUsers") @DefaultValue("false") boolean sendEmail
+      @QueryParam("notifyUsers") @DefaultValue("false") boolean sendEmail,
+      @QueryParam("logEmailContent") @DefaultValue("false") boolean logEmailContent,
+      @QueryParam("statsOnly") @DefaultValue("false") boolean statsOnly
   ) throws WdkModelException {
+
     if (!adminCredentialsSubmitted()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -76,7 +77,8 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     String smtpServer = model.getModelConfig().getSmtpServer();
     String supportEmail = model.getModelConfig().getSupportEmail();
     String siteName = model.getDisplayName();
-    String localhost = model.getProperties().get("LOCALHOST");
+    URI baseUri = getUriInfo().getBaseUri();
+    String localhost = baseUri.getScheme() + "://" + baseUri.getHost();
     String webappPath = model.getProperties().get("WEBAPP_BASE_URL");
     String strategyLinkPrefix = localhost + webappPath + "/workspace/strategies/";
 
@@ -87,8 +89,10 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     String subject = replace.apply(EMAIL_MESSAGE_SUBJECT);
     String messageText = replace.apply(EMAIL_MESSAGE_TEXT);
 
-    // will return an array of objects; one for each user, containing invalid strat info
-    JSONArray responseJson = new JSONArray();
+    // will return either:
+    //   1. statistics object (num users, num strats)
+    //   2. an array of objects; one for each user, containing invalid strat info
+    JSONArray ownersArray = new JSONArray();
 
     for (String userEmail : invalidStrats.keySet()) {
 
@@ -109,13 +113,13 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
           .append(NL);
       }
 
-      responseJson.put(new JSONObject()
+      ownersArray.put(new JSONObject()
         .put("userId", userId)
         .put("siteName", siteName)
         .put("email", userEmail)
         .put("invalidPublicStrategies", stratJsons));
 
-      if (TEST) {
+      if (logEmailContent) {
         LOG.info(
           "Sending email via '" + smtpServer + "'" + NL + NL +
           "To: " + userEmail + NL +
@@ -125,7 +129,8 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
           content.toString() + NL
         );
       }
-      else if (sendEmail) {
+
+      if (sendEmail) {
         Utilities.sendEmail(
           smtpServer,
           userEmail,
@@ -137,7 +142,27 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
       }
     }
 
-    return Response.ok(responseJson.toString(2)).build();
+    // build statistics
+    JSONObject stats = getStatsObj(invalidStrats);
+
+    return Response.ok((statsOnly ? stats :
+      new JSONObject()
+        .put("stats", stats)
+        .put("details", ownersArray)
+    ).toString(2)).build();
+  }
+
+  private JSONObject getStatsObj(Map<String, List<Strategy>> invalidStrats) {
+    int numUniqueUsers = invalidStrats.size();
+    List<Integer> numStratsPerUser = invalidStrats.values().stream()
+        .map(list -> list.size()).collect(Collectors.toList());
+    int numOverallStrats = numStratsPerUser.stream().mapToInt(i -> i).sum();
+    JSONObject usersPerCount = reduce(binItems(numStratsPerUser, i -> i, val -> true).entrySet(),
+        (json, bin) -> json.put(bin.getKey().toString(), bin.getValue().size()), new JSONObject());
+    return new JSONObject()
+        .put("numUniqueUsers", numUniqueUsers)
+        .put("numOverallStrategies", numOverallStrats)
+        .put("distribution (num strats -> num users with that many strats)", usersPerCount);
   }
 
   private boolean adminCredentialsSubmitted() throws WdkModelException {
@@ -150,21 +175,5 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     return
       getWdkModel().getUserFactory().isCorrectPassword(loginCreds[0], loginCreds[1]) &&
       getWdkModel().getModelConfig().getAdminEmails().contains(loginCreds[0]);
-  }
-
-  private static <S,T> Map<S,List<T>> binItems(Collection<T> items,
-      Function<T,S> getCharacteristicFunction, Predicate<T> test) {
-    return Functions.reduce(items, (acc, next) -> {
-      if (test.test(next)) {
-        S key = getCharacteristicFunction.apply(next);
-        List<T> bin = acc.get(key);
-        if (bin == null) {
-          bin = new ArrayList<>();
-          acc.put(key, bin);
-        }
-        bin.add(next);
-      }
-      return acc;
-    }, new LinkedHashMap<S,List<T>>());
   }
 }
