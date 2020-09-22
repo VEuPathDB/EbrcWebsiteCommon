@@ -1,14 +1,40 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 
 import { memoize } from 'lodash';
 
-import { Props as AnswerControllerProps } from 'wdk-client/Controllers/AnswerController';
-import { AttributeValue, RecordInstance } from 'wdk-client/Utils/WdkModel';
+import { IconAlt } from 'wdk-client/Components';
+import {
+  DEFAULT_PAGINATION,
+  DEFAULT_SORTING,
+  Props as AnswerControllerProps
+} from 'wdk-client/Controllers/AnswerController';
+import { WdkService } from 'wdk-client/Core';
+import { WdkServiceContext } from 'wdk-client/Service/WdkService';
+import {
+  AttributeValue,
+  ParameterValues,
+  RecordInstance
+} from 'wdk-client/Utils/WdkModel';
 
 import { MONTHS } from 'ebrc-client/util/formatters';
 
+import './AnswerController.scss';
+
+const DOWNLOAD_REPORTER_NAME = 'attributesTabular';
+const DOWNLOAD_FORMAT = 'csv';
+
 export function AnswerController(DefaultComponent: React.ComponentType<AnswerControllerProps>) {
-  return (props: AnswerControllerProps) => <DefaultComponent {...props} customSortBys={ebrcCustomSortBys} />;
+  return (props: AnswerControllerProps) => {
+    const additionalActions = useAdditionalActions(props);
+
+    return (
+      <DefaultComponent
+        {...props}
+        customSortBys={ebrcCustomSortBys}
+        additionalActions={additionalActions}
+      />
+    );
+  };
 }
 
 const ebrcCustomSortBys = {
@@ -47,3 +73,100 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
     Number(versionStr)
   ];
 });
+
+function useAdditionalActions(props: AnswerControllerProps) {
+  const onDownloadButtonClick = useOnDownloadButtonClick(props);
+
+  return useMemo(
+    () => onDownloadButtonClick == null
+      ? []
+      : [
+          {
+            key: 'download',
+            display: (
+              <button className="btn" onClick={onDownloadButtonClick}>
+                <IconAlt fa="download" />
+                Download
+              </button>
+            )
+          }
+        ],
+    [ onDownloadButtonClick ]
+  )
+}
+
+function useOnDownloadButtonClick(props: AnswerControllerProps) {
+  const wdkService = useContext(WdkServiceContext);
+
+  const { parameters } = props.ownProps;
+
+  const {
+    allAttributes,
+    question,
+    recordClass
+  } = props.stateProps;
+
+  return useMemo(
+    () => {
+      if (
+        wdkService == null ||
+        allAttributes == null ||
+        recordClass == null ||
+        question == null
+      ) {
+        return undefined;
+      }
+
+      // We only offer a download button for answers whose
+      // record class offers the nececessary reporter
+      // FIXME: Should probably also check whether the reporter
+      // is offered in "download" scope
+      const reporterAvailable = recordClass.formats.some(
+        ({ name }) => name === DOWNLOAD_REPORTER_NAME
+      );
+
+      if (!reporterAvailable) {
+        return undefined;
+      }
+
+      return () => {
+        downloadAnswer(
+          wdkService,
+          question.urlSegment,
+          parameters ?? {},
+          // FIXME: The downloaded attributes should be
+          // precisely those with "download" scope
+          allAttributes
+            .filter(({ isDisplayable }) => isDisplayable)
+            .map(({ name }) => name),
+        );
+      }
+    },
+    [ wdkService, question?.urlSegment, parameters, allAttributes ]
+  )
+}
+
+export function downloadAnswer(
+  wdkService: WdkService,
+  searchName: string,
+  parameters: ParameterValues,
+  attributes: string[]
+) {
+  return wdkService.downloadAnswer({
+    answerSpec: {
+      searchName,
+      searchConfig: {
+        parameters
+      }
+    },
+    formatting: {
+      format: DOWNLOAD_REPORTER_NAME,
+      formatConfig: {
+        attachmentType: DOWNLOAD_FORMAT,
+        attributes,
+        pagination: DEFAULT_PAGINATION,
+        sorting: DEFAULT_SORTING
+      }
+    }
+  });
+}
