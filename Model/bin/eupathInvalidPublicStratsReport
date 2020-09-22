@@ -1,30 +1,31 @@
 #!/bin/bash
 
 sites=(
-  https://veupathdb.org
-  https://amoebadb.org
-  https://cryptodb.org
-  https://fungidb.org
-  https://giardiadb.org
-  https://hostdb.org
-  https://microsporidiadb.org
-  https://piroplasmadb.org
-  https://plasmodb.org
-  https://schistodb.net
-  https://toxodb.org
-  https://trichdb.org
-  https://tritrypdb.org
-  https://vectorbase.org
-  https://orthomcl.org
-  https://clinepidb.org
-  https://microbiomedb.org
+  veupathdb.org
+  amoebadb.org
+  cryptodb.org
+  fungidb.org
+  giardiadb.org
+  hostdb.org
+  microsporidiadb.org
+  piroplasmadb.org
+  plasmodb.org
+  schistodb.net
+  toxodb.org
+  trichdb.org
+  tritrypdb.org
+  vectorbase.org
+  orthomcl.org
+  clinepidb.org
+  microbiomedb.org
 )
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 3 ]; then
   echo
-  echo "USAGE: eupathInvalidPublicStratsReport <auth_code> <query_string>"
+  echo "USAGE: eupathInvalidPublicStratsReport <auth_code> <subdomain> <query_string>"
   echo
   echo "  auth_code = 'user_email|password' of an admin user"
+  echo "  subdomain = prefix to append to each domain e.g. 'qa.'"
   echo "  query_string = query string to pass to the service (do not include '?')"
   echo
   echo "    Query string options (all default to false if omitted)"
@@ -36,12 +37,14 @@ if [ $# -ne 2 ]; then
 fi
 
 authCode=$1
-queryString=$2
+subdomain=$2
+queryString=$3
 
-for site in "${sites[@]}"; do
-  url="$site/a/service/invalid-public-strats-report?$queryString"
+for primaryDomain in "${sites[@]}"; do
+  domain="${subdomain}${primaryDomain}"
+  url="https://${domain}/a/service/invalid-public-strats-report?${queryString}"
   echo "##############################################"
-  echo "$site"
+  echo "$domain"
   echo "##############################################"
   curl -H "auth-code: $authCode" -X GET $url
   echo
