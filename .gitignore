@@ -2,7 +2,7 @@
 .settings
 .classpath
 .factorypath
-target
+**/target
 .DS_Store
 *~
 .*~
