@@ -1,4 +1,5 @@
 import React, { useContext, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { memoize } from 'lodash';
 
@@ -19,6 +20,10 @@ import {
 import { MONTHS } from 'ebrc-client/util/formatters';
 
 import './AnswerController.scss';
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
+import { preorderSeq } from 'wdk-client/Utils/TreeUtils';
+import { isQualifying, getId } from 'wdk-client/Utils/CategoryUtils';
+import { RootState } from 'wdk-client/Core/State/Types';
 
 const DOWNLOAD_REPORTER_NAME = 'attributesTabular';
 const DOWNLOAD_FORMAT = 'csv';
@@ -75,7 +80,8 @@ const eupathReleaseToSortKey = memoize((eupathRelease: AttributeValue) => {
 });
 
 function useAdditionalActions(props: AnswerControllerProps) {
-  const onDownloadButtonClick = useOnDownloadButtonClick(props);
+  const downloadAttributes = useDownloadAttributeNames(props);
+  const onDownloadButtonClick = useOnDownloadButtonClick(props, downloadAttributes);
 
   return useMemo(
     () => onDownloadButtonClick == null
@@ -95,14 +101,13 @@ function useAdditionalActions(props: AnswerControllerProps) {
   )
 }
 
-function useOnDownloadButtonClick(props: AnswerControllerProps) {
+function useOnDownloadButtonClick(props: AnswerControllerProps, downloadAttributes?: string[]) {
   const wdkDependencies = useContext(WdkDepdendenciesContext);
-  const wdkService = wdkDependencies?.wdkService;
+  const wdkService = useContext(WdkServiceContext);
 
   const { parameters } = props.ownProps;
 
   const {
-    allAttributes,
     question,
     recordClass
   } = props.stateProps;
@@ -111,9 +116,9 @@ function useOnDownloadButtonClick(props: AnswerControllerProps) {
     () => {
       if (
         wdkService == null ||
-        allAttributes == null ||
         recordClass == null ||
-        question == null
+        question == null ||
+        downloadAttributes == null
       ) {
         return undefined;
       }
@@ -135,16 +140,22 @@ function useOnDownloadButtonClick(props: AnswerControllerProps) {
           wdkService,
           question.urlSegment,
           parameters ?? {},
-          // FIXME: The downloaded attributes should be
-          // precisely those with "download" scope
-          allAttributes
-            .filter(({ isDisplayable }) => isDisplayable)
-            .map(({ name }) => name),
+          downloadAttributes
         );
       }
     },
-    [ wdkService, question?.urlSegment, parameters, allAttributes ]
+    [ wdkService, question?.urlSegment, parameters, downloadAttributes ]
   )
+}
+
+function useDownloadAttributeNames(props: AnswerControllerProps) {
+  const ontology = useSelector((state: RootState) => state.globalData.ontology);
+  const { recordClass } = props.stateProps;
+  if (ontology == null || recordClass == null) return;
+  return preorderSeq(ontology.tree)
+    .filter(isQualifying({ recordClassName: recordClass.fullName, targetType: 'attribute', scope: 'download' }))
+    .map(getId)
+    .toArray();
 }
 
 export function downloadAnswer(
