@@ -159,8 +159,8 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     JSONObject usersPerCount = reduce(binItems(numStratsPerUser, i -> i, val -> true).entrySet(),
         (json, bin) -> json.put(bin.getKey().toString(), bin.getValue().size()), new JSONObject());
     return new JSONObject()
-        .put("numUniqueUsers", numUniqueUsers)
-        .put("numOverallStrategies", numOverallStrats)
+        .put("totalUniqueUsers", numUniqueUsers)
+        .put("totalStrategies", numOverallStrats)
         .put("distribution (num strats -> num users with that many strats)", usersPerCount);
   }
 
