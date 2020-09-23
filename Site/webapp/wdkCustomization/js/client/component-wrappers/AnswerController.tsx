@@ -10,7 +10,7 @@ import {
   Props as AnswerControllerProps
 } from 'wdk-client/Controllers/AnswerController';
 import { WdkService } from 'wdk-client/Core';
-import { WdkServiceContext } from 'wdk-client/Service/WdkService';
+import { WdkDepdendenciesContext } from 'wdk-client/Hooks/WdkDependenciesEffect';
 import {
   AttributeValue,
   ParameterValues,
@@ -102,6 +102,7 @@ function useAdditionalActions(props: AnswerControllerProps) {
 }
 
 function useOnDownloadButtonClick(props: AnswerControllerProps, downloadAttributes?: string[]) {
+  const wdkDependencies = useContext(WdkDepdendenciesContext);
   const wdkService = useContext(WdkServiceContext);
 
   const { parameters } = props.ownProps;
