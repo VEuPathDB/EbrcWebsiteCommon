@@ -56,7 +56,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response notifyInvalidPublicStratsOwners(
-      @QueryParam("notifyUsers") @DefaultValue("false") boolean sendEmail,
+      @QueryParam("sendEmailToUsers") @DefaultValue("false") boolean sendEmail,
       @QueryParam("logEmailContent") @DefaultValue("false") boolean logEmailContent,
       @QueryParam("statsOnly") @DefaultValue("false") boolean statsOnly
   ) throws WdkModelException {
@@ -123,7 +123,6 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
         LOG.info(
           "Sending email via '" + smtpServer + "'" + NL + NL +
           "To: " + userEmail + NL +
-          "Cc: " + supportEmail + NL +
           "Reply-to: " + supportEmail + NL +
           "Subject: " + subject + NL + NL +
           content.toString() + NL
@@ -137,7 +136,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
           supportEmail,
           subject,
           content.toString(),
-          supportEmail
+          ""
         );
       }
     }
