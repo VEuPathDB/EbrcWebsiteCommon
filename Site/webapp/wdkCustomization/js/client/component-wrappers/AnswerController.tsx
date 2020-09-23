@@ -103,7 +103,7 @@ function useAdditionalActions(props: AnswerControllerProps) {
 
 function useOnDownloadButtonClick(props: AnswerControllerProps, downloadAttributes?: string[]) {
   const wdkDependencies = useContext(WdkDepdendenciesContext);
-  const wdkService = useContext(WdkServiceContext);
+  const wdkService = wdkDependencies?.wdkService;
 
   const { parameters } = props.ownProps;
 
