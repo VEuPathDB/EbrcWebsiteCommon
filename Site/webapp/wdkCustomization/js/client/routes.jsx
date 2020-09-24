@@ -6,6 +6,7 @@ import ContactUsController from './controllers/ContactUsController';
 import GalaxyTermsController from './controllers/GalaxyTermsController';
 import ExternalContentController from 'ebrc-client/controllers/ExternalContentController';
 import { ResetSessionController } from 'ebrc-client/controllers/ResetSessionController';
+import StudyAccessController from './controllers/StudyAccessController';
 
 export const STATIC_ROUTE_PATH = '/static-content';
 
@@ -15,6 +16,11 @@ export const STATIC_ROUTE_PATH = '/static-content';
  * For example: the route '/about' is not here because the content (in About.jsx) is not shared.
  */
 export const wrapRoutes = wdkRoutes => [
+  { 
+    path: '/study-access/:datasetId',
+    component: props => <StudyAccessController {...props.match.params}/>
+  },
+
   {
     path: '/tree-data-view',
     component: () => <TreeDataViewerController/>
