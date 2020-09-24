@@ -1,0 +1,52 @@
+#!/bin/bash
+
+sites=(
+  veupathdb.org
+  amoebadb.org
+  cryptodb.org
+  fungidb.org
+  giardiadb.org
+  hostdb.org
+  microsporidiadb.org
+  piroplasmadb.org
+  plasmodb.org
+  schistodb.net
+  toxodb.org
+  trichdb.org
+  tritrypdb.org
+  vectorbase.org
+  orthomcl.org
+  clinepidb.org
+  microbiomedb.org
+)
+
+if [ $# -ne 3 ]; then
+  echo
+  echo "USAGE: eupathInvalidPublicStratsReport <auth_code> <subdomain> <query_string>"
+  echo
+  echo "  auth_code = \"user_email|password\" of an admin user"
+  echo "  subdomain = prefix to append to each domain e.g. \"qa.\" or an empty string \"\" for live sites"
+  echo "  query_string = query string to pass to the service (do not include a '?' at the beginning)"
+  echo
+  echo "    Query string options (all booleans which default to false if omitted)"
+  echo "      sendEmailToUsers: notification emails will be sent to strategy owners"
+  echo "      logEmailContent:  content of emails will be logged to wdk.log4j in each site"
+  echo "      statsOnly:        strategy details and ownership will not be included in response"
+  echo
+  exit 1
+fi
+
+authCode=$1
+subdomain=$2
+queryString=$3
+
+for primaryDomain in "${sites[@]}"; do
+  domain="${subdomain}${primaryDomain}"
+  url="https://${domain}/a/service/invalid-public-strats-report?${queryString}"
+  echo "##############################################"
+  echo "$domain"
+  echo "Command: curl -H \"auth-code: $authCode\" -X GET $url"
+  echo "##############################################"
+  curl -H "auth-code: $authCode" -X GET $url
+  echo
+done

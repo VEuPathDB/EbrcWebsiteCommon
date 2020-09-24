@@ -3,6 +3,7 @@ import React, { useMemo, useState, useCallback, useContext, useEffect } from 're
 import { Link, useHistory } from 'react-router-dom';
 import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
 import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
+import { WdkDepdendenciesContext } from 'wdk-client/Hooks/WdkDependenciesEffect';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
@@ -11,7 +12,6 @@ import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } from 'ebrc-client/hooks/projectUrls';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 import { NewStrategySpec, NewStepSpec } from 'wdk-client/Utils/WdkUser';
-import { WdkServiceContext } from 'wdk-client/Service/WdkService';
 import { DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
 
 import './SiteSearch.scss';
@@ -421,8 +421,10 @@ function StrategyLinkout(props: Props) {
     wdkService.getQuestionAndParameters(docType.wdkSearchName), [ docType ]);
 
   const history = useHistory();
-  const wdkService = useContext(WdkServiceContext);
+  const wdkDependencies = useContext(WdkDepdendenciesContext);
   const onClick = useCallback(async () => {
+    const wdkService = wdkDependencies?.wdkService;
+
     if (wdkService == null || question == null || docType == null) return;
     const parameters = question.parameters.reduce((parameters, parameter) => {
       let value: string;
