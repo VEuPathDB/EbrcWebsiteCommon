@@ -40,7 +40,7 @@ function Results(props: Props) {
   // access study info to show on page
   // access user profile
 
-  if (response.publicStrats === undefined || response.publicStrats.length == 0 ) {
+  if (response === undefined || response.length == 0 ) {
     return (
       <>
         <h1>Study : {studyId}</h1>
@@ -61,7 +61,7 @@ function Results(props: Props) {
         <h1>Study : {studyId}</h1>
       </div>
       <div className={cx('--Results')}>
-        <pre>{JSON.stringify(response.publicStrats,null,2)}</pre>
+        <pre>{JSON.stringify(response,null,2)}</pre>
   
       </div>
     </>

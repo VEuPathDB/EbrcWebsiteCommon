@@ -6,12 +6,12 @@ const publicStrategy = record({
     rootStepId: number,
     signature: string,
     author: string,
-    releaseVersion: number,
+    releaseVersion: string,
     isValid: boolean,
     description: string,
     leafAndTransformStepCount: number,
     isDeleted: boolean,
-    estimatedSize: number,
+    estimatedSize: optional(number),
     isSaved: boolean,
     isExample: boolean,
     organization: string,
@@ -25,9 +25,7 @@ const publicStrategy = record({
 });
 
 
-export const publicStrategyResponse = record({
-  publicStrats: arrayOf(publicStrategy)
-});
+export const publicStrategyResponse = arrayOf(publicStrategy);
 
 export type PublicStrategyResponse = Unpack<typeof publicStrategyResponse>;
 
