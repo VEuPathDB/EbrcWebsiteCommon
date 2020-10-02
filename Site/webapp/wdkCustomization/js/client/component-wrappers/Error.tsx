@@ -10,7 +10,7 @@ const borderStyle = '1px solid #00000029';
 
 const style: React.CSSProperties = {
   fontSize: '1.25em',
-  padding: '2em 0',
+  padding: '1em 0',
   margin: '2em 0',
   borderTop: borderStyle,
   borderBottom: borderStyle
@@ -34,9 +34,10 @@ export function Error(DefaultComponent: React.ComponentType<Props>) {
       <DefaultComponent message={props.message}>
         {
           props.children || (<>
-            <p style={style}>
-              Try reloading the page. This frequently resolves the problem. If the problem persists, {contactUsLink}.
-            </p>
+            <div style={style}>
+              <p>Try <button type="button" title="Reload the current page." className="link" onClick={() => location.reload(true)}>reloading the page</button>. This frequently resolves the problem.</p>
+              <p>If the problem persists, {contactUsLink}.</p>
+            </div>
             <div>{props.message}</div>
           </>)
         }
