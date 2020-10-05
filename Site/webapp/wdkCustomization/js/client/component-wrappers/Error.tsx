@@ -35,7 +35,7 @@ export function Error(DefaultComponent: React.ComponentType<Props>) {
         {
           props.children || (<>
             <div style={style}>
-              <p>Try <button type="button" title="Reload the current page." className="link" onClick={() => location.reload(true)}>reloading the page</button>. This frequently resolves the problem.</p>
+              <p>Try <a href="" title="Reload the current page.">reloading the page</a>. This frequently resolves the problem.</p>
               <p>If the problem persists, {contactUsLink}.</p>
             </div>
             <div>{props.message}</div>
