@@ -5,12 +5,14 @@ import { Link, useHistory } from 'react-router-dom';
 import { CheckboxTree, CheckboxList, CollapsibleSection, LoadingOverlay } from 'wdk-client/Components';
 import { PaginationMenu, AnchoredTooltip } from 'wdk-client/Components/Mesa';
 import { Mesa, MesaState } from 'wdk-client/Components/Mesa';
+import { MesaColumn } from 'wdk-client/Core/CommonTypes';
 
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils'
 import { WdkDepdendenciesContext } from 'wdk-client/Hooks/WdkDependenciesEffect';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 
 import { PublicStrategyResponse, StudyAccessResponse } from 'ebrc-client/StudyAccess/Types';
+
 //import './StudyAccess.scss';
 
 interface Props {
@@ -19,7 +21,7 @@ interface Props {
   response: PublicStrategyResponse;
 }
 
-const cx = makeClassNameHelper('SiteSearch');
+const cx = makeClassNameHelper('StudyAccess');
 const cancelIcon = <i className="fa fa-times"/>;
 
 
@@ -52,8 +54,17 @@ function Results(props: Props) {
     );
   }
 
- // const tableState = useTableState(props);
- // <Mesa state={tableState} />
+  const tableState = MesaState.create({ 
+     "rows": response,
+     "columns": [
+       {
+         key: "releaseVersion" 
+       },
+       {  
+         key: "name" 
+       }
+      ] as MesaColumn[]         
+    });
 
   return (
     <>
@@ -61,8 +72,9 @@ function Results(props: Props) {
         <h1>Study : {studyId}</h1>
       </div>
       <div className={cx('--Results')}>
+        <Mesa state={tableState} />
         <pre>{JSON.stringify(response,null,2)}</pre>
-  
+         
       </div>
     </>
   )
