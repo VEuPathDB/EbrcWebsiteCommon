@@ -2,6 +2,7 @@ import {
   Unpack,
   arrayOf,
   boolean,
+  combine,
   constant,
   number,
   objectOf,
@@ -122,3 +123,76 @@ export const approvalStatus = oneOf(
 );
 
 export type ApprovalStatus = Unpack<typeof approvalStatus>;
+
+export const endUser = record({
+  user: userDetails,
+  datasetId: string,
+  startDate: optional(string),
+  duration: optional(number),
+  restrictionLevel,
+  purpose: string,
+  researchQuestion: string,
+  analysisPlan: string,
+  disseminationPlan: string,
+  approvalStatus,
+  denialReason: optional(string),
+  priorAuth: string
+});
+
+export type EndUser = Unpack<typeof endUser>;
+
+export const endUserCreateRequest = combine(
+  oneOf(
+    record({ userId: number }),
+    record({ email: string })
+  ),
+  record({
+    purpose: string,
+    researchQuestion: string,
+    analysisPlan: string,
+    disseminationPlan: string,
+    priorAuth: string,
+    datasetId: string,
+    startDate: optional(string),
+    duration: optional(number),
+    restrictionLevel: optional(restrictionLevel),
+    approvalStatus: optional(approvalStatus),
+    denialReason: optional(string)
+  })
+);
+
+export type EndUserCreateRequest = Unpack<typeof endUserCreateRequest>;
+
+export const endUserCreateResponse = oneOf(
+  record({
+    created: constant(false)
+  }),
+  record({
+    created: constant(true),
+    endUserId: string
+  })
+);
+
+export type EndUserCreateResponse = Unpack<typeof endUserCreateResponse>;
+
+export const endUserList = record({
+  data: arrayOf(endUser),
+  rows: number,
+  offset: number,
+  total: number
+});
+
+export type EndUserList = Unpack<typeof endUserList>;
+
+export const endUserPatchOp = oneOf(
+  constant('add'),
+  constant('remove'),
+  constant('replace')
+);
+
+export const endUserPatch = record({
+  op: endUserPatchOp,
+  path: string,
+  value: optional(string),
+  from: optional(string)
+});
