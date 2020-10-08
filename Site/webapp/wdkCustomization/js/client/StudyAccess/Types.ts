@@ -2,6 +2,7 @@ import {
   Unpack,
   arrayOf,
   boolean,
+  constant,
   number,
   objectOf,
   optional,
@@ -52,11 +53,11 @@ export interface StudyAccessRequest {
 }
 
 // API  defined in https://veupathdb.github.io/service-dataset-access/api.html#type:lib.DatastoreId
-const datastoreId = number;
+export const datastoreId = number;
 
 export type DatastoreId = Unpack<typeof datastoreId>;
 
-const userDetails = record({
+export const userDetails = record({
   userId: number,
   firstName: string,
   lastName: string,
@@ -65,7 +66,7 @@ const userDetails = record({
 
 export type UserDetails = Unpack<typeof userDetails>;
 
-const staff = record({
+export const staff = record({
   staffId: datastoreId,
   user: userDetails,
   isOwner: boolean
@@ -73,7 +74,7 @@ const staff = record({
 
 export type Staff = Unpack<typeof staff>;
 
-const staffList = record({
+export const staffList = record({
   data: arrayOf(staff),
   rows: number,
   offset: number,
@@ -81,3 +82,24 @@ const staffList = record({
 });
 
 export type StaffList = Unpack<typeof staffList>;
+
+export const newStaffRequest = record({
+  userId: number,
+  isOwner: boolean
+});
+
+export type NewStaffRequest = Unpack<typeof newStaffRequest>;
+
+export const newStaffResponse = record({
+  staffId: number
+});
+
+export type NewStaffResponse = Unpack<typeof newStaffResponse>;
+
+export const staffPatch = record({
+  op: constant('replace'),
+  path: constant('isOwner'),
+  value: boolean
+});
+
+export type StaffPatch = Unpack<typeof staffPatch>;
