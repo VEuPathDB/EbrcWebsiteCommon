@@ -5,6 +5,7 @@ import {
   constant,
   number,
   objectOf,
+  oneOf,
   optional,
   record,
   string
@@ -103,3 +104,21 @@ export const staffPatch = record({
 });
 
 export type StaffPatch = Unpack<typeof staffPatch>;
+
+export const restrictionLevel = oneOf(
+  constant('public'),
+  constant('prerelease'),
+  constant('protected'),
+  constant('controlled'),
+  constant('private')
+);
+
+export type RestrictionLevel = Unpack<typeof restrictionLevel>;
+
+export const approvalStatus = oneOf(
+  constant('approved'),
+  constant('requested'),
+  constant('denied')
+);
+
+export type ApprovalStatus = Unpack<typeof approvalStatus>;
