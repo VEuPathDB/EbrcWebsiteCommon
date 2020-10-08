@@ -190,9 +190,13 @@ export const endUserPatchOp = oneOf(
   constant('replace')
 );
 
+export type EndUserPatchOp = Unpack<typeof endUserPatchOp>;
+
 export const endUserPatch = record({
   op: endUserPatchOp,
   path: string,
   value: optional(string),
   from: optional(string)
 });
+
+export type EndUserPatch = Unpack<typeof endUserPatch>;
