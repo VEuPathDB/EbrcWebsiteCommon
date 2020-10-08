@@ -1121,7 +1121,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
   layout(xaxis = list(title = \"log2($exprMetric + 1)\", 
 		      range = c(log2(1), log2(x.max) + 2),
 		      dtick = 2),
-         yaxis = list(title = \"Experiment\",
+         yaxis = list(title = \"RNA-Seq Experiment\",
 		      showticklabels = FALSE),
          margin = list(l = 30, 
                        r = 30, 
@@ -1134,7 +1134,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  xref=\"paper\", 
                  y=1.1, 
                  x=0, 
-                 text=\"RNA-Seq Transcription Summary - $id\", 
+                 text=\"$id\", 
                  showarrow=F, 
                  font=list(size=14,
                            color=\"red\")) %>%
@@ -1241,24 +1241,27 @@ annotationJS <- \"function(el) {
         showactive: true,
 	active: 0,
         type: 'buttons',
-        y: .75,
-	x: -.12,
-	xanchor: 'left'
+        y: -0.05,
+	x: 0.05,
+        direction: 'right',
+	xanchor: 'center',
+        yanchor: 'top'
     },
     {
         buttons: [
 	    {
                 args: [{annotations: el.layout.annotations}],
-		label: '<br>Remove<br>Sample<br>Labels<br>',
+		label: 'Remove Sample Labels',
                 method: 'relayout'
             }
         ],
         showactive: false,
         active: 0,
         type: 'buttons',
-        y: 1,
-	x: -.12,
-	xanchor: 'left'
+        y: 1.1,
+	x: 0.5,
+	xanchor: 'center',
+        yanchor: 'top'
     }];
 
     Plotly.relayout(el.id, {updatemenus: updatemenus});
