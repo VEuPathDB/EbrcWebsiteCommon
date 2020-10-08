@@ -200,3 +200,54 @@ export const endUserPatch = record({
 });
 
 export type EndUserPatch = Unpack<typeof endUserPatch>;
+
+export const datasetProvider = record({
+  providerId: number,
+  datasetId: string,
+  user: userDetails,
+  isManager: boolean
+});
+
+export type DatasetProvider = Unpack<typeof datasetProvider>;
+
+export const datasetProviderList = record({
+  data: arrayOf(datasetProvider),
+  rows: number,
+  offset: number,
+  total: number
+});
+
+export type DatasetProviderList = Unpack<typeof datasetProviderList>;
+
+export const datasetProviderCreateRequest = combine(
+  oneOf(
+    record({ userId: number }),
+    record({ email: string })
+  ),
+  record({
+    datasetId: string,
+    isManager: boolean
+  })
+);
+
+export type DatasetProviderCreateRequest = Unpack<typeof datasetProviderCreateRequest>;
+
+export const datasetProviderCreateResponse = oneOf(
+  record({
+    created: constant(false)
+  }),
+  record({
+    created: constant(true),
+    providerId: number
+  })
+);
+
+export type DatasetProviderCreateResponse = Unpack<typeof datasetProviderCreateResponse>;
+
+export const datasetProviderPatch = record({
+  op: constant('replace'),
+  path: constant('isManager'),
+  value: boolean
+});
+
+export type DatasetProviderPatch = Unpack<typeof datasetProviderPatch>;
