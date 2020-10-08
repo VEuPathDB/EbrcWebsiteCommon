@@ -251,3 +251,57 @@ export const datasetProviderPatch = record({
 });
 
 export type DatasetProviderPatch = Unpack<typeof datasetProviderPatch>;
+
+export const badRequest = record({
+  status: constant('bad-request'),
+  message: string
+});
+
+export type BadRequest = Unpack<typeof badRequest>;
+
+export const unauthorized = record({
+  status: constant('unauthorized'),
+  message: string
+});
+
+export type Unauthorized = Unpack<typeof unauthorized>;
+
+export const forbidden = record({
+  status: constant('forbidden'),
+  message: string
+});
+
+export type Forbidden = Unpack<typeof forbidden>;
+
+export const notFound = record({
+  status: constant('not-found'),
+  message: string
+});
+
+export type NotFound = Unpack<typeof notFound>;
+
+export const methodNotAllowed = record({
+  status: constant('bad-method'),
+  message: string
+});
+
+export type MethodNotAllowed = Unpack<typeof methodNotAllowed>;
+
+export const unprocessableEntity = record({
+  status: constant('invalid-input'),
+  message: string,
+  errors: record({
+    general: arrayOf(string),
+    byKey: objectOf(arrayOf(string))
+  })
+});
+
+export type UnprocessableEntity = Unpack<typeof unprocessableEntity>;
+
+export const serverError = record({
+  status: constant('server-error'),
+  message: string,
+  requestId: string
+});
+
+export type ServerError = Unpack<typeof serverError>;
