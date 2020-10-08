@@ -65,19 +65,19 @@ const userDetails = record({
 
 export type UserDetails = Unpack<typeof userDetails>;
 
-export type StaffUser =  {
-  staffId: number, 
-  user: { 
-    userId: number,
-    firstName: string,
-    lastName: string,
-    organisation: string
-  },
+const staff = record({
+  staffId: datastoreId,
+  user: userDetails,
   isOwner: boolean
-}
-export type GetStaffTableResponse =  {
-  data: StaffUser[],
-  rows: 1,
-  offset: 0,
-  total: 1
-}
+});
+
+export type Staff = Unpack<typeof staff>;
+
+const staffList = record({
+  data: arrayOf(staff),
+  rows: number,
+  offset: number,
+  total: number
+});
+
+export type StaffList = Unpack<typeof staffList>;
