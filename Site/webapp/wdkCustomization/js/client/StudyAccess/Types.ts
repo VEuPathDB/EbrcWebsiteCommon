@@ -1,37 +1,40 @@
-import { record, string, arrayOf, constant, combine, Unpack, oneOf, objectOf, number, boolean, optional } from "wdk-client/Utils/Json";
-
+import {
+  Unpack,
+  arrayOf,
+  boolean,
+  number,
+  objectOf,
+  optional,
+  record,
+  string
+} from 'wdk-client/Utils/Json';
 
 const publicStrategy = record({
-    lastViewed: string,
-    rootStepId: number,
-    signature: string,
-    author: string,
-    releaseVersion: string,
-    isValid: boolean,
-    description: string,
-    leafAndTransformStepCount: number,
-    isDeleted: boolean,
-    estimatedSize: optional(number),
-    isSaved: boolean,
-    isExample: boolean,
-    organization: string,
-    name: string,
-    recordClassName: string,
-    createdTime: string,
-    isPublic: boolean,
-    strategyId: number,
-    lastModified: string,
-    nameOfFirstStep: string
+  lastViewed: string,
+  rootStepId: number,
+  signature: string,
+  author: string,
+  releaseVersion: string,
+  isValid: boolean,
+  description: string,
+  leafAndTransformStepCount: number,
+  isDeleted: boolean,
+  estimatedSize: optional(number),
+  isSaved: boolean,
+  isExample: boolean,
+  organization: string,
+  name: string,
+  recordClassName: string,
+  createdTime: string,
+  isPublic: boolean,
+  strategyId: number,
+  lastModified: string,
+  nameOfFirstStep: string
 });
-
 
 export const publicStrategyResponse = arrayOf(publicStrategy);
 
 export type PublicStrategyResponse = Unpack<typeof publicStrategyResponse>;
-
-
-
-// from SiteSearch Request and Response types
 
 const studyAccessResults = record({
   totalCount: number,
@@ -48,17 +51,15 @@ export interface StudyAccessRequest {
   restrictToProject?: string;
 }
 
-
-
 // API  defined in https://veupathdb.github.io/service-dataset-access/api.html#type:lib.DatastoreId
 export type StaffUser =  {
   staffId: number, 
   user: { 
-          userId: number, 
-          firstName: string, 
-          lastName: string, 
-          organisation: string 
-        }, 
+    userId: number,
+    firstName: string,
+    lastName: string,
+    organisation: string
+  },
   isOwner: boolean
 }
 export type GetStaffTableResponse =  {
@@ -67,5 +68,3 @@ export type GetStaffTableResponse =  {
   offset: 0,
   total: 1
 }
-
-
