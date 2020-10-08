@@ -52,6 +52,19 @@ export interface StudyAccessRequest {
 }
 
 // API  defined in https://veupathdb.github.io/service-dataset-access/api.html#type:lib.DatastoreId
+const datastoreId = number;
+
+export type DatastoreId = Unpack<typeof datastoreId>;
+
+const userDetails = record({
+  userId: number,
+  firstName: string,
+  lastName: string,
+  organization: string
+});
+
+export type UserDetails = Unpack<typeof userDetails>;
+
 export type StaffUser =  {
   staffId: number, 
   user: { 
