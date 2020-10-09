@@ -1155,7 +1155,8 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
-		 yshift = myYShift,
+		 font=list(size=10),
+                 yshift = myYShift,
                  valign = \"top\",
 		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
@@ -1210,6 +1211,7 @@ annotationJS <- \"function(el) {
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
+          font: {size: 10},
           yshift: annotations[i].yshift, 
           valign: 'top',
 	  name: annotations[i].name
