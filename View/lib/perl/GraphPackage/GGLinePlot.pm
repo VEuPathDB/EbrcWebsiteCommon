@@ -1126,8 +1126,8 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
          margin = list(l = 30, 
                        r = 30, 
                        b = 50, 
-                       t = 100, 
-                       pad = 4),
+                       t = 30, 
+                       pad = 1),
 	 boxgap = .6
   ) %>%
   add_annotations(yref=\"paper\", 
