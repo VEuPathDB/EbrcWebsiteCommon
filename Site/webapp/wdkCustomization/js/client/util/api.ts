@@ -23,7 +23,7 @@ export interface ApiRequest<T> {
   body?: unknown;
   /** Headers to add to the request. */
   headers?: Record<string, string>;
-  /** Transform response body into. This is a good place to do validation. */
+  /** Transform response body. This is a good place to do validation. */
   transformResponse: (body: unknown) => Promise<T>;
 }
 
