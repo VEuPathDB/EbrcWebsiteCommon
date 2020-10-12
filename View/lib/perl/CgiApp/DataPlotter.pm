@@ -255,7 +255,9 @@ sub run {
                       
                       # THIS IS A TEMPORARY WORKAROUND
                       if($format eq 'html') {
-                       system('sed \'s/DATA_PLOTTER/\/dataPlotter/\' ' .  $outputFile);
+                       system('sed -i \'s/DATA_PLOTTER/\/dataPlotter/\' ' .  $outputFile);
+                       system('sed -i \'s/"padding":40/"padding":0/g\' ' . $outputFile);
+			system "cat $outputFile";
                        }
                       else {
                         system "cat $outputFile";

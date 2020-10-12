@@ -6,6 +6,16 @@ import { Props } from 'wdk-client/Components/PageStatus/Error';
 import { UnhandledError } from 'wdk-client/Actions/UnhandledErrorActions';
 import { RootState } from 'wdk-client/Core/State/Types';
 
+const borderStyle = '1px solid #00000029';
+
+const style: React.CSSProperties = {
+  fontSize: '1.25em',
+  padding: '1em 0',
+  margin: '2em 0',
+  borderTop: borderStyle,
+  borderBottom: borderStyle
+}
+
 export function Error(DefaultComponent: React.ComponentType<Props>) {
   return function VEuPathError(props: Props) {
     const errors = useSelector((state: RootState) => state.unhandledErrors.errors)
@@ -24,10 +34,10 @@ export function Error(DefaultComponent: React.ComponentType<Props>) {
       <DefaultComponent message={props.message}>
         {
           props.children || (<>
-            <ul style={{ fontSize: '1.2em', margin: '1em 2em' }}>
-              <li>Please try again.</li>
-              <li>If the problem persists, {contactUsLink}.</li>
-            </ul>
+            <div style={style}>
+              <p>Try <a href="" title="Reload the current page.">reloading the page</a>. This frequently resolves the problem.</p>
+              <p>If the problem persists, {contactUsLink}.</p>
+            </div>
             <div>{props.message}</div>
           </>)
         }
