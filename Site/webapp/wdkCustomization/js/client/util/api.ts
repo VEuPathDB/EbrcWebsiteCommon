@@ -11,25 +11,29 @@ import { Decoder } from 'wdk-client/Utils/Json';
  * Typically this will be based on the `fetch` API.
  */
 
-export type ApiMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH';
-
-export interface ApiRequestInit<T> {
+/**
+ * Represents an HTTP-like request for a resource.
+ */
+export interface ApiRequest<T> {
+  /** Path to resource, relative to a fixed base url. */
   path: string;
-  method: ApiMethod;
+  /** Request method for resource. */
+  method: string;
+  /** Body of request */
   body?: unknown;
+  /** Headers to add to the request. */
   headers?: Record<string, string>;
+  /** Transform response body into. This is a good place to do validation. */
   transformResponse: (body: unknown) => Promise<T>;
-}
-
-export interface ApiRequest<T> extends ApiRequestInit<T> {
-  headers: Record<string, string>;
 }
 
 // XXX Not sure if these belong here, since they are specific to an ApiRequestHandler
 
-export function createJsonRequest<T>(init: ApiRequestInit<T>): ApiRequest<T> {
+/** Helper to create a request with a JSON body. */
+export function createJsonRequest<T>(init: ApiRequest<T>): ApiRequest<T> {
   return {
     ...init,
+    body: JSON.stringify(init.body),
     headers: {
       ...init.headers,
       'Content-Type': 'application/json'
@@ -37,7 +41,8 @@ export function createJsonRequest<T>(init: ApiRequestInit<T>): ApiRequest<T> {
   }
 }
 
-export function createPlainTextRequest<T>(init: ApiRequestInit<T>): ApiRequest<T> {
+/** Helper to create a request with a plain text body. */
+export function createPlainTextRequest<T>(init: ApiRequest<T>): ApiRequest<T> {
   return {
     ...init,
     headers: {
@@ -47,36 +52,49 @@ export function createPlainTextRequest<T>(init: ApiRequestInit<T>): ApiRequest<T
   }
 }
 
+/** Standard transformer that uses a `Json.ts` `decoder` type. */
 export function standardTransformer<T>(decoder: Decoder<T>) {
   return async function transform(body: unknown): Promise<T> {
     const result = decoder(body);
     if (result.status === 'ok') return result.value;
     const report = `Expected ${result.expected}${result.context ? ('at _' + result.context) : ''}, but got ${JSON.stringify(result.value)}.`;
     throw new Error("Could not decode response.\n" + report);
-}
+  }
 }
 
+/**
+ * A function that takes an `ApiRequest<T>` and returns a `Promise<T>`.
+ */
 export interface ApiRequestHandler {
   <T>(request: ApiRequest<T>): Promise<T>;
 }
 
+/**
+ * Options for a `fetch`-based request handler.
+ */
 export interface FetchApiOptions {
+  /** Base url for service endpoint. */
   baseUrl: string;
-  headers?: Record<string, string>;
+  /** Global optoins for all requests. */
   init?: RequestInit;
+  /** Implementation of `fetch` function. Defaults to `window.fetch`. */
   fetchApi?: Window['fetch'];
 }
 
+/**
+ * A `fetch`-based implentation of an `ApiRequestHandler`.
+ */
 export function createFetchApiRequestHandler(options: FetchApiOptions): ApiRequestHandler {
-  const { baseUrl, headers, fetchApi = window.fetch } = options;
+  const { baseUrl, init = {}, fetchApi = window.fetch } = options;
   return async function fetchApiRequestHandler<T>(apiRequest: ApiRequest<T>): Promise<T> {
-    const { transformResponse, path, body, ...init } = apiRequest;
+    const { transformResponse, path, body, ...restReq } = apiRequest;
     const request = new Request(baseUrl + path, {
       ...init,
-      body: JSON.stringify(body),
+      ...restReq,
+      body: String(body),
       headers: {
-        ...init.headers,
-        ...headers
+        ...restReq.headers,
+        ...init.headers
       }
     });
     const response = await fetchApi(request);
