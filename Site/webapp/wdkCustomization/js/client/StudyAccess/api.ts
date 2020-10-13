@@ -7,6 +7,12 @@ import {
   standardTransformer
 } from 'ebrc-client/util/api';
 import {
+  ApprovalStatus,
+  EndUser,
+  EndUserCreateRequest,
+  EndUserCreateResponse,
+  EndUserList,
+  EndUserPatch,
   DatasetProviderCreateRequest,
   DatasetProviderCreateResponse,
   DatasetProviderList,
@@ -17,6 +23,9 @@ import {
   StaffPatch,
   datasetProviderList,
   datasetProviderCreateResponse,
+  endUser,
+  endUserCreateResponse,
+  endUserList,
   newStaffResponse,
   staffList
 } from 'ebrc-client/StudyAccess/Types';
@@ -158,8 +167,82 @@ export function deleteProviderEntry(
   });
 }
 
+export function fetchEndUserList(
+  handler: ApiRequestHandler,
+  limit?: number,
+  offset?: number,
+  approval?: ApprovalStatus
+): Promise<EndUserList> {
+  const queryString = makeQueryString(
+    ['limit', 'offset', 'approval'],
+    [limit, offset, approval]
+  );
+
+  return handler({
+    path: `${END_USERS_PATH}${queryString}`,
+    method: 'GET',
+    transformResponse: standardTransformer(endUserList)
+  });
+}
+
+export function newEndUserEntry(
+  handler: ApiRequestHandler,
+  requestBody: EndUserCreateRequest
+): Promise<EndUserCreateResponse> {
+  const request = createJsonRequest({
+    path: END_USERS_PATH,
+    method: 'POST',
+    body: requestBody,
+    transformResponse: standardTransformer(endUserCreateResponse)
+  });
+
+  return handler(request);
+}
+
+export function fetchEndUserEntry(
+  handler: ApiRequestHandler,
+  wdkUserId: number,
+  datasetId: string
+): Promise<EndUser> {
+  const endUserId = makeEndUserId(
+    wdkUserId,
+    datasetId
+  );
+
+  return handler({
+    path: `${END_USERS_PATH}/${endUserId}`,
+    method: 'GET',
+    transformResponse: standardTransformer(endUser)
+  });
+}
+
+export function updateEndUserEntry(
+  handler: ApiRequestHandler,
+  wdkUserId: number,
+  datasetId: string,
+  requestBody: EndUserPatch
+) {
+  const endUserId = makeEndUserId(
+    wdkUserId,
+    datasetId
+  );
+
+  const request = createJsonRequest({
+    path: `${END_USERS_PATH}/${endUserId}`,
+    method: 'PATCH',
+    body: requestBody,
+    transformResponse: noContent
+  });
+
+  return handler(request);
+}
+
 async function noContent(body: unknown) {
   return null;
+}
+
+function makeEndUserId(wdkUserId: number, datasetId: string) {
+  return `${wdkUserId}-${datasetId}`;
 }
 
 function makeQueryString(
