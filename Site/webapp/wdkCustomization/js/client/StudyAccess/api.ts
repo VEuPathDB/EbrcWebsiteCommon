@@ -64,7 +64,7 @@ export function fetchStaffList(
 export function newStaffEntry(
   handler: ApiRequestHandler,
   requestBody: NewStaffRequest
-) {
+): Promise<NewStaffResponse> {
   const request = createJsonRequest({
     path: STAFF_PATH,
     method: 'POST',
