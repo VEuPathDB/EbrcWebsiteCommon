@@ -3,16 +3,20 @@ import { useMemo } from 'react';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 
 import {
+  DatasetProviderList,
+  EndUserList,
+  StaffList
+} from 'ebrc-client/StudyAccess/Types';
+import {
   createStudyAccessRequestHandler,
   fetchEndUserList,
   fetchProviderList,
   fetchStaffList
 } from 'ebrc-client/StudyAccess/api';
 import {
-  DatasetProviderList,
-  EndUserList,
-  StaffList
-} from 'ebrc-client/StudyAccess/Types';
+  Props as UserTableConfig
+} from 'ebrc-client/components/StudyAccess/UserTable';
+
 import { ApiRequestHandler } from 'ebrc-client/util/api';
 
 export function useStudyAccessRequestHandler(
@@ -25,7 +29,21 @@ export function useStudyAccessRequestHandler(
   );
 }
 
-export function useStaffTableConfig(handler: ApiRequestHandler) {
+type ElementType<T> = T extends (infer U)[] ? U : never;
+
+type StaffTableRows = ReturnType<typeof makeStaffTableRows>;
+type ProviderTableRows = ReturnType<typeof makeProviderTableRows>;
+type EndUserTableRows = ReturnType<typeof makeEndUserTableRows>;
+
+type StaffTableRow = ElementType<StaffTableRows>;
+type ProviderTableRow = ElementType<ProviderTableRows>;
+type EndUserTableRow = ElementType<EndUserTableRows>;
+
+type StaffTableConfig = UserTableConfig<StaffTableRow, 'userId' | 'lastName'>;
+type ProviderTableConfig = UserTableConfig<ProviderTableRow, 'userId' | 'lastName'>;
+type EndUserTableConfig = UserTableConfig<EndUserTableRow, 'userId' | 'lastName'>;
+
+export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member
   const { value } = usePromise(
     async () => fetchStaffList(handler),
@@ -38,11 +56,12 @@ export function useStaffTableConfig(handler: ApiRequestHandler) {
   );
 
   return staffTableRows && {
+    title: 'Staff',
     rows: staffTableRows
   };
 }
 
-export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string) {
+export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value } = usePromise(
     async () => fetchProviderList(handler),
@@ -55,11 +74,12 @@ export function useProviderTableConfig(handler: ApiRequestHandler, activeDataset
   );
 
   return providerTableRows && {
+    title: 'Providers',
     rows: providerTableRows
   };
 }
 
-export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string) {
+export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value } = usePromise(
     async () => fetchEndUserList(handler),
@@ -72,6 +92,7 @@ export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetI
   );
 
   return endUserTableRows && {
+    title: 'End Users',
     rows: endUserTableRows
   };
 }
