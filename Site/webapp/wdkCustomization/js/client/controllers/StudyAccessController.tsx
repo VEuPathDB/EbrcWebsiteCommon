@@ -19,7 +19,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     : value.type === 'error'
     ? <ErrorPage message={value.message} />
     : <StudyAccess
-        studyId={datasetId}
+        title={`Study : ${datasetId}`}
       />;
 }
 
