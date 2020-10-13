@@ -1,3 +1,5 @@
+import { zipWith } from 'lodash';
+
 import {
   ApiRequestHandler,
   createFetchApiRequestHandler,
@@ -35,9 +37,18 @@ export function createStudyAccessRequestHandler(
   });
 }
 
-export function fetchStaffList(handler: ApiRequestHandler): Promise<StaffList> {
+export function fetchStaffList(
+  handler: ApiRequestHandler,
+  limit?: number,
+  offset?: number
+): Promise<StaffList> {
+  const queryString = makeQueryString(
+    ['limit', 'offset'],
+    [limit, offset]
+  );
+
   return handler({
-    path: STAFF_PATH,
+    path: `${STAFF_PATH}${queryString}`,
     method: 'GET',
     transformResponse: standardTransformer(staffList)
   });
@@ -85,4 +96,25 @@ export function deleteStaffEntry(
 
 async function noContent(body: unknown) {
   return null;
+}
+
+function makeQueryString(
+  paramNames: string[],
+  paramValues: (string | number | boolean | null | undefined)[]
+) {
+  const queryParams = zipWith(
+    paramNames,
+    paramValues,
+    (name, value) => value == null
+      ? undefined
+      : `${name}=${encodeURIComponent(value)}`
+  );
+
+  const nonNullParams = queryParams.filter(
+    (param): param is string => param != null
+  );
+
+  return nonNullParams.length === 0
+    ? ''
+    : `?${nonNullParams.join('&')}`;
 }
