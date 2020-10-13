@@ -20,7 +20,7 @@ export interface ApiRequest<T> {
   /** Request method for resource. */
   method: string;
   /** Body of request */
-  body?: unknown;
+  body?: any;
   /** Headers to add to the request. */
   headers?: Record<string, string>;
   /** Transform response body. This is a good place to do validation. */
@@ -91,13 +91,14 @@ export function createFetchApiRequestHandler(options: FetchApiOptions): ApiReque
     const request = new Request(baseUrl + path, {
       ...init,
       ...restReq,
-      body: String(body),
+      body: body,
       headers: {
         ...restReq.headers,
         ...init.headers
       }
     });
     const response = await fetchApi(request);
+    // TODO Make this behavior configurable
     if (response.ok) {
       const responseBody = response.headers.get('Content-Type')?.startsWith('application/json')
         ? await response.json()
