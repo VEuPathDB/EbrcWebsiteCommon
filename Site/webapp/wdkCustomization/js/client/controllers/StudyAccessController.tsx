@@ -3,7 +3,7 @@ import React from 'react';
 import { Loading, Error as ErrorPage } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 
-import StudyAccess from 'ebrc-client/components/StudyAccess';
+import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 
 interface Props {
   datasetId: string;

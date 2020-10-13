@@ -10,7 +10,7 @@ interface Props {
 
 const cx = makeClassNameHelper('StudyAccess');
 
-export default function StudyAccess({ studyId }: Props) {
+export function StudyAccess({ studyId }: Props) {
   return (
     <div className={cx()}>
       <div className={cx('--TitleLine')}>
