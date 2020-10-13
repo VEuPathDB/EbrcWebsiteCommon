@@ -7,9 +7,16 @@ import {
   standardTransformer
 } from 'ebrc-client/util/api';
 import {
+  DatasetProviderCreateRequest,
+  DatasetProviderCreateResponse,
+  DatasetProviderList,
+  DatasetProviderPatch,
   NewStaffRequest,
+  NewStaffResponse,
   StaffList,
   StaffPatch,
+  datasetProviderList,
+  datasetProviderCreateResponse,
   newStaffResponse,
   staffList
 } from 'ebrc-client/StudyAccess/Types';
@@ -89,6 +96,63 @@ export function deleteStaffEntry(
 ) {
   return handler({
     path: `${STAFF_PATH}/${staffId}`,
+    method: 'DELETE',
+    transformResponse: noContent
+  });
+}
+
+export function fetchProviderList(
+  handler: ApiRequestHandler,
+  limit?: number,
+  offset?: number
+): Promise<DatasetProviderList> {
+  const queryString = makeQueryString(
+    ['limit', 'offset'],
+    [limit, offset]
+  );
+
+  return handler({
+    path: `${PROVIDERS_PATH}${queryString}`,
+    method: 'GET',
+    transformResponse: standardTransformer(datasetProviderList)
+  });
+}
+
+export function newProviderEntry(
+  handler: ApiRequestHandler,
+  requestBody: DatasetProviderCreateRequest
+): Promise<DatasetProviderCreateResponse> {
+  const request = createJsonRequest({
+    path: PROVIDERS_PATH,
+    method: 'POST',
+    body: requestBody,
+    transformResponse: standardTransformer(datasetProviderCreateResponse)
+  });
+
+  return handler(request);
+}
+
+export function updateProviderEntry(
+  handler: ApiRequestHandler,
+  providerId: number,
+  requestBody: DatasetProviderPatch
+) {
+  const request = createJsonRequest({
+    path: `${PROVIDERS_PATH}/${providerId}`,
+    method: 'PATCH',
+    body: requestBody,
+    transformResponse: noContent
+  });
+
+  return handler(request);
+}
+
+export function deleteProviderEntry(
+  handler: ApiRequestHandler,
+  providerId: number
+) {
+  return handler({
+    path: `${PROVIDERS_PATH}/${providerId}`,
     method: 'DELETE',
     transformResponse: noContent
   });
