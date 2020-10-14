@@ -382,6 +382,8 @@ if(class(profile.df.full) == 'list'){
       }
     } else if (nrow(profile.df.full) == length(legend.label)) {
       profile.df.full\$LEGEND <- factor(legend.label)
+    } else if (uniqueN(profile.df.full\$PROFILE_ORDER) > 1) {
+      profile.df.full\$LEGEND <- factor(profile.df.full\$PROFILE_ORDER, levels=unique(profile.df.full\$PROFILE_ORDER), labels=legend.label)
     } else {
       warning(\"legend.label provided, but unused.\")
     }
@@ -559,10 +561,10 @@ if(class(profile.df.full) == 'list'){
        if (!is.null(profile.df.full\$LEGEND) && !$prtcpnt_sum) {
         count = length(unique(profile.df.full\$LEGEND));
        } else {
-        count = uniqueN(profile.df.full\$PROFILE_SET)
+        count = uniqueN(profile.df.full\$PROFILE_ORDER)
        }
         if (count < length(force(the.colors))) {
-          stop(\"Too many colors provided. Please only provide the same number of colors as profile.urls.\");
+          stop(\"Too many colors provided. Please only provide the same number of colors as profiles.\");
         }
       }
     }
