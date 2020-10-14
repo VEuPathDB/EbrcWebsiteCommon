@@ -5,7 +5,7 @@ Our frontend code stored in this repo has evolved in the last few years from a S
 
 Frontend pages specialization for specific websites at: 
 <a target="_blank" href="https://github.com/VEuPathDB/ApiCommonWebsite">ApiCommonWebsite</a>,
-<a target="_blank" href="https://github.com/VEuPathDB/OrthoMCLWebsite">OrthoMCLWebsite</a>.
+<a target="_blank" href="https://github.com/VEuPathDB/OrthoMCLClient">OrthoMCLClient</a>.
 
 ## Description
 
