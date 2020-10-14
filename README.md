@@ -10,7 +10,7 @@ Frontend pages specialization for specific websites at:
 ## Description
 
 `EbrcWebsiteCommon` contains an extension of the [WDKClient](https://github.com/VEuPathDB/WDKClient) for our VEuPathDB sites.
-As with the `WDKClient`, `EbrcWebsiteCommon` React-based clieent code is mostly written in [TypeScript](https://www.typescriptlang.org/) and SCSS
+As with the `WDKClient`, `EbrcWebsiteCommon` React-based client code is mostly written in [TypeScript](https://www.typescriptlang.org/) and SCSS
 ([Sass](https://sass-lang.com/)).
 
 
