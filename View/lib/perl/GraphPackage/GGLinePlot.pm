@@ -1094,6 +1094,7 @@ profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(p
 table.df <- profile.df.full %>% 
 		   group_by(LEGEND) %>% 
 		   summarize(TABLE=paste(paste0(\"<b>\", ELEMENT_NAMES, \"</b> \", VALUE), collapse=\"<br>\"))
+#table.df\$TABLE <- paste0(\"Samples in Experiment:<br>\", table.df\$TABLE)
 profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
 
@@ -1127,8 +1128,8 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 		      showticklabels = FALSE),
          margin = list(l = 30, 
                        r = 30, 
-                       b = 50, 
-                       t = 30, 
+                       b = 60, 
+                       t = 0, 
                        pad = 1),
 	 boxgap = .6
   ) %>%
