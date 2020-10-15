@@ -3,7 +3,6 @@ import React from 'react';
 import { MesaColumn, MesaSortObject } from 'wdk-client/Core/CommonTypes';
 
 export interface Props<R, C extends UserTableColumnKey<R>> {
-  title: React.ReactNode;
   rows: R[];
   // columns: UserTableColumns<R, C>;
   // columnOrder: readonly C[];

@@ -15,28 +15,10 @@ import {
   fetchStaffList
 } from 'ebrc-client/StudyAccess/api';
 import {
-  UserTableColumnKey,
-  Props as UserTableProps
-} from 'ebrc-client/components/StudyAccess/UserTable';
+  Props as UserTableSectionConfig
+} from 'ebrc-client/components/StudyAccess/UserTableSection';
 
 import { ApiRequestHandler } from 'ebrc-client/util/api';
-
-type TableConfig<R, C extends UserTableColumnKey<R>> =
-  | {
-      status: 'loading';
-    }
-  | {
-      status: 'error';
-      message: string;
-    }
-  | {
-      status: 'unavailable';
-    }
-  | {
-      status: 'success';
-      value: UserTableProps<R, C>;
-    };
-
 
 type BaseTableRow<R extends { user: UserDetails }> = Omit<R, 'user'> & UserDetails;
 
@@ -44,9 +26,9 @@ export type StaffTableRow = BaseTableRow<Staff>;
 export type ProviderTableRow = BaseTableRow<DatasetProvider>;
 export type EndUserTableRow = BaseTableRow<EndUser>;
 
-export type StaffTableConfig = TableConfig<StaffTableRow, 'userId'>;
-export type ProviderTableConfig = TableConfig<ProviderTableRow, 'userId'>;
-export type EndUserTableConfig = TableConfig<EndUserTableRow, 'userId'>;
+export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, 'userId'>;
+export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, 'userId'>;
+export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, 'userId'>;
 
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -58,7 +40,7 @@ export function useStudyAccessRequestHandler(
   );
 }
 
-export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfig {
+export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member
   const { value, loading } = usePromise(
     async () => {
@@ -82,8 +64,8 @@ export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfi
         }
       : {
           status: 'success',
+          title: 'Staff',
           value: {
-            title: 'Staff',
             rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },
@@ -91,7 +73,7 @@ export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfi
   );
 }
 
-export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableConfig {
+export function useProviderTableSectionConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -115,8 +97,8 @@ export function useProviderTableConfig(handler: ApiRequestHandler, activeDataset
         }
       : {
           status: 'success',
+          title: 'Providers',
           value: {
-            title: 'Providers',
             rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },
@@ -124,7 +106,7 @@ export function useProviderTableConfig(handler: ApiRequestHandler, activeDataset
   );
 }
 
-export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableConfig {
+export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -148,8 +130,8 @@ export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetI
         }
       : {
           status: 'success',
+          title: 'End Users',
           value: {
-            title: 'End Users',
             rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },

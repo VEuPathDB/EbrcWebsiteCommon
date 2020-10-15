@@ -4,9 +4,9 @@ import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
-  useEndUserTableConfig,
-  useProviderTableConfig,
-  useStaffTableConfig,
+  useEndUserTableSectionConfig,
+  useProviderTableSectionConfig,
+  useStaffTableSectionConfig,
   useStudyAccessRequestHandler
 } from 'ebrc-client/hooks/studyAccess';
 
@@ -22,9 +22,9 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
-  const staffTableConfig = useStaffTableConfig(handler);
-  const providerTableConfig = useProviderTableConfig(handler, datasetId);
-  const endUserTableConfig = useEndUserTableConfig(handler, datasetId);
+  const staffTableConfig = useStaffTableSectionConfig(handler);
+  const providerTableConfig = useProviderTableSectionConfig(handler, datasetId);
+  const endUserTableConfig = useEndUserTableSectionConfig(handler, datasetId);
 
   return (
     <StudyAccess
