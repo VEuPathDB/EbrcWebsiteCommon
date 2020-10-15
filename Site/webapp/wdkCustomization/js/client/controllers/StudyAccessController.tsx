@@ -1,35 +1,37 @@
 import React from 'react';
 
-import { Loading, Error as ErrorPage } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
+import {
+  useEndUserTableConfig,
+  useProviderTableConfig,
+  useStaffTableConfig,
+  useStudyAccessRequestHandler
+} from 'ebrc-client/hooks/studyAccess';
 
 interface Props {
   datasetId: string;
 }
 
+// FIXME: This should be configurable
+const STUDY_ACCESS_SERVICE_URL = '/dataset-access';
+
 export default function StudyAccessController({ datasetId }: Props) {
   useSetDocumentTitle(`User Access Dashboard: ${datasetId}`);
 
-  const value = useStudyAccessResponse();
+  const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
-  return value == null
-    ? <Loading />
-    : value.type === 'error'
-    ? <ErrorPage message={value.message} />
-    : <StudyAccess
-        title={`Study : ${datasetId}`}
-      />;
-}
+  const staffTableConfig = useStaffTableConfig(handler);
+  const providerTableConfig = useProviderTableConfig(handler, datasetId);
+  const endUserTableConfig = useEndUserTableConfig(handler, datasetId);
 
-type Response<T> =
-  | { type: 'error', status: string, message: string }
-  | { type: 'success', value: T };
-
-function useStudyAccessResponse(): Response<string> | undefined {
-  return {
-    type: 'success',
-    value: 'Hello World'
-  };
+  return (
+    <StudyAccess
+      title={`Study : ${datasetId}`}
+      staffTableConfig={staffTableConfig}
+      providerTableConfig={providerTableConfig}
+      endUserTableConfig={endUserTableConfig}
+    />
+  );
 }
