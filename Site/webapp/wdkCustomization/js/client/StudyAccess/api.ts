@@ -212,7 +212,7 @@ export function fetchEndUserEntry(
   );
 
   return handler({
-    path: `${END_USERS_PATH}/${endUserId}`,
+    path: `${END_USERS_PATH}/${wdkUserId}-${endUserId}`,
     method: 'GET',
     transformResponse: standardTransformer(endUser)
   });
