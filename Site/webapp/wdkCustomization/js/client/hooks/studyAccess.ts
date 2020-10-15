@@ -2,7 +2,12 @@ import { useMemo } from 'react';
 
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 
-import { UserDetails } from 'ebrc-client/StudyAccess/Types';
+import {
+  DatasetProvider,
+  EndUser,
+  Staff,
+  UserDetails
+} from 'ebrc-client/StudyAccess/Types';
 import {
   createStudyAccessRequestHandler,
   fetchEndUserList,
@@ -15,10 +20,6 @@ import {
 } from 'ebrc-client/components/StudyAccess/UserTable';
 
 import { ApiRequestHandler } from 'ebrc-client/util/api';
-
-type StaffTableRow = ReturnType<typeof makeStaffTableRow>;
-type ProviderTableRow = ReturnType<typeof makeProviderTableRow>;
-type EndUserTableRow = ReturnType<typeof makeEndUserTableRow>;
 
 type TableConfig<R, C extends UserTableColumnKey<R>> =
   | {
@@ -36,9 +37,16 @@ type TableConfig<R, C extends UserTableColumnKey<R>> =
       value: UserTableProps<R, C>;
     };
 
-type StaffTableConfig = TableConfig<StaffTableRow, 'userId'>;
-type ProviderTableConfig = TableConfig<ProviderTableRow, 'userId'>;
-type EndUserTableConfig = TableConfig<EndUserTableRow, 'userId'>;
+
+type BaseTableRow<R extends { user: UserDetails }> = Omit<R, 'user'> & UserDetails;
+
+export type StaffTableRow = BaseTableRow<Staff>;
+export type ProviderTableRow = BaseTableRow<DatasetProvider>;
+export type EndUserTableRow = BaseTableRow<EndUser>;
+
+export type StaffTableConfig = TableConfig<StaffTableRow, 'userId'>;
+export type ProviderTableConfig = TableConfig<ProviderTableRow, 'userId'>;
+export type EndUserTableConfig = TableConfig<EndUserTableRow, 'userId'>;
 
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -50,7 +58,7 @@ export function useStudyAccessRequestHandler(
   );
 }
 
-export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfig | undefined {
+export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfig {
   // FIXME: Fetch this data iff the user is a staff member
   const { value, loading } = usePromise(
     async () => {
@@ -76,14 +84,14 @@ export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfi
           status: 'success',
           value: {
             title: 'Staff',
-            rows: value.data.map(makeStaffTableRow)
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },
     [ value, loading ]
   );
 }
 
-export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableConfig | undefined {
+export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -109,14 +117,14 @@ export function useProviderTableConfig(handler: ApiRequestHandler, activeDataset
           status: 'success',
           value: {
             title: 'Providers',
-            rows: value.data.map(makeProviderTableRow)
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },
     [ value, loading ]
   );
 }
 
-export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableConfig | undefined {
+export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -142,22 +150,9 @@ export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetI
           status: 'success',
           value: {
             title: 'End Users',
-            rows: value.data.map(makeEndUserTableRow)
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
           }
         },
     [ value, loading ]
   );
-}
-
-const makeStaffTableRow = flattenDataRow;
-const makeProviderTableRow = flattenDataRow;
-const makeEndUserTableRow = flattenDataRow;
-
-function flattenDataRow<R extends { user: UserDetails }>(dataRow: R) {
-  const { user, ...rest } = dataRow;
-
-  return ({
-    ...user,
-    ...rest
-  });
 }

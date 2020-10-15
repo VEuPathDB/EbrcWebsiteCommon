@@ -28,3 +28,7 @@ export interface UserTableColumn<R, K extends UserTableColumnKey<R>> extends Mes
 export type UserTableColumns<R, C extends UserTableColumnKey<R>> = {
   [K in C]: UserTableColumn<R, K>
 };
+
+export function UserTable<R, C extends UserTableColumnKey<R>>({ rows }: Props<R, C>) {
+  return <pre>{JSON.stringify(rows, null, 2)}</pre>
+}
