@@ -112,12 +112,13 @@ export function deleteStaffEntry(
 
 export function fetchProviderList(
   handler: ApiRequestHandler,
+  datasetId: string,
   limit?: number,
   offset?: number
 ): Promise<DatasetProviderList> {
   const queryString = makeQueryString(
-    ['limit', 'offset'],
-    [limit, offset]
+    ['datasetId', 'limit', 'offset'],
+    [datasetId, limit, offset]
   );
 
   return handler({
@@ -169,13 +170,14 @@ export function deleteProviderEntry(
 
 export function fetchEndUserList(
   handler: ApiRequestHandler,
+  datasetId: string,
   limit?: number,
   offset?: number,
   approval?: ApprovalStatus
 ): Promise<EndUserList> {
   const queryString = makeQueryString(
-    ['limit', 'offset', 'approval'],
-    [limit, offset, approval]
+    ['datasetId', 'limit', 'offset', 'approval'],
+    [datasetId, limit, offset, approval]
   );
 
   return handler({
