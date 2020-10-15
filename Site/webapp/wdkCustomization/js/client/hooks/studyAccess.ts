@@ -10,7 +10,8 @@ import {
   fetchStaffList
 } from 'ebrc-client/StudyAccess/api';
 import {
-  Props as UserTableConfig
+  UserTableColumnKey,
+  Props as UserTableProps
 } from 'ebrc-client/components/StudyAccess/UserTable';
 
 import { ApiRequestHandler } from 'ebrc-client/util/api';
@@ -19,9 +20,25 @@ type StaffTableRow = ReturnType<typeof makeStaffTableRow>;
 type ProviderTableRow = ReturnType<typeof makeProviderTableRow>;
 type EndUserTableRow = ReturnType<typeof makeEndUserTableRow>;
 
-type StaffTableConfig = UserTableConfig<StaffTableRow, 'userId' | 'lastName'>;
-type ProviderTableConfig = UserTableConfig<ProviderTableRow, 'userId' | 'lastName'>;
-type EndUserTableConfig = UserTableConfig<EndUserTableRow, 'userId' | 'lastName'>;
+type TableConfig<R, C extends UserTableColumnKey<R>> =
+  | {
+      status: 'loading';
+    }
+  | {
+      status: 'error';
+      message: string;
+    }
+  | {
+      status: 'unavailable';
+    }
+  | {
+      status: 'success';
+      value: UserTableProps<R, C>;
+    };
+
+type StaffTableConfig = TableConfig<StaffTableRow, 'userId'>;
+type ProviderTableConfig = TableConfig<ProviderTableRow, 'userId'>;
+type EndUserTableConfig = TableConfig<EndUserTableRow, 'userId'>;
 
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -35,56 +52,101 @@ export function useStudyAccessRequestHandler(
 
 export function useStaffTableConfig(handler: ApiRequestHandler): StaffTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member
-  const { value } = usePromise(
-    async () => fetchStaffList(handler),
+  const { value, loading } = usePromise(
+    async () => {
+      try {
+        return await fetchStaffList(handler);
+      } catch (e) {
+        return 'error';
+      }
+    },
     []
   );
 
-  const staffTableRows = useMemo(
-    () => value?.data.map(makeStaffTableRow),
-    [ value ]
+  return useMemo(
+    () => loading
+      ? {
+          status: 'loading'
+        }
+      : value == null || value == 'error'
+      ? {
+          status: 'unavailable'
+        }
+      : {
+          status: 'success',
+          value: {
+            title: 'Staff',
+            rows: value.data.map(makeStaffTableRow)
+          }
+        },
+    [ value, loading ]
   );
-
-  return staffTableRows && {
-    title: 'Staff',
-    rows: staffTableRows
-  };
 }
 
 export function useProviderTableConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
-  const { value } = usePromise(
-    async () => fetchProviderList(handler, activeDatasetId),
-    []
-  );
-
-  const providerTableRows = useMemo(
-    () => value?.data.map(makeProviderTableRow),
+  const { value, loading } = usePromise(
+    async () => {
+      try {
+        return await fetchProviderList(handler, activeDatasetId);
+      } catch (e) {
+        return 'error';
+      }
+    },
     [ activeDatasetId ]
   );
 
-  return providerTableRows && {
-    title: 'Providers',
-    rows: providerTableRows
-  };
+  return useMemo(
+    () => loading
+      ? {
+          status: 'loading'
+        }
+      : value == null || value == 'error'
+      ? {
+          status: 'unavailable'
+        }
+      : {
+          status: 'success',
+          value: {
+            title: 'Providers',
+            rows: value.data.map(makeProviderTableRow)
+          }
+        },
+    [ value, loading ]
+  );
 }
 
 export function useEndUserTableConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableConfig | undefined {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
-  const { value } = usePromise(
-    async () => fetchEndUserList(handler, activeDatasetId),
-    []
-  );
-
-  const endUserTableRows = useMemo(
-    () => value?.data.map(makeEndUserTableRow),
+  const { value, loading } = usePromise(
+    async () => {
+      try {
+        return await fetchEndUserList(handler, activeDatasetId);
+      } catch (e) {
+        return 'error';
+      }
+    },
     [ activeDatasetId ]
   );
 
-  return endUserTableRows && {
-    title: 'End Users',
-    rows: endUserTableRows
-  };
+  return useMemo(
+    () => loading
+      ? {
+          status: 'loading'
+        }
+      : value == null || value == 'error'
+      ? {
+          status: 'unavailable'
+        }
+      : {
+          status: 'success',
+          value: {
+            title: 'End Users',
+            rows: value.data.map(makeEndUserTableRow)
+          }
+        },
+    [ value, loading ]
+  );
 }
 
 const makeStaffTableRow = flattenDataRow;
