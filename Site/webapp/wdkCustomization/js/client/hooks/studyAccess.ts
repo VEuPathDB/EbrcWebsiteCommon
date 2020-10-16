@@ -3,12 +3,6 @@ import { useMemo } from 'react';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 
 import {
-  DatasetProvider,
-  EndUser,
-  Staff,
-  UserDetails
-} from 'ebrc-client/StudyAccess/Types';
-import {
   createStudyAccessRequestHandler,
   fetchEndUserList,
   fetchProviderList,
@@ -20,15 +14,29 @@ import {
 
 import { ApiRequestHandler } from 'ebrc-client/util/api';
 
-type BaseTableRow<R extends { user: UserDetails }> = Omit<R, 'user'> & UserDetails;
+interface BaseTableRow {
+  userId: number;
+  name: string;
+}
 
-export type StaffTableRow = BaseTableRow<Staff>;
-export type ProviderTableRow = BaseTableRow<DatasetProvider>;
-export type EndUserTableRow = BaseTableRow<EndUser>;
+export interface StaffTableRow extends BaseTableRow {
+  isOwner: boolean;
+  // email: string;
+}
 
-export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, 'userId' | 'firstName' | 'isOwner'>;
-export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, 'userId' | 'firstName' | 'isManager'>;
-export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, 'userId'>;
+export interface ProviderTableRow extends BaseTableRow {
+  isManager: boolean;
+  // email: string;
+}
+
+
+export interface EndUserTableRow extends BaseTableRow {
+
+}
+
+export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyof StaffTableRow>;
+export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, keyof ProviderTableRow>;
+export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, keyof EndUserTableRow>;
 
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -66,18 +74,21 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
           status: 'success',
           title: 'Staff',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            rows: value.data.map(({ user, isOwner }) => ({
+              userId: user.userId,
+              name: `${user.firstName} ${user.lastName}`,
+              isOwner
+            })),
             columns: {
               userId: {
                 key: 'userId',
                 name: 'User ID',
                 sortable: false
               },
-              firstName: {
-                key: 'firstName',
+              name: {
+                key: 'name',
                 name: 'Name',
-                sortable: false,
-                renderCell: (({ row: { firstName, lastName } }) => `${firstName} ${lastName}`)
+                sortable: false
               },
               isOwner: {
                 key: 'isOwner',
@@ -88,7 +99,7 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
                   : 'No'
               }
             },
-            columnOrder: [ 'userId', 'firstName', 'isOwner' ]
+            columnOrder: [ 'userId', 'name', 'isOwner' ]
           }
         },
     [ value, loading ]
@@ -121,18 +132,21 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
           status: 'success',
           title: 'Providers',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            rows: value.data.map(({ user, isManager }) => ({
+              userId: user.userId,
+              name: `${user.firstName} ${user.lastName}`,
+              isManager
+            })),
             columns: {
               userId: {
                 key: 'userId',
                 name: 'User ID',
                 sortable: false
               },
-              firstName: {
-                key: 'firstName',
+              name: {
+                key: 'name',
                 name: 'Name',
-                sortable: false,
-                renderCell: (({ row: { firstName, lastName } }) => `${firstName} ${lastName}`)
+                sortable: false
               },
               isManager: {
                 key: 'isManager',
@@ -143,7 +157,7 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
                   : 'No'
               }
             },
-            columnOrder: [ 'userId', 'firstName', 'isManager' ]
+            columnOrder: [ 'userId', 'name', 'isManager' ]
           }
         },
     [ value, loading ]
@@ -176,13 +190,21 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
           status: 'success',
           title: 'End Users',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            rows: value.data.map(({ user }) => ({
+              userId: user.userId,
+              name: `${user.firstName} ${user.lastName}`
+            })),
             columns: {
               userId: {
                 key: 'userId',
                 name: 'User ID',
                 sortable: false
-              }
+              },
+              name: {
+                key: 'name',
+                name: 'Name',
+                sortable: false
+              },
             },
             columnOrder: [ 'userId' ]
           }
