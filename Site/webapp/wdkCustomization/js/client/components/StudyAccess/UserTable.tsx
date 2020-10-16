@@ -1,11 +1,12 @@
 import React from 'react';
 
 import { MesaColumn, MesaSortObject } from 'wdk-client/Core/CommonTypes';
+import Mesa, { MesaState } from 'wdk-client/Components/Mesa';
 
 export interface Props<R, C extends UserTableColumnKey<R>> {
   rows: R[];
-  // columns: UserTableColumns<R, C>;
-  // columnOrder: readonly C[];
+  columns: UserTableColumns<R, C>;
+  columnOrder: readonly C[];
   // isRowSelected: (row: R) => boolean;
   // filterTerm
   // sortColumn
@@ -28,6 +29,15 @@ export type UserTableColumns<R, C extends UserTableColumnKey<R>> = {
   [K in C]: UserTableColumn<R, K>
 };
 
-export function UserTable<R, C extends UserTableColumnKey<R>>({ rows }: Props<R, C>) {
-  return <pre>{JSON.stringify(rows, null, 2)}</pre>
+export function UserTable<R, C extends UserTableColumnKey<R>>({
+  columnOrder,
+  columns,
+  rows
+}: Props<R, C>) {
+  const state = MesaState.create({
+    rows,
+    columns: columnOrder.map(columnKey => columns[columnKey])
+  });
+
+  return <Mesa state={state} />;
 }

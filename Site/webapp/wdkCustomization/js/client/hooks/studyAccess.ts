@@ -26,8 +26,8 @@ export type StaffTableRow = BaseTableRow<Staff>;
 export type ProviderTableRow = BaseTableRow<DatasetProvider>;
 export type EndUserTableRow = BaseTableRow<EndUser>;
 
-export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, 'userId'>;
-export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, 'userId'>;
+export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, 'userId' | 'firstName' | 'isOwner'>;
+export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, 'userId' | 'firstName' | 'isManager'>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, 'userId'>;
 
 export function useStudyAccessRequestHandler(
@@ -66,7 +66,29 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
           status: 'success',
           title: 'Staff',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            columns: {
+              userId: {
+                key: 'userId',
+                name: 'User ID',
+                sortable: false
+              },
+              firstName: {
+                key: 'firstName',
+                name: 'Name',
+                sortable: false,
+                renderCell: (({ row: { firstName, lastName } }) => `${firstName} ${lastName}`)
+              },
+              isOwner: {
+                key: 'isOwner',
+                name: 'Is Owner?',
+                sortable: false,
+                renderCell: ({ value }) => value === true
+                  ? 'Yes'
+                  : 'No'
+              }
+            },
+            columnOrder: [ 'userId', 'firstName', 'isOwner' ]
           }
         },
     [ value, loading ]
@@ -99,7 +121,29 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
           status: 'success',
           title: 'Providers',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            columns: {
+              userId: {
+                key: 'userId',
+                name: 'User ID',
+                sortable: false
+              },
+              firstName: {
+                key: 'firstName',
+                name: 'Name',
+                sortable: false,
+                renderCell: (({ row: { firstName, lastName } }) => `${firstName} ${lastName}`)
+              },
+              isManager: {
+                key: 'isManager',
+                name: 'Is Manager?',
+                sortable: false,
+                renderCell: ({ value }) => value === true
+                  ? 'Yes'
+                  : 'No'
+              }
+            },
+            columnOrder: [ 'userId', 'firstName', 'isManager' ]
           }
         },
     [ value, loading ]
@@ -132,7 +176,15 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
           status: 'success',
           title: 'End Users',
           value: {
-            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest }))
+            rows: value.data.map(({ user, ...rest }) => ({ ...user, ...rest })),
+            columns: {
+              userId: {
+                key: 'userId',
+                name: 'User ID',
+                sortable: false
+              }
+            },
+            columnOrder: [ 'userId' ]
           }
         },
     [ value, loading ]

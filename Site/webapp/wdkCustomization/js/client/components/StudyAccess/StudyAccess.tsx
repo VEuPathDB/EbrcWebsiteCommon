@@ -31,9 +31,9 @@ export function StudyAccess({
       <div className={cx('--TitleLine')}>
         <h1>{title}</h1>
       </div>
-      <UserTableSection {...staffTableConfig} />
-      <UserTableSection {...providerTableConfig} />
       <UserTableSection {...endUserTableConfig} />
+      <UserTableSection {...providerTableConfig} />
+      <UserTableSection {...staffTableConfig} />
     </div>
   );
 }
