@@ -7,4 +7,13 @@
     font-size: 1.5em;
     padding: 0.5em;
   }
+
+  &--SearchBoxContainer {
+    display: flex;
+    align-items: center;
+  }
+
+  &--SearchBoxContainer > * {
+    margin: 0 0.25em;
+  }
 }

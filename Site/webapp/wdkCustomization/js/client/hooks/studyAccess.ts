@@ -83,20 +83,20 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
               userId: {
                 key: 'userId',
                 name: 'User ID',
-                sortable: false
+                sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
-                sortable: false
+                sortable: true
               },
               isOwner: {
                 key: 'isOwner',
                 name: 'Is Owner?',
-                sortable: false,
-                renderCell: ({ value }) => value === true
-                  ? 'Yes'
-                  : 'No'
+                sortable: true,
+                makeSearchableString: booleanToString,
+                makeOrder: ({ isOwner }) => booleanToString(isOwner),
+                renderCell: ({ value }) => booleanToString(value)
               }
             },
             columnOrder: [ 'userId', 'name', 'isOwner' ]
@@ -141,20 +141,20 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
               userId: {
                 key: 'userId',
                 name: 'User ID',
-                sortable: false
+                sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
-                sortable: false
+                sortable: true
               },
               isManager: {
                 key: 'isManager',
                 name: 'Is Manager?',
-                sortable: false,
-                renderCell: ({ value }) => value === true
-                  ? 'Yes'
-                  : 'No'
+                sortable: true,
+                makeSearchableString: booleanToString,
+                makeOrder: ({ isManager }) => booleanToString(isManager),
+                renderCell: ({ value }) => booleanToString(value)
               }
             },
             columnOrder: [ 'userId', 'name', 'isManager' ]
@@ -198,12 +198,12 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
               userId: {
                 key: 'userId',
                 name: 'User ID',
-                sortable: false
+                sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
-                sortable: false
+                sortable: true
               },
             },
             columnOrder: [ 'userId' ]
@@ -211,4 +211,8 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
         },
     [ value, loading ]
   );
+}
+
+function booleanToString(value: boolean) {
+  return value === true ? 'Yes' : 'No';
 }
