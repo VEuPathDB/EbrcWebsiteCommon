@@ -9,7 +9,7 @@ import {
   StaffTableSectionConfig
 } from 'ebrc-client/hooks/studyAccess';
 
-//import './StudyAccess.scss';
+import './StudyAccess.scss';
 
 interface Props {
   title: React.ReactNode;
@@ -18,7 +18,7 @@ interface Props {
   endUserTableConfig: EndUserTableSectionConfig;
 }
 
-const cx = makeClassNameHelper('StudyAccess');
+export const cx = makeClassNameHelper('StudyAccess');
 
 export function StudyAccess({
   title,

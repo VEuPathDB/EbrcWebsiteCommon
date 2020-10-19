@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { cx } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   UserTable,
   UserTableColumnKey,
@@ -28,7 +29,7 @@ export function UserTableSection<R, C extends UserTableColumnKey<R>>(props: Prop
     ? null
     : props.status === 'error'
     ? <p>{props.message}</p>
-    : <details open>
+    : <details className={cx('--UserTableSection')} open>
         <summary>{props.title}</summary>
         <UserTable {...props.value} />
       </details>;
