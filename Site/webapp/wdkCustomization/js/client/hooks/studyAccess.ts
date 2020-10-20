@@ -2,36 +2,43 @@ import { useMemo } from 'react';
 
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 
+import { ApprovalStatus } from 'ebrc-client/StudyAccess/Types';
 import {
   createStudyAccessRequestHandler,
   fetchEndUserList,
   fetchProviderList,
   fetchStaffList
 } from 'ebrc-client/StudyAccess/api';
+
 import {
   Props as UserTableSectionConfig
 } from 'ebrc-client/components/StudyAccess/UserTableSection';
-
 import { ApiRequestHandler } from 'ebrc-client/util/api';
 
 interface BaseTableRow {
   userId: number;
   name: string;
+  // email: string;
 }
 
 export interface StaffTableRow extends BaseTableRow {
   isOwner: boolean;
-  // email: string;
 }
 
 export interface ProviderTableRow extends BaseTableRow {
   isManager: boolean;
-  // email: string;
 }
 
 
 export interface EndUserTableRow extends BaseTableRow {
-
+  // requestDate: string;
+  approvalStatus: ApprovalStatus;
+  purpose: string;
+  researchQuestion: string;
+  analysisPlan: string;
+  disseminationPlan: string;
+  denialReason: string;
+  // lastStatusUpdate: string;
 }
 
 export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyof StaffTableRow>;
@@ -190,9 +197,23 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
           status: 'success',
           title: 'End Users',
           value: {
-            rows: value.data.map(({ user }) => ({
+            rows: value.data.map(({
+              user,
+              approvalStatus,
+              purpose = '',
+              researchQuestion = '',
+              analysisPlan = '',
+              disseminationPlan = '',
+              denialReason = ''
+            }) => ({
               userId: user.userId,
-              name: `${user.firstName} ${user.lastName}`
+              name: `${user.firstName} ${user.lastName}`,
+              approvalStatus,
+              purpose,
+              researchQuestion,
+              analysisPlan,
+              disseminationPlan,
+              denialReason
             })),
             columns: {
               userId: {
@@ -205,8 +226,47 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
                 name: 'Name',
                 sortable: true
               },
+              approvalStatus: {
+                key: 'approvalStatus',
+                name: 'Approval Status',
+                sortable: true
+              },
+              purpose: {
+                key: 'purpose',
+                name: 'Purpose',
+                sortable: true
+              },
+              researchQuestion: {
+                key: 'researchQuestion',
+                name: 'Research Question',
+                sortable: true
+              },
+              analysisPlan: {
+                key: 'analysisPlan',
+                name: 'Analysis Plan',
+                sortable: true
+              },
+              disseminationPlan: {
+                key: 'disseminationPlan',
+                name: 'Dissemination Plan',
+                sortable: true
+              },
+              denialReason: {
+                key: 'denialReason',
+                name: 'Reason For Denial',
+                sortable: true
+              }
             },
-            columnOrder: [ 'userId' ]
+            columnOrder: [
+              'userId',
+              'name',
+              'approvalStatus',
+              'denialReason',
+              'purpose',
+              'researchQuestion',
+              'analysisPlan',
+              'disseminationPlan',
+            ]
           }
         },
     [ value, loading ]

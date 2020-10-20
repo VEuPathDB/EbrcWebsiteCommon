@@ -88,13 +88,18 @@ export const endUser = record({
   startDate: optional(string),
   duration: optional(number),
   restrictionLevel,
-  purpose: string,
-  researchQuestion: string,
-  analysisPlan: string,
-  disseminationPlan: string,
+  // FIXME: The api docs say this is required. Who is right?
+  purpose: optional(string),
+  // FIXME: The api docs say this is required. Who is right?
+  researchQuestion: optional(string),
+  // FIXME: The api docs say this is required. Who is right?
+  analysisPlan: optional(string),
+  // FIXME: The api docs say this is required. Who is right?
+  disseminationPlan: optional(string),
   approvalStatus,
   denialReason: optional(string),
-  priorAuth: string
+  // FIXME: The api docs say this is required. Who is right?
+  priorAuth: optional(string)
 });
 
 export type EndUser = Unpack<typeof endUser>;
