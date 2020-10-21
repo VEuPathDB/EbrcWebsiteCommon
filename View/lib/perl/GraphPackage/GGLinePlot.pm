@@ -1137,10 +1137,10 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                  xref=\"paper\", 
                  y=1.1, 
                  x=0, 
-                 text=\"<i>Gene:</span> <b>$id</b></i>\", 
+                 text=\"$id\", 
                  showarrow=F, 
                  font=list(size=14,
-                           color=\"darkred\")) %>%
+                           color=\"red\")) %>%
   highlight(on = \"plotly_selected\") %>%
   add_annotations(x = log2(1),
                  y = unique(profile.df.full\$LEGEND),
