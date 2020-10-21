@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import { SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
+import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCell';
 
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/Types';
 import {
@@ -273,27 +274,42 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
               purpose: {
                 key: 'purpose',
                 name: 'Purpose',
-                sortable: true
+                sortable: true,
+                width: '25em',
+                renderCell: ({ value, row: { userId } }) =>
+                  <OverflowingTextCell key={userId} value={value} />
               },
               researchQuestion: {
                 key: 'researchQuestion',
                 name: 'Research Question',
-                sortable: true
+                sortable: true,
+                width: '25em',
+                renderCell: ({ value, row: { userId } }) =>
+                  <OverflowingTextCell key={userId} value={value} />
               },
               analysisPlan: {
                 key: 'analysisPlan',
                 name: 'Analysis Plan',
-                sortable: true
+                sortable: true,
+                width: '25em',
+                renderCell: ({ value, row: { userId } }) =>
+                  <OverflowingTextCell key={userId} value={value} />
               },
               disseminationPlan: {
                 key: 'disseminationPlan',
                 name: 'Dissemination Plan',
-                sortable: true
+                sortable: true,
+                width: '25em',
+                renderCell: ({ value, row: { userId } }) =>
+                  <OverflowingTextCell key={userId} value={value} />
               },
               denialReason: {
                 key: 'denialReason',
                 name: 'Reason For Denial',
-                sortable: true
+                sortable: true,
+                width: '15em',
+                renderCell: ({ value, row: { userId } }) =>
+                  <OverflowingTextCell key={userId} value={value} />
               }
             },
             columnOrder: [
