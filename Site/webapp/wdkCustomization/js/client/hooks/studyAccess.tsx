@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
@@ -9,7 +9,8 @@ import {
   createStudyAccessRequestHandler,
   fetchEndUserList,
   fetchProviderList,
-  fetchStaffList
+  fetchStaffList,
+  updateEndUserEntry
 } from 'ebrc-client/StudyAccess/api';
 
 import {
@@ -186,35 +187,11 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
     [ activeDatasetId ]
   );
 
-  const approvalStatusItems = useMemo(
-    () => [
-      {
-        value: 'requested',
-        display: 'Requested'
-      },
-      {
-        value: 'approved',
-        display: 'Approved'
-      },
-      {
-        value: 'denied',
-        display: 'Denied'
-      }
-    ] as { value: ApprovalStatus, display: string }[],
-    []
-  );
-
-  const [ approvalStatusState, setApprovalStatusState ] = useState<Record<number, ApprovalStatus | undefined>>({});
-
-  const updateApprovalStatus = useCallback(
-    (userId: number, newApprovalStatus: ApprovalStatus) => {
-      setApprovalStatusState({
-        ...approvalStatusState,
-        [userId]: newApprovalStatus
-      });
-    },
-    [ approvalStatusState ]
-  );
+  const {
+    approvalStatusItems,
+    approvalStatusState,
+    onApprovalStatusChange
+  } = useApprovalStatusConfig(handler, activeDatasetId);
 
   return useMemo(
     () => loading
@@ -267,7 +244,11 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
                     items={approvalStatusItems}
                     value={value}
                     onChange={(newValue) => {
-                      updateApprovalStatus(userId, newValue as ApprovalStatus);
+                      onApprovalStatusChange(
+                        userId,
+                        activeDatasetId,
+                        newValue as ApprovalStatus
+                      );
                     }}
                   />
               },
@@ -324,8 +305,144 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
             ]
           }
         },
-    [ value, loading, approvalStatusState ]
+    [ value, loading, activeDatasetId, approvalStatusState ]
   );
+}
+
+function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: string) {
+  const approvalStatusItems = useMemo(
+    () => [
+      {
+        value: 'requested',
+        display: 'Requested'
+      },
+      {
+        value: 'approved',
+        display: 'Approved'
+      },
+      {
+        value: 'denied',
+        display: 'Denied'
+      }
+    ] as { value: ApprovalStatus, display: string }[],
+    []
+  );
+
+  const initialApprovalStatusState: Record<number, ApprovalStatus | undefined> = {};
+
+  const [ approvalStatusState, setApprovalStatusState ] = useState(initialApprovalStatusState);
+
+  useEffect(() => {
+    setApprovalStatusState(initialApprovalStatusState);
+  }, [ activeDatasetId ]);
+
+  const updateApprovalStatus = useCallback(
+    (userId: number, newApprovalStatus: ApprovalStatus | undefined) => {
+      setApprovalStatusState({
+        ...approvalStatusState,
+        [userId]: newApprovalStatus
+      });
+    },
+    [ approvalStatusState ]
+  );
+
+  const onApprovalStatusChange = useCallback(
+    async (
+      userId: number,
+      datasetId: string,
+      newApprovalStatus: ApprovalStatus
+    ) => {
+      const oldApprovalStatus = approvalStatusState[userId];
+
+      if (newApprovalStatus !== 'denied') {
+        updateUiStateOptimistically(
+          () => {
+            updateApprovalStatus(userId, newApprovalStatus);
+          },
+          async () => {
+            await updateEndUserEntry(
+              handler,
+              userId,
+              datasetId,
+              [
+                {
+                  op: 'replace',
+                  path: '/approvalStatus',
+                  value: newApprovalStatus
+                },
+                {
+                  op: 'remove',
+                  path: '/denialReason'
+                }
+              ]
+            );
+          },
+          () => {
+            updateApprovalStatus(userId, oldApprovalStatus);
+          }
+        );
+      } else {
+        const denialReason = prompt('Please provide a reason for denying this request: ');
+
+        if (denialReason != null) {
+          updateUiStateOptimistically(
+            () => {
+              updateApprovalStatus(userId, newApprovalStatus);
+            },
+            async () => {
+              await updateEndUserEntry(
+                handler,
+                userId,
+                datasetId,
+                [
+                  {
+                    op: 'replace',
+                    path: '/approvalStatus',
+                    value: 'denied'
+                  },
+                  {
+                    op: 'replace',
+                    path: '/denialReason',
+                    value: denialReason
+                  }
+                ]
+              );
+            },
+            () => {
+              updateApprovalStatus(userId, oldApprovalStatus);
+            }
+          );
+        }
+      }
+    },
+    [ handler, updateApprovalStatus, approvalStatusState ]
+  );
+
+  return {
+    approvalStatusItems,
+    approvalStatusState,
+    onApprovalStatusChange
+  };
+}
+
+async function updateUiStateOptimistically(
+  optimisticUiStateUpdate: () => void,
+  serviceUpdateCb: () => Promise<void>,
+  rollbackUiStateUpdate: () => void
+) {
+  // Update the UI state optimistically
+  optimisticUiStateUpdate();
+
+  try {
+    // Try to update the backend
+    await serviceUpdateCb();
+  } catch (e) {
+    // If the backend update fails, rollback the optimistic UI state
+    // update and throw an error
+    rollbackUiStateUpdate();
+
+    throw e;
+  }
 }
 
 function booleanToString(value: boolean) {
