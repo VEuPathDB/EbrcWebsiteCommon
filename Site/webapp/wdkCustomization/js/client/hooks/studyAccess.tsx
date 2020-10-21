@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
+import { SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/Types';
@@ -184,6 +185,36 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
     [ activeDatasetId ]
   );
 
+  const approvalStatusItems = useMemo(
+    () => [
+      {
+        value: 'requested',
+        display: 'Requested'
+      },
+      {
+        value: 'approved',
+        display: 'Approved'
+      },
+      {
+        value: 'denied',
+        display: 'Denied'
+      }
+    ] as { value: ApprovalStatus, display: string }[],
+    []
+  );
+
+  const [ approvalStatusState, setApprovalStatusState ] = useState<Record<number, ApprovalStatus | undefined>>({});
+
+  const updateApprovalStatus = useCallback(
+    (userId: number, newApprovalStatus: ApprovalStatus) => {
+      setApprovalStatusState({
+        ...approvalStatusState,
+        [userId]: newApprovalStatus
+      });
+    },
+    [ approvalStatusState ]
+  );
+
   return useMemo(
     () => loading
       ? {
@@ -208,7 +239,7 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
             }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
-              approvalStatus,
+              approvalStatus: approvalStatusState[user.userId] ?? approvalStatus,
               purpose,
               researchQuestion,
               analysisPlan,
@@ -229,7 +260,15 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
               approvalStatus: {
                 key: 'approvalStatus',
                 name: 'Approval Status',
-                sortable: true
+                sortable: true,
+                renderCell: ({ value, row: { userId } }) =>
+                  <SingleSelect
+                    items={approvalStatusItems}
+                    value={value}
+                    onChange={(newValue) => {
+                      updateApprovalStatus(userId, newValue as ApprovalStatus);
+                    }}
+                  />
               },
               purpose: {
                 key: 'purpose',
@@ -265,11 +304,11 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
               'purpose',
               'researchQuestion',
               'analysisPlan',
-              'disseminationPlan',
+              'disseminationPlan'
             ]
           }
         },
-    [ value, loading ]
+    [ value, loading, approvalStatusState ]
   );
 }
 
