@@ -1128,19 +1128,27 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 		      showticklabels = FALSE),
          margin = list(l = 30, 
                        r = 30, 
-                       b = 60, 
-                       t = 0, 
+                       b = 75, 
+                       t = 40, 
                        pad = 1),
 	 boxgap = .6
   ) %>%
   add_annotations(yref=\"paper\", 
                  xref=\"paper\", 
-                 y=1.1, 
+                 y=1.05, 
                  x=0, 
+                 text=\"<b>Gene:</b>\", 
+                 showarrow=F, 
+                 font=list(size=14,
+                           color=\"black\")) %>%
+  add_annotations(yref=\"paper\", 
+                 xref=\"paper\", 
+                 y=1.05, 
+                 x=0.05, 
                  text=\"$id\", 
                  showarrow=F, 
                  font=list(size=14,
-                           color=\"red\")) %>%
+                           color=\"darkred\")) %>%
   highlight(on = \"plotly_selected\") %>%
   add_annotations(x = log2(1),
                  y = unique(profile.df.full\$LEGEND),
@@ -1250,7 +1258,7 @@ annotationJS <- \"function(el) {
 	x: 0.05,
         direction: 'right',
 	xanchor: 'center',
-        yanchor: 'top'
+        yanchor: 'center'
     },
     {
         buttons: [
@@ -1263,10 +1271,10 @@ annotationJS <- \"function(el) {
         showactive: false,
         active: 0,
         type: 'buttons',
-        y: 1.1,
-	x: 0.5,
+        y: -0.05,
+	x: 0.85,
 	xanchor: 'center',
-        yanchor: 'top'
+        yanchor: 'center'
     }];
 
     Plotly.relayout(el.id, {updatemenus: updatemenus});

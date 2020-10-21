@@ -124,10 +124,14 @@ export function getPolicyUrl (study = {}, webAppUrl = '') {
   return !study
     ? null
     : study.policyUrl
-      ? study.policyUrl
+      ? webAppUrl + '/' + study.policyUrl
       : study.policyAppUrl
         ? webAppUrl + study.policyAppUrl
         : null;
+}
+
+export function getRequestNeedsApproval (study = {}) {
+  return study.requestNeedsApproval;
 }
 
 export function getActionVerb (action) {
@@ -157,6 +161,7 @@ export function getActionVerb (action) {
 
 export function getRequirement ({ action, study }) {
   if (actionRequiresLogin({ action, study })) return 'login or create an account';
+  if ( getRequestNeedsApproval(study)=="0" ) return 'submit an access request';
   if (actionRequiresApproval({ action, study })) return 'acquire research approval';
   return 'contact us';
 }
