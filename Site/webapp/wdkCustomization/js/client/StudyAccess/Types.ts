@@ -155,12 +155,24 @@ export const endUserPatchOp = oneOf(
 
 export type EndUserPatchOp = Unpack<typeof endUserPatchOp>;
 
-export const endUserPatch = record({
-  op: endUserPatchOp,
-  path: string,
-  value: optional(string),
-  from: optional(string)
-});
+export const endUserPatch = arrayOf(
+  oneOf(
+    record({
+      op: constant('add'),
+      path: string,
+      value: string
+    }),
+    record({
+      op: constant('remove'),
+      path: string
+    }),
+    record({
+      op: constant('replace'),
+      path: string,
+      value: string
+    })
+  )
+);
 
 export type EndUserPatch = Unpack<typeof endUserPatch>;
 
