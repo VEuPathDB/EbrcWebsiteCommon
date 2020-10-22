@@ -1121,12 +1121,18 @@ profile.df.full <- merge(profile.df.full, colors.df, by = \"LEGEND\")
 profile.df.full\$COLOR <- paste0(profile.df.full\$COLOR, \"|\", profile.df.full\$DATASET_PRESENTER_ID)
 
 myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
-  layout(xaxis = list(title = \"log2($exprMetric + 1)\", 
+  layout(xaxis = list(title = \"\", 
 		      range = c(log2(1), log2(x.max) + 2),
-		      dtick = 2),
-         yaxis = list(title = \"RNA-Seq Experiment\",
-		      showticklabels = FALSE),
-         margin = list(l = 30, 
+		      dtick = 2,
+		      mirror = \"ticks\",
+		      zerolinecolor = \"#eee\"),
+	# xaxis2 = list(range = c(log2(1), log2(x.max) + 2),
+	#	       dtick = 2,
+	#	       zerolinecolor = \"#eee\",
+	#	       overlaying = \"x\",
+	#	       side = \"top\"),
+         yaxis = list(visible = FALSE),
+         margin = list(l = 75, 
                        r = 30, 
                        b = 75, 
                        t = 40, 
@@ -1136,21 +1142,29 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
   add_annotations(yref=\"paper\", 
                  xref=\"paper\", 
                  y=1.05, 
-                 x=0, 
-                 text=\"<b>Gene:</b>\", 
+                 x=-0.05, 
+                 text=\"<b><i>Gene:</i></b>\", 
                  showarrow=F, 
                  font=list(size=14,
                            color=\"black\")) %>%
   add_annotations(yref=\"paper\", 
                  xref=\"paper\", 
                  y=1.05, 
-                 x=0.05, 
-                 text=\"$id\", 
+                 x=0, 
+                 text=\"<i>$id</i>\", 
                  showarrow=F, 
                  font=list(size=14,
                            color=\"darkred\")) %>%
+  add_annotations(yref=\"paper\", 
+                 xref=\"paper\", 
+                 y=-0.1, 
+                 x=-0.05, 
+                 text=\"<i>Scale:</i>\", 
+                 showarrow=F, 
+                 font=list(size=14,
+                           color=\"black\")) %>%
   highlight(on = \"plotly_selected\") %>%
-  add_annotations(x = log2(1),
+  add_annotations(x = -.05,
                  y = unique(profile.df.full\$LEGEND),
 		 text = unique(profile.df.full\$LEGEND),
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -1162,7 +1176,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
 #			 unique(profile.df.full\$DATASET_PRESENTER_ID),
 #			 '\\'>Dataset Expression Graphs</a>'),
 		 hovertext = unique(profile.df.full\$TABLE),
-                 xref = \"x\",
+                 xref = \"paper\",
                  yref = \"y\",
                  xanchor = \"left\",
                  showarrow = FALSE,
@@ -1201,24 +1215,44 @@ annotationJS <- \"function(el) {
 
       var annotations = el.layout.annotations;
       var linearAnnotations = [];
-      linearAnnotations[0] = {
+      linearAnnotations[1] = {
         yref: 'paper', 
         xref: 'paper', 
-        y: 1.1, 
-        x: 0, 
-        text: annotations[0].text, 
+        y: 1.05, 
+        x: -0.05, 
+        text: annotations[1].text, 
         showarrow: false, 
         font: {size: 14,
-               color: 'red'}
+               color: 'black'}
+      };
+      linearAnnotations[2] = {
+        yref: 'paper', 
+        xref: 'paper', 
+        y: 1.05, 
+        x: 0, 
+        text: annotations[2].text, 
+        showarrow: false, 
+        font: {size: 14,
+               color: 'darkred'}
+      };
+      linearAnnotations[4] = {
+        yref: 'paper', 
+        xref: 'paper', 
+        y: -0.1, 
+        x: -0.05, 
+        text: annotations[4].text, 
+        showarrow: false, 
+        font: {size: 14,
+               color: 'black'}
       };
       var i;
-      for (i = 2; i < annotations.length; i++) {
+      for (i = 6; i < annotations.length; i++) {
         var ann = {  
-          x: 0,
+          x: -0.05,
           y: annotations[i].y,
           text: annotations[i].text,
 	  hovertext: annotations[i].hovertext,
-          xref: 'x',
+          xref: 'paper',
           yref: 'y',
           xanchor: 'left',
           showarrow: false,
@@ -1236,45 +1270,53 @@ annotationJS <- \"function(el) {
         buttons: [
             {
                 args: [{x: xData},
-                       {xaxis: {title: 'log2($exprMetric + 1)',
-                                range: range},
+                       {xaxis: {title: '',
+                                range: range,
+				dtick: 2,
+				mirror: 'ticks',
+				zerolinecolor: '#eee'},
 			annotations: annotations}],
-                label: 'Log2 Scale',
+                label: '<i>log2($exprMetric + 1)</i>',
                 method: 'update'
             },
             {
 		args: [{x: xFPKM},
-                       {xaxis: {title: '$exprMetric',
-                                range: [0, Math.pow(2,range[1]-2)]},
+                       {xaxis: {title: '',
+                                range: [0, Math.pow(2,range[1]-2)],
+				mirror: 'ticks',
+				zerolinecolor: 'eee'},
 			annotations: linearAnnotations}],
-                label: 'Linear Scale',
+                label: '<i>$exprMetric</i>',
                 method: 'update'
             }
         ],
         showactive: true,
 	active: 0,
         type: 'buttons',
-        y: -0.05,
-	x: 0.05,
+        y: -0.1,
+	x: 0,
         direction: 'right',
-	xanchor: 'center',
-        yanchor: 'center'
+	xanchor: 'left',
+        yanchor: 'bottom',
+	borderwidth: 2
     },
     {
         buttons: [
 	    {
                 args: [{annotations: el.layout.annotations}],
-		label: 'Remove Sample Labels',
+		label: '<i>click to remove sample labels</i>',
                 method: 'relayout'
             }
         ],
         showactive: false,
         active: 0,
         type: 'buttons',
-        y: -0.05,
+        y: -0.1,
 	x: 0.85,
 	xanchor: 'center',
-        yanchor: 'center'
+        yanchor: 'bottom',
+	bgcolor: 'lightgray',
+	borderwidth: 0
     }];
 
     Plotly.relayout(el.id, {updatemenus: updatemenus});
