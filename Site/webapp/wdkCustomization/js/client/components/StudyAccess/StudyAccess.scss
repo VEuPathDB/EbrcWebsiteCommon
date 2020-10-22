@@ -16,4 +16,17 @@
   &--SearchBoxContainer > * {
     margin: 0 0.25em;
   }
+
+  &--UserTableDialog {
+    font-size: 1.5em;
+  }
+
+  &--AccessDenialReason > * {
+    margin: 0.5em 0;
+  }
+
+  &--AccessDenialSubmit {
+    display: flex;
+    justify-content: center;
+  }
 }
