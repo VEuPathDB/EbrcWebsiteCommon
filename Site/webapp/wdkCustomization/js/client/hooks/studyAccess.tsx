@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { zipWith } from 'lodash';
+
 import { SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCell';
@@ -29,28 +31,32 @@ interface BaseTableRow {
   // email: string;
 }
 
-export interface StaffTableRow extends BaseTableRow {
+interface StaffTableRow extends BaseTableRow {
   isOwner: boolean;
 }
 
-export interface ProviderTableRow extends BaseTableRow {
+interface ProviderTableRow extends BaseTableRow {
   isManager: boolean;
 }
 
-export interface EndUserTableRow extends BaseTableRow {
+interface EndUserTableRow extends BaseTableRow {
   // requestDate: string;
+  content: string;
   approvalStatus: ApprovalStatus;
-  purpose: string;
-  researchQuestion: string;
-  analysisPlan: string;
-  disseminationPlan: string;
   denialReason: string;
   // lastStatusUpdate: string;
 }
 
+interface EndUserTableFullRow extends EndUserTableRow {
+  purpose: string;
+  researchQuestion: string;
+  analysisPlan: string;
+  disseminationPlan: string;
+}
+
 export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyof StaffTableRow>;
 export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, keyof ProviderTableRow>;
-export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, keyof EndUserTableRow>;
+export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableFullRow, keyof EndUserTableRow>;
 
 export type OpenDialogConfig = UserTableDialogProps<ContentProps>;
 
@@ -281,6 +287,7 @@ export function useEndUserTableSectionConfig(
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
               approvalStatus: endUserTableUiState.approvalStatus[user.userId] ?? approvalStatus,
+              content: [ purpose, researchQuestion, analysisPlan, disseminationPlan ].join('\0'),
               purpose,
               researchQuestion,
               analysisPlan,
@@ -316,42 +323,31 @@ export function useEndUserTableSectionConfig(
                     }}
                   />
               },
-              purpose: {
-                key: 'purpose',
-                name: 'Purpose',
-                sortable: true,
-                width: '25em',
-                renderCell: ({ value, row: { userId } }) =>
-                  <OverflowingTextCell key={userId} value={value} />
-              },
-              researchQuestion: {
-                key: 'researchQuestion',
-                name: 'Research Question',
-                sortable: true,
-                width: '25em',
-                renderCell: ({ value, row: { userId } }) =>
-                  <OverflowingTextCell key={userId} value={value} />
-              },
-              analysisPlan: {
-                key: 'analysisPlan',
-                name: 'Analysis Plan',
-                sortable: true,
-                width: '25em',
-                renderCell: ({ value, row: { userId } }) =>
-                  <OverflowingTextCell key={userId} value={value} />
-              },
-              disseminationPlan: {
-                key: 'disseminationPlan',
-                name: 'Dissemination Plan',
-                sortable: true,
-                width: '25em',
-                renderCell: ({ value, row: { userId } }) =>
-                  <OverflowingTextCell key={userId} value={value} />
+              content: {
+                key: 'content',
+                name: 'Content',
+                sortable: false,
+                width: '35em',
+                renderCell: ({ value, row: { userId, purpose, researchQuestion, analysisPlan, disseminationPlan } }) => {
+                  const contentFields = zipWith(
+                    [ 'Purpose:', 'Research Question:', 'Analysis Plan:', 'Dissemination Plan:'],
+                    [ purpose, researchQuestion, analysisPlan, disseminationPlan ],
+                    (heading, field) => {
+                      return field.length > 0
+                        ? `${heading}\n${field}`
+                        : undefined
+                    }
+                  );
+
+                  const textValue = contentFields.filter(contentField => contentField != null).join('\n\n');
+
+                  return <OverflowingTextCell key={userId} value={textValue} />;
+                }
               },
               denialReason: {
                 key: 'denialReason',
                 name: 'Reason For Denial',
-                sortable: true,
+                sortable: false,
                 width: '15em',
                 renderCell: ({ value, row: { userId } }) =>
                   <OverflowingTextCell key={userId} value={value} />
@@ -361,11 +357,8 @@ export function useEndUserTableSectionConfig(
               'userId',
               'name',
               'approvalStatus',
+              'content',
               'denialReason',
-              'purpose',
-              'researchQuestion',
-              'analysisPlan',
-              'disseminationPlan'
             ]
           }
         },
@@ -419,22 +412,22 @@ function useApprovalStatusColumnConfig(
             );
           },
           async () => {
-            // await updateEndUserEntry(
-            //   handler,
-            //   userId,
-            //   datasetId,
-            //   [
-            //     {
-            //       op: 'replace',
-            //       path: '/approvalStatus',
-            //       value: newApprovalStatus
-            //     },
-            //     {
-            //       op: 'remove',
-            //       path: '/denialReason'
-            //     }
-            //   ]
-            // );
+            await updateEndUserEntry(
+              handler,
+              userId,
+              datasetId,
+              [
+                {
+                  op: 'replace',
+                  path: '/approvalStatus',
+                  value: newApprovalStatus
+                },
+                {
+                  op: 'remove',
+                  path: '/denialReason'
+                }
+              ]
+            );
           },
           () => {
             updateEndUserApprovalStatus(
@@ -464,23 +457,23 @@ function useApprovalStatusColumnConfig(
                 );
               },
               async () => {
-                // await updateEndUserEntry(
-                //   handler,
-                //   userId,
-                //   datasetId,
-                //   [
-                //     {
-                //       op: 'replace',
-                //       path: '/approvalStatus',
-                //       value: newApprovalStatus
-                //     },
-                //     {
-                //       op: 'replace',
-                //       path: '/denialReason',
-                //       value: denialReason
-                //     }
-                //   ]
-                // );
+                await updateEndUserEntry(
+                  handler,
+                  userId,
+                  datasetId,
+                  [
+                    {
+                      op: 'replace',
+                      path: '/approvalStatus',
+                      value: newApprovalStatus
+                    },
+                    {
+                      op: 'replace',
+                      path: '/denialReason',
+                      value: denialReason
+                    }
+                  ]
+                );
               },
               () => {
                 updateEndUserApprovalStatus(
