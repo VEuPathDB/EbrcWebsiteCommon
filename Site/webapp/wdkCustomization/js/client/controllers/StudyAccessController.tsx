@@ -35,7 +35,7 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const { approvalStatusState, updateUserApprovalStatus } = useApprovalStatusState(datasetId);
 
-  const { openDialogConfig, updateOpenDialog } = useOpenDialogConfig();
+  const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
   const staffTableConfig = useStaffTableSectionConfig(handler);
   const providerTableConfig = useProviderTableSectionConfig(handler, datasetId);
@@ -44,7 +44,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     datasetId,
     approvalStatusState,
     updateUserApprovalStatus,
-    updateOpenDialog
+    changeOpenDialogConfig
   );
 
   return (

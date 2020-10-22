@@ -14,7 +14,8 @@ import {
 } from 'ebrc-client/StudyAccess/api';
 import {
   Props as UserTableDialogProps,
-  OpenDialogType
+  AccessDenialContent,
+  ContentProps
 } from 'ebrc-client/components/StudyAccess/UserTableDialog';
 
 import {
@@ -51,7 +52,7 @@ export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyo
 export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, keyof ProviderTableRow>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, keyof EndUserTableRow>;
 
-export type OpenDialogConfig = UserTableDialogProps | undefined;
+export type OpenDialogConfig = UserTableDialogProps<ContentProps>;
 
 type ApprovalStatusState = Record<number, ApprovalStatus | undefined>;
 
@@ -91,25 +92,26 @@ export function useApprovalStatusState(activeDatasetId: string) {
 }
 
 export function useOpenDialogConfig() {
-  const [ openDialogConfig, setOpenDialogConfig ] = useState<OpenDialogConfig>(undefined);
+  const [ openDialogConfig, setOpenDialogConfig ] = useState<OpenDialogConfig | undefined>(undefined);
 
-  const updateOpenDialog = useCallback((dialogType: OpenDialogType) => {
-    if (dialogType.type === 'access-denial') {
+  const changeOpenDialogConfig = useCallback((newDialogContentProps: ContentProps | undefined) => {
+    if (newDialogContentProps == null) {
+      setOpenDialogConfig(undefined);
+    } else if (newDialogContentProps.type === 'access-denial') {
       setOpenDialogConfig({
-        title: `Denying ${dialogType.userName}`,
+        title: 'Denying Access',
         onClose: () => {
-          setOpenDialogConfig(undefined)
+          setOpenDialogConfig(undefined);
         },
-        content: 'TODO',
-        buttonDisplay: 'Submit',
-        onButtonClick: () => alert('TODO')
+        contentProps: newDialogContentProps,
+        ContentComponent: AccessDenialContent
       });
     }
   }, []);
 
   return {
     openDialogConfig,
-    updateOpenDialog
+    changeOpenDialogConfig
   };
 }
 
@@ -234,7 +236,7 @@ export function useEndUserTableSectionConfig(
   activeDatasetId: string,
   approvalStatusState: ApprovalStatusState,
   updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
-  updateOpenDialog: (dialogType: OpenDialogType) => void
+  changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
@@ -251,7 +253,7 @@ export function useEndUserTableSectionConfig(
   const {
     approvalStatusItems,
     onApprovalStatusChange
-  } = useApprovalStatusColumnConfig(handler, approvalStatusState, updateUserApprovalStatus, updateOpenDialog);
+  } = useApprovalStatusColumnConfig(handler, approvalStatusState, updateUserApprovalStatus, changeOpenDialogConfig);
 
   return useMemo(
     () => loading
@@ -374,7 +376,7 @@ function useApprovalStatusColumnConfig(
   handler: ApiRequestHandler,
   approvalStatusState: ApprovalStatusState,
   updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
-  updateOpenDialog: (dialogType: OpenDialogType) => void
+  changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ) {
   const approvalStatusItems = useMemo(
     () => [
@@ -431,9 +433,40 @@ function useApprovalStatusColumnConfig(
           }
         );
       } else {
-        updateOpenDialog({
+        changeOpenDialogConfig({
           type: 'access-denial',
-          userName
+          userName,
+          onSubmit: function(denialReason) {
+            changeOpenDialogConfig(undefined);
+
+            updateUiStateOptimistically(
+              () => {
+                updateUserApprovalStatus(userId, newApprovalStatus);
+              },
+              async () => {
+                await updateEndUserEntry(
+                  handler,
+                  userId,
+                  datasetId,
+                  [
+                    {
+                      op: 'replace',
+                      path: '/approvalStatus',
+                      value: newApprovalStatus
+                    },
+                    {
+                      op: 'replace',
+                      path: '/denialReason',
+                      value: denialReason
+                    }
+                  ]
+                );
+              },
+              () => {
+                updateUserApprovalStatus(userId, oldApprovalStatus);
+              }
+            );
+          }
         });
       }
     },

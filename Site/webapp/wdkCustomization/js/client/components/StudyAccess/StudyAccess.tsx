@@ -18,7 +18,7 @@ interface Props {
   staffTableConfig: StaffTableSectionConfig;
   providerTableConfig: ProviderTableSectionConfig;
   endUserTableConfig: EndUserTableSectionConfig;
-  openDialogConfig: OpenDialogConfig;
+  openDialogConfig?: OpenDialogConfig;
 }
 
 export const cx = makeClassNameHelper('StudyAccess');
