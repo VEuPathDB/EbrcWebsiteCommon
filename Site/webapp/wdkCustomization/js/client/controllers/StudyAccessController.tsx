@@ -9,6 +9,7 @@ import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   useApprovalStatusState,
   useEndUserTableSectionConfig,
+  useOpenDialogConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
   useStudyAccessRequestHandler
@@ -34,9 +35,17 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const { approvalStatusState, updateUserApprovalStatus } = useApprovalStatusState(datasetId);
 
+  const { openDialogConfig, updateOpenDialog } = useOpenDialogConfig();
+
   const staffTableConfig = useStaffTableSectionConfig(handler);
   const providerTableConfig = useProviderTableSectionConfig(handler, datasetId);
-  const endUserTableConfig = useEndUserTableSectionConfig(handler, datasetId, approvalStatusState, updateUserApprovalStatus);
+  const endUserTableConfig = useEndUserTableSectionConfig(
+    handler,
+    datasetId,
+    approvalStatusState,
+    updateUserApprovalStatus,
+    updateOpenDialog
+  );
 
   return (
     study == null
@@ -46,6 +55,7 @@ export default function StudyAccessController({ datasetId }: Props) {
           staffTableConfig={staffTableConfig}
           providerTableConfig={providerTableConfig}
           endUserTableConfig={endUserTableConfig}
+          openDialogConfig={openDialogConfig}
         />
   );
 }
