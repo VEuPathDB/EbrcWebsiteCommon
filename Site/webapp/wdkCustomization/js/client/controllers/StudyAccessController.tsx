@@ -35,8 +35,7 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const {
     endUserTableUiState,
-    updateUserApprovalStatus,
-    updateUserDenialReason
+    setEndUserTableUiState
   } = useEndUserTableUiState(datasetId);
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
@@ -47,8 +46,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     handler,
     datasetId,
     endUserTableUiState,
-    updateUserApprovalStatus,
-    updateUserDenialReason,
+    setEndUserTableUiState,
     changeOpenDialogConfig
   );
 

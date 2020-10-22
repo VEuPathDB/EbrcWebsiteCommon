@@ -81,36 +81,9 @@ export function useEndUserTableUiState(activeDatasetId: string) {
     setEndUserTableUiState(initialEndUserTableUiState);
   }, [ activeDatasetId ]);
 
-  const updateUserApprovalStatus = useCallback(
-    (userId: number, newApprovalStatus: ApprovalStatus | undefined) => {
-      setEndUserTableUiState({
-        ...endUserTableUiState,
-        approvalStatus: {
-          ...endUserTableUiState.approvalStatus,
-          [userId]: newApprovalStatus
-        }
-      });
-    },
-    [ endUserTableUiState ]
-  );
-
-  const updateUserDenialReason = useCallback(
-    (userId: number, newDenialReason: string | undefined) => {
-      setEndUserTableUiState({
-        ...endUserTableUiState,
-        denialReason: {
-          ...endUserTableUiState.denialReason,
-          [userId]: newDenialReason
-        }
-      });
-    },
-    [ endUserTableUiState ]
-  );
-
   return {
     endUserTableUiState,
-    updateUserApprovalStatus,
-    updateUserDenialReason
+    setEndUserTableUiState
   };
 }
 
@@ -258,8 +231,7 @@ export function useEndUserTableSectionConfig(
   handler: ApiRequestHandler,
   activeDatasetId: string,
   endUserTableUiState: EndUserTableUiState,
-  updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
-  updateUserDenialReason: (userId: number, newDenialReason: string | undefined) => void,
+  setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
@@ -280,8 +252,7 @@ export function useEndUserTableSectionConfig(
   } = useApprovalStatusColumnConfig(
     handler,
     endUserTableUiState,
-    updateUserApprovalStatus,
-    updateUserDenialReason,
+    setEndUserTableUiState,
     changeOpenDialogConfig
   );
 
@@ -398,15 +369,14 @@ export function useEndUserTableSectionConfig(
             ]
           }
         },
-    [ value, loading, activeDatasetId, endUserTableUiState ]
+    [ value, loading, activeDatasetId, onApprovalStatusChange, endUserTableUiState ]
   );
 }
 
 function useApprovalStatusColumnConfig(
   handler: ApiRequestHandler,
   endUserTableUiState: EndUserTableUiState,
-  updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
-  updateUserDenialReason: (userId: number, newDenialReason: string | undefined) => void,
+  setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ) {
   const approvalStatusItems = useMemo(
@@ -440,30 +410,40 @@ function useApprovalStatusColumnConfig(
       if (newApprovalStatus !== 'denied') {
         updateUiStateOptimistically(
           () => {
-            updateUserApprovalStatus(userId, newApprovalStatus);
-            updateUserDenialReason(userId, undefined);
-          },
-          async () => {
-            await updateEndUserEntry(
-              handler,
+            updateEndUserApprovalStatus(
+              endUserTableUiState,
+              setEndUserTableUiState,
               userId,
-              datasetId,
-              [
-                {
-                  op: 'replace',
-                  path: '/approvalStatus',
-                  value: newApprovalStatus
-                },
-                {
-                  op: 'remove',
-                  path: '/denialReason'
-                }
-              ]
+              newApprovalStatus,
+              undefined
             );
           },
+          async () => {
+            // await updateEndUserEntry(
+            //   handler,
+            //   userId,
+            //   datasetId,
+            //   [
+            //     {
+            //       op: 'replace',
+            //       path: '/approvalStatus',
+            //       value: newApprovalStatus
+            //     },
+            //     {
+            //       op: 'remove',
+            //       path: '/denialReason'
+            //     }
+            //   ]
+            // );
+          },
           () => {
-            updateUserApprovalStatus(userId, oldApprovalStatus);
-            updateUserDenialReason(userId, oldDenialReason);
+            updateEndUserApprovalStatus(
+              endUserTableUiState,
+              setEndUserTableUiState,
+              userId,
+              oldApprovalStatus,
+              oldDenialReason
+            );
           }
         );
       } else {
@@ -475,38 +455,53 @@ function useApprovalStatusColumnConfig(
 
             updateUiStateOptimistically(
               () => {
-                updateUserApprovalStatus(userId, newApprovalStatus);
-                updateUserDenialReason(userId, denialReason);
-              },
-              async () => {
-                await updateEndUserEntry(
-                  handler,
+                updateEndUserApprovalStatus(
+                  endUserTableUiState,
+                  setEndUserTableUiState,
                   userId,
-                  datasetId,
-                  [
-                    {
-                      op: 'replace',
-                      path: '/approvalStatus',
-                      value: newApprovalStatus
-                    },
-                    {
-                      op: 'replace',
-                      path: '/denialReason',
-                      value: denialReason
-                    }
-                  ]
+                  newApprovalStatus,
+                  denialReason
                 );
               },
+              async () => {
+                // await updateEndUserEntry(
+                //   handler,
+                //   userId,
+                //   datasetId,
+                //   [
+                //     {
+                //       op: 'replace',
+                //       path: '/approvalStatus',
+                //       value: newApprovalStatus
+                //     },
+                //     {
+                //       op: 'replace',
+                //       path: '/denialReason',
+                //       value: denialReason
+                //     }
+                //   ]
+                // );
+              },
               () => {
-                updateUserApprovalStatus(userId, oldApprovalStatus);
-                updateUserDenialReason(userId, oldDenialReason);
+                updateEndUserApprovalStatus(
+                  endUserTableUiState,
+                  setEndUserTableUiState,
+                  userId,
+                  oldApprovalStatus,
+                  oldDenialReason
+                );
               }
             );
           }
         });
       }
     },
-    [ handler, updateUserApprovalStatus, endUserTableUiState ]
+    [
+      handler,
+      changeOpenDialogConfig,
+      endUserTableUiState,
+      setEndUserTableUiState
+    ]
   );
 
   return {
@@ -533,6 +528,26 @@ async function updateUiStateOptimistically(
 
     throw e;
   }
+}
+
+function updateEndUserApprovalStatus(
+  endUserTableUiState: EndUserTableUiState,
+  setEndUserTableUiState: (newState: EndUserTableUiState) => void,
+  userId: number,
+  newApprovalStatus: ApprovalStatus | undefined,
+  newDenialReason: string | undefined
+) {
+  setEndUserTableUiState({
+    ...endUserTableUiState,
+    approvalStatus: {
+      ...endUserTableUiState.approvalStatus,
+      [userId]: newApprovalStatus
+    },
+    denialReason: {
+      ...endUserTableUiState.denialReason,
+      [userId]: newDenialReason
+    }
+  });
 }
 
 function booleanToString(value: boolean) {
