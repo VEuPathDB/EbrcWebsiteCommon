@@ -54,7 +54,10 @@ export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, 
 
 export type OpenDialogConfig = UserTableDialogProps<ContentProps>;
 
-type ApprovalStatusState = Record<number, ApprovalStatus | undefined>;
+interface EndUserTableUiState {
+  approvalStatus: Record<number, ApprovalStatus | undefined>;
+  denialReason: Record<number, string | undefined>;
+}
 
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -66,28 +69,48 @@ export function useStudyAccessRequestHandler(
   );
 }
 
-export function useApprovalStatusState(activeDatasetId: string) {
-  const initialApprovalStatusState: ApprovalStatusState = {};
+export function useEndUserTableUiState(activeDatasetId: string) {
+  const initialEndUserTableUiState: EndUserTableUiState = {
+    approvalStatus: {},
+    denialReason: {}
+  };
 
-  const [ approvalStatusState, setApprovalStatusState ] = useState(initialApprovalStatusState);
+  const [ endUserTableUiState, setEndUserTableUiState ] = useState(initialEndUserTableUiState);
 
   useEffect(() => {
-    setApprovalStatusState(initialApprovalStatusState);
+    setEndUserTableUiState(initialEndUserTableUiState);
   }, [ activeDatasetId ]);
 
   const updateUserApprovalStatus = useCallback(
     (userId: number, newApprovalStatus: ApprovalStatus | undefined) => {
-      setApprovalStatusState({
-        ...approvalStatusState,
-        [userId]: newApprovalStatus
+      setEndUserTableUiState({
+        ...endUserTableUiState,
+        approvalStatus: {
+          ...endUserTableUiState.approvalStatus,
+          [userId]: newApprovalStatus
+        }
       });
     },
-    [ approvalStatusState ]
+    [ endUserTableUiState ]
+  );
+
+  const updateUserDenialReason = useCallback(
+    (userId: number, newDenialReason: string | undefined) => {
+      setEndUserTableUiState({
+        ...endUserTableUiState,
+        denialReason: {
+          ...endUserTableUiState.denialReason,
+          [userId]: newDenialReason
+        }
+      });
+    },
+    [ endUserTableUiState ]
   );
 
   return {
-    approvalStatusState,
-    updateUserApprovalStatus
+    endUserTableUiState,
+    updateUserApprovalStatus,
+    updateUserDenialReason
   };
 }
 
@@ -234,8 +257,9 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
 export function useEndUserTableSectionConfig(
   handler: ApiRequestHandler,
   activeDatasetId: string,
-  approvalStatusState: ApprovalStatusState,
+  endUserTableUiState: EndUserTableUiState,
   updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
+  updateUserDenialReason: (userId: number, newDenialReason: string | undefined) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
@@ -253,7 +277,13 @@ export function useEndUserTableSectionConfig(
   const {
     approvalStatusItems,
     onApprovalStatusChange
-  } = useApprovalStatusColumnConfig(handler, approvalStatusState, updateUserApprovalStatus, changeOpenDialogConfig);
+  } = useApprovalStatusColumnConfig(
+    handler,
+    endUserTableUiState,
+    updateUserApprovalStatus,
+    updateUserDenialReason,
+    changeOpenDialogConfig
+  );
 
   return useMemo(
     () => loading
@@ -279,12 +309,12 @@ export function useEndUserTableSectionConfig(
             }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
-              approvalStatus: approvalStatusState[user.userId] ?? approvalStatus,
+              approvalStatus: endUserTableUiState.approvalStatus[user.userId] ?? approvalStatus,
               purpose,
               researchQuestion,
               analysisPlan,
               disseminationPlan,
-              denialReason
+              denialReason: endUserTableUiState.denialReason[user.userId] ?? denialReason
             })),
             columns: {
               userId: {
@@ -368,14 +398,15 @@ export function useEndUserTableSectionConfig(
             ]
           }
         },
-    [ value, loading, activeDatasetId, approvalStatusState ]
+    [ value, loading, activeDatasetId, endUserTableUiState ]
   );
 }
 
 function useApprovalStatusColumnConfig(
   handler: ApiRequestHandler,
-  approvalStatusState: ApprovalStatusState,
+  endUserTableUiState: EndUserTableUiState,
   updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void,
+  updateUserDenialReason: (userId: number, newDenialReason: string | undefined) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ) {
   const approvalStatusItems = useMemo(
@@ -403,12 +434,14 @@ function useApprovalStatusColumnConfig(
       datasetId: string,
       newApprovalStatus: ApprovalStatus
     ) => {
-      const oldApprovalStatus = approvalStatusState[userId];
+      const oldApprovalStatus = endUserTableUiState.approvalStatus[userId];
+      const oldDenialReason = endUserTableUiState.denialReason[userId];
 
       if (newApprovalStatus !== 'denied') {
         updateUiStateOptimistically(
           () => {
             updateUserApprovalStatus(userId, newApprovalStatus);
+            updateUserDenialReason(userId, undefined);
           },
           async () => {
             await updateEndUserEntry(
@@ -430,6 +463,7 @@ function useApprovalStatusColumnConfig(
           },
           () => {
             updateUserApprovalStatus(userId, oldApprovalStatus);
+            updateUserDenialReason(userId, oldDenialReason);
           }
         );
       } else {
@@ -442,6 +476,7 @@ function useApprovalStatusColumnConfig(
             updateUiStateOptimistically(
               () => {
                 updateUserApprovalStatus(userId, newApprovalStatus);
+                updateUserDenialReason(userId, denialReason);
               },
               async () => {
                 await updateEndUserEntry(
@@ -464,18 +499,18 @@ function useApprovalStatusColumnConfig(
               },
               () => {
                 updateUserApprovalStatus(userId, oldApprovalStatus);
+                updateUserDenialReason(userId, oldDenialReason);
               }
             );
           }
         });
       }
     },
-    [ handler, updateUserApprovalStatus, approvalStatusState ]
+    [ handler, updateUserApprovalStatus, endUserTableUiState ]
   );
 
   return {
     approvalStatusItems,
-    approvalStatusState,
     onApprovalStatusChange
   };
 }

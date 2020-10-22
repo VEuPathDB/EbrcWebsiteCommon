@@ -7,8 +7,8 @@ import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
-  useApprovalStatusState,
   useEndUserTableSectionConfig,
+  useEndUserTableUiState,
   useOpenDialogConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
@@ -33,7 +33,11 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
-  const { approvalStatusState, updateUserApprovalStatus } = useApprovalStatusState(datasetId);
+  const {
+    endUserTableUiState,
+    updateUserApprovalStatus,
+    updateUserDenialReason
+  } = useEndUserTableUiState(datasetId);
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
@@ -42,8 +46,9 @@ export default function StudyAccessController({ datasetId }: Props) {
   const endUserTableConfig = useEndUserTableSectionConfig(
     handler,
     datasetId,
-    approvalStatusState,
+    endUserTableUiState,
     updateUserApprovalStatus,
+    updateUserDenialReason,
     changeOpenDialogConfig
   );
 
