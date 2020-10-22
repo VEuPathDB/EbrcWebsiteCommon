@@ -7,6 +7,7 @@ import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
+  useApprovalStatusState,
   useEndUserTableSectionConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
@@ -31,9 +32,11 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
+  const { approvalStatusState, updateUserApprovalStatus } = useApprovalStatusState(datasetId);
+
   const staffTableConfig = useStaffTableSectionConfig(handler);
   const providerTableConfig = useProviderTableSectionConfig(handler, datasetId);
-  const endUserTableConfig = useEndUserTableSectionConfig(handler, datasetId);
+  const endUserTableConfig = useEndUserTableSectionConfig(handler, datasetId, approvalStatusState, updateUserApprovalStatus);
 
   return (
     study == null

@@ -48,6 +48,8 @@ export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyo
 export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, keyof ProviderTableRow>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableRow, keyof EndUserTableRow>;
 
+type ApprovalStatusState = Record<number, ApprovalStatus | undefined>;
+
 export function useStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
   fetchApi?: Window['fetch']
@@ -56,6 +58,31 @@ export function useStudyAccessRequestHandler(
     () => createStudyAccessRequestHandler(baseStudyAccessUrl, fetchApi),
     []
   );
+}
+
+export function useApprovalStatusState(activeDatasetId: string) {
+  const initialApprovalStatusState: ApprovalStatusState = {};
+
+  const [ approvalStatusState, setApprovalStatusState ] = useState(initialApprovalStatusState);
+
+  useEffect(() => {
+    setApprovalStatusState(initialApprovalStatusState);
+  }, [ activeDatasetId ]);
+
+  const updateUserApprovalStatus = useCallback(
+    (userId: number, newApprovalStatus: ApprovalStatus | undefined) => {
+      setApprovalStatusState({
+        ...approvalStatusState,
+        [userId]: newApprovalStatus
+      });
+    },
+    [ approvalStatusState ]
+  );
+
+  return {
+    approvalStatusState,
+    updateUserApprovalStatus
+  };
 }
 
 export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTableSectionConfig {
@@ -174,7 +201,12 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
   );
 }
 
-export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeDatasetId: string): EndUserTableSectionConfig {
+export function useEndUserTableSectionConfig(
+  handler: ApiRequestHandler,
+  activeDatasetId: string,
+  approvalStatusState: ApprovalStatusState,
+  updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void
+): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -189,9 +221,8 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
 
   const {
     approvalStatusItems,
-    approvalStatusState,
     onApprovalStatusChange
-  } = useApprovalStatusConfig(handler, activeDatasetId);
+  } = useApprovalStatusColumnConfig(handler, approvalStatusState, updateUserApprovalStatus);
 
   return useMemo(
     () => loading
@@ -309,7 +340,11 @@ export function useEndUserTableSectionConfig(handler: ApiRequestHandler, activeD
   );
 }
 
-function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: string) {
+function useApprovalStatusColumnConfig(
+  handler: ApiRequestHandler,
+  approvalStatusState: ApprovalStatusState,
+  updateUserApprovalStatus: (userId: number, newApprovalStatus: ApprovalStatus | undefined) => void
+) {
   const approvalStatusItems = useMemo(
     () => [
       {
@@ -328,24 +363,6 @@ function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: st
     []
   );
 
-  const initialApprovalStatusState: Record<number, ApprovalStatus | undefined> = {};
-
-  const [ approvalStatusState, setApprovalStatusState ] = useState(initialApprovalStatusState);
-
-  useEffect(() => {
-    setApprovalStatusState(initialApprovalStatusState);
-  }, [ activeDatasetId ]);
-
-  const updateApprovalStatus = useCallback(
-    (userId: number, newApprovalStatus: ApprovalStatus | undefined) => {
-      setApprovalStatusState({
-        ...approvalStatusState,
-        [userId]: newApprovalStatus
-      });
-    },
-    [ approvalStatusState ]
-  );
-
   const onApprovalStatusChange = useCallback(
     async (
       userId: number,
@@ -357,7 +374,7 @@ function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: st
       if (newApprovalStatus !== 'denied') {
         updateUiStateOptimistically(
           () => {
-            updateApprovalStatus(userId, newApprovalStatus);
+            updateUserApprovalStatus(userId, newApprovalStatus);
           },
           async () => {
             await updateEndUserEntry(
@@ -378,7 +395,7 @@ function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: st
             );
           },
           () => {
-            updateApprovalStatus(userId, oldApprovalStatus);
+            updateUserApprovalStatus(userId, oldApprovalStatus);
           }
         );
       } else {
@@ -387,7 +404,7 @@ function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: st
         if (denialReason != null) {
           updateUiStateOptimistically(
             () => {
-              updateApprovalStatus(userId, newApprovalStatus);
+              updateUserApprovalStatus(userId, newApprovalStatus);
             },
             async () => {
               await updateEndUserEntry(
@@ -409,13 +426,13 @@ function useApprovalStatusConfig(handler: ApiRequestHandler, activeDatasetId: st
               );
             },
             () => {
-              updateApprovalStatus(userId, oldApprovalStatus);
+              updateUserApprovalStatus(userId, oldApprovalStatus);
             }
           );
         }
       }
     },
-    [ handler, updateApprovalStatus, approvalStatusState ]
+    [ handler, updateUserApprovalStatus, approvalStatusState ]
   );
 
   return {
