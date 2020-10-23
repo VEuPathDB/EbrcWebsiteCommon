@@ -91,6 +91,7 @@ const parseStudy = mapProps({
   access: ['attributes.study_access', access => access && access.toLowerCase()],
   email: ['attributes.email'],
   policyUrl: ['attributes.policy_url'],
+  requestNeedsApproval: ['attributes.request_needs_approval'],
   downloadUrl: ['attributes.bulk_download_url'],
   projectAvailability: ['attributes.project_availability', JSON.parse],
   headline: ['attributes.card_headline'],

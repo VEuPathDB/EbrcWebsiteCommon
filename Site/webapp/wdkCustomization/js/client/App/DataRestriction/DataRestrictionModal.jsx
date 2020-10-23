@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getPolicyUrl, isPrereleaseStudy, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
+import { getRequestNeedsApproval, getPolicyUrl, isPrereleaseStudy, isActionStrict, getRestrictionMessage, actionRequiresApproval } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import Modal from 'ebrc-client/App/Modal';
 import { IconAlt as Icon, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
@@ -44,12 +44,20 @@ class DataRestrictionModal extends React.Component {
       ? null
       : !policyUrl
         ? null
-        : (
-          <p>
-            The data from this study requires approval to download and use in research projects.
-            Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
-          </p>
-    );
+        : (getRequestNeedsApproval(study)=="0")
+          ? (
+            <p>
+              Access to data from this study will be granted immediately upon submission of the data access request.
+              <br />Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
+            </p>
+            )
+          : (
+            <p>
+              The data from this study requires approval to download and use in research projects.
+              Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
+            </p>
+            )
+    ;
   }
 
   renderButtons () {
