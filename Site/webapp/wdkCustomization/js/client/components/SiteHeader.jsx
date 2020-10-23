@@ -66,7 +66,7 @@ function Header(props) {
             <span className="eupathdb-LogoRelease">
               Release {buildNumber}
               <br/>
-              27 Aug 2020
+              30 Oct 2020
             </span>
           </div>
         </div>
