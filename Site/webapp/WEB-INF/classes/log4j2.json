@@ -139,6 +139,9 @@
         "name": "org.orthomcl",
         "level": "info"
       },{
+        "name": "org.clinepi",
+        "level": "info"
+      },{
         "name": "org.gusdb.fgputil.db.slowquery.QueryLogger.ExampleQueryLog",
         "additivity": "false",
         "level": "info",
