@@ -1120,28 +1120,31 @@ colors.df <- data.table(\"LEGEND\" = unique(profile.df.full\$LEGEND), \"COLOR\" 
 profile.df.full <- merge(profile.df.full, colors.df, by = \"LEGEND\")
 profile.df.full\$COLOR <- paste0(profile.df.full\$COLOR, \"|\", profile.df.full\$DATASET_PRESENTER_ID)
 
-myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
+profile.df.full.1 <- profile.df.full[profile.df.full\$LEGEND == profile.df.full\$LEGEND[length(profile.df.full\$LEGEND)],]
+profile.df.full.2 <- profile.df.full[profile.df.full\$LEGEND != profile.df.full\$LEGEND[length(profile.df.full\$LEGEND)],]
+
+myPlotly <- plot_ly(type = \"box\", data = profile.df.full.2, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
+  add_trace(type = \"box\", data = profile.df.full.1, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\"), xaxis = \"x2\") %>%
   layout(xaxis = list(title = \"\", 
 		      range = c(log2(1), log2(x.max) + 2),
 		      dtick = 2,
-		      mirror = \"ticks\",
 		      zerolinecolor = \"#eee\"),
-	# xaxis2 = list(range = c(log2(1), log2(x.max) + 2),
-	#	       dtick = 2,
-	#	       zerolinecolor = \"#eee\",
-	#	       overlaying = \"x\",
-	#	       side = \"top\"),
+	 xaxis2 = list(range = c(log2(1), log2(x.max) + 2),
+		       dtick = 2,
+		       zerolinecolor = \"#eee\",
+		       overlaying = \"x\",
+		       side = \"top\"),
          yaxis = list(visible = FALSE),
          margin = list(l = 75, 
                        r = 30, 
                        b = 75, 
-                       t = 40, 
+                       t = 50, 
                        pad = 1),
 	 boxgap = .6
   ) %>%
   add_annotations(yref=\"paper\", 
                  xref=\"paper\", 
-                 y=1.05, 
+                 y=1.075, 
                  x=-0.05, 
                  text=\"<b><i>Gene:</i></b>\", 
                  showarrow=F, 
@@ -1149,7 +1152,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full, x = ~log2(VALUE + 1)
                            color=\"black\")) %>%
   add_annotations(yref=\"paper\", 
                  xref=\"paper\", 
-                 y=1.05, 
+                 y=1.075, 
                  x=0, 
                  text=\"<i>$id</i>\", 
                  showarrow=F, 
@@ -1218,7 +1221,7 @@ annotationJS <- \"function(el) {
       linearAnnotations[1] = {
         yref: 'paper', 
         xref: 'paper', 
-        y: 1.05, 
+        y: 1.075, 
         x: -0.05, 
         text: annotations[1].text, 
         showarrow: false, 
@@ -1228,7 +1231,7 @@ annotationJS <- \"function(el) {
       linearAnnotations[2] = {
         yref: 'paper', 
         xref: 'paper', 
-        y: 1.05, 
+        y: 1.075, 
         x: 0, 
         text: annotations[2].text, 
         showarrow: false, 
@@ -1273,8 +1276,13 @@ annotationJS <- \"function(el) {
                        {xaxis: {title: '',
                                 range: range,
 				dtick: 2,
-				mirror: 'ticks',
 				zerolinecolor: '#eee'},
+                        xaxis2: {title: '',
+                                range: range,
+                                dtick: 2,
+                                zerolinecolor: '#eee',
+                                overlaying: 'x',
+                                side: 'top'},
 			annotations: annotations}],
                 label: '<i>log2($exprMetric + 1)</i>',
                 method: 'update'
@@ -1285,6 +1293,12 @@ annotationJS <- \"function(el) {
                                 range: [0, Math.pow(2,range[1]-2)],
 				mirror: 'ticks',
 				zerolinecolor: 'eee'},
+                        xaxis2: {title: '',
+                                range: [0, Math.pow(2,range[1]-2)],
+                                mirror: 'ticks',
+                                zerolinecolor: 'eee',
+                                overlaying: 'x',
+                                side: 'top'},
 			annotations: linearAnnotations}],
                 label: '<i>$exprMetric</i>',
                 method: 'update'
