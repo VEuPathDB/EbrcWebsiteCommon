@@ -1,4 +1,5 @@
-import { Decoder } from 'wdk-client/Utils/Json';
+import { mapValues, compose } from 'lodash/fp';
+import { Decoder, standardErrorReport } from 'wdk-client/Utils/Json';
 
 /*
  * An "Api" is an abstraction for interacting with resources.
@@ -25,6 +26,27 @@ export interface ApiRequest<T> {
   headers?: Record<string, string>;
   /** Transform response body. This is a good place to do validation. */
   transformResponse: (body: unknown) => Promise<T>;
+}
+
+export interface ApiRequestCreator<T, U extends any[] = any[]> {
+  (...args: U): ApiRequest<T>;
+}
+
+export interface ApiRequestsObject<T = any, U extends any[] = any[]> {
+  [Key: string]: ApiRequestCreator<T, U>;
+}
+
+type ApiRequestToBound<R extends ApiRequestCreator<any>> = R extends ApiRequestCreator<infer T, infer U> ? (...args: U) => Promise<T> : never;
+
+export type BoundApiRequestsObject<T extends ApiRequestsObject> = {
+  [P in keyof T]: T[P] extends ApiRequestCreator<infer A, infer B> ? (...args: B) => Promise<A> : never;
+}
+
+export function bindApiRequestCreators<T extends ApiRequestsObject>(
+  requestCreators: T,
+  handler: ApiRequestHandler
+): BoundApiRequestsObject<T> {
+  return mapValues(requestCreator => compose(handler, requestCreator), requestCreators) as BoundApiRequestsObject<T>;
 }
 
 // XXX Not sure if these belong here, since they are specific to an ApiRequestHandler
