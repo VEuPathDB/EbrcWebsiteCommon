@@ -17,9 +17,8 @@ export interface Props<R, C extends UserTableColumnKey<R>> {
   rows: R[];
   columns: UserTableColumns<R, C>;
   columnOrder: readonly C[];
-  // isRowSelected: (row: R) => boolean;
-  // filterTerm
-  // sortColumn
+  idGetter: (row: R) => number;
+  actions?: { element: React.ReactNode, callback: (selection: R[]) => void }[];
 }
 
 export type UserTableColumnKey<R> = keyof R & string;
@@ -40,10 +39,14 @@ export type UserTableColumns<R, C extends UserTableColumnKey<R>> = {
 };
 
 export function UserTable<R, C extends UserTableColumnKey<R>>({
+  actions,
   columnOrder,
   columns,
-  rows
+  rows,
+  idGetter
 }: Props<R, C>) {
+  const [ selectedRowIds, setSelectedRowIds ] = useState(() => new Set<number>());
+
   const [ searchTerm, setSearchTerm ] = useState('');
 
   const initialSortUiState: UserTableSortObject<R, C> =
@@ -60,10 +63,13 @@ export function UserTable<R, C extends UserTableColumnKey<R>>({
   const mesaColumns = useMemo(() => makeMesaColumns(columns, columnOrder), [ columns, columnOrder ]);
 
   const mesaOptions = useMemo(
-    () => makeMesaOptions(),
-    [ ]
+    () => makeMesaOptions(selectedRowIds, idGetter, actions),
+    [ selectedRowIds, idGetter, actions ]
   );
-  const mesaEventHandlers = useMemo(() => makeMesaEventHandlers(setSortUiState), []);
+  const mesaEventHandlers = useMemo(
+    () => makeMesaEventHandlers(setSortUiState, selectedRowIds, setSelectedRowIds, idGetter, actions),
+    [ selectedRowIds, idGetter, actions ]
+  );
   const mesaUiState = useMemo(() => makeMesaUiState(sortUiState), [ sortUiState ]);
 
   const mesaState = useMemo(
@@ -71,11 +77,12 @@ export function UserTable<R, C extends UserTableColumnKey<R>>({
       rows: mesaRows,
       filteredRows: mesaFilteredRows,
       columns: mesaColumns,
+      actions,
       options: mesaOptions,
       eventHandlers: mesaEventHandlers,
-      uiState: mesaUiState
+      uiState: mesaUiState,
     }),
-    [ mesaRows, mesaFilteredRows, mesaColumns, mesaOptions, mesaEventHandlers, mesaUiState ]
+    [ actions, mesaRows, mesaFilteredRows, mesaColumns, mesaOptions, mesaEventHandlers, mesaUiState ]
   );
 
   return (
@@ -162,12 +169,44 @@ function makeMesaColumns<R, C extends UserTableColumnKey<R>>(
 }
 
 function makeMesaEventHandlers<R, C extends UserTableColumnKey<R>>(
-  setSortUiState: (newSort: UserTableSortObject<R, C>) => void
+  setSortUiState: (newSort: UserTableSortObject<R, C>) => void,
+  selectedRowIds: Set<number>,
+  setSelectedRowIds: (newSelectedRowIds: Set<number>) => void,
+  idGetter: Props<R, C>['idGetter'],
+  actions: Props<R, C>['actions']
 ) {
+  const onMultipleRowSelect = actions && ((selectedRows: R[]) => {
+    const newSelectedRowIds = new Set(selectedRowIds);
+
+    selectedRows.forEach(selectedRow => {
+      newSelectedRowIds.add(idGetter(selectedRow));
+    });
+
+    setSelectedRowIds(newSelectedRowIds);
+  });
+
+  const onMultipleRowDeselect = actions && ((deselectedRows: R[]) => {
+    const newSelectedRowIds = new Set(selectedRowIds);
+
+    deselectedRows.forEach(deselectedRow => {
+      newSelectedRowIds.delete(idGetter(deselectedRow));
+    });
+
+    setSelectedRowIds(newSelectedRowIds);
+  });
+
   return {
     onSort: ({ key }: { key: C }, direction: UserTableSortObject<R, C>['direction']) => {
       setSortUiState({ columnKey: key, direction });
-    }
+    },
+    onMultipleRowSelect,
+    onMultipleRowDeselect,
+    onRowSelect: onMultipleRowSelect && ((selectedRow: R) => {
+      onMultipleRowSelect([ selectedRow ]);
+    }),
+    onRowDeselect: onMultipleRowDeselect && ((deselectedRow: R) => {
+      onMultipleRowDeselect([ deselectedRow ]);
+    })
   };
 };
 
@@ -177,8 +216,16 @@ function makeMesaUiState<R, C extends UserTableColumnKey<R>>(sort: UserTableSort
   };
 }
 
-function makeMesaOptions() {
+function makeMesaOptions<R, C extends UserTableColumnKey<R>>(
+  selectedRowIds: Set<number>,
+  idGetter: Props<R, C>['idGetter'],
+  actions: Props<R, C>['actions']
+) {
   return {
+    isRowSelected: actions && ((row: R) => {
+      console.log(row);
+      return selectedRowIds.has(idGetter(row));
+    }),
     toolbar: true
   };
 }

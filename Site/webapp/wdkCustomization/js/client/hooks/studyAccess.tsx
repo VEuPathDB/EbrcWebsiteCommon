@@ -168,7 +168,8 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
                 renderCell: ({ value }) => booleanToString(value)
               }
             },
-            columnOrder: [ 'userId', 'name', 'isOwner' ]
+            columnOrder: [ 'userId', 'name', 'isOwner' ],
+            idGetter: ({ userId }) => userId
           }
         },
     [ value, loading ]
@@ -226,7 +227,8 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
                 renderCell: ({ value }) => booleanToString(value)
               }
             },
-            columnOrder: [ 'userId', 'name', 'isManager' ]
+            columnOrder: [ 'userId', 'name', 'isManager' ],
+            idGetter: ({ userId }) => userId
           }
         },
     [ value, loading ]
@@ -359,7 +361,8 @@ export function useEndUserTableSectionConfig(
               'approvalStatus',
               'content',
               'denialReason',
-            ]
+            ],
+            idGetter: ({ userId }) => userId
           }
         },
     [ value, loading, activeDatasetId, onApprovalStatusChange, endUserTableUiState ]
