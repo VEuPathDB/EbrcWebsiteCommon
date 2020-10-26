@@ -55,12 +55,12 @@ function runTests {
   cd $projectHome/FgpUtil
   mvn clean install -Dmaven.test.skip=true
   echo "Running Java unit tests..."
-  mvn test 2>&1 | tee $outputDir/java-unit-tests.out
+  mvn test 2>&1 | tee $outputDir/java-unit-tests.txt
 
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."
   cd $projectHome/WDKClient/Client
-  yarn test 2>&1 | tee $outputDir/javascript-unit-tests.out
+  yarn test 2>&1 | tee $outputDir/javascript-unit-tests.txt
 
   # run service API tests
   echo "Downloading API test framework"
@@ -69,7 +69,7 @@ function runTests {
   cd wdk-api-test
   apiTestCmd="./run -c $siteUrl/a"
   echo "Running API tests with command: $apiTestCmd"
-  $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.out
+  $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.txt
 
   # run smoke/selenium tests
   echo "Running Smoke/Selenium tests..."
