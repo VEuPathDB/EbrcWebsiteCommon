@@ -1080,7 +1080,7 @@ sub new {
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
   my $exprMetric = "FPKM";
-  if ($projectId eq 'VectorBase') {
+  if ($projectId eq 'VectorBase' || $projectId eq 'ToxoDB' || $projectId eq 'PiroplasmoDB' || $projectId eq 'AmoebaDB') {
     $exprMetric = "TPM";
   }
 
