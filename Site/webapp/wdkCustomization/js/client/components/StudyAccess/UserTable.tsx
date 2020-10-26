@@ -223,9 +223,7 @@ function makeMesaOptions<R, C extends UserTableColumnKey<R>>(
 ) {
   return {
     isRowSelected: actions && ((row: R) => {
-      console.log(row);
       return selectedRowIds.has(idGetter(row));
-    }),
-    toolbar: true
+    })
   };
 }
