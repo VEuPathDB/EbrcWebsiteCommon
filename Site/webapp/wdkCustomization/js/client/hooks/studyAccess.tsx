@@ -13,6 +13,7 @@ import {
   fetchEndUserList,
   fetchProviderList,
   fetchStaffList,
+  newProviderEntry,
   updateEndUserEntry
 } from 'ebrc-client/StudyAccess/api';
 import {
@@ -258,7 +259,15 @@ export function useProviderTableSectionConfig(
                 callback: () => {
                   changeOpenDialogConfig({
                     type: 'add-providers',
-                    onSubmit: (providerEmails: string[]) => alert(`Submitted these emails: ${providerEmails.join(', ')}`)
+                    onSubmit: async (providerEmails: string[]) => {
+                      changeOpenDialogConfig(undefined);
+
+                      await Promise.all(
+                        providerEmails.map(
+                          providerEmail => newProviderEntry(handler, { datasetId: activeDatasetId, email: providerEmail, isManager: false })
+                        )
+                      );
+                    }
                   });
                 }
               },
