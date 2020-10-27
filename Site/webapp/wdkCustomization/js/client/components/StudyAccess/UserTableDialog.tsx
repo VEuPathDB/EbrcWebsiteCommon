@@ -4,22 +4,17 @@ import { Dialog, TextArea } from 'wdk-client/Components';
 
 import { cx } from 'ebrc-client/components/StudyAccess/StudyAccess';
 
-export interface Props<P> {
+export interface Props {
   title: React.ReactNode;
-  contentProps: P;
-  ContentComponent: React.ComponentType<P>;
+  content: React.ReactNode;
   onClose: () => void;
 }
 
-export type ContentProps =
-  | AccessDenialContentProps;
-
-export function UserTableDialog<P>({
+export function UserTableDialog({
   title,
-  contentProps,
-  ContentComponent,
+  content,
   onClose
-}: Props<P>) {
+}: Props) {
   return (
     <Dialog
       className={cx('--UserTableDialog')}
@@ -28,13 +23,16 @@ export function UserTableDialog<P>({
       onClose={onClose}
       modal
     >
-      <ContentComponent {...contentProps} />
+      {content}
     </Dialog>
   );
 }
 
+export type ContentProps =
+  | { type: 'access-denial' } & AccessDenialContentProps
+  | { type: 'add-providers' } & AddProvidersContentProps;
+
 interface AccessDenialContentProps {
-  type: 'access-denial';
   userName: string;
   onSubmit: (denialReason: string) => void;
 }
@@ -59,6 +57,39 @@ export function AccessDenialContent({ onSubmit, userName }: AccessDenialContentP
           className="btn"
           onClick={() => {
             onSubmit(denialReason);
+          }}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  );
+}
+
+interface AddProvidersContentProps {
+  onSubmit: (providerEmails: string[]) => void;
+}
+
+export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps) {
+  const [ providerEmailField, setProviderEmailField ] = useState('');
+
+  return (
+    <div className={cx('--AddProvidersContent')}>
+      <div className={cx('--AddProvidersEmailField')}>
+        Please input the emails of the providers you wish to add:
+        <TextArea
+          value={providerEmailField}
+          onChange={setProviderEmailField}
+          rows={6}
+          cols={100}
+        />
+      </div>
+      <div className={cx('--AddProvidersSubmit')}>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            onSubmit([ providerEmailField ]);
           }}
         >
           Submit

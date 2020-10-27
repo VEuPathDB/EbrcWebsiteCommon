@@ -18,6 +18,7 @@ import {
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
+  AddProvidersContentDialog,
   ContentProps
 } from 'ebrc-client/components/StudyAccess/UserTableDialog';
 
@@ -63,7 +64,7 @@ export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyo
 export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableFullRow, keyof ProviderTableRow>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableFullRow, keyof EndUserTableRow>;
 
-export type OpenDialogConfig = UserTableDialogProps<ContentProps>;
+export type OpenDialogConfig = UserTableDialogProps;
 
 interface EndUserTableUiState {
   approvalStatus: Record<number, ApprovalStatus | undefined>;
@@ -110,8 +111,15 @@ export function useOpenDialogConfig() {
         onClose: () => {
           setOpenDialogConfig(undefined);
         },
-        contentProps: newDialogContentProps,
-        ContentComponent: AccessDenialContent
+        content: <AccessDenialContent {...newDialogContentProps} />
+      });
+    } else if (newDialogContentProps.type === 'add-providers') {
+      setOpenDialogConfig({
+        title: 'Add Providers',
+        onClose: () => {
+          setOpenDialogConfig(undefined);
+        },
+        content: <AddProvidersContentDialog {...newDialogContentProps} />
       });
     }
   }, []);
@@ -181,7 +189,11 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
   );
 }
 
-export function useProviderTableSectionConfig(handler: ApiRequestHandler, activeDatasetId: string): ProviderTableSectionConfig {
+export function useProviderTableSectionConfig(
+  handler: ApiRequestHandler,
+  activeDatasetId: string,
+  changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
+): ProviderTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
     async () => {
@@ -243,7 +255,12 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
                     Add Providers
                   </button>
                 ),
-                callback: () => alert('TODO')
+                callback: () => {
+                  changeOpenDialogConfig({
+                    type: 'add-providers',
+                    onSubmit: (providerEmails: string[]) => alert(`Submitted these emails: ${providerEmails.join(', ')}`)
+                  });
+                }
               },
               {
                 selectionRequired: true,

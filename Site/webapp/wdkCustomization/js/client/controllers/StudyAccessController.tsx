@@ -41,7 +41,11 @@ export default function StudyAccessController({ datasetId }: Props) {
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
   const staffTableConfig = useStaffTableSectionConfig(handler);
-  const providerTableConfig = useProviderTableSectionConfig(handler, datasetId);
+  const providerTableConfig = useProviderTableSectionConfig(
+    handler,
+    datasetId,
+    changeOpenDialogConfig
+  );
   const endUserTableConfig = useEndUserTableSectionConfig(
     handler,
     datasetId,

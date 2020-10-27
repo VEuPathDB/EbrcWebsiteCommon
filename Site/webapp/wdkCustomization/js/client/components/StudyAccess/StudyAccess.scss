@@ -21,11 +21,11 @@
     font-size: 1.5em;
   }
 
-  &--AccessDenialReason > * {
+  &--AccessDenialReason > *, &--AddProvidersEmailField {
     margin: 0.5em 0;
   }
 
-  &--AccessDenialSubmit {
+  &--AccessDenialSubmit, &--AddProvidersSubmit {
     display: flex;
     justify-content: center;
   }
