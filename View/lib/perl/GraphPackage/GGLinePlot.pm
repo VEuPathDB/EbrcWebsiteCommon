@@ -1080,7 +1080,7 @@ sub new {
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
   my $exprMetric = "FPKM";
-  if ($projectId eq 'VectorBase') {
+  if ($projectId eq 'VectorBase' || $projectId eq 'ToxoDB' || $projectId eq 'PiroplasmoDB' || $projectId eq 'AmoebaDB') {
     $exprMetric = "TPM";
   }
 
@@ -1094,7 +1094,7 @@ profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(p
 table.df <- profile.df.full %>% 
 		   group_by(LEGEND) %>% 
 		   summarize(TABLE=paste(paste0(\"<b>\", ELEMENT_NAMES, \"</b> \", VALUE), collapse=\"<br>\"))
-#table.df\$TABLE <- paste0(\"Samples in Experiment:<br>\", table.df\$TABLE)
+table.df\$TABLE <- paste0(\"<b>Sample</b> $exprMetric:<br>\", table.df\$TABLE)
 profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
 
@@ -1121,7 +1121,11 @@ profile.df.full <- merge(profile.df.full, colors.df, by = \"LEGEND\")
 profile.df.full\$COLOR <- paste0(profile.df.full\$COLOR, \"|\", profile.df.full\$DATASET_PRESENTER_ID)
 
 profile.df.full.1 <- profile.df.full[profile.df.full\$LEGEND == profile.df.full\$LEGEND[length(profile.df.full\$LEGEND)],]
-profile.df.full.2 <- profile.df.full[profile.df.full\$LEGEND != profile.df.full\$LEGEND[length(profile.df.full\$LEGEND)],]
+if (uniqueN(profile.df.full\$LEGEND) == 1) {
+  profile.df.full.2 <- profile.df.full.1
+} else {
+  profile.df.full.2 <- profile.df.full[profile.df.full\$LEGEND != profile.df.full\$LEGEND[length(profile.df.full\$LEGEND)],]
+}
 
 myPlotly <- plot_ly(type = \"box\", data = profile.df.full.2, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\")) %>% 
   add_trace(type = \"box\", data = profile.df.full.1, x = ~log2(VALUE + 1), y = ~LEGEND, color = ~LEGEND, colors = myColors, text = ~TOOLTIP, customdata = ~COLOR, hoverinfo = \"none\", boxpoints = \"all\", jitter = 0.3, pointpos = 0, showlegend = FALSE, opacity = .6, marker=list(color=\"black\"), xaxis = \"x2\") %>%
