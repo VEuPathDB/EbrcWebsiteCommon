@@ -101,13 +101,13 @@ public class SeleniumTests {
    
     ArrayList<Object[]> searchesArrayList = new ArrayList<Object[]>();
     
-    JSONObject recordTypesJson = parseEndpoint(baseurl + "/service/record-types", 1000, "record-types");
+    JSONObject recordTypesJson = parseEndpoint(baseurl + "/service/record-types", "record-types");
     JSONArray recordTypesArray = (JSONArray) recordTypesJson.get("record-types");
 
     for(int i = 0; i < recordTypesArray.length(); i++) {
       String recordType = recordTypesArray.getString(i);
 
-      JSONObject searches = parseEndpoint(baseurl + "/service/record-types/" + recordType + "/searches", 1000, "searches");
+      JSONObject searches = parseEndpoint(baseurl + "/service/record-types/" + recordType + "/searches", "searches");
       JSONArray searchesArray = (JSONArray) searches.get("searches");
 
       for(int j = 0; j < searchesArray.length(); j++) {
@@ -176,7 +176,7 @@ public class SeleniumTests {
   }
 
 
-  public JSONObject parseEndpoint (String url, int timeout, String rootName)  {
+  public JSONObject parseEndpoint (String url, String rootName)  {
     this.driver.get(url);
     Service servicePage = new Service(driver);
     String jsonContent = servicePage.jsonContent();
