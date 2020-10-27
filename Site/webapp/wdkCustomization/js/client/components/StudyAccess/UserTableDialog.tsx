@@ -44,10 +44,17 @@ export function AccessDenialContent({ onSubmit, userName }: AccessDenialContentP
   const [ denialReason, setDenialReason ] = useState('');
 
   return (
-    <div className={cx('--AccessDenialContent')}>
+    <form
+      className={cx('--AccessDenialContent')}
+      onSubmit={event => {
+        event.preventDefault();
+        onSubmit(denialReason);
+      }}
+    >
       <div className={cx('--AccessDenialReason')}>
         You are denying {userName} access to this study. Please provide a reason:
         <TextArea
+          required
           value={denialReason}
           onChange={setDenialReason}
           rows={6}
@@ -56,16 +63,13 @@ export function AccessDenialContent({ onSubmit, userName }: AccessDenialContentP
       </div>
       <div className={cx('--AccessDenialSubmit')}>
         <button
-          type="button"
+          type="submit"
           className="btn"
-          onClick={() => {
-            onSubmit(denialReason);
-          }}
         >
           Submit
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 
@@ -98,7 +102,7 @@ export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps
   return (
     <form
       className={cx('--AddProvidersContent')}
-      onSubmit={(event) => {
+      onSubmit={event => {
         event.preventDefault();
         onSubmit(providerEmails);
       }}
