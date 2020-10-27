@@ -1094,7 +1094,7 @@ profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(p
 table.df <- profile.df.full %>% 
 		   group_by(LEGEND) %>% 
 		   summarize(TABLE=paste(paste0(\"<b>\", ELEMENT_NAMES, \"</b> \", VALUE), collapse=\"<br>\"))
-#table.df\$TABLE <- paste0(\"Samples in Experiment:<br>\", table.df\$TABLE)
+table.df\$TABLE <- paste0(\"<b>Sample</b> $exprMetric:<br>\", table.df\$TABLE)
 profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
 
