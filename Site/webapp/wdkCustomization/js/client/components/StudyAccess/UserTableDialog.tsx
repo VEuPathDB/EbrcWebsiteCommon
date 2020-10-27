@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { partition } from 'lodash';
 
 import { Dialog, TextArea } from 'wdk-client/Components';
 
 import { cx } from 'ebrc-client/components/StudyAccess/StudyAccess';
+import { EMAIL_REGEX } from 'ebrc-client/util/email';
 
 export interface Props {
   title: React.ReactNode;
@@ -72,29 +75,55 @@ interface AddProvidersContentProps {
 
 export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps) {
   const [ providerEmailField, setProviderEmailField ] = useState('');
+  const [ providerEmails, setProviderEmails ] = useState()
+
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const draftEmails = providerEmailField.split(/[,;\s]+/g).filter(x => x.length > 0);
+
+    const [ validEmails, invalidEmails ] = partition(draftEmails, email => EMAIL_REGEX.test(email));
+
+    setProviderEmails(validEmails);
+
+    if (ref.current != null) {
+      if (invalidEmails.length > 0) {
+        ref.current.setCustomValidity(`Please correct the following emails: ${invalidEmails.join(', ')}.`);
+      } else {
+        ref.current.setCustomValidity('');
+      }
+    }
+  }, [ providerEmailField ]);
 
   return (
-    <div className={cx('--AddProvidersContent')}>
+    <form
+      className={cx('--AddProvidersContent')}
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit(providerEmails);
+      }}
+    >
       <div className={cx('--AddProvidersEmailField')}>
         Please input the emails of the providers you wish to add:
-        <TextArea
+        <textarea
+          required
+          ref={ref}
           value={providerEmailField}
-          onChange={setProviderEmailField}
+          onChange={(e) => {
+            setProviderEmailField(e.target.value)
+          }}
           rows={6}
           cols={100}
         />
       </div>
       <div className={cx('--AddProvidersSubmit')}>
         <button
-          type="button"
+          type="submit"
           className="btn"
-          onClick={() => {
-            onSubmit([ providerEmailField ]);
-          }}
         >
           Submit
         </button>
       </div>
-    </div>
+    </form>
   );
 }
