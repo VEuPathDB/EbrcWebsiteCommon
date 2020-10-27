@@ -224,6 +224,7 @@ function makeMesaOptions<R, C extends UserTableColumnKey<R>>(
   return {
     isRowSelected: actions && ((row: R) => {
       return selectedRowIds.has(idGetter(row));
-    })
+    }),
+    toolbar: actions == null
   };
 }
