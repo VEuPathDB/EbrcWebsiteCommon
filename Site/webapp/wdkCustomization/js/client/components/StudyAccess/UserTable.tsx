@@ -18,7 +18,7 @@ export interface Props<R, C extends UserTableColumnKey<R>> {
   columns: UserTableColumns<R, C>;
   columnOrder: readonly C[];
   idGetter: (row: R) => number;
-  actions?: { element: React.ReactNode, callback: (selection: R[]) => void }[];
+  actions?: { element: React.ReactNode | ((selection: R[]) => React.ReactNode), callback: (selection: R[]) => void }[];
 }
 
 export type UserTableColumnKey<R> = keyof R & string;

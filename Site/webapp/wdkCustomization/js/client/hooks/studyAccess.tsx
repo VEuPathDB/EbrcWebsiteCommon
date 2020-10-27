@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { zipWith } from 'lodash';
 
-import { SingleSelect } from 'wdk-client/Components';
+import { IconAlt, SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCell';
 
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/Types';
 import {
   createStudyAccessRequestHandler,
+  deleteProviderEntry,
   fetchEndUserList,
   fetchProviderList,
   fetchStaffList,
@@ -39,6 +40,10 @@ interface ProviderTableRow extends BaseTableRow {
   isManager: boolean;
 }
 
+interface ProviderTableFullRow extends ProviderTableRow {
+  providerId: number;
+}
+
 interface EndUserTableRow extends BaseTableRow {
   // requestDate: string;
   content: string;
@@ -55,7 +60,7 @@ interface EndUserTableFullRow extends EndUserTableRow {
 }
 
 export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyof StaffTableRow>;
-export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableRow, keyof ProviderTableRow>;
+export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableFullRow, keyof ProviderTableRow>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableFullRow, keyof EndUserTableRow>;
 
 export type OpenDialogConfig = UserTableDialogProps<ContentProps>;
@@ -202,8 +207,9 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
           status: 'success',
           title: 'Providers',
           value: {
-            rows: value.data.map(({ user, isManager }) => ({
+            rows: value.data.map(({ user, providerId, isManager }) => ({
               userId: user.userId,
+              providerId,
               name: `${user.firstName} ${user.lastName}`,
               isManager
             })),
@@ -228,7 +234,36 @@ export function useProviderTableSectionConfig(handler: ApiRequestHandler, active
               }
             },
             columnOrder: [ 'userId', 'name', 'isManager' ],
-            idGetter: ({ userId }) => userId
+            idGetter: ({ userId }) => userId,
+            actions: [
+              {
+                element: (
+                  <button type="button" className="btn">
+                    <IconAlt fa="plus" />
+                    Add Providers
+                  </button>
+                ),
+                callback: () => alert('TODO')
+              },
+              {
+                selectionRequired: true,
+                element: selection => (
+                  <button
+                    type="button"
+                    className="btn"
+                    disabled={selection.length === 0}
+                  >
+                    <IconAlt fa="trash" />
+                    Remove {selection.length === 1 ? 'Provider' : 'Providers'}
+                  </button>
+                ),
+                callback: async (selection) => {
+                  await Promise.all(
+                    selection.map(({ providerId }) => deleteProviderEntry(handler, providerId))
+                  );
+                }
+              }
+            ]
           }
         },
     [ value, loading ]
