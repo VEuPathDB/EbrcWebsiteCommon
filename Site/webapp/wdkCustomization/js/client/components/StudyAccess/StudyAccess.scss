@@ -18,14 +18,23 @@
   }
 
   &--UserTableDialog {
+    min-width: 600px;
+    max-width: 80vw;
+  }
+
+  &--UserTableDialog p {
     font-size: 1.5em;
   }
 
-  &--AccessDenialReason > *, &--AddProvidersEmailField > * {
+  &--UsersAddedContent > * {
     margin: 0.5em 0;
   }
 
-  &--AccessDenialSubmit, &--AddProvidersSubmit {
+  &--UsersAddedContent p, &--UsersAddedContent ul {
+    font-size: 1.2em;
+  }
+
+  &--AccessDenialSubmit, &--AddProvidersSubmit, &--UsersAddedConfirm {
     display: flex;
     justify-content: center;
   }

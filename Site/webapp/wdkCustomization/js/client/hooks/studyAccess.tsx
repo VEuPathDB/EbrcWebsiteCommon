@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { zipWith } from 'lodash';
+import { partition, zipWith } from 'lodash';
 
 import { IconAlt, SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
@@ -19,8 +19,9 @@ import {
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
-  AddProvidersContentDialog,
-  ContentProps
+  AddProvidersContent,
+  ContentProps,
+  UsersAddedContent
 } from 'ebrc-client/components/StudyAccess/UserTableDialog';
 
 import {
@@ -116,12 +117,20 @@ export function useOpenDialogConfig() {
       });
     } else if (newDialogContentProps.type === 'add-providers') {
       setOpenDialogConfig({
-        title: 'Add Providers',
+        title: 'Adding Providers',
         onClose: () => {
           setOpenDialogConfig(undefined);
         },
-        content: <AddProvidersContentDialog {...newDialogContentProps} />
+        content: <AddProvidersContent {...newDialogContentProps} />
       });
+    } else if (newDialogContentProps.type === 'users-added') {
+      setOpenDialogConfig({
+        title: 'New Providers',
+        onClose: () => {
+          setOpenDialogConfig(undefined);
+        },
+        content: <UsersAddedContent {...newDialogContentProps} />
+      })
     }
   }, []);
 
@@ -196,7 +205,7 @@ export function useProviderTableSectionConfig(
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): ProviderTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
-  const { value, loading } = usePromise(
+  const { value, loading, reload: reloadProvidersTable } = usePromiseWithReloadCallback(
     async () => {
       try {
         return await fetchProviderList(handler, activeDatasetId);
@@ -262,11 +271,34 @@ export function useProviderTableSectionConfig(
                     onSubmit: async (providerEmails: string[]) => {
                       changeOpenDialogConfig(undefined);
 
-                      await Promise.all(
+                      const addedUsers = await Promise.all(
                         providerEmails.map(
                           providerEmail => newProviderEntry(handler, { datasetId: activeDatasetId, email: providerEmail, isManager: false })
                         )
                       );
+
+                      const addedUsersWithEmails = zipWith(
+                        addedUsers,
+                        providerEmails,
+                        (addedUser, email) => ({
+                          ...addedUser,
+                          email
+                        })
+                      );
+
+                      const [ createdUsers, emailedUsers ] = partition(addedUsersWithEmails, ({ created }) => created);
+
+                      changeOpenDialogConfig({
+                        type: 'users-added',
+                        createdUsers: createdUsers.map(({ email }) => email),
+                        emailedUsers: emailedUsers.map(({ email }) => email),
+                        permissionName: 'provider',
+                        onConfirm: () => {
+                          changeOpenDialogConfig(undefined);
+                        }
+                      });
+
+                      reloadProvidersTable();
                     }
                   });
                 }
@@ -391,7 +423,7 @@ export function useEndUserTableSectionConfig(
                 name: 'Content',
                 sortable: false,
                 width: '35em',
-                renderCell: ({ value, row: { userId, purpose, researchQuestion, analysisPlan, disseminationPlan } }) => {
+                renderCell: ({ row: { userId, purpose, researchQuestion, analysisPlan, disseminationPlan } }) => {
                   const contentFields = zipWith(
                     [ 'Purpose:', 'Research Question:', 'Analysis Plan:', 'Dissemination Plan:'],
                     [ purpose, researchQuestion, analysisPlan, disseminationPlan ],
@@ -564,6 +596,31 @@ function useApprovalStatusColumnConfig(
   return {
     approvalStatusItems,
     onApprovalStatusChange
+  };
+}
+
+function usePromiseWithReloadCallback<T>(factory: () => Promise<T>, deps?: any[]) {
+  const [ reloadTime, setReloadTime ] = useState(Date.now());
+
+  const reload = useCallback(
+    () => {
+      setReloadTime(Date.now())
+    },
+    []
+  );
+
+  const fullDeps = useMemo(
+    () => deps == null
+      ? [ reloadTime ]
+      : [ ...deps, reloadTime ],
+    [ deps, reloadTime ]
+  );
+
+  const promiseStatus = usePromise(factory, fullDeps);
+
+  return {
+    ...promiseStatus,
+    reload
   };
 }
 

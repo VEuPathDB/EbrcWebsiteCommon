@@ -33,7 +33,8 @@ export function UserTableDialog({
 
 export type ContentProps =
   | { type: 'access-denial' } & AccessDenialContentProps
-  | { type: 'add-providers' } & AddProvidersContentProps;
+  | { type: 'add-providers' } & AddProvidersContentProps
+  | { type: 'users-added' } & UsersAddedContentProps;
 
 interface AccessDenialContentProps {
   userName: string;
@@ -52,7 +53,7 @@ export function AccessDenialContent({ onSubmit, userName }: AccessDenialContentP
       }}
     >
       <div className={cx('--AccessDenialReason')}>
-        You are denying {userName} access to this study. Please provide a reason:
+        <p>You are denying {userName} access to this study. Please provide a reason:</p>
         <TextArea
           required
           value={denialReason}
@@ -77,7 +78,7 @@ interface AddProvidersContentProps {
   onSubmit: (providerEmails: string[]) => void;
 }
 
-export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps) {
+export function AddProvidersContent({ onSubmit }: AddProvidersContentProps) {
   const [ providerEmailField, setProviderEmailField ] = useState('');
   const [ providerEmails, setProviderEmails ] = useState()
 
@@ -108,7 +109,7 @@ export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps
       }}
     >
       <div className={cx('--AddProvidersEmailField')}>
-        Please input the emails of the providers you wish to add:
+        <p>Please input the emails of the providers you wish to add:</p>
         <textarea
           required
           ref={ref}
@@ -129,5 +130,65 @@ export function AddProvidersContentDialog({ onSubmit }: AddProvidersContentProps
         </button>
       </div>
     </form>
+  );
+}
+
+interface UsersAddedContentProps {
+  createdUsers: string[];
+  emailedUsers: string[];
+  permissionName: string;
+  onConfirm: () => void;
+}
+
+export function UsersAddedContent({
+  createdUsers,
+  emailedUsers,
+  permissionName,
+  onConfirm
+}: UsersAddedContentProps) {
+  return (
+    <div className={cx('--UsersAddedContent')}>
+      {
+        createdUsers.length > 0 &&
+        <div className={cx('--UsersAddedCreatedUsers')}>
+          <h2>Added Users:</h2>
+          <p>The following users have been granted {permissionName}-level access to this study:</p>
+          <ul>
+            {
+              createdUsers.map(
+                (createdUser, i) => (
+                  <li key={i}>{createdUser}</li>
+                )
+              )
+            }
+          </ul>
+        </div>
+      }
+      {
+        emailedUsers.length > 0 &&
+        <div className={cx('--UsersAddedEmailedUsers')}>
+          <h2>Emailed Users:</h2>
+          <p>The following users do not have an existing account, and have been invited to register with us. Once they register, they will be granted {permissionName}-level access to this study:</p>
+          <ul>
+            {
+              emailedUsers.map(
+                (emailedUser, i) => (
+                  <li key={i}>{emailedUser}</li>
+                )
+              )
+            }
+          </ul>
+        </div>
+      }
+      <div className={cx('--UsersAddedConfirm')}>
+        <button
+          type="button"
+          className="btn"
+          onClick={onConfirm}
+        >
+          OK
+        </button>
+      </div>
+    </div>
   );
 }
