@@ -6,7 +6,7 @@ import { IconAlt, SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
 import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCell';
 
-import { ApprovalStatus } from 'ebrc-client/StudyAccess/Types';
+import { ApprovalStatus } from 'ebrc-client/StudyAccess/EntityTypes';
 import {
   createStudyAccessRequestHandler,
   deleteProviderEntry,

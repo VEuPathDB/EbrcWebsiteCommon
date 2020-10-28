@@ -12,7 +12,6 @@ import {
   string
 } from 'wdk-client/Utils/Json';
 
-// API  defined in https://veupathdb.github.io/service-dataset-access/api.html
 export const datastoreId = number;
 
 export type DatastoreId = Unpack<typeof datastoreId>;
@@ -226,6 +225,26 @@ export const datasetProviderPatch = record({
 });
 
 export type DatasetProviderPatch = Unpack<typeof datasetProviderPatch>;
+
+export const datasetPermissionEntry = oneOf(
+  record({
+    type: constant('provider'),
+    isManager: boolean
+  }),
+  record({
+    type: constant('enduser')
+  })
+);
+
+export type DatasetPermissionEntry = Unpack<typeof datasetPermissionEntry>;
+
+export const permissionsResponse = record({
+  isOwner: optional(boolean),
+  isStaff: optional(boolean),
+  perDataset: optional(objectOf(datasetPermissionEntry))
+});
+
+export type PermissionsResponse = Unpack<typeof permissionsResponse>;
 
 export const badRequest = record({
   status: constant('bad-request'),

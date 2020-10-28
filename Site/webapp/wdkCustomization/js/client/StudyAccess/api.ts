@@ -28,8 +28,9 @@ import {
   endUserList,
   newStaffResponse,
   staffList
-} from 'ebrc-client/StudyAccess/Types';
+} from 'ebrc-client/StudyAccess/EntityTypes';
 
+// API  defined in https://veupathdb.github.io/service-dataset-access/api.html
 const STAFF_PATH = '/staff';
 const PROVIDERS_PATH = '/dataset-providers';
 const END_USERS_PATH = '/dataset-end-users';
