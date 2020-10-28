@@ -154,11 +154,11 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
   );
 
   return useMemo(
-    () => loading
+    () => value == null
       ? {
           status: 'loading'
         }
-      : value == null || value == 'error'
+      : value == 'error'
       ? {
           status: 'unavailable'
         }
@@ -217,11 +217,11 @@ export function useProviderTableSectionConfig(
   );
 
   return useMemo(
-    () => loading
+    () => value == null
       ? {
           status: 'loading'
         }
-      : value == null || value == 'error'
+      : value == 'error'
       ? {
           status: 'unavailable'
         }
@@ -360,11 +360,11 @@ export function useEndUserTableSectionConfig(
   );
 
   return useMemo(
-    () => loading
+    () => value == null
       ? {
           status: 'loading'
         }
-      : value == null || value == 'error'
+      : value == 'error'
       ? {
           status: 'unavailable'
         }
