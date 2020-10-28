@@ -267,7 +267,7 @@ hook: HostResponseGraphs
               onCollapsedChange={this.handleCoverageCollapseChange}>
 
               <div>
-                <a href={specialImgUrl}>
+                <a href={specialImgUrl.replace('/phenotypeTracks/', '/tracks/')}>
                   View in genome browser
                 </a>
               </div>

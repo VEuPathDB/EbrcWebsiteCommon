@@ -73,6 +73,7 @@ export const accessLevels = {
     [Action.download]: Require.approval,
     [Action.basket]: Require.approval
   },
+  /* not in use build 49
   "limited": {
     [Action.search]: Require.allow,
     [Action.analysis]: Require.allow,
@@ -82,7 +83,7 @@ export const accessLevels = {
     [Action.recordPage]: Require.login,
     [Action.download]: Require.approval,
     [Action.basket]: Require.approval
-  },
+  },*/
   "protected": {
     [Action.search]: Require.allow,
     [Action.analysis]: Require.allow,
@@ -125,9 +126,7 @@ export function getPolicyUrl (study = {}, webAppUrl = '') {
     ? null
     : study.policyUrl
       ? webAppUrl + '/' + study.policyUrl
-      : study.policyAppUrl
-        ? webAppUrl + study.policyAppUrl
-        : null;
+      : null;
 }
 
 export function getRequestNeedsApproval (study = {}) {
@@ -160,7 +159,7 @@ export function getActionVerb (action) {
 }
 
 export function getRequirement ({ action, study }) {
-  if (actionRequiresLogin({ action, study })) return 'login or create an account';
+  //if (actionRequiresLogin({ action, study })) return 'login or create an account';
   if ( getRequestNeedsApproval(study)=="0" ) return 'submit an access request';
   if (actionRequiresApproval({ action, study })) return 'acquire research approval';
   return 'contact us';
@@ -181,7 +180,7 @@ export function isAllowedAccess ({ user, action, study }) {
   if (user.properties.approvedStudies == null) return true;
   if (user.properties.approvedStudies.includes(study.id)) return true;
   if (accessLevels[study.access][action] === Require.allow) return true;
-  if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
+  //if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
   // access not allowed, we need to build the modal popup
   return false;
 }
@@ -201,11 +200,13 @@ export function isPrereleaseStudy (access, studyId, user) {
   }
 }
 
-// we will request the user to login if (1) guest and (2) explicit approval not needed 
+// we will request the user to login if (1) guest and (2) explicit approval not needed
+/* 
 export function actionRequiresLogin ({ study, action }) {
   if (accessLevels[study.access][action] === Require.login) return true;
   else return false;
 }
+*/
 
 // we will request the user to request approval if explicit approval needed (guest or not)
 export function actionRequiresApproval ({ study, action }) {

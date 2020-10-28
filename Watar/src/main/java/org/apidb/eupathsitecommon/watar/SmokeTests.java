@@ -5,7 +5,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.net.URL;
 
-import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
@@ -14,10 +13,7 @@ import com.gargoylesoftware.htmlunit.UnexpectedPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
-//import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 
 public class SmokeTests {
 

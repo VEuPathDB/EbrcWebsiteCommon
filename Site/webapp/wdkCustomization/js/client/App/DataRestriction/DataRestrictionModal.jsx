@@ -17,8 +17,7 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderRestrictionMessage () {
-    const { study, user, action, webAppUrl } = this.props;
-    const message = getRestrictionMessage({ study, action });
+    const { study, user, webAppUrl } = this.props;
     const studyPageUrl = webAppUrl + '/app' + study.route;
     return (isPrereleaseStudy(study.access, study.id, user)) 
       ? (
@@ -32,13 +31,13 @@ class DataRestrictionModal extends React.Component {
         <div>
           <h2>The {safeHtml(study.name)} study has data access restrictions.</h2>
           <hr />
-          <p>{message}</p>
         </div>
         );
   }
 
   renderPolicyNotice () {
-    const { study, user, webAppUrl } = this.props;
+    const { study, user, action, webAppUrl } = this.props;
+    const message = getRestrictionMessage({ study, action });
     const policyUrl = getPolicyUrl(study, webAppUrl);
     return (isPrereleaseStudy(study.access, study.id, user))
       ? null
@@ -47,14 +46,14 @@ class DataRestrictionModal extends React.Component {
         : (getRequestNeedsApproval(study)=="0")
           ? (
             <p>
-              Access to data from this study will be granted immediately upon submission of the data access request.
-              <br />Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
+              {message} Data access will be granted immediately upon request submission.
+              <br /><br />Please read the <a href={policyUrl} target="_blank"> Data Access and Use Policy.</a>
             </p>
             )
           : (
             <p>
-              The data from this study requires approval to download and use in research projects.
-              Please read the <a href={policyUrl} target="_blank">{safeHtml(study.name)} Data Access and Use Policy.</a>
+              {message} The data from this study requires approval to download and use in research projects.
+              <br /><br />Please read the <a href={policyUrl} target="_blank"> Data Access and Use Policy.</a>
             </p>
             )
     ;
