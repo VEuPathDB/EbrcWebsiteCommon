@@ -319,6 +319,8 @@ export function useProviderTableSectionConfig(
                   await Promise.all(
                     selection.map(({ providerId }) => deleteProviderEntry(handler, providerId))
                   );
+
+                  reloadProvidersTable();
                 }
               }
             ]
