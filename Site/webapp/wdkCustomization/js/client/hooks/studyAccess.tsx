@@ -37,7 +37,7 @@ import { bindApiRequestCreators } from 'ebrc-client/util/api';
 interface BaseTableRow {
   userId: number;
   name: string;
-  // email: string;
+  email: string;
 }
 
 interface StaffTableRow extends BaseTableRow {
@@ -53,11 +53,10 @@ interface ProviderTableFullRow extends ProviderTableRow {
 }
 
 interface EndUserTableRow extends BaseTableRow {
-  // requestDate: string;
+  startDate?: string;
   content: string;
   approvalStatus: ApprovalStatus;
   denialReason: string;
-  // lastStatusUpdate: string;
 }
 
 interface EndUserTableFullRow extends EndUserTableRow {
@@ -215,6 +214,7 @@ export function useStaffTableSectionConfig(
             rows: value.result.data.map(({ user, isOwner }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
+              email: user.email,
               isOwner
             })),
             columns: {
@@ -228,6 +228,11 @@ export function useStaffTableSectionConfig(
                 name: 'Name',
                 sortable: true
               },
+              email: {
+                key: 'email',
+                name: 'Email',
+                sortable: true
+              },
               isOwner: {
                 key: 'isOwner',
                 name: 'Is Owner?',
@@ -237,7 +242,7 @@ export function useStaffTableSectionConfig(
                 renderCell: ({ value }) => booleanToString(value)
               }
             },
-            columnOrder: [ 'userId', 'name', 'isOwner' ],
+            columnOrder: [ 'userId', 'name', 'email', 'isOwner' ],
             idGetter: ({ userId }) => userId
           }
         },
@@ -282,6 +287,7 @@ export function useProviderTableSectionConfig(
               userId: user.userId,
               providerId,
               name: `${user.firstName} ${user.lastName}`,
+              email: `${user.email}`,
               isManager
             })),
             columns: {
@@ -295,6 +301,11 @@ export function useProviderTableSectionConfig(
                 name: 'Name',
                 sortable: true
               },
+              email: {
+                key: 'email',
+                name: 'Email',
+                sortable: true
+              },
               isManager: {
                 key: 'isManager',
                 name: 'Is Manager?',
@@ -304,7 +315,7 @@ export function useProviderTableSectionConfig(
                 renderCell: ({ value }) => booleanToString(value)
               }
             },
-            columnOrder: [ 'userId', 'name', 'isManager' ],
+            columnOrder: [ 'userId', 'name', 'email', 'isManager' ],
             idGetter: ({ userId }) => userId,
             actions: [
               {
@@ -423,6 +434,7 @@ export function useEndUserTableSectionConfig(
           value: {
             rows: value.result.data.map(({
               user,
+              startDate,
               approvalStatus,
               purpose = '',
               researchQuestion = '',
@@ -432,6 +444,8 @@ export function useEndUserTableSectionConfig(
             }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
+              email: user.email,
+              startDate,
               approvalStatus: endUserTableUiState.approvalStatus[user.userId] ?? approvalStatus,
               content: [ purpose, researchQuestion, analysisPlan, disseminationPlan ].join('\0'),
               purpose,
@@ -449,6 +463,16 @@ export function useEndUserTableSectionConfig(
               name: {
                 key: 'name',
                 name: 'Name',
+                sortable: true
+              },
+              email: {
+                key: 'email',
+                name: 'Email',
+                sortable: true
+              },
+              startDate: {
+                key: 'startDate',
+                name: 'Date Created',
                 sortable: true
               },
               approvalStatus: {
@@ -502,6 +526,8 @@ export function useEndUserTableSectionConfig(
             columnOrder: [
               'userId',
               'name',
+              'email',
+              'startDate',
               'approvalStatus',
               'content',
               'denialReason',

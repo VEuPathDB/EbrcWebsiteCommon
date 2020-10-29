@@ -20,7 +20,8 @@ export const userDetails = record({
   userId: number,
   firstName: string,
   lastName: string,
-  organization: string
+  organization: string,
+  email: string
 });
 
 export type UserDetails = Unpack<typeof userDetails>;
