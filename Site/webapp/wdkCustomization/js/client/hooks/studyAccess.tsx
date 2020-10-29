@@ -16,6 +16,7 @@ import {
   newProviderEntry,
   updateEndUserEntry
 } from 'ebrc-client/StudyAccess/api';
+import { makeApprovalStatusSelectItems } from 'ebrc-client/StudyAccess/permission';
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
@@ -350,7 +351,6 @@ export function useEndUserTableSectionConfig(
   );
 
   const {
-    approvalStatusItems,
     onApprovalStatusChange
   } = useApprovalStatusColumnConfig(
     handler,
@@ -408,7 +408,7 @@ export function useEndUserTableSectionConfig(
                 sortable: true,
                 renderCell: ({ value, row: { userId, name } }) =>
                   <SingleSelect
-                    items={approvalStatusItems}
+                    items={makeApprovalStatusSelectItems(value)}
                     value={value}
                     onChange={(newValue) => {
                       onApprovalStatusChange(
@@ -443,7 +443,7 @@ export function useEndUserTableSectionConfig(
               },
               denialReason: {
                 key: 'denialReason',
-                name: 'Reason For Denial',
+                name: 'Notes',
                 sortable: false,
                 width: '15em',
                 renderCell: ({ value, row: { userId } }) =>
@@ -470,24 +470,6 @@ function useApprovalStatusColumnConfig(
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ) {
-  const approvalStatusItems = useMemo(
-    () => [
-      {
-        value: 'requested',
-        display: 'Requested'
-      },
-      {
-        value: 'approved',
-        display: 'Approved'
-      },
-      {
-        value: 'denied',
-        display: 'Denied'
-      }
-    ] as { value: ApprovalStatus, display: string }[],
-    []
-  );
-
   const onApprovalStatusChange = useCallback(
     async (
       userId: number,
@@ -596,7 +578,6 @@ function useApprovalStatusColumnConfig(
   );
 
   return {
-    approvalStatusItems,
     onApprovalStatusChange
   };
 }

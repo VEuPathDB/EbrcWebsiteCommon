@@ -1,4 +1,7 @@
+import { capitalize } from 'lodash';
+
 import {
+  ApprovalStatus,
   DatasetPermissionEntry,
   PermissionsResponse
 } from 'ebrc-client/StudyAccess/EntityTypes';
@@ -24,4 +27,19 @@ export function permissionsResponseToUserPermissions(permissionsResponse: Permis
       type: 'none'
     };
   }
+}
+
+export function permittedApprovalStatusChanges(oldApprovalStatus: ApprovalStatus): ApprovalStatus[] {
+  return oldApprovalStatus === 'requested'
+    ? [ 'requested', 'approved', 'denied']
+    : oldApprovalStatus === 'approved'
+    ? [ 'approved', 'denied' ]
+    : [ 'requested', 'approved', 'denied'];
+}
+
+export function makeApprovalStatusSelectItems(oldApprovalStatus: ApprovalStatus) {
+  return permittedApprovalStatusChanges(oldApprovalStatus).map(permittedStatus => ({
+    value: permittedStatus,
+    display: capitalize(permittedStatus)
+  }));
 }
