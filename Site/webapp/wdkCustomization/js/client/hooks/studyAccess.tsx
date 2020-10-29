@@ -10,8 +10,9 @@ import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCe
 import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/EntityTypes';
 import {
-  createStudyAccessRequestHandler,
-  studyAccessApi
+  StudyAccessApi,
+  apiRequests,
+  createStudyAccessRequestHandler
 } from 'ebrc-client/StudyAccess/api';
 import {
   makeApprovalStatusSelectItems,
@@ -27,17 +28,7 @@ import {
 import {
   Props as UserTableSectionConfig
 } from 'ebrc-client/components/StudyAccess/UserTableSection';
-import { ApiRequestHandler } from 'ebrc-client/util/api';
-
-const {
-  deleteProviderEntry,
-  fetchEndUserList,
-  fetchPermissions,
-  fetchProviderList,
-  fetchStaffList,
-  newProviderEntry,
-  updateEndUserEntry
-} = studyAccessApi;
+import { bindApiRequestCreators } from 'ebrc-client/util/api';
 
 interface BaseTableRow {
   userId: number;
@@ -109,20 +100,23 @@ export function useStudy(datasetId: string): StudyStatus {
   );
 }
 
-export function useStudyAccessRequestHandler(
+export function useStudyAccessApi(
   baseStudyAccessUrl: string,
   fetchApi?: Window['fetch']
 ) {
   return useMemo(
-    () => createStudyAccessRequestHandler(baseStudyAccessUrl, fetchApi),
+    () => {
+      const handler = createStudyAccessRequestHandler(baseStudyAccessUrl, fetchApi);
+      return bindApiRequestCreators(apiRequests, handler);
+    },
     []
   );
 }
 
-export function useUserPermissions(handler: ApiRequestHandler) {
+export function useUserPermissions(fetchPermissions: StudyAccessApi['fetchPermissions']) {
   return usePromise(
     async () => {
-      const permissionsResponse = await fetchPermissions(handler);
+      const permissionsResponse = await fetchPermissions();
 
       return permissionsResponseToUserPermissions(
         permissionsResponse
@@ -189,27 +183,14 @@ export function useOpenDialogConfig() {
   };
 }
 
-export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTableSectionConfig {
+export function useStaffTableSectionConfig(fetchStaffList: StudyAccessApi['fetchStaffList']): StaffTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member
-  const { value, loading } = usePromise(
-    async () => {
-      try {
-        return await fetchStaffList(handler);
-      } catch (e) {
-        return 'error';
-      }
-    },
-    []
-  );
+  const { value, loading } = usePromise(fetchStaffList, []);
 
   return useMemo(
     () => value == null
       ? {
           status: 'loading'
-        }
-      : value == 'error'
-      ? {
-          status: 'unavailable'
         }
       : {
           status: 'success',
@@ -249,19 +230,15 @@ export function useStaffTableSectionConfig(handler: ApiRequestHandler): StaffTab
 }
 
 export function useProviderTableSectionConfig(
-  handler: ApiRequestHandler,
+  fetchProviderList: StudyAccessApi['fetchProviderList'],
+  newProviderEntry: StudyAccessApi['newProviderEntry'],
+  deleteProviderEntry: StudyAccessApi['deleteProviderEntry'],
   activeDatasetId: string,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): ProviderTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading, reload: reloadProvidersTable } = usePromiseWithReloadCallback(
-    async () => {
-      try {
-        return await fetchProviderList(handler, activeDatasetId);
-      } catch (e) {
-        return 'error';
-      }
-    },
+    () => fetchProviderList(activeDatasetId),
     [ activeDatasetId ]
   );
 
@@ -269,10 +246,6 @@ export function useProviderTableSectionConfig(
     () => value == null
       ? {
           status: 'loading'
-        }
-      : value == 'error'
-      ? {
-          status: 'unavailable'
         }
       : {
           status: 'success',
@@ -322,7 +295,11 @@ export function useProviderTableSectionConfig(
 
                       const addedUsers = await Promise.all(
                         providerEmails.map(
-                          providerEmail => newProviderEntry(handler, { datasetId: activeDatasetId, email: providerEmail, isManager: false })
+                          providerEmail => newProviderEntry({
+                            datasetId: activeDatasetId,
+                            email: providerEmail,
+                            isManager: false
+                          })
                         )
                       );
 
@@ -366,7 +343,7 @@ export function useProviderTableSectionConfig(
                 ),
                 callback: async (selection) => {
                   await Promise.all(
-                    selection.map(({ providerId }) => deleteProviderEntry(handler, providerId))
+                    selection.map(({ providerId }) => deleteProviderEntry(providerId))
                   );
 
                   reloadProvidersTable();
@@ -380,7 +357,8 @@ export function useProviderTableSectionConfig(
 }
 
 export function useEndUserTableSectionConfig(
-  handler: ApiRequestHandler,
+  fetchEndUserList: StudyAccessApi['fetchEndUserList'],
+  updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
   activeDatasetId: string,
   endUserTableUiState: EndUserTableUiState,
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
@@ -388,33 +366,18 @@ export function useEndUserTableSectionConfig(
 ): EndUserTableSectionConfig {
   // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
-    async () => {
-      try {
-        return await fetchEndUserList(handler, activeDatasetId);
-      } catch (e) {
-        return 'error';
-      }
-    },
+    () => fetchEndUserList(activeDatasetId),
     [ activeDatasetId ]
   );
 
   const {
     onApprovalStatusChange
-  } = useApprovalStatusColumnConfig(
-    handler,
-    endUserTableUiState,
-    setEndUserTableUiState,
-    changeOpenDialogConfig
-  );
+  } = useApprovalStatusColumnConfig(updateEndUserEntry, endUserTableUiState, setEndUserTableUiState, changeOpenDialogConfig);
 
   return useMemo(
     () => value == null
       ? {
           status: 'loading'
-        }
-      : value == 'error'
-      ? {
-          status: 'unavailable'
         }
       : {
           status: 'success',
@@ -513,7 +476,7 @@ export function useEndUserTableSectionConfig(
 }
 
 function useApprovalStatusColumnConfig(
-  handler: ApiRequestHandler,
+  updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
   endUserTableUiState: EndUserTableUiState,
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
@@ -541,7 +504,6 @@ function useApprovalStatusColumnConfig(
           },
           async () => {
             await updateEndUserEntry(
-              handler,
               userId,
               datasetId,
               [
@@ -586,7 +548,6 @@ function useApprovalStatusColumnConfig(
               },
               async () => {
                 await updateEndUserEntry(
-                  handler,
                   userId,
                   datasetId,
                   [
@@ -618,7 +579,7 @@ function useApprovalStatusColumnConfig(
       }
     },
     [
-      handler,
+      updateEndUserEntry,
       changeOpenDialogConfig,
       endUserTableUiState,
       setEndUserTableUiState

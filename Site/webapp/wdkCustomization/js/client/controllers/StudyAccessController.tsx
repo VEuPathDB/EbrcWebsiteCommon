@@ -13,7 +13,7 @@ import {
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
   useStudy,
-  useStudyAccessRequestHandler,
+  useStudyAccessApi,
   useUserPermissions
 } from 'ebrc-client/hooks/studyAccess';
 
@@ -27,9 +27,9 @@ const STUDY_ACCESS_SERVICE_URL = '/dataset-access';
 export default function StudyAccessController({ datasetId }: Props) {
   const study = useStudy(datasetId);
 
-  const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
+  const studyAccessApi = useStudyAccessApi(STUDY_ACCESS_SERVICE_URL);
 
-  const { value: userPermissions } = useUserPermissions(handler);
+  const { value: userPermissions } = useUserPermissions(studyAccessApi.fetchPermissions);
 
   const dashboardAccessAllowed = (
     userPermissions != null && isDashboardAccessAllowed(userPermissions, datasetId)
@@ -52,14 +52,17 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
-  const staffTableConfig = useStaffTableSectionConfig(handler);
+  const staffTableConfig = useStaffTableSectionConfig(studyAccessApi.fetchStaffList);
   const providerTableConfig = useProviderTableSectionConfig(
-    handler,
+    studyAccessApi.fetchProviderList,
+    studyAccessApi.newProviderEntry,
+    studyAccessApi.deleteProviderEntry,
     datasetId,
     changeOpenDialogConfig
   );
   const endUserTableConfig = useEndUserTableSectionConfig(
-    handler,
+    studyAccessApi.fetchEndUserList,
+    studyAccessApi.updateEndUserEntry,
     datasetId,
     endUserTableUiState,
     setEndUserTableUiState,
