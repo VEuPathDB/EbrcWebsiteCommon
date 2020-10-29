@@ -4,6 +4,7 @@ import { Loading, PermissionDenied } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
+import { isDashboardAccessAllowed } from 'ebrc-client/StudyAccess/permission';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   useEndUserTableSectionConfig,
@@ -15,7 +16,6 @@ import {
   useStudyAccessRequestHandler,
   useUserPermissions
 } from 'ebrc-client/hooks/studyAccess';
-import { isDashboardAccessAllowed } from 'ebrc-client/StudyAccess/permission';
 
 interface Props {
   datasetId: string;
