@@ -16,7 +16,11 @@ import {
 } from 'ebrc-client/StudyAccess/api';
 import {
   makeApprovalStatusSelectItems,
-  permissionsResponseToUserPermissions
+  permissionsResponseToUserPermissions,
+  UserPermissions,
+  shouldDisplayStaffTable,
+  shouldDisplayProvidersTable,
+  shouldDisplayEndUsersTable
 } from 'ebrc-client/StudyAccess/permission';
 import {
   Props as UserTableDialogProps,
@@ -183,20 +187,32 @@ export function useOpenDialogConfig() {
   };
 }
 
-export function useStaffTableSectionConfig(fetchStaffList: StudyAccessApi['fetchStaffList']): StaffTableSectionConfig {
-  // FIXME: Fetch this data iff the user is a staff member
-  const { value, loading } = usePromise(fetchStaffList, []);
+export function useStaffTableSectionConfig(
+  userPermissions: UserPermissions | undefined,
+  fetchStaffList: StudyAccessApi['fetchStaffList']
+): StaffTableSectionConfig {
+  const { value, loading } = usePromise(
+    fetchIfAllowed(
+      userPermissions && shouldDisplayStaffTable(userPermissions),
+      fetchStaffList
+    ),
+    [ userPermissions ]
+  );
 
   return useMemo(
     () => value == null
       ? {
           status: 'loading'
         }
+      : value.type === 'not-allowed'
+      ? {
+          status: 'unavailable'
+        }
       : {
           status: 'success',
           title: 'Staff',
           value: {
-            rows: value.data.map(({ user, isOwner }) => ({
+            rows: value.result.data.map(({ user, isOwner }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
               isOwner
@@ -225,21 +241,28 @@ export function useStaffTableSectionConfig(fetchStaffList: StudyAccessApi['fetch
             idGetter: ({ userId }) => userId
           }
         },
-    [ value, loading ]
+    [
+      userPermissions,
+      value,
+      loading
+    ]
   );
 }
 
 export function useProviderTableSectionConfig(
+  userPermissions: UserPermissions | undefined,
   fetchProviderList: StudyAccessApi['fetchProviderList'],
   createProviderEntry: StudyAccessApi['createProviderEntry'],
   deleteProviderEntry: StudyAccessApi['deleteProviderEntry'],
   activeDatasetId: string,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): ProviderTableSectionConfig {
-  // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading, reload: reloadProvidersTable } = usePromiseWithReloadCallback(
-    () => fetchProviderList(activeDatasetId),
-    [ activeDatasetId ]
+    fetchIfAllowed(
+      userPermissions && shouldDisplayProvidersTable(userPermissions, activeDatasetId),
+      () => fetchProviderList(activeDatasetId)
+    ),
+    [ userPermissions, activeDatasetId ]
   );
 
   return useMemo(
@@ -247,11 +270,15 @@ export function useProviderTableSectionConfig(
       ? {
           status: 'loading'
         }
+      : value.type === 'not-allowed'
+      ? {
+          status: 'unavailable'
+        }
       : {
           status: 'success',
           title: 'Providers',
           value: {
-            rows: value.data.map(({ user, providerId, isManager }) => ({
+            rows: value.result.data.map(({ user, providerId, isManager }) => ({
               userId: user.userId,
               providerId,
               name: `${user.firstName} ${user.lastName}`,
@@ -352,11 +379,16 @@ export function useProviderTableSectionConfig(
             ]
           }
         },
-    [ value, loading ]
+    [
+      userPermissions,
+      value,
+      loading
+    ]
   );
 }
 
 export function useEndUserTableSectionConfig(
+  userPermissions: UserPermissions | undefined,
   fetchEndUserList: StudyAccessApi['fetchEndUserList'],
   updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
   activeDatasetId: string,
@@ -364,10 +396,12 @@ export function useEndUserTableSectionConfig(
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): EndUserTableSectionConfig {
-  // FIXME: Fetch this data iff the user is a staff member or provider for the dataset
   const { value, loading } = usePromise(
-    () => fetchEndUserList(activeDatasetId),
-    [ activeDatasetId ]
+    fetchIfAllowed(
+      userPermissions && shouldDisplayEndUsersTable(userPermissions, activeDatasetId),
+      () => fetchEndUserList(activeDatasetId)
+    ),
+    [ userPermissions, activeDatasetId ]
   );
 
   const {
@@ -379,11 +413,15 @@ export function useEndUserTableSectionConfig(
       ? {
           status: 'loading'
         }
+      : value.type === 'not-allowed'
+      ? {
+          status: 'unavailable'
+        }
       : {
           status: 'success',
           title: 'End Users',
           value: {
-            rows: value.data.map(({
+            rows: value.result.data.map(({
               user,
               approvalStatus,
               purpose = '',
@@ -471,7 +509,12 @@ export function useEndUserTableSectionConfig(
             idGetter: ({ userId }) => userId
           }
         },
-    [ value, loading, activeDatasetId, onApprovalStatusChange, endUserTableUiState ]
+    [
+      value,
+      loading,
+      onApprovalStatusChange,
+      endUserTableUiState
+    ]
   );
 }
 
@@ -589,6 +632,16 @@ function useApprovalStatusColumnConfig(
   return {
     onApprovalStatusChange
   };
+}
+
+type ConditionalFetchResult<T> =
+  | { type: 'not-allowed' }
+  | { type: 'allowed', result: T };
+
+function fetchIfAllowed<T>(allowed: boolean | undefined, factory: () => Promise<T>): () => Promise<ConditionalFetchResult<T>> {
+  return async () => !allowed
+    ? { type: 'not-allowed' }
+    : { type: 'allowed', result: await factory() };
 }
 
 function usePromiseWithReloadCallback<T>(factory: () => Promise<T>, deps?: any[]) {

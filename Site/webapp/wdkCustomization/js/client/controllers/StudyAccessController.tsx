@@ -52,8 +52,12 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
-  const staffTableConfig = useStaffTableSectionConfig(studyAccessApi.fetchStaffList);
+  const staffTableConfig = useStaffTableSectionConfig(
+    userPermissions,
+    studyAccessApi.fetchStaffList
+  );
   const providerTableConfig = useProviderTableSectionConfig(
+    userPermissions,
     studyAccessApi.fetchProviderList,
     studyAccessApi.createProviderEntry,
     studyAccessApi.deleteProviderEntry,
@@ -61,6 +65,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     changeOpenDialogConfig
   );
   const endUserTableConfig = useEndUserTableSectionConfig(
+    userPermissions,
     studyAccessApi.fetchEndUserList,
     studyAccessApi.updateEndUserEntry,
     datasetId,
