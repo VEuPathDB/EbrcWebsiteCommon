@@ -62,7 +62,7 @@ export const apiRequests = {
       transformResponse: standardTransformer(staffList)
     };
   },
-  newStaffEntry: function(requestBody: NewStaffRequest) {
+  createStaffEntry: function(requestBody: NewStaffRequest) {
     return createJsonRequest({
       path: STAFF_PATH,
       method: 'POST',
@@ -97,7 +97,7 @@ export const apiRequests = {
       transformResponse: standardTransformer(datasetProviderList)
     };
   },
-  newProviderEntry: function(requestBody: DatasetProviderCreateRequest) {
+  createProviderEntry: function(requestBody: DatasetProviderCreateRequest) {
     return createJsonRequest({
       path: PROVIDERS_PATH,
       method: 'POST',
@@ -132,7 +132,7 @@ export const apiRequests = {
       transformResponse: standardTransformer(endUserList)
     };
   },
-  newEndUserEntry: function(requestBody: EndUserCreateRequest) {
+  createEndUserEntry: function(requestBody: EndUserCreateRequest) {
     return createJsonRequest({
       path: END_USERS_PATH,
       method: 'POST',

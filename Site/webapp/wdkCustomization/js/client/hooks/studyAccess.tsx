@@ -231,7 +231,7 @@ export function useStaffTableSectionConfig(fetchStaffList: StudyAccessApi['fetch
 
 export function useProviderTableSectionConfig(
   fetchProviderList: StudyAccessApi['fetchProviderList'],
-  newProviderEntry: StudyAccessApi['newProviderEntry'],
+  createProviderEntry: StudyAccessApi['createProviderEntry'],
   deleteProviderEntry: StudyAccessApi['deleteProviderEntry'],
   activeDatasetId: string,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
@@ -295,7 +295,7 @@ export function useProviderTableSectionConfig(
 
                       const addedUsers = await Promise.all(
                         providerEmails.map(
-                          providerEmail => newProviderEntry({
+                          providerEmail => createProviderEntry({
                             datasetId: activeDatasetId,
                             email: providerEmail,
                             isManager: false

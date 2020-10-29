@@ -55,7 +55,7 @@ export default function StudyAccessController({ datasetId }: Props) {
   const staffTableConfig = useStaffTableSectionConfig(studyAccessApi.fetchStaffList);
   const providerTableConfig = useProviderTableSectionConfig(
     studyAccessApi.fetchProviderList,
-    studyAccessApi.newProviderEntry,
+    studyAccessApi.createProviderEntry,
     studyAccessApi.deleteProviderEntry,
     datasetId,
     changeOpenDialogConfig
