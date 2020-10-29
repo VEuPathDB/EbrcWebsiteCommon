@@ -15,12 +15,12 @@ import {
   createStudyAccessRequestHandler
 } from 'ebrc-client/StudyAccess/api';
 import {
+  UserPermissions,
   makeApprovalStatusSelectItems,
   permissionsResponseToUserPermissions,
-  UserPermissions,
-  shouldDisplayStaffTable,
+  shouldDisplayEndUsersTable,
   shouldDisplayProvidersTable,
-  shouldDisplayEndUsersTable
+  shouldDisplayStaffTable
 } from 'ebrc-client/StudyAccess/permission';
 import {
   Props as UserTableDialogProps,
