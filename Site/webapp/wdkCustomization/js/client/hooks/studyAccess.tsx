@@ -473,7 +473,16 @@ export function useEndUserTableSectionConfig(
               startDate: {
                 key: 'startDate',
                 name: 'Date Created',
-                sortable: true
+                sortable: true,
+                renderCell: ({ value }) => {
+                  if (value == null) {
+                    return '';
+                  }
+
+                  const date = new Date(value);
+
+                  return date.toLocaleDateString();
+                }
               },
               approvalStatus: {
                 key: 'approvalStatus',
