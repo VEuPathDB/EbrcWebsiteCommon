@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Loading } from 'wdk-client/Components';
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
+import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
 import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
@@ -30,9 +31,11 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const userPermissions = useUserPermissions(handler);
 
-  const documentTitle = study == null || userPermissions == null
+  const documentTitle = study.status === 'loading' || userPermissions == null
     ? 'Loading...'
-    : `Study Access Dashboard: ${study.name}`;
+    : study.status === 'not-found'
+    ? 'Not Found'
+    : `Study Access Dashboard: ${study.record.name}`;
 
   useSetDocumentTitle(documentTitle);
 
@@ -58,10 +61,12 @@ export default function StudyAccessController({ datasetId }: Props) {
   );
 
   return (
-    study == null || userPermissions == null
+    study.status == 'loading' || userPermissions == null
       ? <Loading />
+      : study.status == 'not-found'
+      ? <NotFound />
       : <StudyAccess
-          title={`Study: ${study.name}`}
+          title={`Study: ${study.record.name}`}
           staffTableConfig={staffTableConfig}
           providerTableConfig={providerTableConfig}
           endUserTableConfig={endUserTableConfig}
@@ -70,13 +75,28 @@ export default function StudyAccessController({ datasetId }: Props) {
   );
 }
 
-function useStudy(datasetId: string) {
+type StudyStatus =
+  | { status: 'loading' }
+  | { status: 'not-found' }
+  | { status: 'success', record: any };
+
+function useStudy(datasetId: string): StudyStatus {
   const studies = useWdkService(fetchStudies, []);
 
   return useMemo(
-    () => studies && studies[0].find(
-      (study: any) => study.id === datasetId && !study.disabled
-    ),
+    () => {
+      if (studies == null) {
+        return { status: 'loading' };
+      }
+
+      const study = studies[0].find(
+        (study: any) => study.id === datasetId && !study.disabled
+      );
+
+      return study == null
+        ? { status: 'not-found' }
+        : { status: 'success', record: study };
+    },
     [ studies ]
   );
 }
