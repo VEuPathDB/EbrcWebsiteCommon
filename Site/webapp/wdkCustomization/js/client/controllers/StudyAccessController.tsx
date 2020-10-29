@@ -4,7 +4,7 @@ import { Loading, PermissionDenied } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
-import { isDashboardAccessAllowed } from 'ebrc-client/StudyAccess/permission';
+import { canAccessDashboard } from 'ebrc-client/StudyAccess/permission';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   useEndUserTableSectionConfig,
@@ -32,7 +32,7 @@ export default function StudyAccessController({ datasetId }: Props) {
   const { value: userPermissions } = useUserPermissions(studyAccessApi.fetchPermissions);
 
   const dashboardAccessAllowed = (
-    userPermissions != null && isDashboardAccessAllowed(userPermissions, datasetId)
+    userPermissions != null && canAccessDashboard(userPermissions, datasetId)
   );
 
   const documentTitle = study.status === 'loading' || userPermissions == null

@@ -226,14 +226,22 @@ export const datasetProviderPatch = record({
 
 export type DatasetProviderPatch = Unpack<typeof datasetProviderPatch>;
 
+export const providerPermissionEntry = record({
+  type: constant('provider'),
+  isManager: boolean
+});
+
+export type ProviderPermissionEntry = Unpack<typeof providerPermissionEntry>;
+
+export const endUserPermissionEntry = record({
+  type: constant('enduser')
+});
+
+export type EndUserPermissionEntry = Unpack<typeof endUserPermissionEntry>;
+
 export const datasetPermissionEntry = oneOf(
-  record({
-    type: constant('provider'),
-    isManager: boolean
-  }),
-  record({
-    type: constant('enduser')
-  })
+  providerPermissionEntry,
+  endUserPermissionEntry
 );
 
 export type DatasetPermissionEntry = Unpack<typeof datasetPermissionEntry>;

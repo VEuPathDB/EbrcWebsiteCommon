@@ -7,9 +7,21 @@ import {
 } from 'ebrc-client/StudyAccess/EntityTypes';
 
 export type UserPermissions =
-  | { type: 'staff', isOwner: boolean }
-  | { type: 'external', perDataset: Record<string, DatasetPermissionEntry> }
-  | { type: 'none' };
+  | StaffPermissions
+  | ExternalUserPermissions
+  | NoPermissions;
+
+export interface StaffPermissions {
+  type: 'staff';
+  isOwner: boolean;
+}
+export interface ExternalUserPermissions {
+  type: 'external';
+  perDataset: Record<string, DatasetPermissionEntry | undefined>;
+}
+export interface NoPermissions {
+  type: 'none';
+}
 
 export function permissionsResponseToUserPermissions(permissionsResponse: PermissionsResponse): UserPermissions {
   if (
@@ -32,11 +44,91 @@ export function permissionsResponseToUserPermissions(permissionsResponse: Permis
   }
 }
 
-export function isDashboardAccessAllowed(userPermissions: UserPermissions, datasetId: string) {
+export function isOwner(userPermissions: UserPermissions) {
+  return userPermissions.type === 'staff' && userPermissions.isOwner;
+}
+
+export function isStaff(userPermissions: UserPermissions) {
+  return userPermissions.type === 'staff';
+}
+
+export function isManager(userPermissions: UserPermissions, datasetId: string) {
+  if (userPermissions.type !== 'external') {
+    return false;
+  }
+
+  const datasetPermissions = userPermissions.perDataset[datasetId];
+
   return (
-    userPermissions.type === 'staff' ||
+    datasetPermissions?.type === 'provider' &&
+    datasetPermissions.isManager
+  );
+}
+
+export function isProvider(userPermissions: UserPermissions, datasetId: string) {
+  return (
     userPermissions.type === 'external' &&
     userPermissions.perDataset[datasetId]?.type === 'provider'
+  );
+}
+
+export function isEndUser(userPermissions: UserPermissions, datasetId: string) {
+  return (
+    userPermissions.type === 'external' &&
+    userPermissions.perDataset[datasetId]?.type === 'enduser'
+  );
+}
+
+export function canAccessDashboard(userPermissions: UserPermissions, datasetId: string) {
+  return (
+    isStaff(userPermissions) ||
+    isProvider(userPermissions, datasetId)
+  );
+}
+
+export function shouldDisplayStaffTable(userPermissions: UserPermissions) {
+  return isStaff(userPermissions);
+}
+
+// By "updating staff", we mean:
+// (1) adding a new staff member
+// (2) removing an existing staff member
+// (3) altering a staff member's "owner"ship
+export function canUpdateStaff(userPermissions: UserPermissions) {
+  return isOwner(userPermissions);
+}
+
+export function shouldDisplayProvidersTable(userPermissions: UserPermissions, datasetId: string) {
+  return isProvider(userPermissions, datasetId);
+}
+
+// By "updating the providers", we mean:
+// (1) adding a new provider
+// (2) removing an existing provider
+// (3) altering a provider's managerial capabilities
+export function canUpdateProviders(userPermissions: UserPermissions, datasetId: string) {
+  return (
+    isStaff(userPermissions) ||
+    isManager(userPermissions, datasetId)
+  );
+}
+
+export function shouldDisplayEndUsersTable(userPermissions: UserPermissions, datasetId: string) {
+  return canAccessDashboard(userPermissions, datasetId);
+}
+
+export function canAddEndUsers(userPermissions: UserPermissions, datasetId: string) {
+  return canAccessDashboard(userPermissions, datasetId);
+}
+
+export function canRemoveEndUsers(userPermissions: UserPermissions) {
+  return isStaff(userPermissions);
+}
+
+export function canUpdateApprovalStatus(userPermissions: UserPermissions, datasetId: string) {
+  return (
+    isStaff(userPermissions) ||
+    isProvider(userPermissions, datasetId)
   );
 }
 
