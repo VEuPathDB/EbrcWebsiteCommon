@@ -99,7 +99,10 @@ export function canUpdateStaff(userPermissions: UserPermissions) {
 }
 
 export function shouldDisplayProvidersTable(userPermissions: UserPermissions, datasetId: string) {
-  return isProvider(userPermissions, datasetId);
+  return (
+    isStaff(userPermissions) ||
+    isProvider(userPermissions, datasetId)
+  );
 }
 
 // By "updating the providers", we mean:
