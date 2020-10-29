@@ -26,6 +26,7 @@ import {
   endUserCreateResponse,
   endUserList,
   newStaffResponse,
+  permissionsResponse,
   staffList
 } from 'ebrc-client/StudyAccess/EntityTypes';
 
@@ -33,6 +34,7 @@ import {
 const STAFF_PATH = '/staff';
 const PROVIDERS_PATH = '/dataset-providers';
 const END_USERS_PATH = '/dataset-end-users';
+const PERMISSIONS_PATH = '/permissions';
 
 export function createStudyAccessRequestHandler(
   baseStudyAccessUrl: string,
@@ -187,6 +189,13 @@ export const studyAccessApi = {
     });
 
     return handler(request);
+  },
+  fetchPermissions: function(handler: ApiRequestHandler) {
+    return handler({
+      path: PERMISSIONS_PATH,
+      method: 'GET',
+      transformResponse: standardTransformer(permissionsResponse)
+    });
   }
 }
 

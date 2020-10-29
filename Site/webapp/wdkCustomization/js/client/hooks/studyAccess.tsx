@@ -11,7 +11,10 @@ import {
   createStudyAccessRequestHandler,
   studyAccessApi
 } from 'ebrc-client/StudyAccess/api';
-import { makeApprovalStatusSelectItems } from 'ebrc-client/StudyAccess/permission';
+import {
+  makeApprovalStatusSelectItems,
+  permissionsResponseToUserPermissions
+} from 'ebrc-client/StudyAccess/permission';
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
@@ -28,6 +31,7 @@ import { ApiRequestHandler } from 'ebrc-client/util/api';
 const {
   deleteProviderEntry,
   fetchEndUserList,
+  fetchPermissions,
   fetchProviderList,
   fetchStaffList,
   newProviderEntry,
@@ -84,6 +88,19 @@ export function useStudyAccessRequestHandler(
 ) {
   return useMemo(
     () => createStudyAccessRequestHandler(baseStudyAccessUrl, fetchApi),
+    []
+  );
+}
+
+export function useUserPermissions(handler: ApiRequestHandler) {
+  return usePromise(
+    async () => {
+      const permissionsResponse = await fetchPermissions(handler);
+
+      return permissionsResponseToUserPermissions(
+        permissionsResponse
+      );
+    },
     []
   );
 }

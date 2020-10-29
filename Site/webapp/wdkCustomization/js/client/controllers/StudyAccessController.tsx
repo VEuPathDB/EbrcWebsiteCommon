@@ -12,7 +12,8 @@ import {
   useOpenDialogConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
-  useStudyAccessRequestHandler
+  useStudyAccessRequestHandler,
+  useUserPermissions
 } from 'ebrc-client/hooks/studyAccess';
 
 interface Props {
@@ -25,13 +26,15 @@ const STUDY_ACCESS_SERVICE_URL = '/dataset-access';
 export default function StudyAccessController({ datasetId }: Props) {
   const study = useStudy(datasetId);
 
-  const documentTitle = study == null
+  const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
+
+  const userPermissions = useUserPermissions(handler);
+
+  const documentTitle = study == null || userPermissions == null
     ? 'Loading...'
     : `Study Access Dashboard: ${study.name}`;
 
   useSetDocumentTitle(documentTitle);
-
-  const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
   const {
     endUserTableUiState,
@@ -55,7 +58,7 @@ export default function StudyAccessController({ datasetId }: Props) {
   );
 
   return (
-    study == null
+    study == null || userPermissions == null
       ? <Loading />
       : <StudyAccess
           title={`Study: ${study.name}`}
