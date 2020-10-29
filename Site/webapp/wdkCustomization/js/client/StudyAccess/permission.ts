@@ -12,7 +12,10 @@ export type UserPermissions =
   | { type: 'none' };
 
 export function permissionsResponseToUserPermissions(permissionsResponse: PermissionsResponse): UserPermissions {
-  if (permissionsResponse.isStaff != null) {
+  if (
+    permissionsResponse.isStaff === true ||
+    permissionsResponse.isOwner === true
+  ) {
     return {
       type: 'staff',
       isOwner: !!permissionsResponse.isOwner
