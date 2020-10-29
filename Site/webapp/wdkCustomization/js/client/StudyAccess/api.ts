@@ -19,7 +19,6 @@ import {
   DatasetProviderPatch,
   NewStaffRequest,
   NewStaffResponse,
-  StaffList,
   StaffPatch,
   datasetProviderList,
   datasetProviderCreateResponse,
