@@ -54,190 +54,141 @@ export function createStudyAccessRequestHandler(
   });
 }
 
-export function fetchStaffList(
-  handler: ApiRequestHandler,
-  limit?: number,
-  offset?: number
-): Promise<StaffList> {
-  const queryString = makeQueryString(
-    ['limit', 'offset'],
-    [limit, offset]
-  );
+export const studyAccessApi = {
+  fetchStaffList: function(handler: ApiRequestHandler, limit?: number, offset?: number) {
+    const queryString = makeQueryString(
+      ['limit', 'offset'],
+      [limit, offset]
+    );
 
-  return handler({
-    path: `${STAFF_PATH}${queryString}`,
-    method: 'GET',
-    transformResponse: standardTransformer(staffList)
-  });
-}
+    return handler({
+      path: `${STAFF_PATH}${queryString}`,
+      method: 'GET',
+      transformResponse: standardTransformer(staffList)
+    });
+  },
+  newStaffEntry: function(handler: ApiRequestHandler, requestBody: NewStaffRequest): Promise<NewStaffResponse> {
+    const request = createJsonRequest({
+      path: STAFF_PATH,
+      method: 'POST',
+      body: requestBody,
+      transformResponse: standardTransformer(newStaffResponse)
+    });
 
-export function newStaffEntry(
-  handler: ApiRequestHandler,
-  requestBody: NewStaffRequest
-): Promise<NewStaffResponse> {
-  const request = createJsonRequest({
-    path: STAFF_PATH,
-    method: 'POST',
-    body: requestBody,
-    transformResponse: standardTransformer(newStaffResponse)
-  });
+    return handler(request);
+  },
+  updateStaffEntry: function(handler: ApiRequestHandler, staffId: number, requestBody: StaffPatch) {
+    const request = createJsonRequest({
+      path: `${STAFF_PATH}/${staffId}`,
+      method: 'PATCH',
+      body: requestBody,
+      transformResponse: noContent
+    });
 
-  return handler(request);
-}
+    return handler(request);
+  },
+  deleteStaffEntry: function deleteStaffEntry(
+    handler: ApiRequestHandler,
+    staffId: number
+  ) {
+    return handler({
+      path: `${STAFF_PATH}/${staffId}`,
+      method: 'DELETE',
+      transformResponse: noContent
+    });
+  },
+  fetchProviderList: function fetchProviderList(handler: ApiRequestHandler, datasetId: string, limit?: number, offset?: number): Promise<DatasetProviderList> {
+    const queryString = makeQueryString(
+      ['datasetId', 'limit', 'offset'],
+      [datasetId, limit, offset]
+    );
 
-export function updateStaffEntry(
-  handler: ApiRequestHandler,
-  staffId: number,
-  requestBody: StaffPatch
-) {
-  const request = createJsonRequest({
-    path: `${STAFF_PATH}/${staffId}`,
-    method: 'PATCH',
-    body: requestBody,
-    transformResponse: noContent
-  });
+    return handler({
+      path: `${PROVIDERS_PATH}${queryString}`,
+      method: 'GET',
+      transformResponse: standardTransformer(datasetProviderList)
+    });
+  },
+  newProviderEntry: function(handler: ApiRequestHandler, requestBody: DatasetProviderCreateRequest): Promise<DatasetProviderCreateResponse> {
+    const request = createJsonRequest({
+      path: PROVIDERS_PATH,
+      method: 'POST',
+      body: requestBody,
+      transformResponse: standardTransformer(datasetProviderCreateResponse)
+    });
 
-  return handler(request);
-}
+    return handler(request);
+  },
+  updateProviderEntry: function(handler: ApiRequestHandler, providerId: number, requestBody: DatasetProviderPatch) {
+    const request = createJsonRequest({
+      path: `${PROVIDERS_PATH}/${providerId}`,
+      method: 'PATCH',
+      body: requestBody,
+      transformResponse: noContent
+    });
 
-export function deleteStaffEntry(
-  handler: ApiRequestHandler,
-  staffId: number
-) {
-  return handler({
-    path: `${STAFF_PATH}/${staffId}`,
-    method: 'DELETE',
-    transformResponse: noContent
-  });
-}
+    return handler(request);
+  },
+  deleteProviderEntry: function(handler: ApiRequestHandler, providerId: number) {
+    return handler({
+      path: `${PROVIDERS_PATH}/${providerId}`,
+      method: 'DELETE',
+      transformResponse: noContent
+    });
+  },
+  fetchEndUserList: function(handler: ApiRequestHandler, datasetId: string, limit?: number, offset?: number, approval?: ApprovalStatus): Promise<EndUserList> {
+    const queryString = makeQueryString(
+      ['datasetId', 'limit', 'offset', 'approval'],
+      [datasetId, limit, offset, approval]
+    );
 
-export function fetchProviderList(
-  handler: ApiRequestHandler,
-  datasetId: string,
-  limit?: number,
-  offset?: number
-): Promise<DatasetProviderList> {
-  const queryString = makeQueryString(
-    ['datasetId', 'limit', 'offset'],
-    [datasetId, limit, offset]
-  );
+    return handler({
+      path: `${END_USERS_PATH}${queryString}`,
+      method: 'GET',
+      transformResponse: standardTransformer(endUserList)
+    });
+  },
+  newEndUserEntry: function(handler: ApiRequestHandler, requestBody: EndUserCreateRequest): Promise<EndUserCreateResponse> {
+    const request = createJsonRequest({
+      path: END_USERS_PATH,
+      method: 'POST',
+      body: requestBody,
+      transformResponse: standardTransformer(endUserCreateResponse)
+    });
 
-  return handler({
-    path: `${PROVIDERS_PATH}${queryString}`,
-    method: 'GET',
-    transformResponse: standardTransformer(datasetProviderList)
-  });
-}
+    return handler(request);
+  },
+  fetchEndUserEntry: function(
+    handler: ApiRequestHandler,
+    wdkUserId: number,
+    datasetId: string
+  ): Promise<EndUser> {
+    const endUserId = makeEndUserId(
+      wdkUserId,
+      datasetId
+    );
 
-export function newProviderEntry(
-  handler: ApiRequestHandler,
-  requestBody: DatasetProviderCreateRequest
-): Promise<DatasetProviderCreateResponse> {
-  const request = createJsonRequest({
-    path: PROVIDERS_PATH,
-    method: 'POST',
-    body: requestBody,
-    transformResponse: standardTransformer(datasetProviderCreateResponse)
-  });
+    return handler({
+      path: `${END_USERS_PATH}/${wdkUserId}-${endUserId}`,
+      method: 'GET',
+      transformResponse: standardTransformer(endUser)
+    });
+  },
+  updateEndUserEntry: function(handler: ApiRequestHandler, wdkUserId: number, datasetId: string, requestBody: EndUserPatch) {
+    const endUserId = makeEndUserId(
+      wdkUserId,
+      datasetId
+    );
 
-  return handler(request);
-}
+    const request = createJsonRequest({
+      path: `${END_USERS_PATH}/${endUserId}`,
+      method: 'PATCH',
+      body: requestBody,
+      transformResponse: noContent
+    });
 
-export function updateProviderEntry(
-  handler: ApiRequestHandler,
-  providerId: number,
-  requestBody: DatasetProviderPatch
-) {
-  const request = createJsonRequest({
-    path: `${PROVIDERS_PATH}/${providerId}`,
-    method: 'PATCH',
-    body: requestBody,
-    transformResponse: noContent
-  });
-
-  return handler(request);
-}
-
-export function deleteProviderEntry(
-  handler: ApiRequestHandler,
-  providerId: number
-) {
-  return handler({
-    path: `${PROVIDERS_PATH}/${providerId}`,
-    method: 'DELETE',
-    transformResponse: noContent
-  });
-}
-
-export function fetchEndUserList(
-  handler: ApiRequestHandler,
-  datasetId: string,
-  limit?: number,
-  offset?: number,
-  approval?: ApprovalStatus
-): Promise<EndUserList> {
-  const queryString = makeQueryString(
-    ['datasetId', 'limit', 'offset', 'approval'],
-    [datasetId, limit, offset, approval]
-  );
-
-  return handler({
-    path: `${END_USERS_PATH}${queryString}`,
-    method: 'GET',
-    transformResponse: standardTransformer(endUserList)
-  });
-}
-
-export function newEndUserEntry(
-  handler: ApiRequestHandler,
-  requestBody: EndUserCreateRequest
-): Promise<EndUserCreateResponse> {
-  const request = createJsonRequest({
-    path: END_USERS_PATH,
-    method: 'POST',
-    body: requestBody,
-    transformResponse: standardTransformer(endUserCreateResponse)
-  });
-
-  return handler(request);
-}
-
-export function fetchEndUserEntry(
-  handler: ApiRequestHandler,
-  wdkUserId: number,
-  datasetId: string
-): Promise<EndUser> {
-  const endUserId = makeEndUserId(
-    wdkUserId,
-    datasetId
-  );
-
-  return handler({
-    path: `${END_USERS_PATH}/${wdkUserId}-${endUserId}`,
-    method: 'GET',
-    transformResponse: standardTransformer(endUser)
-  });
-}
-
-export function updateEndUserEntry(
-  handler: ApiRequestHandler,
-  wdkUserId: number,
-  datasetId: string,
-  requestBody: EndUserPatch
-) {
-  const endUserId = makeEndUserId(
-    wdkUserId,
-    datasetId
-  );
-
-  const request = createJsonRequest({
-    path: `${END_USERS_PATH}/${endUserId}`,
-    method: 'PATCH',
-    body: requestBody,
-    transformResponse: noContent
-  });
-
-  return handler(request);
+    return handler(request);
+  }
 }
 
 async function noContent(body: unknown) {

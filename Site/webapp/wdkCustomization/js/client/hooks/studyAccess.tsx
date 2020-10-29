@@ -9,12 +9,7 @@ import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCe
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/EntityTypes';
 import {
   createStudyAccessRequestHandler,
-  deleteProviderEntry,
-  fetchEndUserList,
-  fetchProviderList,
-  fetchStaffList,
-  newProviderEntry,
-  updateEndUserEntry
+  studyAccessApi
 } from 'ebrc-client/StudyAccess/api';
 import { makeApprovalStatusSelectItems } from 'ebrc-client/StudyAccess/permission';
 import {
@@ -29,6 +24,15 @@ import {
   Props as UserTableSectionConfig
 } from 'ebrc-client/components/StudyAccess/UserTableSection';
 import { ApiRequestHandler } from 'ebrc-client/util/api';
+
+const {
+  deleteProviderEntry,
+  fetchEndUserList,
+  fetchProviderList,
+  fetchStaffList,
+  newProviderEntry,
+  updateEndUserEntry
+} = studyAccessApi;
 
 interface BaseTableRow {
   userId: number;
