@@ -1091,9 +1091,19 @@ profile.df.full\$TOOLTIP <- paste(profile.df.full\$ELEMENT_NAMES, profile.df.ful
 #exptOrder <- unique(profile.df.full\$LEGEND)
 #profile.df.full <- profile.df.full[order(match(profile.df.full\$LEGEND, exptOrder), profile.df.full\$VALUE),]
 profile.df.full\$LEGEND <- factor(profile.df.full\$LEGEND, levels = rev(levels(profile.df.full\$LEGEND)))
+
+truncatedSamplesTable <- function(x,y) {
+  numSamples <- length(x)
+  if (numSamples > 10) { x <- x[1:10]; y <- y[1:10] }
+  tableText <- paste(paste0(x, \":  \", y), collapse=\"<br>\")
+  if (numSamples > 10) { tableText <- paste0(tableText, \"<br>...<br><i>(Click on points in graph to see all samples.<br> Zoom may also be necessary.)</i>\")}
+
+  return(tableText)
+}
+
 table.df <- profile.df.full %>% 
-		   group_by(LEGEND) %>% 
-		   summarize(TABLE=paste(paste0(ELEMENT_NAMES, \":  \", VALUE), collapse=\"<br>\"))
+                   group_by(LEGEND) %>% 
+                   summarize(TABLE=truncatedSamplesTable(ELEMENT_NAMES, VALUE))
 table.df\$TABLE <- paste0(\"<b>Sample:  $exprMetric</b><br>\", table.df\$TABLE)
 profile.df.full <- merge(profile.df.full, table.df, by = 'LEGEND')
 ";
