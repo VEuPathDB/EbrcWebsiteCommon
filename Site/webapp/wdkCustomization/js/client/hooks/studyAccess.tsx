@@ -4,8 +4,10 @@ import { partition, zipWith } from 'lodash';
 
 import { IconAlt, SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { OverflowingTextCell } from 'wdk-client/Views/Strategy/OverflowingTextCell';
 
+import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { ApprovalStatus } from 'ebrc-client/StudyAccess/EntityTypes';
 import {
   createStudyAccessRequestHandler,
@@ -22,7 +24,6 @@ import {
   ContentProps,
   UsersAddedContent
 } from 'ebrc-client/components/StudyAccess/UserTableDialog';
-
 import {
   Props as UserTableSectionConfig
 } from 'ebrc-client/components/StudyAccess/UserTableSection';
@@ -80,6 +81,32 @@ export type OpenDialogConfig = UserTableDialogProps;
 interface EndUserTableUiState {
   approvalStatus: Record<number, ApprovalStatus | undefined>;
   denialReason: Record<number, string | undefined>;
+}
+
+type StudyStatus =
+  | { status: 'loading' }
+  | { status: 'not-found' }
+  | { status: 'success', record: any };
+
+export function useStudy(datasetId: string): StudyStatus {
+  const studies = useWdkService(fetchStudies, []);
+
+  return useMemo(
+    () => {
+      if (studies == null) {
+        return { status: 'loading' };
+      }
+
+      const study = studies[0].find(
+        (study: any) => study.id === datasetId && !study.disabled
+      );
+
+      return study == null
+        ? { status: 'not-found' }
+        : { status: 'success', record: study };
+    },
+    [ studies ]
+  );
 }
 
 export function useStudyAccessRequestHandler(

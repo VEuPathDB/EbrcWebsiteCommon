@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { Loading } from 'wdk-client/Components';
-import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
+import { Loading, PermissionDenied } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
-import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   useEndUserTableSectionConfig,
@@ -13,9 +11,11 @@ import {
   useOpenDialogConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
+  useStudy,
   useStudyAccessRequestHandler,
   useUserPermissions
 } from 'ebrc-client/hooks/studyAccess';
+import { isDashboardAccessAllowed } from 'ebrc-client/StudyAccess/permission';
 
 interface Props {
   datasetId: string;
@@ -29,12 +29,18 @@ export default function StudyAccessController({ datasetId }: Props) {
 
   const handler = useStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL);
 
-  const userPermissions = useUserPermissions(handler);
+  const { value: userPermissions } = useUserPermissions(handler);
+
+  const dashboardAccessAllowed = (
+    userPermissions != null && isDashboardAccessAllowed(userPermissions, datasetId)
+  );
 
   const documentTitle = study.status === 'loading' || userPermissions == null
     ? 'Loading...'
     : study.status === 'not-found'
     ? 'Not Found'
+    : !dashboardAccessAllowed
+    ? 'Permission Denied'
     : `Study Access Dashboard: ${study.record.name}`;
 
   useSetDocumentTitle(documentTitle);
@@ -65,6 +71,8 @@ export default function StudyAccessController({ datasetId }: Props) {
       ? <Loading />
       : study.status == 'not-found'
       ? <NotFound />
+      : !dashboardAccessAllowed
+      ? <PermissionDenied />
       : <StudyAccess
           title={`Study: ${study.record.name}`}
           staffTableConfig={staffTableConfig}
@@ -72,31 +80,5 @@ export default function StudyAccessController({ datasetId }: Props) {
           endUserTableConfig={endUserTableConfig}
           openDialogConfig={openDialogConfig}
         />
-  );
-}
-
-type StudyStatus =
-  | { status: 'loading' }
-  | { status: 'not-found' }
-  | { status: 'success', record: any };
-
-function useStudy(datasetId: string): StudyStatus {
-  const studies = useWdkService(fetchStudies, []);
-
-  return useMemo(
-    () => {
-      if (studies == null) {
-        return { status: 'loading' };
-      }
-
-      const study = studies[0].find(
-        (study: any) => study.id === datasetId && !study.disabled
-      );
-
-      return study == null
-        ? { status: 'not-found' }
-        : { status: 'success', record: study };
-    },
-    [ studies ]
   );
 }

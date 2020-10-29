@@ -32,6 +32,14 @@ export function permissionsResponseToUserPermissions(permissionsResponse: Permis
   }
 }
 
+export function isDashboardAccessAllowed(userPermissions: UserPermissions, datasetId: string) {
+  return (
+    userPermissions.type === 'staff' ||
+    userPermissions.type === 'external' &&
+    userPermissions.perDataset[datasetId]?.type === 'provider'
+  );
+}
+
 export function permittedApprovalStatusChanges(oldApprovalStatus: ApprovalStatus): ApprovalStatus[] {
   return oldApprovalStatus === 'requested'
     ? [ 'requested', 'approved', 'denied']
