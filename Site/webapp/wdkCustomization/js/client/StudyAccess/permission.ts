@@ -142,10 +142,3 @@ export function permittedApprovalStatusChanges(oldApprovalStatus: ApprovalStatus
     ? [ 'approved', 'denied' ]
     : [ 'requested', 'approved', 'denied'];
 }
-
-export function makeApprovalStatusSelectItems(oldApprovalStatus: ApprovalStatus) {
-  return permittedApprovalStatusChanges(oldApprovalStatus).map(permittedStatus => ({
-    value: permittedStatus,
-    display: capitalize(permittedStatus)
-  }));
-}

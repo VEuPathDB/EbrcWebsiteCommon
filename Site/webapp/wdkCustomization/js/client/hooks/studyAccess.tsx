@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { partition, zipWith } from 'lodash';
+import {
+  capitalize,
+  partition,
+  zipWith
+ } from 'lodash';
 
 import { IconAlt, SingleSelect } from 'wdk-client/Components';
 import { usePromise } from 'wdk-client/Hooks/PromiseHook';
@@ -16,8 +20,9 @@ import {
 } from 'ebrc-client/StudyAccess/api';
 import {
   UserPermissions,
-  makeApprovalStatusSelectItems,
+  canUpdateApprovalStatus,
   permissionsResponseToUserPermissions,
+  permittedApprovalStatusChanges,
   shouldDisplayEndUsersTable,
   shouldDisplayProvidersTable,
   shouldDisplayStaffTable
@@ -416,8 +421,16 @@ export function useEndUserTableSectionConfig(
   );
 
   const {
+    approvalStatusEditable,
     onApprovalStatusChange
-  } = useApprovalStatusColumnConfig(updateEndUserEntry, endUserTableUiState, setEndUserTableUiState, changeOpenDialogConfig);
+  } = useApprovalStatusColumnConfig(
+    userPermissions,
+    activeDatasetId,
+    updateEndUserEntry,
+    endUserTableUiState,
+    setEndUserTableUiState,
+    changeOpenDialogConfig
+  );
 
   return useMemo(
     () => value == null
@@ -488,19 +501,22 @@ export function useEndUserTableSectionConfig(
                 key: 'approvalStatus',
                 name: 'Approval Status',
                 sortable: true,
-                renderCell: ({ value, row: { userId, name } }) =>
-                  <SingleSelect
-                    items={makeApprovalStatusSelectItems(value)}
-                    value={value}
-                    onChange={(newValue) => {
-                      onApprovalStatusChange(
-                        userId,
-                        name,
-                        activeDatasetId,
-                        newValue as ApprovalStatus
-                      );
-                    }}
-                  />
+                renderCell: ({ value, row: { userId, name } }) => {
+                  return !approvalStatusEditable
+                    ? makeApprovalStatusDisplayName(value)
+                    : <SingleSelect
+                        items={makeApprovalStatusSelectItems(value)}
+                        value={value}
+                        onChange={(newValue) => {
+                          onApprovalStatusChange(
+                            userId,
+                            name,
+                            activeDatasetId,
+                            newValue as ApprovalStatus
+                          );
+                        }}
+                      />;
+                }
               },
               content: {
                 key: 'content',
@@ -547,6 +563,7 @@ export function useEndUserTableSectionConfig(
     [
       value,
       loading,
+      approvalStatusEditable,
       onApprovalStatusChange,
       endUserTableUiState
     ]
@@ -554,6 +571,8 @@ export function useEndUserTableSectionConfig(
 }
 
 function useApprovalStatusColumnConfig(
+  userPermissions: UserPermissions | undefined,
+  activeDatasetId: string,
   updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
   endUserTableUiState: EndUserTableUiState,
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
@@ -665,6 +684,10 @@ function useApprovalStatusColumnConfig(
   );
 
   return {
+    approvalStatusEditable: (
+      userPermissions &&
+      canUpdateApprovalStatus(userPermissions, activeDatasetId)
+    ),
     onApprovalStatusChange
   };
 }
@@ -746,4 +769,15 @@ function updateEndUserApprovalStatus(
 
 function booleanToString(value: boolean) {
   return value === true ? 'Yes' : 'No';
+}
+
+function makeApprovalStatusSelectItems(oldApprovalStatus: ApprovalStatus) {
+  return permittedApprovalStatusChanges(oldApprovalStatus).map(permittedStatus => ({
+    value: permittedStatus,
+    display: makeApprovalStatusDisplayName(permittedStatus)
+  }));
+}
+
+function makeApprovalStatusDisplayName(approvalStatus: ApprovalStatus) {
+  return capitalize(approvalStatus);
 }
