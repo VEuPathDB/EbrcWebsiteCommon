@@ -21,6 +21,7 @@ import {
 import {
   UserPermissions,
   canUpdateApprovalStatus,
+  canUpdateProviders,
   permissionsResponseToUserPermissions,
   permittedApprovalStatusChanges,
   shouldDisplayEndUsersTable,
@@ -275,6 +276,8 @@ export function useProviderTableSectionConfig(
     [ userPermissions, activeDatasetId ]
   );
 
+  const providersAreUpdateable = userPermissions && canUpdateProviders(userPermissions, activeDatasetId);
+
   return useMemo(
     () => value == null
       ? {
@@ -322,7 +325,7 @@ export function useProviderTableSectionConfig(
             },
             columnOrder: [ 'userId', 'name', 'email', 'isManager' ],
             idGetter: ({ userId }) => userId,
-            actions: [
+            actions: !providersAreUpdateable ? undefined : [
               {
                 element: (
                   <button type="button" className="btn">
@@ -398,7 +401,8 @@ export function useProviderTableSectionConfig(
     [
       userPermissions,
       value,
-      loading
+      loading,
+      providersAreUpdateable
     ]
   );
 }

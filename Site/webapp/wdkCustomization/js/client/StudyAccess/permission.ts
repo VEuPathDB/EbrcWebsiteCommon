@@ -1,5 +1,3 @@
-import { capitalize } from 'lodash';
-
 import {
   ApprovalStatus,
   DatasetPermissionEntry,
