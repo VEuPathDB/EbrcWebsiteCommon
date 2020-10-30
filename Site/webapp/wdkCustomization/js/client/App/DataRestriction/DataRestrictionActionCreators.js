@@ -1,4 +1,5 @@
 import { fetchStudies } from 'ebrc-client/App/Studies/StudyActionCreators';
+import { checkPermissions } from 'ebrc-client/StudyAccess/permission';
 
 import { isAllowedAccess } from './DataRestrictionUtils';
 
@@ -11,9 +12,17 @@ export function attemptAction(action, details = {}) {
     const user$ = wdkService.getCurrentUser();
     const studies$ = fetchStudies(wdkService);
 
-    return Promise.all([ user$, studies$ ]).then(
-      ([ user, studies ]) => handleAction(user, studies[0], action, details)
-    )
+    return Promise.all([ user$, studies$ ]).then(([ user, studies ]) => {
+      return checkPermissions(user).then(permissions => {
+        return handleAction(
+          permissions,
+          user,
+          studies[0],
+          action,
+          details
+        );
+      });
+    })
   }
 }
 
@@ -36,7 +45,7 @@ export function clearRestrictions() {
 }
 
 // Create restriction action
-function handleAction(user, studies, action, { studyId, onAllow, onDeny }) {
+function handleAction(permissions, user, studies, action, { studyId, onAllow, onDeny }) {
   console.info(label('Restriction Encountered:'), { action, studyId });
   const study = studies.find(study => studyId === study.id);
 
@@ -48,7 +57,7 @@ function handleAction(user, studies, action, { studyId, onAllow, onDeny }) {
     return clearRestrictions();
   }
 
-  if (isAllowedAccess({ user, action, study })) {
+  if (isAllowedAccess({ permissions, user, action, study })) {
     if (typeof onAllow === 'function') onAllow();
     return unrestricted(study, action);
   }

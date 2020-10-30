@@ -1,8 +1,15 @@
+import { User } from 'wdk-client/Utils/WdkUser';
+
 import {
   ApprovalStatus,
   DatasetPermissionEntry,
   PermissionsResponse
 } from 'ebrc-client/StudyAccess/EntityTypes';
+import {
+  STUDY_ACCESS_SERVICE_URL,
+  apiRequests,
+  createStudyAccessRequestHandler
+} from 'ebrc-client/StudyAccess/api';
 
 export type UserPermissions =
   | StaffPermissions
@@ -131,6 +138,34 @@ export function canUpdateApprovalStatus(userPermissions: UserPermissions, datase
     isStaff(userPermissions) ||
     isProvider(userPermissions, datasetId)
   );
+}
+
+export function isUserApprovedForStudy(
+  userPermissions: UserPermissions,
+  approvedStudies: string[] | undefined,
+  datasetId: string
+) {
+  // assuming approvedStudies only contain public studies for this user (in CineEpiWebsite CustomProfileService.java)
+  return (
+    isStaff(userPermissions) ||
+    isProvider(userPermissions, datasetId) ||
+    approvedStudies == null ||
+    approvedStudies.includes(datasetId)
+  );
+}
+
+async function fetchPermissions(fetchApi?: Window['fetch']) {
+  const handler = createStudyAccessRequestHandler(STUDY_ACCESS_SERVICE_URL, fetchApi);
+
+  const permissionsResponse = await handler(apiRequests.fetchPermissions());
+
+  return permissionsResponseToUserPermissions(permissionsResponse);
+}
+
+export async function checkPermissions(user: User, fetchApi?: Window['fetch']): Promise<UserPermissions> {
+  return user.isGuest
+    ? { type: 'none' }
+    : await fetchPermissions(fetchApi);
 }
 
 export function permittedApprovalStatusChanges(oldApprovalStatus: ApprovalStatus): ApprovalStatus[] {

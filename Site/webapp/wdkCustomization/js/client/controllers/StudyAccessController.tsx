@@ -4,6 +4,7 @@ import { Loading, PermissionDenied } from 'wdk-client/Components';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
+import { STUDY_ACCESS_SERVICE_URL } from 'ebrc-client/StudyAccess/api';
 import { canAccessDashboard } from 'ebrc-client/StudyAccess/permission';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
@@ -20,9 +21,6 @@ import {
 interface Props {
   datasetId: string;
 }
-
-// FIXME: This should be configurable
-const STUDY_ACCESS_SERVICE_URL = '/dataset-access';
 
 export default function StudyAccessController({ datasetId }: Props) {
   const study = useStudy(datasetId);

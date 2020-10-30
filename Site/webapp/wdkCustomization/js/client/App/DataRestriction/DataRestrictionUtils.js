@@ -3,6 +3,7 @@ import React from 'react';
 import { BasketActions, ResultPanelActions, ResultTableSummaryViewActions } from 'wdk-client/Actions';
 import { attemptAction } from './DataRestrictionActionCreators';
 import {getResultTypeDetails} from 'wdk-client/Utils/WdkResult';
+import { isUserApprovedForStudy } from 'ebrc-client/StudyAccess/permission';
 
 // Data stuff =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // per https://docs.google.com/presentation/d/1Cmf2GcmGuKbSTcH4wdeTEvRHTi9DDoh5-MnPm1MkcEA/edit?pli=1#slide=id.g3d955ef9d5_3_2
@@ -177,12 +178,10 @@ export function getRestrictionMessage ({ action, study }) {
 
 // CHECKERS! =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-export function isAllowedAccess ({ user, action, study }) {
+export function isAllowedAccess ({ permissions, user, action, study }) {
   if (sessionStorage.getItem('restriction_override') === 'true') return true;
   if (!(study.access in accessLevels)) throw new Error(`Unknown access level "${study.access}".`);
-  // assuming approvedStudies only contain public studies for this user (in CineEpiWebsite CustomProfileService.java)
-  if (user.properties.approvedStudies == null) return true;
-  if (user.properties.approvedStudies.includes(study.id)) return true;
+  if (isUserApprovedForStudy(permissions, user.properties.approvedStudies, study.id)) return true;
   if (accessLevels[study.access][action] === Require.allow) return true;
   //if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
   // access not allowed, we need to build the modal popup
