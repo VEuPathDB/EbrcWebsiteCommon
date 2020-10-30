@@ -15,10 +15,7 @@ const bgWashCx = makeClassNameHelper('vpdb-BgWash');
 
 // FIXME This prefix should be added on the "Jekyll side"
 const WORKSHOP_EXERCISES_PREFIX = 'https://workshop.eupathdb.org';
-const JEKYLL_PDF_PREFIX = 'https://static-content.veupathdb.org//documents';
-
 const WORKSHOP_EXERCISES_URL_SEGMENT = 'workshop_exercises.json';
-
 const FILL_ME_IN = 'FILL ME IN';
 
 type WorkshopExercisesResponseData = {
@@ -162,7 +159,10 @@ type CardProps = {
   entry: CardEntry;
 };
 
-const Card = ({ entry }: CardProps) =>
+export function Card({ entry }: CardProps) {
+  const communitySiteUrl = useCommunitySiteRootUrl();
+
+  return (
   <div className={
     combineClassNames(
       cardListCx('Item'),
@@ -194,7 +194,7 @@ const Card = ({ entry }: CardProps) =>
                   <a href={`${WORKSHOP_EXERCISES_PREFIX}/${exercise.url}`} target="_blank" className={cardListCx('ItemContentLink')}>{exercise.title}</a>
                 </>
               : <>
-                  <a href={`${JEKYLL_PDF_PREFIX}/${exercise.url}`} target="_blank" className={cardListCx('ItemContentLink')}>{exercise.title}</a>
+                  <a href={`https://${communitySiteUrl}documents/${exercise.url}`} target="_blank" className={cardListCx('ItemContentLink')}>{exercise.title}</a>
                 </>
               } 
             </li>
@@ -202,4 +202,6 @@ const Card = ({ entry }: CardProps) =>
       }
       </ul>
     </div>
-  </div>;
+  </div>
+  );
+}

@@ -71,6 +71,7 @@ export const accessLevels = {
     [Action.record]: Require.approval,
     [Action.recordPage]: Require.approval,
     [Action.download]: Require.approval,
+    [Action.downloadPage]: Require.approval,
     [Action.basket]: Require.approval
   },
   /* not in use build 49
@@ -92,6 +93,7 @@ export const accessLevels = {
     [Action.record]: Require.approval,
     [Action.recordPage]: Require.approval,
     [Action.download]: Require.approval,
+    [Action.downloadPage]: Require.approval,
     [Action.basket]: Require.approval
   },
   "private": {
@@ -102,6 +104,7 @@ export const accessLevels = {
     [Action.record]: Require.approval,
     [Action.recordPage]: Require.approval,
     [Action.download]: Require.approval,
+    [Action.downloadPage]: Require.approval,
     [Action.basket]: Require.approval
   },
   "prerelease": {
@@ -112,6 +115,7 @@ export const accessLevels = {
     [Action.record]: Require.notready,
     [Action.recordPage]: Require.notready,
     [Action.download]: Require.notready,
+    [Action.downloadPage]: Require.notready,
     [Action.basket]: Require.notready
   }
 
