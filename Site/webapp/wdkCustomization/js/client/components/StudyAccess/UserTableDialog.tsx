@@ -168,7 +168,7 @@ export function UsersAddedContent({
         emailedUsers.length > 0 &&
         <div className={cx('--UsersAddedEmailedUsers')}>
           <h2>Emailed Users:</h2>
-          <p>The following users do not have an existing account, and have been invited to register with us. Once they register, they will be granted {permissionName}-level access to this study:</p>
+          <p>The following users could not be granted {permissionName}-level access, as they do not have an existing account. They have been invited to register with us:</p>
           <ul>
             {
               emailedUsers.map(
