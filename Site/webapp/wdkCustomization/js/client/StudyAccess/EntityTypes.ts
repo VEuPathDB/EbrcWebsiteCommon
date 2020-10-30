@@ -235,7 +235,7 @@ export const providerPermissionEntry = record({
 export type ProviderPermissionEntry = Unpack<typeof providerPermissionEntry>;
 
 export const endUserPermissionEntry = record({
-  type: constant('enduser')
+  type: constant('end-user')
 });
 
 export type EndUserPermissionEntry = Unpack<typeof endUserPermissionEntry>;

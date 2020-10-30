@@ -73,7 +73,7 @@ export function isProvider(userPermissions: UserPermissions, datasetId: string) 
 export function isEndUser(userPermissions: UserPermissions, datasetId: string) {
   return (
     userPermissions.type === 'external' &&
-    userPermissions.perDataset[datasetId]?.type === 'enduser'
+    userPermissions.perDataset[datasetId]?.type === 'end-user'
   );
 }
 
