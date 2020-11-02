@@ -42,4 +42,8 @@
     display: flex;
     justify-content: center;
   }
+
+  &--StartDateCell, &--NameCell {
+    white-space: nowrap;
+  }
 }

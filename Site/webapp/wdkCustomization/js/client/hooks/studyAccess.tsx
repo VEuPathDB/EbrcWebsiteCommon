@@ -28,6 +28,7 @@ import {
   shouldDisplayProvidersTable,
   shouldDisplayStaffTable
 } from 'ebrc-client/StudyAccess/permission';
+import { cx } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
@@ -227,21 +228,25 @@ export function useStaffTableSectionConfig(
               userId: {
                 key: 'userId',
                 name: 'User ID',
+                className: cx('--UserIdCell'),
                 sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
+                className: cx('--NameCell'),
                 sortable: true
               },
               email: {
                 key: 'email',
                 name: 'Email',
+                className: cx('--EmailCell'),
                 sortable: true
               },
               isOwner: {
                 key: 'isOwner',
                 name: 'Is Owner?',
+                className: cx('--IsOwnerCell'),
                 sortable: true,
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isOwner }) => booleanToString(isOwner),
@@ -303,21 +308,25 @@ export function useProviderTableSectionConfig(
               userId: {
                 key: 'userId',
                 name: 'User ID',
+                className: cx('--UserIdCell'),
                 sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
+                className: cx('--NameCell'),
                 sortable: true
               },
               email: {
                 key: 'email',
                 name: 'Email',
+                className: cx('--EmailCell'),
                 sortable: true
               },
               isManager: {
                 key: 'isManager',
                 name: 'Is Manager?',
+                className: cx('--IsManagerCell'),
                 sortable: true,
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isManager }) => booleanToString(isManager),
@@ -477,21 +486,25 @@ export function useEndUserTableSectionConfig(
               userId: {
                 key: 'userId',
                 name: 'User ID',
+                className: cx('--UserIdCell'),
                 sortable: true
               },
               name: {
                 key: 'name',
                 name: 'Name',
+                className: cx('--NameCell'),
                 sortable: true
               },
               email: {
                 key: 'email',
                 name: 'Email',
+                className: cx('--EmailCell'),
                 sortable: true
               },
               startDate: {
                 key: 'startDate',
                 name: 'Date Created',
+                className: cx('--StartDateCell'),
                 sortable: true,
                 renderCell: ({ value }) => isoToUtcString(value),
                 makeSearchableString: isoToUtcString
@@ -499,6 +512,7 @@ export function useEndUserTableSectionConfig(
               approvalStatus: {
                 key: 'approvalStatus',
                 name: 'Approval Status',
+                className: cx('--ApprovalStatusCell'),
                 sortable: true,
                 renderCell: ({ value, row: { userId, name } }) => {
                   return !approvalStatusEditable
@@ -520,6 +534,7 @@ export function useEndUserTableSectionConfig(
               content: {
                 key: 'content',
                 name: 'Content',
+                className: cx('--ContentCell'),
                 sortable: false,
                 width: '35em',
                 renderCell: ({ row: { userId, purpose, researchQuestion, analysisPlan, disseminationPlan } }) => {
@@ -541,6 +556,7 @@ export function useEndUserTableSectionConfig(
               denialReason: {
                 key: 'denialReason',
                 name: 'Notes',
+                className: cx('--NotesCell'),
                 sortable: false,
                 width: '15em',
                 renderCell: ({ value, row: { userId } }) =>
