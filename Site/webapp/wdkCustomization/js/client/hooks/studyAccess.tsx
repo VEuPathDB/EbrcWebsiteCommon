@@ -22,6 +22,7 @@ import {
   UserPermissions,
   canUpdateApprovalStatus,
   canUpdateProviders,
+  canUpdateStaff,
   permissionsResponseToUserPermissions,
   permittedApprovalStatusChanges,
   shouldDisplayEndUsersTable,
@@ -51,6 +52,10 @@ interface StaffTableRow extends BaseTableRow {
   isOwner: boolean;
 }
 
+interface StaffTableFullRow extends StaffTableRow {
+  staffId: number;
+}
+
 interface ProviderTableRow extends BaseTableRow {
   isManager: boolean;
 }
@@ -73,7 +78,7 @@ interface EndUserTableFullRow extends EndUserTableRow {
   disseminationPlan: string;
 }
 
-export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableRow, keyof StaffTableRow>;
+export type StaffTableSectionConfig = UserTableSectionConfig<StaffTableFullRow, keyof StaffTableRow>;
 export type ProviderTableSectionConfig = UserTableSectionConfig<ProviderTableFullRow, keyof ProviderTableRow>;
 export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableFullRow, keyof EndUserTableRow>;
 
@@ -220,7 +225,10 @@ export function useOpenDialogConfig() {
 export function useStaffTableSectionConfig(
   userId: number | undefined,
   userPermissions: UserPermissions | undefined,
-  fetchStaffList: StudyAccessApi['fetchStaffList']
+  fetchStaffList: StudyAccessApi['fetchStaffList'],
+  updateStaffEntry: StudyAccessApi['updateStaffEntry'],
+  staffTableUiState: StaffTableUiState,
+  setStaffTableUiState: (newState: StaffTableUiState) => void
 ): StaffTableSectionConfig {
   const { value, loading } = usePromise(
     fetchIfAllowed(
@@ -228,6 +236,16 @@ export function useStaffTableSectionConfig(
       fetchStaffList
     ),
     [ userPermissions ]
+  );
+
+  const staffAreUpdateable = userPermissions && canUpdateStaff(userPermissions);
+
+  const {
+    onIsOwnerChange
+  } = useIsOwnerColumnConfig(
+    updateStaffEntry,
+    staffTableUiState,
+    setStaffTableUiState
   );
 
   return useMemo(
@@ -243,11 +261,12 @@ export function useStaffTableSectionConfig(
           status: 'success',
           title: 'Staff',
           value: {
-            rows: value.result.data.map(({ user, isOwner }) => ({
+            rows: value.result.data.map(({ user, staffId, isOwner }) => ({
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
               email: user.email,
-              isOwner
+              isOwner,
+              staffId
             })),
             columns: {
               userId: {
@@ -275,7 +294,20 @@ export function useStaffTableSectionConfig(
                 sortable: true,
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isOwner }) => booleanToString(isOwner),
-                renderCell: ({ value }) => booleanToString(value)
+                renderCell: ({ value, row: { staffId, userId: wdkUserId } }) => {
+                  return !staffAreUpdateable || wdkUserId === userId
+                    ? booleanToString(value)
+                    : <SingleSelect
+                        items={BOOLEAN_SELECT_ITEMS}
+                        value={booleanToString(value)}
+                        onChange={(newValue) => {
+                          onIsOwnerChange(
+                            staffId,
+                            stringToBoolean(newValue)
+                          );
+                        }}
+                      />;
+                }
               }
             },
             columnOrder: [ 'userId', 'name', 'email', 'isOwner' ],
@@ -286,7 +318,9 @@ export function useStaffTableSectionConfig(
     [
       userId,
       value,
-      loading
+      loading,
+      staffAreUpdateable,
+      onIsOwnerChange
     ]
   );
 }

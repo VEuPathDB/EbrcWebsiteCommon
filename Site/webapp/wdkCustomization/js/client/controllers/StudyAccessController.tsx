@@ -53,7 +53,9 @@ export default function StudyAccessController({ datasetId }: Props) {
     endUserTableUiState,
     setEndUserTableUiState,
     providerTableUiState,
-    setProviderTableUiState
+    setProviderTableUiState,
+    staffTableUiState,
+    setStaffTableUiState
   } = useTableUiState(datasetId);
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
@@ -61,7 +63,10 @@ export default function StudyAccessController({ datasetId }: Props) {
   const staffTableConfig = useStaffTableSectionConfig(
     userProfile?.id,
     userPermissions,
-    studyAccessApi.fetchStaffList
+    studyAccessApi.fetchStaffList,
+    studyAccessApi.updateStaffEntry,
+    staffTableUiState,
+    setStaffTableUiState
   );
   const providerTableConfig = useProviderTableSectionConfig(
     userProfile?.id,
