@@ -149,6 +149,7 @@ export function isUserApprovedForStudy(
   return (
     isStaff(userPermissions) ||
     isProvider(userPermissions, datasetId) ||
+    isEndUser(userPermissions, datasetId) ||
     approvedStudies == null ||
     approvedStudies.includes(datasetId)
   );
