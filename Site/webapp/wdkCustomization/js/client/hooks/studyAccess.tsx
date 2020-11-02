@@ -316,8 +316,6 @@ export function useProviderTableSectionConfig(
   const {
     onIsManagerChange
   } = useIsManagerColumnConfig(
-    userPermissions,
-    activeDatasetId,
     updateProviderEntry,
     providerTableUiState,
     setProvideTableUiState
