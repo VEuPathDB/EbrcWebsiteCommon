@@ -56,11 +56,13 @@ export const newStaffResponse = record({
 
 export type NewStaffResponse = Unpack<typeof newStaffResponse>;
 
-export const staffPatch = record({
-  op: constant('replace'),
-  path: constant('isOwner'),
-  value: boolean
-});
+export const staffPatch = arrayOf(
+  record({
+    op: constant('replace'),
+    path: constant('/isOwner'),
+    value: boolean
+  })
+);
 
 export type StaffPatch = Unpack<typeof staffPatch>;
 
@@ -219,11 +221,13 @@ export const datasetProviderCreateResponse = oneOf(
 
 export type DatasetProviderCreateResponse = Unpack<typeof datasetProviderCreateResponse>;
 
-export const datasetProviderPatch = record({
-  op: constant('replace'),
-  path: constant('isManager'),
-  value: boolean
-});
+export const datasetProviderPatch = arrayOf(
+  record({
+    op: constant('replace'),
+    path: constant('/isManager'),
+    value: boolean
+  })
+);
 
 export type DatasetProviderPatch = Unpack<typeof datasetProviderPatch>;
 
