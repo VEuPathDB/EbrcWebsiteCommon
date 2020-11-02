@@ -294,8 +294,11 @@ export function useProviderTableSectionConfig(
   userPermissions: UserPermissions | undefined,
   fetchProviderList: StudyAccessApi['fetchProviderList'],
   createProviderEntry: StudyAccessApi['createProviderEntry'],
+  updateProviderEntry: StudyAccessApi['updateProviderEntry'],
   deleteProviderEntry: StudyAccessApi['deleteProviderEntry'],
   activeDatasetId: string,
+  providerTableUiState: ProviderTableUiState,
+  setProvideTableUiState: (newState: ProviderTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): ProviderTableSectionConfig {
   const { value, loading, reload: reloadProvidersTable } = usePromiseWithReloadCallback(
@@ -307,6 +310,16 @@ export function useProviderTableSectionConfig(
   );
 
   const providersAreUpdateable = userPermissions && canUpdateProviders(userPermissions, activeDatasetId);
+
+  const {
+    onIsManagerChange
+  } = useIsManagerColumnConfig(
+    userPermissions,
+    activeDatasetId,
+    updateProviderEntry,
+    providerTableUiState,
+    setProvideTableUiState
+  );
 
   return useMemo(
     () => value == null
@@ -326,7 +339,7 @@ export function useProviderTableSectionConfig(
               providerId,
               name: `${user.firstName} ${user.lastName}`,
               email: `${user.email}`,
-              isManager
+              isManager: providerTableUiState.isManager[providerId] ?? isManager
             })),
             columns: {
               userId: {
@@ -354,7 +367,20 @@ export function useProviderTableSectionConfig(
                 sortable: true,
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isManager }) => booleanToString(isManager),
-                renderCell: ({ value }) => booleanToString(value)
+                renderCell: ({ value, row: { providerId } }) => {
+                  return !providersAreUpdateable
+                    ? booleanToString(value)
+                    : <SingleSelect
+                        items={BOOLEAN_SELECT_ITEMS}
+                        value={booleanToString(value)}
+                        onChange={(newValue) => {
+                          onIsManagerChange(
+                            providerId,
+                            stringToBoolean(newValue)
+                          );
+                        }}
+                      />;
+                }
               }
             },
             columnOrder: [ 'userId', 'name', 'email', 'isManager' ],
@@ -437,7 +463,8 @@ export function useProviderTableSectionConfig(
       userPermissions,
       value,
       loading,
-      providersAreUpdateable
+      providersAreUpdateable,
+      onIsManagerChange
     ]
   );
 }
@@ -608,6 +635,60 @@ export function useEndUserTableSectionConfig(
       endUserTableUiState
     ]
   );
+}
+
+function useIsManagerColumnConfig(
+  userPermissions: UserPermissions | undefined,
+  activeDatasetId: string,
+  updateProviderTableEntry: StudyAccessApi['updateProviderEntry'],
+  providerTableUiState: ProviderTableUiState,
+  setProviderTableUiState: (newState: ProviderTableUiState) => void
+) {
+  const onIsManagerChange = useCallback(
+    async (providerId: number, newIsManager: boolean) => {
+      const oldIsManager = providerTableUiState.isManager[providerId];
+
+      updateUiStateOptimistically(
+        () => {
+          updateProviderIsManagerUiState(
+            providerTableUiState,
+            setProviderTableUiState,
+            providerId,
+            newIsManager
+          );
+        },
+        async () => {
+          updateProviderTableEntry(
+            providerId,
+            [
+              {
+                op: 'replace',
+                path: '/isManager',
+                value: newIsManager
+              }
+            ]
+          );
+        },
+        () => {
+          updateProviderIsManagerUiState(
+            providerTableUiState,
+            setProviderTableUiState,
+            providerId,
+            oldIsManager
+          );
+        }
+      );
+    },
+    [
+      updateProviderTableEntry,
+      providerTableUiState,
+      setProviderTableUiState
+    ]
+  );
+
+  return {
+    onIsManagerChange
+  };
 }
 
 function useApprovalStatusColumnConfig(
@@ -795,14 +876,14 @@ async function updateUiStateOptimistically(
 function updateStaffIsOwnerUiState(
   staffTableUiState: StaffTableUiState,
   setStaffTableUiState: (newState: StaffTableUiState) => void,
-  userId: number,
+  staffId: number,
   newIsOwner: boolean | undefined
 ) {
   setStaffTableUiState({
     ...staffTableUiState,
     isOwner: {
       ...staffTableUiState.isOwner,
-      [userId]: newIsOwner
+      [staffId]: newIsOwner
     }
   });
 }
@@ -811,14 +892,14 @@ function updateStaffIsOwnerUiState(
 function updateProviderIsManagerUiState(
   providerTableUiState: ProviderTableUiState,
   setProviderTableUiState: (newState: ProviderTableUiState) => void,
-  userId: number,
+  providerId: number,
   newIsManager: boolean | undefined
 ) {
   setProviderTableUiState({
     ...providerTableUiState,
     isManager: {
       ...providerTableUiState.isManager,
-      [userId]: newIsManager
+      [providerId]: newIsManager
     }
   });
 }
@@ -846,6 +927,21 @@ function updateEndUserApprovalStatusUiState(
 function booleanToString(value: boolean) {
   return value === true ? 'Yes' : 'No';
 }
+
+function stringToBoolean(value: string) {
+  return value === 'Yes';
+}
+
+const BOOLEAN_SELECT_ITEMS = [
+  {
+    value: booleanToString(true),
+    display: booleanToString(true)
+  },
+  {
+    value: booleanToString(false),
+    display: booleanToString(false)
+  }
+];
 
 function makeApprovalStatusSelectItems(oldApprovalStatus: ApprovalStatus) {
   return permittedApprovalStatusChanges(oldApprovalStatus).map(permittedStatus => ({
