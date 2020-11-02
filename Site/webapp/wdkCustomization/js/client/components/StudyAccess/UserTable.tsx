@@ -18,6 +18,7 @@ export interface Props<R, C extends UserTableColumnKey<R>> {
   columns: UserTableColumns<R, C>;
   columnOrder: readonly C[];
   idGetter: (row: R) => number;
+  initialSort?: UserTableSortObject<R, C>;
   actions?: { element: React.ReactNode | ((selection: R[]) => React.ReactNode), callback: (selection: R[]) => void }[];
 }
 
@@ -43,14 +44,17 @@ export function UserTable<R, C extends UserTableColumnKey<R>>({
   columnOrder,
   columns,
   rows,
-  idGetter
+  idGetter,
+  initialSort
 }: Props<R, C>) {
   const [ selectedRowIds, setSelectedRowIds ] = useState(() => new Set<number>());
 
   const [ searchTerm, setSearchTerm ] = useState('');
 
-  const initialSortUiState: UserTableSortObject<R, C> =
-    { columnKey: columns[columnOrder[0]].key, direction: 'asc' };
+  const initialSortUiState: UserTableSortObject<R, C> = (
+    initialSort ??
+    { columnKey: columns[columnOrder[0]].key, direction: 'asc' }
+  );
   const [ sortUiState, setSortUiState ] = useState(initialSortUiState);
 
   const mesaRows = useMemo(

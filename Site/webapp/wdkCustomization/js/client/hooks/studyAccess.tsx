@@ -249,7 +249,8 @@ export function useStaffTableSectionConfig(
               }
             },
             columnOrder: [ 'userId', 'name', 'email', 'isOwner' ],
-            idGetter: ({ userId }) => userId
+            idGetter: ({ userId }) => userId,
+            initialSort: { columnKey: 'name', direction: 'asc' }
           }
         },
     [
@@ -325,6 +326,7 @@ export function useProviderTableSectionConfig(
             },
             columnOrder: [ 'userId', 'name', 'email', 'isManager' ],
             idGetter: ({ userId }) => userId,
+            initialSort: { columnKey: 'name', direction: 'asc' },
             actions: !providersAreUpdateable ? undefined : [
               {
                 element: (
@@ -554,7 +556,8 @@ export function useEndUserTableSectionConfig(
               'content',
               'denialReason',
             ],
-            idGetter: ({ userId }) => userId
+            idGetter: ({ userId }) => userId,
+            initialSort: { columnKey: 'startDate', direction: 'desc' }
           }
         },
     [
