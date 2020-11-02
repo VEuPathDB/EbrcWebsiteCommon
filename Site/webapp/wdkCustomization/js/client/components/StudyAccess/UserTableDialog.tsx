@@ -33,7 +33,7 @@ export function UserTableDialog({
 
 export type ContentProps =
   | { type: 'access-denial' } & AccessDenialContentProps
-  | { type: 'add-providers' } & AddProvidersContentProps
+  | { type: 'add-users' } & AddUsersContentProps
   | { type: 'users-added' } & UsersAddedContentProps;
 
 interface AccessDenialContentProps {
@@ -74,22 +74,26 @@ export function AccessDenialContent({ onSubmit, userName }: AccessDenialContentP
   );
 }
 
-interface AddProvidersContentProps {
-  onSubmit: (providerEmails: string[]) => void;
+interface AddUsersContentProps {
+  permissionNamePlural: string;
+  onSubmit: (userEmails: string[]) => void;
 }
 
-export function AddProvidersContent({ onSubmit }: AddProvidersContentProps) {
-  const [ providerEmailField, setProviderEmailField ] = useState('');
-  const [ providerEmails, setProviderEmails ] = useState()
+export function AddUsersContent({
+  permissionNamePlural,
+  onSubmit
+}: AddUsersContentProps) {
+  const [ emailField, setEmailField ] = useState('');
+  const [ userEmails, setUserEmails ] = useState()
 
   const ref = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    const draftEmails = providerEmailField.split(/[,;\s]+/g).filter(x => x.length > 0);
+    const draftEmails = emailField.split(/[,;\s]+/g).filter(x => x.length > 0);
 
     const [ validEmails, invalidEmails ] = partition(draftEmails, email => EMAIL_REGEX.test(email));
 
-    setProviderEmails(validEmails);
+    setUserEmails(validEmails);
 
     if (ref.current != null) {
       if (invalidEmails.length > 0) {
@@ -98,30 +102,30 @@ export function AddProvidersContent({ onSubmit }: AddProvidersContentProps) {
         ref.current.setCustomValidity('');
       }
     }
-  }, [ providerEmailField ]);
+  }, [ emailField ]);
 
   return (
     <form
-      className={cx('--AddProvidersContent')}
+      className={cx('--AddUsersContent')}
       onSubmit={event => {
         event.preventDefault();
-        onSubmit(providerEmails);
+        onSubmit(userEmails);
       }}
     >
-      <div className={cx('--AddProvidersEmailField')}>
-        <p>Please input the emails of the providers you wish to add:</p>
+      <div className={cx('--AddUsersEmailField')}>
+        <p>Please input the emails of the {permissionNamePlural} you wish to add:</p>
         <textarea
           required
           ref={ref}
-          value={providerEmailField}
+          value={emailField}
           onChange={(e) => {
-            setProviderEmailField(e.target.value)
+            setEmailField(e.target.value)
           }}
           rows={6}
           cols={100}
         />
       </div>
-      <div className={cx('--AddProvidersSubmit')}>
+      <div className={cx('--AddUsersSubmit')}>
         <button
           type="submit"
           className="btn"

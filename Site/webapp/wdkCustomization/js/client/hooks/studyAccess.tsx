@@ -33,7 +33,7 @@ import { cx } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   Props as UserTableDialogProps,
   AccessDenialContent,
-  AddProvidersContent,
+  AddUsersContent,
   ContentProps,
   UsersAddedContent
 } from 'ebrc-client/components/StudyAccess/UserTableDialog';
@@ -197,13 +197,13 @@ export function useOpenDialogConfig() {
         },
         content: <AccessDenialContent {...newDialogContentProps} />
       });
-    } else if (newDialogContentProps.type === 'add-providers') {
+    } else if (newDialogContentProps.type === 'add-users') {
       setOpenDialogConfig({
-        title: 'Adding Providers',
+        title: `Adding ${capitalize(newDialogContentProps.permissionNamePlural)}`,
         onClose: () => {
           setOpenDialogConfig(undefined);
         },
-        content: <AddProvidersContent {...newDialogContentProps} />
+        content: <AddUsersContent {...newDialogContentProps} />
       });
     } else if (newDialogContentProps.type === 'users-added') {
       setOpenDialogConfig({
@@ -430,7 +430,8 @@ export function useProviderTableSectionConfig(
                 ),
                 callback: () => {
                   changeOpenDialogConfig({
-                    type: 'add-providers',
+                    type: 'add-users',
+                    permissionNamePlural: 'providers',
                     onSubmit: async (providerEmails: string[]) => {
                       changeOpenDialogConfig(undefined);
 
