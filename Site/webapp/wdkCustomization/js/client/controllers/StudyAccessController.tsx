@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Loading, PermissionDenied } from 'wdk-client/Components';
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { useSetDocumentTitle } from 'wdk-client/Utils/ComponentUtils';
 import NotFound from 'wdk-client/Views/NotFound/NotFound';
 
@@ -23,6 +24,11 @@ interface Props {
 }
 
 export default function StudyAccessController({ datasetId }: Props) {
+  const userProfile = useWdkService(
+    wdkService => wdkService.getCurrentUser(),
+    []
+  );
+
   const study = useStudy(datasetId);
 
   const studyAccessApi = useStudyAccessApi(STUDY_ACCESS_SERVICE_URL);
@@ -33,7 +39,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     userPermissions != null && canAccessDashboard(userPermissions, datasetId)
   );
 
-  const documentTitle = study.status === 'loading' || userPermissions == null
+  const documentTitle = userProfile == null || study.status === 'loading' || userPermissions == null
     ? 'Loading...'
     : study.status === 'not-found'
     ? 'Not Found'
@@ -53,10 +59,12 @@ export default function StudyAccessController({ datasetId }: Props) {
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 
   const staffTableConfig = useStaffTableSectionConfig(
+    userProfile?.id,
     userPermissions,
     studyAccessApi.fetchStaffList
   );
   const providerTableConfig = useProviderTableSectionConfig(
+    userProfile?.id,
     userPermissions,
     studyAccessApi.fetchProviderList,
     studyAccessApi.createProviderEntry,
@@ -68,6 +76,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     changeOpenDialogConfig
   );
   const endUserTableConfig = useEndUserTableSectionConfig(
+    userProfile?.id,
     userPermissions,
     studyAccessApi.fetchEndUserList,
     studyAccessApi.updateEndUserEntry,
@@ -78,7 +87,7 @@ export default function StudyAccessController({ datasetId }: Props) {
   );
 
   return (
-    study.status == 'loading' || userPermissions == null
+    userProfile == null || study.status == 'loading' || userPermissions == null
       ? <Loading />
       : study.status == 'not-found'
       ? <NotFound />

@@ -218,6 +218,7 @@ export function useOpenDialogConfig() {
 }
 
 export function useStaffTableSectionConfig(
+  userId: number | undefined,
   userPermissions: UserPermissions | undefined,
   fetchStaffList: StudyAccessApi['fetchStaffList']
 ): StaffTableSectionConfig {
@@ -230,7 +231,7 @@ export function useStaffTableSectionConfig(
   );
 
   return useMemo(
-    () => value == null
+    () => userId == null || value == null
       ? {
           status: 'loading'
         }
@@ -283,7 +284,7 @@ export function useStaffTableSectionConfig(
           }
         },
     [
-      userPermissions,
+      userId,
       value,
       loading
     ]
@@ -291,6 +292,7 @@ export function useStaffTableSectionConfig(
 }
 
 export function useProviderTableSectionConfig(
+  userId: number | undefined,
   userPermissions: UserPermissions | undefined,
   fetchProviderList: StudyAccessApi['fetchProviderList'],
   createProviderEntry: StudyAccessApi['createProviderEntry'],
@@ -322,7 +324,7 @@ export function useProviderTableSectionConfig(
   );
 
   return useMemo(
-    () => value == null
+    () => userId == null || value == null
       ? {
           status: 'loading'
         }
@@ -367,8 +369,8 @@ export function useProviderTableSectionConfig(
                 sortable: true,
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isManager }) => booleanToString(isManager),
-                renderCell: ({ value, row: { providerId } }) => {
-                  return !providersAreUpdateable
+                renderCell: ({ value, row: { providerId, userId: wdkUserId } }) => {
+                  return !providersAreUpdateable || wdkUserId === userId
                     ? booleanToString(value)
                     : <SingleSelect
                         items={BOOLEAN_SELECT_ITEMS}
@@ -460,7 +462,7 @@ export function useProviderTableSectionConfig(
           }
         },
     [
-      userPermissions,
+      userId,
       value,
       loading,
       providersAreUpdateable,
@@ -470,6 +472,7 @@ export function useProviderTableSectionConfig(
 }
 
 export function useEndUserTableSectionConfig(
+  userId: number | undefined,
   userPermissions: UserPermissions | undefined,
   fetchEndUserList: StudyAccessApi['fetchEndUserList'],
   updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
@@ -499,7 +502,7 @@ export function useEndUserTableSectionConfig(
   );
 
   return useMemo(
-    () => value == null
+    () => userId == null || value == null
       ? {
           status: 'loading'
         }
@@ -565,15 +568,15 @@ export function useEndUserTableSectionConfig(
                 name: 'Approval Status',
                 className: cx('--ApprovalStatusCell'),
                 sortable: true,
-                renderCell: ({ value, row: { userId, name } }) => {
-                  return !approvalStatusEditable
+                renderCell: ({ value, row: { userId: wdkUserId, name } }) => {
+                  return !approvalStatusEditable || wdkUserId === userId
                     ? makeApprovalStatusDisplayName(value)
                     : <SingleSelect
                         items={makeApprovalStatusSelectItems(value)}
                         value={value}
                         onChange={(newValue) => {
                           onApprovalStatusChange(
-                            userId,
+                            wdkUserId,
                             name,
                             activeDatasetId,
                             newValue as ApprovalStatus
