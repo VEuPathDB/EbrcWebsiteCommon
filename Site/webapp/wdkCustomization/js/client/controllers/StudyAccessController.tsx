@@ -9,12 +9,12 @@ import { canAccessDashboard } from 'ebrc-client/StudyAccess/permission';
 import { StudyAccess } from 'ebrc-client/components/StudyAccess/StudyAccess';
 import {
   useEndUserTableSectionConfig,
-  useEndUserTableUiState,
   useOpenDialogConfig,
   useProviderTableSectionConfig,
   useStaffTableSectionConfig,
   useStudy,
   useStudyAccessApi,
+  useTableUiState,
   useUserPermissions
 } from 'ebrc-client/hooks/studyAccess';
 
@@ -46,7 +46,7 @@ export default function StudyAccessController({ datasetId }: Props) {
   const {
     endUserTableUiState,
     setEndUserTableUiState
-  } = useEndUserTableUiState(datasetId);
+  } = useTableUiState(datasetId);
 
   const { openDialogConfig, changeOpenDialogConfig } = useOpenDialogConfig();
 

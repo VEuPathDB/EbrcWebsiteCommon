@@ -79,6 +79,14 @@ export type EndUserTableSectionConfig = UserTableSectionConfig<EndUserTableFullR
 
 export type OpenDialogConfig = UserTableDialogProps;
 
+interface StaffTableUiState {
+  isOwner: Record<number, boolean | undefined>;
+}
+
+interface ProviderTableUiState {
+  isManager: Record<number, boolean | undefined>;
+}
+
 interface EndUserTableUiState {
   approvalStatus: Record<number, ApprovalStatus | undefined>;
   denialReason: Record<number, string | undefined>;
@@ -136,21 +144,37 @@ export function useUserPermissions(fetchPermissions: StudyAccessApi['fetchPermis
   );
 }
 
-export function useEndUserTableUiState(activeDatasetId: string) {
+export function useTableUiState(activeDatasetId: string) {
+  const initialStaffTableUiState: StaffTableUiState = {
+    isOwner: {}
+  };
+
+  const initialProviderTableUiState: ProviderTableUiState = {
+    isManager: {}
+  };
+
   const initialEndUserTableUiState: EndUserTableUiState = {
     approvalStatus: {},
     denialReason: {}
   };
 
+  const [ staffTableUiState, setStaffTableUiState ] = useState(initialStaffTableUiState);
+  const [ providerTableUiState, setProviderTableUiState ] = useState(initialProviderTableUiState);
   const [ endUserTableUiState, setEndUserTableUiState ] = useState(initialEndUserTableUiState);
 
   useEffect(() => {
     setEndUserTableUiState(initialEndUserTableUiState);
+    setProviderTableUiState(initialProviderTableUiState);
+    setStaffTableUiState(initialStaffTableUiState);
   }, [ activeDatasetId ]);
 
   return {
     endUserTableUiState,
-    setEndUserTableUiState
+    providerTableUiState,
+    staffTableUiState,
+    setEndUserTableUiState,
+    setProviderTableUiState,
+    setStaffTableUiState
   };
 }
 
