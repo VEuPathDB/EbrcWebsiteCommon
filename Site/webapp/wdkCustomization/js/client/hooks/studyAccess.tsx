@@ -638,6 +638,58 @@ export function useEndUserTableSectionConfig(
   );
 }
 
+function useIsOwnerColumnConfig(
+  updateStaffEntry: StudyAccessApi['updateStaffEntry'],
+  staffTableUiState: StaffTableUiState,
+  setStaffTableUiState: (newState: StaffTableUiState) => void
+) {
+  const onIsOwnerChange = useCallback(
+    async (staffId: number, newIsOwner: boolean) => {
+      const oldIsOwner = staffTableUiState.isOwner[staffId];
+
+      updateUiStateOptimistically(
+        () => {
+          updateStaffIsOwnerUiState(
+            staffTableUiState,
+            setStaffTableUiState,
+            staffId,
+            newIsOwner
+          );
+        },
+        async () => {
+          updateStaffEntry(
+            staffId,
+            [
+              {
+                op: 'replace',
+                path: '/isOwner',
+                value: newIsOwner
+              }
+            ]
+          );
+        },
+        () => {
+          updateStaffIsOwnerUiState(
+            staffTableUiState,
+            setStaffTableUiState,
+            staffId,
+            oldIsOwner
+          );
+        }
+      );
+    },
+    [
+      updateStaffEntry,
+      staffTableUiState,
+      setStaffTableUiState
+    ]
+  );
+
+  return {
+    onIsOwnerChange
+  };
+}
+
 function useIsManagerColumnConfig(
   updateProviderEntry: StudyAccessApi['updateProviderEntry'],
   providerTableUiState: ProviderTableUiState,
