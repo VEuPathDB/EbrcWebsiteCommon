@@ -633,7 +633,7 @@ function useApprovalStatusColumnConfig(
 
         updateUiStateOptimistically(
           () => {
-            updateEndUserApprovalStatus(
+            updateEndUserApprovalStatusUiState(
               endUserTableUiState,
               setEndUserTableUiState,
               userId,
@@ -660,7 +660,7 @@ function useApprovalStatusColumnConfig(
             );
           },
           () => {
-            updateEndUserApprovalStatus(
+            updateEndUserApprovalStatusUiState(
               endUserTableUiState,
               setEndUserTableUiState,
               userId,
@@ -680,7 +680,7 @@ function useApprovalStatusColumnConfig(
 
             updateUiStateOptimistically(
               () => {
-                updateEndUserApprovalStatus(
+                updateEndUserApprovalStatusUiState(
                   endUserTableUiState,
                   setEndUserTableUiState,
                   userId,
@@ -707,7 +707,7 @@ function useApprovalStatusColumnConfig(
                 );
               },
               () => {
-                updateEndUserApprovalStatus(
+                updateEndUserApprovalStatusUiState(
                   endUserTableUiState,
                   setEndUserTableUiState,
                   userId,
@@ -792,7 +792,38 @@ async function updateUiStateOptimistically(
   }
 }
 
-function updateEndUserApprovalStatus(
+function updateStaffIsOwnerUiState(
+  staffTableUiState: StaffTableUiState,
+  setStaffTableUiState: (newState: StaffTableUiState) => void,
+  userId: number,
+  newIsOwner: boolean | undefined
+) {
+  setStaffTableUiState({
+    ...staffTableUiState,
+    isOwner: {
+      ...staffTableUiState.isOwner,
+      [userId]: newIsOwner
+    }
+  });
+}
+
+
+function updateProviderIsManagerUiState(
+  providerTableUiState: ProviderTableUiState,
+  setProviderTableUiState: (newState: ProviderTableUiState) => void,
+  userId: number,
+  newIsManager: boolean | undefined
+) {
+  setProviderTableUiState({
+    ...providerTableUiState,
+    isManager: {
+      ...providerTableUiState.isManager,
+      [userId]: newIsManager
+    }
+  });
+}
+
+function updateEndUserApprovalStatusUiState(
   endUserTableUiState: EndUserTableUiState,
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   userId: number,
