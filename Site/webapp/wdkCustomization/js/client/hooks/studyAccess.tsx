@@ -639,7 +639,7 @@ export function useEndUserTableSectionConfig(
 }
 
 function useIsManagerColumnConfig(
-  updateProviderTableEntry: StudyAccessApi['updateProviderEntry'],
+  updateProviderEntry: StudyAccessApi['updateProviderEntry'],
   providerTableUiState: ProviderTableUiState,
   setProviderTableUiState: (newState: ProviderTableUiState) => void
 ) {
@@ -657,7 +657,7 @@ function useIsManagerColumnConfig(
           );
         },
         async () => {
-          updateProviderTableEntry(
+          updateProviderEntry(
             providerId,
             [
               {
@@ -679,7 +679,7 @@ function useIsManagerColumnConfig(
       );
     },
     [
-      updateProviderTableEntry,
+      updateProviderEntry,
       providerTableUiState,
       setProviderTableUiState
     ]
