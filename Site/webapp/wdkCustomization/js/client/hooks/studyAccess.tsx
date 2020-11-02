@@ -641,8 +641,6 @@ export function useEndUserTableSectionConfig(
 }
 
 function useIsManagerColumnConfig(
-  userPermissions: UserPermissions | undefined,
-  activeDatasetId: string,
   updateProviderTableEntry: StudyAccessApi['updateProviderEntry'],
   providerTableUiState: ProviderTableUiState,
   setProviderTableUiState: (newState: ProviderTableUiState) => void
