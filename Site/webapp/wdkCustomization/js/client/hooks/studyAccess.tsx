@@ -491,15 +491,8 @@ export function useEndUserTableSectionConfig(
                 key: 'startDate',
                 name: 'Date Created',
                 sortable: true,
-                renderCell: ({ value }) => {
-                  if (value == null) {
-                    return '';
-                  }
-
-                  const date = new Date(value);
-
-                  return date.toLocaleDateString();
-                }
+                renderCell: ({ value }) => isoToUtcString(value),
+                makeSearchableString: isoToUtcString
               },
               approvalStatus: {
                 key: 'approvalStatus',
@@ -593,6 +586,8 @@ function useApprovalStatusColumnConfig(
       const oldDenialReason = endUserTableUiState.denialReason[userId];
 
       if (newApprovalStatus !== 'denied') {
+        const denialReason = `${makeTimestampString()}: Status was changed to ${makeApprovalStatusDisplayName(newApprovalStatus)}.`;
+
         updateUiStateOptimistically(
           () => {
             updateEndUserApprovalStatus(
@@ -600,7 +595,7 @@ function useApprovalStatusColumnConfig(
               setEndUserTableUiState,
               userId,
               newApprovalStatus,
-              undefined
+              denialReason
             );
           },
           async () => {
@@ -614,8 +609,9 @@ function useApprovalStatusColumnConfig(
                   value: newApprovalStatus
                 },
                 {
-                  op: 'remove',
-                  path: '/denialReason'
+                  op: 'replace',
+                  path: '/denialReason',
+                  value: denialReason
                 }
               ]
             );
@@ -637,6 +633,8 @@ function useApprovalStatusColumnConfig(
           onSubmit: function(denialReason) {
             changeOpenDialogConfig(undefined);
 
+            const fullDenialReason = `${makeTimestampString()}: Status was changed to ${makeApprovalStatusDisplayName('denied')}. Reason: ${denialReason}`;
+
             updateUiStateOptimistically(
               () => {
                 updateEndUserApprovalStatus(
@@ -644,7 +642,7 @@ function useApprovalStatusColumnConfig(
                   setEndUserTableUiState,
                   userId,
                   newApprovalStatus,
-                  denialReason
+                  fullDenialReason
                 );
               },
               async () => {
@@ -660,7 +658,7 @@ function useApprovalStatusColumnConfig(
                     {
                       op: 'replace',
                       path: '/denialReason',
-                      value: denialReason
+                      value: fullDenialReason
                     }
                   ]
                 );
@@ -784,4 +782,18 @@ function makeApprovalStatusSelectItems(oldApprovalStatus: ApprovalStatus) {
 
 function makeApprovalStatusDisplayName(approvalStatus: ApprovalStatus) {
   return capitalize(approvalStatus);
+}
+
+function makeTimestampString() {
+  return dateToUtcString(new Date());
+}
+
+function isoToUtcString(value: string | undefined) {
+  return value == null
+    ? ''
+    : dateToUtcString(new Date(value))
+}
+
+function dateToUtcString(date: Date) {
+  return date.toUTCString().replace(/^[A-Z][a-z][a-z],\s/i, '');
 }
