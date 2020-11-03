@@ -570,7 +570,16 @@ export function useEndUserTableSectionConfig(
               email: user.email,
               startDate,
               approvalStatus: endUserTableUiState.approvalStatus[user.userId] ?? approvalStatus,
-              content: [ purpose, researchQuestion, analysisPlan, disseminationPlan ].join('\0'),
+              content: [
+                purpose && 'Purpose:',
+                purpose,
+                researchQuestion && 'Research Question:',
+                researchQuestion,
+                analysisPlan && 'Analysis Plan:',
+                analysisPlan,
+                disseminationPlan && 'Dissemination Plan:',
+                disseminationPlan
+              ].join('\0'),
               purpose,
               researchQuestion,
               analysisPlan,
