@@ -686,7 +686,6 @@ export function useEndUserTableSectionConfig(
       endUserTableUiState,
       reloadEndUsersTable,
       activeDatasetId,
-      endUsersRemovable,
       endUsersAddable,
       changeOpenDialogConfig
     ]
