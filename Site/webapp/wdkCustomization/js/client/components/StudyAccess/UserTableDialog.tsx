@@ -113,7 +113,7 @@ export function AddUsersContent({
       }}
     >
       <div className={cx('--AddUsersEmailField')}>
-        <p>Please input the emails of the {permissionNamePlural} you wish to add:</p>
+        <p>Please input the email(s) of the {permissionNamePlural} you wish to add:</p>
         <textarea
           required
           ref={ref}

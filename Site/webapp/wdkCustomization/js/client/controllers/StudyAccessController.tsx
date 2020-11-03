@@ -84,6 +84,7 @@ export default function StudyAccessController({ datasetId }: Props) {
     userProfile?.id,
     userPermissions,
     studyAccessApi.fetchEndUserList,
+    studyAccessApi.createEndUserEntry,
     studyAccessApi.updateEndUserEntry,
     datasetId,
     endUserTableUiState,

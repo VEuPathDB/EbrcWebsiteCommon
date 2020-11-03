@@ -20,6 +20,7 @@ import {
 } from 'ebrc-client/StudyAccess/api';
 import {
   UserPermissions,
+  canAddEndUsers,
   canUpdateApprovalStatus,
   canUpdateProviders,
   canUpdateStaff,
@@ -199,7 +200,7 @@ export function useOpenDialogConfig() {
       });
     } else if (newDialogContentProps.type === 'add-users') {
       setOpenDialogConfig({
-        title: `Adding ${capitalize(newDialogContentProps.permissionNamePlural)}`,
+        title: `Adding ${newDialogContentProps.permissionNamePlural.split(' ').map(capitalize).join(' ')}`,
         onClose: () => {
           setOpenDialogConfig(undefined);
         },
@@ -508,19 +509,22 @@ export function useEndUserTableSectionConfig(
   userId: number | undefined,
   userPermissions: UserPermissions | undefined,
   fetchEndUserList: StudyAccessApi['fetchEndUserList'],
+  createEndUserEntry: StudyAccessApi['createEndUserEntry'],
   updateEndUserEntry: StudyAccessApi['updateEndUserEntry'],
   activeDatasetId: string,
   endUserTableUiState: EndUserTableUiState,
   setEndUserTableUiState: (newState: EndUserTableUiState) => void,
   changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void
 ): EndUserTableSectionConfig {
-  const { value, loading } = usePromise(
+  const { value, loading, reload: reloadEndUsersTable } = usePromiseWithReloadCallback(
     fetchIfAllowed(
       userPermissions && shouldDisplayEndUsersTable(userPermissions, activeDatasetId),
       () => fetchEndUserList(activeDatasetId)
     ),
     [ userPermissions, activeDatasetId ]
   );
+
+  const endUsersAddable = userPermissions && canAddEndUsers(userPermissions, activeDatasetId);
 
   const {
     approvalStatusEditable,
@@ -660,7 +664,14 @@ export function useEndUserTableSectionConfig(
               'denialReason',
             ],
             idGetter: ({ userId }) => userId,
-            initialSort: { columnKey: 'startDate', direction: 'desc' }
+            initialSort: { columnKey: 'startDate', direction: 'desc' },
+            actions: makeEndUserTableActions(
+              activeDatasetId,
+              createEndUserEntry,
+              changeOpenDialogConfig,
+              reloadEndUsersTable,
+              endUsersAddable
+            )
           }
         },
     [
@@ -668,7 +679,12 @@ export function useEndUserTableSectionConfig(
       loading,
       approvalStatusEditable,
       onApprovalStatusChange,
-      endUserTableUiState
+      endUserTableUiState,
+      reloadEndUsersTable,
+      activeDatasetId,
+      endUsersRemovable,
+      endUsersAddable,
+      changeOpenDialogConfig
     ]
   );
 }
@@ -902,6 +918,78 @@ function useApprovalStatusColumnConfig(
     ),
     onApprovalStatusChange
   };
+}
+
+function makeEndUserTableActions(
+  activeDatasetId: string,
+  createEndUserEntry: StudyAccessApi['createEndUserEntry'],
+  changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void,
+  reloadEndUsersTable: () => void,
+  endUsersAddable: boolean | undefined,
+) {
+  const addEndUsers = !endUsersAddable ? undefined : {
+    element: (
+      <button type="button" className="btn">
+        <IconAlt fa="plus" />
+        Add End Users
+      </button>
+    ),
+    callback: () => {
+      changeOpenDialogConfig({
+        type: 'add-users',
+        permissionNamePlural: 'end users',
+        onSubmit: async (endUserEmails: string[]) => {
+          changeOpenDialogConfig(undefined);
+
+          const addedUsers = await Promise.all(
+            endUserEmails.map(
+              endUserEmail => createEndUserEntry({
+                datasetId: activeDatasetId,
+                email: endUserEmail,
+                purpose: '',
+                researchQuestion: '',
+                analysisPlan: '',
+                disseminationPlan: '',
+                approvalStatus: 'approved',
+                startDate: new Date().toISOString(),
+                priorAuth: '',
+                restrictionLevel: 'public',
+                duration: -1,
+                denialReason: undefined
+              })
+            )
+          );
+
+          const addedUsersWithEmails = zipWith(
+            addedUsers,
+            endUserEmails,
+            (addedUser, email) => ({
+              ...addedUser,
+              email
+            })
+          );
+
+          const [ createdUsers, emailedUsers ] = partition(addedUsersWithEmails, ({ created }) => created);
+
+          changeOpenDialogConfig({
+            type: 'users-added',
+            createdUsers: createdUsers.map(({ email }) => email),
+            emailedUsers: emailedUsers.map(({ email }) => email),
+            permissionName: 'end user',
+            onConfirm: () => {
+              changeOpenDialogConfig(undefined);
+            }
+          });
+
+          reloadEndUsersTable();
+        }
+      });
+    }
+  };
+
+  return addEndUsers == null
+    ? undefined
+    : [ addEndUsers ];
 }
 
 type ConditionalFetchResult<T> =
