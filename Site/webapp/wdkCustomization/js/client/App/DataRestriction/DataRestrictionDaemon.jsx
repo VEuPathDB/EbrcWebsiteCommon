@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { useLocation } from 'react-router';
 
 import { UserSessionActions } from 'wdk-client/Actions';
-
-import { withPermissions } from 'ebrc-client/components/Permissions';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 
 import { clearRestrictions } from './DataRestrictionActionCreators';
 import DataRestrictionModal from './DataRestrictionModal';
@@ -65,4 +64,4 @@ const enhance = connect(
   }
 )
 
-export default compose(withPermissions, enhance)(DataRestrictionDaemon);
+export default compose(wrappable, enhance)(DataRestrictionDaemon);

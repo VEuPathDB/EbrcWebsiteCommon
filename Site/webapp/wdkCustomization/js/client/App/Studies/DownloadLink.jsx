@@ -3,10 +3,10 @@ import React from 'react';
 import { compose } from 'lodash/fp';
 
 import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators'
 import { connect } from 'react-redux'
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
-import { withPermissions } from 'ebrc-client/components/Permissions';
 
 function DownloadLink(props) {
   const { attemptAction, studyAccess, studyId, studyUrl, user, permissions, className, linkText = '' } = props;
@@ -43,6 +43,6 @@ function DownloadLink(props) {
 // arg2: mapDispatchToProps: pass an object with one property 'attemptAction' which is an actionCreator (because it returns a run() function) see DataRestrictionActionCreators
 // attemptAction gets bound to the store, the store receives the action, which will get executed when user clicks.
 export default compose(
-  withPermissions,
+  wrappable,
   connect(state => ({user: state.globalData.user}), { attemptAction })
 )(DownloadLink);
