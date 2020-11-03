@@ -321,6 +321,7 @@ export function useStaffTableSectionConfig(
       value,
       loading,
       staffAreUpdateable,
+      staffTableUiState,
       onIsOwnerChange
     ]
   );
@@ -500,7 +501,10 @@ export function useProviderTableSectionConfig(
       value,
       loading,
       providersAreUpdateable,
-      onIsManagerChange
+      onIsManagerChange,
+      providerTableUiState,
+      reloadProvidersTable,
+      changeOpenDialogConfig
     ]
   );
 }
