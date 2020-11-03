@@ -266,7 +266,7 @@ export function useStaffTableSectionConfig(
               userId: user.userId,
               name: `${user.firstName} ${user.lastName}`,
               email: user.email,
-              isOwner,
+              isOwner: staffTableUiState.isOwner[staffId] ?? isOwner,
               staffId
             })),
             columns: {
