@@ -161,6 +161,7 @@ class DataRestrictionModal extends React.Component {
 
 DataRestrictionModal.propTypes = {
   user: PropTypes.object.isRequired,
+  permissions: PropTypes.object.isRequired,
   study: PropTypes.object.isRequired,
   action: PropTypes.string.isRequired,
   when: PropTypes.bool.isRequired,
