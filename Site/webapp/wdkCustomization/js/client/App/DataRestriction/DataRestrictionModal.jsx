@@ -17,9 +17,9 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderRestrictionMessage () {
-    const { study, user, webAppUrl } = this.props;
+    const { study, user, permissions, webAppUrl } = this.props;
     const studyPageUrl = webAppUrl + '/app' + study.route;
-    return (isPrereleaseStudy(study.access, study.id, user)) 
+    return (isPrereleaseStudy(study.access, study.id, user, permissions))
       ? (
         <div>
           <h2>The {safeHtml(study.name)} study is not yet publicly available.</h2>
@@ -36,10 +36,10 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderPolicyNotice () {
-    const { study, user, action, webAppUrl } = this.props;
+    const { study, user, permissions, action, webAppUrl } = this.props;
     const message = getRestrictionMessage({ study, action });
     const policyUrl = getPolicyUrl(study, webAppUrl);
-    return (isPrereleaseStudy(study.access, study.id, user))
+    return (isPrereleaseStudy(study.access, study.id, user, permissions))
       ? null
       : !policyUrl
         ? null
@@ -60,10 +60,10 @@ class DataRestrictionModal extends React.Component {
   }
 
   renderButtons () {
-    const { action, study, user, showLoginForm, onClose, webAppUrl } = this.props;
+    const { action, study, user, permissions, showLoginForm, onClose, webAppUrl } = this.props;
     const strict = isActionStrict(action);
     const approvalRequired = actionRequiresApproval({ action, study });
-    return (isPrereleaseStudy(study.access, study.id, user)) 
+    return (isPrereleaseStudy(study.access, study.id, user, permissions))
       ? (
         <div className="DataRestrictionModal-Buttons">
           {!strict

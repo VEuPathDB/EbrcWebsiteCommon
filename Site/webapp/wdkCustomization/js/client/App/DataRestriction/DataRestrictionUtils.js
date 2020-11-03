@@ -195,7 +195,7 @@ export function isPrereleaseStudy (access, studyId, user, permissions) {
   if (typeof(user) != "undefined") {
     if (permissions != null) {
       if (
-        (access === 'prerelease') &&
+        access === 'prerelease' &&
         !isUserApprovedForStudy(permissions, user.properties.approvedStudies, studyId)
       ) {
         return true;
