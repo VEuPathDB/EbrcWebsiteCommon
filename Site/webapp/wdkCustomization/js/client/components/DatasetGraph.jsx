@@ -271,7 +271,7 @@ hook: HostResponseGraphs
                   View in genome browser
                 </a>
               </div>
-              <ExternalResource><iframe src={specialImgUrl + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="185" scrolling="no" allowfullscreen="false" /></ExternalResource>
+              <ExternalResource><iframe src={specialImgUrl.replace('/app/jbrowse', '/jbrowse/index.html') + "&tracklist=0&nav=0&overview=0&fullviewlink=0&meno=0"} width="100%" height="185" scrolling="no" allowfullscreen="false" /></ExternalResource>
               <br></br><br></br>
             </CollapsibleSection>
           : null}
