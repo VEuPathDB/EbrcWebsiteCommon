@@ -38,6 +38,11 @@ function StudyAnswerController(props) {
     [ studyEntities, props.stateProps.records, props.stateProps.unfilteredRecords ]
   );
 
+  const renderCellContent = useMemo(
+    () => makeRenderCellContent(user, props.permissions),
+    [ user, props.permissions ]
+  );
+
   return (
     <React.Fragment>
       <props.DefaultComponent 
@@ -77,7 +82,14 @@ interface RenderCellProps extends CellContentProps {
 }
 */
 
-const renderCellContent = props => {
+const makeRenderCellContent = (user, permissions) => props => {
+  const shouldRenderAsPrerelease = isPrereleaseStudy(
+    props.record.attributes.study_access.toLowerCase(),
+    props.record.attributes.dataset_id,
+    user,
+    permissions
+  );
+
   if (props.attribute.name === 'study_categories') {
     let studyCategories = JSON.parse(props.record.attributes.study_categories);
     return <div style={{ textAlign: 'center'}}>
@@ -93,7 +105,7 @@ const renderCellContent = props => {
     </div>;
   }
   if (props.attribute.name === 'card_questions') { 
-    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), props.record.attributes.dataset_id))
+    return (!shouldRenderAsPrerelease)
       ? (
           <StudySearchCellContent {...props}/>
         )
@@ -102,7 +114,7 @@ const renderCellContent = props => {
         );
   }
   if (props.attribute.name === 'bulk_download_url') {
-    return (!isPrereleaseStudy(props.record.attributes.study_access.toLowerCase(), props.record.attributes.dataset_id))
+    return (!shouldRenderAsPrerelease)
       ? (
           <DownloadLink studyId={props.record.id[0].value} studyUrl= {props.record.attributes.bulk_download_url.url}/>
         )
