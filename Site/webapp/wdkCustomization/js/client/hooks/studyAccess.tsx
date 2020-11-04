@@ -239,7 +239,7 @@ export function useStaffTableSectionConfig(
     [ userPermissions ]
   );
 
-  const staffAreUpdateable = userPermissions && canUpdateStaff(userPermissions);
+  const staffAreUpdateable = false;
 
   const {
     onIsOwnerChange
