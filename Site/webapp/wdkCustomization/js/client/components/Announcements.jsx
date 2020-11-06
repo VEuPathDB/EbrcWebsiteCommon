@@ -49,6 +49,19 @@ const siteAnnouncements = [
       }
     }
   },
+  {
+    id: 'live-beta',
+    renderDisplay: props => {
+      if ( isGenomicHomePage(props.projectId, props.location) ) return (
+        <div key="live-beta">
+          Welcome to {props.displayName} <i>beta</i> where you will find the newest versions of our interface, features, tools and data.
+          While we transition to making this beta site permanent, <a target="_blank" href={`https://legacy.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
+            legacy.{props.projectId.toLowerCase()}.org</a> is still available.
+          Here is a <a target="_blank" href="https://upenn.co1.qualtrics.com/jfe/form/SV_9N2RTXq7ljpZnDv">form for sending your feedback</a> on the beta sites.
+        </div>
+      )
+    }
+  },
 
   // beta
   //  /*isBetaSite() || */
