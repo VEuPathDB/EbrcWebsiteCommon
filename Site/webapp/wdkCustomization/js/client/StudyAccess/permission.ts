@@ -116,7 +116,7 @@ export function shouldDisplayProvidersTable(userPermissions: UserPermissions, da
 // (3) altering a provider's managerial capabilities
 export function canUpdateProviders(userPermissions: UserPermissions, datasetId: string) {
   return (
-    isStaff(userPermissions) ||
+    isOwner(userPermissions) ||
     isManager(userPermissions, datasetId)
   );
 }
