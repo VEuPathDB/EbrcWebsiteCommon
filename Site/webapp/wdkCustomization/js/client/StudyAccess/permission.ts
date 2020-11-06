@@ -126,16 +126,19 @@ export function shouldDisplayEndUsersTable(userPermissions: UserPermissions, dat
 }
 
 export function canAddEndUsers(userPermissions: UserPermissions, datasetId: string) {
-  return canAccessDashboard(userPermissions, datasetId);
+  return (
+    isOwner(userPermissions) ||
+    isProvider(userPermissions, datasetId)
+  );
 }
 
 export function canRemoveEndUsers(userPermissions: UserPermissions) {
-  return isStaff(userPermissions);
+  return isOwner(userPermissions);
 }
 
 export function canUpdateApprovalStatus(userPermissions: UserPermissions, datasetId: string) {
   return (
-    isStaff(userPermissions) ||
+    isOwner(userPermissions) ||
     isProvider(userPermissions, datasetId)
   );
 }
