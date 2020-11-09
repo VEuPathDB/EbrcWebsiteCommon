@@ -3,6 +3,7 @@ import { emptyAction } from 'wdk-client/Core/WdkMiddleware';
 
 import { getSearchableString } from 'wdk-client/Views/Records/RecordUtils'
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
+import { checkPermissions } from 'ebrc-client/StudyAccess/permission';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
@@ -67,12 +68,15 @@ function loadStudies() {
 
 
 export function fetchStudies(wdkService) {
+  const user$ = wdkService.getCurrentUser();
+
   return Promise.all([
     wdkService.getConfig().then(config => config.projectId),
     wdkService.getQuestions(),
     wdkService.getRecordClasses(),
     wdkService.getStudies('__ALL_ATTRIBUTES__', '__ALL_TABLES__'),
-    wdkService.getCurrentUser()
+    user$,
+    user$.then(checkPermissions)
   ]).then(spread(formatStudies))
 }
 
@@ -100,7 +104,7 @@ const parseStudy = mapProps({
 });
   
 
-function formatStudies(projectId, questions, recordClasses, answer, user) {
+function formatStudies(projectId, questions, recordClasses, answer, user, permissions) {
   const questionsByName = keyBy(questions, 'fullName');
   const recordClassesByName = keyBy(recordClasses, 'urlSegment');
 
@@ -161,7 +165,7 @@ function formatStudies(projectId, questions, recordClasses, answer, user) {
     [
       ({ disabled }) => disabled,
       ({ id }) => records.appearFirst.has(id),
-      ({ access, id }) => isPrereleaseStudy(access, id, user),
+      ({ access, id }) => isPrereleaseStudy(access, id, user, permissions),
       ({ name }) => name
     ],
     [
