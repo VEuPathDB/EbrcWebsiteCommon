@@ -26,7 +26,7 @@ class StudyCard extends React.Component {
   }
 
   render () {
-    const { card, user, prefix, attemptAction } = this.props;
+    const { card, user, permissions, prefix, attemptAction } = this.props;
     const { searchType } = this.state;
     const { id, access, name, categories, route, headline, points, searches, disabled } = card;
     const myStudyTitle = "Go to the Study Details page";
@@ -56,7 +56,7 @@ class StudyCard extends React.Component {
         </div>
         <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
         <div className="box StudyCard-PreFooter">
-          { isPrereleaseStudy(card.access, card.id, user)
+          { isPrereleaseStudy(card.access, card.id, user, permissions)
             ? <span title="Please check the study page">Coming Soon!</span>
             : searchType
               ? <span>by <b>{searchType}</b></span>
@@ -64,7 +64,7 @@ class StudyCard extends React.Component {
           }
         </div>
         <div className="box StudyCard-Footer">
-          { (!isPrereleaseStudy(card.access, card.id, user) && searches.length)
+          { (!isPrereleaseStudy(card.access, card.id, user, permissions) && searches.length)
             ? searches.map(({ icon, displayName, path }) => {
               const route = `/search/${path}`;
               return (

@@ -1,15 +1,19 @@
 import React from 'react';
+
+import { compose } from 'lodash/fp';
+
 import { IconAlt as Icon, Mesa } from 'wdk-client/Components';
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { attemptAction } from 'ebrc-client/App/DataRestriction/DataRestrictionActionCreators'
 import { connect } from 'react-redux'
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 
 function DownloadLink(props) {
-  const { attemptAction, studyAccess, studyId, studyUrl, user, className, linkText = '' } = props;
+  const { attemptAction, studyAccess, studyId, studyUrl, user, permissions, className, linkText = '' } = props;
   const myDownloadTitle = "Download data files";
   return (
     <div className={className}> 
-      { !isPrereleaseStudy(studyAccess, studyId, user)
+      { !isPrereleaseStudy(studyAccess, studyId, user, permissions)
         ? <Mesa.AnchoredTooltip
         fadeOut
         content={myDownloadTitle}>
@@ -38,4 +42,7 @@ function DownloadLink(props) {
 // arg1: mapStateToProps: take state from store and pass to component as props
 // arg2: mapDispatchToProps: pass an object with one property 'attemptAction' which is an actionCreator (because it returns a run() function) see DataRestrictionActionCreators
 // attemptAction gets bound to the store, the store receives the action, which will get executed when user clicks.
-export default connect( state => ({user: state.globalData.user}) ,{ attemptAction })(DownloadLink);
+export default compose(
+  wrappable,
+  connect(state => ({user: state.globalData.user}), { attemptAction })
+)(DownloadLink);
