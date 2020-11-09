@@ -368,7 +368,7 @@ export function useProviderTableSectionConfig(
         }
       : {
           status: 'success',
-          title: 'Providers',
+          title: 'Study Team Members',
           value: {
             rows: value.result.data.map(({ user, providerId, isManager }) => ({
               userId: user.userId,
