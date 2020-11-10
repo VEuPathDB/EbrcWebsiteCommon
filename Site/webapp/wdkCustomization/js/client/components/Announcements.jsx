@@ -255,9 +255,11 @@ function AnnouncementBanner({
 
   return (
     <div className="eupathdb-Announcement" style={{
+      margin: '3px',
       padding: '.5em',
-      borderWidth: '0 1px 1px 1px',
-      borderColor: '#bbbbbb',
+      borderRadius: '0.5em',
+      borderWidth: '1px',
+      borderColor: 'black',
       borderStyle: 'solid',
       background: '#E3F2FD',
       display: isOpen ? 'block' : 'none'
@@ -269,6 +271,7 @@ function AnnouncementBanner({
       }}>
         {icon}
         <div style={{
+          marginLeft: '1em',
           display: 'inline-block',
           width: 'calc(100% - 5.5em)',
           padding: '8px',
