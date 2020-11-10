@@ -23,5 +23,6 @@ export const {
   vimeoUrl = '',
   communitySite = '',
   siteSearchServiceUrl = '',
+  studyAccessServiceUrl = '',
   retainContainerContent = false
 } = window.__SITE_CONFIG__;

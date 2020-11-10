@@ -3,6 +3,7 @@ import React from 'react';
 import { BasketActions, ResultPanelActions, ResultTableSummaryViewActions } from 'wdk-client/Actions';
 import { attemptAction } from './DataRestrictionActionCreators';
 import {getResultTypeDetails} from 'wdk-client/Utils/WdkResult';
+import { isUserApprovedForStudy } from 'ebrc-client/StudyAccess/permission';
 
 // Data stuff =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 // per https://docs.google.com/presentation/d/1Cmf2GcmGuKbSTcH4wdeTEvRHTi9DDoh5-MnPm1MkcEA/edit?pli=1#slide=id.g3d955ef9d5_3_2
@@ -177,12 +178,10 @@ export function getRestrictionMessage ({ action, study }) {
 
 // CHECKERS! =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-export function isAllowedAccess ({ user, action, study }) {
+export function isAllowedAccess ({ permissions, user, action, study }) {
   if (sessionStorage.getItem('restriction_override') === 'true') return true;
   if (!(study.access in accessLevels)) throw new Error(`Unknown access level "${study.access}".`);
-  // assuming approvedStudies only contain public studies for this user (in CineEpiWebsite CustomProfileService.java)
-  if (user.properties.approvedStudies == null) return true;
-  if (user.properties.approvedStudies.includes(study.id)) return true;
+  if (isUserApprovedForStudy(permissions, user.properties.approvedStudies, study.id)) return true;
   if (accessLevels[study.access][action] === Require.allow) return true;
   //if (accessLevels[study.access][action] === Require.login) if (!user.isGuest) return true;
   // access not allowed, we need to build the modal popup
@@ -192,8 +191,19 @@ export function isAllowedAccess ({ user, action, study }) {
 // the UI in (1) home page study card, (2) study menu, (3) study record page is different when
 // - the study.access is prerelease
 // - the user doesnt have access
-export function isPrereleaseStudy (access, studyId, user) {
+export function isPrereleaseStudy (access, studyId, user, permissions) {
   if (typeof(user) != "undefined") {
+    if (permissions != null) {
+      if (
+        access === 'prerelease' &&
+        !isUserApprovedForStudy(permissions, user.properties.approvedStudies, studyId)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
     if ( (access === 'prerelease') && (!user.properties.approvedStudies.includes(studyId))  ) 
       return true;
     else return false;
