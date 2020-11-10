@@ -3,16 +3,29 @@
 import { memoize, pick } from 'lodash';
 import { getFilterFields } from 'wdk-client/Views/Question/Params/FilterParamNew/FilterParamUtils';
 
+import {
+  Parameter,
+  ParameterGroup,
+  QuestionWithParameters,
+  RecordClass,
+  ParameterValues
+} from 'wdk-client/Utils/WdkModel';
+
+import {
+  ParamUIState,
+  GroupUIState,
+  WizardState
+} from './WizardTypes'
 /**
  * Create initial wizard state object
  */
-export function createInitialState(question, recordClass, paramValues, defaultParamValues, customName) {
+export function createInitialState(question: QuestionWithParameters, recordClass: RecordClass, paramValues: ParameterValues, defaultParamValues: ParameterValues, customName: string) {
 
-  const paramUIState = question.parameters.reduce(function(uiState, param) {
+  const paramUIState = question.parameters.reduce(function(uiState: ParamUIState, param: Parameter) {
     return Object.assign(uiState, { [param.name]: createInitialParamState(param) });
   }, {});
 
-  const groupUIState = question.groups.reduce(function(groupUIState, group) {
+  const groupUIState = question.groups.reduce(function(groupUIState: GroupUIState, group: ParameterGroup) {
     return Object.assign(groupUIState, {
       [group.name]: {
         accumulatedTotal: undefined,
@@ -42,7 +55,7 @@ export function createInitialState(question, recordClass, paramValues, defaultPa
   };
 }
 
-export function createInitialParamState(param) {
+export function createInitialParamState(param: Parameter) {
   switch(param.type) {
     case 'filter': {
       const filterFields = getFilterFields(param).toArray();
@@ -87,7 +100,7 @@ export function createInitialParamState(param) {
  * @param {WizardState} wizardState
  * @return {Record<string, string>}
  */
-export function getDefaultParamValues(wizardState) {
+export function getDefaultParamValues(wizardState: WizardState) {
   return wizardState.defaultParamValues;
 }
 
@@ -97,30 +110,30 @@ export function getDefaultParamValues(wizardState) {
  * @param {Group} group
  * @return {boolean}
  */
-export function groupParamsValuesAreDefault(wizardState, group) {
+export function groupParamsValuesAreDefault(wizardState: WizardState, group: ParameterGroup) {
   const defaultValues = getDefaultParamValues(wizardState);
   return group.parameters.every(paramName =>
     wizardState.paramValues[paramName] === defaultValues[paramName]);
 }
 
-export function getGroup(wizardState, groupName) {
+export function getGroup(wizardState: WizardState, groupName: string): ParameterGroup | undefined {
   return getGroupMap(wizardState.question).get(groupName);
 }
 
-export function getParameter(wizardState, paramName) {
+export function getParameter(wizardState: WizardState, paramName: string) : Parameter | undefined {
   return getParamMap(wizardState.question).get(paramName);
 }
 
 /**
  * Get the set of parameters for a given group.
  */
-export function getParameterValuesForGroup(wizardState, groupName) {
-  const group = getGroup(wizardState, groupName);
+export function getParameterValuesForGroup(wizardState: WizardState, groupName: string) {
+  const group = getGroup(wizardState, groupName) as ParameterGroup;
   return pick(wizardState.paramValues, group.parameters);
 }
 
-const getGroupMap = memoize(question => new Map(question.groups.map(g => [g.name, g])));
-const getParamMap = memoize(question => new Map(question.parameters.map(p => [p.name, p])));
+const getGroupMap = memoize((question: QuestionWithParameters) => new Map(question.groups.map(g => [g.name, g])));
+const getParamMap = memoize((question: QuestionWithParameters) => new Map(question.parameters.map(p => [p.name, p])));
 
 
 // Immutable state modifiers
@@ -132,8 +145,8 @@ const getParamMap = memoize(question => new Map(question.parameters.map(p => [p.
  * @param {boolean} visiblity
  * @return {WizardState}
  */
-export function setFilterPopupVisiblity(wizardState, visible) {
-  return updateObjectImmutably(wizardState, ['filterPopupState', 'visible'], visible);
+export function setFilterPopupVisiblity(wizardState: WizardState, visible: boolean): WizardState {
+  return Object.assign({}, wizardState, { filterPopupState: Object.assign({}, wizardState.filterPopupState, {visible})});
 }
 
 /**
@@ -142,8 +155,8 @@ export function setFilterPopupVisiblity(wizardState, visible) {
  * @param {boolean} pinned
  * @return {WizardState}
  */
-export function setFilterPopupPinned(wizardState, pinned) {
-  return updateObjectImmutably(wizardState, ['filterPopupState', 'pinned'], pinned);
+export function setFilterPopupPinned(wizardState: WizardState, pinned: boolean): WizardState {
+  return Object.assign({}, wizardState, { filterPopupState: Object.assign({}, wizardState.filterPopupState, {pinned})});
 }
 
 /**
@@ -151,21 +164,6 @@ export function setFilterPopupPinned(wizardState, pinned) {
  * @param {WizardState} wizardState
  * @return {WizardState}
  */
-export function resetParamValues(wizardState) {
-  return updateObjectImmutably(wizardState, ['paramValues'], getDefaultParamValues(wizardState));
-}
-
-/**
- * Creates a new object based on input object with an updated value
- * a the specified path.
- */
-function updateObjectImmutably(object, [key, ...restPath], value) {
-  const isObject = typeof object === 'object';
-  if (!isObject || (isObject && !(key in object)))
-    throw new Error("Invalid key path");
-
-  return Object.assign({}, object, {
-    [key]: restPath.length === 0 ? value
-      : updateObjectImmutably(object[key], restPath, value)
-  })
+export function resetParamValues(wizardState: WizardState): WizardState {
+  return Object.assign({}, wizardState, {paramValues: getDefaultParamValues(wizardState)});
 }

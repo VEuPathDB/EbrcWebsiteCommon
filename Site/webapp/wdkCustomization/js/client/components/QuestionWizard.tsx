@@ -17,12 +17,12 @@ import {
 
 import FilterFinder from './FilterFinder';
 import FilterSummary from './FilterSummary';
-import QuestionWizardPropTypes from './QuestionWizardPropTypes';
+import { QuestionWizardProps } from '../util/WizardTypes';
 
 /**
  * QuestionWizard component
  */
-function QuestionWizard(props) {
+function QuestionWizard(props : QuestionWizardProps) {
   const {
     question,
     activeGroup,
@@ -72,15 +72,13 @@ function QuestionWizard(props) {
   )
 }
 
-QuestionWizard.propTypes = QuestionWizardPropTypes;
-
 export default wrappable(QuestionWizard);
 
 
 /**
  * GroupList component
  */
-function Navigation(props) {
+function Navigation(props: QuestionWizardProps) {
   const {
     wizardState: {
       updatingParamName,
@@ -120,8 +118,8 @@ function Navigation(props) {
 
   return (
     <Sticky>
-      {({isFixed}) => (
-          <div className={makeClassName('NavigationContainer', isFixed && 'fixed')}>
+      {(o: {isFixed: boolean}) => (
+          <div className={makeClassName('NavigationContainer', o.isFixed && 'fixed')}>
             <div className={makeClassName('NavigationIconContainer')}>
               <button
                 type="button"
@@ -138,6 +136,8 @@ function Navigation(props) {
                 title={`All ${recordDisplayName}`}
                 count={initialCount}
                 isActive={activeGroup == groups[0]}
+                isLoading={false}
+                isValid={true}
               />
             </div>
 
@@ -238,10 +238,15 @@ function Navigation(props) {
   )
 }
 
-Navigation.propTypes = QuestionWizard.propTypes;
 
 /** Render count or loading */
-function ParamGroupCount(props) {
+function ParamGroupCount(props: {
+  title: string,
+  count: number,
+  isValid: boolean,
+  isLoading: boolean,
+  isActive: boolean
+}) {
   return (
     <div title={props.title}
       className={makeClassName(
@@ -257,10 +262,4 @@ function ParamGroupCount(props) {
   )
 }
 
-ParamGroupCount.propTypes = {
-  title: PropTypes.string,
-  count: PropTypes.number,
-  isValid: PropTypes.bool,
-  isLoading: PropTypes.bool,
-  isActive: PropTypes.bool
-};
+
