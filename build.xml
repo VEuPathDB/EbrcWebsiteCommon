@@ -5,7 +5,6 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <import file="${projectsDir}/WDK/build.xml" />
-  <import file="${projectsDir}/WDKClient/build.xml" />
 
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
@@ -13,7 +12,6 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
-                                                        WDKClient-Installation,
                                                         EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
@@ -73,8 +71,6 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
-                                                           WDKClient-WebInstallation,
-                                                           WDKClient/Client-WebInstallation,
                                                            EbrcWebsiteCommon-Installation,
                                                            EbrcWebsiteCommon/Site-WebInstallation">
   </target>

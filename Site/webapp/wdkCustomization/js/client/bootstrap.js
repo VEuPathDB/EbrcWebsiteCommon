@@ -4,13 +4,12 @@
 // ### THIS NEEDS TO BE FIRST
 import './publicPath';
 // ###
-
 import 'custom-event-polyfill';
 import 'whatwg-fetch';
-import 'lib/jquery';
-import 'lib/jquery-migrate';
-import 'lib/jquery-ui';
-import 'lib/jquery-qtip';
+import '!!script-loader!@veupathdb/wdk-client/vendored/jquery';
+import '!!script-loader!@veupathdb/wdk-client/vendored/jquery-migrate-1.2.1';
+import '!!script-loader!@veupathdb/wdk-client/vendored/jquery-ui';
+import '!!script-loader!@veupathdb/wdk-client/vendored/jquery.qtip.min';
 
 import { debounce, identity, uniq, flow } from 'lodash';
 
