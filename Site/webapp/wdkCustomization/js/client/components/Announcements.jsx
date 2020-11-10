@@ -31,6 +31,24 @@ const infoIcon = (
 // a unique id for the announcement, and a function that takes props and returns a React Element.
 // Use props as an opportunity to determine if the message should be displayed for the given context.
 const siteAnnouncements = [
+
+  // clinepi workshop
+  {
+    id: 'clinepi-workshop',
+    renderDisplay: (props) => {
+    if (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB' ) {
+        return (
+          <div>
+            Register for our <a href="https://clinepidb.org/ce/app/static-content/ClinEpiDB/workshops.html">FREE virtual workshop</a> on Friday, November 13, 2020!
+          </div>
+        );
+      }
+      return null;
+    }
+  },
+
+
+
   // alpha
   {
     id: 'alpha',
