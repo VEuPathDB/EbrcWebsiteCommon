@@ -36,8 +36,7 @@ export default class FilterParamNew extends React.PureComponent {
   }
 
   _handleActiveFieldChange(term) {
-    let filters = this._getFiltersFromValue(this.props.value);
-    this.props.onOntologyTermSelect(this.props.param, filters, term);
+    this.props.onOntologyTermSelectCurrentFilters(this.props.param, term);
   }
 
   _handleFieldCountUpdateRequest(term) {

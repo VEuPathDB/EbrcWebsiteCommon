@@ -32,11 +32,7 @@ const styles = {
   })
 }
 
-export default function FilterFinder({
-  wizardState: { question },
-  wizardEventHandlers: { onGroupSelect },
-  parameterEventHandlers: { onOntologyTermSelect }
-}) {
+export default function FilterFinder({question, onGroupSelect, onOntologyTermSelectNoFilters}){
   const [ inputValue, setInputValue ] = useState('');
   const options = useMemo(() => makeOptions(question), [question]);
   return (
@@ -60,18 +56,18 @@ export default function FilterFinder({
     if (action !== 'select-option') return;
     const { group, parameter, ontologyItem } = option;
     onGroupSelect(group);
-    onOntologyTermSelect(parameter, [], ontologyItem.term);
+    onOntologyTermSelectNoFilters(parameter, ontologyItem.term);
   }
 
   function handleInputChange(value, { action }) {
     if (action === 'input-change') setInputValue(value);
   }
 }
-
 FilterFinder.propTypes = {
-  wizardState: PropTypes.object.isRequired
+  question: PropTypes.object.isRequired,
+  onGroupSelect: PropTypes.func.isRequired,
+  onOntologyTermSelectNoFilters: PropTypes.func.isRequired
 }
-
 function findPath(ontologyItemsByTerm, ontologyTerm) {
   const path = [];
   const ontologyItem = ontologyItemsByTerm[ontologyTerm];

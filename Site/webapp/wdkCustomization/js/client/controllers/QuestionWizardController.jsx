@@ -96,7 +96,8 @@ class QuestionWizardController extends ViewController {
   getParameterEventHandlers() {
     return pick(this, [
       'onOntologyTermSearch',
-      'onOntologyTermSelect',
+      'onOntologyTermSelectCurrentFilters',
+      'onOntologyTermSelectNoFilters',
       'onOntologyTermSort',
       'onOntologyTermSummaryUpdate',
       'onParamStateChange',
@@ -223,7 +224,7 @@ class QuestionWizardController extends ViewController {
         .map(paramName => this.parameterMap.get(paramName))
         .filter(param => param.type === 'filter')
         .forEach(param => {
-          this.onOntologyTermSelect(param, [], this.state.paramUIState[param.name].activeOntologyTerm);
+          this.onOntologyTermSelectNoFilters(param, this.state.paramUIState[param.name].activeOntologyTerm);
         })
     })
   }
@@ -248,8 +249,17 @@ class QuestionWizardController extends ViewController {
 
   /**
    * Update paramUI state based on ontology term.
+   * FIXME: these seem to do the same thing (navigate within FilterParamNew)
    */
-  onOntologyTermSelect(param, filters, ontologyTerm) {
+  onOntologyTermSelectCurrentFilters(param, ontologyTerm) {
+    const { filters } = JSON.parse(this.state.paramValues[param.name]);
+    this._onOntologyTermSelect(param, filters, ontologyTerm);
+  }
+
+  onOntologyTermSelectNoFilters(param, ontologyTerm) {
+    this._onOntologyTermSelect(param, [], ontologyTerm);
+  }
+  _onOntologyTermSelect(param, filters, ontologyTerm) {
     const {
       summary,
       loading = false,

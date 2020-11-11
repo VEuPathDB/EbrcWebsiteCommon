@@ -6,7 +6,6 @@ import Parameters from './Parameters';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import { groupParamsValuesAreDefault } from '../util/QuestionWizardState';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
-import QuestionWizardPropTypes from './QuestionWizardPropTypes';
 
 /**
  * Active group section. Includes heading, help text, summary counts, and parameters.
@@ -79,8 +78,6 @@ function ActiveGroup(props) {
     </div>
   );
 }
-
-ActiveGroup.propTypes = QuestionWizardPropTypes;
 
 export default wrappable(ActiveGroup);
 

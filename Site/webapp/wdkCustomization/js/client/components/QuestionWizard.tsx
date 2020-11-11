@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { result, zip } from 'lodash';
+import { result, zip, memoize, every } from 'lodash';
 import ActiveGroup from './ActiveGroup';
 import {
   IconAlt as Icon,
@@ -18,30 +18,34 @@ import {
 import FilterFinder from './FilterFinder';
 import FilterSummary from './FilterSummary';
 import { QuestionWizardProps } from '../util/WizardTypes';
+import { 
+  QuestionWithParameters,
+  ParameterGroup,
+  Parameter,
+  ParameterValue
+} from 'wdk-client/Utils/WdkModel';
+import { FilterField } from 'wdk-client/Components/AttributeFilter/Types';
 
+const getParamMap = memoize((question: QuestionWithParameters) => new Map(question.parameters.map(p => [p.name, p])));
 /**
  * QuestionWizard component
  */
 function QuestionWizard(props : QuestionWizardProps) {
-  const {
-    question,
-    activeGroup,
-  } = props.wizardState;
-  
-  const {
-    additionalHeadingContent = null
-  } = props;
 
-   const {
-    questionSummary = null
-  } = props;
+  const onSelectFilterParamField = (parameter: Parameter, field: FilterField) => {
 
+  };
+  const groupsWithNondefaultValues = props.wizardState.question.groups.filter(group =>
+    every(group.parameters.map(paramName => 
+      props.wizardState.paramValues[paramName] == props.wizardState.defaultParamValues[paramName]
+    ))
+  );
   return (
     <div className={makeClassName()}>
       <div className={makeClassName('HeadingContainer')}>
         <h1 className={makeClassName('Heading')}>
-          {question.displayName} &nbsp;
-          {question.groups.some(groupName => !groupParamsValuesAreDefault(props.wizardState, groupName)) && (
+          {props.wizardState.question.displayName} &nbsp;
+          {groupsWithNondefaultValues.length === 0 ? null : (
             <button
               type="button"
               title="View a summary of active filters"
@@ -52,16 +56,43 @@ function QuestionWizard(props : QuestionWizardProps) {
             </button>
           )}
         </h1>
-        <FilterSummary {...props} />
-        {additionalHeadingContent}
+        <FilterSummary
+          isVisible={props.wizardState.filterPopupState.visible}
+          isPinned={props.wizardState.filterPopupState.pinned}
+          setVisible={props.wizardEventHandlers.onFilterPopupVisibilityChange}
+          setPinned={props.wizardEventHandlers.onFilterPopupPinned}
+          parametersByName={getParamMap(props.wizardState.question)}
+          groupsWithNondefaultValues={props.wizardState.question.groups}
+          paramValues={props.wizardState.paramValues}
+          defaultParamValues={props.wizardState.defaultParamValues}
+          onParamValuesReset={props.wizardEventHandlers.onParamValuesReset}
+          onParamValueChange={props.parameterEventHandlers.onParamValueChange}
+          onSelectGroup={(group: ParameterGroup) => {
+            props.wizardEventHandlers.onGroupSelect(group);
+            if (!props.wizardState.filterPopupState.pinned) {
+              props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
+            }
+          }}
+          onSelectFilterParamField={(group: ParameterGroup, parameter: Parameter, field: FilterField)=>{
+            props.wizardEventHandlers.onGroupSelect(group);
+            if (!props.wizardState.filterPopupState.pinned) {
+              props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
+            }
+            props.parameterEventHandlers.onOntologyTermSelectCurrentFilters(parameter, field.term);
+          }}
+        />
+        {props.additionalHeadingContent}
       </div>
-      {questionSummary}
-      <FilterFinder {...props} />
+      {props.questionSummary}
+      <FilterFinder
+         question={props.wizardState.question}
+         onGroupSelect={props.wizardEventHandlers.onGroupSelect}
+         onOntologyTermSelectNoFilters={props.parameterEventHandlers.onOntologyTermSelectNoFilters}/>
       <Navigation {...props} />
-      {activeGroup == null ? (
+      {props.wizardState.activeGroup == null ? (
         <div className={makeClassName('ActiveGroupContainer')}>
           <p className={makeClassName('HelpText')}>
-            {question.summary}
+            {props.wizardState.question.summary}
           </p>
         </div>
       ) : (

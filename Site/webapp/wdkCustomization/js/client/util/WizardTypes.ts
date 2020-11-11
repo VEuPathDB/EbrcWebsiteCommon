@@ -6,8 +6,10 @@ import {
   // ParamUIState,
   QuestionWithParameters,
   RecordClass,
-  ParameterValues
+  ParameterValues,
+  ParameterValue
 } from 'wdk-client/Utils/WdkModel';
+import { Field } from 'wdk-client/Components/AttributeFilter/Types';
 
 // divergent
 export type ParamUIState = Record<string, ParameterValues>;
@@ -50,17 +52,19 @@ export type QuestionWizardProps = {
   wizardState: WizardState,
   wizardEventHandlers: {
     onGroupSelect: (...args: any[]) => any,
+    onParamValuesReset: (...args: any[]) => any,
     onInvalidGroupCountsUpdate: (...args: any[]) => any,
     onFilterPopupVisibilityChange: (...args: any[]) => any,
     onFilterPopupPinned: (...args: any[]) => any,
     onSubmit: (...args: any[]) => any
   },
   parameterEventHandlers: {
-    onOntologyTermSelect: (...args: any[]) => any,
+    onOntologyTermSelectCurrentFilters: (parameter: Parameter, ontologyTerm: string) => any,
+    onOntologyTermSelectNoFilters: (parameter: Parameter, ontologyTerm: string) => any,
     onOntologyTermSummaryUpdate: (...args: any[]) => any,
     onOntologyTermSort: (...args: any[]) => any,
     onOntologyTermSearch: (...args: any[]) => any,
-    onParamValueChange: (...args: any[]) => any,
+    onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
     onParamStateChange: (...args: any[]) => any
   },
   additionalHeadingContent?: React.ReactNode
