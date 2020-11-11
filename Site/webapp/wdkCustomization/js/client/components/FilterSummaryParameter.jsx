@@ -69,7 +69,6 @@ function FilterParamFilter(props) {
     <div key={parameter.name + '::' + field.term} className={makeClassName('Chiclet')} >
       <button
         type="button"
-        title="Clear selection"
         className={makeClassName('ChicletTitle') + ' wdk-Link'}
         onClick={() => {
           navigateToGroup(props);
@@ -85,6 +84,7 @@ function FilterParamFilter(props) {
       &nbsp;
       <button
         type="button"
+        title="Clear selection"
         className={makeClassName('RemoveFilterButton')}
         onClick={() => parameterEventHandlers.onParamValueChange(props.parameter, JSON.stringify({
           filters: removeFilter(filters, filter, containerFilter)
