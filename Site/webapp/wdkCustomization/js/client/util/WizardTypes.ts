@@ -3,34 +3,42 @@ import React from "react";
 import {
   Parameter,
   ParameterGroup,
+  // ParamUIState,
   QuestionWithParameters,
   RecordClass,
   ParameterValues
 } from 'wdk-client/Utils/WdkModel';
 
+// divergent
 export type ParamUIState = Record<string, ParameterValues>;
 
+// divergent
 type GroupState = {
   accumulatedTotal: number,
   valid: boolean,
   loading: boolean
 }
+
 export type GroupUIState = Record<string, GroupState>;
 
-export type WizardState = {
-  question: QuestionWithParameters,
-  paramValues: ParameterValues,
-  defaultParamValues: ParameterValues,
+export type WizardNavState = {
   filterPopupState: {
     visible: boolean,
     pinned: boolean
   },
   updatingParamName: boolean,
-  paramUIState: ParamUIState,
-  groupUIState: GroupUIState,
-  recordClass: RecordClass,
   activeGroup?: ParameterGroup,
   initialCount: number
+}
+export type WizardState = WizardNavState & {
+  // These two are divergent from the store
+  paramUIState: ParamUIState,
+  groupUIState: GroupUIState,
+  // These are redundant with the store
+  recordClass: RecordClass,
+  question: QuestionWithParameters,
+  paramValues: ParameterValues,
+  defaultParamValues: ParameterValues,
 };
 
 export type QuestionWizardProps = {
