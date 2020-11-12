@@ -653,7 +653,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
   if (
     documentType.id === 'news' ||
     documentType.id === 'general' ||
-    documentType.id === 'tutorial', ||
+    documentType.id === 'tutorial' ||
     documentType.id === 'workshop-exercise'
   ) {
     // Handle the special case of tutorials that are offered as home page cards
