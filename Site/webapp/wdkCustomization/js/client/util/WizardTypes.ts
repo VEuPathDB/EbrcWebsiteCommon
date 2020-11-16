@@ -42,7 +42,15 @@ export type WizardState = WizardNavState & {
   paramValues: ParameterValues,
   defaultParamValues: ParameterValues,
 };
-
+export type ParameterEventHandlers = {
+    onOntologyTermSelectCurrentFilters: (parameter: Parameter, ontologyTerm: string) => any,
+    onOntologyTermSelectNoFilters: (parameter: Parameter, ontologyTerm: string) => any,
+    onOntologyTermSummaryUpdate: (...args: any[]) => any,
+    onOntologyTermSort: (...args: any[]) => any,
+    onOntologyTermSearch: (...args: any[]) => any,
+    onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
+    onParamStateChange: (...args: any[]) => any
+};
 export type QuestionWizardProps = {
   customName?: string,
   setCustomName: (...args: any[]) => string,
@@ -58,14 +66,6 @@ export type QuestionWizardProps = {
     onFilterPopupPinned: (...args: any[]) => any,
     onSubmit: (...args: any[]) => any
   },
-  parameterEventHandlers: {
-    onOntologyTermSelectCurrentFilters: (parameter: Parameter, ontologyTerm: string) => any,
-    onOntologyTermSelectNoFilters: (parameter: Parameter, ontologyTerm: string) => any,
-    onOntologyTermSummaryUpdate: (...args: any[]) => any,
-    onOntologyTermSort: (...args: any[]) => any,
-    onOntologyTermSearch: (...args: any[]) => any,
-    onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
-    onParamStateChange: (...args: any[]) => any
-  },
+  parameterEventHandlers: ParameterEventHandlers,
   additionalHeadingContent?: React.ReactNode
 };

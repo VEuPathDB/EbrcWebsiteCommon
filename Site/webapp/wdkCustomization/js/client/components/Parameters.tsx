@@ -4,11 +4,26 @@ import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import Param from './Param';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import { paramGroupPropTypes } from '../util/paramUtil';
-
+import { ParamUIState, ParameterEventHandlers } from '../util/WizardTypes';
+import {
+  Parameter,
+  ParameterGroup,
+  // ParamUIState,
+  QuestionWithParameters,
+  RecordClass,
+  ParameterValues,
+  ParameterValue
+} from 'wdk-client/Utils/WdkModel';
 /**
  * Parameters that belong to a Paramter group
  */
-function Parameters(props) {
+type Props = {
+  parameters: Parameter[],
+  paramValues: Record<string, any>,
+  paramUIState: ParamUIState,
+  eventHandlers: ParameterEventHandlers
+}
+function Parameters(props: Props) {
   const {
     parameters,
     paramValues,
@@ -65,7 +80,5 @@ function Parameters(props) {
     </div>
   );
 }
-
-Parameters.propTypes = paramGroupPropTypes;
 
 export default wrappable(Parameters);
