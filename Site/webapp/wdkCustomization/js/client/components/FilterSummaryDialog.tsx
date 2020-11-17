@@ -25,17 +25,9 @@ type Props = {
   isPinned: boolean,
   setVisible: (visible: boolean) => any,
   setPinned: (pinned: boolean) => any,
-  parametersByName: Map<string, Parameter>,
-  groupsWithNondefaultValues: ParameterGroup[],
-  paramValues: ParameterValues,
-  defaultParamValues: ParameterValues,
-  onParamValuesReset:() => any,
-  onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
-  onSelectGroup: (group: ParameterGroup) => any,
-  onSelectFilterParamField: (group: ParameterGroup, parameter: Parameter, field: FilterField) => any,
 }
 
-class FilterSummary extends React.Component<Props> {
+class FilterSummaryDialog extends React.Component<Props> {
   render () {
     const props = this.props;
     return (
@@ -66,31 +58,11 @@ class FilterSummary extends React.Component<Props> {
         ]}
       >
         <div>
-          { props.groupsWithNondefaultValues.length === 0 ? (
-            <p>No filters applied</p>
-          ) : (
-            props.groupsWithNondefaultValues.map(group => 
-              <FilterSummaryGroup
-                key={group.name}
-                groupDisplayName={group.displayName}
-                groupParameters={group.parameters.map(paramName => props.parametersByName.get(paramName) as Parameter)}
-                paramValues={props.paramValues}
-                defaultParamValues={props.defaultParamValues}
-                onParamValueChange={props.onParamValueChange}
-                onSelectGroup={()=>props.onSelectGroup(group)}
-                onSelectFilterParamField={(parameter: Parameter, field: FilterField) => props.onSelectFilterParamField(group, parameter, field)}
-                />
-              )
-          )}
-          <div className={makeClassName('FilterSummaryRemoveAll')}>
-            <button type="button" className="wdk-Link" onClick={props.onParamValuesReset}>
-              Remove all
-            </button>
-          </div>
+          { this.props.children }
         </div>
       </Dialog>
     );
   }
 }
 
-export default wrappable(FilterSummary);
+export default wrappable(FilterSummaryDialog);

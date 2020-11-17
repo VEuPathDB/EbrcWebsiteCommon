@@ -3,55 +3,46 @@ import React from "react";
 import {
   Parameter,
   ParameterGroup,
-  // ParamUIState,
+  // ParamUIState divergent,
   QuestionWithParameters,
   RecordClass,
   ParameterValues,
   ParameterValue
 } from 'wdk-client/Utils/WdkModel';
-import { Field } from 'wdk-client/Components/AttributeFilter/Types';
+import { Dispatch } from 'redux';
+import { Field, FilterField } from 'wdk-client/Components/AttributeFilter/Types';
 
-// divergent
-export type ParamUIState = Record<string, ParameterValues>;
-
-// divergent
-type GroupState = {
+export type ParameterGroupUI = ParameterGroup & {
   accumulatedTotal: number,
   valid: boolean,
-  loading: boolean
-}
+  loading: boolean,
+  selectedInPanel: boolean,
+  countCanChangeInPanel: boolean,
+  allValuesDefault: boolean
+};
 
-export type GroupUIState = Record<string, GroupState>;
-
-export type WizardNavState = {
+export type WizardState = {
+  activeGroupIx: number,
+  defaultParamValues: ParameterValues,
   filterPopupState: {
     visible: boolean,
-    pinned: boolean
+    pinned: boolean  
   },
-  updatingParamName: boolean,
-  activeGroup?: ParameterGroup,
-  initialCount: number
-}
-export type WizardState = WizardNavState & {
-  // These two are divergent from the store
-  paramUIState: ParamUIState,
-  groupUIState: GroupUIState,
-  // These are redundant with the store
-  recordClass: RecordClass,
-  question: QuestionWithParameters,
+  parameterGroupUIs: ParameterGroupUI[],
+  initialCount: number,
+  paramUIState: Record<string, ParameterValues>,
   paramValues: ParameterValues,
-  defaultParamValues: ParameterValues,
+  question: QuestionWithParameters,
+  recordClass: RecordClass,
+  updatingParamName?: string,
 };
 export type ParameterEventHandlers = {
-    onOntologyTermSelectCurrentFilters: (parameter: Parameter, ontologyTerm: string) => any,
-    onOntologyTermSelectNoFilters: (parameter: Parameter, ontologyTerm: string) => any,
-    onOntologyTermSummaryUpdate: (...args: any[]) => any,
-    onOntologyTermSort: (...args: any[]) => any,
-    onOntologyTermSearch: (...args: any[]) => any,
-    onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
-    onParamStateChange: (...args: any[]) => any
+  onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
+  onSelectFilterParamField: (groupIx: number, parameter: Parameter, field: FilterField) => any
 };
 export type QuestionWizardProps = {
+  searchName: string,
+  recordClassName: string,
   customName?: string,
   setCustomName: (...args: any[]) => string,
   questionSummary?: string,
@@ -59,7 +50,7 @@ export type QuestionWizardProps = {
   showHelpText: boolean,
   wizardState: WizardState,
   wizardEventHandlers: {
-    onGroupSelect: (...args: any[]) => any,
+    onSelectGroup: (groupIx: number) => any,
     onParamValuesReset: (...args: any[]) => any,
     onInvalidGroupCountsUpdate: (...args: any[]) => any,
     onFilterPopupVisibilityChange: (...args: any[]) => any,
@@ -67,5 +58,6 @@ export type QuestionWizardProps = {
     onSubmit: (...args: any[]) => any
   },
   parameterEventHandlers: ParameterEventHandlers,
+  dispatch: Dispatch,
   additionalHeadingContent?: React.ReactNode
 };

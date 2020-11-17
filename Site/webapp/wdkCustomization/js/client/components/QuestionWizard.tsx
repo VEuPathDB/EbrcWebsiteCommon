@@ -11,12 +11,10 @@ import {
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
 import { Seq } from 'wdk-client/Utils/IterableUtils';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
-import {
-  groupParamsValuesAreDefault
-} from '../util/QuestionWizardState';
 
 import FilterFinder from './FilterFinder';
-import FilterSummary from './FilterSummary';
+import FilterSummaryGroup from './FilterSummaryGroup';
+import FilterSummaryDialog from './FilterSummaryDialog';
 import { QuestionWizardProps } from '../util/WizardTypes';
 import { 
   QuestionWithParameters,
@@ -31,21 +29,15 @@ const getParamMap = memoize((question: QuestionWithParameters) => new Map(questi
  * QuestionWizard component
  */
 function QuestionWizard(props : QuestionWizardProps) {
+  const parametersByName = getParamMap(props.wizardState.question);
 
-  const onSelectFilterParamField = (parameter: Parameter, field: FilterField) => {
-
-  };
-  const groupsWithNondefaultValues = props.wizardState.question.groups.filter(group =>
-    every(group.parameters.map(paramName => 
-      props.wizardState.paramValues[paramName] == props.wizardState.defaultParamValues[paramName]
-    ))
-  );
+  const valuesDefaultInAllGroups = every(props.wizardState.parameterGroupUIs.map(group => group.allValuesDefault));
   return (
     <div className={makeClassName()}>
       <div className={makeClassName('HeadingContainer')}>
         <h1 className={makeClassName('Heading')}>
           {props.wizardState.question.displayName} &nbsp;
-          {groupsWithNondefaultValues.length === 0 ? null : (
+          {valuesDefaultInAllGroups ? null : (
             <button
               type="button"
               title="View a summary of active filters"
@@ -56,40 +48,55 @@ function QuestionWizard(props : QuestionWizardProps) {
             </button>
           )}
         </h1>
-        <FilterSummary
+        <FilterSummaryDialog
           isVisible={props.wizardState.filterPopupState.visible}
           isPinned={props.wizardState.filterPopupState.pinned}
           setVisible={props.wizardEventHandlers.onFilterPopupVisibilityChange}
           setPinned={props.wizardEventHandlers.onFilterPopupPinned}
-          parametersByName={getParamMap(props.wizardState.question)}
-          groupsWithNondefaultValues={props.wizardState.question.groups}
-          paramValues={props.wizardState.paramValues}
-          defaultParamValues={props.wizardState.defaultParamValues}
-          onParamValuesReset={props.wizardEventHandlers.onParamValuesReset}
-          onParamValueChange={props.parameterEventHandlers.onParamValueChange}
-          onSelectGroup={(group: ParameterGroup) => {
-            props.wizardEventHandlers.onGroupSelect(group);
-            if (!props.wizardState.filterPopupState.pinned) {
-              props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
-            }
-          }}
-          onSelectFilterParamField={(group: ParameterGroup, parameter: Parameter, field: FilterField)=>{
-            props.wizardEventHandlers.onGroupSelect(group);
-            if (!props.wizardState.filterPopupState.pinned) {
-              props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
-            }
-            props.parameterEventHandlers.onOntologyTermSelectCurrentFilters(parameter, field.term);
-          }}
-        />
+         >
+          { valuesDefaultInAllGroups ? (
+            <p>No filters applied</p>
+          ) : (
+            props.wizardState.parameterGroupUIs.map((group,ix) => (
+              group.allValuesDefault ? null : <FilterSummaryGroup
+                key={group.name}
+                groupDisplayName={group.displayName}
+                groupParameters={group.parameters.map(paramName => parametersByName.get(paramName) as Parameter)}
+                paramValues={props.wizardState.paramValues}
+                defaultParamValues={props.wizardState.defaultParamValues}
+                onParamValueChange={props.parameterEventHandlers.onParamValueChange}
+                onSelectGroup={() => {
+									props.wizardEventHandlers.onSelectGroup(ix);
+									if (!props.wizardState.filterPopupState.pinned) {
+										props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
+									}
+								}}
+                onSelectFilterParamField={(parameter: Parameter, field: FilterField) => {
+									props.wizardEventHandlers.onSelectGroup(ix);
+									if (!props.wizardState.filterPopupState.pinned) {
+										props.wizardEventHandlers.onFilterPopupVisibilityChange(false);
+									}
+                  props.parameterEventHandlers.onSelectFilterParamField(ix, parameter, field);
+                }}
+                />
+              ))
+            )
+           }
+						<div className={makeClassName('FilterSummaryRemoveAll')}>
+							<button type="button" className="wdk-Link" onClick={props.wizardEventHandlers.onParamValuesReset}>
+								Remove all
+							</button>
+						</div>
+        </FilterSummaryDialog>
         {props.additionalHeadingContent}
       </div>
       {props.questionSummary}
       <FilterFinder
          question={props.wizardState.question}
-         onGroupSelect={props.wizardEventHandlers.onGroupSelect}
-         onOntologyTermSelectNoFilters={props.parameterEventHandlers.onOntologyTermSelectNoFilters}/>
+         onSelectGroup={props.wizardEventHandlers.onSelectGroup}
+         onSelectFilterParamField={props.parameterEventHandlers.onSelectFilterParamField}/>
       <Navigation {...props} />
-      {props.wizardState.activeGroup == null ? (
+      {props.wizardState.activeGroupIx === -1 ? (
         <div className={makeClassName('ActiveGroupContainer')}>
           <p className={makeClassName('HelpText')}>
             {props.wizardState.question.summary}
@@ -113,15 +120,14 @@ function Navigation(props: QuestionWizardProps) {
   const {
     wizardState: {
       updatingParamName,
-      activeGroup,
+      activeGroupIx,
       question,
-      groupUIState,
+      parameterGroupUIs,
       recordClass,
       initialCount
     },
     wizardEventHandlers: {
-      onGroupSelect,
-      onInvalidGroupCountsUpdate,
+      onSelectGroup,
       onFilterPopupVisibilityChange,
       onSubmit
     },
@@ -130,17 +136,15 @@ function Navigation(props: QuestionWizardProps) {
     showHelpText,
     isAddingStep
   } = props;
-  const { groups } = question;
-  const invalid = Object.values(groupUIState).some(uiState => uiState.valid === false && uiState.loading !== true);
+  const invalid = parameterGroupUIs.some(uiState => uiState.valid === false && uiState.loading !== true);
 
+  const allValuesDefault = props.wizardState.parameterGroupUIs.filter(group =>
+    group.allValuesDefault
+  );
   const finalCountState = Seq.of({ accumulatedTotal: initialCount })
-    .concat(Seq.from(groups)
-      .map(group => groupUIState[group.name])
+    .concat(Seq.from(parameterGroupUIs)
       .filter(groupState => groupState.valid !== undefined))
     .last();
-
-  // A Map from a group to its previous group
-  const prevGroupMap = new Map(zip(groups.slice(1), groups.slice(0, -1)));
 
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
   const iconName = question.iconName || recordClass.iconName || 'fa fa-database';
@@ -156,7 +160,7 @@ function Navigation(props: QuestionWizardProps) {
                 type="button"
                 title="See search overview"
                 className={makeClassName('IconButton')}
-                onClick={() => onGroupSelect(null)}
+                onClick={() => onSelectGroup(-1)}
               >
                 <i className={makeClassName('Icon') + ' ' + iconName}/>
               </button>
@@ -166,29 +170,30 @@ function Navigation(props: QuestionWizardProps) {
               <ParamGroupCount
                 title={`All ${recordDisplayName}`}
                 count={initialCount}
-                isActive={activeGroup == groups[0]}
+                isActive={parameterGroupUIs[0].selectedInPanel}
                 isLoading={false}
                 isValid={true}
               />
             </div>
 
-            {Seq.from(groups).flatMap(group => [(
+            {parameterGroupUIs.map((group, ix) => (
+						  <React.Fragment key={group.name}>
               <div
                 key={group.name}
-                className={makeClassName('ParamGroup', group === activeGroup && 'active')}
+                className={makeClassName('ParamGroup', group.selectedInPanel && 'active')}
               >
                 <button
                   type="button"
                   title={`Filter ${recordDisplayName} by ${group.displayName}`}
                   className={makeClassName(
                     'ParamGroupButton',
-                    group == activeGroup && 'active'
+                    group.selectedInPanel && 'active'
                   )}
-                  onClick={() => onGroupSelect(group)}
+                  onClick={() => onSelectGroup(ix)}
                 >
                   {group.displayName}
                 </button>
-                {groupParamsValuesAreDefault(props.wizardState, group) || (
+                {group.allValuesDefault ? null : (
                   <button
                     type="button"
                     title="View a summary of active filters"
@@ -201,24 +206,26 @@ function Navigation(props: QuestionWizardProps) {
                     />
                   </button>
                 )}
-                {showHelpText && activeGroup == null && group === groups[0] && (
+                {showHelpText && activeGroupIx === -1 && ix == 0 && (
                   <div className={makeClassName('GetStarted')}>
                     Click to get started. <em>(skipping ahead is ok)</em>
                   </div>
                 )}
               </div>
-            ), group !== groups[groups.length - 1] && (
+              { ix !== parameterGroupUIs.length - 1 && (
               <div key={group.name + '__sep'} className={makeClassName('ParamGroupSeparator')}>
                 <div className={makeClassName('ParamGroupArrow')}/>
                 <ParamGroupCount
                   title={`${recordDisplayName} selected from previous steps.`}
-                  count={groupUIState[group.name].accumulatedTotal}
-                  isLoading={groupUIState[group.name].loading}
-                  isValid={groupUIState[group.name].valid}
-                  isActive={(group === activeGroup || group === prevGroupMap.get(activeGroup))}
+                  count={group.accumulatedTotal}
+                  isLoading={group.loading}
+                  isValid={group.valid}
+                  isActive={group.countCanChangeInPanel} 
                 />
               </div>
-            )])}
+              )}
+              </React.Fragment>
+             ))}
             <div className={makeClassName('SubmitContainer')}>
               <button
                 type="button"
@@ -251,18 +258,6 @@ function Navigation(props: QuestionWizardProps) {
                 placeholder="Name this search"
               />
             </div>
-            {invalid && (
-              <div className={makeClassName('InvalidCounts')}>
-                <button
-                  type="button"
-                  className="wdk-Link"
-                  onClick={onInvalidGroupCountsUpdate}
-                  title="Recompute invalid counts above"
-                >
-                  <Icon fa="refresh"/> Refresh counts
-                </button>
-              </div>
-            )}
           </div>
       )}
     </Sticky>
