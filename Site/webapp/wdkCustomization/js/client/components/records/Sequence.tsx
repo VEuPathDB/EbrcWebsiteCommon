@@ -7,16 +7,28 @@ import { writeTextToClipboard } from 'wdk-client/Utils/DomUtils';
 
 const NUM_COLS = 80;
 
-function Sequence(props) {
-  const { accession, highlightRegions, sequence } = props;
-  const ref = useRef(null);
+interface Props {
+  accession?: string;
+  highlightRegions?: HighlightRegion[];
+  sequence: string;
+}
+
+interface HighlightRegion {
+  start: number;
+  end: number;
+  renderRegion: (region: string) => React.ReactNode;
+}
+
+function Sequence(props: Props) {
+  const { accession, highlightRegions = [], sequence } = props;
+  const ref = useRef<HTMLPreElement>(null);
   const [ isExpanded, setIsExpanded ] = useState();
   const isOverflowing = useIsRefOverflowingVertically(ref);
 
   const onClickCopyButton = useCallback(
     () => {
       if (ref.current) {
-        const sequenceLines = makeSequenceLines(ref.current.textContent);
+        const sequenceLines = makeSequenceLines(ref.current.textContent ?? '');
 
         const newClipboardLines = accession == null
           ? sequenceLines
@@ -33,9 +45,9 @@ function Sequence(props) {
   );
 
   useEffect(() => {
-    if (isExpanded == null || isExpanded) return;
+    if (ref.current == null || isExpanded == null || isExpanded) return;
     ref.current.scrollIntoView({ block: 'center' });
-  }, [ isExpanded ]);
+  }, [ ref.current, isExpanded ]);
 
   const style = {
     width: `${NUM_COLS + 0.5}ch`,
@@ -43,12 +55,11 @@ function Sequence(props) {
     wordBreak: 'break-all',
     maxHeight: isExpanded ? '' : '30vh',
     overflow: 'hidden'
-  };
+  } as const;
 
   const sortedHilightRegions = orderBy(highlightRegions, ['start']);
   const firstHighlightRegion = sortedHilightRegions[0];
-  // array of react elements
-  const highlightedSequence = firstHighlightRegion == null ? [ sequence ]
+  const highlightedSequence: React.ReactNode[] = firstHighlightRegion == null ? [ sequence ]
     : firstHighlightRegion.start === 0 ? []
     : [sequence.slice(0, firstHighlightRegion.start - 1)];
 
@@ -109,18 +120,18 @@ Sequence.defaultProps = {
   highlightRegions: []
 };
 
-function handleCopy(event) {
-  const string = window.getSelection().toString();
+function handleCopy(event: React.ClipboardEvent) {
+  const string = window.getSelection()?.toString() ?? '';
   const selection = makeSequenceLines(string).join('\n');
   event.clipboardData.setData('text/plain', selection);
   event.preventDefault();
 }
 
-function makeDefline(accession) {
+function makeDefline(accession: string) {
   return `>${accession}`;
 }
 
-function makeSequenceLines(sequenceSegment) {
+function makeSequenceLines(sequenceSegment: string) {
   return (
     range(Math.ceil(sequenceSegment.length / NUM_COLS))
       .map(n => sequenceSegment.slice(n * NUM_COLS, n * NUM_COLS + NUM_COLS))
