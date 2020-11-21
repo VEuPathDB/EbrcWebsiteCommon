@@ -19,7 +19,5 @@ export function useCommunitySiteProjectUrl(): string | undefined {
   // FIXME: Remove the OrthoMCL-related hardcoding
   return displayName == null || communitySiteRootUrl == null
     ? undefined
-    : displayName === 'OrthoMCL'
-    ? `${communitySiteRootUrl}VEuPathDB`
     : `${communitySiteRootUrl}${displayName}`;
 };
