@@ -23,10 +23,15 @@ export default function GalaxyTerms(props) {
       </p>
 
       <div className="eupathdb-GalaxyWelcomeGrid">
-        <div>
+        {displayName != 'OrthoMCL' && (<div>
           <p>Use Galaxy to analyze RNA-Seq, ChIP-Seq, Variants, and many other data sets.</p>
           <p>Some analysis results will be available as tracks and searches in {displayName}.</p>
-        </div>
+        </div>)}
+       {displayName == 'OrthoMCL' && (<div className="smaller-font">
+	  <p>In VEuPathDB Galaxy you may upload your proteins .fasta file and map them to OrthoMCL Core or Residual groups.</p>
+          <p>If the proteins come from a single proteome, you can additionally find paralog groups.</p>
+          <p>Once you are logged in, click below "Go to Galaxy".</p>
+        </div>)}
         <div>
           <img src="/a/wdkCustomization/images/globus-01-welcome-page.png"/>
         </div>
