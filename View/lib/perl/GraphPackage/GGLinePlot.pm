@@ -1634,4 +1634,29 @@ sub new {
    return $self;
 }
 
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::LOPIT;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot );
+use strict;
+
+sub new {
+  my $class = shift;
+  my $self = $class->SUPER::new(@_);
+
+  my $id = $self->getId();
+
+  $self->setIsLogged(0);
+
+  $self->setYaxisLabel("Probability");
+  $self->setXaxisLabel("");
+  $self->setDefaultYMax(1);
+  $self->setDefaultYMin(0);
+
+  $self->setPartName('prob');
+  $self->setPlotTitle("LOPIT Probability - $id");
+  $self->setPlotTitle("");
+
+  return $self;
+}
+
 1;
