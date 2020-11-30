@@ -1152,7 +1152,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full.2, x = ~log2(VALUE + 
          margin = list(l = 75, 
                        r = 30, 
                        b = 75, 
-                       t = 50, 
+                       t = 60, 
                        pad = 1),
 	 boxgap = .6
   ) %>%
