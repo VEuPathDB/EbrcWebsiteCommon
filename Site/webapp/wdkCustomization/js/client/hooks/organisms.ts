@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWdkEffect } from "wdk-client/Service/WdkService";
+import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
 
 // TODO Make these configurable via model.prop, and when not defined, always return an empty tree.
@@ -9,19 +9,21 @@ const TAXON_QUESTION_NAME = 'SequencesByTaxon';
 const ORGANISM_PARAM_NAME = 'organism';
 
 
-export function useOrganismTree() {
-  const [ tree, setTree ] = useState<TreeBoxVocabNode>();
-  useWdkEffect(wdkService => {
-    wdkService.getQuestionAndParameters(TAXON_QUESTION_NAME)
-      .then(question => {
-        let orgParam  = question.parameters.find(p => p.name == ORGANISM_PARAM_NAME);
-        if (orgParam && orgParam.type == 'multi-pick-vocabulary' && orgParam.displayType == "treeBox") {
-          setTree(orgParam.vocabulary);
-        }
-        else {
-          throw new Error(TAXON_QUESTION_NAME + " does not contain treebox enum param " + ORGANISM_PARAM_NAME);
-        }
-      });
-  });
+export function useOrganismTree(offerOrganismFilter: boolean) {
+  const tree = useWdkService(async wdkService => {
+    if (!offerOrganismFilter) {
+      return undefined;
+    }
+
+    const taxonQuestion = await wdkService.getQuestionAndParameters(TAXON_QUESTION_NAME);
+    const orgParam  = taxonQuestion.parameters.find(p => p.name == ORGANISM_PARAM_NAME);
+
+    if (orgParam?.type == 'multi-pick-vocabulary' && orgParam?.displayType == "treeBox") {
+      return orgParam.vocabulary;
+    }
+
+    throw new Error(TAXON_QUESTION_NAME + " does not contain treebox enum param " + ORGANISM_PARAM_NAME);
+  }, [ offerOrganismFilter ]);
+
   return tree;
 }
