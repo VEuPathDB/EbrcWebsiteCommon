@@ -1653,8 +1653,7 @@ sub new {
   $self->setDefaultYMin(0);
 
   $self->setPartName('prob');
-  $self->setPlotTitle("LOPIT Probability - $id");
-  $self->setPlotTitle("");
+  $self->setPlotTitle("$id");
 
   return $self;
 }
