@@ -123,6 +123,7 @@ public class SmokeTests {
     /** 
       * Assert HEAD request returns 200 OK for the given url.
     **/
+    @SuppressWarnings("unused") // may need later
     private void assertHeaderStatusMessageIsOK(String url) throws Exception {
 
         try {

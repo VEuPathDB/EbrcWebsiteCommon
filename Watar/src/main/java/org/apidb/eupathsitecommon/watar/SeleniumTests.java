@@ -163,8 +163,13 @@ public class SeleniumTests {
     String changedSelectedToolText = homePage.selectedToolHeaderText();
     assertTrue(!initialSelectedToolText.equals(changedSelectedToolText), "assert Selected Tool was Changed");
   }
-  
 
+  /**
+   * Assert static content page loads without error and static-content element is present
+   *
+   * @param url url of the page
+   * @param name name of the page
+   */
   @Test(dataProvider="staticPages", 
       description="Assert static content page loads without error and static-content element is present",
       groups = { "static_content" })
