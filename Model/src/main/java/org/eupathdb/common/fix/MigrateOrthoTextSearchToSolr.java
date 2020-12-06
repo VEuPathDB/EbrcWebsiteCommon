@@ -85,21 +85,21 @@ public class MigrateOrthoTextSearchToSolr implements TableRowUpdaterPlugin<StepD
       "GroupQuestions.GroupsByText",
       "group",
       Map.ofEntries(
-        entry("Sequences", "Sequences"),
-        entry("PFams", "PFams"),
-        entry("EcNumber", "EcNumber"),
-        entry("GroupName", "primary_key")
+        entry("sequences (IDs / descriptions / taxa)", "Sequences"),
+        entry("PFam domains (names and descriptions)", "PFams"),
+        entry("EC numbers (and descriptions)", "EcNumber"),
+        entry("ortholog group ID", "primary_key")
       )
     )),
     entry("SequenceQuestions.ByTextSearch", new SolrSearch(
       "SequenceQuestions.SequencesByText",
       "sequence",
       Map.ofEntries(
-        entry("EcNumbers", "EcNumbers"),
-        entry("OrthologGroupId", "current_old_groups"),
-        entry("Product", "product"),
-        entry("PFams", "pfam_domains"),
-        entry("Taxon", "taxon_name")
+        entry("EC numbers (and descriptions)", "EcNumbers"),
+        entry("ortholog group ID (in current or previous OrthoMCL releases)", "current_old_groups"),
+        entry("product", "product"),
+        entry("PFam domains (names and descriptions)", "pfam_domains"),
+        entry("taxon", "taxon_name")
       )
     ))
   );
