@@ -81,6 +81,7 @@ function Parameters(props: Props) {
                 },
                 parameter: parameter,
                 value: paramValues[parameter.name],
+                uiConfig: {hideGlobalCounts: true},
                 uiState: paramUIState[parameter.name],
                 onParamValueChange: (paramValue: string) => {
                   eventHandlers.onParamValueChange(
