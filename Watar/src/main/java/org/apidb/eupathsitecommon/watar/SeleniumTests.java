@@ -38,18 +38,15 @@ public class SeleniumTests {
 //  private boolean isPortal;
 
   public SeleniumTests() {
-    String websiteBase = System.getProperty("baseurl");
-    String webappName = System.getProperty("webappname");
-    String username = System.getProperty("username");
-    String password = System.getProperty("password");
-    
-    this.baseurl = websiteBase + "/" + webappName;
-    this.username = username;
-    this.password = password;
-    //    isPortal = baseurl.toLowerCase().contains("eupathdb");
-    
+
+    baseurl = System.getProperty("baseurl") + "/" + System.getProperty("webappname");
+    username = System.getProperty("username");
+    password = System.getProperty("password");
+
+    //isPortal = baseurl.toLowerCase().contains("eupathdb");
+
   }
-  
+
   @BeforeTest
   public void setUp() {
    this.driver = new ChromeDriver();
