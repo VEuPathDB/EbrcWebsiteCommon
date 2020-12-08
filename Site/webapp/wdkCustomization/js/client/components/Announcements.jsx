@@ -259,7 +259,7 @@ function AnnouncementBanner({
       padding: '.5em',
       borderRadius: '0.5em',
       borderWidth: '1px',
-      borderColor: 'black',
+      borderColor: 'lightgrey',
       borderStyle: 'solid',
       background: '#E3F2FD',
       display: isOpen ? 'block' : 'none'
