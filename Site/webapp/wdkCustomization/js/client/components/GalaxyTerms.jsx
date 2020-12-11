@@ -28,9 +28,9 @@ export default function GalaxyTerms(props) {
           <p>Some analysis results will be available as tracks and searches in {displayName}.</p>
         </div>)}
        {displayName == 'OrthoMCL' && (<div className="smaller-font">
-	  <p>In VEuPathDB Galaxy you may upload your proteins .fasta file and map them to OrthoMCL Core or Residual groups.</p>
-          <p>If the proteins come from a single proteome, you can additionally find paralog groups.</p>
-          <p>Once you are logged in, click below "Go to Galaxy".</p>
+	  <p>In VEuPathDB Galaxy, you can upload your set of proteins as a .fasta file and map the proteins to OrthoMCL Core and Residual groups.</p>
+          <p>Any proteins that do not map to a defined group are subject to the OrthoMCL algorithm, allowing the formation of additional groups. If your set of proteins is from a single species, each additional group will consist of a set of paralogs.</p>
+          <p>First log into OrthoMCL and then press the "Go to Galaxy" button.</p>
         </div>)}
         <div>
           <img src="/a/wdkCustomization/images/globus-01-welcome-page.png"/>
