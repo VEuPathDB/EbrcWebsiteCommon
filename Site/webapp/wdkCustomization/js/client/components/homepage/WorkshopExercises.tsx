@@ -4,7 +4,7 @@ import { Loading, IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
-import { useCommunitySiteContentProjectUrl } from 'ebrc-client/hooks/staticData';
+import { useCommunitySiteRootUrl, useCommunitySiteContentProjectUrl } from 'ebrc-client/hooks/staticData';
 
 import './WorkshopExercises.scss';
 
@@ -160,7 +160,7 @@ type CardProps = {
 };
 
 export function Card({ entry }: CardProps) {
-  const communitySiteUrl = useCommunitySiteContentProjectUrl();
+  const communitySiteUrl = useCommunitySiteRootUrl();
 
   return (
   <div className={
