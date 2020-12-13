@@ -4,7 +4,7 @@ import { Loading, IconAlt } from 'wdk-client/Components';
 import { makeClassNameHelper } from 'wdk-client/Utils/ComponentUtils';
 
 import { combineClassNames } from 'ebrc-client/components/homepage/Utils';
-import { useCommunitySiteRootUrl } from 'ebrc-client/hooks/staticData';
+import { useCommunitySiteContentProjectUrl } from 'ebrc-client/hooks/staticData';
 
 import './WorkshopExercises.scss';
 
@@ -52,14 +52,14 @@ type ExerciseEntry = {
 };
 
 function useCardMetadata(): CardMetadata | undefined {
-  const communitySiteUrl = useCommunitySiteRootUrl();
+  const communitySiteUrl = useCommunitySiteContentProjectUrl();
   const [ workshopExercisesResponseData, setWorkshopExercisesResponseData ] = useState<WorkshopExercisesResponseData | undefined>(undefined);
 
   useEffect(() => {
     if (communitySiteUrl != null) {
       (async () => {
         // FIXME Add basic error-handling
-        const response = await fetch(`https://${communitySiteUrl}${WORKSHOP_EXERCISES_URL_SEGMENT}`, { mode: 'cors' });
+        const response = await fetch(`https://${communitySiteUrl}/${WORKSHOP_EXERCISES_URL_SEGMENT}`, { mode: 'cors' });
 
         // FIXME Validate this JSON using a Decoder
         const responseData = await response.json() as WorkshopExercisesResponseData;
@@ -160,7 +160,7 @@ type CardProps = {
 };
 
 export function Card({ entry }: CardProps) {
-  const communitySiteUrl = useCommunitySiteRootUrl();
+  const communitySiteUrl = useCommunitySiteContentProjectUrl();
 
   return (
   <div className={
