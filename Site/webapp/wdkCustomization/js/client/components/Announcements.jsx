@@ -67,6 +67,7 @@ const siteAnnouncements = [
   },
 
  // clinepi workshop
+/*
   { 
     id: 'clinepi-workshop',
     renderDisplay: (props) => {
@@ -80,7 +81,7 @@ const siteAnnouncements = [
       return null;
     }
   },
-
+*/
 
   // beta
   //  /*isBetaSite() || */
