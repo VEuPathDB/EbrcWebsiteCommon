@@ -48,6 +48,7 @@ function useFeaturedToolMetadata(): Result<FeaturedToolMetadata> | undefined {
         try {
           const response = await fetch(`https://${communitySiteUrl}${FEATURED_TOOL_URL_SEGMENT}`, { mode: 'cors' });
           if (response.ok) {
+            // FIXME Validate this JSON using a Decoder
             const responseData = await response.json() as FeaturedToolResponseData;
             setFeaturedToolResponseData(responseData);
           }
