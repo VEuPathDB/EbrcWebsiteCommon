@@ -145,6 +145,12 @@
       <artifactId>Jackfish</artifactId>
     </dependency>
 
+    <!-- Contains context listener used to prevent classloader memory leaks (used by web.xmls) -->
+    <dependency>
+      <groupId>se.jiderhamn.classloader-leak-prevention</groupId>
+      <artifactId>classloader-leak-prevention-servlet</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

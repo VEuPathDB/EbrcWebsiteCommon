@@ -249,7 +249,7 @@ sub run {
                        my $outputFile = $_gp->getOutputFile();
 
 
-			print $Cgi->header(-Content_type => $contentType{$format},
+			print $Cgi->header(-Content_type => $contentType{$format} . ';charset=utf-8',
                          -Cache_Control      => 'max-age=600',
                         );
                       

@@ -23,7 +23,8 @@ _hostname_project_map:
   w2.restricted.clinepidb.org: AllClinEpiDB
   restricted.clinepidb.org: AllClinEpiDB
   qa.restricted.clinepidb.org: AllClinEpiDB
-  feature.eupathdb.org: UniDB   
+  feature.eupathdb.org: UniDB
+  feature.veupathdb.org: UniDB   
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
 

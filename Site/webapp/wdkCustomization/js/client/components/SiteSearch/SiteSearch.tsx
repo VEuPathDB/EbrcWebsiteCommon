@@ -26,7 +26,8 @@ interface Props {
   hideDocumentTypeClearButton?: boolean;
   filters?: string[];
   filterOrganisms?: string[];
-  organismTree: TreeBoxVocabNode;
+  offerOrganismFilter: boolean;
+  organismTree?: TreeBoxVocabNode;
   onSearch: (searchString: string) => void;
   onPageOffsetChange: (offset: number) => void;
   onDocumentTypeChange: (documentType?: string) => void;
@@ -134,19 +135,23 @@ function ResultInfo(props: Props) {
 }
 
 function SearchCounts(props: Props) {
-  const { searchString, response, documentType, hideDocumentTypeClearButton, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
+  const { searchString, response, documentType, hideDocumentTypeClearButton, offerOrganismFilter, organismTree, filterOrganisms, onOrganismsChange, onDocumentTypeChange } = props;
   const { categories, documentTypes, organismCounts } = response || {};
   const [ onlyShowMatches, setOnlyShowMatches ] = useState(true);
   const docTypesById = useMemo(() => keyBy(documentTypes, 'id'), [ documentTypes ]);
   const finalOrganismTree = useMemo(() => (
-    onlyShowMatches
+    !offerOrganismFilter || organismTree == null
+      ? undefined
+      : onlyShowMatches
       ? pruneDescendantNodes(
           node => node.children.length > 0 || organismCounts[node.data.term] > 0 || Boolean(filterOrganisms && filterOrganisms.includes(node.data.term)),
           organismTree
         )
       : organismTree
-    ), [ organismTree, organismCounts, onlyShowMatches ]);
-  const showOrganismFilter = documentType == null
+    ), [ offerOrganismFilter, organismTree, organismCounts, onlyShowMatches ]);
+  const showOrganismFilter = !offerOrganismFilter
+    ? false
+    : documentType == null
     ? documentTypes.some(d => d.hasOrganismField)
     : docTypesById[documentType]?.hasOrganismField;
 
@@ -196,7 +201,7 @@ function SearchCounts(props: Props) {
         </tbody>
       </table>
       <WdkRecordFields {...props} onlyShowMatches={onlyShowMatches} />
-      {showOrganismFilter && organismTree && filterOrganisms && (
+      {showOrganismFilter && finalOrganismTree && filterOrganisms && (
         <OrganismFilter
           organismTree={finalOrganismTree}
           filterOrganisms={filterOrganisms}
@@ -653,7 +658,8 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
   if (
     documentType.id === 'news' ||
     documentType.id === 'general' ||
-    documentType.id === 'tutorial'
+    documentType.id === 'tutorial' ||
+    documentType.id === 'workshop-exercise'
   ) {
     // Handle the special case of tutorials that are offered as home page cards
     const url = documentType.id === 'tutorial' && document.primaryKey.length === 1 && document.primaryKey[0].startsWith('#')

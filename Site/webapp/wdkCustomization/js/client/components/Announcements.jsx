@@ -49,19 +49,38 @@ const siteAnnouncements = [
       }
     }
   },
-  {
+
+ { 
     id: 'live-beta',
     renderDisplay: props => {
       if ( isGenomicHomePage(props.projectId, props.location) ) return (
         <div key="live-beta">
-          Welcome to {props.displayName} <i>beta</i> where you will find the newest versions of our interface, features, tools and data.
+          Welcome to {props.displayName} <i>beta</i> where you will find the newest versions of our interface, features, tools and data.  
           While we transition to making this beta site permanent, <a target="_blank" href={`https://legacy.${props.projectId.toLowerCase()}.${props.projectId === 'SchistoDB' ? 'net' : 'org'}`}>
-            legacy.{props.projectId.toLowerCase()}.org</a> is still available.
+            legacy.{props.projectId.toLowerCase()}.org</a> is still available. 
           Here is a <a target="_blank" href="https://upenn.co1.qualtrics.com/jfe/form/SV_9N2RTXq7ljpZnDv">form for sending your feedback</a> on the beta sites.
         </div>
       )
     }
   },
+
+ // clinepi workshop
+/*
+  {
+    id: 'clinepi-workshop',
+    renderDisplay: (props) => {
+    if (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB' ) {
+        return (
+          <div>
+            WEBINAR Dec 9, 10am EST: We present <span style={{fontWeight: 'bold'}}>Clinical and Epidemiologic Data Exploration for Genomic Researchers</span>. We will cover key features and studies in ClinEpiDB that may be of interest to biologists working on infectious diseases. <a target="_blank" href="https://attendee.gotowebinar.com/register/3656141554042311437">Register here.</a>
+          </div>
+        );
+      }
+      return null;
+    }
+  },
+*/
+
 
   // beta
   //  /*isBetaSite() || */
@@ -237,9 +256,11 @@ function AnnouncementBanner({
 
   return (
     <div className="eupathdb-Announcement" style={{
+      margin: '3px',
       padding: '.5em',
-      borderWidth: '0 1px 1px 1px',
-      borderColor: '#bbbbbb',
+      borderRadius: '0.5em',
+      borderWidth: '1px',
+      borderColor: 'lightgrey',
       borderStyle: 'solid',
       background: '#E3F2FD',
       display: isOpen ? 'block' : 'none'
@@ -251,6 +272,7 @@ function AnnouncementBanner({
       }}>
         {icon}
         <div style={{
+          marginLeft: '1em',
           display: 'inline-block',
           width: 'calc(100% - 5.5em)',
           padding: '8px',
