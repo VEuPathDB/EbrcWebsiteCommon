@@ -1,6 +1,15 @@
+import { negate } from 'lodash'
+
 import { stripHTML } from 'wdk-client/Utils/DomUtils';
-import { Node } from 'wdk-client/Utils/TreeUtils'
+import { Node, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils'
 import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
+
+export function pruneNodesWithOneExtendingChild(organismTree: Node<TreeBoxVocabNode>) {
+  return pruneDescendantNodes(
+    negate(isNodeWithOneExtendingChild),
+    organismTree
+  );
+}
 
 export function isNodeWithOneExtendingChild(node: Node<TreeBoxVocabNode>) {
   return (
