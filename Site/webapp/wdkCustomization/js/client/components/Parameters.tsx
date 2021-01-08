@@ -1,19 +1,11 @@
 import React from 'react';
+import { Dispatch } from 'redux';
 import { HelpIcon } from 'wdk-client/Components';
 import { wrappable } from 'wdk-client/Utils/ComponentUtils';
+import { Parameter, ParameterValues } from 'wdk-client/Utils/WdkModel';
 import { makeQuestionWizardClassName as makeClassName } from '../util/classNames';
 import { WizardState, ParameterEventHandlers } from '../util/WizardTypes';
-import {
-  Parameter,
-  ParameterGroup,
-  // ParamUIState,
-  QuestionWithParameters,
-  RecordClass,
-  ParameterValues,
-  ParameterValue
-} from 'wdk-client/Utils/WdkModel';
-import { Plugin } from 'wdk-client/Utils/ClientPlugin';
-import { Dispatch } from 'redux';
+import Param from './Param';
 
 type Props = {
   //group: ActiveGroup was needed by previous param
@@ -66,31 +58,14 @@ function Parameters(props: Props) {
                 }
               }}
             >
-            <Plugin
-              context={{
-                type: 'questionFormParameter',
-                name: parameter.name,
-                searchName,
-                recordClassName
-              }}
-              pluginProps={{
-                ctx: {
-                  searchName,
-                  parameter,
-                  paramValues: paramValues
-                },
-                parameter: parameter,
-                value: paramValues[parameter.name],
-                uiConfig: {hideGlobalCounts: true},
-                uiState: paramUIState[parameter.name],
-                onParamValueChange: (paramValue: string) => {
-                  eventHandlers.onParamValueChange(
-                    parameter,
-                    paramValue
-                  )
-                },
-                dispatch: dispatch
-              }}
+              <Param
+                dispatch={dispatch}
+                param={parameter}
+                paramValues={paramValues}
+                uiState={paramUIState[parameter.name]}
+                eventHandlers={eventHandlers}
+                searchName={searchName}
+                recordClassName={recordClassName}
               />
             </div>
           </div>
