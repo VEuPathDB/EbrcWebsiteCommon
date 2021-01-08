@@ -1,5 +1,5 @@
 import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
-import { pruneNodesWithOneExtendingChild } from 'ebrc-client/util/organisms';
+import { pruneNodesWithSingleExtendingChild } from 'ebrc-client/util/organisms';
 
 // TODO Make these configurable via model.prop, and when not defined, always return an empty tree.
 // This way non-genomic sites can call this without effect, while keeping the thrown error if
@@ -18,7 +18,7 @@ export function useOrganismTree(offerOrganismFilter: boolean) {
     const orgParam  = taxonQuestion.parameters.find(p => p.name == ORGANISM_PARAM_NAME);
 
     if (orgParam?.type == 'multi-pick-vocabulary' && orgParam?.displayType == 'treeBox') {
-      return pruneNodesWithOneExtendingChild(orgParam.vocabulary);
+      return pruneNodesWithSingleExtendingChild(orgParam.vocabulary);
     }
 
     throw new Error(TAXON_QUESTION_NAME + " does not contain treebox enum param " + ORGANISM_PARAM_NAME);
