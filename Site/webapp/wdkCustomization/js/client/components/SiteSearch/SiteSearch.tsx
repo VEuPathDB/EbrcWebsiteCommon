@@ -8,7 +8,7 @@ import { useWdkService } from 'wdk-client/Hooks/WdkServiceHook';
 import { makeClassNameHelper, safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import { areTermsInString, makeSearchHelpText } from 'wdk-client/Utils/SearchUtils';
 import { getLeaves, pruneDescendantNodes } from 'wdk-client/Utils/TreeUtils';
-import { TreeBoxVocabNode } from 'wdk-client/Utils/WdkModel';
+import { TreeBoxVocabNode, StringParam } from 'wdk-client/Utils/WdkModel';
 import { useProjectUrls, ProjectUrls, useOrganismToProject, OrganismToProject } from 'ebrc-client/hooks/projectUrls';
 import { SiteSearchResponse, SiteSearchDocumentType, SiteSearchDocument } from 'ebrc-client/SiteSearch/Types';
 import { NewStrategySpec, NewStepSpec } from 'wdk-client/Utils/WdkUser';
@@ -485,8 +485,11 @@ function StrategyLinkout(props: Props) {
     history.push(`/workspace/strategies/${strategyResp.id}`);
   }, [question, docType, filters, filterOrganisms, searchString]);
 
+  const stringParam = question?.parameters.find(p => p.name === 'text_expression') as StringParam | undefined;
+
   if (docType == null) return <StrategyLinkoutLink tooltipContent="To export, select a result type (like Genes) on the left."/>
   if (!docType.isWdkRecordType || question == null) return <StrategyLinkoutLink tooltipContent={`This feature is not available for ${docType.displayNamePlural}`}/>
+  if (stringParam && searchString.length > stringParam.length) return <StrategyLinkoutLink tooltipContent="Your search string is too large to export to a strategy. Try a smaller search string."/>
   return <StrategyLinkoutLink onClick={onClick} tooltipContent="Download or data mine using the search strategy system." />;
 }
 
