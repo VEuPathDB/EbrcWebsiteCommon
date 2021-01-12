@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Parameter,
   ParameterGroup,
@@ -11,12 +10,14 @@ import {
 } from 'wdk-client/Utils/WdkModel';
 import { Dispatch } from 'redux';
 import { Field, FilterField } from 'wdk-client/Components/AttributeFilter/Types';
+import {
+  GroupState
+} from 'wdk-client/StoreModules/QuestionStoreModule'
 
 export type ParameterGroupUI = ParameterGroup & {
-  accumulatedTotal: number,
-  valid: boolean,
-  loading: boolean,
+  filteredCountState: GroupState['filteredCountState'],
   selectedInPanel: boolean,
+  precedingTheGroupThatIsSelectedInPanel: boolean,
   countCanChangeInPanel: boolean,
   allValuesDefault: boolean
 };

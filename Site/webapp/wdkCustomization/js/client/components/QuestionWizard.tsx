@@ -22,6 +22,9 @@ import {
   Parameter,
   ParameterValue
 } from 'wdk-client/Utils/WdkModel';
+import {
+  FilteredCountState
+} from 'wdk-client/StoreModules/QuestionStoreModule'
 import { FilterField } from 'wdk-client/Components/AttributeFilter/Types';
 
 const getParamMap = memoize((question: QuestionWithParameters) => new Map(question.parameters.map(p => [p.name, p])));
@@ -136,14 +139,15 @@ function Navigation(props: QuestionWizardProps) {
     showHelpText,
     isAddingStep
   } = props;
-  const invalid = parameterGroupUIs.some(uiState => uiState.valid === false && uiState.loading !== true);
 
   const allValuesDefault = props.wizardState.parameterGroupUIs.filter(group =>
     group.allValuesDefault
   );
-  const finalCountState = Seq.of({ accumulatedTotal: initialCount })
-    .concat(Seq.from(parameterGroupUIs)
-      .filter(groupState => groupState.valid !== undefined))
+  const finalCountState = Seq.of(initialCount)
+    .concat(
+      Seq.from(parameterGroupUIs)
+      .filter(groupState => groupState.filteredCountState !== 'initial')
+      .map(groupState => groupState.filteredCountState))
     .last();
 
   // XXX We should probably have a separate component for RecordClassIcon to encapsulate this logic
@@ -169,10 +173,8 @@ function Navigation(props: QuestionWizardProps) {
               <div className={makeClassName('ParamGroupArrow')}/>
               <ParamGroupCount
                 title={`All ${recordDisplayName}`}
-                count={initialCount}
+                filteredCountState={initialCount}
                 isActive={parameterGroupUIs[0].selectedInPanel}
-                isLoading={false}
-                isValid={true}
               />
             </div>
 
@@ -217,10 +219,8 @@ function Navigation(props: QuestionWizardProps) {
                 <div className={makeClassName('ParamGroupArrow')}/>
                 <ParamGroupCount
                   title={`${recordDisplayName} selected from previous steps.`}
-                  count={group.accumulatedTotal}
-                  isLoading={group.loading}
-                  isValid={group.valid}
-                  isActive={group.countCanChangeInPanel} 
+                  filteredCountState={group.filteredCountState}
+                  isActive={group.selectedInPanel || group.precedingTheGroupThatIsSelectedInPanel} 
                 />
               </div>
               )}
@@ -234,9 +234,10 @@ function Navigation(props: QuestionWizardProps) {
                 title="View the results of your search for further analysis."
                 onClick={() => onSubmit()}
               >
-                { finalCountState.accumulatedTotal == null || finalCountState.loading ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
-                : finalCountState.valid === false ? `View ? ${recordDisplayName}`
-                : `${isAddingStep ? 'Combine' : 'View'} ${result(finalCountState.accumulatedTotal, 'toLocaleString')} ${recordDisplayName}` }
+                {
+                  finalCountState === 'loading' ? <Loading radius={4} className={makeClassName('ParamGroupCountLoading')}/>
+                 : (isAddingStep ? 'Combine' : 'View' ) + ' ' + fcsToEl(finalCountState) + (fcsToEl(finalCountState) ? ' ' : '') + recordDisplayName
+               }
               </button>
               {/*!isAddingStep && (
                 <button
@@ -265,27 +266,32 @@ function Navigation(props: QuestionWizardProps) {
 }
 
 
+function fcsToEl(fcs: FilteredCountState){
+  return (
+    fcs === 'loading' ? <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
+    : fcs === 'invalid' ? '?'
+    : fcs === 'initial' ? ''
+    : result(fcs, 'toLocaleString') as string
+  );
+}
+
+
 /** Render count or loading */
 function ParamGroupCount(props: {
   title: string,
-  count: number,
-  isValid: boolean,
-  isLoading: boolean,
+  filteredCountState: FilteredCountState,
   isActive: boolean
 }) {
   return (
     <div title={props.title}
       className={makeClassName(
         'ParamGroupCount',
-        props.isValid === false && 'invalid',
+        props.filteredCountState === 'invalid' && 'invalid',
         props.isActive && 'active'
       )}
     >
-      {props.isLoading === true ? (
-        <Loading radius={2} className={makeClassName('ParamGroupCountLoading')}/>
-      ) : (props.isValid === false ? '?' : result(props.count, 'toLocaleString'))}
+     {fcsToEl(props.filteredCountState) }
     </div>
-  )
+  );
 }
-
 

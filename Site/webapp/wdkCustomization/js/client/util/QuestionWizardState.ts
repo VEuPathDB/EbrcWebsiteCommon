@@ -23,10 +23,10 @@ import {
   State as FilterParamState
 } from 'wdk-client/Views/Question/Params/FilterParamNew/State'
 
-export function constructInitialCount(question: QuestionWithParameters, paramUIState: WizardState['paramUIState'], activeGroupIx: number): number{
+export function constructInitialCount(question: QuestionWithParameters, paramUIState: WizardState['paramUIState'], activeGroupIx: number) {
 
-  return (activeGroupIx > -1 && question.parameters?.[0].type === 'filter' &&
-    ((paramUIState[question.parameters?.[0].name] as unknown) as FilterParamState).unfilteredCount || 0
+  return (question.parameters?.[0].type === 'filter' ?
+    ((paramUIState[question.parameters?.[0].name] as unknown) as FilterParamState).unfilteredCount : undefined
   );
 
 }
@@ -36,13 +36,10 @@ export function constructParameterGroupUIs(question: QuestionWithParameters, par
     group,
     { 
       selectedInPanel: ix === activeGroupIx,
-      countCanChangeInPanel:
-        ix === activeGroupIx || ( activeGroupIx > -1 && ix === activeGroupIx + 1 )
+      precedingTheGroupThatIsSelectedInPanel: activeGroupIx > -1 && ix + 1 === activeGroupIx,
     },
     {
-      valid: groupUIState[group.name]?.filteredCountIsValid,
-      loading: groupUIState[group.name]?.loadingFilteredCount,
-      accumulatedTotal: groupUIState[group.name]?.filteredCount || 0,
+      filteredCountState: groupUIState[group.name]!.filteredCountState,
     },
     { allValuesDefault: 
        every(group.parameters.map(paramName => 

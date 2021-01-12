@@ -37,8 +37,8 @@ function ActiveGroup(props: QuestionWizardProps) {
   const paramMap = new Map(question.parameters.map(p => [p.name, p]));
   const activeGroup = parameterGroupUIs[activeGroupIx];
 
-  const { accumulatedTotal, loading } =  activeGroup;
-  const { accumulatedTotal: prevAccumulatedTotal, loading: prevLoading } = activeGroupIx === 0 ? { accumulatedTotal: initialCount, loading: undefined } : parameterGroupUIs[activeGroupIx - 1];
+  const filteredCountState = activeGroup.filteredCountState;
+  const filteredCountStateOfPreviousGroup = activeGroupIx === 0 ? initialCount : parameterGroupUIs[activeGroupIx - 1]!.filteredCountState;
 
   const parameters = activeGroup.parameters
     .map(paramName => paramMap.get(paramName) as Parameter)
@@ -65,9 +65,9 @@ function ActiveGroup(props: QuestionWizardProps) {
       <div className={makeClassName('ActiveGroupHeading')}>
         <div className={makeClassName('ActiveGroupCount', activeGroup.allValuesDefault ? 'hidden' : 'visible')}>
           Your <em>{activeGroup.displayName}</em> filters reduce {
-            (prevLoading ? loadingEl : result(prevAccumulatedTotal, 'toLocaleString'))
+            (filteredCountStateOfPreviousGroup === 'loading' ? loadingEl : result(filteredCountStateOfPreviousGroup, 'toLocaleString'))
           } {recordClass.shortDisplayNamePlural} to {
-            (loading ? loadingEl : result(accumulatedTotal, 'toLocaleString'))
+            (filteredCountState === 'loading' ? loadingEl : result(filteredCountState, 'toLocaleString'))
           }
         </div>
         {activeGroup.description && (
