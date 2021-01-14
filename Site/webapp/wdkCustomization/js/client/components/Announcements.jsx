@@ -121,6 +121,19 @@ const siteAnnouncements = [
   },
 */
 
+  { 
+    id: 'apollo-galaxy-off',
+    category: 'degraded',
+    renderDisplay: props => {
+      if ( isGalaxy(props.location) || isApollo(props.location) ) return (
+        <div>
+          Data export to VEuPathDB is currently <b>unavailable</b>.  We are working on fixing this issue and hope to have the export service back ASAP.
+        </div>
+      )
+    }
+  },
+
+
   // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
     id: 'geneFungi',
@@ -350,11 +363,15 @@ function param(name, { search = '' }) {
 function isGenomicSite(projectId) {
   return !/ClinEpiDB|MicrobiomeDB/i.test(projectId);
 }
-
 function isBetaSite() {
   return param('beta', window.location) === 'true' || /^(beta|b1|b2)/.test(window.location.hostname);
 }
-
+function isGalaxy(routerLocation) {
+  return routerLocation.pathname.startsWith('/galaxy-orientation');
+}
+function isApollo(routerLocation) {
+  return routerLocation.pathname.startsWith('/static-content/apollo');
+}
 function isStrategies(routerLocation) {
   return routerLocation.pathname.startsWith('/workspace/strategies');
 }
@@ -364,7 +381,6 @@ function isBasket(routerLocation) {
 function isFavorites(routerLocation) {
   return routerLocation.pathname.startsWith('/workspace/favorites');
 }
-
 function isGenomicHomePage(projectId, routerLocation) {
   return isGenomicSite(projectId) && routerLocation.pathname === '/';
 }
