@@ -127,7 +127,7 @@ const siteAnnouncements = [
     renderDisplay: props => {
       if ( isGalaxy(props.location) || isApollo(props.location) ) return (
         <div>
-          Data export to VEuPathDB is currently <b>unavailable</b>.  We are working on fixing this issue and hope to have the export service back ASAP.
+          Apollo and the Galaxy Data export to VEuPathDB are currently <b>unavailable</b>.  We are working on fixing this issue and hope to have the export service back ASAP.
         </div>
       )
     }
