@@ -120,7 +120,7 @@ const siteAnnouncements = [
     }
   },
 */
-
+/*
   { 
     id: 'apollo-galaxy-off',
     category: 'degraded',
@@ -132,7 +132,7 @@ const siteAnnouncements = [
       )
     }
   },
-
+*/
 
   // TriTryp gene page for Bodo saltans strain Lake Konstanz
   {
