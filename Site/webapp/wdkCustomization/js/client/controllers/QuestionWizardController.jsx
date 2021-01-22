@@ -1,52 +1,22 @@
-/*global wdk*/
-import {
-  ary,
-  debounce,
-  flow,
-  get,
-  groupBy,
-  identity,
-  isEqual,
-  keyBy,
-  mapValues,
-  memoize,
-  partition,
-  pick,
-  reverse,
-  sortBy,
-  stubTrue as T
-} from 'lodash';
-import PropTypes from 'prop-types';
-import React, { useEffect, useMemo } from 'react';
+import { mapValues, pick } from 'lodash';
+import React from 'react';
 import { connect } from 'react-redux';
-import {
-  updateActiveQuestion,
-  initParam,
-  changeGroupVisibility,
-  updateParamValue
-} from 'wdk-client/Actions/QuestionActions';
-
 import { setActiveField } from 'wdk-client/Actions/FilterParamActions';
-
-import { Dispatch } from 'redux';
-
-import { Dialog, LoadingOverlay } from 'wdk-client/Components';
-import { wrappable } from 'wdk-client/Utils/ComponentUtils';
-import { ViewController } from 'wdk-client/Controllers';
-import { Seq } from 'wdk-client/Utils/IterableUtils';
-import { synchronized } from 'wdk-client/Utils/PromiseUtils';
-import * as StrategyActions from 'wdk-client/Actions/StrategyActions';
+import { changeGroupVisibility, updateActiveQuestion, updateParamValue } from 'wdk-client/Actions/QuestionActions';
 import * as RouterActions from 'wdk-client/Actions/RouterActions';
+import * as StrategyActions from 'wdk-client/Actions/StrategyActions';
+import { Dialog, LoadingOverlay } from 'wdk-client/Components';
+import { ViewController } from 'wdk-client/Controllers';
 import { DEFAULT_STEP_WEIGHT, DEFAULT_STRATEGY_NAME } from 'wdk-client/StoreModules/QuestionStoreModule';
-
+import { wrappable } from 'wdk-client/Utils/ComponentUtils';
+import { Seq } from 'wdk-client/Utils/IterableUtils';
+import { addStep } from 'wdk-client/Utils/StrategyUtils';
 import QuestionWizard from '../components/QuestionWizard';
-import {
-  setFilterPopupVisiblity,
-  setFilterPopupPinned,
-  constructInitialCount,
-  constructParameterGroupUIs
-} from '../util/QuestionWizardState';
-import {addStep} from 'wdk-client/Utils/StrategyUtils';
+import { constructInitialCount, constructParameterGroupUIs, setFilterPopupPinned, setFilterPopupVisiblity } from '../util/QuestionWizardState';
+
+
+
+
 
 //  type State = {
 //    activeGroup: Group;
@@ -76,9 +46,9 @@ class QuestionWizardController extends ViewController {
     this.wizardEventHandlers = mapValues(this.getWizardEventHandlers(), handler => handler.bind(this));
     this.parameterEventHandlers = mapValues(this.getParameterEventHandlers(), handler => handler.bind(this));
 
-		this._activeGroupIx = this._activeGroupIx.bind(this);
+    this._activeGroupIx = this._activeGroupIx.bind(this);
     this._resetParameters = this._resetParameters.bind(this);
-		this.onSelectFilterParamField = this.onSelectFilterParamField.bind(this);
+    this.onSelectFilterParamField = this.onSelectFilterParamField.bind(this);
 
     this.setCustomName = this.setCustomName.bind(this);
     this.componentStateFromLoadedQuestion = this.componentStateFromLoadedQuestion.bind(this);
@@ -97,21 +67,18 @@ class QuestionWizardController extends ViewController {
 
   getParameterEventHandlers() {
     return pick(this, [
-			'onSelectFilterParamField',
+      'onSelectFilterParamField',
       'onParamValueChange'
     ]);
   }
 
   loadQuestion() {
-  const { 
-    dispatch, 
-    submissionMetadata,
-    searchName, 
-    recordClassName, 
-    recordClasses,
-    initialParamData,
-    autoRun,
-    prepopulateWithLastParamValues } = this.props;
+    const {
+      dispatch,
+      submissionMetadata,
+      searchName,
+      initialParamData,
+      autoRun } = this.props;
 
     const stepId = submissionMetadata.type === 'edit-step' || submissionMetadata.type === 'submit-custom-form' ? submissionMetadata.stepId : undefined;
 
@@ -124,31 +91,26 @@ class QuestionWizardController extends ViewController {
     }));
 
   }
-  async componentStateFromLoadedQuestion () {
+  async componentStateFromLoadedQuestion() {
 
-  const { 
-    question,
-    dispatch, 
-    submissionMetadata,
-    searchName, 
-    recordClassName, 
-    recordClasses,
-    initialParamData,
-    wdkService,
-    autoRun,
-    prepopulateWithLastParamValues } = this.props;
+    const {
+      question,
+      submissionMetadata,
+      recordClassName,
+      recordClasses,
+      wdkService } = this.props;
 
     const stepId = submissionMetadata.type === 'edit-step' || submissionMetadata.type === 'submit-custom-form' ? submissionMetadata.stepId : undefined;
 
-    if(stepId){
+    if (stepId) {
       const step = await wdkService.findStep(submissionMetadata.stepId);
-      if(step.customName){
-        this.setState({customName: step.customName});
+      if (step.customName) {
+        this.setState({ customName: step.customName });
       }
     }
-    
 
-    const recordClass = recordClasses && recordClasses.find(({ urlSegment }) => urlSegment === recordClassName); 
+
+    const recordClass = recordClasses && recordClasses.find(({ urlSegment }) => urlSegment === recordClassName);
 
     document.title = `Search for ${recordClass.displayName} by ${question.displayName}`;
     this.onSelectGroup(0);
@@ -164,25 +126,25 @@ class QuestionWizardController extends ViewController {
   onSelectGroup(activeGroupIx) {
     const prevActiveGroupIx = this._activeGroupIx();
 
-    
-    if (prevActiveGroupIx < activeGroupIx){
+
+    if (prevActiveGroupIx < activeGroupIx) {
       this.props.question.groups.slice(prevActiveGroupIx + 1, activeGroupIx + 1)
         .forEach(group => {
-            this.props.dispatch(changeGroupVisibility({
-                  searchName: this.props.searchName,
-                  groupName: group.name,
-                  isVisible: true
-                }));
+          this.props.dispatch(changeGroupVisibility({
+            searchName: this.props.searchName,
+            groupName: group.name,
+            isVisible: true
+          }));
 
         });
-    } else if (prevActiveGroupIx > activeGroupIx){
+    } else if (prevActiveGroupIx > activeGroupIx) {
       this.props.question.groups.slice(activeGroupIx + 1, prevActiveGroupIx + 1)
         .forEach(group => {
-            this.props.dispatch(changeGroupVisibility({
-                  searchName: this.props.searchName,
-                  groupName: group.name,
-                  isVisible: false
-                }));
+          this.props.dispatch(changeGroupVisibility({
+            searchName: this.props.searchName,
+            groupName: group.name,
+            isVisible: false
+          }));
 
         });
     } else {
@@ -191,37 +153,38 @@ class QuestionWizardController extends ViewController {
   }
 
 
-  onSelectFilterParamField(activeGroupIx, parameter, field){
-		this.onSelectGroup(activeGroupIx);
-		
-		this.props.dispatch(setActiveField({
-			searchName: this.props.searchName,
-			parameter,
-      paramValues: this.props.paramValues,
- 			activeField: field.term })
-		);
-	}
+  onSelectFilterParamField(activeGroupIx, parameter, field) {
+    this.onSelectGroup(activeGroupIx);
 
-  onParamValueChange(parameter, paramValue, callback){
+    this.props.dispatch(setActiveField({
+      searchName: this.props.searchName,
+      parameter,
+      paramValues: this.props.paramValues,
+      activeField: field.term
+    })
+    );
+  }
+
+  onParamValueChange(parameter, paramValue, callback) {
 
     /*
      * Mark in the state that new parameter is expected
      * It is set back to null when props change with the new value.
      */
-		const currentValue = this.props.paramValues[parameter.name];
-		const updatingParamName = paramValue != currentValue ? parameter.name : null;
+    const currentValue = this.props.paramValues[parameter.name];
+    const updatingParamName = paramValue != currentValue ? parameter.name : null;
 
-		this.setState({updatingParamName}, () => {
+    this.setState({ updatingParamName }, () => {
       this.props.dispatch(updateParamValue({
         searchName: this.props.searchName,
         paramValues: this.props.paramValues,
         parameter,
         paramValue
       }));
-      if(callback){
+      if (callback) {
         callback();
       }
-   });
+    });
   }
 
   /**
@@ -244,13 +207,13 @@ class QuestionWizardController extends ViewController {
   onParamValuesReset() {
     this._resetParameters(
       this.props.question.parameters
-      .filter(parameter => parameter.isVisible)
-      .filter(parameter => this.props.paramValues[parameter.name] != this.props.defaultParamValues[parameter.name])
+        .filter(parameter => parameter.isVisible)
+        .filter(parameter => this.props.paramValues[parameter.name] != this.props.defaultParamValues[parameter.name])
     );
   }
 
-  _resetParameters(parameters){
-    if(parameters.length === 0){
+  _resetParameters(parameters) {
+    if (parameters.length === 0) {
       return;
     }
     let [parameter, ...otherParameters] = parameters;
@@ -360,7 +323,7 @@ class QuestionWizardController extends ViewController {
         throw new Error(`Unknown submissionMetadata type: "${submissionMetadata.type}"`);
       }
 
-      catch(error) {
+      catch (error) {
         this.setState({ submitting: false });
         throw error;
       }
@@ -383,32 +346,32 @@ class QuestionWizardController extends ViewController {
     if (prevProps.searchName !== this.props.searchName) {
       this.loadQuestion();
     }
-    if(prevProps.questionStatus !== 'complete' && this.props.questionStatus == 'complete'){
+    if (prevProps.questionStatus !== 'complete' && this.props.questionStatus == 'complete') {
       this.componentStateFromLoadedQuestion();
     }
-/*
-This only isn't a bug because we only set updatingParamName to non-null when updating to a different value
-*/
-		if (this.state.updatingParamName && prevProps.paramValues[this.state.updatingParamName] !== this.props.paramValues[this.state.updatingParamName]){
-			this.setState({updatingParamName: null});
+    /*
+    This only isn't a bug because we only set updatingParamName to non-null when updating to a different value
+    */
+    if (this.state.updatingParamName && prevProps.paramValues[this.state.updatingParamName] !== this.props.paramValues[this.state.updatingParamName]) {
+      this.setState({ updatingParamName: null });
     }
   }
 
-	_activeGroupIx(){
+  _activeGroupIx() {
     return this.props.question.groups.map(group => this.props.groupUIState[group.name].isVisible).lastIndexOf(true);
-	}
+  }
 
   renderView() {
 
-    const recordClass = this.props.recordClasses && this.props.recordClasses.find(({ urlSegment }) => urlSegment === this.props.recordClassName); 
-		const activeGroupIx = this._activeGroupIx();
+    const recordClass = this.props.recordClasses && this.props.recordClasses.find(({ urlSegment }) => urlSegment === this.props.recordClassName);
+    const activeGroupIx = this._activeGroupIx();
 
     return (
       <React.Fragment>
         {this.state.error && (
           <Dialog open modal title="An error occurred" onClose={() => this.setState({ error: undefined })}>
             {Seq.from(this.state.error.stack.split('\n'))
-              .flatMap(line => [ line, <br/> ])}
+              .flatMap(line => [line, <br />])}
           </Dialog>
         )}
         {this.state.submitting && <LoadingOverlay>Running search...</LoadingOverlay>}
@@ -421,14 +384,14 @@ This only isn't a bug because we only set updatingParamName to non-null when upd
               defaultParamValues: this.props.defaultParamValues,
               filterPopupState: this.state.filterPopupState,
               parameterGroupUIs: constructParameterGroupUIs(
-								this.props.question, this.props.paramValues, this.props.defaultParamValues,
-							  this.props.groupUIState, activeGroupIx
-							),
+                this.props.question, this.props.paramValues, this.props.defaultParamValues,
+                this.props.groupUIState, activeGroupIx
+              ),
               initialCount: constructInitialCount(this.props.question, this.props.paramUIState, activeGroupIx),
               paramUIState: this.props.paramUIState,
               paramValues: this.props.paramValues,
               question: this.props.question,
-							recordClass,
+              recordClass,
               updatingParamName: this.state.updatingParamName,
             }}
             wizardEventHandlers={this.wizardEventHandlers}
@@ -454,8 +417,8 @@ function mapStateToPropsPrevious(state, props) {
   }
   return {};
 }
-function getQuestion(state, props){
-  const {searchName} = props;
+function getQuestion(state, props) {
+  const { searchName } = props;
   const q = state.question.questions[searchName];
   /*
    * Triggers this error, I don't know how to get rid of it:
@@ -476,8 +439,8 @@ const enhance = connect(
       recordClasses: state.globalData.recordClasses,
     },
     getQuestion(state, props)
-    ),
-  (dispatch) => ({ dispatch}),
+  ),
+  (dispatch) => ({ dispatch }),
   (stateProps, dispatchProps, ownProps) => ({
     ...stateProps,
     ...dispatchProps,
