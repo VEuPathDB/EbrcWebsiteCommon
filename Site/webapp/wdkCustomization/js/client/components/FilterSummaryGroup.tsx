@@ -10,14 +10,16 @@ import {
   Parameter,
   ParameterGroup,
   ParameterValue,
-  ParameterValues
+  ParameterValues,
 } from 'wdk-client/Utils/WdkModel';
 import { FilterField } from 'wdk-client/Components/AttributeFilter/Types';
+import { WizardState } from 'ebrc-client/util/WizardTypes';
 
 type Props = {
   groupDisplayName: string,
   groupParameters: Parameter[],
   paramValues: ParameterValues,
+  wizardState: WizardState,
   defaultParamValues: ParameterValues,
   onParamValueChange: (parameter: Parameter, newParamValue: ParameterValue) => any,
   onSelectGroup: () => any,

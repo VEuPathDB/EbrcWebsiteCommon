@@ -63,6 +63,7 @@ function QuestionWizard(props : QuestionWizardProps) {
             props.wizardState.parameterGroupUIs.map((group,ix) => (
               group.allValuesDefault ? null : <FilterSummaryGroup
                 key={group.name}
+                wizardState={props.wizardState}
                 groupDisplayName={group.displayName}
                 groupParameters={group.parameters.map(paramName => parametersByName.get(paramName) as Parameter)}
                 paramValues={props.wizardState.paramValues}
