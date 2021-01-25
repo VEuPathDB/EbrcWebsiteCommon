@@ -1,0 +1,142 @@
+[
+  {"matchStrings": ["ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
+  },
+  {"matchStrings": ["QQBrowser"
+    ],
+   "comment": "NPE, old system MSIE 7.0; Windows NT 5.1"
+  },
+  {"matchStrings": ["======== CONNECTION"
+    ]
+  },
+  {"matchStrings": ["ORA-12516"
+    ],
+   "comment": "could not find available handler with matching protocol stack"
+  },
+  {"matchStrings": ["SQLException: Cannot get a connection"
+    ],
+   "comment": "pool error Timeout waiting for idle object"
+  },
+
+
+  {"matchStrings": ["======== MISMATCH RESULTS"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Expected to find"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Attribute query data","contains more records than ID query"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Mismatched record count from ID query and records in attribute query data"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
+    ]
+  },
+
+
+  {"matchStrings": ["======== SQL TROUBLE"
+    ]
+  },
+  {"matchStrings": ["SQLException: ORA-01407: cannot update"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to run SQL"
+    ]
+  },
+  {"matchStrings": ["SQLSyntaxErrorException: ORA-00942: table or view does not exist"
+    ]
+  },
+  {"matchStrings": ["SQLSyntaxErrorException: ORA-00904:","invalid identifier"
+    ]
+  },
+  {"matchStrings": ["SQLException: Failed to run query"
+    ]
+  },
+  {"matchStrings": ["query block has incorrect number of result columns"
+    ],
+   "comment": "SQLSyntaxErrorException: ORA-01789"
+  },
+  {"matchStrings": ["FROM keyword not found where expected"
+    ],
+   "comment": "SQLSyntaxErrorException: ORA-00923"
+  },
+  {"matchStrings": ["WdkModelException: Failed running SQL to fetch"
+    ]
+  },
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
+    ]
+  },
+
+
+
+  {"matchStrings": ["======== APP ISSUE"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Actual value is too big for column"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: The internal of flatVocabParam","is null"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to update user","preferences"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Unclosed character"
+    ]
+  },
+  {"matchStrings": ["WdkModelException","UserFileFactory"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to execute all operations subsequent to step copy"
+    ]
+  },
+
+  {"matchStrings": ["WdkModelException: Problem closing IRODS file"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: The blast database doesn't exist"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: The","job in jobDir","failed"
+    ]
+  },
+
+
+  {"matchStrings": ["======== USER ISSUE"
+    ]
+  },
+  {"matchStrings": ["NumberFormatException: For input string"
+    ]
+  },
+  {"matchStrings": ["IllegalArgumentException: Must request"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Default values for question"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: The expression is invalid"
+    ]
+  },
+  {"matchStrings": ["WdkModelException","cannot be longer"
+    ]
+  },
+
+
+  {"matchStrings": [
+      "WdkModelException"
+    ]
+  },
+  {"matchStrings": [
+      "NullPointerException"
+    ]
+  },
+  {"matchStrings": [
+      "Exception"
+    ]
+  }
+]
+
