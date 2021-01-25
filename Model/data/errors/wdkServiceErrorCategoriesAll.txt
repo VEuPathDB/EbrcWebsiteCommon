@@ -39,10 +39,14 @@
   {"matchStrings": ["WdkModelException: Mismatched record count from ID query and records in attribute query data"
     ]
   },
+  {"matchStrings": ["WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
+    ]
+  },
   {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
     ],
    "comment": "many come from google bot trying a non existent datasetId page"
   },
+
 
 
   {"matchStrings": ["======== SQL TROUBLE"
