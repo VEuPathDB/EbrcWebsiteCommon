@@ -1,6 +1,15 @@
 [
   {"matchStrings": ["ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
+  {"matchStrings": ["========== BOTS"
+    ]
+  },
+  {"matchStrings": ["User Agent: Apache-HttpClient"
+    ]
+  },
+  {"matchStrings": ["User Agent: Go-http-client"
+    ]
+  },
   {"matchStrings": ["QQBrowser"
     ],
    "comment": "NPE, old system MSIE 7.0; Windows NT 5.1"
@@ -31,11 +40,15 @@
     ]
   },
   {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
-    ]
+    ],
+   "comment": "many come from google bot trying a non existent datasetId page"
   },
 
 
   {"matchStrings": ["======== SQL TROUBLE"
+    ]
+  },
+  {"matchStrings": ["SQLRecoverableException: ORA-12514: TNS:listener does not currently know of service requested in connect descriptor"
     ]
   },
   {"matchStrings": ["SQLException: ORA-01407: cannot update"
@@ -72,6 +85,12 @@
 
 
   {"matchStrings": ["======== APP ISSUE"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Unable to retrieve metadata from site search service"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Answer Param value","does not refer to a step"
     ]
   },
   {"matchStrings": ["PluginModelException: Actual value is too big for column"
