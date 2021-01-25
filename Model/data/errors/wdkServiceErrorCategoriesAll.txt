@@ -65,7 +65,8 @@
     ]
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
-    ]
+    ],
+   "comment": "500: case1: go enrch param on non protein coding result"
   },
 
 
