@@ -1,7 +1,6 @@
 [
   {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
-
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
    "comment": "Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
@@ -155,12 +154,76 @@
   },
 
 
-  {"matchStrings": ["========= SERVICE ERRORS"
+  {"matchStrings": ["========= CHECK THESE"
+    ]
+  },
+  {"matchStrings": ["Cannot POST"
+    ]
+  },
+  {"matchStrings": ["Cannot GET"
+    ]
+  },
+  {"matchStrings": ["Cannot PATCH"
+    ]
+  },
+  {"matchStrings": ["Cannot DELETE"
+    ]
+  },
+
+
+  {"matchStrings": ["Unexpected token"
+    ],
+   "comment": "Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+  },
+  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
+    ]
+  },
+  {"matchStrings": ["could not be parsed into terms."
+    ]
+  },
+  {"matchStrings": ["Unexpected end of JSON input"
+    ]
+  },
+  {"matchStrings": ["invalid escape sequence"
+    ]
+  },
+  {"matchStrings": ["Element type is invalid","CompositePluginComponent"
+    ]
+  },
+  {"matchStrings": ["Unable to deserialize data."
+    ]
+  },
+  {"matchStrings": ["Multi-value enum stable value","could not be parsed into terms."
+    ]
+  },
+  {"matchStrings": ["Invalid hook call"
+    ]
+  },
+  {"matchStrings": ["File error: Corrupted"
+    ]
+  },
+  {"matchStrings": ["Right side of assignment cannot be destructured"
     ]
   },
 
 
 
-
-
+  {"matchStrings": ["========= USER NEEDS TO BE TOLD TO CORRECT"
+    ]
+  },
+  {"matchStrings": ["Invalid regular expression:"
+    ]
+  },
+  {"matchStrings": ["cannot find question"
+    ]
+  },
+  {"matchStrings": ["Invalid dimensions for plot"
+    ]
+  },
+  {"matchStrings": ["QuotaExceededError"
+    ]
+  },
+  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
+    ]
+  }
 ]
