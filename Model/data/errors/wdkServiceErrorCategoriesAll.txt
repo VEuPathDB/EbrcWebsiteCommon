@@ -52,6 +52,12 @@
   {"matchStrings": ["======== SQL TROUBLE"
     ]
   },
+  {"matchStrings": ["ORA-01652: unable to extend temp segment by 128 in tablespace TEMP"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to create cache."
+    ]
+  },
   {"matchStrings": ["SQLRecoverableException: ORA-12514: TNS:listener does not currently know of service requested in connect descriptor"
     ]
   },
@@ -59,6 +65,9 @@
     ]
   },
   {"matchStrings": ["WdkModelException: Unable to run SQL"
+    ]
+  },
+  {"matchStrings": ["SQLException: ORA-12526: TNS:listener: all appropriate instances are in restricted mode"
     ]
   },
   {"matchStrings": ["SQLSyntaxErrorException: ORA-00942: table or view does not exist"
@@ -89,6 +98,12 @@
 
 
   {"matchStrings": ["======== APP ISSUE"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Default values for question"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: The default value from model","is not a valid term for param"
     ]
   },
   {"matchStrings": ["PluginModelException: Unable to retrieve metadata from site search service"
@@ -137,9 +152,6 @@
     ]
   },
   {"matchStrings": ["IllegalArgumentException: Must request"
-    ]
-  },
-  {"matchStrings": ["WdkModelException: Default values for question"
     ]
   },
   {"matchStrings": ["WdkModelException: The expression is invalid"
