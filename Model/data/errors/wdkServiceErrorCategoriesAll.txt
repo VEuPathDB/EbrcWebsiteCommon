@@ -4,9 +4,6 @@
   {"matchStrings": ["========== BOTS"
     ]
   },
-  {"matchStrings": ["User Agent: Apache-HttpClient"
-    ]
-  },
   {"matchStrings": ["User Agent: Go-http-client"
     ]
   },
@@ -100,6 +97,9 @@
   {"matchStrings": ["======== APP ISSUE"
     ]
   },
+  {"matchStrings": ["jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyWriter not found for media type"
+    ]
+  },
   {"matchStrings": ["WdkModelException: Default values for question"
     ]
   },
@@ -116,6 +116,9 @@
     ]
   },
   {"matchStrings": ["WdkModelException: The internal of flatVocabParam","is null"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: The term of flatVocabParam","is null"
     ]
   },
   {"matchStrings": ["WdkModelException: Unable to update user","preferences"
@@ -143,9 +146,19 @@
   {"matchStrings": ["PluginModelException: The","job in jobDir","failed"
     ]
   },
+  {"matchStrings": ["PluginModelException: Failed running"
+    ]
+  },
 
 
   {"matchStrings": ["======== USER ISSUE"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Illegal repetition near index"
+    ],
+   "comment": "invalid reg ex provided by user?"
+  },
+  {"matchStrings": ["ValidObjectWrappingException:","This is almost certainly a bug in the calling code"
     ]
   },
   {"matchStrings": ["NumberFormatException: For input string"
