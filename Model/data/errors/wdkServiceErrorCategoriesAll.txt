@@ -59,7 +59,8 @@
     ]
   },
   {"matchStrings": ["SQLException: ORA-01407: cannot update"
-    ]
+    ],
+   "comment": "user database"
   },
   {"matchStrings": ["WdkModelException: Unable to run SQL"
     ]
