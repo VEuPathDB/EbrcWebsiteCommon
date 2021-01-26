@@ -170,7 +170,10 @@
     ]
   },
 
-
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "during download"
+  },
   {"matchStrings": ["Unexpected token"
     ],
    "comment": "Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."

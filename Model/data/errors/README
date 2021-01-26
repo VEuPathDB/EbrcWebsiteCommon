@@ -5,11 +5,14 @@
 ========================================
 Jan 24 2021
 
-wdkErrorCategories.txt determines what gets emailed, it is 
-a subset of wdkClientErrorCategoriesAll.txt, and does not include any Service error. 
+DO NOT EDIT
+wdkErrorCategories.txt 
+- it determines what gets emailed, 
+- it is a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
 
 
-These files contain most of the current errors showing up these days and should be used to generate reports.
+EDIT
+These files contain all errors,  should be used to generate reports.
 
         Model/data/errors/wdkClientErrorCategoriesAll.txt
         Model/data/errors/wdkServiceErrorCategoriesAll.txt
