@@ -111,7 +111,7 @@ public class ErrorHandlerHelpers {
         String comment = JsonUtil.getStringOrDefault(category, "comment", "");
         Integer redmineIssue = JsonUtil.getIntegerOrDefault(category, "redmine", -1);
         if (redmineIssue == -1) redmineIssue = null; // convert to null if not present
-        boolean isFixed = JsonUtil.getBooleanOrDefault(category, "isFixed", false);
+        boolean isFixed = JsonUtil.getBooleanOrDefault(category, "fixed", false);
         boolean isEmailWorthy = JsonUtil.getBooleanOrDefault(category, "emailWorthy", false);
         categories.add(new ErrorCategory(matchStrings, comment, redmineIssue, isFixed, isEmailWorthy));
       }
