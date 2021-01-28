@@ -49,6 +49,12 @@
   {"matchStrings": ["======== SQL TROUBLE"
     ]
   },
+  {"matchStrings": ["ORA-00001: unique constraint (USERLOGINS5.preferences_pk"
+    ]
+  },
+  {"matchStrings": ["ORA-00001: unique constraint (USERLOGINS5.STEPS_UX01"
+    ]
+  },
   {"matchStrings": ["ORA-01652: unable to extend temp segment by 128 in tablespace TEMP"
     ]
   },
@@ -88,9 +94,12 @@
   {"matchStrings": ["WdkModelException: Failed running SQL to fetch"
     ]
   },
-  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
     ],
-   "comment": "500: case1: go enrch param on non protein coding result"
+   "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
+  },
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
+    ]
   },
 
 
@@ -98,11 +107,13 @@
   {"matchStrings": ["======== APP ISSUE"
     ]
   },
-  {"matchStrings": ["jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyWriter not found for media type"
-    ]
+  {"matchStrings": ["WdkModelException: Request failed with status code: 504"
+    ],
+   "comment": "FastaReporter.transferFormResult, various IPs at the same time, referred from: <not set>"
   },
-  {"matchStrings": ["WdkModelException: Default values for question"
-    ]
+  {"matchStrings": ["jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyWriter not found for media type"
+    ],
+   "comment": "proximic webcrawler"
   },
   {"matchStrings": ["WdkModelException: The default value from model","is not a valid term for param"
     ]
@@ -129,12 +140,16 @@
     ]
   },
   {"matchStrings": ["WdkModelException","UserFileFactory"
-    ]
+    ],
+   "comment": "OPENED #43509"
   },
   {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
     ]
   },
   {"matchStrings": ["WdkModelException: Unable to execute all operations subsequent to step copy"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to create the strategy."
     ]
   },
 
@@ -154,6 +169,10 @@
 
   {"matchStrings": ["======== USER ISSUE"
     ]
+  },
+  {"matchStrings": ["WdkModelException: Default values for question"
+    ],
+   "comment": "eg: GenesByMotifSearch: Number of selected values (69) is not allowed"
   },
   {"matchStrings": ["PluginModelException: Illegal repetition near index"
     ],

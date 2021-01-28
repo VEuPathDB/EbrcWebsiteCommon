@@ -1,7 +1,6 @@
 [
   {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
-
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
    "comment": "Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
@@ -10,13 +9,16 @@
    ],
    "comment": "Dec23-2020. Action: retry, popup content update: network instability, try again."
   },
-  {"matchStrings": ["Failed to fetch\""
+  {"matchStrings": ["Failed to fetch"
     ],
    "comment": "Dec23-2020. Action: retry, popup content update: network instability, try again."
   },
   {"matchStrings": ["Loading chunk"
     ],
    "comment": "Dec23-2020. Action: popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Loading CSS chunk"
+    ]
   },
   {"matchStrings": ["NetworkError when attempting to fetch resource"
     ],
@@ -28,9 +30,15 @@
   {"matchStrings": ["Unable to connect to the target server."
     ]
   },
+  {"matchStrings": ["Could not connect to the server"
+    ]
+  },
   {"matchStrings": ["Bad Gateway"
     ],
    "comment": "THIS seems to coincide with service errors not being able to find a connection with ORA-12516"
+  },
+  {"matchStrings": ["The network connection was lost"
+    ]
   },
 
 
@@ -39,6 +47,10 @@
 
   {"matchStrings": ["chrome-extension"
     ]
+  },
+  {"matchStrings": ["IndexSizeError"
+    ],
+   "comment": "old edge on win 10 using legacy library"
   },
   {"matchStrings": ["can't redefine non-configurable property"
     ],
@@ -91,6 +103,16 @@
   {"matchStrings": ["not allowed by Access-Control-Allow-Origin"
     ]
   },
+  {"matchStrings": ["Permission denied to access property","on cross-origin object"
+    ]
+  },
+  {"matchStrings": ["The operation is insecure."
+    ]
+  },
+  {"matchStrings": ["SecurityError"
+    ]
+  },
+
 
 
   {"matchStrings": ["========= IT IS US, will prevent from sending emails"
@@ -144,6 +166,9 @@
   {"matchStrings": ["is not a function"
     ]
   },
+  {"matchStrings": ["this is not a non-null object"
+    ]
+  },
   {"matchStrings": ["has already been declared"
     ]
   },
@@ -155,12 +180,12 @@
   },
 
 
+
   {"matchStrings": ["========= SERVICE ERRORS"
     ]
   },
 
-
-
-
-
-]
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
+    ],
+   "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
+  },
