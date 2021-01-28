@@ -188,4 +188,5 @@
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
     ],
    "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
-  },
+  }
+]
