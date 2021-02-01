@@ -4,23 +4,27 @@
   {"matchStrings": ["========== BOTS"
     ]
   },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "mostly old dataset ids WdkModelException: Attribute query"
+  },
   {"matchStrings": ["User Agent: Go-http-client"
     ]
   },
   {"matchStrings": ["QQBrowser"
     ],
-   "comment": "NPE, old system MSIE 7.0; Windows NT 5.1"
+   "comment": "---NPE, old system MSIE 7.0; Windows NT 5.1"
   },
   {"matchStrings": ["======== CONNECTION"
     ]
   },
   {"matchStrings": ["ORA-12516"
     ],
-   "comment": "could not find available handler with matching protocol stack"
+   "comment": "---could not find available handler with matching protocol stack"
   },
   {"matchStrings": ["SQLException: Cannot get a connection"
     ],
-   "comment": "pool error Timeout waiting for idle object"
+   "comment": "---pool error Timeout waiting for idle object"
   },
 
 
@@ -41,7 +45,7 @@
   },
   {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
     ],
-   "comment": "many come from google bot trying a non existent datasetId page"
+   "comment": "---many come from google bot trying a non existent datasetId page"
   },
 
 
@@ -66,7 +70,7 @@
   },
   {"matchStrings": ["SQLException: ORA-01407: cannot update"
     ],
-   "comment": "user database"
+   "comment": "---user database"
   },
   {"matchStrings": ["WdkModelException: Unable to run SQL"
     ]
@@ -85,18 +89,18 @@
   },
   {"matchStrings": ["query block has incorrect number of result columns"
     ],
-   "comment": "SQLSyntaxErrorException: ORA-01789"
+   "comment": "---SQLSyntaxErrorException: ORA-01789"
   },
   {"matchStrings": ["FROM keyword not found where expected"
     ],
-   "comment": "SQLSyntaxErrorException: ORA-00923"
+   "comment": "---SQLSyntaxErrorException: ORA-00923"
   },
   {"matchStrings": ["WdkModelException: Failed running SQL to fetch"
     ]
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
     ],
-   "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
+   "comment": "---opened #41782 - error 500: go enrch param on non protein coding result"
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
     ]
@@ -109,11 +113,11 @@
   },
   {"matchStrings": ["WdkModelException: Request failed with status code: 504"
     ],
-   "comment": "FastaReporter.transferFormResult, various IPs at the same time, referred from: <not set>"
+   "comment": "---FastaReporter.transferFormResult, various IPs at the same time, referred from: <not set>"
   },
   {"matchStrings": ["jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyWriter not found for media type"
     ],
-   "comment": "proximic webcrawler"
+   "comment": "---proximic webcrawler"
   },
   {"matchStrings": ["WdkModelException: The default value from model","is not a valid term for param"
     ]
@@ -141,7 +145,7 @@
   },
   {"matchStrings": ["WdkModelException","UserFileFactory"
     ],
-   "comment": "OPENED #43509"
+   "comment": "---OPENED #43509"
   },
   {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
     ]
@@ -170,13 +174,17 @@
   {"matchStrings": ["======== USER ISSUE"
     ]
   },
+  {"matchStrings": ["WdkModelException: The expression is invalid:"
+    ],
+   "comment": "---philetic pattern in ortho, opened trello to convert to 404"
+  },
   {"matchStrings": ["WdkModelException: Default values for question"
     ],
-   "comment": "eg: GenesByMotifSearch: Number of selected values (69) is not allowed"
+   "comment": "---eg: GenesByMotifSearch: Number of selected values (69) is not allowed"
   },
   {"matchStrings": ["PluginModelException: Illegal repetition near index"
     ],
-   "comment": "invalid reg ex provided by user?"
+   "comment": "---invalid reg ex provided by user?"
   },
   {"matchStrings": ["ValidObjectWrappingException:","This is almost certainly a bug in the calling code"
     ]
