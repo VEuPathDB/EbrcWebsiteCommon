@@ -86,6 +86,7 @@ sub makeRPlotString {
   my $resp = $ua->request($profileSetsRequest);
   if ($resp->is_success) {
     $plotDataJson = $resp->decoded_content;
+    $plotDataJson =~ s/\'/\\\'/g;
   } else {
     print "HTTP POST error code: ", $resp->code, "\n";
     print "HTTP POST error message: ", $resp->message, "\n";
