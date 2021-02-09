@@ -1,0 +1,355 @@
+[
+  {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
+  },
+  {"matchStrings": ["Could not load embedded JBrowse instance"
+    ],
+   "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
+  },
+  {"matchStrings": ["Failed to fetch: [attempting"
+   ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Failed to fetch"
+    ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Loading chunk"
+    ],
+   "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Loading CSS chunk"
+    ]
+  },
+  {"matchStrings": ["NetworkError when attempting to fetch resource"
+    ],
+   "comment": "---Dec23-2020. Dave: variant of Failed to fetch?"
+  },
+  {"matchStrings": ["The internet connection appears to be offline"
+    ]
+  },
+  {"matchStrings": ["Unable to connect to the target server."
+    ]
+  },
+  {"matchStrings": ["Could not connect to the server"
+    ]
+  },
+  {"matchStrings": ["Bad Gateway"
+    ],
+   "comment": "---THIS seems to coincide with service errors not being able to find a connection with ORA-12516"
+  },
+  {"matchStrings": ["The network connection was lost"
+    ]
+  },
+
+
+  {"matchStrings": ["=========CANT DO ANYTHING ABOUT THESE"]
+  },
+
+  {"matchStrings": ["chrome-extension"
+    ]
+  },
+  {"matchStrings": ["IndexSizeError"
+    ],
+   "comment": "---old edge on win 10 using legacy library"
+  },
+  {"matchStrings": ["can't redefine non-configurable property"
+    ],
+   "comment": "---Win7"
+  },
+  {"matchStrings": ["sandbox not initialized", "twitter"
+    ],
+   "comment": "---twitter"
+  }, 
+  {"matchStrings": ["Invariant failed"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Object doesn't support this action"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Failed to execute 'removeChild' "
+    ]
+  },
+  {"matchStrings": ["Failed to execute 'insertBefore' "
+    ],
+   "comment": "---Dec23-2020. Dave: likely due to browser addon like Google Translate"
+  },
+  {"matchStrings": ["Document is not focused"
+    ]
+  },
+  {"matchStrings": ["cancelled: [attempting"
+    ]
+  },
+  {"matchStrings": ["message\": \"cancelled\""
+    ]
+  },
+  {"matchStrings": ["Client Closed Request"
+    ]
+  },
+  {"matchStrings": ["A request was aborted"
+    ]
+  },
+  {"matchStrings": ["The operation was aborted"
+    ]
+  },
+  {"matchStrings": ["Database deleted by request of the user"
+    ]
+  },
+  {"matchStrings": ["Blocked a frame with origin"
+    ],
+   "comment": "---Dec23-2020. Dave: GoogleBot and Safari 11"
+  },
+  {"matchStrings": ["not allowed by Access-Control-Allow-Origin"
+    ]
+  },
+  {"matchStrings": ["Permission denied to access property","on cross-origin object"
+    ]
+  },
+  {"matchStrings": ["The operation is insecure."
+    ]
+  },
+
+
+
+  {"matchStrings": ["========= IT IS US, will prevent from sending emails"
+    ]
+  },
+  {"matchStrings": ["https://localhost:3000"
+    ]
+  },
+  {"matchStrings": ["https://q"
+    ]
+  },
+
+
+  {"matchStrings": ["========= DO NOT SEND EMAIL"
+    ]
+  },
+
+
+  {"matchStrings": ["Cannot read property"
+    ],
+   "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
+  },
+  {"matchStrings": ["setting getter-only property"
+    ]
+  },
+  {"matchStrings": ["Attempted to assign to readonly property"
+    ]
+  },
+
+
+
+
+  {"matchStrings": ["is null\""
+    ]
+  },
+  {"matchStrings": ["message\": \"null"
+    ]
+  },
+  {"matchStrings": ["null is not an object (evaluating"
+    ]
+  },
+  {"matchStrings": ["message\": \"undefined"
+    ]
+  },
+  {"matchStrings": ["is undefined\""
+    ]
+  },
+  {"matchStrings": ["message\": \"[object Event]"
+    ]
+  },
+  {"matchStrings": ["is not a function"
+    ]
+  },
+  {"matchStrings": ["this is not a non-null object"
+    ]
+  },
+  {"matchStrings": ["has already been declared"
+    ]
+  },
+  {"matchStrings": ["message\": \"error\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Error: {}\""
+    ],
+   "comment": "---Jan 29 2021, sam safari jbrowse"
+  },
+  {"matchStrings": ["<unknown status code>"
+    ]
+  },
+
+  {"matchStrings": ["========= BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "mostly cross origin"
+  },
+
+
+  {"matchStrings": ["========= CHECK THESE"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Resource","Step","does not exist"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Resource","no record with primary keys","does not exist"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","No strategy exists with signature"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","Only graphs of 500 nodes or fewer"
+    ],
+   "comment": ""
+  },
+  {"matchStrings": ["Cannot POST","analyses","Your result has no genes that are in pathways"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","You cannot analyze a Step with zero results"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","Invalid value"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","Cannot be empty."
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Could not configure reporter","with passed formatConfig."
+    ]
+  },
+  {"matchStrings": ["Cannot POST","/users/current/strategies","so cannot be assigned to a new strategy"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","/users/current/strategies"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","not runnable because","is associated with an invalid search"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
+    ],
+   "comment": "---text search"
+  },
+  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
+    ]
+  },
+  {"matchStrings": ["Cannot POST"
+    ]
+  },
+  {"matchStrings": ["Cannot GET"
+    ]
+  },
+  {"matchStrings": ["Cannot PATCH"
+    ]
+  },
+  {"matchStrings": ["Cannot DELETE"
+    ]
+  },
+
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+  },
+  {"matchStrings": ["The request timed out"
+    ]
+  },
+  {"matchStrings": ["Unexpected token"
+    ],
+   "comment": "---Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+  },
+  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
+    ]
+  },
+  {"matchStrings": ["Unexpected end of JSON input"
+    ]
+  },
+  {"matchStrings": ["invalid escape sequence"
+    ]
+  },
+  {"matchStrings": ["Element type is invalid","CompositePluginComponent"
+    ]
+  },
+  {"matchStrings": ["Unable to deserialize data."
+    ]
+  },
+  {"matchStrings": ["Multi-value enum stable value","could not be parsed into terms."
+    ],
+   "comment": "---invalid organism value, invalid dataset name in jbrowse popup url"
+  },
+  {"matchStrings": ["could not be parsed into terms."
+    ]
+  },
+  {"matchStrings": ["Invalid hook call"
+    ]
+  },
+  {"matchStrings": ["File error: Corrupted"
+    ]
+  },
+  {"matchStrings": ["Right side of assignment cannot be destructured"
+    ]
+  },
+  {"matchStrings": ["out of memory"
+    ]
+  },
+  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
+    ]
+  },
+
+
+  {"matchStrings": ["========= USER NEEDS TO BE TOLD TO CORRECT"
+    ]
+  },
+  {"matchStrings": ["Invalid regular expression:"
+    ]
+  },
+  {"matchStrings": ["cannot find question"
+    ]
+  },
+  {"matchStrings": ["Could not find question"
+    ]
+  },
+  {"matchStrings": ["Invalid dimensions for plot"
+    ]
+  },
+  {"matchStrings": ["QuotaExceededError"
+    ]
+  },
+
+
+  {"matchStrings": ["========= UNCAUGHT"
+    ]
+  },
+  {"matchStrings": ["name\": \"UnknownError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ChunkLoadError"
+    ]
+  },
+  {"matchStrings": ["name\": \"SecurityError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ServiceError"
+    ]
+  },
+  {"matchStrings": ["name\": \"NotAllowedError"
+    ]
+  },
+  {"matchStrings": ["name\": \"NotFoundError"
+    ]
+  },
+  {"matchStrings": ["name\": \"TypeError"
+    ]
+  },
+  {"matchStrings": ["name\": \"SyntaxError"
+    ]
+  },
+  {"matchStrings": ["name\": \"Error"
+    ]
+  }
+]

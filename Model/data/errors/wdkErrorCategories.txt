@@ -1,285 +1,225 @@
 [
-  {"matchStrings": ["tomcat@q"]},
-  {
-    "matchStrings": ["SharedVQ.TelomereChromosomes"],
-    "redmine": 24127
+  {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
-  {"matchStrings": ["The blast database doesn't exist: /var/www/Common/apiSiteFilesMirror/webServices//TrichDB/build-29/TvaginalisRG/blast/TvaginalisRGAnnotatedProteins"]},
-  {"matchStrings": ["BlastAlgorithm_invalid"]},
-  {"matchStrings": ["motif_organism=Trichomonas vaginalis G3"]},
-  {"matchStrings": ["Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in record: OrfRecordClasses.OrfRecordClass"]},
-  {"matchStrings": ["view \"APIDBTUNING.SNPCHIPATTRIBUTES\" has errors"]},
-  {"matchStrings": ["matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass"]},
-  {"matchStrings": ["is not in the form 'setName.elementName"]},
-  {
-    "matchStrings": ["GetVocabAction.java:114"],
-    "comment": "fixed - convert to WdkUserException",
-    "fixed": "2/1/17"
-  },
-  {
-    "matchStrings": [
-      "oracle.jdbc.driver.OraclePreparedStatementWrapper",
-      "is closed",
-      "TranscriptSearch"
+  {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
-    "comment": "check isClosed() before close(). see r20098",
-    "fixed": "6/1/17"
+   "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
   },
-  {
-    "matchStrings": ["pool error Timeout"],
-    "comment": "trello card to increase limits"
+  {"matchStrings": ["Failed to fetch: [attempting"
+   ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
   },
-  {"matchStrings": ["GC overhead limit exceeded"]},
-  {"matchStrings": ["OutOfMemoryError: Java heap space"]},
-  {
-    "matchStrings": ["ORA-12514"],
-    "comment": "tns listener"
+  {"matchStrings": ["Failed to fetch"
+    ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
   },
-  {"matchStrings": ["doesn't have step"]},
-  {
-    "matchStrings": ["No configuration form can be found for the selected format: attributesTabular"],
-    "comment": "trello card assigned to ryan, to retire downloadStep.do"
+  {"matchStrings": ["Loading chunk"
+    ],
+   "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
   },
-  {"matchStrings": ["No item returned by the query [GeneVQ.GenericPercentileSamples]"]},
-  {"matchStrings": ["No item returned by the query [organismVQ.withGenes]"]},
-  {"matchStrings": ["No item returned by the query [GeneVQ.GeneTypes]"]},
-  {
-    "matchStrings": ["The term of flatVocabParam [popsetParams.product] is null"],
-    "comment": "bindu or cristina should be able to fix. see mail from steve"
+  {"matchStrings": ["Loading CSS chunk"
+    ]
   },
-  {"matchStrings": ["SummaryTableUpdateProcessor.java:143"]},
-  {"matchStrings": ["Set 'GeneQuestions' returned null for 'GenesBySageTagRStat'"]},
-  {
-    "matchStrings": ["GiardiaGenesByDifferentialExpressionTwo"],
-    "comment": "old link in news"
+  {"matchStrings": ["NetworkError when attempting to fetch resource"
+    ],
+   "comment": "---Dec23-2020. Dave: variant of Failed to fetch?"
   },
-  {
-     "matchStrings": ["ProcessFavoriteAction.java:97"],
-     "comment": "fixed by preventing npe",
-     "fixed": "2/1/17"
+  {"matchStrings": ["The internet connection appears to be offline"
+    ]
   },
-  {
-     "matchStrings": ["ProcessFavoriteAction.java", "JSONObject[\"source_id\"] not found"],
-     "comment": "probably spam; dont care as this action will be retired soon"
+  {"matchStrings": ["Unable to connect to the target server."
+    ]
   },
-  {
-     "matchStrings": ["ProcessBasketAction.java", "JSONObject[\"source_id\"] not found"],
-     "comment": "probably spam; dont care as this action will be retired soon"
+  {"matchStrings": ["Could not connect to the server"
+    ]
   },
-  {
-     "matchStrings": ["ProcessBasketAction.java", "JSONObject[\"gene_source_id\"] not found"],
-     "comment": "probably spam; dont care as this action will be retired soon"
+  {"matchStrings": ["Bad Gateway"
+    ],
+   "comment": "---THIS seems to coincide with service errors not being able to find a connection with ORA-12516"
   },
-  {
-     "matchStrings": ["CustomProcessBasketAction.java", "JSONException"],
-     "comment": "probably spam; dont care as this action will be retired soon"
+  {"matchStrings": ["The network connection was lost"
+    ]
   },
 
-  {
-    "matchStrings": ["PathwaysByGeneList, Unable to insert record into cache"],
-    "comment": "fixed by DD",
-    "fixed": "2/1/17"
-  },
-  {
-    "matchStrings": ["Illegal repetition"],
-    "comment": "should be user error (motif search bad regex)"
-  },
-  {"matchStrings": ["The attribute field [filename] cannot be found"]},
-  {"matchStrings": ["No configuration form can be found for the selected format"]},
-  {"matchStrings": ["APIDB\".\"REVERSE_COMPLEMENT\": invalid identifier"]},
-  {"matchStrings": ["(USERLOGINS5.preferences_pk) violated"]},
-  {
-    "matchStrings": [
-      "unable to extend temp segment"
-    ],
-    "comment": "should mark as 'recurrent'.  these are side effects of problematic SQL that Ana must find for us."
-  },
-  {
-    "matchStrings": ["StepFactory.java:826"],
-    "comment": "step can't be found"
-  },
-  {
-    "matchStrings": ["Unclosed character class"],
-    "comment": "should be user error (motif search bad regex)"
-  },
-  {"matchStrings": [
-    "Attribute query",
-    "doesn't return any row",
-    "/app/record"
-  ]},
-  {"matchStrings": ["java.io.StringReader.<init>(StringReader.java:50)"]},
-  {"matchStrings": [
-    "Could not get uncached results from DB",
-    "table or view does not exist"
-  ]},
-  {"matchStrings": ["Cannot get value for column 'struct_name'"]},
-  {"matchStrings": ["\"APIDB\".\"WRAP\": invalid identifier"]},
-  {
-    "matchStrings": [
-      "\"IDSQL_2\".\"MATCHED_RESULT\": invalid identifier",
-      "download"
-    ],
-    "comment": "need fresh examples... or wait till SQL is logged in exceptions"
-  },
-  {"matchStrings": ["'PathwayAttributes.Bfmv' doesn't return the same number"]},
-  {
-    "matchStrings": ["RodMalPhenotype"],
-    "fixed": "2/1/17"
-  },
-  {"matchStrings": ["Stajich_HyphalGrowth"]},
-  {
-    "matchStrings": [
-      "primaryKeyValue is mandatory for tag recordLink",
-      "favorites"
-    ],
-    "fixed": "2/1/17"
-  },
-  {"matchStrings": ["IllegalArgumentException: No bean specified"]},
-  {
-    "matchStrings": [
-      "Unable to load class for JSP",
-      "Favorite"
-    ],
-    "fixed": "2/1/17"
-  },
-  {"matchStrings": ["value(single_gene_id) = [ ATGAACC"]},
-  {
-    "matchStrings": [
-      "Unable to check instance ID",
-      "ORA-00942: table or view does not exist"
-    ],
-    "comment": "debug after upgrade in SqlUtils to dump errant SQL"
-  },
-  {"matchStrings": ["tomcat@q"]},
-  {
-    "matchStrings": [
-      "ProcessRESTAction.java:191",
-      "/webservice"
-    ],
-    "fixed": "2/1/17"
-  },
-  {
-    "matchStrings": ["\"GENE_SOURCE_ID\": invalid identifier"],
-    "comment": "no longer in logs.  will be easier to debug when all sql exceptions include the SQL"
-  },
-  {"matchStrings": ["does not include question GenesByEHistolyticaExpressionTiming"]},
-  {"matchStrings": ["Unable to create value row for table"]},
-  {"matchStrings": ["ORA-00920: invalid relational operator"]},
-  {"matchStrings": ["Unable to create cache"]},
-  {"matchStrings": ["ORA-00904: \"MATCHED_RESULT\": invalid identifier"]},
-  {
-    "matchStrings": [
-      "PluginModelException: Time out, the command is cancelled.",
-      "Blast"
-    ],
-    "comment": "cristina will revert change to allow low complexity filter"
-  },
-  {"matchStrings": ["PluginModelException: The invocation is failed: Can't take sqrt of"]},
-  {"matchStrings": ["GenesByRNASeqpfal3D7_Caro"]},
-  {"matchStrings": ["InvokeAttributePluginAction.java:43"]},
-  {"matchStrings": ["FlatVocabularyFetcher.java:174"]},
-  {"matchStrings": ["More than one strategy of signature"]},
-  {"matchStrings": ["ORA-01790: expression must have same datatype"]},
-  {"matchStrings": [
-    "doesn't return the same number of records as ID SQL",
-    "userlogins5.user_baskets"
-  ]},
-  {"matchStrings": ["Proteomics analysis of sporozoite excystation"]},
-  {"matchStrings": ["ORA-00942: table or view does not exist", "QueryResult"]},
-  {"matchStrings": ["ORA-00942: table or view does not exist", "Gff3"]},
-  {"matchStrings": ["Some of the input parameters are invalid or missing"]},
-  {
-    "matchStrings": [
-      "PatternSyntaxException",
-      "AbstractMotifPlugin"
-    ],
-    "comment": "should be a pluginuserexception"
-  },
-  {
-    "matchStrings": [
-      "ORA-00376",
-      "fung032s"
-    ],
-    "comment": "caused by a temporary boo-boo by ana.",
-    "fixed" : "6/1/17"
-  },
-  {
-    "matchStrings": [
-      "ORA-00028: your session has been killed"
-    ],
-    "comment": "a slow query that we fixed ran so long it needed to be killed",
-    "fixed": "6/1/17"
-  },
-  {
-    "matchStrings": [
-      "No headline", "addComment.do"
-    ],
-    "comment": "error thrown by NewCommentForm.java.  should be user exception"
-  },
-  {
-    "matchStrings": [
-      "No content : content is required!", "addComment.do"
-    ],
-    "comment": "error thrown by NewCommentForm.java.  should be user exception"
-  },
-  {
-    "matchStrings": [
-      "Invalid Gene Identifier", "addComment.do"
-    ],
-    "comment": "error thrown by NewCommentForm.java.  should be user exception"
-  },
-  {
-    "matchStrings": [
-      "PluginModelException: Actual value is too big for column [Locations]"
-    ],
-    "comment": "span logic error.  should be a user exception, with a better message"
-  },
-  {
-    "matchStrings": [
-      "'TranscriptAttributes.CellularLocalization' doesn't return the same number of records"
-    ],
-    "comment": "data dev issue",
-    "fixed": "6/1/17"
-  },
-  {
-    "matchStrings": [
-      "importStrategy",
-      "does not include question"
-    ],
-    "comment": "should be a user exception"
+
+  {"matchStrings": ["=========CANT DO ANYTHING ABOUT THESE"]
   },
 
-  {
-    "matchStrings": [
-      "BeanUtilsBean",
-      "Missing End Delimiter"
+  {"matchStrings": ["chrome-extension"
+    ]
+  },
+  {"matchStrings": ["IndexSizeError"
     ],
-    "comment": "possibly a bad bookmark"
+   "comment": "---old edge on win 10 using legacy library"
   },
-  {
-     "matchStrings": ["'gene_boolean_filter_array' doesn't exist"],
-     "comment": "see r20135 and r82099",
-     "fixed": "6/6/17"
-  },
-  {"matchStrings": ["No item returned by the query [SharedVQ.BlastOrganismFiles]"]},
-  {
-     "matchStrings": ["'SnpAttributes.Bfmv' doesn't return the same number of records as ID SQL"],
-     "comment": "redmine.apidb.org/issues/26315",
-     "fixed": "datadev"
-  },
-  {"matchStrings": ["Record ordering in attribute query data [SnpAttributes.Bfmv.txt] does not match ID query"]},
-  {
-    "matchStrings": [
-      "Expected to find",
-      "records in paged id query result",
-      "OrganismAttributes.organismAttrs"
+  {"matchStrings": ["can't redefine non-configurable property"
     ],
-    "comment": "possibly a data dev issue"
+   "comment": "---Win7"
+  },
+  {"matchStrings": ["sandbox not initialized", "twitter"
+    ],
+   "comment": "---twitter"
+  }, 
+  {"matchStrings": ["Invariant failed"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Object doesn't support this action"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Failed to execute 'removeChild' "
+    ]
+  },
+  {"matchStrings": ["Failed to execute 'insertBefore' "
+    ],
+   "comment": "---Dec23-2020. Dave: likely due to browser addon like Google Translate"
+  },
+  {"matchStrings": ["Document is not focused"
+    ]
+  },
+  {"matchStrings": ["cancelled: [attempting"
+    ]
+  },
+  {"matchStrings": ["message\": \"cancelled\""
+    ]
+  },
+  {"matchStrings": ["Client Closed Request"
+    ]
+  },
+  {"matchStrings": ["A request was aborted"
+    ]
+  },
+  {"matchStrings": ["The operation was aborted"
+    ]
+  },
+  {"matchStrings": ["Database deleted by request of the user"
+    ]
+  },
+  {"matchStrings": ["Blocked a frame with origin"
+    ],
+   "comment": "---Dec23-2020. Dave: GoogleBot and Safari 11"
+  },
+  {"matchStrings": ["not allowed by Access-Control-Allow-Origin"
+    ]
+  },
+  {"matchStrings": ["Permission denied to access property","on cross-origin object"
+    ]
+  },
+  {"matchStrings": ["The operation is insecure."
+    ]
   },
 
-  {
-    "matchStrings": ["WdkModelException: The Step", "of user", "cannot be found"],
-    "comment": "a great mystery as to how a step can be deleted shortly after creation.  see, eg, lines 42 and 42 of GetFilterSummaryAction"
+
+
+  {"matchStrings": ["========= IT IS US, will prevent from sending emails"
+    ]
+  },
+  {"matchStrings": ["https://localhost:3000"
+    ]
+  },
+  {"matchStrings": ["https://q"
+    ]
+  },
+
+
+  {"matchStrings": ["========= DO NOT SEND EMAIL"
+    ]
+  },
+
+
+  {"matchStrings": ["Cannot read property"
+    ],
+   "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
+  },
+  {"matchStrings": ["setting getter-only property"
+    ]
+  },
+  {"matchStrings": ["Attempted to assign to readonly property"
+    ]
+  },
+
+
+
+
+  {"matchStrings": ["is null\""
+    ]
+  },
+  {"matchStrings": ["message\": \"null"
+    ]
+  },
+  {"matchStrings": ["null is not an object (evaluating"
+    ]
+  },
+  {"matchStrings": ["message\": \"undefined"
+    ]
+  },
+  {"matchStrings": ["is undefined\""
+    ]
+  },
+  {"matchStrings": ["message\": \"[object Event]"
+    ]
+  },
+  {"matchStrings": ["is not a function"
+    ]
+  },
+  {"matchStrings": ["this is not a non-null object"
+    ]
+  },
+  {"matchStrings": ["has already been declared"
+    ]
+  },
+  {"matchStrings": ["message\": \"error\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Error: {}\""
+    ],
+   "comment": "---Jan 29 2021, sam safari jbrowse"
+  },
+  {"matchStrings": ["<unknown status code>"
+    ]
+  },
+
+  {"matchStrings": ["========= BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "mostly cross origin"
+  },
+
+
+  {"matchStrings": ["========= CHECK THESE"
+    ]
+  },
+
+  {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
+    ],
+   "comment": "---text search"
+  },
+  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
+    ]
+  },
+
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+  },
+  {"matchStrings": ["The request timed out"
+    ]
+  },
+
+  {"matchStrings": ["========= SERVICE ERRORS"
+    ]
+  },
+
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
+    ],
+   "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
   }
-]
 
+
+]
