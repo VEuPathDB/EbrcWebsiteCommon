@@ -247,6 +247,7 @@ hook: HostResponseGraphs
               id={dataset_name + "Coverage"}
               className="eupathdb-GbrowseContext"
               headerContent="Coverage"
+              headerComponent='h4'
               isCollapsed={this.state.coverageCollapsed}
               onCollapsedChange={this.handleCoverageCollapseChange}>
 
@@ -271,7 +272,7 @@ hook: HostResponseGraphs
               onCollapsedChange={this.handleWGCNACollapseChange}>
 
               <div> 
-                {<Link to={'/search/transcript/GenesByRNASeqEvidence?param.wgcna_prrofileGeneId=' + source_id + '#GenesByRNASeqWGCNA' + dataset_name}>Search other genes in the same module</Link>}
+                {<Link target='_new' to={'/search/transcript/GenesByRNASeqEvidence?param.wgcna_prrofileGeneId=' + source_id + '#GenesByRNASeqWGCNA' + dataset_name}>Search other genes in the same module</Link>}
                 <br/><br/>
               </div>
             </CollapsibleSection>
