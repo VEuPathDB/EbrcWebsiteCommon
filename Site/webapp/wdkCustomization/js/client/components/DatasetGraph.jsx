@@ -29,6 +29,7 @@ export default class DatasetGraph extends React.PureComponent {
       descriptionCollapsed: true,
       dataTableCollapsed: true,
       coverageCollapsed: true,
+      wgcnaCollapsed: true,
       showLogScale: (this.props.rowData.assay_type == 'RNA-Seq')? false:true,
       showSpecialGraph: this.props.rowData.has_special_jbrowse,
       graphId: graphIds[0],
@@ -44,6 +45,9 @@ export default class DatasetGraph extends React.PureComponent {
     };
     this.handleCoverageCollapseChange = coverageCollapsed => {
       this.setState({ coverageCollapsed });
+    };
+    this.handleWGCNACollapseChange = wgcnaCollapsed => {
+      this.setState({ wgcnaCollapsed });
     };
   }
 
@@ -91,6 +95,14 @@ export default class DatasetGraph extends React.PureComponent {
       '../../../../documents/FromCoverageNonuniqueReads.pdf'
     );
   }
+
+  makeWGCNAUrl({ rowData }) {
+
+    return (
+      '/a/app/search/transcript/GenesByRNASeqEvidence#GenesByRNASeqWGCNA' + rowData.dataset_name
+    );
+  }
+
 
   getGraphParts(props) {
     let baseUrl = this.makeBaseUrl(props);
@@ -148,6 +160,8 @@ export default class DatasetGraph extends React.PureComponent {
       dataset_id,
       dataset_name,
       description,
+      project_id,
+      project_id_url,
       x_axis,
       y_axis
     } } = this.props;
@@ -169,6 +183,7 @@ export default class DatasetGraph extends React.PureComponent {
 
     let dataset_link = this.makeDatasetUrl(this.props, isUserDataset);
     let tutorial_link = this.makeTutorialUrl(this.props);
+    let wgcna_link = this.makeWGCNAUrl(this.props );
 
 
 
@@ -258,6 +273,23 @@ hook: HostResponseGraphs
             </CollapsibleSection>
           : null}
 
+          {(assay_type == 'RNA-Seq' && module !== 'SpliceSites' && !isUserDataset  && project_id_url =='EuPathDB' && dataset_name == 'pfal3D7_Lee_Gambian_rnaSeq_RSRC'  && covImgUrl) ? 
+            <CollapsibleSection
+              id={dataset_name + "WGCNA"}
+              className="eupathdb-WGCNA"
+              headerContent="WGCNA search"
+	      headerComponent='h4'
+              isCollapsed={this.state.wgcnaCollapsed}
+              onCollapsedChange={this.handleWGCNACollapseChange}>
+
+              <div>
+                Search other genes in the same module: (<a href={wgcna_link}><b>search here</b></a>)
+                <br></br><br></br>
+              </div>
+            </CollapsibleSection>
+          : null}
+
+
           {assay_type == 'Phenotype' && showSpecialGraph == 'true' && specialImgUrl ?
             <CollapsibleSection
               id={"Special"}
@@ -279,7 +311,7 @@ hook: HostResponseGraphs
 
 
         <div className="eupathdb-DatasetGraphDetails">
-          {this.props.dataTable &&
+          {this.props.taTable &&
             <CollapsibleSection
               className={"eupathdb-" + this.props.dataTable.table.name + "Container"}
               headerContent="Data table"
