@@ -283,7 +283,7 @@ hook: HostResponseGraphs
               onCollapsedChange={this.handleWGCNACollapseChange}>
 
               <div>
-                Search other genes in the same module: (<a href={wgcna_link}><b>search here</b></a>)
+                Search other genes in the same module: (<a href={wgcna_link} target="_blank"><b>search here</b></a>)
                 <br></br><br></br>
               </div>
             </CollapsibleSection>
