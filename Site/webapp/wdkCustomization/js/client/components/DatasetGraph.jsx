@@ -1,6 +1,6 @@
 import React from 'react';
 import { httpGet } from '../util/http';
-import { CollapsibleSection, Loading } from 'wdk-client/Components';
+import { CollapsibleSection, Loading, Link } from 'wdk-client/Components';
 import { safeHtml } from 'wdk-client/Utils/ComponentUtils';
 import ExternalResource from './ExternalResource';
 
@@ -81,7 +81,6 @@ export default class DatasetGraph extends React.PureComponent {
   }
 
   makeDatasetUrl({ rowData }, isUserDataset) {
-
     if(isUserDataset) {
         return('/a/app/workspace/datasets/' + rowData.dataset_id);
     }
@@ -95,14 +94,6 @@ export default class DatasetGraph extends React.PureComponent {
       '../../../../documents/FromCoverageNonuniqueReads.pdf'
     );
   }
-
-  makeWGCNAUrl({ rowData }) {
-
-    return (
-      '/a/app/search/transcript/GenesByRNASeqEvidence#GenesByRNASeqWGCNA' + rowData.dataset_name
-    );
-  }
-
 
   getGraphParts(props) {
     let baseUrl = this.makeBaseUrl(props);
@@ -183,9 +174,6 @@ export default class DatasetGraph extends React.PureComponent {
 
     let dataset_link = this.makeDatasetUrl(this.props, isUserDataset);
     let tutorial_link = this.makeTutorialUrl(this.props);
-    let wgcna_link = this.makeWGCNAUrl(this.props );
-
-
 
     return (
       <div className="eupathdb-DatasetGraphContainer2">
@@ -282,9 +270,9 @@ hook: HostResponseGraphs
               isCollapsed={this.state.wgcnaCollapsed}
               onCollapsedChange={this.handleWGCNACollapseChange}>
 
-              <div>
-                Search other genes in the same module: (<a href={wgcna_link}><b>search here</b></a>)
-                <br></br><br></br>
+              <div> 
+                {<Link to={'/search/transcript/GenesByRNASeqEvidence?param.wgcna_prrofileGeneId=' + source_id + '#GenesByRNASeqWGCNA' + dataset_name}>Search other genes in the same module</Link>}
+                <br/><br/>
               </div>
             </CollapsibleSection>
           : null}
