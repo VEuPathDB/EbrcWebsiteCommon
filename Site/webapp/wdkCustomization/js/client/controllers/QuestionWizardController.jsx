@@ -387,7 +387,7 @@ class QuestionWizardController extends ViewController {
                 this.props.question, this.props.paramValues, this.props.defaultParamValues,
                 this.props.groupUIState, activeGroupIx
               ),
-              initialCount: constructInitialCount(this.props.question, this.props.paramUIState, activeGroupIx),
+              initialCount: this.props.groupUIState.__total__.filteredCountState,
               paramUIState: this.props.paramUIState,
               paramValues: this.props.paramValues,
               question: this.props.question,
