@@ -31,6 +31,9 @@
   {"matchStrings": ["======== MISMATCH RESULTS"
     ]
   },
+  {"matchStrings": ["WdkModelException: There is a discrepancy between the ID query and attribute query","Either the counts disagree or the order of the IDs disagree"
+    ]
+  },
   {"matchStrings": ["WdkModelException: Expected to find"
     ]
   },
@@ -38,6 +41,9 @@
     ]
   },
   {"matchStrings": ["WdkModelException: Mismatched record count from ID query and records in attribute query data"
+    ]
+  },
+  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
     ]
   },
   {"matchStrings": ["WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
@@ -62,8 +68,9 @@
   {"matchStrings": ["ORA-01652: unable to extend temp segment by 128 in tablespace TEMP"
     ]
   },
-  {"matchStrings": ["WdkModelException: Unable to create cache."
-    ]
+  {"matchStrings": ["ORA-01426: numeric overflow"
+    ],
+   "comment": "---redmine 43619 eve found broken interpro database"
   },
   {"matchStrings": ["SQLRecoverableException: ORA-12514: TNS:listener does not currently know of service requested in connect descriptor"
     ]
@@ -84,6 +91,15 @@
   {"matchStrings": ["SQLSyntaxErrorException: ORA-00904:","invalid identifier"
     ]
   },
+  {"matchStrings": ["SQLException: ORA-01489: result of string concatenation is too long"
+    ]
+  },
+  {"matchStrings": ["SQLSyntaxErrorException: ORA-01704: string literal too long"
+    ]
+  },
+  {"matchStrings": ["SQLException: Failed to run SQL"
+    ]
+  },
   {"matchStrings": ["SQLException: Failed to run query"
     ]
   },
@@ -98,14 +114,13 @@
   {"matchStrings": ["WdkModelException: Failed running SQL to fetch"
     ]
   },
-  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
+  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries"
     ],
    "comment": "---opened #41782 - error 500: go enrch param on non protein coding result"
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
     ]
   },
-
 
 
   {"matchStrings": ["======== APP ISSUE"
@@ -117,7 +132,7 @@
   },
   {"matchStrings": ["jersey.message.internal.MessageBodyProviderNotFoundException: MessageBodyWriter not found for media type"
     ],
-   "comment": "---proximic webcrawler"
+   "comment": "---proximic webcrawler, also seen with User Agent: python-requests/2.22.0"
   },
   {"matchStrings": ["WdkModelException: The default value from model","is not a valid term for param"
     ]
@@ -153,10 +168,12 @@
   {"matchStrings": ["WdkModelException: Unable to execute all operations subsequent to step copy"
     ]
   },
+  {"matchStrings": ["WdkModelException: Step","is part of a strategy but answer param","does not have a value"
+    ]
+  },
   {"matchStrings": ["WdkModelException: Unable to create the strategy."
     ]
   },
-
   {"matchStrings": ["WdkModelException: Problem closing IRODS file"
     ]
   },
@@ -169,9 +186,31 @@
   {"matchStrings": ["PluginModelException: Failed running"
     ]
   },
+  {"matchStrings": ["EuPathServiceException: Organism","does not map to any project ID"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to create cache."
+    ]
+  },
 
+
+
+  {"matchStrings": ["======== CLIENT ISSUE"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Required value is missing or incorrect type"
+    ],
+   "comment": "---trying to access a transcript record page"
+  },
 
   {"matchStrings": ["======== USER ISSUE"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Dangling meta character"
+    ],
+   "comment": "---ortho: user entering wrong regex in motif"
+  },
+  {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
     ]
   },
   {"matchStrings": ["WdkModelException: The expression is invalid:"
@@ -209,7 +248,8 @@
   },
   {"matchStrings": [
       "NullPointerException"
-    ]
+    ],
+   "comment": "---in QA sites lots at WdkModelBase.getPropertyLists at ParamFormatter.getBaseJson, opened trello for ryan"
   },
   {"matchStrings": [
       "Exception"
