@@ -13,6 +13,10 @@
     ],
    "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
   },
+  {"matchStrings": ["failed to fetch"
+    ],
+   "comment": "---twitter"
+  },
   {"matchStrings": ["Loading chunk"
     ],
    "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
@@ -75,6 +79,9 @@
     ],
    "comment": "---Dec23-2020. Dave: likely due to browser addon like Google Translate"
   },
+  {"matchStrings": ["Failed to read","The request has not finished."
+    ]
+  },
   {"matchStrings": ["Document is not focused"
     ]
   },
@@ -104,7 +111,8 @@
     ]
   },
   {"matchStrings": ["Permission denied to access property","on cross-origin object"
-    ]
+    ],
+   "comment": "---seen on moz-extension"
   },
   {"matchStrings": ["The operation is insecure."
     ]
@@ -140,24 +148,34 @@
   },
 
 
-
-
-  {"matchStrings": ["is null\""
+  {"matchStrings": ["message\": \"Object doesn't support property or method"
     ]
   },
   {"matchStrings": ["message\": \"null"
     ]
   },
-  {"matchStrings": ["null is not an object (evaluating"
-    ]
-  },
   {"matchStrings": ["message\": \"undefined"
     ]
   },
-  {"matchStrings": ["is undefined\""
+  {"matchStrings": ["message\": \"[object Event]"
     ]
   },
-  {"matchStrings": ["message\": \"[object Event]"
+  {"matchStrings": ["message\": \"error\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Error: {}\""
+    ],
+   "comment": "---Jan 29 2021, sam safari jbrowse"
+  },
+
+
+  {"matchStrings": ["is null\""
+    ]
+  },
+  {"matchStrings": ["null is not an object (evaluating"
+    ]
+  },
+  {"matchStrings": ["is undefined"
     ]
   },
   {"matchStrings": ["is not a function"
@@ -169,23 +187,57 @@
   {"matchStrings": ["has already been declared"
     ]
   },
-  {"matchStrings": ["message\": \"error\""
-    ]
-  },
-  {"matchStrings": ["message\": \"Error: {}\""
-    ],
-   "comment": "---Jan 29 2021, sam safari jbrowse"
-  },
   {"matchStrings": ["<unknown status code>"
     ]
   },
+  {"matchStrings": ["Unexpected token < in JSON at position 0"
+    ],
+   "comment": "---Win7   Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+  },
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+  },
+  {"matchStrings": ["The request timed out"
+    ]
+  },
+  {"matchStrings": ["Unexpected token"
+    ],
+   "comment": "--- other than (filter above): JSON at position 0 (Win 7)"
+  },
+  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
+    ]
+  },
+  {"matchStrings": ["Unexpected end of JSON input"
+    ]
+  },
+  {"matchStrings": ["invalid escape sequence"
+    ]
+  },
+
+
+
+  {"matchStrings": ["========= USERS BUT DO NOT EMAIL"
+    ]
+  },
+  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
+    ],
+   "comment": "---safari"
+  },
+  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
+    ]
+  },
+
 
   {"matchStrings": ["========= BOTS"
     ]
   },
   {"matchStrings": ["Googlebot"
     ],
-   "comment": "mostly cross origin"
+   "comment": "---cross origin, step does not exist due to new guest id"
   },
 
 
@@ -196,14 +248,20 @@
     ]
   },
   {"matchStrings": ["Cannot POST","Resource","no record with primary keys","does not exist"
-    ]
+    ],
+   "comment": "---one reason is change of guest user, other cases unclear"
   },
   {"matchStrings": ["Cannot POST","No strategy exists with signature"
-    ]
+    ],
+   "comment": "---could be the strategy has been deleted"
+  },
+  {"matchStrings": ["Cannot POST","Step","is not part of a strategy, so cannot run"
+    ],
+   "comment": "---Feb 5 2021 opened trello"
   },
   {"matchStrings": ["Cannot POST","analyses","Only graphs of 500 nodes or fewer"
     ],
-   "comment": ""
+   "comment": "---added message, opened trello for (1) do not offer analysis, (2) a nicer error message"
   },
   {"matchStrings": ["Cannot POST","analyses","Your result has no genes that are in pathways"
     ]
@@ -233,45 +291,26 @@
     ],
    "comment": "---text search"
   },
-  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
-    ]
-  },
-  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
-    ]
-  },
   {"matchStrings": ["Cannot POST"
+    ]
+  },
+  {"matchStrings": ["Cannot GET","Resource","Dataset with ID","does not exist."
     ]
   },
   {"matchStrings": ["Cannot GET"
     ]
   },
   {"matchStrings": ["Cannot PATCH"
+    ],
+   "comment": "---preferences name was too small, ana increased #43584"
+  },
+  {"matchStrings": ["Cannot DELETE","Resource","analysis","does not exist."
     ]
   },
   {"matchStrings": ["Cannot DELETE"
     ]
   },
 
-  {"matchStrings": ["Error: Message did timeout"
-    ],
-   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
-  },
-  {"matchStrings": ["The request timed out"
-    ]
-  },
-  {"matchStrings": ["Unexpected token"
-    ],
-   "comment": "---Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
-  },
-  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
-    ]
-  },
-  {"matchStrings": ["Unexpected end of JSON input"
-    ]
-  },
-  {"matchStrings": ["invalid escape sequence"
-    ]
-  },
   {"matchStrings": ["Element type is invalid","CompositePluginComponent"
     ]
   },
@@ -294,12 +333,6 @@
   {"matchStrings": ["Right side of assignment cannot be destructured"
     ]
   },
-  {"matchStrings": ["out of memory"
-    ]
-  },
-  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
-    ]
-  },
 
 
   {"matchStrings": ["========= USER NEEDS TO BE TOLD TO CORRECT"
@@ -317,7 +350,14 @@
   {"matchStrings": ["Invalid dimensions for plot"
     ]
   },
-  {"matchStrings": ["QuotaExceededError"
+  {"matchStrings": ["message\": \"out of memory"
+    ],
+   "comment": "--- old windows with FF"
+  },
+  {"matchStrings": ["Encountered full disk while opening backing store for indexedDB.open"
+    ]
+  },
+  {"matchStrings": ["Internal error opening backing store for indexedDB.open."
     ]
   },
 
@@ -341,6 +381,12 @@
     ]
   },
   {"matchStrings": ["name\": \"NotFoundError"
+    ]
+  },
+  {"matchStrings": ["name\": \"InvalidStateError"
+    ]
+  },
+  {"matchStrings": ["name\": \"QuotaExceededError"
     ]
   },
   {"matchStrings": ["name\": \"TypeError"

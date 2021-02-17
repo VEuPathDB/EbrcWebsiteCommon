@@ -1,4 +1,8 @@
 [
+  {"matchStrings": ["========  CLIENT ERRORS: copy and paste from wdkClientCategories file"
+    ]
+  },
+
   {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
   {"matchStrings": ["Could not load embedded JBrowse instance"
@@ -12,6 +16,10 @@
   {"matchStrings": ["Failed to fetch"
     ],
    "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
+  },
+  {"matchStrings": ["failed to fetch"
+    ],
+   "comment": "---twitter"
   },
   {"matchStrings": ["Loading chunk"
     ],
@@ -75,6 +83,9 @@
     ],
    "comment": "---Dec23-2020. Dave: likely due to browser addon like Google Translate"
   },
+  {"matchStrings": ["Failed to read","The request has not finished."
+    ]
+  },
   {"matchStrings": ["Document is not focused"
     ]
   },
@@ -104,7 +115,8 @@
     ]
   },
   {"matchStrings": ["Permission denied to access property","on cross-origin object"
-    ]
+    ],
+   "comment": "---seen on moz-extension"
   },
   {"matchStrings": ["The operation is insecure."
     ]
@@ -140,24 +152,34 @@
   },
 
 
-
-
-  {"matchStrings": ["is null\""
+  {"matchStrings": ["message\": \"Object doesn't support property or method"
     ]
   },
   {"matchStrings": ["message\": \"null"
     ]
   },
-  {"matchStrings": ["null is not an object (evaluating"
-    ]
-  },
   {"matchStrings": ["message\": \"undefined"
     ]
   },
-  {"matchStrings": ["is undefined\""
+  {"matchStrings": ["message\": \"[object Event]"
     ]
   },
-  {"matchStrings": ["message\": \"[object Event]"
+  {"matchStrings": ["message\": \"error\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Error: {}\""
+    ],
+   "comment": "---Jan 29 2021, sam safari jbrowse"
+  },
+
+
+  {"matchStrings": ["is null\""
+    ]
+  },
+  {"matchStrings": ["null is not an object (evaluating"
+    ]
+  },
+  {"matchStrings": ["is undefined"
     ]
   },
   {"matchStrings": ["is not a function"
@@ -169,33 +191,42 @@
   {"matchStrings": ["has already been declared"
     ]
   },
-  {"matchStrings": ["message\": \"error\""
-    ]
-  },
-  {"matchStrings": ["message\": \"Error: {}\""
-    ],
-   "comment": "---Jan 29 2021, sam safari jbrowse"
-  },
   {"matchStrings": ["<unknown status code>"
     ]
   },
-
-  {"matchStrings": ["========= BOTS"
+  {"matchStrings": ["Unexpected token < in JSON at position 0"
+    ],
+   "comment": "---Win7   Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+  },
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+  },
+  {"matchStrings": ["The request timed out"
     ]
   },
-  {"matchStrings": ["Googlebot"
+  {"matchStrings": ["Unexpected token"
     ],
-   "comment": "mostly cross origin"
+   "comment": "--- other than (filter above): JSON at position 0 (Win 7)"
   },
-
-
-  {"matchStrings": ["========= CHECK THESE"
+  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
+    ]
+  },
+  {"matchStrings": ["Unexpected end of JSON input"
+    ]
+  },
+  {"matchStrings": ["invalid escape sequence"
     ]
   },
 
-  {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
+
+
+  {"matchStrings": ["========= USERS BUT DO NOT EMAIL"
+    ]
+  },
+  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
     ],
-   "comment": "---text search"
+   "comment": "---safari"
   },
   {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
     ]
@@ -204,15 +235,24 @@
     ]
   },
 
-  {"matchStrings": ["Error: Message did timeout"
-    ],
-   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+
+  {"matchStrings": ["========= BOTS"
+    ]
   },
-  {"matchStrings": ["The request timed out"
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "---cross origin, step does not exist due to new guest id"
+  },
+
+
+
+
+
+  {"matchStrings": ["========= SERVICE ERRORS"
     ]
   },
 
-  {"matchStrings": ["========= SERVICE ERRORS"
+  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
     ]
   },
 
