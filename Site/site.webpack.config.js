@@ -1,15 +1,21 @@
+var path = require('path');
 var baseConfig = require('../../install/base.webpack.config');
 
 // Create webpack alias configuration object
-var alias = {
+var devAlias = {
+  site: process.cwd() + '/webapp',
+  '@veupathdb/wdk-client': path.resolve(__dirname, '../../WDKClient/Client'),
+  '@veupathdb/web-common': path.resolve(__dirname, '../../EbrcWebsiteCommon/Client'),
+};
+var prodAlias = {
   site: process.cwd() + '/webapp',
 };
 
 module.exports = function configure(additionalConfig) {
-  return baseConfig.merge([{
+  return baseConfig.merge((env, argv) => [{
     context: process.cwd(),
     resolve: {
-      alias,
+      alias: argv.mode === 'production' ? prodAlias : devAlias,
     },
 
     // Map external libraries Wdk exposes so we can do things like:
