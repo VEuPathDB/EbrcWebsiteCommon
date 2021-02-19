@@ -119,7 +119,9 @@
     <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" >
       <arg line="build"/>
     </exec>
-    <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client"/>
+    <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client">
+      <arg line="--ignore-engines"/>
+    </exec>
   </target>
 
   <target name="siteLog4j">
