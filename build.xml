@@ -115,11 +115,13 @@
 
   <target name="buildLocalNpmPackages" if="${doLocalNpmModuleBuild}">
     <echo message="Building npm package for WDKClient/Client"/>
-    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client"/>
-    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" >
+    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
+      <arg line="--ignore-engines"/>
+    </exec>
+    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
       <arg line="build"/>
     </exec>
-    <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client">
+    <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client" failonerror="true">
       <arg line="--ignore-engines"/>
     </exec>
   </target>
