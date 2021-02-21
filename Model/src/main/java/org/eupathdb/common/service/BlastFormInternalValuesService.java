@@ -2,7 +2,9 @@ package org.eupathdb.common.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -61,7 +63,11 @@ public class BlastFormInternalValuesService extends AbstractWdkService {
       for (String typeTerm : dbTypeValueMap.keySet()) {
         if (!typeTerm.equals(defaultTypeTerm)) { // map for default db type already added
           spec = getQueryInstanceSpec(question, dbTypeParamName, typeTerm);
-          organismValuesMap.put(typeTerm, orgParam.getVocabInstance(spec).getVocabMap());
+          // filter out rows with internal = -1
+          Map<String,String> orgVocab = orgParam.getVocabInstance(spec).getVocabMap().entrySet().stream()
+              .filter(e -> !e.getValue().equals("-1"))
+              .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+          organismValuesMap.put(typeTerm, orgVocab);
         }
       }
     }
