@@ -11,6 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.log4j.Logger;
 import org.gusdb.fgputil.validation.ValidObjectFactory.DisplayablyValid;
 import org.gusdb.fgputil.validation.ValidationLevel;
 import org.gusdb.wdk.model.WdkModelException;
@@ -24,19 +25,21 @@ import org.gusdb.wdk.service.request.exception.DataValidationException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
+@Path("/blast-param-internal-values/{questionUrlSegment}")
 public class BlastFormInternalValuesService extends AbstractWdkService {
+
+  private static final Logger LOG = Logger.getLogger(BlastFormInternalValuesService.class);
 
   private static final String[] DB_TYPE_PARAM_NAMES = new String[] {"BlastDatabaseType", "MultiBlastDatabaseType" };
   private static final String[] ORGANISM_PARAM_NAMES = new String[] { "BlastDatabaseOrganism" };
 
-  private static final String URL_SEGMENT_PATH_PARAM = "questionUrlSegment";
-
   @GET
-  @Path("/blast-param-internal-values/{" + URL_SEGMENT_PATH_PARAM + "}")
   @Produces(MediaType.APPLICATION_JSON)
   public JSONObject getBlastParamInternalValues(
-      @PathParam(URL_SEGMENT_PATH_PARAM) String questionUrlSegment)
+      @PathParam("questionUrlSegment") String questionUrlSegment)
           throws WdkModelException, DataValidationException {
+
+    LOG.info("Request received with question " + questionUrlSegment);
 
     // confirm question exists and is a BLAST question (i.e. has BlastDatabaseType param)
     Question question = getQuestionOrNotFound(questionUrlSegment);
