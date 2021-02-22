@@ -2,7 +2,9 @@ package org.eupathdb.common.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -24,18 +26,17 @@ import org.gusdb.wdk.service.request.exception.DataValidationException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
+@Path("/blast-param-internal-values")
 public class BlastFormInternalValuesService extends AbstractWdkService {
 
   private static final String[] DB_TYPE_PARAM_NAMES = new String[] {"BlastDatabaseType", "MultiBlastDatabaseType" };
   private static final String[] ORGANISM_PARAM_NAMES = new String[] { "BlastDatabaseOrganism" };
 
-  private static final String URL_SEGMENT_PATH_PARAM = "questionUrlSegment";
-
   @GET
-  @Path("/blast-param-internal-values/{" + URL_SEGMENT_PATH_PARAM + "}")
+  @Path("/{questionUrlSegment}")
   @Produces(MediaType.APPLICATION_JSON)
   public JSONObject getBlastParamInternalValues(
-      @PathParam(URL_SEGMENT_PATH_PARAM) String questionUrlSegment)
+      @PathParam("questionUrlSegment") String questionUrlSegment)
           throws WdkModelException, DataValidationException {
 
     // confirm question exists and is a BLAST question (i.e. has BlastDatabaseType param)
@@ -56,9 +57,13 @@ public class BlastFormInternalValuesService extends AbstractWdkService {
       String defaultTypeTerm = spec.get().get(dbTypeParamName);
       organismValuesMap.put(defaultTypeTerm, orgParam.getVocabInstance(spec).getVocabMap());
       for (String typeTerm : dbTypeValueMap.keySet()) {
-        if (!typeTerm.equals(defaultTypeTerm)) { // map for default db type already added
+        if (!typeTerm.equals(defaultTypeTerm)) { // map for default db type already added; skip
           spec = getQueryInstanceSpec(question, dbTypeParamName, typeTerm);
-          organismValuesMap.put(typeTerm, orgParam.getVocabInstance(spec).getVocabMap());
+          // filter out rows with internal = -1
+          Map<String,String> orgVocab = orgParam.getVocabInstance(spec).getVocabMap().entrySet().stream()
+              .filter(e -> !e.getValue().equals("-1"))
+              .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+          organismValuesMap.put(typeTerm, orgVocab);
         }
       }
     }
