@@ -18,6 +18,17 @@ module.exports = function configure(additionalConfig) {
       alias: argv.mode === 'production' ? prodAlias : devAlias,
     },
 
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx|ts|tsx)$/,
+          exclude: /node_modules\/(?!(@veupathdb))/,
+          enforce: 'pre',
+          use: 'source-map-loader'
+        },
+      ]
+    },
+
     // Map external libraries Wdk exposes so we can do things like:
     //
     //    import Wdk from 'wdk;
