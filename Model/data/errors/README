@@ -1,21 +1,29 @@
 (BLOG style, add on top)
+
+     
+wdkErrorCategories.txt  
+- it determines what does not get emailed, 
+- do no edit, make it a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+
+
 ========================================
+
+Feb 12 2021
+
+
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-retained* > zcat-gen-01.txt ; zcat /usr/local/tomcat_instances/*/logs/*.b6_3/2021-01/errors-retained* > zcat-ortho-01.txt ;  zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-02/errors-retained* > zcat-gen-02.txt ; zcat /usr/local/tomcat_instances/*/logs/*.b6_3/2021-02/errors-retained* > zcat-ortho-02.txt ; cat zcat-gen-01.txt zcat-ortho-01.txt zcat-gen-02.txt zcat-ortho-02.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_3/errors-retained* /usr/local/tomcat_instances/*/logs/*.b15/errors-retained* /usr/local/tomcat_instances/*/logs/*.b20/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 02/01/2021 --ed 02/28/2021
 
 
 ========================================
 Jan 24 2021
 
-DO NOT EDIT
-wdkErrorCategories.txt 
-- it determines what gets emailed, 
-- it is a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
 
-
-EDIT
-These files contain all errors,  should be used to generate reports.
+EDIT  These files: they contain all errors,  should be used to generate reports.
 
         Model/data/errors/wdkClientErrorCategoriesAll.txt
         Model/data/errors/wdkServiceErrorCategoriesAll.txt
+
+
 
 REPORT COUNTS
 
