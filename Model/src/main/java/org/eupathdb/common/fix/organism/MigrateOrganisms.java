@@ -80,8 +80,9 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
   @Override
   public void configure(WdkModel wdkModel, List<String> additionalArgs) throws Exception {
     if (additionalArgs.size() < 1 || additionalArgs.size() > 2) {
-      LOG.error("USAGE: migrateOrganisms <buildSpecificJavaClassName> [-write]");
-      throw new IllegalArgumentException();
+      String usage = "USAGE: migrateOrganisms <projectId> <buildSpecificJavaClassName> [-write]";
+      LOG.error(usage);
+      throw new IllegalArgumentException(usage);
     }
     String configClass = getClass().getPackageName() + "." + additionalArgs.get(0);
     _config = (OrganismMigration)Class.forName(configClass).getConstructor().newInstance();
@@ -128,11 +129,11 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
     for (String paramName : paramsJson.keySet()) {
       if (_config.getOrganismParams().contains(paramName)) {
         // found an org param; perform mapping
-        List<String> orgs = AbstractEnumParam.convertToTerms(
+        List<String> orgs = new ArrayList<>(AbstractEnumParam.convertToTerms(
             AbstractEnumParam.standardizeStableValue(
-                paramsJson.getString(paramName), true));
+                paramsJson.getString(paramName), true)));
         jsonChanged |= replaceInPlace(orgs, _config.getOrganismMapping());
-        paramsJson.put(paramName, new JSONArray(orgs));
+        paramsJson.put(paramName, new JSONArray(orgs).toString());
       }
     }
 
@@ -155,7 +156,7 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
         .put(KEY_PARAMS,  paramsJson)
         .put(KEY_FILTERS, filtersJson)
         .put(KEY_COLUMN_FILTERS, columnFiltersJson);
-      LOG.info("Will convert param filters JSON" + NL +
+      LOG.info("Will convert param filters JSON for step " + nextRow.getStepId() + NL +
           "--OLD--" + NL + oldParamFiltersJson.toString(2) + NL +
           "--NEW--" + NL + newParamFiltersJson.toString(2) + NL);
       nextRow.setParamFilters(newParamFiltersJson);
