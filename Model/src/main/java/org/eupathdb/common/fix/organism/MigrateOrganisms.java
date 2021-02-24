@@ -75,7 +75,10 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
   private OrganismMigration _config;
 
   // statistics
-  private AtomicInteger _stepsConverted = new AtomicInteger(0);
+  private AtomicInteger _numParamValuesModified = new AtomicInteger(0);
+  private AtomicInteger _numFilterValuesModified = new AtomicInteger(0);
+  private AtomicInteger _numStepsProcessed = new AtomicInteger(0);
+  private AtomicInteger _numStepsWritten = new AtomicInteger(0);
 
   @Override
   public void configure(WdkModel wdkModel, List<String> additionalArgs) throws Exception {
@@ -123,7 +126,8 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
         paramFiltersJson.getJSONObject(KEY_COLUMN_FILTERS) : new JSONObject();
 
     // build new JSON
-    boolean jsonChanged = false;
+    boolean paramValuesChanged = false;
+    boolean filterValuesChanged = false;
 
     // look for organism params
     for (String paramName : paramsJson.keySet()) {
@@ -132,7 +136,7 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
         List<String> orgs = new ArrayList<>(AbstractEnumParam.convertToTerms(
             AbstractEnumParam.standardizeStableValue(
                 paramsJson.getString(paramName), true)));
-        jsonChanged |= replaceInPlace(orgs, _config.getOrganismMapping());
+        paramValuesChanged |= replaceInPlace(orgs, _config.getOrganismMapping());
         paramsJson.put(paramName, new JSONArray(orgs).toString());
       }
     }
@@ -146,10 +150,12 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
             .getJSONObject("byValue");
         List<String> orgs = new ArrayList<>(Arrays.asList(JsonUtil.toStringArray(
             byValueObject.getJSONArray("values"))));
-        jsonChanged |= replaceInPlace(orgs, _config.getOrganismMapping());
+        filterValuesChanged |= replaceInPlace(orgs, _config.getOrganismMapping());
         byValueObject.put("values", new JSONArray(orgs));
       }
     }
+
+    boolean jsonChanged = paramValuesChanged || filterValuesChanged;
 
     if (jsonChanged) {
       JSONObject newParamFiltersJson = new JSONObject()
@@ -160,8 +166,13 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
           "--OLD--" + NL + oldParamFiltersJson.toString(2) + NL +
           "--NEW--" + NL + newParamFiltersJson.toString(2) + NL);
       nextRow.setParamFilters(newParamFiltersJson);
-      _stepsConverted.incrementAndGet();
+
+      // update stats
+      if (paramValuesChanged) _numParamValuesModified.incrementAndGet();
+      if (filterValuesChanged) _numFilterValuesModified.incrementAndGet();
+      _numStepsWritten.incrementAndGet();
     }
+    _numStepsProcessed.incrementAndGet();
 
     return new RowResult<>(nextRow).setShouldWrite(jsonChanged && _performUpdates);
   }
@@ -189,7 +200,11 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
 
   @Override
   public void dumpStatistics() {
-    LOG.info("Converted a total of " + _stepsConverted.get() + " steps.");
+    LOG.info(NL + NL + "Statistics:" + NL +
+        "  Processed:     " + _numStepsProcessed.get() + NL +
+        "  Param Mods:    " + _numParamValuesModified.get() + NL +
+        "  Filter Mods:   " + _numFilterValuesModified.get() + NL +
+        "  Total Written: " + _numStepsWritten.get() + NL);
   }
 
 }
