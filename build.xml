@@ -104,16 +104,13 @@
 
   <!-- Target to be used by implementing sites -->
   <target name="eupathWebComponentInstall">
-    <condition property="doLocalNpmModuleBuild" value="false" else="true">
-      <istrue value="${webAssets.optimize}"/>
-    </condition>
     <antcall target="buildLocalNpmPackages"/>
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
     <ant target="siteLog4j"/>
   </target>
 
-  <target name="buildLocalNpmPackages" if="${doLocalNpmModuleBuild}">
+  <target name="buildLocalNpmPackages">
     <echo message="Building npm package for WDKClient/Client"/>
     <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
       <arg line="--ignore-engines"/>

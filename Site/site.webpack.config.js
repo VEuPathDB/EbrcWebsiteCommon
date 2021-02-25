@@ -2,20 +2,17 @@ var path = require('path');
 var baseConfig = require('../../install/base.webpack.config');
 
 // Create webpack alias configuration object
-var devAlias = {
+var alias = {
   site: process.cwd() + '/webapp',
   '@veupathdb/wdk-client': path.resolve(__dirname, '../../WDKClient/Client'),
   '@veupathdb/web-common': path.resolve(__dirname, '../../EbrcWebsiteCommon/Client'),
 };
-var prodAlias = {
-  site: process.cwd() + '/webapp',
-};
 
 module.exports = function configure(additionalConfig) {
-  return baseConfig.merge((env, argv) => [{
+  return baseConfig.merge([{
     context: process.cwd(),
     resolve: {
-      alias: argv.mode === 'production' ? prodAlias : devAlias,
+      alias
     },
 
     module: {
