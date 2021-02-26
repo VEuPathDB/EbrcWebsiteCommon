@@ -40,6 +40,7 @@ public class Build51 implements OrganismMigration {
   });
 
   private static final Map<String,String> ORGANISM_MAPPING = Map.ofEntries(
+    entry("Anopheles gambiae str. PEST", "Anopheles gambiae PEST"),
     entry("Aspergillus kawachii IFO 4308", "Aspergillus luchuensis IFO 4308"),
     entry("Aspergillus kawachii", REMOVE_ENTRY),
     entry("Aspergillus zonatus CBS 506.65", "Penicilliopsis zonata CBS 506.65"),
