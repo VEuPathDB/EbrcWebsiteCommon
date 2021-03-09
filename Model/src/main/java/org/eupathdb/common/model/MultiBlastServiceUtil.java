@@ -14,9 +14,8 @@ public class MultiBlastServiceUtil {
   private static final String LOCALHOST_PROP_KEY = "LOCALHOST";
   private static final String SERVICE_URL_PROP_KEY = "MULTI_BLAST_SERVICE_URL";
 
-  // header names for blast service authentication
-  private static final String GUEST_USER_ID_HEADER_NAME = "Auth-Guest-User-Id";
-  private static final String REGISTERED_USER_AUTH_HEADER_NAME = "Auth-Key";
+  // header name for blast service authentication
+  private static final String AUTH_HEADER_NAME = "Auth-Key";
 
   public static <T extends Exception> String getMultiBlastServiceUrl(WdkModel model, Function<String,T> exceptionProvider) throws T {
     Map<String,String> modelProps = model.getProperties();
@@ -32,10 +31,10 @@ public class MultiBlastServiceUtil {
   public static TwoTuple<String,String> getAuthHeader(WdkModel wdkModel, User user) {
     return user.isGuest()
         ? new TwoTuple<>(
-            GUEST_USER_ID_HEADER_NAME,
+            AUTH_HEADER_NAME,
             String.valueOf(user.getUserId()))
         : new TwoTuple<>(
-            REGISTERED_USER_AUTH_HEADER_NAME,
+            AUTH_HEADER_NAME,
             new LoginCookieFactory(wdkModel.getModelConfig().getSecretKey()).getLoginCookieValue(user.getEmail()));
   }
 
