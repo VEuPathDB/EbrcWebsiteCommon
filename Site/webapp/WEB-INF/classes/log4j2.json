@@ -21,7 +21,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "service-access-log",
@@ -33,7 +33,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "http-response-log",
@@ -45,7 +45,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "errors-ignored",
@@ -57,7 +57,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "errors-retained",
@@ -69,7 +69,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "errors-client-ignored",
@@ -81,7 +81,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "errors-client-retained",
@@ -93,7 +93,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "100 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "example-sql-log",
@@ -105,7 +105,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "5 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "RollingFile",
         "name": "slow-sql-log",
@@ -117,7 +117,7 @@
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
           "SizeBasedTriggeringPolicy": { "size": "10 MB" }
         },
-        "DefaultRolloverStrategy": { "max": "3" }
+        "DefaultRolloverStrategy": { }
       },{
         "type": "Console",
         "name": "STDOUT",
