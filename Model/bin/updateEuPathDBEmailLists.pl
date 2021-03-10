@@ -68,7 +68,7 @@ $body .= "/*\n";
 
 sub getSQL {
   return "select u.email, first.value || ' ' || last.value as name, p.preference_name
-from userlogins5.preferences\@prodn.login_comment p, useraccounts.accounts\@acctdbs.profile u, useraccounts.account_properties\@acctdbs.profile first, useraccounts.account_properties\@acctdbs.profile last 
+from userlogins5.preferences\@prods.login_comment p, useraccounts.accounts\@acctdbs.profile u, useraccounts.account_properties\@acctdbs.profile first, useraccounts.account_properties\@acctdbs.profile last 
 where u.last_login is not null
 and u.user_id = p.user_id
 and p.preference_name like '%email%'
