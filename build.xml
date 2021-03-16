@@ -107,6 +107,7 @@
     <antcall target="buildLocalNpmPackages"/>
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
+    <ant target="copyClientImages"/>
     <ant target="siteLog4j"/>
   </target>
 
@@ -121,6 +122,12 @@
     <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client" failonerror="true">
       <arg line="--ignore-engines"/>
     </exec>
+  </target>
+
+  <target name="copyClientImages">
+    <copy todir="${webappTargetDir}/images">
+      <fileset dir="${projectsDir}/EbrcWebsiteCommon/Client/images"/>
+    </copy>
   </target>
 
   <target name="siteLog4j">
