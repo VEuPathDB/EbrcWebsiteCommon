@@ -143,7 +143,21 @@ const siteAnnouncements = [
     }
   },
 */
-
+  {
+    id: 'microbiome',
+    renderDisplay: (props) => {
+    if (isMBiomeHomePage(props.projectId, props.location)) {
+        return (
+          <div>
+            We are pleased to announce a new collaboration with the <a target="_blank" href="https://nephele.niaid.nih.gov/">Nephele</a> team at the NIH/NIAID!  
+            &nbsp;&nbsp;&nbsp;MicrobiomeDB users can now process their raw fastq files from 16S rRNA marker gene studies on <a target="_blank" href="https://nephele.niaid.nih.gov/">Nephele</a> and pass the results directly to their private <Link to="/workspace/datasets">My Data Sets page</Link> for seamless integration with query tools and visualization apps on MicrobiomeDB. 
+            &nbsp;&nbsp;&nbsp;<a target="_blank" href="https://nephele.niaid.nih.gov/user_guide_microbiomedb_tutorial/">Read more</a> about this new feature.
+          </div>
+        );
+      }
+      return null;
+    }
+  },
   {
     id: 'blast-beta',
     renderDisplay: props => {
@@ -410,6 +424,9 @@ function isFavorites(routerLocation) {
 }
 function isGenomicHomePage(projectId, routerLocation) {
   return isGenomicSite(projectId) && routerLocation.pathname === '/';
+}
+function isMBiomeHomePage(projectId, routerLocation) {
+  return /MicrobiomeDB/i.test(projectId) && routerLocation.pathname === '/';
 }
 function isLegacyBlast(projectId, routerLocation) {
   return (
