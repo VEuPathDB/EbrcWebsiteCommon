@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from '@veupathdb/wdk-client/lib/Components';
 import {pure} from '@veupathdb/wdk-client/lib/Utils/ComponentUtils';
 import DatasetGraph from 'ebrc-client/components/DatasetGraph';
+import { projectId } from 'ebrc-client/config';
 
 // Use Element.innerText to strip XML
 function stripXML(str) {
@@ -131,10 +132,12 @@ function References(props) {
     let question = questions.find(q => q.fullName === name);
 
     if (question == null) {
-      // throw new Error("cannot find question with name:" + name) ;
+      if (projectId === 'EuPathDB') {
+        console.warn("Ignoring dataset reference `", name, "`. Unable to resolve with model.");
+        return null;
+      }
+      throw new Error("cannot find question with name:" + name) ;
       // There are too many cases that are difficult to address right now, so we opt to ignore
-      console.warn("Ignoring dataset reference `", name, "`. Unable to resolve with model.");
-      return null;
     }
 
     let recordClass = recordClasses.find(r => r.urlSegment === question.outputRecordClassName);
