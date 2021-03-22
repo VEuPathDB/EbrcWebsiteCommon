@@ -17,7 +17,7 @@
       "appender": [{
         "name": "wdk-log",
         "fileName": "${logDir}/wdk.log",
-        "filePattern": "${logDir}/wdk.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/wdk.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${standardLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -28,7 +28,7 @@
       },{
         "name": "service-access-log",
         "fileName": "${logDir}/wdk-service-access.log",
-        "filePattern": "${logDir}/wdk-service-access.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/wdk-service-access.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${standardLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -39,7 +39,7 @@
       },{
         "name": "http-response-log",
         "fileName": "${logDir}/http-responses.log",
-        "filePattern": "${logDir}/http-responses.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/http-responses.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${standardLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -50,7 +50,7 @@
       },{
         "name": "errors-ignored",
         "fileName": "${logDir}/errors-ignored.log",
-        "filePattern": "${logDir}/errors-ignored.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/errors-ignored.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${errorLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -61,7 +61,7 @@
       },{
         "name": "errors-retained",
         "fileName": "${logDir}/errors-retained.log",
-        "filePattern": "${logDir}/errors-retained.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/errors-retained.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${errorLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -72,7 +72,7 @@
       },{
         "name": "errors-client-ignored",
         "fileName": "${logDir}/errors-client-ignored.log",
-        "filePattern": "${logDir}/errors-client-ignored.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/errors-client-ignored.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${errorLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -83,7 +83,7 @@
       },{
         "name": "errors-client-retained",
         "fileName": "${logDir}/errors-client-retained.log",
-        "filePattern": "${logDir}/errors-client-retained.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/errors-client-retained.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${errorLogPattern}" },
         "type": "RollingFile",
         "Policies": {
@@ -94,23 +94,23 @@
       },{
         "name": "example-sql-log",
         "fileName": "${logDir}/queries-example.log",
-        "filePattern": "${logDir}/queries-example.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/queries-example.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${standardLogPattern}" },
         "type": "RollingFile",
         "Policies": {
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
-          "SizeBasedTriggeringPolicy": { "size": "5MB" }
+          "SizeBasedTriggeringPolicy": { "size": "100MB" }
         },
         "DefaultRolloverStrategy": { "max": 1000 }
       },{
         "name": "slow-sql-log",
         "fileName": "${logDir}/queries-slow.log",
-        "filePattern": "${logDir}/queries-slow.log.%d{yyyy-MM-dd}.%i.gz",
+        "filePattern": "${logDir}/archive/queries-slow.log.%d{yyyy-MM-dd}.%i.gz",
         "PatternLayout": { "pattern": "${standardLogPattern}" },
         "type": "RollingFile",
         "Policies": {
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
-          "SizeBasedTriggeringPolicy": { "size": "10MB" }
+          "SizeBasedTriggeringPolicy": { "size": "100MB" }
         },
         "DefaultRolloverStrategy": { "max": 1000 }
       },{
