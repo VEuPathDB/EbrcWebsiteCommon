@@ -65,7 +65,7 @@ public class ContactUsSubmitter {
     String smtpServer = modelConfig.getSmtpServer();
     
     // Send auto-reply
-   /* emailSender.sendEmail(
+    emailSender.sendEmail(
         smtpServer, 
         replyEmail, 
         supportEmail, 
@@ -73,11 +73,11 @@ public class ContactUsSubmitter {
         escapeHtml(metaInfo + "\n\n" + contextContent + "\n\n" + emailContent + "\n\n"), 
         ccField,null, 
         params.attachments
-    );*/
+    );
 
     // Send support email
     LOG.debug("SUBJECT: " + params.subject +  " -----TO: " + supportEmail);
-   /*  emailSender.sendEmail( 
+     emailSender.sendEmail( 
         smtpServer, 
         supportEmail, 
         replyEmail, 
@@ -85,7 +85,7 @@ public class ContactUsSubmitter {
         escapeHtml(metaInfo + "\n\n" + contextContent + "\n\n" + params.message + "\n\n"), 
         null, null,
         params.attachments
-    );*/
+    );
     
     // Send Redmine email
     emailSender.sendEmail(
