@@ -1080,9 +1080,9 @@ sub new {
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
-  my $exprMetric = "FPKM";
-  if ($projectId eq 'VectorBase' || $projectId eq 'ToxoDB' || $projectId eq 'PiroplasmoDB' || $projectId eq 'AmoebaDB') {
-    $exprMetric = "TPM";
+  my $exprMetric = "TPM";
+  if ($projectId eq 'HostDB' || $projectId eq 'TriTrypDB' || $projectId eq 'CryptoDB' || $projectId eq 'MicrosporidiaDB') {
+      $exprMetric = "FPKM";
   }
 
   my $adjust = "
