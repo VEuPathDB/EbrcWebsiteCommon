@@ -13,11 +13,12 @@ I maintain the files in watermelon (~/WORK/wdk*), since i run the script there o
 
 When ready to commit new filters into qa or production 
 ------------------------------------------------------
+In your working server where you have your sites. a project_home (eg: ash, durian)
+(assuming changes in these files might break a site build)
+(otherwise u may stay in watermelon)
 
-1) scp into your working server, where you have your sites
-     scp -P 2112 aurreco@watermelon.uga.apidb.org:~/WORK/wdk* .
-
-   (wdkErrorCategories.txt is basically empty in watermelon)
+1) scp the files from watermelon:
+     scp -P 2112 aurreco@watermelon.uga.apidb.org:~/WORK/wdk* ~/WORK
 
 
 2) Check differences with what is committed:
