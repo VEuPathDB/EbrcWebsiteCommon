@@ -6,6 +6,60 @@ wdkErrorCategories.txt
 - do no edit, make it a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
 
 
+
+WORKFLOW
+
+I maintain the files in watermelon (~/WORK/wdk*), since i run the script there on live logs.
+
+When ready to commit new filters into qa or production 
+------------------------------------------------------
+
+1) scp into your working server, where you have your sites
+     scp -P 2112 aurreco@watermelon.uga.apidb.org:~/WORK/wdk* .
+
+   (wdkErrorCategories.txt is basically empty in watermelon)
+
+
+2) Check differences with what is committed:
+    cd $MYSITE/project_home/EbrcWebsiteCommon/Model/data/errors/ 
+    diff ~/WORK/wdkClientErrorCategoriesAll.txt  .
+    diff ~/WORK/wdkServiceErrorCategoriesAll.txt  .
+
+
+3)  3.1- update project_home: 
+         cp ~/WORK/wdkClientErrorCategoriesAll.txt  .
+         cp ~/WORK/wdkServiceErrorCategoriesAll.txt  .
+
+    3.2- generate a new wdkErrorCategories.txt in ~/WORK: 
+         - copy from wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+           (the ones we do not want emails at the top of the files)
+           INTO EMPTY wdkErrorCategories.txt coming from watermelon
+         - diff ~/WORK/wdkErrorCategories.txt  .
+         - cp ~/WORK/wdkErrorCategories.txt  .
+
+    3.3- commit the 3 files.
+
+
+
+
+========================================
+
+Mar 28 2021
+
+BUILD 51,o ortho 6_4,  clinepi 16, mbiome 21
+released march 16, dont check on  16 and 17, always lots of errors
+
+
+MARCH 2021
+
+
+zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 03/18/2021 --ed 03/31/2021
+
+zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-client-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-client-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-client-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-client-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt  --r --sd 03/18/2021 --ed 03/31/2021
+
+
+
+
 ========================================
 
 Feb 12 2021

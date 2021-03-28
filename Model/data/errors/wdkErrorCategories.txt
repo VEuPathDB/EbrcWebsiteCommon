@@ -5,6 +5,10 @@
 
   {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
   },
+  {"matchStrings": ["studies could not be parsed"
+    ],
+   "comment": "---clinepi, presenters prop: isPublic false, only show in qa, live site client gets project_availability null, qa gets AlClinEpiDB"
+  },
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
    "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
@@ -121,7 +125,9 @@
   {"matchStrings": ["The operation is insecure."
     ]
   },
-
+  {"matchStrings": ["message\": \"SecurityError\""
+    ]
+  },
 
 
   {"matchStrings": ["========= IT IS US, will prevent from sending emails"
@@ -135,7 +141,7 @@
   },
 
 
-  {"matchStrings": ["========= DO NOT SEND EMAIL"
+  {"matchStrings": ["========= Probably cannot do anything about these either  DO NOT SEND EMAIL"
     ]
   },
 
@@ -152,6 +158,9 @@
   },
 
 
+  {"matchStrings": ["message\": \"The object can not be found here."
+    ]
+  },
   {"matchStrings": ["message\": \"Object doesn't support property or method"
     ]
   },
@@ -205,6 +214,9 @@
   {"matchStrings": ["The request timed out"
     ]
   },
+  {"matchStrings": ["Clipboard write was blocked due to lack of user activation"
+    ]
+  },
   {"matchStrings": ["Unexpected token"
     ],
    "comment": "--- other than (filter above): JSON at position 0 (Win 7)"
@@ -221,7 +233,7 @@
 
 
 
-  {"matchStrings": ["========= USERS BUT DO NOT EMAIL"
+  {"matchStrings": ["========= CHECK UX on USERS (error handling)  BUT DO NOT EMAIL"
     ]
   },
   {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
@@ -234,6 +246,12 @@
   {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
     ]
   },
+  {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
+    ],
+   "comment": "---text search"
+  },
+
+
 
 
   {"matchStrings": ["========= BOTS"
@@ -247,18 +265,12 @@
 
 
 
-
   {"matchStrings": ["========= SERVICE ERRORS"
     ]
   },
 
   {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
     ]
-  },
-
-  {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries.ontologiesInAnswer"
-    ],
-   "comment": "opened #41782 - error 500: go enrch param on non protein coding result"
   }
 
 
