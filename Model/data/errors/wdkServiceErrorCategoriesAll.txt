@@ -6,7 +6,7 @@
   },
   {"matchStrings": ["Googlebot"
     ],
-   "comment": "mostly old dataset ids WdkModelException: Attribute query"
+   "comment": "---mostly old dataset ids WdkModelException: Attribute query"
   },
   {"matchStrings": ["User Agent: Go-http-client"
     ]
@@ -32,10 +32,12 @@
     ]
   },
   {"matchStrings": ["WdkModelException: There is a discrepancy between the ID query and attribute query","Either the counts disagree or the order of the IDs disagree"
-    ]
+    ],
+   "comment": "---redmine 43691"
   },
-  {"matchStrings": ["WdkModelException: Expected to find"
-    ]
+  {"matchStrings": ["WdkModelException: Expected to find","records in paged id query result"
+    ],
+   "comment": "---redmine 43677 orthomcl prot by motif"
   },
   {"matchStrings": ["WdkModelException: Attribute query data","contains more records than ID query"
     ]
@@ -47,7 +49,8 @@
     ]
   },
   {"matchStrings": ["WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
-    ]
+    ],
+   "comment": "---redmine 43737 org by text"
   },
   {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
     ],
@@ -58,6 +61,10 @@
 
   {"matchStrings": ["======== SQL TROUBLE"
     ]
+  },
+  {"matchStrings": ["WdkModelException: Unable to dynamically load table"
+    ],
+   "comment": "---redmine 43245"
   },
   {"matchStrings": ["ORA-00001: unique constraint (USERLOGINS5.preferences_pk"
     ]
@@ -70,14 +77,21 @@
   },
   {"matchStrings": ["ORA-01426: numeric overflow"
     ],
-   "comment": "---redmine 43619 eve found broken interpro database"
+   "comment": "---redmine 43681 microarray search broken, redmine 43619 eve found broken interpro database"
   },
   {"matchStrings": ["SQLRecoverableException: ORA-12514: TNS:listener does not currently know of service requested in connect descriptor"
     ]
   },
+  {"matchStrings": ["SQLException: ORA-01407: cannot update","STRATEGIES","NAME"
+    ],
+   "comment": "---trello to prevent users from submiting empty name"
+  },
   {"matchStrings": ["SQLException: ORA-01407: cannot update"
     ],
    "comment": "---user database"
+  },
+  {"matchStrings": ["WdkModelException: Could not get uncached results from DB"
+    ]
   },
   {"matchStrings": ["WdkModelException: Unable to run SQL"
     ]
@@ -89,13 +103,16 @@
     ]
   },
   {"matchStrings": ["SQLSyntaxErrorException: ORA-00904:","invalid identifier"
-    ]
+    ],
+   "comment": "---redmine 43662 our default value breaks sql"
   },
   {"matchStrings": ["SQLException: ORA-01489: result of string concatenation is too long"
-    ]
+    ],
+   "comment": "---redmine 43663"
   },
   {"matchStrings": ["SQLSyntaxErrorException: ORA-01704: string literal too long"
-    ]
+    ],
+   "comment": "---Feb 2021: ests by gene id: user entering tons of IDs, committed help and limit stringParam to 100"
   },
   {"matchStrings": ["SQLException: Failed to run SQL"
     ]
@@ -103,20 +120,19 @@
   {"matchStrings": ["SQLException: Failed to run query"
     ]
   },
-  {"matchStrings": ["query block has incorrect number of result columns"
-    ],
-   "comment": "---SQLSyntaxErrorException: ORA-01789"
+  {"matchStrings": ["SQLSyntaxErrorException: ORA-01789: query block has incorrect number of result columns"
+    ]
   },
-  {"matchStrings": ["FROM keyword not found where expected"
-    ],
-   "comment": "---SQLSyntaxErrorException: ORA-00923"
+  {"matchStrings": ["SQLSyntaxErrorException: ORA-00923: FROM keyword not found where expected"
+    ]
   },
   {"matchStrings": ["WdkModelException: Failed running SQL to fetch"
-    ]
+    ],
+   "comment": "---redmine 43162"
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries"
     ],
-   "comment": "---opened #41782 - error 500: go enrch param on non protein coding result"
+   "comment": "---redmine 41782 - error 500: go enrch param on non protein coding result"
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
     ]
@@ -160,10 +176,7 @@
   },
   {"matchStrings": ["WdkModelException","UserFileFactory"
     ],
-   "comment": "---OPENED #43509"
-  },
-  {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
-    ]
+   "comment": "---redmine 43509"
   },
   {"matchStrings": ["WdkModelException: Unable to execute all operations subsequent to step copy"
     ]
@@ -178,7 +191,8 @@
     ]
   },
   {"matchStrings": ["PluginModelException: The blast database doesn't exist"
-    ]
+    ],
+   "comment": "---redmine 43326"
   },
   {"matchStrings": ["PluginModelException: The","job in jobDir","failed"
     ]
@@ -187,7 +201,8 @@
     ]
   },
   {"matchStrings": ["EuPathServiceException: Organism","does not map to any project ID"
-    ]
+    ],
+   "comment": "---redmine 43613"
   },
   {"matchStrings": ["WdkModelException: Unable to create cache."
     ]
@@ -213,7 +228,7 @@
   {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
     ]
   },
-  {"matchStrings": ["WdkModelException: The expression is invalid:"
+  {"matchStrings": ["WdkModelException: The expression is invalid"
     ],
    "comment": "---philetic pattern in ortho, opened trello to convert to 404"
   },
@@ -234,14 +249,15 @@
   {"matchStrings": ["IllegalArgumentException: Must request"
     ]
   },
-  {"matchStrings": ["WdkModelException: The expression is invalid"
-    ]
-  },
-  {"matchStrings": ["WdkModelException","cannot be longer"
+  {"matchStrings": ["WdkModelException","Step field","cannot be longer"
     ]
   },
 
 
+
+  {"matchStrings": ["======== REST"
+    ]
+  },
   {"matchStrings": [
       "WdkModelException"
     ]
@@ -249,7 +265,7 @@
   {"matchStrings": [
       "NullPointerException"
     ],
-   "comment": "---in QA sites lots at WdkModelBase.getPropertyLists at ParamFormatter.getBaseJson, opened trello for ryan"
+   "comment": "---AbstractTabularReporter.getHttpContentType(AbstractTabularReporter.java:87) ---- in QA sites lots at WdkModelBase.getPropertyLists at ParamFormatter.getBaseJson, opened trello for ryan"
   },
   {"matchStrings": [
       "Exception"
