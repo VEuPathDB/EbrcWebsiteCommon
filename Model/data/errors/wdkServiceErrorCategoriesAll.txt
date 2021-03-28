@@ -208,6 +208,12 @@
     ]
   },
 
+  {"matchStrings": ["WdkModelException","does not exist","apiSiteFilesMirror"
+    ]
+  },
+  {"matchStrings": ["WdkModelException","does not exist","User with ID"
+    ]
+  },
 
 
   {"matchStrings": ["======== CLIENT ISSUE"

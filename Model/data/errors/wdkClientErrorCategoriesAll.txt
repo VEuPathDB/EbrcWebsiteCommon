@@ -227,7 +227,18 @@
     ]
   },
 
-
+  {"matchStrings": ["message\": \"Script error."
+    ]
+  },
+  {"matchStrings": ["message\": \"[object Object]"
+    ]
+  },
+  {"matchStrings": ["message\": \"TypeError: undefined is not an object (evaluating 'p.manager')"
+    ]
+  },
+  {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
+    ]
+  },
 
   {"matchStrings": ["========= CHECK UX on USERS (error handling)  BUT DO NOT EMAIL"
     ]
@@ -354,6 +365,13 @@
    "comment": "---mbiome has a link to vimeo"
   },
 
+  {"matchStrings": ["404 Not Found"
+    ]
+  },
+  {"matchStrings": ["500 Internal Server Error"
+    ]
+  },
+
 
   {"matchStrings": ["=========  CHECK UX, USER NEEDS TO BE TOLD TO CORRECT"
     ]
@@ -416,7 +434,11 @@
   {"matchStrings": ["name\": \"SyntaxError"
     ]
   },
+  {"matchStrings": ["name\": \"URIError"
+    ]
+  },
   {"matchStrings": ["name\": \"Error"
     ]
   }
+
 ]
