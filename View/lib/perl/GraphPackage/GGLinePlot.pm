@@ -1081,9 +1081,6 @@ sub new {
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
   my $exprMetric = "TPM";
-  if ($projectId eq 'HostDB' || $projectId eq 'CryptoDB' || $projectId eq 'MicrosporidiaDB') {
-      $exprMetric = "FPKM";
-  }
 
   my $adjust = "
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
