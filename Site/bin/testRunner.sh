@@ -60,7 +60,7 @@ function runTests {
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."
   cd $projectHome/WDKClient/Client
-  yarn test 2>&1 | tee $outputDir/javascript-unit-tests.txt
+  ./node_modules/.bin/jest 2>&1 | tee $outputDir/javascript-unit-tests.txt
 
   # run service API tests
   echo "Downloading API test framework"
