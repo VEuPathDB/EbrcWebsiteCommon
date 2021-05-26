@@ -44,7 +44,6 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
       "organismwithPhenotype",
       "organismSinglePick",
       "organismSinglePickCnv",
-      "organismSinglePick",
       "gff_organism",
       "gff_organism_name",
       "organism_with_epitopes",
