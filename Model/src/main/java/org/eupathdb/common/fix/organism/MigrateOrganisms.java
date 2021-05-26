@@ -32,19 +32,44 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
 
   public interface OrganismMigration {
 
+    public static final List<String> STANDARD_ORGANISM_PARAMS = Arrays.asList(new String[] {
+      "specific_host",         // from popsetParams.xml
+      "BlastDatabaseOrganism", // from sharedParams.xml
+      "motif_organism",        // from similarityParams.xml
+
+      // from organismParams.xml
+      "reference_strains_only",
+      "no_ref_organism",
+      "organism",
+      "organismwithPhenotype",
+      "organismSinglePick",
+      "organismSinglePickCnv",
+      "organismSinglePick",
+      "gff_organism",
+      "gff_organism_name",
+      "organism_with_epitopes",
+      "localorganism",
+      "text_search_organism",
+      "org_with_nonnuclear_genes",
+      "org_with_centromere_genes",
+      "org_with_Hagai_pathways",
+      "organismWithCellularLocImages",
+      "organismWithEstsInChromosomes"
+    });
+
     public static final String REMOVE_ENTRY = "__NULL__";
 
     /** @return list of project_ids to apply changes to; null or empty list will imply all projects */
     List<String> getProjectIds();
-
-    /** @return list of org param names to apply the changes to */
-    List<String> getOrganismParams();
 
     /** @return list of conversions; to simply remove a key, use value OrganismMigration.REMOVE_ENTRY */
     Map<String,String> getOrganismMapping();
 
     /** @return name of organism column filter */
     default String getOrganismColumnFilterName() { return "organism"; }
+
+    /** @return list of org param names to apply the changes to */
+    default List<String> getOrganismParams() { return STANDARD_ORGANISM_PARAMS; }
   }
 
   private static class OrgMigrationStepDataFactory extends StepDataFactory {
