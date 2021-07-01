@@ -1424,7 +1424,7 @@ sub new {
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
   my $exprMetric = $self->getExpressionMetric();
-  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
+  $exprMetric = defined($exprMetric) ? $exprMetric : "tpm";
 
   $self->setPartName($exprMetric);
   $exprMetric = uc($exprMetric);
