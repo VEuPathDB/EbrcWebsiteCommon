@@ -31,16 +31,39 @@ function renderPrimaryContact(contact, institution, email, record) {
         );
 }
 
-function renderSourceVersion(version) {
-  return (
-    <span>
-      {version.version}&nbsp;
-      <i className="fa fa-question-circle" style={{ color: 'blue' }}
-        title={'The data provider\'s version number or publication date, from' +
-        ' the site the data was acquired. In the rare case neither is available,' +
-        ' the download date.'}/>
-    </span>
-  );
+function renderSourceVersion(version, newcategory) {
+  if (newcategory === 'Genomics') {
+    return (
+      <span>
+        {version}&nbsp;
+        <i className="fa fa-question-circle" style={{ color: 'blue' }}
+        title={'The source versions from' +
+        ' the site the data was acquired.'}/>
+      </span>
+    );
+  } else {
+    return (
+      <span>
+        {version.version}&nbsp;
+        <i className="fa fa-question-circle" style={{ color: 'blue' }}
+          title={'The data provider\'s version number or publication date, from' +
+          ' the site the data was acquired. In the rare case neither is available,' +
+          ' the download date.'}/>
+      </span>
+    );
+  }
+}
+
+
+function getSourceVersion(attributes, tables) {
+  let version;
+  if (attributes.newcategory === 'Genomics') {
+    version = attributes.functional_annotation_version ? attributes.genome_version + ", " + attributes.annotation_version + ", " + attributes.functional_annotation_version : attributes.genome_version + ", " + attributes.annotation_version;
+  } else {
+    version = tables.Version && tables.Version[0];
+  }
+
+  return (version);
 }
 
 export function RecordHeading(props) {
@@ -52,25 +75,30 @@ export function RecordHeading(props) {
     contact,
     email,
     institution,
-    organism_prefix
+    organism_prefix,
+    newcategory,
+    megabase_pairs
   } = attributes;
 
-  let version = tables.Version && tables.Version[0];
+  let version = getSourceVersion(attributes, tables);
   let primaryPublication = getPrimaryPublication(record);
 
   return (
     <div>
       <props.DefaultComponent {...props}/>
       <div className="wdk-RecordOverview eupathdb-RecordOverview">
-        <div className="eupathdb-RecordOverviewItem">
-          <strong>Summary: </strong>
-          <span style={{ whiteSpace: 'normal' }} dangerouslySetInnerHTML={{__html: summary}}/>
-        </div>
-
+        
         {organism_prefix ? (
           <div className="eupathdb-RecordOverviewItem">
             <strong>Organism (source or reference): </strong>
             <span dangerouslySetInnerHTML={{__html: organism_prefix}}/>
+          </div>
+        ) : null}
+
+        {newcategory ? (
+          <div className="eupathdb-RecordOverviewItem">
+            <strong>Category: </strong>
+            <span>{newcategory}</span>
           </div>
         ) : null}
 
@@ -90,11 +118,10 @@ export function RecordHeading(props) {
           </div>
         ) : null}
 
-
         {version ? (
           <div className="eupathdb-RecordOverviewItem">
-            <strong>Source version: </strong>
-            <span>{renderSourceVersion(version)}</span>
+            <strong>Source version(s): </strong>
+            <span>{renderSourceVersion(version, newcategory)}</span>
           </div>
         ) : null}
 
@@ -104,7 +131,20 @@ export function RecordHeading(props) {
             <span>{eupath_release}</span>
           </div>
         ) : null}
-      </div>
+        
+        <div className="eupathdb-RecordOverviewItem">
+          <strong>Summary: </strong>
+          <span style={{ whiteSpace: 'normal' }} dangerouslySetInnerHTML={{__html: summary}}/>
+        </div>
+     
+        {megabase_pairs ? (
+          <div className="eupathdb-RecordOverviewItem">
+            <strong>Megabase Pairs: </strong>
+            <span>{megabase_pairs}</span>
+          </div>
+        ) : null} 
+
+     </div>
     </div>
   );
 }
