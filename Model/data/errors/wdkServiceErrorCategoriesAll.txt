@@ -54,7 +54,7 @@
   },
   {"matchStrings": ["WdkModelException: Attribute query","doesn't return any row:"
     ],
-   "comment": "---many come from google bot trying a non existent datasetId page"
+   "comment": "---not by google bot"
   },
 
 
@@ -93,6 +93,10 @@
   {"matchStrings": ["WdkModelException: Could not get uncached results from DB"
     ]
   },
+  {"matchStrings": ["WdkModelException: Unable to run SQL", "ORA-00060: deadlock detected while waiting for resource"
+    ],
+   "comment": "---user database"
+  },
   {"matchStrings": ["WdkModelException: Unable to run SQL"
     ]
   },
@@ -108,13 +112,19 @@
   },
   {"matchStrings": ["SQLException: ORA-01489: result of string concatenation is too long"
     ],
-   "comment": "---redmine 43663"
+   "comment": "---redmine 43663 CLOSED"
   },
   {"matchStrings": ["SQLSyntaxErrorException: ORA-01704: string literal too long"
     ],
    "comment": "---Feb 2021: ests by gene id: user entering tons of IDs, committed help and limit stringParam to 100"
   },
   {"matchStrings": ["SQLException: Failed to run SQL"
+    ]
+  },
+  {"matchStrings": ["SQLException: Failed to run query","ORA-12154: TNS:could not resolve the connect identifier specified"
+    ]
+  },
+  {"matchStrings": ["SQLException: Failed to run query","ORA-00932: inconsistent datatypes:"
     ]
   },
   {"matchStrings": ["SQLException: Failed to run query"
@@ -132,7 +142,7 @@
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query","stepAnalysisParamQueries"
     ],
-   "comment": "---redmine 41782 - error 500: go enrch param on non protein coding result"
+   "comment": "---redmine 45298 - do not offer analyze if result is 0"
   },
   {"matchStrings": ["WdkEmptyEnumListException: No item returned by the query"
     ]
@@ -141,6 +151,13 @@
 
   {"matchStrings": ["======== APP ISSUE"
     ]
+  },
+  {"matchStrings": ["WdkModelException: Problem closing IRODS file"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: Execution failed for iCAT query IRODSQuery"
+    ],
+   "comment": ""
   },
   {"matchStrings": ["WdkModelException: Request failed with status code: 504"
     ],
@@ -184,10 +201,10 @@
   {"matchStrings": ["WdkModelException: Step","is part of a strategy but answer param","does not have a value"
     ]
   },
-  {"matchStrings": ["WdkModelException: Unable to create the strategy."
+  {"matchStrings": ["WdkModelException: Unable to find step","defined in step analysis instance"
     ]
   },
-  {"matchStrings": ["WdkModelException: Problem closing IRODS file"
+  {"matchStrings": ["WdkModelException: Unable to create the strategy."
     ]
   },
   {"matchStrings": ["PluginModelException: The blast database doesn't exist"
@@ -204,6 +221,13 @@
     ],
    "comment": "---redmine 43613"
   },
+  {"matchStrings": ["EuPathServiceException","Error while looking up project for organism"
+    ],
+   "comment": ""
+  },
+  {"matchStrings": ["WdkModelException: Unable to create cache.","ORA-12805: parallel query server died unexpectedly"
+    ]
+  },
   {"matchStrings": ["WdkModelException: Unable to create cache."
     ]
   },
@@ -213,6 +237,20 @@
   },
   {"matchStrings": ["WdkModelException","does not exist","User with ID"
     ]
+  },
+  {"matchStrings": ["WdkModelException: Could not find expected attachment"
+    ],
+   "comment": "--- it shows in emails where referrer is contact us"
+  },
+
+
+
+  {"matchStrings": ["======== MBLAST ISSUE"
+    ]
+  },
+  {"matchStrings": ["wsfplugin.blast.AbstractMultiBlastServicePlugin"
+    ],
+   "comment": ""
   },
 
 
@@ -226,6 +264,10 @@
 
   {"matchStrings": ["======== USER ISSUE"
     ]
+  },
+  {"matchStrings": ["PluginModelException: Illegal character range near"
+    ],
+   "comment": ""
   },
   {"matchStrings": ["PluginModelException: Dangling meta character"
     ],
@@ -256,26 +298,18 @@
     ]
   },
   {"matchStrings": ["WdkModelException","Step field","cannot be longer"
-    ]
+    ],
+   "comment": "---Step name 200 char we need to convert t a 400 error, opened trello"
   },
-
 
 
   {"matchStrings": ["======== REST"
     ]
   },
   {"matchStrings": [
-      "WdkModelException"
-    ]
-  },
-  {"matchStrings": [
       "NullPointerException"
     ],
    "comment": "---AbstractTabularReporter.getHttpContentType(AbstractTabularReporter.java:87) ---- in QA sites lots at WdkModelBase.getPropertyLists at ParamFormatter.getBaseJson, opened trello for ryan"
-  },
-  {"matchStrings": [
-      "Exception"
-    ]
   }
 ]
 

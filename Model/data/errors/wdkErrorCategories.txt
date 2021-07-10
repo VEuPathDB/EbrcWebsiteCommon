@@ -3,7 +3,8 @@
     ]
   },
 
-  {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
+  {"matchStrings": ["============= DO NO EMAIL, USER network?"
+    ]
   },
   {"matchStrings": ["studies could not be parsed"
     ],
@@ -52,9 +53,13 @@
   {"matchStrings": ["The network connection was lost"
     ]
   },
+  {"matchStrings": ["Connection to Indexed Database server lost"
+    ]
+  },
 
 
-  {"matchStrings": ["=========CANT DO ANYTHING ABOUT THESE"]
+
+  {"matchStrings": ["========= DO NOT EMAIL  USER BROWSER?"]
   },
 
   {"matchStrings": ["chrome-extension"
@@ -128,9 +133,30 @@
   {"matchStrings": ["message\": \"SecurityError\""
     ]
   },
+  {"matchStrings": ["message\": \"Forbidden\""
+    ]
+  },
 
 
-  {"matchStrings": ["========= IT IS US, will prevent from sending emails"
+  {"matchStrings": ["name\": \"AbortError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ChunkLoadError"
+    ]
+  },
+  {"matchStrings": ["name\": \"NotAllowedError"
+    ]
+  },
+  {"matchStrings": ["message\": \"out of memory"
+    ],
+   "comment": "--- old windows with FF"
+  },
+  {"matchStrings": ["name\": \"QuotaExceededError"
+    ]
+  },
+
+
+  {"matchStrings": ["========= DO NOT EMAIL  IT IS US, QA"
     ]
   },
   {"matchStrings": ["https://localhost:3000"
@@ -141,11 +167,9 @@
   },
 
 
-  {"matchStrings": ["========= Probably cannot do anything about these either  DO NOT SEND EMAIL"
+  {"matchStrings": ["========= DO NOT EMAIL  APP in USER BROWSER?   Probably cannot do anything about these either"
     ]
   },
-
-
   {"matchStrings": ["Cannot read property"
     ],
    "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
@@ -156,12 +180,24 @@
   {"matchStrings": ["Attempted to assign to readonly property"
     ]
   },
-
-
+  {"matchStrings": ["message\": \"ReferenceError: Can't find variable"
+    ],
+   "comment": ""
+  },
+  {"matchStrings": ["message\": \"Error looking up record in object store by key range"
+    ]
+  },
+  {"matchStrings": ["message\": \"Object Not Found Matching Id"
+    ],
+   "comment": "---microsoft IP 40.94..."
+  },
   {"matchStrings": ["message\": \"The object can not be found here."
     ]
   },
   {"matchStrings": ["message\": \"Object doesn't support property or method"
+    ]
+  },
+  {"matchStrings": ["message\": \"\""
     ]
   },
   {"matchStrings": ["message\": \"null"
@@ -225,37 +261,69 @@
     ]
   },
   {"matchStrings": ["Unexpected end of JSON input"
-    ]
+    ],
+   "comment": "--- this showed in UI (eve general april 1 2021) as a result of a 502 (conttainerized serviice (mblast) erroring"
   },
   {"matchStrings": ["invalid escape sequence"
     ]
   },
+  {"matchStrings": ["The transaction was aborted, so the request cannot be fulfilled"
+    ]
+  },
+  {"matchStrings": ["too much recursion"
+    ]
+  },
+  {"matchStrings": ["server_fp is not defined"
+    ]
+  },
+  {"matchStrings": ["NS_ERROR_FILE_CORRUPTED"
+    ]
+  },
+  {"matchStrings": ["message\": \"Minified React error"
+    ],
+   "comment": "---on urls accessing apache documents"
+  },
 
+
+
+  {"matchStrings": ["========= DO NOT EMAIL   new ones in B51 with npm? often stacktrace shows ...generatorResume@[native....Promise@[native...."
+    ]
+  },
   {"matchStrings": ["message\": \"Script error."
     ]
   },
   {"matchStrings": ["message\": \"[object Object]"
     ]
   },
-  {"matchStrings": ["message\": \"TypeError: undefined is not an object (evaluating 'p.manager')"
-    ]
+  {"matchStrings": ["message\": \"TypeError: undefined is not an object (evaluating "
+    ],
+   "comment": "---(evaluating 'p.manager'),(evaluating 'Zotero.Connector.reportActiveURL')"
   },
   {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
     ]
   },
 
-  {"matchStrings": ["========= CHECK UX on USERS (error handling)  BUT DO NOT EMAIL"
+  {"matchStrings": ["========= DO NOT EMAIL  OUR APP      CHECK UX on USERS (error handling)"
     ]
   },
   {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
     ],
    "comment": "---safari"
   },
+  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
+    ]
+  },
   {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
     ],
    "comment": "---text search"
   },
-
+  {"matchStrings": ["Cannot POST","must not be longer than 31000 characters"
+    ],
+   "comment": "---BLAST"
+  },
 
 
 
@@ -266,11 +334,81 @@
     ],
    "comment": "---cross origin, step does not exist due to new guest id"
   },
+  {"matchStrings": ["User Agent:","Baidu"
+    ]
+  },
+  {"matchStrings": ["User Agent:","bingbot"
+    ]
+  },
+
+
 
 
   {"matchStrings": ["========= SERVICE ERRORS"
     ]
   },
+
+
+  {"matchStrings": ["========== BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "---mostly old dataset ids WdkModelException: Attribute query"
+  },
+  {"matchStrings": ["User Agent: Go-http-client"
+    ]
+  },
+  {"matchStrings": ["QQBrowser"
+    ],
+   "comment": "---NPE, old system MSIE 7.0; Windows NT 5.1"
+  },
+
+
+  {"matchStrings": ["======== USER ISSUE"
+    ]
+  },
+  {"matchStrings": ["PluginModelException: Illegal character range near"
+    ],
+   "comment": ""
+  },
+  {"matchStrings": ["PluginModelException: Dangling meta character"
+    ],
+   "comment": "---ortho: user entering wrong regex in motif"
+  },
+  {"matchStrings": ["WdkModelException: Unable to produce a valid spec from incoming param values"
+    ]
+  },
+  {"matchStrings": ["WdkModelException: The expression is invalid"
+    ],
+   "comment": "---philetic pattern in ortho, opened trello to convert to 404"
+  },
+  {"matchStrings": ["WdkModelException: Default values for question"
+    ],
+   "comment": "---eg: GenesByMotifSearch: Number of selected values (69) is not allowed"
+  },
+  {"matchStrings": ["PluginModelException: Illegal repetition near index"
+    ],
+   "comment": "---invalid reg ex provided by user?"
+  },
+  {"matchStrings": ["ValidObjectWrappingException:","This is almost certainly a bug in the calling code"
+    ]
+  },
+  {"matchStrings": ["NumberFormatException: For input string"
+    ]
+  },
+  {"matchStrings": ["IllegalArgumentException: Must request"
+    ]
+  },
+  {"matchStrings": ["WdkModelException","Step field","cannot be longer"
+    ],
+   "comment": "---Step name 200 char we need to convert t a 400 error, opened trello"
+  },
+
+
+
+
+
 
   {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
     ]

@@ -1,45 +1,85 @@
-(BLOG style, add on top)
+(BLOG style, add on top after the INTRODUCTION)
 
      
-wdkErrorCategories.txt  
-- it determines what does not get emailed, 
-- do no edit, make it a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+===========================================
+
+INTRODUCTION
+
+wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+- used for generating reports and checking on errors in the logs
+  by running the script wdkFilterErrors manually (see examples below)
+
+wdkErrorCategories.txt
+- once committed in prod or qa, it determines what does not get emailed.
+- it is a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt, 
+   generated manually by copying/pasting chunks from the Client and Service files.
+
+=================================================
 
 
 
-WORKFLOW
-
-I maintain the files in watermelon (~/WORK/wdk*), since i run the script there on live logs.
-
-When ready to commit new filters into qa or production 
-------------------------------------------------------
-In your working server where you have your sites. a project_home (eg: ash, durian)
-(assuming changes in these files might break a site build)
-(otherwise u may stay in watermelon)
-
-1) scp the files from watermelon:
-     scp -P 2112 aurreco@watermelon.uga.apidb.org:~/WORK/wdk* ~/WORK
 
 
-2) Check differences with what is committed:
-    cd $MYSITE/project_home/EbrcWebsiteCommon/Model/data/errors/ 
-    diff ~/WORK/wdkClientErrorCategoriesAll.txt  .
-    diff ~/WORK/wdkServiceErrorCategoriesAll.txt  .
 
 
-3)  3.1- update project_home: 
-         cp ~/WORK/wdkClientErrorCategoriesAll.txt  .
-         cp ~/WORK/wdkServiceErrorCategoriesAll.txt  .
 
-    3.2- generate a new wdkErrorCategories.txt in ~/WORK: 
-         - copy from wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
-           (the ones we do not want emails at the top of the files)
-           INTO EMPTY wdkErrorCategories.txt coming from watermelon
-         - diff ~/WORK/wdkErrorCategories.txt  .
-         - cp ~/WORK/wdkErrorCategories.txt  .
+======================================
 
-    3.3- commit the 3 files.
+July 9 2021
 
+
+BUILD 52,o ortho 6_5,  clinepi 17, mbiome 22
+released may 20, 2021
+
+we have access to archives months june and july plus most recent logs.
+be aware that the archive contains unexpected older dates within in a build (older than may 20 for b52) from QA sites activity.
+
+
+
+1) REPORT  (add --r flag)
+ append | sort -gr  to get the occurring ones at the top
+
+SERVICE
+use:
+wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 07/30/2021
+
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-retained.log.2021-06-* > zcat-gen.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-retained.log.2021-06-* > zcat-ortho.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-retained.log.2021-06-* > zcat-ce.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-retained.log.2021-06-* > zcat-mbio.txt ; 
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-retained.log.2021-07-* > zcat-gen2.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-retained.log.2021-07-* > zcat-ortho2.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-retained.log.2021-07-* > zcat-ce2.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-retained.log.2021-07-* > zcat-mbio2.txt ; 
+cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt zcat-gen2.txt zcat-ortho2.txt zcat-ce2.txt zcat-mbio2.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 07/30/2021 
+
+
+
+CLIENT
+use:
+wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 
+
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-client-retained.log.2021-06-* > zcat-gen.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-client-retained.log.2021-06-* > zcat-ortho.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-client-retained.log.2021-06-* > zcat-ce.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-client-retained.log.2021-06-* > zcat-mbio.txt ; 
+cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-client-retained* |  wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 | sort -gr
+
+
+2) FISH FOR ERRORS (remove --r flag)
+
+SERVICE
+use:
+wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep Exception | sort | uniq -c | sort -gr  > pepe
+
+CLIENT
+use:
+wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep "\"message\":" | sort | uniq -c | sort -gr  > pepe
+
+
+3) FIND SPECIFIC ERROR (use -sf flag instead of -ff)
+use:
+wdkFilterErrors -sf 'apiSiteFilesMirror' --sd 06/01/2021 --ed 06/30/2021
 
 
 
@@ -53,12 +93,35 @@ released march 16, dont check on  16 and 17, always lots of errors
 
 MARCH 2021
 
+REPORTING COUNTS
 
 zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 03/18/2021 --ed 03/31/2021
 
 zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-client-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-client-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-client-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-client-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt  --r --sd 03/18/2021 --ed 03/31/2021
 
 
+SORT THE HITS ON TOP
+
+add 
+   | sort -gr
+
+
+
+SEE WHAT WAS NOT CAUGHT
+
+remove -r and add:
+   | grep "\"message\":" | sort | uniq -c | sort -gr > pepe 
+
+
+
+
+OUTPUT ERRORS WITH A KEYWORD
+
+Instead of 
+    -ff wdkClientErrorCategoriesAll.txt
+use
+    -sf '[object Object]'
+ 
 
 
 ========================================
