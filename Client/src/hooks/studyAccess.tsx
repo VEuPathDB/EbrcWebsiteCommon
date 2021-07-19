@@ -53,11 +53,11 @@ interface BaseTableRow {
 }
 
 interface StaffTableRow extends BaseTableRow {
-  name: string;
   isOwner: boolean;
 }
 
 interface StaffTableFullRow extends StaffTableRow {
+  name: string;
   staffId: number;
 }
 
@@ -303,12 +303,6 @@ export function useStaffTableSectionConfig(
                 makeOrder: ({ name, userId }) => [name, userId],
                 makeSearchableString: (_, { name, userId }) => `${name} ${userId} (${userId})`,
                 renderCell: ({ row: { name, userId } }) => `${name} (${userId})`
-              },
-              name: {
-                key: 'name',
-                name: 'Name',
-                className: cx('--NameCell'),
-                sortable: true
               },
               email: {
                 key: 'email',
