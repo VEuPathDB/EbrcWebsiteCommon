@@ -49,11 +49,11 @@ import { bindApiRequestCreators } from 'ebrc-client/util/api';
 
 interface BaseTableRow {
   userId: number;
-  name: string;
   email: string;
 }
 
 interface StaffTableRow extends BaseTableRow {
+  name: string;
   isOwner: boolean;
 }
 
@@ -66,10 +66,12 @@ interface ProviderTableRow extends BaseTableRow {
 }
 
 interface ProviderTableFullRow extends ProviderTableRow {
+  name: string;
   providerId: number;
 }
 
 interface EndUserTableRow extends BaseTableRow {
+  name: string;
   startDate?: string;
   content: string;
   approvalStatus: ApprovalStatus;
@@ -84,6 +86,7 @@ interface EndUserTableFullRow extends EndUserTableRow {
 }
 
 interface HistoryTableRow extends BaseTableRow {
+  name: string;
   timestamp: HistoryResult['cause']['timestamp'];
   actionPerformer: string;
   action: HistoryResult['cause']['action'];
@@ -295,8 +298,11 @@ export function useStaffTableSectionConfig(
               userId: {
                 key: 'userId',
                 name: 'User ID',
-                className: cx('--UserIdCell'),
-                sortable: true
+                className: cx('--UserIdentityCell'),
+                sortable: true,
+                makeOrder: ({ name, userId }) => [name, userId],
+                makeSearchableString: (_, { name, userId }) => `${name} ${userId} (${userId})`,
+                renderCell: ({ row: { name, userId } }) => `${name} (${userId})`
               },
               name: {
                 key: 'name',
@@ -333,9 +339,9 @@ export function useStaffTableSectionConfig(
                 }
               }
             },
-            columnOrder: [ 'userId', 'name', 'email', 'isOwner' ],
+            columnOrder: [ 'userId', 'email', 'isOwner' ],
             idGetter: ({ userId }) => userId,
-            initialSort: { columnKey: 'name', direction: 'asc' }
+            initialSort: { columnKey: 'userId', direction: 'asc' }
           }
         },
     [
@@ -403,14 +409,11 @@ export function useProviderTableSectionConfig(
               userId: {
                 key: 'userId',
                 name: 'User ID',
-                className: cx('--UserIdCell'),
-                sortable: true
-              },
-              name: {
-                key: 'name',
-                name: 'Name',
-                className: cx('--NameCell'),
-                sortable: true
+                className: cx('--UserIdentityCell'),
+                sortable: true,
+                makeOrder: ({ name, userId }) => [name, userId],
+                makeSearchableString: (_, { name, userId }) => `${name} ${userId} (${userId})`,
+                renderCell: ({ row: { name, userId } }) => `${name} (${userId})`
               },
               email: {
                 key: 'email',
@@ -441,9 +444,9 @@ export function useProviderTableSectionConfig(
                 }
               }
             },
-            columnOrder: [ 'userId', 'name', 'email', 'isManager' ],
+            columnOrder: [ 'userId', 'email', 'isManager' ],
             idGetter: ({ userId }) => userId,
-            initialSort: { columnKey: 'name', direction: 'asc' },
+            initialSort: { columnKey: 'userId', direction: 'asc' },
             actions: !providersAreUpdateable ? undefined : [
               {
                 element: (
