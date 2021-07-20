@@ -25,6 +25,8 @@ import {
   canAddEndUsers,
   canRemoveEndUsers,
   canUpdateApprovalStatus,
+  canAddProviders,
+  canRemoveProviders,
   canUpdateProviders,
   canUpdateStaff,
   permissionsResponseToUserPermissions,
@@ -265,7 +267,7 @@ export function useStaffTableSectionConfig(
     [ userPermissions ]
   );
 
-  const staffAreUpdateable = false;
+  const staffUpdateable = false;
 
   const {
     onIsOwnerChange
@@ -319,7 +321,7 @@ export function useStaffTableSectionConfig(
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isOwner }) => booleanToString(isOwner),
                 renderCell: ({ value, row: { staffId, userId: wdkUserId } }) => {
-                  return !staffAreUpdateable || wdkUserId === userId
+                  return !staffUpdateable || wdkUserId === userId
                     ? booleanToString(value)
                     : <SingleSelect
                         items={BOOLEAN_SELECT_ITEMS}
@@ -343,7 +345,7 @@ export function useStaffTableSectionConfig(
       userId,
       value,
       loading,
-      staffAreUpdateable,
+      staffUpdateable,
       staffTableUiState,
       onIsOwnerChange
     ]
@@ -370,7 +372,9 @@ export function useProviderTableSectionConfig(
     [ userPermissions, activeDatasetId ]
   );
 
-  const providersAreUpdateable = userPermissions && canUpdateProviders(userPermissions, activeDatasetId);
+  const providersAddable = userPermissions && canAddProviders(userPermissions, activeDatasetId);
+  const providersRemovable = userPermissions && canRemoveProviders(userPermissions);
+  const providersUpdateable = userPermissions && canUpdateProviders(userPermissions, activeDatasetId);
 
   const {
     onIsManagerChange
@@ -424,7 +428,7 @@ export function useProviderTableSectionConfig(
                 makeSearchableString: booleanToString,
                 makeOrder: ({ isManager }) => booleanToString(isManager),
                 renderCell: ({ value, row: { providerId, userId: wdkUserId } }) => {
-                  return !providersAreUpdateable || wdkUserId === userId
+                  return !providersUpdateable || wdkUserId === userId
                     ? booleanToString(value)
                     : <SingleSelect
                         items={BOOLEAN_SELECT_ITEMS}
@@ -442,90 +446,30 @@ export function useProviderTableSectionConfig(
             columnOrder: [ 'userId', 'email', 'isManager' ],
             idGetter: ({ userId }) => userId,
             initialSort: { columnKey: 'userId', direction: 'asc' },
-            actions: !providersAreUpdateable ? undefined : [
-              {
-                element: (
-                  <button type="button" className="btn">
-                    <IconAlt fa="plus" />
-                    Add Providers
-                  </button>
-                ),
-                callback: () => {
-                  changeOpenDialogConfig({
-                    type: 'add-users',
-                    permissionNamePlural: 'providers',
-                    onSubmit: async (providerEmails: string[]) => {
-                      changeOpenDialogConfig(undefined);
-
-                      const addedUsers = await Promise.all(
-                        providerEmails.map(
-                          providerEmail => createProviderEntry({
-                            datasetId: activeDatasetId,
-                            email: providerEmail,
-                            isManager: false
-                          })
-                        )
-                      );
-
-                      const addedUsersWithEmails = zipWith(
-                        addedUsers,
-                        providerEmails,
-                        (addedUser, email) => ({
-                          ...addedUser,
-                          email
-                        })
-                      );
-
-                      const [ createdUsers, emailedUsers ] = partition(addedUsersWithEmails, ({ created }) => created);
-
-                      changeOpenDialogConfig({
-                        type: 'users-added',
-                        createdUsers: createdUsers.map(({ email }) => email),
-                        emailedUsers: emailedUsers.map(({ email }) => email),
-                        permissionName: 'provider',
-                        permissionNamePlural: 'providers',
-                        onConfirm: () => {
-                          changeOpenDialogConfig(undefined);
-                        }
-                      });
-
-                      reloadProvidersTable();
-                    }
-                  });
-                }
-              },
-              {
-                selectionRequired: true,
-                element: selection => (
-                  <button
-                    type="button"
-                    className="btn"
-                    disabled={selection.length === 0}
-                  >
-                    <IconAlt fa="trash" />
-                    Remove {selection.length === 1 ? 'Provider' : 'Providers'}
-                  </button>
-                ),
-                callback: async (selection) => {
-                  await Promise.all(
-                    selection.map(({ providerId }) => deleteProviderEntry(providerId))
-                  );
-
-                  reloadProvidersTable();
-                }
-              }
-            ]
+            actions: makeProviderTableActions(
+              activeDatasetId,
+              createProviderEntry,
+              deleteProviderEntry,
+              changeOpenDialogConfig,
+              reloadProvidersTable,
+              providersAddable,
+              providersRemovable
+            )
           }
         },
     [
       userId,
       value,
       loading,
-      providersAreUpdateable,
+      providersAddable,
+      providersRemovable,
+      providersUpdateable,
       onIsManagerChange,
       providerTableUiState,
       reloadProvidersTable,
-      changeOpenDialogConfig
+      changeOpenDialogConfig,
+      createProviderEntry,
+      deleteProviderEntry
     ]
   );
 }
@@ -713,7 +657,9 @@ export function useEndUserTableSectionConfig(
       activeDatasetId,
       endUsersAddable,
       endUsersRemovable,
-      changeOpenDialogConfig
+      changeOpenDialogConfig,
+      createEndUserEntry,
+      deleteEndUserEntry
     ]
   );
 }
@@ -1114,6 +1060,106 @@ function useApprovalStatusColumnConfig(
   };
 }
 
+interface TableAction<R> {
+  selectionRequired: boolean;
+  element: (selection: R[]) => JSX.Element;
+  callback: (selection: R[]) => Promise<void>;
+}
+
+function makeProviderTableActions(
+  activeDatasetId: string,
+  createProviderEntry: StudyAccessApi['createProviderEntry'],
+  deleteProviderEntry: StudyAccessApi['deleteProviderEntry'],
+  changeOpenDialogConfig: (newDialogContentProps: ContentProps | undefined) => void,
+  reloadProvidersTable: () => void,
+  providersAddable: boolean | undefined,
+  providersRemovable: boolean | undefined,
+) {
+  const addProviders = !providersAddable ? undefined : {
+    element: (
+      <button type="button" className="btn">
+        <IconAlt fa="plus" />
+        Add Providers
+      </button>
+    ),
+    callback: () => {
+      changeOpenDialogConfig({
+        type: 'add-users',
+        permissionNamePlural: 'providers',
+        onSubmit: async (providerEmails: string[]) => {
+          changeOpenDialogConfig(undefined);
+
+          const addedUsers = await Promise.all(
+            providerEmails.map(
+              providerEmail => createProviderEntry({
+                datasetId: activeDatasetId,
+                email: providerEmail,
+                isManager: false
+              })
+            )
+          );
+
+          const addedUsersWithEmails = zipWith(
+            addedUsers,
+            providerEmails,
+            (addedUser, email) => ({
+              ...addedUser,
+              email
+            })
+          );
+
+          const [ createdUsers, emailedUsers ] = partition(addedUsersWithEmails, ({ created }) => created);
+
+          changeOpenDialogConfig({
+            type: 'users-added',
+            createdUsers: createdUsers.map(({ email }) => email),
+            emailedUsers: emailedUsers.map(({ email }) => email),
+            permissionName: 'provider',
+            permissionNamePlural: 'providers',
+            onConfirm: () => {
+              changeOpenDialogConfig(undefined);
+            }
+          });
+
+          reloadProvidersTable();
+        }
+      });
+    }
+  };
+
+  const removeProviders = !providersRemovable ? undefined : {
+    selectionRequired: true,
+    element: (selection: ProviderTableFullRow[]) => (
+      <button
+        type="button"
+        className="btn"
+        disabled={selection.length === 0}
+      >
+        <IconAlt fa="trash" />
+        Remove {selection.length === 1 ? 'Provider' : 'Providers'}
+      </button>
+    ),
+    callback: async (selection: ProviderTableFullRow[]) => {
+      await Promise.all(
+        selection.map(({ providerId }) => deleteProviderEntry(providerId))
+      );
+
+      reloadProvidersTable();
+    }
+  }
+
+  const availableActions = [
+    addProviders,
+    removeProviders
+  ].filter(
+    (action): action is TableAction<ProviderTableRow> => action != null
+  );
+
+  return availableActions.length === 0
+    ? undefined
+    : availableActions;
+}
+
 function makeEndUserTableActions(
   activeDatasetId: string,
   createEndUserEntry: StudyAccessApi['createEndUserEntry'],
@@ -1187,7 +1233,7 @@ function makeEndUserTableActions(
 
   const removeEndUsers = !endUsersRemovable ? undefined : {
     selectionRequired: true,
-    element: (selection: EndUserTableRow[]) => (
+    element: (selection: EndUserTableFullRow[]) => (
       <button
         type="button"
         className="btn"
@@ -1197,7 +1243,7 @@ function makeEndUserTableActions(
         Remove {selection.length === 1 ? 'End User' : 'End Users'}
       </button>
     ),
-    callback: async (selection: EndUserTableRow[]) => {
+    callback: async (selection: EndUserTableFullRow[]) => {
       await Promise.all(
         selection.map(({ userId }) => deleteEndUserEntry(userId, activeDatasetId))
       );
@@ -1210,11 +1256,7 @@ function makeEndUserTableActions(
     addEndUsers,
     removeEndUsers
   ].filter(
-    (action): action is ({
-      selectionRequired: boolean,
-      element: (selection: EndUserTableRow[]) => JSX.Element,
-      callback: (selection: EndUserTableRow[]) => Promise<void>
-    }) => action != null
+    (action): action is TableAction<EndUserTableFullRow> => action != null
   );
 
   return availableActions.length === 0
