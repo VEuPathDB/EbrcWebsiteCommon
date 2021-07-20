@@ -871,8 +871,8 @@ export function useHistoryTableSectionConfig(
               'actionPerformer',
               'changeDescription',
               'approvalStatus',
-              'content',
               'denialReason',
+              'content',
               'allowSelfEdits'
             ],
             idGetter: getHistoryTableRowId,
