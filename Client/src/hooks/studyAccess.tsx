@@ -89,7 +89,7 @@ interface HistoryTableRow extends BaseTableRow {
   name: string;
   timestamp: HistoryResult['cause']['timestamp'];
   actionPerformer: string;
-  action: HistoryResult['cause']['action'];
+  changeDescription: string;
   content: string;
   approvalStatus: HistoryResult['row']['approvalStatus'];
   denialReason: NonNullable<HistoryResult['row']['denialReason']>;
@@ -97,6 +97,7 @@ interface HistoryTableRow extends BaseTableRow {
 }
 
 interface HistoryTableFullRow extends HistoryTableRow {
+  action: HistoryResult['cause']['action'];
   purpose: NonNullable<HistoryResult['row']['purpose']>;
   researchQuestion: NonNullable<HistoryResult['row']['researchQuestion']>;
   analysisPlan: NonNullable<HistoryResult['row']['analysisPlan']>;
@@ -764,8 +765,23 @@ export function useHistoryTableSectionConfig(
                   row.disseminationPlan
                 ),
                 denialReason: row.denialReason ?? '',
-                allowSelfEdits: row.allowSelfEdits
-              })),
+                allowSelfEdits: row.allowSelfEdits,
+              }))
+              .sort(({ timestamp: timestampA }, { timestamp: timestampB }) =>
+                timestampA === timestampB
+                  ? 0
+                  : timestampA < timestampB
+                  ? -1
+                  : 1
+              )
+              .reduce(
+                addChangeDescription,
+                {
+                  rowsWithChangeDescriptions: [],
+                  lastRowsByEndUser: {}
+                }
+              )
+              .rowsWithChangeDescriptions,
             columns: {
               userId: {
                 key: 'userId',
@@ -799,10 +815,10 @@ export function useHistoryTableSectionConfig(
                 className: cx('--NameCell'),
                 sortable: true,
               },
-              action: {
-                key: 'action',
+              changeDescription: {
+                key: 'changeDescription',
                 name: 'Action',
-                className: cx('--ActionCell'),
+                className: cx('--ChangeDescriptionCell'),
                 sortable: true,
                 renderCell: ({ value }) => value.toLowerCase()
               },
@@ -853,7 +869,7 @@ export function useHistoryTableSectionConfig(
               'email',
               'timestamp',
               'actionPerformer',
-              'action',
+              'changeDescription',
               'approvalStatus',
               'content',
               'denialReason',
@@ -1399,4 +1415,48 @@ function makeContentDisplay(
 
 function getHistoryTableRowId(row: HistoryTableFullRow) {
   return `${row.userId}-${row.timestamp}`
+}
+
+interface RowHistory {
+  rowsWithChangeDescriptions: HistoryTableFullRow[];
+  lastRowsByEndUser: Record<string, HistoryTableFullRow>;
+}
+
+function addChangeDescription(rowHistory: RowHistory, nextRow: Omit<HistoryTableFullRow, 'changeDescription'>) {
+  const rowWithChangeDescription = {
+    ...nextRow,
+    changeDescription: nextRow.action !== 'UPDATE'
+      ? nextRow.action
+      : makeUpdateChangeDescription(
+          nextRow,
+          rowHistory.lastRowsByEndUser[nextRow.userId]
+        )
+  };
+
+  rowHistory.rowsWithChangeDescriptions.push(rowWithChangeDescription);
+  rowHistory.lastRowsByEndUser[nextRow.userId] = rowWithChangeDescription;
+
+  return rowHistory;
+}
+
+const COLUMNS_TO_MONITOR_FOR_CHANGE = {
+  'approvalStatus': 'approval status',
+  'content': 'content',
+  'denialReason': 'notes',
+  'allowSelfEdits': 'lock/unlock'
+} as const;
+
+const COLUMNS_TO_MONITOR_FOR_CHANGE_KEYS =
+  Object.keys(COLUMNS_TO_MONITOR_FOR_CHANGE) as (keyof typeof COLUMNS_TO_MONITOR_FOR_CHANGE)[];
+
+function makeUpdateChangeDescription(nextRow: Omit<HistoryTableFullRow, 'changeDescription'>, prevRow?: HistoryTableFullRow) {
+  const changedColumns = prevRow == null
+    ? []
+    : COLUMNS_TO_MONITOR_FOR_CHANGE_KEYS
+      .filter(columnKey => prevRow[columnKey] !== nextRow[columnKey])
+      .map(columnKey => COLUMNS_TO_MONITOR_FOR_CHANGE[columnKey]);
+
+  return changedColumns.length === 0
+    ? `update`
+    : `update ${changedColumns.join(', ')}`
 }
