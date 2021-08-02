@@ -27,7 +27,7 @@ _hostname_project_map:
   feature.veupathdb.org: UniDB
   b2.veupathdb.org: UniDB
   b1.veupathdb.org: UniDB
-
+  feature.clinepidb.org: AllClinEpiDB
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
 
