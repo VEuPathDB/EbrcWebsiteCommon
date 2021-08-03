@@ -25,6 +25,7 @@ _hostname_project_map:
   qa.restricted.clinepidb.org: AllClinEpiDB
   feature.eupathdb.org: UniDB
   feature.veupathdb.org: UniDB   
+  feature.clinepidb.org: AllClinEpiDB
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
 
