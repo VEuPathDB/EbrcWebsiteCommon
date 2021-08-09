@@ -12,7 +12,8 @@ module.exports = function configure(additionalConfig) {
   return baseConfig.merge([{
     context: process.cwd(),
     resolve: {
-      alias
+      alias,
+      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
     },
 
     module: {

@@ -169,6 +169,7 @@ modelprop:
   YOUTUBE_URL:
   REDDIT_URL: 
   SITE_SEARCH_SERVICE_URL:
+  USE_EDA: "false"
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
