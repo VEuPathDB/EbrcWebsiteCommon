@@ -26,6 +26,21 @@ import org.gusdb.wdk.model.query.param.AbstractEnumParam;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * This table row updater plugin updates the steps table, performing organism
+ * migrations on all the organism params listed below AND the organism column
+ * filter.  Release-specific subclasses of OrganismMigration can be easily
+ * created for each release, containing a list of migrations, no-longer-valid
+ * orgs, and limiting the project IDs to consider, which speeds the script up.
+ *
+ * After a new OrganismMigration subclass is created (named after the build; see
+ * examples in this package), it can be run via a script with usage:
+ *
+ * migrateOrganisms <projectIdToDbConfig> <buildSpecificJavaClassName> [-write]
+ * 
+ * @author rdoherty
+ *
+ */
 public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
 
   private static final Logger LOG = Logger.getLogger(MigrateOrganisms.class);
