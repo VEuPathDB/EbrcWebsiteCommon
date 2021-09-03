@@ -15,6 +15,9 @@ module.exports = function configure(additionalConfig) {
       alias,
       modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
     },
+    resolveLoader: {
+      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
+    },
 
     module: {
       rules: [
@@ -24,7 +27,15 @@ module.exports = function configure(additionalConfig) {
           enforce: 'pre',
           use: 'source-map-loader'
         },
+        {
+          test: /node_modules/,
+          loader: 'ify-loader'
+        }
       ]
+    },
+
+    node: {
+      fs: 'empty'
     },
 
     // Map external libraries Wdk exposes so we can do things like:
