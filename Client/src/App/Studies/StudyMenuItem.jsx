@@ -6,6 +6,7 @@ import { safeHtml } from '@veupathdb/wdk-client/lib/Utils/ComponentUtils';
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import { makeEdaRoute } from 'ebrc-client/routes';
 import './StudyMenu.scss';
+import edaIcon from './edaIcon.svg';
 
 class StudyMenuItem extends React.Component {
   constructor (props) {
@@ -56,7 +57,11 @@ class StudyMenuItem extends React.Component {
         { (!isPrereleaseStudy(study.access, study.id, user, permissions))
           ? useEda ? (
             <Link name="Explore the data" to={edaRoute}>
-              <i className="fa fa-area-chart"/>
+                  <img
+                    alt="Histogram"
+                    style={{ height: '1.4em', width: '1.4em' }}
+                    src={edaIcon}
+                  />
             </Link>
           ) : searches.map(({ path, displayName, icon }) => <SearchLink key={path} path={path} displayName={displayName} icon={icon} />)
           : (

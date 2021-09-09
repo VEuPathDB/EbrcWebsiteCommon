@@ -8,6 +8,7 @@ import DownloadLink from './DownloadLink';
 import { isPrereleaseStudy } from 'ebrc-client/App/DataRestriction/DataRestrictionUtils';
 import './StudyCard.scss';
 import { makeEdaRoute } from 'ebrc-client/routes';
+import edaIcon from './edaIcon.svg';
 
 
 class StudyCard extends React.Component {
@@ -70,9 +71,11 @@ class StudyCard extends React.Component {
           { (!isPrereleaseStudy(card.access, card.id, user, permissions) && searches.length)
             ? useEda ? (
                 <div className="box">
-                  <Link to={edaRoute}>
-                    <i className="fa fa-area-chart"/>
-                  </Link>
+                  <img
+                    alt="Histogram"
+                    style={{ height: '1em', width: '1em' }}
+                    src={edaIcon}
+                  />
                 </div>
               ) : searches.map(({ icon, displayName, path }) => {
               const route = `/search/${path}`;
