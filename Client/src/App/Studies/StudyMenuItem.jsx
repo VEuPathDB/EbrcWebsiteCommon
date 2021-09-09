@@ -58,7 +58,7 @@ class StudyMenuItem extends React.Component {
           ? useEda ? (
             <Link name="Explore the data" to={edaRoute}>
                   <img
-                    alt="Histogram"
+                    alt="EDA icon"
                     style={{ height: '1.4em', width: '1.4em' }}
                     src={edaIcon}
                   />

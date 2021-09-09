@@ -72,7 +72,7 @@ class StudyCard extends React.Component {
             ? useEda ? (
                 <div className="box">
                   <img
-                    alt="Histogram"
+                    alt="EDA icon"
                     style={{ height: '1em', width: '1em' }}
                     src={edaIcon}
                   />
