@@ -26,6 +26,7 @@ import { loadSiteConfig } from './actioncreators/GlobalActionCreators';
 import * as EbrcComponentWrappers from './component-wrappers';
 import * as EbrcComponents from './components';
 import * as EbrcControllers from './controllers';
+import { onLogin as ebrcOnLogin } from './onLogin';
 import * as EbrcRoutes from './routes';
 import ebrcWrapStoreModules from './wrapStoreModules';
 import ebrcWrapWdkService from './wrapWdkService';
@@ -42,7 +43,9 @@ import './scroll-to-top';
  * @param {Function} [options.wrapRoutes] A function that takes a Routes object
  *    and returns a new Routes object. Use this as an opportunity alter routes.
  * @param {Function} [options.wrapWdkService] A function that takes WdkService and returns
- *     a sub class.
+ *    a sub class.
+ * @param {Function} [options.wrapOnLogin] A function that takes and returns an onLogin
+ *    callback
  * @param {ClientPlugin[]} [options.pluginConfig] TODO - docs
  * @param {ClassisHomePageConfig|CardBasedHomePageConfig} [options.homePageConfig] Options for home page
  */
@@ -54,7 +57,8 @@ export function initialize(options = {}) {
     wrapRoutes = identity,
     wrapStoreModules = identity,
     wrapWdkService = identity,
-    additionalMiddleware
+    wrapOnLogin = identity,
+    additionalMiddleware,
   } = options;
 
   unaliasWebappUrl();
@@ -73,6 +77,7 @@ export function initialize(options = {}) {
     retainContainerContent,
     endpoint,
     onLocationChange: makeLocationHandler(),
+    onLogin: wrapOnLogin(ebrcOnLogin),
     pluginConfig: sitePluginConfig.concat(pluginConfig),
     additionalMiddleware
   });
