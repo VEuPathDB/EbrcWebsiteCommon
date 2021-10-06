@@ -45,7 +45,7 @@ import './scroll-to-top';
  * @param {Function} [options.wrapWdkService] A function that takes WdkService and returns
  *    a sub class.
  * @param {Function} [options.wrapOnLogin] A function that takes and returns an onLogin
- *    callback
+ *    callback (or undefined)
  * @param {ClientPlugin[]} [options.pluginConfig] TODO - docs
  * @param {ClassisHomePageConfig|CardBasedHomePageConfig} [options.homePageConfig] Options for home page
  */
