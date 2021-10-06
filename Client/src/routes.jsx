@@ -18,7 +18,7 @@ export function makeEdaRoute(studyId) {
   return '/workspace/analyses' + (studyId ? `/${studyId}` : '');
 }
 
-const edaServiceUrl = '/eda-data';
+export const edaServiceUrl = '/eda-data';
 
 const WorkspaceRouter = React.lazy(() => import('./WorkspaceRouter'));
 

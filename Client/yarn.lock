@@ -994,6 +994,28 @@
     react-resizable "^3.0.4"
     uuid "^8.3.2"
 
+"@veupathdb/eda@^0.12.3":
+  version "0.12.3"
+  resolved "https://registry.yarnpkg.com/@veupathdb/eda/-/eda-0.12.3.tgz#3eb44a368b835210ed29ff2fd0a4c1d5163ea084"
+  integrity sha512-ul/LsRTfd9/LsEKetoi8L0KW9UZBHfcZOJoZW3DEiuvinhwvR+vY6rR3MJ9pjrr+wJ1vY95/u69gOH1qhmJfcQ==
+  dependencies:
+    "@material-ui/core" "^4.11.3"
+    "@material-ui/lab" "^4.0.0-alpha.58"
+    "@types/debounce-promise" "^3.1.3"
+    "@veupathdb/components" "^0.7.19"
+    "@veupathdb/wdk-client" "^0.4.4"
+    "@veupathdb/web-common" "^0.1.9"
+    debounce-promise "^3.1.2"
+    fp-ts "^2.9.3"
+    io-ts "^2.2.13"
+    lodash "^4.17.20"
+    monocle-ts "^2.3.11"
+    react "^17.0.1"
+    react-dom "^17.0.1"
+    react-draggable "^4.4.3"
+    react-resizable "^3.0.4"
+    uuid "^8.3.2"
+
 "@veupathdb/react-scripts@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@veupathdb/react-scripts/-/react-scripts-1.2.0.tgz#3aef2d9c4c9d3ca7b8c33ca43cf22419896e90a5"
