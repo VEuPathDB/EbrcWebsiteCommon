@@ -71,7 +71,6 @@
   <target name="smoketest" depends="testinit">
     <testng 
         outputdir="${outputdir}"
-        useDefaultListeners="false"
         listeners="org.testng.reporters.XMLReporter"
         verbose="3"
      >
@@ -91,7 +90,6 @@
     <testng 
         testnames="${testnames}"
         outputdir="${outputdir}"
-        useDefaultListeners="false"
         listeners="org.testng.reporters.XMLReporter"
         verbose="3"
     >
