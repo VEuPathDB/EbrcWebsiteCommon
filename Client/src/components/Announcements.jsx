@@ -74,22 +74,24 @@ const siteAnnouncements = [
     }
   },
 */
- // clinepi workshop*
-/* 
+ // clinepi beta
+ 
  {
     id: 'clinepi-workshop',
     renderDisplay: (props) => {
     if (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB' ) {
         return (
           <div>
-           Join our current <span style={{fontWeight: 'bold'}}>webinar series on Tuesdays at 2 PM UTC</span> to learn more about the different infectious disease and maternal, newborn, and child health studies in our resource! Register at: <a target="_blank" href="https://attendee.gotowebinar.com/register/5366233982916667918">https://attendee.gotowebinar.com/register/5366233982916667918</a>.
+           Welcome to ClinEpiDB’s new and improved data exploration platform! This site is still in development. 
+           Help us make the website better by sending comments and reporting bugs to <a href="mailto:help@clinepidb.org">help@clinepidb.org</a>. 
+           To access data from all studies, please use <a href"https:clinepidb.org">clinepidb.org</a>.
           </div>
         );
       }
       return null;
     }
   },
-*/
+
 
 
   // beta
