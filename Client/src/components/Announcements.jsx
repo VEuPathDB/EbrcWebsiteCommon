@@ -49,6 +49,24 @@ const siteAnnouncements = [
       }
     }
   },
+
+ {
+    id: 'clinepi-beta',
+    renderDisplay: (props) => {
+    if ( (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB') && (props.location.pathname === '/') ) {
+        return (
+          <div>
+           Welcome to ClinEpiDB’s new and improved data exploration platform! This site is still in development.
+           Help us make the website better by <Link to="/contact-us">sending comments and reporting bugs</Link>.
+           To access data from all studies, please use <a href="https:clinepidb.org">clinepidb.org</a>.
+          </div>
+        );
+      }
+      return null;
+    }
+  },
+
+
 /*
   { 
     id: 'live-beta',
@@ -74,25 +92,6 @@ const siteAnnouncements = [
     }
   },
 */
- // clinepi beta
- 
- {
-    id: 'clinepi-workshop',
-    renderDisplay: (props) => {
-    if (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB' ) {
-        return (
-          <div>
-           Welcome to ClinEpiDB’s new and improved data exploration platform! This site is still in development. 
-           Help us make the website better by sending comments and reporting bugs to <a href="mailto:help@clinepidb.org">help@clinepidb.org</a>. 
-           To access data from all studies, please use <a href"https:clinepidb.org">clinepidb.org</a>.
-          </div>
-        );
-      }
-      return null;
-    }
-  },
-
-
 
   // beta
   //  /*isBetaSite() || */
