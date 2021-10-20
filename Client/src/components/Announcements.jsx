@@ -56,9 +56,10 @@ const siteAnnouncements = [
     if ( (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB') && (props.location.pathname === '/') ) {
         return (
           <div>
-           Welcome to ClinEpiDB’s new and improved data exploration platform! This site is still in development.
-           Help us make the website better by <Link to="/contact-us">sending comments and reporting bugs</Link>.
-           To access data from all studies, please use <a href="https:clinepidb.org">clinepidb.org</a>.
+           Welcome to ClinEpiDB’s new and improved <span style={{fontWeight: 'bold', fontStyle: 'italic'}}>data exploration platform!</span>
+           &nbsp;<a target="_blank" href="https://forms.gle/x7c11Xqrm8pgRWrC6">Register for our upcoming workshop</a> for hands-on training with this new platform.
+           &nbsp;Please <Link to="/contact-us">contact us</Link> with feedback.
+           &nbsp;To access data from all studies use <a href="https://clinepidb.org">clinepidb.org</a>.
           </div>
         );
       }
