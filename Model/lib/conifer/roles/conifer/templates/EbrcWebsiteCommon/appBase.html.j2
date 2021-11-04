@@ -28,7 +28,7 @@
         siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}",
         useEda: "true" === "{{ eda.enabled|default('false')}}",
         edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|default('') }}",
-        edaServiceBaseUrl: "{{ eda.service_base_url|default('') }}",
+        edaServiceUrl: "{{ eda.service_base_url|default('') }}",
         {% endblock %}
       };
 
