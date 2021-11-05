@@ -173,7 +173,7 @@ modelprop:
 eda:
   enabled: "false"
   example_analyses_author:
-  service_base_url: "/eda-data"
+  service_base_url: "/eda"
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
