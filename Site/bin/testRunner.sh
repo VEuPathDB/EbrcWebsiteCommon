@@ -67,7 +67,10 @@ function runTests {
   cd $workingDir
   git clone https://github.com/VEuPathDB/wdk-api-test.git
   cd wdk-api-test
-  apiTestCmd="./run -c $siteUrl/a"
+
+  # get webservice url
+  fullUrl=$(curl -sI $siteUrl | awk '/^Location:/ {print $2}')
+  apiTestCmd="./run -c $fullUrl"
   echo "Running API tests with command: $apiTestCmd"
   $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.txt
 
