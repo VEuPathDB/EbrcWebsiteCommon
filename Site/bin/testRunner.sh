@@ -69,7 +69,7 @@ function runTests {
   cd wdk-api-test
 
   # get webservice url
-  fullUrl=$(curl -sI $siteUrl | awk '/^Location:/ {print $2}')
+  fullUrl=$(curl -sI $siteUrl | strings | awk '/^Location:/ {printf $2}')
   apiTestCmd="./run -c $fullUrl"
   echo "Running API tests with command: $apiTestCmd"
   $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.txt
