@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,6 @@ import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
-import org.gusdb.wdk.model.record.FieldScope;
 import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.model.record.TableField;
 import org.gusdb.wdk.model.record.attribute.AttributeField;
@@ -167,7 +167,7 @@ public class DetailTableLoader extends BaseCLI {
     long start = System.currentTimeMillis();
 
     // first check if the table has any columns
-    if (table.getAttributeFields(FieldScope.REPORT_MAKER).length == 0) {
+    if (table.getReporterAttributeFieldMap().isEmpty()) {
       logger.info("table [" + table.getName() + "] doesn't have any columns to be dumped. skipped.");
       return;
     }
@@ -309,7 +309,7 @@ public class DetailTableLoader extends BaseCLI {
     StringBuilder title = new StringBuilder();
     title.append("TABLE: ").append(table.getDisplayName()).append("\n");
     boolean firstField = true;
-    for (AttributeField attribute : table.getAttributeFields(FieldScope.REPORT_MAKER)) {
+    for (AttributeField attribute : table.getReporterAttributeFieldMap().values()) {
       if (firstField)
         firstField = false;
       else
@@ -344,12 +344,13 @@ public class DetailTableLoader extends BaseCLI {
   private String[] formatAttributeValues(ResultSet resultSet, TableField table)
       throws WdkModelException, SQLException, WdkUserException {
 
-    String[] formattedValuesArray = new String[table.getAttributeFields(FieldScope.REPORT_MAKER).length];
+    Collection<AttributeField> fields = table.getReporterAttributeFieldMap().values();
+    String[] formattedValuesArray = new String[fields.size()];
 
     Map<String, String> formattedValuesMap = new HashMap<String, String>();
 
     int i = 0;
-    for (AttributeField attribute : table.getAttributeFields(FieldScope.REPORT_MAKER)) {
+    for (AttributeField attribute : fields) {
       String formattedValue = formatValue(formattedValuesMap, table, attribute, resultSet);
       formattedValuesArray[i++] = formattedValue;
     }

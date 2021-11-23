@@ -22,9 +22,13 @@
         twitterUrl: "{{ modelprop.TWITTER_URL|default('') }}",
         twitterUrl2: "{{ modelprop.TWITTER_URL_2|default('') }}",
         youtubeUrl: "{{ modelprop.YOUTUBE_URL|default('') }}",
+        redditUrl: "{{ modelprop.REDDIT_URL|default('') }}",
         vimeoUrl: "{{ modelprop.VIMEO_URL|default('') }}",
         communitySite: "{{ modelprop.COMMUNITY_SITE|default('') }}",
         siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}",
+        useEda: "true" === "{{ eda.enabled|default('false')}}",
+        edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|default('') }}",
+        edaServiceUrl: "{{ eda.service_base_url|default('') }}",
         {% endblock %}
       };
 

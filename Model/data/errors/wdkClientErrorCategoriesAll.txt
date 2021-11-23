@@ -1,0 +1,539 @@
+[
+  {"matchStrings": ["========ORDER OF FILTERS MATTERS:  once an error matches a filter it is counted, and it wont be considered under the remaining filters"]
+  },
+
+  {"matchStrings": ["============= DO NO EMAIL, USER network?"
+    ]
+  },
+  {"matchStrings": ["studies could not be parsed"
+    ],
+   "comment": "---clinepi, presenters prop: isPublic false, only show in qa, live site client gets project_availability null, qa gets AlClinEpiDB"
+  },
+  {"matchStrings": ["Could not load embedded JBrowse instance"
+    ],
+   "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
+  },
+  {"matchStrings": ["Failed to fetch: [attempting"
+   ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Failed to fetch"
+    ],
+   "comment": "---Dec23-2020. Action: retry, popup content update: network instability, try again."
+  },
+  {"matchStrings": ["failed to fetch"
+    ],
+   "comment": "---twitter"
+  },
+  {"matchStrings": ["Loading chunk"
+    ],
+   "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
+  },
+  {"matchStrings": ["Loading CSS chunk"
+    ]
+  },
+  {"matchStrings": ["NetworkError when attempting to fetch resource"
+    ],
+   "comment": "---Dec23-2020. Dave: variant of Failed to fetch?"
+  },
+  {"matchStrings": ["The internet connection appears to be offline"
+    ]
+  },
+  {"matchStrings": ["Unable to connect to the target server."
+    ]
+  },
+  {"matchStrings": ["Could not connect to the server"
+    ]
+  },
+  {"matchStrings": ["Bad Gateway"
+    ],
+   "comment": "---THIS seems to coincide with service errors not being able to find a connection with ORA-12516"
+  },
+  {"matchStrings": ["The network connection was lost"
+    ]
+  },
+  {"matchStrings": ["Connection to Indexed Database server lost"
+    ]
+  },
+
+
+
+  {"matchStrings": ["========= DO NOT EMAIL  USER BROWSER?"]
+  },
+
+  {"matchStrings": ["chrome-extension"
+    ]
+  },
+  {"matchStrings": ["IndexSizeError"
+    ],
+   "comment": "---old edge on win 10 using legacy library"
+  },
+  {"matchStrings": ["can't redefine non-configurable property"
+    ],
+   "comment": "---Win7"
+  },
+  {"matchStrings": ["sandbox not initialized", "twitter"
+    ],
+   "comment": "---twitter"
+  }, 
+  {"matchStrings": ["Invariant failed"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Object doesn't support this action"
+    ],
+   "comment": "---Dec23-2020. Dave: old IE"
+  },
+  {"matchStrings": ["Failed to execute 'removeChild' "
+    ]
+  },
+  {"matchStrings": ["Failed to execute 'insertBefore' "
+    ],
+   "comment": "---Dec23-2020. Dave: likely due to browser addon like Google Translate"
+  },
+  {"matchStrings": ["Failed to read","The request has not finished."
+    ]
+  },
+  {"matchStrings": ["Document is not focused"
+    ]
+  },
+  {"matchStrings": ["cancelled: [attempting"
+    ]
+  },
+  {"matchStrings": ["message\": \"cancelled\""
+    ]
+  },
+  {"matchStrings": ["Client Closed Request"
+    ]
+  },
+  {"matchStrings": ["A request was aborted"
+    ]
+  },
+  {"matchStrings": ["The operation was aborted"
+    ]
+  },
+  {"matchStrings": ["Database deleted by request of the user"
+    ]
+  },
+  {"matchStrings": ["Blocked a frame with origin"
+    ],
+   "comment": "---Dec23-2020. Dave: GoogleBot and Safari 11"
+  },
+  {"matchStrings": ["not allowed by Access-Control-Allow-Origin"
+    ]
+  },
+  {"matchStrings": ["Permission denied to access property","on cross-origin object"
+    ],
+   "comment": "---seen on moz-extension"
+  },
+  {"matchStrings": ["The operation is insecure."
+    ]
+  },
+  {"matchStrings": ["message\": \"SecurityError\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Forbidden\""
+    ]
+  },
+
+
+  {"matchStrings": ["name\": \"AbortError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ChunkLoadError"
+    ]
+  },
+  {"matchStrings": ["name\": \"NotAllowedError"
+    ]
+  },
+  {"matchStrings": ["message\": \"out of memory"
+    ],
+   "comment": "--- old windows with FF"
+  },
+  {"matchStrings": ["name\": \"QuotaExceededError"
+    ]
+  },
+
+
+  {"matchStrings": ["========= DO NOT EMAIL  IT IS US, QA"
+    ]
+  },
+  {"matchStrings": ["https://localhost:3000"
+    ]
+  },
+  {"matchStrings": ["https://q"
+    ]
+  },
+
+
+  {"matchStrings": ["========= DO NOT EMAIL  APP in USER BROWSER?   Probably cannot do anything about these either"
+    ]
+  },
+  {"matchStrings": ["Cannot read property"
+    ],
+   "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
+  },
+  {"matchStrings": ["setting getter-only property"
+    ]
+  },
+  {"matchStrings": ["Attempted to assign to readonly property"
+    ]
+  },
+  {"matchStrings": ["message\": \"ReferenceError: Can't find variable"
+    ],
+   "comment": ""
+  },
+  {"matchStrings": ["message\": \"Error looking up record in object store by key range"
+    ]
+  },
+  {"matchStrings": ["message\": \"Object Not Found Matching Id"
+    ],
+   "comment": "---microsoft IP 40.94..."
+  },
+  {"matchStrings": ["message\": \"The object can not be found here."
+    ]
+  },
+  {"matchStrings": ["message\": \"Object doesn't support property or method"
+    ]
+  },
+  {"matchStrings": ["message\": \"\""
+    ]
+  },
+  {"matchStrings": ["message\": \"null"
+    ]
+  },
+  {"matchStrings": ["message\": \"undefined"
+    ]
+  },
+  {"matchStrings": ["message\": \"[object Event]"
+    ]
+  },
+  {"matchStrings": ["message\": \"error\""
+    ]
+  },
+  {"matchStrings": ["message\": \"Error: {}\""
+    ],
+   "comment": "---Jan 29 2021, sam safari jbrowse"
+  },
+
+
+  {"matchStrings": ["is null\""
+    ]
+  },
+  {"matchStrings": ["null is not an object (evaluating"
+    ]
+  },
+  {"matchStrings": ["is undefined"
+    ]
+  },
+  {"matchStrings": ["is not a function"
+    ]
+  },
+  {"matchStrings": ["this is not a non-null object"
+    ]
+  },
+  {"matchStrings": ["has already been declared"
+    ]
+  },
+  {"matchStrings": ["<unknown status code>"
+    ]
+  },
+  {"matchStrings": ["Unexpected token < in JSON at position 0"
+    ],
+   "comment": "---Win7   Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+  },
+  {"matchStrings": ["Error: Message did timeout"
+    ],
+   "comment": "---sam (safari). sam didn’t see an error message, slow for a few seconds and eventually worked"
+  },
+  {"matchStrings": ["The request timed out"
+    ]
+  },
+  {"matchStrings": ["Clipboard write was blocked due to lack of user activation"
+    ]
+  },
+  {"matchStrings": ["Unexpected token"
+    ],
+   "comment": "--- other than (filter above): JSON at position 0 (Win 7)"
+  },
+  {"matchStrings": ["JSON.parse: unexpected character at line 1 column 1 of the JSON data"
+    ]
+  },
+  {"matchStrings": ["Unexpected end of JSON input"
+    ],
+   "comment": "--- this showed in UI (eve general april 1 2021) as a result of a 502 (conttainerized serviice (mblast) erroring"
+  },
+  {"matchStrings": ["invalid escape sequence"
+    ]
+  },
+  {"matchStrings": ["The transaction was aborted, so the request cannot be fulfilled"
+    ]
+  },
+  {"matchStrings": ["too much recursion"
+    ]
+  },
+  {"matchStrings": ["server_fp is not defined"
+    ]
+  },
+  {"matchStrings": ["NS_ERROR_FILE_CORRUPTED"
+    ]
+  },
+  {"matchStrings": ["message\": \"Minified React error"
+    ],
+   "comment": "---on urls accessing apache documents"
+  },
+
+
+
+  {"matchStrings": ["========= DO NOT EMAIL   new ones in B51 with npm? often stacktrace shows ...generatorResume@[native....Promise@[native...."
+    ]
+  },
+  {"matchStrings": ["message\": \"Script error."
+    ]
+  },
+  {"matchStrings": ["message\": \"[object Object]"
+    ]
+  },
+  {"matchStrings": ["message\": \"TypeError: undefined is not an object (evaluating "
+    ],
+   "comment": "---(evaluating 'p.manager'),(evaluating 'Zotero.Connector.reportActiveURL')"
+  },
+  {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
+    ]
+  },
+
+  {"matchStrings": ["========= DO NOT EMAIL  OUR APP      CHECK UX on USERS (error handling)"
+    ]
+  },
+  {"matchStrings": ["Attempt to use","more than 100 times per 30 seconds"
+    ],
+   "comment": "---safari"
+  },
+  {"matchStrings": ["Cannot POST","The BLAST execution has timed out"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
+    ],
+   "comment": "---text search"
+  },
+  {"matchStrings": ["Cannot POST","must not be longer than 31000 characters"
+    ],
+   "comment": "---BLAST"
+  },
+
+
+
+  {"matchStrings": ["========= BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "---cross origin, step does not exist due to new guest id"
+  },
+  {"matchStrings": ["User Agent:","Baidu"
+    ]
+  },
+  {"matchStrings": ["User Agent:","bingbot"
+    ]
+  },
+
+
+
+  {"matchStrings": ["========= CHECK THESE"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","RecordClass with name gene has no record with primary keys"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Resource","Step","does not exist"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Resource","no record with primary keys","does not exist"
+    ],
+   "comment": "---one reason is change of guest user, other cases unclear"
+  },
+  {"matchStrings": ["Cannot POST","No strategy exists with signature"
+    ],
+   "comment": "---could be the strategy has been deleted"
+  },
+  {"matchStrings": ["Cannot POST","Step","is not part of a strategy, so cannot run"
+    ],
+   "comment": "---Feb 5 2021 opened trello"
+  },
+  {"matchStrings": ["Cannot POST","analyses","Only graphs of 500 nodes or fewer"
+    ],
+   "comment": "---added message, opened trello for (1) do not offer analysis, (2) a nicer error message"
+  },
+  {"matchStrings": ["Cannot POST","analyses","Your result has no genes that are in pathways"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","You cannot analyze a Step with zero results"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","Invalid value"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","analyses","Cannot be empty."
+    ]
+  },
+  {"matchStrings": ["Cannot POST","Could not configure reporter","with passed formatConfig."
+    ]
+  },
+  {"matchStrings": ["Cannot POST","/users/current/strategies","so cannot be assigned to a new strategy"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","/users/current/strategies"
+    ]
+  },
+  {"matchStrings": ["Cannot POST","not runnable because","is associated with an invalid search"
+    ]
+  },
+  {"matchStrings": ["Cannot POST"
+    ]
+  },
+  {"matchStrings": ["Cannot GET","Resource","Dataset with ID","does not exist."
+    ],
+   "comment":  "---mistery with datasetParams, mostly on LocusTag search"
+  },
+  {"matchStrings": ["Cannot GET","strategies","Permission Denied","access to this resource"
+    ]
+  },
+  {"matchStrings": ["Cannot GET"
+    ],
+   "comment": "---some might be related to POST step does not exist"
+  },
+  {"matchStrings": ["Cannot PATCH"
+    ],
+   "comment": "---redmine 43584 preferences name was too small, db increased and wdk also increased"
+  },
+  {"matchStrings": ["Cannot DELETE","Resource","analysis","does not exist."
+    ]
+  },
+  {"matchStrings": ["Cannot DELETE"
+    ]
+  },
+  {"matchStrings": ["Cannot PUT","This email is already in use by another account"
+    ]
+  },
+
+
+
+  {"matchStrings": ["Element type is invalid","CompositePluginComponent"
+    ]
+  },
+  {"matchStrings": ["Unable to deserialize data."
+    ]
+  },
+  {"matchStrings": ["Multi-value enum stable value","could not be parsed into terms."
+    ],
+   "comment": "---redmine 43378: invalid organism value, redmine 43482: invalid dataset name in jbrowse popup url"
+  },
+  {"matchStrings": ["could not be parsed into terms."
+    ]
+  },
+  {"matchStrings": ["Invalid hook call"
+    ]
+  },
+  {"matchStrings": ["File error: Corrupted"
+    ]
+  },
+  {"matchStrings": ["Right side of assignment cannot be destructured"
+    ]
+  },
+  {"matchStrings": ["Cannot destructure property","vimeoUrl"
+    ],
+   "comment": "---mbiome has a link to vimeo"
+  },
+  {"matchStrings": ["Missing expected table"
+    ],
+   "comment": "---it happens when connections timeout"
+  },
+  {"matchStrings": ["404 Not Found"
+    ],
+   "comment": "--- MBLAST (old)"
+  },
+  {"matchStrings": ["500 Internal Server Error"
+    ],
+   "comment": "--- MBLAST, on any page or result"
+  },
+  {"matchStrings": ["400 Bad Request","unrecognized query target"
+    ],
+   "comment": "--- MBLAST, mostly portal, on new,  organism issue"
+  },
+  {"matchStrings": ["502 Proxy Error","The proxy server could not handle the request"
+    ],
+   "comment": "--- MBLAST, on individual result"
+  },
+  {"matchStrings": ["401 Unauthorized","Users must be logged in"
+    ],
+   "comment": "--- trying to get to a study page in clinepi, i seemed logged in and started getting this client error (lots) but upon reload i was a guest.. also seen in MBLAST, happening in the all jobs page or individual result"
+  },
+
+  {"matchStrings": ["=========  CHECK UX, USER NEEDS TO BE TOLD TO CORRECT"
+    ]
+  },
+  {"matchStrings": ["Invalid regular expression:"
+    ]
+  },
+  {"matchStrings": ["cannot find question"
+    ]
+  },
+  {"matchStrings": ["Could not find question"
+    ],
+   "comment": "---redmine 43544 host popsets"
+  },
+  {"matchStrings": ["Invalid dimensions for plot"
+    ]
+  },
+  {"matchStrings": ["Encountered full disk while opening backing store for indexedDB.open"
+    ]
+  },
+  {"matchStrings": ["Internal error opening backing store for indexedDB.open."
+    ]
+  },
+
+
+  {"matchStrings": ["========= UNCAUGHT"
+    ]
+  },
+
+  {"matchStrings": ["name\": \"InternalError"
+    ]
+  },
+  {"matchStrings": ["name\": \"InvalidStateError"
+    ]
+  },
+  {"matchStrings": ["name\": \"NotFoundError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ReferenceError"
+    ]
+  },
+  {"matchStrings": ["name\": \"SecurityError"
+    ]
+  },
+  {"matchStrings": ["name\": \"ServiceError"
+    ]
+  },
+  {"matchStrings": ["name\": \"SyntaxError"
+    ]
+  },
+  {"matchStrings": ["name\": \"TimeoutError"
+    ]
+  },
+  {"matchStrings": ["name\": \"TypeError"
+    ]
+  },
+  {"matchStrings": ["name\": \"UnknownError"
+    ]
+  },
+  {"matchStrings": ["name\": \"URIError"
+    ]
+  }
+
+
+
+]

@@ -1,0 +1,265 @@
+(BLOG style, add on top after the INTRODUCTION)
+
+     
+===========================================
+
+INTRODUCTION
+
+wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+- used for generating reports and checking on errors in the logs
+  by running the script wdkFilterErrors manually (see examples below)
+
+wdkErrorCategories.txt
+- once committed in prod or qa, it determines what does not get emailed.
+- it is a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt, 
+   generated manually by copying/pasting chunks from the Client and Service files.
+
+=================================================
+
+
+
+
+
+
+
+
+======================================
+
+July 9 2021
+
+
+BUILD 52,o ortho 6_5,  clinepi 17, mbiome 22
+released may 20, 2021
+
+we have access to archives months june and july plus most recent logs.
+be aware that the archive contains unexpected older dates within in a build (older than may 20 for b52) from QA sites activity.
+
+
+
+1) REPORT  (add --r flag)
+ append | sort -gr  to get the occurring ones at the top
+
+SERVICE
+use:
+wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 07/30/2021
+
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-retained.log.2021-06-* > zcat-gen.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-retained.log.2021-06-* > zcat-ortho.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-retained.log.2021-06-* > zcat-ce.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-retained.log.2021-06-* > zcat-mbio.txt ; 
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-retained.log.2021-07-* > zcat-gen2.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-retained.log.2021-07-* > zcat-ortho2.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-retained.log.2021-07-* > zcat-ce2.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-retained.log.2021-07-* > zcat-mbio2.txt ; 
+cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt zcat-gen2.txt zcat-ortho2.txt zcat-ce2.txt zcat-mbio2.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 07/30/2021 
+
+
+
+CLIENT
+use:
+wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 
+
+zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-client-retained.log.2021-06-* > zcat-gen.txt ; 
+zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-client-retained.log.2021-06-* > zcat-ortho.txt ;
+zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-client-retained.log.2021-06-* > zcat-ce.txt ; 
+zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-client-retained.log.2021-06-* > zcat-mbio.txt ; 
+cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-client-retained* |  wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 | sort -gr
+
+
+2) FISH FOR ERRORS (remove --r flag)
+
+SERVICE
+use:
+wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep Exception | sort | uniq -c | sort -gr  > pepe
+
+CLIENT
+use:
+wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep "\"message\":" | sort | uniq -c | sort -gr  > pepe
+
+
+3) FIND SPECIFIC ERROR (use -sf flag instead of -ff)
+use:
+wdkFilterErrors -sf 'apiSiteFilesMirror' --sd 06/01/2021 --ed 06/30/2021
+
+
+
+========================================
+
+Mar 28 2021
+
+BUILD 51,o ortho 6_4,  clinepi 16, mbiome 21
+released march 16, dont check on  16 and 17, always lots of errors
+
+
+MARCH 2021
+
+REPORTING COUNTS
+
+zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 03/18/2021 --ed 03/31/2021
+
+zcat /usr/local/tomcat_instances/*/logs/*.b51/2021-03/errors-client-retained* > zcat-gen.txt ; zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_4/2021-03/errors-client-retained* > zcat-ortho.txt ; zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b16/2021-03/errors-client-retained* > zcat-ce.txt ; zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b21/2021-03/errors-client-retained* > zcat-mbio.txt ; cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b51/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_4/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b16/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b21/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt  --r --sd 03/18/2021 --ed 03/31/2021
+
+
+SORT THE HITS ON TOP
+
+add 
+   | sort -gr
+
+
+
+SEE WHAT WAS NOT CAUGHT
+
+remove -r and add:
+   | grep "\"message\":" | sort | uniq -c | sort -gr > pepe 
+
+
+
+
+OUTPUT ERRORS WITH A KEYWORD
+
+Instead of 
+    -ff wdkClientErrorCategoriesAll.txt
+use
+    -sf '[object Object]'
+ 
+
+
+========================================
+
+Feb 12 2021
+
+
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-retained* > zcat-gen-01.txt ; zcat /usr/local/tomcat_instances/*/logs/*.b6_3/2021-01/errors-retained* > zcat-ortho-01.txt ;  zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-02/errors-retained* > zcat-gen-02.txt ; zcat /usr/local/tomcat_instances/*/logs/*.b6_3/2021-02/errors-retained* > zcat-ortho-02.txt ; cat zcat-gen-01.txt zcat-ortho-01.txt zcat-gen-02.txt zcat-ortho-02.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_3/errors-retained* /usr/local/tomcat_instances/*/logs/*.b15/errors-retained* /usr/local/tomcat_instances/*/logs/*.b20/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 02/01/2021 --ed 02/28/2021
+
+
+========================================
+Jan 24 2021
+
+
+EDIT  These files: they contain all errors,  should be used to generate reports.
+
+        Model/data/errors/wdkClientErrorCategoriesAll.txt
+        Model/data/errors/wdkServiceErrorCategoriesAll.txt
+
+
+
+REPORT COUNTS
+
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_3/errors-retained* /usr/local/tomcat_instances/*/logs/*.b15/errors-retained* /usr/local/tomcat_instances/*/logs/*.b20/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt  --r --sd 01/04/2021 --ed 01/23/2021
+
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-client-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_3/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b15/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b20/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt  --r --sd 01/04/2021 --ed 01/23/2021
+
+
+CHECK ERRORS FOR A GIVEN FILTER
+
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-retained*  | wdkFilterErrors -sf 'Attribute query && return any row'  --sd 01/04/2021 --ed 01/23/2021 > pepe
+
+
+=========================================
+
+
+Jan 23 2021
+Based on report below we will commit a new categories file from scratch
+
+ zcat /usr/local/tomcat_instances/*/logs/*.b50/2021-01/errors-client-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_3/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b15/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b20/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesOld.txt  --r --sd 01/04/2021 --ed 01/23/2021 
+0		tomcat@q
+0		SharedVQ.TelomereChromosomes
+0		The blast database doesn't exist: /var/www/Common/apiSiteFilesMirror/webServices//TrichDB/build-29/TvaginalisRG/blast/TvaginalisRGAnnotatedProteins
+0		BlastAlgorithm_invalid
+0		motif_organism=Trichomonas vaginalis G3
+0		Requested Filter, with key 'matched_transcript_filter_array' doesn't exist in record: OrfRecordClasses.OrfRecordClass
+0		view "APIDBTUNING.SNPCHIPATTRIBUTES" has errors
+0		matched_transcript_filter_array' doesn't exist in record: SequenceRecordClasses.SequenceRecordClass
+0		is not in the form 'setName.elementName
+0	2/1/17	GetVocabAction.java:114
+0	6/1/17	oracle.jdbc.driver.OraclePreparedStatementWrapper && is closed && TranscriptSearch
+0		pool error Timeout
+0		GC overhead limit exceeded
+0		OutOfMemoryError: Java heap space
+0		ORA-12514
+0		doesn't have step
+0		No configuration form can be found for the selected format: attributesTabular
+0		No item returned by the query [GeneVQ.GenericPercentileSamples]
+0		No item returned by the query [organismVQ.withGenes]
+0		No item returned by the query [GeneVQ.GeneTypes]
+0		The term of flatVocabParam [popsetParams.product] is null
+0		SummaryTableUpdateProcessor.java:143
+0		Set 'GeneQuestions' returned null for 'GenesBySageTagRStat'
+0		GiardiaGenesByDifferentialExpressionTwo
+0	2/1/17	ProcessFavoriteAction.java:97
+0		ProcessFavoriteAction.java && JSONObject["source_id"] not found
+0		ProcessBasketAction.java && JSONObject["source_id"] not found
+0		ProcessBasketAction.java && JSONObject["gene_source_id"] not found
+0		CustomProcessBasketAction.java && JSONException
+0	2/1/17	PathwaysByGeneList, Unable to insert record into cache
+0		Illegal repetition
+0		The attribute field [filename] cannot be found
+0		No configuration form can be found for the selected format
+0		APIDB"."REVERSE_COMPLEMENT": invalid identifier
+0		(USERLOGINS5.preferences_pk) violated
+0		unable to extend temp segment
+0		StepFactory.java:826
+0		Unclosed character class
+0		Attribute query && doesn't return any row && /app/record
+0		java.io.StringReader.<init>(StringReader.java:50)
+0		Could not get uncached results from DB && table or view does not exist
+0		Cannot get value for column 'struct_name'
+0		"APIDB"."WRAP": invalid identifier
+0		"IDSQL_2"."MATCHED_RESULT": invalid identifier && download
+0		'PathwayAttributes.Bfmv' doesn't return the same number
+0	2/1/17	RodMalPhenotype
+1		Stajich_HyphalGrowth
+0	2/1/17	primaryKeyValue is mandatory for tag recordLink && favorites
+0		IllegalArgumentException: No bean specified
+0	2/1/17	Unable to load class for JSP && Favorite
+0		value(single_gene_id) = [ ATGAACC
+0		Unable to check instance ID && ORA-00942: table or view does not exist
+0		tomcat@q
+0	2/1/17	ProcessRESTAction.java:191 && /webservice
+0		"GENE_SOURCE_ID": invalid identifier
+0		does not include question GenesByEHistolyticaExpressionTiming
+0		Unable to create value row for table
+0		ORA-00920: invalid relational operator
+0		Unable to create cache
+0		ORA-00904: "MATCHED_RESULT": invalid identifier
+0		PluginModelException: Time out, the command is cancelled. && Blast
+0		PluginModelException: The invocation is failed: Can't take sqrt of
+0		GenesByRNASeqpfal3D7_Caro
+0		InvokeAttributePluginAction.java:43
+0		FlatVocabularyFetcher.java:174
+0		More than one strategy of signature
+0		ORA-01790: expression must have same datatype
+0		doesn't return the same number of records as ID SQL && userlogins5.user_baskets
+0		Proteomics analysis of sporozoite excystation
+0		ORA-00942: table or view does not exist && QueryResult
+0		ORA-00942: table or view does not exist && Gff3
+0		Some of the input parameters are invalid or missing
+0		PatternSyntaxException && AbstractMotifPlugin
+0	6/1/17	ORA-00376 && fung032s
+0	6/1/17	ORA-00028: your session has been killed
+0		No headline && addComment.do
+0		No content : content is required! && addComment.do
+0		Invalid Gene Identifier && addComment.do
+0		PluginModelException: Actual value is too big for column [Locations]
+0	6/1/17	'TranscriptAttributes.CellularLocalization' doesn't return the same number of records
+0		importStrategy && does not include question
+0		BeanUtilsBean && Missing End Delimiter
+0	6/6/17	'gene_boolean_filter_array' doesn't exist
+0		No item returned by the query [SharedVQ.BlastOrganismFiles]
+0	datadev	'SnpAttributes.Bfmv' doesn't return the same number of records as ID SQL
+0		Record ordering in attribute query data [SnpAttributes.Bfmv.txt] does not match ID query
+0		Expected to find && records in paged id query result && OrganismAttributes.organismAttrs
+0		WdkModelException: The Step && of user && cannot be found
+
+Total errorsssss in date range: 5589
+                 # matched: 1
+               # unmatched: 5588
+=========================================
+Dec 25 2020
+Command line examples using these files
+
+CLIENT ERRORS
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2020-12/errors-client-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-client-retained* | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 12/18/2020
+
+SERVICE ERRORS
+zcat /usr/local/tomcat_instances/*/logs/*.b50/2020-12/errors-retained* > zcat.txt ; cat zcat.txt /usr/local/tomcat_instances/*/logs/*.b50/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 12/18/2020

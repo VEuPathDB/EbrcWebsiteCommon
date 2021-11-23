@@ -60,14 +60,17 @@ function runTests {
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."
   cd $projectHome/WDKClient/Client
-  yarn test 2>&1 | tee $outputDir/javascript-unit-tests.txt
+  ./node_modules/.bin/jest 2>&1 | tee $outputDir/javascript-unit-tests.txt
 
   # run service API tests
   echo "Downloading API test framework"
   cd $workingDir
   git clone https://github.com/VEuPathDB/wdk-api-test.git
   cd wdk-api-test
-  apiTestCmd="./run -c $siteUrl/a"
+
+  # get webservice url
+  fullUrl=$(curl -sI $siteUrl | strings | awk '/^Location:/ {printf $2}')
+  apiTestCmd="./run -c $fullUrl"
   echo "Running API tests with command: $apiTestCmd"
   $apiTestCmd 2>&1 | tee $outputDir/service-api-tests.txt
 

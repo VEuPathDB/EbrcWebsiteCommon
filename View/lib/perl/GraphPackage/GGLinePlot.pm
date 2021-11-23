@@ -138,6 +138,7 @@ sub makeRPlotString {
   my $resp = $ua->request($profileSetsRequest);
   if ($resp->is_success) {
     $plotDataJson = $resp->decoded_content;
+    $plotDataJson =~ s/\'/\\\'/g;
   } else {
     print "HTTP POST error code: ", $resp->code, "\n";
     print "HTTP POST error message: ", $resp->message, "\n";
@@ -1079,10 +1080,7 @@ sub new {
   $self->setIsLogged(1); 
   $self->setForceNoLines(1);
   my $projectId = $self->getProject();
-  my $exprMetric = "FPKM";
-  if ($projectId eq 'VectorBase' || $projectId eq 'ToxoDB' || $projectId eq 'PiroplasmoDB' || $projectId eq 'AmoebaDB') {
-    $exprMetric = "TPM";
-  }
+  my $exprMetric = "TPM";
 
   my $adjust = "
 profile.df.full\$VALUE[profile.df.full\$VALUE < .01] <- .01
@@ -1152,7 +1150,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full.2, x = ~log2(VALUE + 
          margin = list(l = 75, 
                        r = 30, 
                        b = 75, 
-                       t = 50, 
+                       t = 60, 
                        pad = 1),
 	 boxgap = .6
   ) %>%
@@ -1426,7 +1424,7 @@ sub new {
   my $self = $class->SUPER::new(@_);
   my $id = $self->getId();
   my $exprMetric = $self->getExpressionMetric();
-  $exprMetric = defined($exprMetric) ? $exprMetric : "fpkm";
+  $exprMetric = defined($exprMetric) ? $exprMetric : "tpm";
 
   $self->setPartName($exprMetric);
   $exprMetric = uc($exprMetric);
@@ -1632,6 +1630,30 @@ sub new {
    $self->setPlotTitle("Quant Mass Spec Profile - $id");
 
    return $self;
+}
+
+
+package EbrcWebsiteCommon::View::GraphPackage::GGLinePlot::LOPIT;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGLinePlot );
+use strict;
+
+sub new {
+  my $class = shift;
+  my $self = $class->SUPER::new(@_);
+
+  my $id = $self->getId();
+
+  $self->setIsLogged(0);
+
+  $self->setYaxisLabel("Probability");
+  $self->setXaxisLabel("");
+  $self->setDefaultYMax(1);
+  $self->setDefaultYMin(0);
+
+  $self->setPartName('prob');
+  $self->setPlotTitle("$id");
+
+  return $self;
 }
 
 1;

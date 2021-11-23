@@ -147,7 +147,7 @@ modelconfig_emailContent: >
   <![CDATA[
     <p>Thank you for registering at {{ product }}.{{ _topleveldomain }}, a member site of the VEuPathDB Bioinformatics Resource Center.</p>
     <p>Your temporary password is: $$PASSWORD$$</p>
-    <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other EuPathDB member site.</p>
+    <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other VEuPathDB member site.</p>
   ]]>
 
 
@@ -167,7 +167,13 @@ modelprop:
   GOOGLE_ANALYTICS_ID:
   FACEBOOK_URL:
   YOUTUBE_URL:
+  REDDIT_URL: 
   SITE_SEARCH_SERVICE_URL:
+
+eda:
+  enabled: "false"
+  example_analyses_author:
+  service_base_url: "/eda"
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"

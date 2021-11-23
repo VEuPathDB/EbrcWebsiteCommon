@@ -103,9 +103,9 @@ public class ErrorHandler {
         .append("Server Addr: ").append(valueOrDefault((String)context.getRequestAttributeMap().get("SERVER_ADDR"),
             "<not set> Is 'JkEnvVar SERVER_ADDR' set in the Apache configuration?")).append(NL)
         .append("Server Name: " ).append(valueOrDefault(requestData.getServerName(), "<unknown>")).append(NL)
-        .append("Session ID: ").append(context.getMdcBundle().getShortSessionId()).append(NL)
-        .append("Request ID: ").append(context.getMdcBundle().getRequestId()).append(NL)
-        .append("Request duration at error: ").append(context.getMdcBundle().getRequestDuration()).append(NL)
+        .append("Session ID: ").append(context.getThreadContextBundle().getShortSessionId()).append(NL)
+        .append("Request ID: ").append(context.getThreadContextBundle().getRequestId()).append(NL)
+        .append("Request duration at error: ").append(context.getThreadContextBundle().getRequestDuration()).append(NL)
         .append("Date of last webapp reload: ").append(formatDateTime(new Date(model.getStartupTime()))).append(NL)
         .append("Time since last webapp reload: ").append(
             Timer.getDurationString(context.getErrorDate().getTime() - model.getStartupTime())).append(NL)

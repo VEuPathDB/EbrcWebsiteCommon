@@ -89,6 +89,13 @@
   </rule>
 
   <rule>
+    <name>Organism to Dataset</name>
+    <note>Forward to new url</note>
+    <from>^/app/record/organism/(.+)$</from>
+    <to type="redirect" last="true">%{context-path}/app/record/dataset/$1</to>
+  </rule>
+
+  <rule>
     <name>Resolve assets</name>
     <note>Strip checksums from filenames and add far-future cache-related headers</note>
     <from>^(.*)-.{32}\.(ico|js|css|jpeg|jpg|gif|png)$</from>

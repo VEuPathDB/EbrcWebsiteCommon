@@ -86,6 +86,7 @@ sub makeRPlotString {
   my $resp = $ua->request($profileSetsRequest);
   if ($resp->is_success) {
     $plotDataJson = $resp->decoded_content;
+    $plotDataJson =~ s/\'/\\\'/g;
   } else {
     print "HTTP POST error code: ", $resp->code, "\n";
     print "HTTP POST error message: ", $resp->message, "\n";
@@ -453,44 +454,6 @@ sub new {
 1;
 
 
-
-
-package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::LOPIT;
-use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot );
-use strict;
-
-sub new {
-  my $class = shift;
-  my $self = $class->SUPER::new(@_);
-
-  my $id = $self->getId();
-  my $wantLogged = 0;
-
-  $self->setYaxisLabel("Probability");
-  $self->setIsLogged(0);
-  $self->setSkipStdErr(1);
-
-  $self->setDefaultYMax(1);
-  $self->setDefaultYMin(0);
-
-  $self->setPartName('prob');
-#  $self->setPlotTitle("LOPIT Probability - $id");
-  $self->setPlotTitle("");
-
-  return $self;
-}
-
-1;
-
-
-
-
-
-
-
-
-
-
 package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::Percentile;
 use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot );
 use strict;
@@ -523,12 +486,12 @@ sub new {
 
   my $id = $self->getId();
 
-  $self->setPartName('rpm');
-  $self->setYaxisLabel('RPM');
+  $self->setPartName('tpm');
+  $self->setYaxisLabel('TPM');
   $self->setIsStacked(1);
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(50);
-  $self->setPlotTitle("RPM - $id");
+  $self->setPlotTitle("TPM - $id");
 
   return $self;
 }

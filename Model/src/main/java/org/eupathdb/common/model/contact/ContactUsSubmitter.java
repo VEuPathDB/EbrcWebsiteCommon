@@ -53,8 +53,9 @@ public class ContactUsSubmitter {
       (params.context == null ? "None" : params.context) + "\n" +
       "---------------------";
 
-    String redmineMetaInfo = "Project: usersupportrequests\n" + "Category: " + 
-        website + "\n" + "\n" +
+    String redmineMetaInfo = "Project: usersupportrequests\n" + 
+        "Tracker: Communication\n" +
+        "Category: " + website + "\n" + "\n" +
         metaInfo + "\n" + 
         "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" +
         "Request URL: " + requestData.getFullRequestUri() + "\n" +
@@ -76,7 +77,7 @@ public class ContactUsSubmitter {
 
     // Send support email
     LOG.debug("SUBJECT: " + params.subject +  " -----TO: " + supportEmail);
-    emailSender.sendEmail( 
+     emailSender.sendEmail( 
         smtpServer, 
         supportEmail, 
         replyEmail, 

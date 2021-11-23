@@ -621,12 +621,12 @@ sub new {
 
   my $id = $self->getId();
 
-  $self->setPartName('rpm');
-  $self->setYaxisLabel('RPM');
+  $self->setPartName('tpm');
+  $self->setYaxisLabel('TPM');
   $self->setIsStacked(1);
   $self->setDefaultYMin(0);
   $self->setDefaultYMax(50);
-  $self->setPlotTitle("RPM - $id");
+  $self->setPlotTitle("TPM - $id");
 
   return $self;
 }
