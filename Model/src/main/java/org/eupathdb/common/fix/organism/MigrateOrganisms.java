@@ -68,7 +68,8 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
       "org_with_centromere_genes",
       "org_with_Hagai_pathways",
       "organismWithCellularLocImages",
-      "organismWithEstsInChromosomes"
+      "organismWithEstsInChromosomes",
+      "organism_select_all"
     });
 
     public static final String REMOVE_ENTRY = "__NULL__";
