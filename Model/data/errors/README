@@ -1,18 +1,22 @@
-(BLOG style, add on top after the INTRODUCTION)
-
-     
-===========================================
 
 INTRODUCTION
 
-wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
-- used for generating reports and checking on errors in the logs
-  by running the script wdkFilterErrors manually (see examples below)
+These are the files in this directory:
+
+wdkErrorFilters.txt
+- Filters for ErrorsTag. No email report will be sent for errors matching these filters, possibly we do not log either?
+- these flters are executed first, before checking on wdkErrorCategroies.txt
+- currenty we are not emailing:  WdkUserException and PluginUserException
 
 wdkErrorCategories.txt
-- once committed in prod or qa, it determines what does not get emailed.
-- it is a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt, 
-   generated manually by copying/pasting chunks from the Client and Service files.
+- another layer of error email filters
+- errors matching these filters will NOT be emailed.
+- we generate this file manually as a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt,
+   by copying/pasting chunks from the Client and Service files.
+
+wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+- these files used for generating reports and checking on errors in the logs, by running the script wdkFilterErrors manually (see examples below)
+- they are also used to generate wdkErrorCategories.txt and control error emails
 
 =================================================
 
@@ -51,6 +55,7 @@ zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-retained.log.2021-0
 zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-retained.log.2021-07-* > zcat-ortho2.txt ;
 zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-retained.log.2021-07-* > zcat-ce2.txt ; 
 zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-retained.log.2021-07-* > zcat-mbio2.txt ; 
+
 cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt zcat-gen2.txt zcat-ortho2.txt zcat-ce2.txt zcat-mbio2.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-retained* | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 07/30/2021 
 
 
@@ -66,15 +71,15 @@ zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-clien
 cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-client-retained* |  wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 | sort -gr
 
 
-2) FISH FOR ERRORS (remove --r flag)
+2) FISH FOR unmatched ERRORS (remove --r flag)
 
 SERVICE
 use:
-wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep Exception | sort | uniq -c | sort -gr  > pepe
+... | wdkFilterErrors -ff wdkServiceErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep Exception | sort | uniq -c | sort -gr  > pepe
 
 CLIENT
 use:
-wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep "\"message\":" | sort | uniq -c | sort -gr  > pepe
+... | wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt   --sd 06/01/2021 --ed 06/30/2021 | grep "\"message\":" | sort | uniq -c | sort -gr  > pepe
 
 
 3) FIND SPECIFIC ERROR (use -sf flag instead of -ff)
