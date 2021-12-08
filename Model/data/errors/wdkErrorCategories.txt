@@ -381,6 +381,17 @@
   },
 
 
+  {"matchStrings": ["======== MISMATCH RESULTS"
+    ]
+  },
+
+  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
+    ]
+  },
+
+
+
+
   {"matchStrings": ["========== BOTS"
     ]
   },
