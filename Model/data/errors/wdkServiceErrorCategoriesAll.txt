@@ -15,6 +15,13 @@
     ],
    "comment": "---NPE, old system MSIE 7.0; Windows NT 5.1"
   },
+  {"matchStrings": ["Seekport Crawler"
+    ]
+  },
+  {"matchStrings": ["Web-Crawler"
+    ]
+  },
+
   {"matchStrings": ["======== CONNECTION"
     ]
   },
@@ -308,8 +315,7 @@
   },
   {"matchStrings": [
       "NullPointerException"
-    ],
-   "comment": "---AbstractTabularReporter.getHttpContentType(AbstractTabularReporter.java:87) ---- in QA sites lots at WdkModelBase.getPropertyLists at ParamFormatter.getBaseJson, opened trello for ryan"
+    ]
   }
 ]
 

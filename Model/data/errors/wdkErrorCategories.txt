@@ -3,6 +3,19 @@
     ]
   },
 
+
+  {"matchStrings": ["========= DO NOT EMAIL  IT IS US, QA"
+    ]
+  },
+  {"matchStrings": ["https://localhost:3000"
+    ]
+  },
+  {"matchStrings": ["https://q"
+    ]
+  },
+
+
+
   {"matchStrings": ["============= DO NO EMAIL, USER network?"
     ]
   },
@@ -136,8 +149,6 @@
   {"matchStrings": ["message\": \"Forbidden\""
     ]
   },
-
-
   {"matchStrings": ["name\": \"AbortError"
     ]
   },
@@ -156,20 +167,25 @@
   },
 
 
-  {"matchStrings": ["========= DO NOT EMAIL  IT IS US, QA"
-    ]
-  },
-  {"matchStrings": ["https://localhost:3000"
-    ]
-  },
-  {"matchStrings": ["https://q"
-    ]
-  },
-
 
   {"matchStrings": ["========= DO NOT EMAIL  APP in USER BROWSER?   Probably cannot do anything about these either"
     ]
   },
+  {"matchStrings": ["Cannot redefine property: googletag"
+    ],
+   "comment": "---Dec 2021"
+  },
+  {"matchStrings": ["Transaction timed out due to inactivity."
+    ],
+   "comment": "---Dec 2021"
+  },
+  {"matchStrings": ["Cannot read properties of undefined"
+    ],
+   "comment": "---Dec 2021"
+  },
+
+
+
   {"matchStrings": ["Cannot read property"
     ],
    "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
@@ -241,7 +257,7 @@
   },
   {"matchStrings": ["Unexpected token < in JSON at position 0"
     ],
-   "comment": "---Win7   Dec23-2020. Problem: failed attempt to parse response as JSON. It happens when failed to get staticcontent sections in home page."
+   "comment": "---Win7   Dec23-2020. when failed to get staticcontent sections in home page."
   },
   {"matchStrings": ["Error: Message did timeout"
     ],
@@ -303,6 +319,36 @@
     ]
   },
 
+
+
+  {"matchStrings": ["========= BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "---cross origin, step does not exist due to new guest id"
+  },
+  {"matchStrings": ["User Agent:","Baidu"
+    ]
+  },
+  {"matchStrings": ["User Agent:","bingbot"
+    ]
+  },
+  {"matchStrings": ["Applebot"
+    ]
+  },
+  {"matchStrings": ["applebot"
+    ]
+  },
+  {"matchStrings": ["Jooblebot"
+    ]
+  },
+  {"matchStrings": ["BingPreview"
+    ]
+  },
+
+
+
   {"matchStrings": ["========= DO NOT EMAIL  OUR APP      CHECK UX on USERS (error handling)"
     ]
   },
@@ -324,23 +370,9 @@
     ],
    "comment": "---BLAST"
   },
-
-
-
-  {"matchStrings": ["========= BOTS"
+  {"matchStrings": ["baskets","You must log in to use this"
     ]
   },
-  {"matchStrings": ["Googlebot"
-    ],
-   "comment": "---cross origin, step does not exist due to new guest id"
-  },
-  {"matchStrings": ["User Agent:","Baidu"
-    ]
-  },
-  {"matchStrings": ["User Agent:","bingbot"
-    ]
-  },
-
 
 
 
@@ -363,6 +395,14 @@
     ],
    "comment": "---NPE, old system MSIE 7.0; Windows NT 5.1"
   },
+  {"matchStrings": ["Seekport Crawler"
+    ]
+  },
+  {"matchStrings": ["Web-Crawler"
+    ]
+  },
+
+
 
 
   {"matchStrings": ["======== USER ISSUE"
@@ -403,16 +443,6 @@
   {"matchStrings": ["WdkModelException","Step field","cannot be longer"
     ],
    "comment": "---Step name 200 char we need to convert t a 400 error, opened trello"
-  },
-
-
-
-
-
-
-  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
-    ]
   }
-
 
 ]
