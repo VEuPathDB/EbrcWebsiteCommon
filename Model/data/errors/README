@@ -1,7 +1,7 @@
 
 INTRODUCTION
 
-These are the files in this directory:
+These are the files in this directory /EbrcWebsiteCommon/Model/data/errors/
 
 wdkErrorFilters.txt
 - Filters for ErrorsTag. No email report will be sent for errors matching these filters, possibly we do not log either?
