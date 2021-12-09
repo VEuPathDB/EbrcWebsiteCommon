@@ -237,6 +237,10 @@
   {"matchStrings": ["is null\""
     ]
   },
+  {"matchStrings": ["of null"
+    ],
+   "comment": "---Dec 2021 gene page"
+  },
   {"matchStrings": ["null is not an object (evaluating"
     ]
   },
