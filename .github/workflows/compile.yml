@@ -1,0 +1,21 @@
+# This is a dummy workflow do that we can enforce branches are up to date before allowing merges.
+
+name: Compile check
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events.
+on:
+  pull_request:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: |
+          yarn install
+          yarn tsc
+        working-directory: ./Client
