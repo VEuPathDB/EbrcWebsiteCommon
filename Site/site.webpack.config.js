@@ -11,10 +11,10 @@ module.exports = function configure(additionalConfig) {
     context: process.cwd(),
     resolve: {
       alias,
-      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
+      modules: [ 'node_modules', ]
     },
     resolveLoader: {
-      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
+      modules: [ 'node_modules', ]
     },
 
     module: {
