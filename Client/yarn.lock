@@ -1287,6 +1287,18 @@
     react-modal "^3.14.3"
     react-table "^7.7.0"
 
+"@veupathdb/core-components@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@veupathdb/core-components/-/core-components-0.4.6.tgz#3ca0c4b650b6549ba9bb6218d9d108000d92d80b"
+  integrity sha512-1m/hp6lX3cJ5KLVZ45xjAAwi4fFDRdylycWqMiDkQnuGClqoD3YoGP/IgZXuWUAN5kyt+oelu1bmgqIB0utQjg==
+  dependencies:
+    "@material-ui/core" "^4.12.3"
+    "@material-ui/icons" "^4.11.2"
+    lodash "^4.17.21"
+    react-cool-dimensions "^2.0.7"
+    react-modal "^3.14.3"
+    react-table "^7.7.0"
+
 "@veupathdb/eda@^1.1.46":
   version "1.1.46"
   resolved "https://registry.yarnpkg.com/@veupathdb/eda/-/eda-1.1.46.tgz#28b502a158c1b4c6e19a1e0af768d4d4feba548e"

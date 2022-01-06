@@ -8,7 +8,9 @@ import DownloadLink from './DownloadLink';
 import { isPrereleaseStudy } from '@veupathdb/study-data-access/lib/data-restriction/DataRestrictionUtils';
 import './StudyCard.scss';
 import { makeEdaRoute } from 'ebrc-client/routes';
-
+import { colors, Card, TableDownload } from '@veupathdb/core-components';
+import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
+import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton'
 
 class StudyCard extends React.Component {
   constructor (props) {
@@ -29,6 +31,7 @@ class StudyCard extends React.Component {
 
   renderLinkouts() {
     const { analyses, attemptAction, card } = this.props;
+    console.log(colors);
     if (useEda) {
       return (
         <div className="StudyCard-LinkOuts">
@@ -126,32 +129,69 @@ class StudyCard extends React.Component {
     const primaryCategory = categories[0];
     const edaRoute = makeEdaRoute(card.id) + '/~latest';
 
-    return (
-      <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
-        <div className="box StudyCard-Heading">
-          <h2 title={myStudyTitle}><Link to={useEda ? edaRoute + '/details' : route}>{safeHtml(name)}</Link></h2>
-          <div className="box StudyCard-Categories">
-            {primaryCategory && <CategoryIcon category={primaryCategory}/>}
+    if (useEda) {
+      const styleOverrides = {
+        background: 'white'
+      };
+      const onPress = {
+        target: edaRoute
+      };
+
+      return (
+        <div>
+          <UIThemeProvider
+            theme={{
+              palette: {
+                primary: { hue: colors.mutedGreen, level: 500 },
+                secondary: { hue: colors.mutedMagenta, level: 500 },
+              },
+            }}
+          ></UIThemeProvider>
+          <Card title={name} width={300} height={500} styleOverrides={styleOverrides} themeRole="primary">
+            <div className="box StudyCard-Headline">
+              {headline}
+            </div>
+            <div className="box StudyCard-Body">
+              <ul>
+                {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
+              </ul>
+            </div>
+            <div className="StudyCard-LinkTest">
+              <FloatingButton text="Explore" icon={TableDownload} onPress={onPress} />
+            </div>
+          </Card>
+        </div>
+      );
+
+    } else {
+
+      return (
+        <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
+          <div className="box StudyCard-Heading">
+            <h2 title={myStudyTitle}><Link to={useEda ? edaRoute + '/details' : route}>{safeHtml(name)}</Link></h2>
+            <div className="box StudyCard-Categories">
+              {primaryCategory && <CategoryIcon category={primaryCategory}/>}
+            </div>
+            {/*<Link to={route} target="_blank" title={myStudyTitle}>
+              <Icon fa="angle-double-right" /> 
+            </Link> */}
           </div>
-          {/*<Link to={route} target="_blank" title={myStudyTitle}>
-            <Icon fa="angle-double-right" /> 
-          </Link> */}
+          <Link to={useEda ? edaRoute + '/details' : route} className="StudyCard-DetailsLink" title={myStudyTitle}>
+            <small>Study Details <Icon fa="chevron-circle-right"/></small>
+          </Link>
+          <div className="box StudyCard-Stripe">
+            {headline}
+          </div>
+          <div className="box StudyCard-Body">
+            <ul>
+              {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
+           </ul>
+          </div>
+          {this.renderLinkouts()}
+          {this.renderFooter()}
         </div>
-        <Link to={useEda ? edaRoute + '/details' : route} className="StudyCard-DetailsLink" title={myStudyTitle}>
-          <small>Study Details <Icon fa="chevron-circle-right"/></small>
-        </Link>
-        <div className="box StudyCard-Stripe">
-          {headline}
-        </div>
-        <div className="box StudyCard-Body">
-          <ul>
-            {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
-          </ul>
-        </div>
-        {this.renderLinkouts()}
-        {this.renderFooter()}
-      </div>
-    );
+      );
+    }
   }
 }
 
