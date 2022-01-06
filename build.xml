@@ -106,7 +106,6 @@
   <target name="eupathWebComponentInstall">
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
-    <ant target="copyClientImages"/>
     <ant target="siteLog4j"/>
   </target>
 
