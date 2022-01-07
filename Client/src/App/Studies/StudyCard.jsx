@@ -8,7 +8,8 @@ import DownloadLink from './DownloadLink';
 import { isPrereleaseStudy } from '@veupathdb/study-data-access/lib/data-restriction/DataRestrictionUtils';
 import './StudyCard.scss';
 import { makeEdaRoute } from 'ebrc-client/routes';
-import { colors, Card, TableDownload } from '@veupathdb/core-components';
+import { colors, Card } from '@veupathdb/core-components';
+import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
 import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton'
 
@@ -136,31 +137,27 @@ class StudyCard extends React.Component {
       const onPress = {
         target: edaRoute
       };
+      const { analyses, attemptAction, card } = this.props;
 
       return (
-        <div>
-          <UIThemeProvider
-            theme={{
-              palette: {
-                primary: { hue: colors.mutedGreen, level: 500 },
-                secondary: { hue: colors.mutedMagenta, level: 500 },
-              },
-            }}
-          ></UIThemeProvider>
-          <Card title={name} width={300} height={500} styleOverrides={styleOverrides} themeRole="primary">
-            <div className="box StudyCard-Headline">
-              {headline}
-            </div>
-            <div className="box StudyCard-Body">
-              <ul>
-                {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
-              </ul>
-            </div>
-            <div className="StudyCard-LinkTest">
-              <FloatingButton text="Explore" icon={TableDownload} onPress={onPress} />
-            </div>
-          </Card>
-        </div>
+          <div style={{minWidth: 300, margin: 10, backgroundColor: 'white'}}>
+            <Card title={name} width={300} height={480} styleOverrides={styleOverrides} themeRole="primary">
+              <div style={{margin: 20, fontStyle: 'italic'}}>
+                {headline}
+              </div>
+              <div style={{margin: 20}}>
+                <ul>
+                  {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
+                </ul>
+              </div>
+              <div style={{position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column'}}>
+                <FloatingButton text="Explore" icon={EdaIcon} size="small"/>
+                {analyses?.some(analysis => analysis.studyId === card.id) &&
+                  <FloatingButton text="My analyses" icon={TableDownload} size="small"/>
+                }
+              </div>
+            </Card>
+          </div>
       );
 
     } else {
