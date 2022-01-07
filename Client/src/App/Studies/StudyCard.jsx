@@ -11,7 +11,9 @@ import { makeEdaRoute } from 'ebrc-client/routes';
 import { colors, Card } from '@veupathdb/core-components';
 import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
-import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton'
+import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton';
+import LocationOnIcon from '@material-ui/icons';
+import CalendarTodayIcon from '@material-ui/icons';
 
 class StudyCard extends React.Component {
   constructor (props) {
@@ -130,20 +132,23 @@ class StudyCard extends React.Component {
     const primaryCategory = categories[0];
     const edaRoute = makeEdaRoute(card.id) + '/~latest';
 
+
     if (useEda) {
-      const styleOverrides = {
-        background: 'white'
-      };
-      const onPress = {
-        target: edaRoute
+    
+      const exploreOnPress = function () {
+        location.href = edaRoute;
       };
       const { analyses, attemptAction, card } = this.props;
+      const studyYears = headline.match(/[0-9]{4}-[0-9]{4}/) ? headline.match(/[0-9]{4}-[0-9]{4}/)[0] : headline.match(/[0-9]{4}/)[0];
+      const studyLocation = headline.replace(/[0-9]{4}/g,'').replace('-','').trim().replace(/from$/,'').trim().replace(/,$/,'').trim()
 
       return (
           <div style={{minWidth: 300, margin: 10, backgroundColor: 'white'}}>
-            <Card title={name} width={300} height={480} styleOverrides={styleOverrides} themeRole="primary">
+            <Card title={safeHtml(name)} width={300} height={480} themeRole="primary">
               <div style={{margin: 20, fontStyle: 'italic'}}>
                 {headline}
+                {studyLocation}
+                {studyYears}
               </div>
               <div style={{margin: 20}}>
                 <ul>
@@ -151,9 +156,9 @@ class StudyCard extends React.Component {
                 </ul>
               </div>
               <div style={{position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column'}}>
-                <FloatingButton text="Explore" icon={EdaIcon} size="small"/>
+                <FloatingButton text="Explore" icon={EdaIcon} size="small" themeRole="primary" />
                 {analyses?.some(analysis => analysis.studyId === card.id) &&
-                  <FloatingButton text="My analyses" icon={TableDownload} size="small"/>
+                  <FloatingButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={exploreOnPress}/>
                 }
               </div>
             </Card>
