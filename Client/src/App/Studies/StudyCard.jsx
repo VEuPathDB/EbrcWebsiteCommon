@@ -12,8 +12,7 @@ import { colors, Card } from '@veupathdb/core-components';
 import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
 import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton';
-import LocationOnIcon from '@material-ui/icons';
-import CalendarTodayIcon from '@material-ui/icons';
+import { LocationOn, CalendarToday, MenuBookOutlined } from '@material-ui/icons';
 
 class StudyCard extends React.Component {
   constructor (props) {
@@ -134,32 +133,46 @@ class StudyCard extends React.Component {
 
 
     if (useEda) {
-    
+      const styleOverrides = {content: {
+        backgroundColor: 'white'
+      }};
+
       const exploreOnPress = function () {
         location.href = edaRoute;
       };
+      const detailsOnPress = function () {
+        location.href = edaRoute + '/details';
+      }
       const { analyses, attemptAction, card } = this.props;
-      const studyYears = headline.match(/[0-9]{4}-[0-9]{4}/) ? headline.match(/[0-9]{4}-[0-9]{4}/)[0] : headline.match(/[0-9]{4}/)[0];
-      const studyLocation = headline.replace(/[0-9]{4}/g,'').replace('-','').trim().replace(/from$/,'').trim().replace(/,$/,'').trim()
+
+      const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] : headline.match(/[0-9]{4}/)[0];
+      const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$/,'').replace(/,\s?$/,'').trim()
 
       return (
-          <div style={{minWidth: 300, margin: 10, backgroundColor: 'white'}}>
-            <Card title={safeHtml(name)} width={300} height={480} themeRole="primary">
-              <div style={{margin: 20, fontStyle: 'italic'}}>
-                {headline}
-                {studyLocation}
-                {studyYears}
+          <div style={{minWidth: 300, margin: 10}}>
+            <Card title={safeHtml(name)} titleSize="small" width={300} height={480} themeRole="primary" styleOverrides={styleOverrides}>
+              <div style={{marginTop: 20, color: colors.mutedTeal[600]}}>
+                <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
+                  <LocationOn fontSize="inherit" style={{marginRight: 10}} />{studyLocation}
+                </div>
+                <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
+                  <CalendarToday fontSize="inherit" style={{marginRight: 10}} />{studyYears}
+                </div>
               </div>
-              <div style={{margin: 20}}>
+              <div className="emptybox">
+                &nbsp;
+              </div>
+              <div style={{marginTop: 10}}>
                 <ul>
                   {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
                 </ul>
               </div>
               <div style={{position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column'}}>
-                <FloatingButton text="Explore" icon={EdaIcon} size="small" themeRole="primary" />
                 {analyses?.some(analysis => analysis.studyId === card.id) &&
                   <FloatingButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={exploreOnPress}/>
                 }
+                <FloatingButton text="Explore" icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
+                <FloatingButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
               </div>
             </Card>
           </div>
