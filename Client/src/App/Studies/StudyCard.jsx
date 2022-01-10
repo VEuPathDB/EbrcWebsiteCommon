@@ -8,10 +8,11 @@ import DownloadLink from './DownloadLink';
 import { isPrereleaseStudy } from '@veupathdb/study-data-access/lib/data-restriction/DataRestrictionUtils';
 import './StudyCard.scss';
 import { makeEdaRoute } from 'ebrc-client/routes';
-import { colors, Card } from '@veupathdb/core-components';
+import { colors } from '@veupathdb/core-components';
+import Card from '@veupathdb/core-components/dist/components/containers/Card';
 import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
-import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton';
+import OutlinedButton from '@veupathdb/core-components/dist/components/buttons/OutlinedButton';
 import { LocationOn, CalendarToday, MenuBookOutlined } from '@material-ui/icons';
 
 class StudyCard extends React.Component {
@@ -142,16 +143,33 @@ class StudyCard extends React.Component {
       };
       const detailsOnPress = function () {
         location.href = edaRoute + '/details';
-      }
-      const { analyses, attemptAction, card } = this.props;
+      };
+      const myAnalysesOnPress = function () {
+        return ({ "pathname": makeEdaRoute(), "search": `?s=${encodeURIComponent(card.name)}` });
+      };
+
+      const { analyses, attemptAction, card, user, permissions } = this.props;
 
       const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] : headline.match(/[0-9]{4}/)[0];
-      const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$/,'').replace(/,\s?$/,'').trim()
+      const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$/,'').replace(/,\s?$/,'').trim();
+      const disabledStyle = {opacity: 0.3,
+        pointerEvents: 'none',
+        transition: 'all 0.5s'
+      };
 
       return (
-          <div style={{minWidth: 300, margin: 10}}>
+          <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
+            <UIThemeProvider
+              theme={{
+                palette: {
+                  primary: { hue: colors.mutedCyan, level: 600 },
+                  secondary: { hue: colors.mutedRed, level: 500 },
+                },
+              }}
+              >
+            </UIThemeProvider> 
             <Card title={safeHtml(name)} titleSize="small" width={300} height={480} themeRole="primary" styleOverrides={styleOverrides}>
-              <div style={{marginTop: 20, color: colors.mutedTeal[600]}}>
+              <div style={{marginTop: 20, color: colors.mutedCyan[600]}}>
                 <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
                   <LocationOn fontSize="inherit" style={{marginRight: 10}} />{studyLocation}
                 </div>
@@ -169,10 +187,13 @@ class StudyCard extends React.Component {
               </div>
               <div style={{position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column'}}>
                 {analyses?.some(analysis => analysis.studyId === card.id) &&
-                  <FloatingButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={exploreOnPress}/>
+                  <OutlinedButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={myAnalysesOnPress}/>
                 }
-                <FloatingButton text="Explore" icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
-                <FloatingButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
+                { isPrereleaseStudy(card.access, card.id, user, permissions)
+                  ? <OutlinedButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
+                  : <OutlinedButton text={disabled ? 'Explore Unavailable' : 'Explore'} icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
+                }
+                <OutlinedButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
               </div>
             </Card>
           </div>
