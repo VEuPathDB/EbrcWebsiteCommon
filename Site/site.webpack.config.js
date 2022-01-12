@@ -26,7 +26,8 @@ module.exports = function configure(additionalConfig) {
           use: 'source-map-loader'
         },
         {
-          test: /node_modules/,
+          test: /\.(js|jsx|ts|tsx)$/,
+          include: /node_modules/,
           loader: 'ify-loader'
         }
       ]
