@@ -1,4 +1,3 @@
-var path = require('path');
 var baseConfig = require('../../install/base.webpack.config');
 
 // Create webpack alias configuration object
