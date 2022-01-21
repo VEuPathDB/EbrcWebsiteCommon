@@ -104,10 +104,8 @@
 
   <!-- Target to be used by implementing sites -->
   <target name="eupathWebComponentInstall">
-    <antcall target="buildLocalNpmPackages"/>
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
-    <ant target="copyClientImages"/>
     <ant target="siteLog4j"/>
   </target>
 
