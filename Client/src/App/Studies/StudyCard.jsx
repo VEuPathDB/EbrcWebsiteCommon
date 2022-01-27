@@ -149,8 +149,14 @@ class StudyCard extends React.Component {
       };
 
       const { analyses, attemptAction, card, user, permissions } = this.props;
+      console.log(headline);
 
-      const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] : headline.match(/[0-9]{4}/)[0];
+      const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) 
+                          ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] 
+                          : headline.match(/[0-9]{4}/) 
+                            ? headline.match(/[0-9]{4}/)[0]
+                            : '';
+
       const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$/,'').replace(/,\s?$/,'').trim();
       const disabledStyle = {opacity: 0.3,
         pointerEvents: 'none',
