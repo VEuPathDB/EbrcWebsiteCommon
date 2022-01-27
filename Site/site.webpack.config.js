@@ -1,11 +1,8 @@
-var path = require('path');
 var baseConfig = require('../../install/base.webpack.config');
 
 // Create webpack alias configuration object
 var alias = {
   site: process.cwd() + '/webapp',
-  '@veupathdb/wdk-client': path.resolve(__dirname, '../../WDKClient/Client'),
-  '@veupathdb/web-common': path.resolve(__dirname, '../../EbrcWebsiteCommon/Client'),
 };
 
 module.exports = function configure(additionalConfig) {
@@ -13,10 +10,10 @@ module.exports = function configure(additionalConfig) {
     context: process.cwd(),
     resolve: {
       alias,
-      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
+      modules: [ 'node_modules', ]
     },
     resolveLoader: {
-      modules: [ path.resolve(__dirname, '../../EbrcWebsiteCommon/Client/node_modules'), 'node_modules', ]
+      modules: [ 'node_modules', ]
     },
 
     module: {
@@ -28,7 +25,8 @@ module.exports = function configure(additionalConfig) {
           use: 'source-map-loader'
         },
         {
-          test: /node_modules/,
+          test: /\.(js|jsx|ts|tsx)$/,
+          include: /node_modules/,
           loader: 'ify-loader'
         }
       ]
