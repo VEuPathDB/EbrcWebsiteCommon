@@ -12,7 +12,7 @@ import { colors } from '@veupathdb/core-components';
 import Card from '@veupathdb/core-components/dist/components/containers/Card';
 import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
-import OutlinedButton from '@veupathdb/core-components/dist/components/buttons/OutlinedButton';
+import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton';
 import { LocationOn, CalendarToday, MenuBookOutlined } from '@material-ui/icons';
 
 class StudyCard extends React.Component {
@@ -33,96 +33,50 @@ class StudyCard extends React.Component {
   }
 
   renderLinkouts() {
-    const { analyses, attemptAction, card } = this.props;
-    console.log(colors);
-    if (useEda) {
-      return (
-        <div className="StudyCard-LinkOuts">
-         {// <DownloadLink className="box StudyCard-Download" linkText="Download" iconFirst studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
-          }
-          {analyses?.some(analysis => analysis.studyId === card.id) &&
-            <div className="box StudyCard-MyAnalyses">
-              <Link to={{ pathname: makeEdaRoute(), search: `?s=${encodeURIComponent(card.name)}` }}>
-                <i className="ebrc-icon-table"/> My analyses
-              </Link>
-            </div>
-          }
-        </div>
-      );
-    }
-    else {
-      return (
-        <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
-      );
-    }
+    const { attemptAction, card } = this.props;
+    return (
+      <DownloadLink className="box StudyCard-Download" linkText="Download Data" studyAccess={card.access} studyId={card.id} studyUrl={card.downloadUrl.url} attemptAction={attemptAction}/>
+    );
   }
 
   renderFooter() {
     const { card, user, permissions } = this.props;
-    if (useEda) {
-      const { disabled } = card;
-      const edaRoute = makeEdaRoute(card.id) + '/~latest';
-      return (
-        <Link className="StudyCard-SearchLink" to={edaRoute}>
-          <div className="box StudyCard-PreFooter">
-            { isPrereleaseStudy(card.access, card.id, user, permissions)
-              ? <span title="Please check the study page">Coming Soon!</span>
-              : <span>{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
-            }
-          </div>
-          <div className="box StudyCard-Footer">
-            { (!isPrereleaseStudy(card.access, card.id, user, permissions))
-             ? (
-               <div className="box">
-                 <i className="ebrc-icon-edaIcon"/>
-               </div>
-             ) : (
-               <div className="emptybox">
-                 &nbsp;
-               </div>
-             )}
-          </div>
-        </Link>
-      );
-    }
-    else {
-      const { searchType } = this.state;
-      const { searches, disabled } = card;
-      return (
-        <>
-          <div className="box StudyCard-PreFooter">
-            { isPrereleaseStudy(card.access, card.id, user, permissions)
-              ? <span title="Please check the study page">Coming Soon!</span>
-              : searchType
-                ? <span>by <b>{searchType}</b></span>
-                : <span title="Click on an Icon">{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
-            }
-          </div>
-          <div className="box StudyCard-Footer">
-            { (!isPrereleaseStudy(card.access, card.id, user, permissions) && searches.length)
-              ? searches.map(({ icon, displayName, path }) => {
-                  const route = `/search/${path}`;
-                  return (
-                    <div
-                      key={path}
-                      className="box"
-                      onMouseEnter={() => this.displaySearchType(displayName)}
-                      onMouseLeave={this.clearDisplaySearchType}>
-                      <Link className="StudyCard-SearchLink" to={route}>
-                        <i className={icon} />
-                      </Link>
-                    </div>
-                  );
-                })
-              : (
-                <div className="emptybox">
-                  &nbsp;
-                </div>
-              )}
-          </div>
-        </>
-      );
-    }
+    const { searchType } = this.state;
+    const { searches, disabled } = card;
+    return (
+      <>
+        <div className="box StudyCard-PreFooter">
+          { isPrereleaseStudy(card.access, card.id, user, permissions)
+            ? <span title="Please check the study page">Coming Soon!</span>
+            : searchType
+              ? <span>by <b>{searchType}</b></span>
+              : <span title="Click on an Icon">{disabled ? 'Explore Unavailable' : 'Explore The Data'}</span>
+          }
+        </div>
+        <div className="box StudyCard-Footer">
+          { (!isPrereleaseStudy(card.access, card.id, user, permissions) && searches.length)
+            ? searches.map(({ icon, displayName, path }) => {
+                const route = `/search/${path}`;
+                return (
+                  <div
+                    key={path}
+                    className="box"
+                    onMouseEnter={() => this.displaySearchType(displayName)}
+                    onMouseLeave={this.clearDisplaySearchType}>
+                    <Link className="StudyCard-SearchLink" to={route}>
+                      <i className={icon} />
+                    </Link>
+                  </div>
+                );
+              })
+            : (
+              <div className="emptybox">
+                &nbsp;
+              </div>
+            )}
+        </div>
+      </>
+    );
   }
 
   render () {
@@ -165,44 +119,36 @@ class StudyCard extends React.Component {
 
       return (
           <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
-            <UIThemeProvider
-              theme={{
-                palette: {
-                  primary: { hue: colors.mutedCyan, level: 600 },
-                  secondary: { hue: colors.mutedRed, level: 500 },
-                },
-              }}
-              >
-            </UIThemeProvider> 
-            <Card title={safeHtml(name)} titleSize="small" width={300} height={480} themeRole="primary" styleOverrides={styleOverrides}>
+            <Card title={safeHtml(name)} titleSize="small" width={300} height={450} themeRole="primary" styleOverrides={styleOverrides}>
               <div style={{marginTop: 20, color: colors.mutedCyan[600]}}>
                 <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
                   <LocationOn fontSize="inherit" style={{marginRight: 10}} />{studyLocation}
                 </div>
-                <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
+                {studyYears && (<div style={{display: 'flex', alignItems: 'center', margin: 3}}>
                   <CalendarToday fontSize="inherit" style={{marginRight: 10}} />{studyYears}
+                  </div>)
+                }
                 </div>
-              </div>
-              <div className="emptybox">
-                &nbsp;
-              </div>
-              <div style={{marginTop: 10}}>
-                <ul>
-                  {points.map((point, index) => <li key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
-                </ul>
-              </div>
-              <div style={{position: 'absolute', bottom: 20, left: 20, display: 'flex', flexDirection: 'column'}}>
-                {analyses?.some(analysis => analysis.studyId === card.id) &&
-                  <OutlinedButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={myAnalysesOnPress}/>
-                }
-                { isPrereleaseStudy(card.access, card.id, user, permissions)
-                  ? <OutlinedButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
-                  : <OutlinedButton text={disabled ? 'Explore Unavailable' : 'Explore'} icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
-                }
-                <OutlinedButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
-              </div>
-            </Card>
-          </div>
+                <div className="emptybox">
+                  &nbsp;
+                </div>
+                <div style={{marginTop: 10}}>
+                  <ul>
+                    {points.map((point, index) => <li style={{marginTop: 5}} key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
+                  </ul>
+                </div>
+                <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'column', width: '50%'}}>
+                  { isPrereleaseStudy(card.access, card.id, user, permissions)
+                    ? <FloatingButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
+                    : <FloatingButton text={disabled ? 'Explore Unavailable' : 'Explore'} icon={EdaIcon} size="small" themeRole="secondary" onPress={exploreOnPress}/>
+                  }
+                  {analyses?.some(analysis => analysis.studyId === card.id) &&
+                    <FloatingButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={myAnalysesOnPress}/>
+                  }
+                  <FloatingButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
+                </div>
+            </Card>  
+        </div>
       );
 
     } else {
@@ -210,7 +156,7 @@ class StudyCard extends React.Component {
       return (
         <div className={'Card StudyCard ' + (disabled ? 'disabled' : '') + ' StudyCard__' + id}>
           <div className="box StudyCard-Heading">
-            <h2 title={myStudyTitle}><Link to={useEda ? edaRoute + '/details' : route}>{safeHtml(name)}</Link></h2>
+            <h2 title={myStudyTitle}><Link to={route}>{safeHtml(name)}</Link></h2>
             <div className="box StudyCard-Categories">
               {primaryCategory && <CategoryIcon category={primaryCategory}/>}
             </div>
@@ -218,7 +164,7 @@ class StudyCard extends React.Component {
               <Icon fa="angle-double-right" /> 
             </Link> */}
           </div>
-          <Link to={useEda ? edaRoute + '/details' : route} className="StudyCard-DetailsLink" title={myStudyTitle}>
+          <Link to={route} className="StudyCard-DetailsLink" title={myStudyTitle}>
             <small>Study Details <Icon fa="chevron-circle-right"/></small>
           </Link>
           <div className="box StudyCard-Stripe">
