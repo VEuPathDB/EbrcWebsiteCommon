@@ -12,7 +12,8 @@ import { colors } from '@veupathdb/core-components';
 import Card from '@veupathdb/core-components/dist/components/containers/Card';
 import { TableDownload, EdaIcon } from '@veupathdb/core-components/dist/components/icons';
 import UIThemeProvider from '@veupathdb/core-components/dist/components/theming/UIThemeProvider';
-import FloatingButton from '@veupathdb/core-components/dist/components/buttons/FloatingButton';
+import FilledButton from '@veupathdb/core-components/dist/components/buttons/FilledButton';
+import OutlinedButton from '@veupathdb/core-components/dist/components/buttons/OutlinedButton';
 import { LocationOn, CalendarToday, MenuBookOutlined } from '@material-ui/icons';
 
 class StudyCard extends React.Component {
@@ -89,8 +90,11 @@ class StudyCard extends React.Component {
 
     if (useEda) {
       const styleOverrides = {content: {
-        backgroundColor: 'white'
-      }};
+          backgroundColor: 'white'
+        },
+        border: {
+          color: "#c6dee2"
+        }};
 
       const exploreOnPress = function () {
         location.href = edaRoute;
@@ -103,7 +107,6 @@ class StudyCard extends React.Component {
       };
 
       const { analyses, attemptAction, card, user, permissions } = this.props;
-      console.log(headline);
 
       const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) 
                           ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] 
@@ -120,7 +123,7 @@ class StudyCard extends React.Component {
       return (
           <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
             <Card title={safeHtml(name)} titleSize="small" width={300} height={450} themeRole="primary" styleOverrides={styleOverrides}>
-              <div style={{marginTop: 20, color: colors.mutedCyan[600]}}>
+              <div style={{marginTop: 20, color: colors.gray[500]}}>
                 <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
                   <LocationOn fontSize="inherit" style={{marginRight: 10}} />{studyLocation}
                 </div>
@@ -132,20 +135,19 @@ class StudyCard extends React.Component {
                 <div className="emptybox">
                   &nbsp;
                 </div>
-                <div style={{marginTop: 10}}>
+                <div style={{marginTop: 10, color: colors.gray[800]}}>
                   <ul>
                     {points.map((point, index) => <li style={{marginTop: 5}} key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
                   </ul>
                 </div>
-                <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'column', width: '50%'}}>
+                <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'row', gap: 5, width: 240}}>
                   { isPrereleaseStudy(card.access, card.id, user, permissions)
-                    ? <FloatingButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
-                    : <FloatingButton text={disabled ? 'Explore Unavailable' : 'Explore'} icon={EdaIcon} size="small" themeRole="secondary" onPress={exploreOnPress}/>
+                    ? <FilledButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
+                    : <FilledButton text={disabled ? 'Explore Unavailable' : 'Explore'} textTransform="none" icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
                   }
                   {analyses?.some(analysis => analysis.studyId === card.id) &&
-                    <FloatingButton text="My analyses" icon={TableDownload} size="small" themeRole="primary" onPress={myAnalysesOnPress}/>
+                    <OutlinedButton text="My analyses" textTransform="none" icon={TableDownload} size="small" themeRole="primary" onPress={myAnalysesOnPress}/>
                   }
-                  <FloatingButton text="Study Details" icon={MenuBookOutlined} size="small" themeRole="primary" onPress={detailsOnPress}/>
                 </div>
             </Card>  
         </div>
