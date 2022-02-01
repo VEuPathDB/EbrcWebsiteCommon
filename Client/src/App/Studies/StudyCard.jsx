@@ -123,12 +123,14 @@ class StudyCard extends React.Component {
       return (
           <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
             <Card title={safeHtml(name)} titleSize="small" width={300} height={450} themeRole="primary" styleOverrides={styleOverrides}>
-              <div style={{marginTop: 20, color: colors.gray[500]}}>
+              <div style={{marginTop: 20, color: colors.mutedCyan[700]}}>
                 <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
-                  <LocationOn fontSize="inherit" style={{marginRight: 10}} />{studyLocation}
+                  <span style={{ fontWeight: 600}}>Location:</span>
+                  &nbsp;{studyLocation}
                 </div>
                 {studyYears && (<div style={{display: 'flex', alignItems: 'center', margin: 3}}>
-                  <CalendarToday fontSize="inherit" style={{marginRight: 10}} />{studyYears}
+                  <span style={{ fontWeight: 600}}>Dates:</span>
+                  &nbsp;{studyYears}
                   </div>)
                 }
                 </div>
@@ -140,7 +142,7 @@ class StudyCard extends React.Component {
                     {points.map((point, index) => <li style={{marginTop: 5}} key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
                   </ul>
                 </div>
-                <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'row', gap: 5, width: 240}}>
+                <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'row', gap: 13, width: 240}}>
                   { isPrereleaseStudy(card.access, card.id, user, permissions)
                     ? <FilledButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
                     : <FilledButton text={disabled ? 'Explore Unavailable' : 'Explore'} textTransform="none" icon={EdaIcon} size="small" themeRole="primary" onPress={exploreOnPress}/>
