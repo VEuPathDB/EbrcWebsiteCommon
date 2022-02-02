@@ -114,7 +114,7 @@ class StudyCard extends React.Component {
                             ? headline.match(/[0-9]{4}/)[0]
                             : '';
 
-      const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$/,'').replace(/,\s?$/,'').trim();
+      const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$|\s?in\s?$/,'').replace(/,\s?$/,'').trim();
       const disabledStyle = {opacity: 0.3,
         pointerEvents: 'none',
         transition: 'all 0.5s'
@@ -123,7 +123,8 @@ class StudyCard extends React.Component {
       return (
           <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
             <Card title={safeHtml(name)} titleSize="small" width={300} height={450} themeRole="primary" styleOverrides={styleOverrides}>
-              <div style={{marginTop: 20, color: colors.mutedCyan[700]}}>
+              <div style={{fontSize: "0.8rem"}}>
+               <div style={{marginTop: 20, color: colors.gray[800]}}>
                 <div style={{display: 'flex', alignItems: 'center', margin: 3}}>
                   <span style={{ fontWeight: 600}}>Location:</span>
                   &nbsp;{studyLocation}
@@ -137,11 +138,12 @@ class StudyCard extends React.Component {
                 <div className="emptybox">
                   &nbsp;
                 </div>
-                <div style={{marginTop: 10, color: colors.gray[800]}}>
+                <div style={{marginTop: 10, color: colors.gray[700]}}>
                   <ul>
                     {points.map((point, index) => <li style={{marginTop: 5}} key={index} dangerouslySetInnerHTML={{ __html: point }} />)}
                   </ul>
                 </div>
+               </div>
                 <div style={{position: 'absolute', bottom: 30, display: 'flex', flexFlow: 'row', gap: 13, width: 240}}>
                   { isPrereleaseStudy(card.access, card.id, user, permissions)
                     ? <FilledButton text="Coming soon!" icon={EdaIcon} size="small" themeRole="primary" />
