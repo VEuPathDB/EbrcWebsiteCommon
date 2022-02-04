@@ -1172,6 +1172,13 @@
     "@types/react-dom" "*"
     "@types/react-transition-group" "*"
 
+"@types/react-table@^7.7.9":
+  version "7.7.9"
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-7.7.9.tgz#ea82875775fc6ee71a28408dcc039396ae067c92"
+  integrity sha512-ejP/J20Zlj9VmuLh73YgYkW2xOSFTW39G43rPH93M4mYWdMmqv66lCCr+axZpkdtlNLGjvMG2CwzT4S6abaeGQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-transition-group@*", "@types/react-transition-group@^4.2.0", "@types/react-transition-group@^4.4.1":
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/@types/react-transition-group/-/react-transition-group-4.4.4.tgz#acd4cceaa2be6b757db61ed7b432e103242d163e"
@@ -1331,6 +1338,18 @@
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@veupathdb/core-components/-/core-components-0.8.1.tgz#5ac32c9ab097024ee4dc25a08e4dca8d5771d63d"
   integrity sha512-1FRse8MDZkODFYqvY1HjWhF0NlNedHdgtVpl+MiAHKov6Dgm/UjWK4nMjWvfbo/fJQdINMXDmO9nlbSkpf7dIA==
+  dependencies:
+    "@material-ui/core" "^4.12.3"
+    "@material-ui/icons" "^4.11.2"
+    lodash "^4.17.21"
+    react-cool-dimensions "^2.0.7"
+    react-modal "^3.14.3"
+    react-table "^7.7.0"
+
+"@veupathdb/core-components@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@veupathdb/core-components/-/core-components-0.9.1.tgz#2cf12b9b5e30da579195110523b4466a4d5aafdf"
+  integrity sha512-AIc3q9vPIDI21rR4mNs2l11kmvFKe/3M3lexJZO+wR+6auhCDphRrPDPqpPScNqLwFL04uBZ6fDDcFIh8IPlVg==
   dependencies:
     "@material-ui/core" "^4.12.3"
     "@material-ui/icons" "^4.11.2"
