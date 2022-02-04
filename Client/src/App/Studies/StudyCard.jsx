@@ -85,24 +85,25 @@ class StudyCard extends React.Component {
     const primaryCategory = categories[0];
     const edaRoute = makeEdaRoute(card.id) + '/new';
 
-
     if (useEda) {
+
+      // Style overrides for Card
       const styleOverrides = {content: {
           backgroundColor: 'white'
         },
         border: {
           color: "#c6dee2"
         }};
-
-      const exploreOnPress = function () {
-        location.href = edaRoute;
+        
+      const disabledStyle = {opacity: 0.3,
+        pointerEvents: 'none',
+        transition: 'all 0.5s'
       };
-      const myAnalysesOnPress = function () {
-        return ({ "pathname": makeEdaRoute(), "search": `?s=${encodeURIComponent(card.name)}` });
-      };
-
+      
       const { analyses, attemptAction, card, user, permissions } = this.props;
 
+      // Break headline into study years and location. This is a temporary solution - will be replaced by the presenter
+      // file reorganization in the spring
       const studyYears = headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/) 
                           ? headline.match(/[0-9]{4}-?,?\s?[0-9]{4}/)[0] 
                           : headline.match(/[0-9]{4}/) 
@@ -110,10 +111,6 @@ class StudyCard extends React.Component {
                             : '';
 
       const studyLocation = headline.replace(/[0-9]{4}-?,?\s?/g,'').replace(/\s?from\s?$|\s?in\s?$/,'').replace(/,\s?$/,'').trim();
-      const disabledStyle = {opacity: 0.3,
-        pointerEvents: 'none',
-        transition: 'all 0.5s'
-      };
 
       return (
           <div style={disabled ? {minWidth: 300, margin: 10, ...disabledStyle} : {minWidth: 300, margin: 10}}>
