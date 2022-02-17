@@ -106,7 +106,6 @@
   <target name="eupathWebComponentInstall">
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
-    <ant target="copyClientImages"/>
     <ant target="siteLog4j"/>
   </target>
 
@@ -125,7 +124,7 @@
 
   <target name="copyClientImages">
     <copy todir="${webappTargetDir}/images">
-      <fileset dir="${projectsDir}/${project}/${component}/node_modules/@veupathdb/web-common/images"/>
+      <fileset dir="${projectsDir}/EbrcWebsiteCommon/Client/images"/>
     </copy>
   </target>
 
