@@ -23,7 +23,7 @@ foreach my $campus (@campusList) {
     if ($type eq 'gbrowse') {
       print "$site /var/www/Common/tmp/gbrowseLogs/$site/slowQueries.log /var/log/httpd/$site/access_log\n";
     } else {
-      print "$site /usr/local/tomcat_instances/$component/logs/*.b$build/slowQueries.log4j* /var/log/httpd/$site/access_log\n";
+      print "$site /usr/local/tomcat_instances/$component/logs/*.b$build/queries-slow.log* /var/log/httpd/$site/access_log\n";
     }
 
   }

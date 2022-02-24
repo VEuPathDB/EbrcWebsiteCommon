@@ -106,6 +106,9 @@
   <target name="eupathWebComponentInstall">
     <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
+    <antcall target="copyClientImages">
+      <param name="yarnCwd" value="${projectsDir}/${project}/${component}"/>
+    </antcall>
     <ant target="siteLog4j"/>
   </target>
 
@@ -122,9 +125,9 @@
     </exec>
   </target>
 
-  <target name="copyClientImages">
+  <target name="copyClientImages" if="isYarnComponent" depends="checkIfYarnComponent">
     <copy todir="${webappTargetDir}/images">
-      <fileset dir="${projectsDir}/EbrcWebsiteCommon/Client/images"/>
+      <fileset dir="${yarnCwd}/node_modules/@veupathdb/web-common/images"/>
     </copy>
   </target>
 
