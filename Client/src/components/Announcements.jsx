@@ -56,8 +56,7 @@ const siteAnnouncements = [
     if ( (props.projectId == 'ClinEpiDB' || props.projectId == 'AllClinEpiDB') && (props.location.pathname === '/') ) {
         return (
           <div>
-           We are excited to announce the beta release of our new and improved <span style={{fontWeight: 'bold', fontStyle: 'italic'}}>data exploration platform</span>
-             &nbsp;at <a target="_blank" href="https://beta.clinepidb.org">beta.clinepidb.org!</a>.
+            The original version of ClinEpiDB. Access our new and improved data exploration platform at <a target="_blank" href="https://clinepidb.org">clinepidb.org</a>!
           </div>
         );
       }
