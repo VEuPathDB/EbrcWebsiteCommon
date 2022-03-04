@@ -22,7 +22,6 @@ import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
-import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.answer.stream.SingleAttributeRecordStream;
 import org.gusdb.wdk.model.question.Question;
 import org.gusdb.wdk.model.record.PrimaryKeyValue;
@@ -60,10 +59,6 @@ public class BlastViewReporter extends DefaultJsonReporter {
   public static final String BLAST_META = "blastMeta";
 
   public static final String SCORE_ATTRIBUTE_NAME = "score";
-
-  public BlastViewReporter(AnswerValue answerValue) {
-    super(answerValue);
-  }
 
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
