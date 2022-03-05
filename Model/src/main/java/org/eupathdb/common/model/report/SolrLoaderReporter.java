@@ -10,7 +10,6 @@ import java.util.Set;
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.answer.AnswerValue;
 import org.gusdb.wdk.model.answer.stream.RecordStream;
 import org.gusdb.wdk.model.answer.stream.RecordStreamFactory;
 import org.gusdb.wdk.model.record.RecordInstance;
@@ -34,10 +33,6 @@ import org.json.JSONObject;
  * @author rdoherty
  */
 public class SolrLoaderReporter extends AnswerDetailsReporter {
-
-  public SolrLoaderReporter(AnswerValue answerValue) {
-    super(answerValue);
-  }
 
   @Override
   protected void write(OutputStream out) throws WdkModelException {
