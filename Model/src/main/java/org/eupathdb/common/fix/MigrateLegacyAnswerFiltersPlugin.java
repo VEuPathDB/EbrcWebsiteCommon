@@ -18,13 +18,13 @@ import org.gusdb.fgputil.functional.Result;
 import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.answer.spec.ParamsAndFiltersDbColumnFormat;
+import org.gusdb.wdk.model.columntool.byvalue.filter.ByValueConfigStyle;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.TableRowUpdaterPlugin;
 import org.gusdb.wdk.model.fix.table.TableRowUpdater;
 import org.gusdb.wdk.model.fix.table.steps.StepData;
 import org.gusdb.wdk.model.fix.table.steps.StepDataFactory;
 import org.gusdb.wdk.model.fix.table.steps.StepDataWriter;
-import org.gusdb.wdk.model.toolbundle.filter.ColumnFilterConfigStyle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -42,7 +42,7 @@ public class MigrateLegacyAnswerFiltersPlugin implements TableRowUpdaterPlugin<S
     COL_ORGANISM      = "organism",
     COL_SEQUENCE      = "sequence_type",
     KEY_COL_FILTER    = ParamsAndFiltersDbColumnFormat.KEY_COLUMN_FILTERS,
-    KEY_VALUES_CONFIG = ColumnFilterConfigStyle.VALUES.getRequiredPropertyName(),
+    KEY_VALUES_CONFIG = ByValueConfigStyle.VALUES.getRequiredPropertyName(),
     DEFAULT_TOOL      = "byValue", //Should match the default column tool bundle name
     INSTANCES_SUFFIX   = "_instances",
     GENES_SUFFIX      = "_genes";
