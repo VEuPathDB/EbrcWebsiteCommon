@@ -9,10 +9,9 @@ my $gusHome = $ENV{GUS_HOME};
 my ($projectName, $webapp) = $baseGus =~ /\/(\w+)\/([\w\.-]+)\/?$/;
 my $tomcatName = $projectName;
 
-##deal with change Mark made so that Gates and ICEMR sites are run out of the ClinEpiDB tomcat
-##requires developer to set a PROJECT_NAME environment variable appropriately ... best in the etc/setenv file that is sourced
-
-$projectName = ($projectName eq 'ClinEpiDB' && $ENV{PROJECT_NAME}) ? $ENV{PROJECT_NAME} : $projectName;
+# allow override of the project name (e.g. PlasmoDB, VectorBase, EuPathDB) that is otherwise
+# derived from BASE_GUS
+$projectName = $ENV{PROJECT_NAME} // $projectName;
 
 unless($baseGus && $projectHome && $gusHome) {
   die "WHOOPS!  Did you forgot to source your setenv file?";
