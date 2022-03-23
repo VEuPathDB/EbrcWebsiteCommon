@@ -71,7 +71,7 @@ public class FillDatasetValueOrderColumn {
             ps.addBatch();
           }
           else {
-            LOG.info("Will set order of " + rs.getLong(2) + " to " + rs.getLong(1));
+            //LOG.info("Will set order of " + rs.getLong(2) + " to " + rs.getLong(1));
           }
           batchCount++;
           if (batchCount >= BATCH_SIZE) {
