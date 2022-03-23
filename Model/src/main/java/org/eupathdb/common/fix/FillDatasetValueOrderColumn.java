@@ -98,8 +98,13 @@ public class FillDatasetValueOrderColumn {
   private static void logProgress(Timer t, long totalRecords, long expectedRowCount) {
     long elapsed = t.getElapsed();
     long pctComplete = totalRecords * 100 / expectedRowCount;
-    long expectedRemaining = (elapsed * 100 / pctComplete) - elapsed;
+    long expectedRemaining = pctComplete == 0 ? 0 : (elapsed * 100 / pctComplete) - elapsed;
     Date eta = new Date(System.currentTimeMillis() + expectedRemaining);
-    LOG.info("Num Updated: " + totalRecords + ", " + pctComplete + "% complete, elapsed: " + Timer.getDurationString(elapsed) + ", ETA: " + eta);
+    LOG.info(
+        "Num Updated: " + totalRecords + ", " +
+        pctComplete + "% complete, " +
+        "elapsed: " + Timer.getDurationString(elapsed) + ", " +
+        "ETA: " + eta
+    );
   }
 }
