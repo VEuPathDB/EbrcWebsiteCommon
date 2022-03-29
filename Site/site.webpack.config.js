@@ -10,7 +10,6 @@ module.exports = function configure(additionalConfig) {
     context: process.cwd(),
     resolve: {
       alias,
-      modules: [ 'node_modules', ]
     },
     resolveLoader: {
       modules: [ 'node_modules', ]
