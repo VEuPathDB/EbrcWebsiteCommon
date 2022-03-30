@@ -18,6 +18,7 @@ public class FillDatasetValueOrderColumn {
   private static final Logger LOG = Logger.getLogger(FillDatasetValueOrderColumn.class);
 
   private static final int BATCH_SIZE = 10000;
+  private static final int COMMIT_SIZE = 100000;
 
   public static void main(String[] args) throws Exception {
 
@@ -60,9 +61,11 @@ public class FillDatasetValueOrderColumn {
           .executeQuery(new SingleLongResultSetHandler()).orElseThrow();
 
       // read values from temp table and insert
+      conn.setAutoCommit(false);
       new SQLRunner(conn, selectSql).executeQuery(rs -> {
         Timer t = new Timer();
         int batchCount = 0;
+        int commitCount = 0;
         long totalRecords = 0;
         while (rs.next()) {
           if (write) {
@@ -74,9 +77,15 @@ public class FillDatasetValueOrderColumn {
             //LOG.info("Will set order of " + rs.getLong(2) + " to " + rs.getLong(1));
           }
           batchCount++;
+          commitCount++;
           if (batchCount >= BATCH_SIZE) {
             if (write) {
               ps.executeBatch();
+              if (commitCount >= COMMIT_SIZE) {
+                LOG.info("Committing last " + commitCount + " updates.");
+                conn.commit();
+                commitCount = 0;
+              }
             }
             totalRecords += batchCount;
             logProgress(t, totalRecords, expectedRowCount);
@@ -86,6 +95,8 @@ public class FillDatasetValueOrderColumn {
         if (batchCount > 0) {
           if (write) {
             ps.executeBatch();
+            LOG.info("Committing final " + commitCount + " updates.");
+            conn.commit();
           }
           totalRecords += batchCount;
           logProgress(t, totalRecords, expectedRowCount);
