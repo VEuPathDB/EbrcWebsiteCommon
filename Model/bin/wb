@@ -12,7 +12,7 @@ my $tomcatName = $projectName;
 ##deal with change Mark made so that Gates and ICEMR sites are run out of the ClinEpiDB tomcat
 ##requires developer to set a PROJECT_NAME environment variable appropriately ... best in the etc/setenv file that is sourced
 
-$projectName = ($projectName eq 'ClinEpiDB' && $ENV{PROJECT_NAME}) ? $ENV{PROJECT_NAME} : $projectName;
+$projectName = ($ENV{PROJECT_NAME}) ? $ENV{PROJECT_NAME} : $projectName;
 
 unless($baseGus && $projectHome && $gusHome) {
   die "WHOOPS!  Did you forgot to source your setenv file?";
