@@ -29,6 +29,9 @@
         useEda: "true" === "{{ eda.enabled|default('false')}}",
         edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|default('') }}",
         edaServiceUrl: "{{ eda.service_base_url|default('') }}",
+        {% if eda.single_app_mode is defined %}
+        edaSingleAppMode: "{{ eda.single_app_mode }}",
+        {% endif -%}
         {% endblock %}
       };
     </script>
