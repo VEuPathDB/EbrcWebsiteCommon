@@ -12,7 +12,6 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
-                                                        EbrcWebsiteCommon-MavenInstallation,
                                                         EbrcWebsiteCommon/Site-Installation,
                                                         EbrcWebsiteCommon/Model-Installation,
                                                         EbrcWebsiteCommon/View-Installation,
@@ -26,12 +25,6 @@
 
   </target>
 
-  <target name="EbrcWebsiteCommon-MavenInstallation">
-    <ant target="mavenBuildProject">
-      <property name="project" value="EbrcWebsiteCommon" />
-    </ant>
-    <property name="alreadyBuilt" value="true" />
-  </target>
 
   <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
 
@@ -172,19 +165,6 @@
       <arg line="-o HTML:Smarty:PHP" />
       <arg value="-q" />
     </exec>
-  </target>
-
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  Distributable  ooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="EbrcWebsiteCommon-Distributable" depends="ProjectTree">
-
-    <copy todir="${targetDir}">
-      <fileset dir="${projectsDir}">
-        <exclude name="**/.svn/*" />
-      </fileset>
-    </copy>
   </target>
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
