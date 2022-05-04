@@ -79,7 +79,7 @@ public class BrcRequest {
   public JSONObject getDatasetJson() {
     DatasetSourceType sourceType = DatasetSourceType.ID_LIST;
     return new JSONObject()
-        .put(JsonKeys.SOURCE_TYPE, sourceType.getJsonKey())
+        .put(JsonKeys.SOURCE_TYPE, sourceType.getTypeIndicator())
         .put(JsonKeys.SOURCE_CONTENT, new JSONObject().put(sourceType.getConfigJsonKey(), ids));
   }
 
