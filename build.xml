@@ -102,7 +102,6 @@
     <antcall target="copyClientImages">
       <param name="yarnCwd" value="${projectsDir}/${project}/${component}"/>
     </antcall>
-    <ant target="siteLog4j"/>
   </target>
 
   <target name="buildLocalNpmPackages">
@@ -122,30 +121,6 @@
     <copy todir="${webappTargetDir}/images">
       <fileset dir="${yarnCwd}/node_modules/@veupathdb/web-common/images"/>
     </copy>
-  </target>
-
-  <target name="siteLog4j">
-    <available file="${targetDir}/config/log4j2.xml.custom-web"
-               property="custom.weblog4j.present" />
-    <antcall target="installCustomWebLog4j" />
-    <available file="${webappTargetDir}/WEB-INF/classes/log4j2.json"
-               property="weblog4j.present" />
-    <antcall target="setLog4j" />
-  </target>
-
-  <target name="installCustomWebLog4j" if="custom.weblog4j.present">
-    <echo message="Installing custom log4j2.xml from" />
-    <echo message="${targetDir}/config/log4j2.xml.custom-web" />
-    <copy overwrite="true"
-          file="${targetDir}/config/log4j2.xml.custom-web"
-          tofile="${webappTargetDir}/WEB-INF/classes/log4j2.xml" />
-  </target>
-
-  <target name="setLog4j" if="weblog4j.present">
-    <dirname property="webappDir" file="${webappTargetDir}" />
-    <basename property="webapp" file="${webappDir}" />
-    <replace file="${webappTargetDir}/WEB-INF/classes/log4j2.json"
-             token="@WEBAPP@" value="${webapp}" />
   </target>
 
   <target name="dashboardDoc" if="dashboard.present">

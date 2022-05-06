@@ -4,7 +4,7 @@
     "properties": {
       "property": [{
         "name": "logDir",
-        "value": "${sys:catalina.base}/logs/@WEBAPP@"
+        "value": "${sys:catalina.base}/logs/{{ hostname }}"
       },{
         "name": "standardLogPattern",
         "value": "[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9cmdc{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"
