@@ -175,6 +175,10 @@ eda:
   example_analyses_author:
   service_base_url: "/eda"
 
+user_datasets_workspace:
+  enabled: "false"
+  import_url: "/dataset-import"
+
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
 contextxml_model: "{{ project }}"

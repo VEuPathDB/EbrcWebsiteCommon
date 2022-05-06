@@ -32,6 +32,8 @@
         {% if eda.single_app_mode is defined %}
         edaSingleAppMode: "{{ eda.single_app_mode }}",
         {% endif -%}
+        useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
+        datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}"
         {% endblock %}
       };
     </script>
