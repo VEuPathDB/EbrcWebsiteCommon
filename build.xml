@@ -1,4 +1,4 @@
-<project name="EbrcWebsiteCommon" default="Installation" basedir=".">
+<project name="EbrcWebsiteCommon" basedir=".">
 
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Dependencies  oooooooooooooooooooooooooo -->
@@ -6,28 +6,19 @@
 
   <import file="${projectsDir}/WDK/build.xml" />
 
-
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooo  Installation  oooooooooooooooooooooooooo -->
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-Installation" depends="WDK-Installation,
-                                                        EbrcWebsiteCommon/Site-Installation,
-                                                        EbrcWebsiteCommon/Model-Installation,
-                                                        EbrcWebsiteCommon/View-Installation,
-                                                        EbrcWebsiteCommon/Watar-Installation">
+                                                         EbrcWebsiteCommon/Site-Installation,
+                                                         EbrcWebsiteCommon/Model-Installation,
+                                                         EbrcWebsiteCommon/View-Installation,
+                                                         EbrcWebsiteCommon/Watar-Installation">
     <ant target="defaultProjectInstall">
       <property name="project" value="EbrcWebsiteCommon" />
     </ant>
-
-    <!-- remove conflicting jar file -->
-    <delete file="${targetDir}/lib/java/servlet-api-2.4.jar" />
-
   </target>
-
-
-  <!-- ooooooooooooooooo  Installation Postprocess  ooooooooooooooooooooo -->
-
 
   <!-- ooooooooooooooooooooooo  Install Components  ooooooooooooooooooooooo -->
 
@@ -64,9 +55,8 @@
   <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
 
   <target name="EbrcWebsiteCommon-WebInstallation" depends="WDK-WebInstallation,
-                                                           EbrcWebsiteCommon-Installation,
-                                                           EbrcWebsiteCommon/Site-WebInstallation">
-  </target>
+                                                            EbrcWebsiteCommon-Installation,
+                                                            EbrcWebsiteCommon/Site-WebInstallation"/>
 
   <target name="EbrcWebsiteCommon/Site-WebInstallation">
 
@@ -89,11 +79,6 @@
     <replace file="${cgibinTargetDir}/dataPlotter.pl"
              token="@rProgram@"
              value="${rProgram}" />
-    <!-- Not sure what this will be until deploy time
-    <replace file="${cgibinTargetDir}/dataPlotter.pl"
-             token="@cgilibTargetDir@"
-             value="${cgilibTargetDir}" />
-    -->
 
   </target>
 
@@ -142,14 +127,6 @@
       <arg line="-o HTML:Smarty:PHP" />
       <arg value="-q" />
     </exec>
-  </target>
-
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooo  ProjectTree  ooooooooooooooooooooooooooo -->
-  <!-- oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo -->
-
-  <target name="ProjectTree" if="${checkout}">
-    <ant target="projectCheckOut" />
   </target>
 
 </project>
