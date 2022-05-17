@@ -33,7 +33,7 @@
         edaSingleAppMode: "{{ eda.single_app_mode }}",
         {% endif -%}
         useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
-        datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}"
+        datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
         showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
         {% endblock %}
       };
