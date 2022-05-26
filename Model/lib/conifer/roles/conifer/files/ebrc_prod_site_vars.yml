@@ -3,7 +3,6 @@ env: production
 yarn_cache_folder: "{{ '{}/../project_home/.cache/yarn'.format(gus_home) | realpath }}"
 
 _hostname_project_map:
-  feature.clinepidb.org: AllClinEpiDB
   feature.eupathdb.org: UniDB
   feature.veupathdb.org: UniDB
   b2.veupathdb.org: UniDB
