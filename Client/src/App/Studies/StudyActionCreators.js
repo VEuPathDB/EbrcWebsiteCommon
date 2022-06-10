@@ -4,6 +4,7 @@ import { showUnreleasedData } from 'ebrc-client/config';
 
 import { getSearchableString } from '@veupathdb/wdk-client/lib/Views/Records/RecordUtils'
 import { isPrereleaseStudyTemp } from '@veupathdb/study-data-access/lib/data-restriction/DataRestrictionUtils';
+import { filter } from '@veupathdb/wdk-client/lib/Utils/IterableUtils';
 
 export const STUDIES_REQUESTED = 'studies/studies-requested';
 export const STUDIES_RECEIVED = 'studies/studies-received';
@@ -89,6 +90,7 @@ const parseStudy = mapProps({
   // TODO Remove .toLowerCase() when attribute display value is updated
   access: ['attributes.study_access', access => access && access.toLowerCase()],
   isReleased: ['attributes.is_public', str => str === 'true'],
+  isSecret: ['attributes.is_secret', str => str === 'true'],
   email: ['attributes.email'],
   policyUrl: ['attributes.policy_url'],
   requestNeedsApproval: ['attributes.request_needs_approval'],
@@ -138,6 +140,7 @@ function formatStudies(questions, recordClasses, answer) {
   }, { valid: [], invalid: [], appearFirst: new Set() });
 
   const unsortedValidRecords = records.valid
+    .filter(study => !study.isSecret || showUnreleasedData)
     .map(study => Object.assign(study, {
       disabled: !showUnreleasedData && !study.isReleased,
       // searchUrls: mapValues(study.searches, search => `/showQuestion.do?questionFullName=${search}`),
