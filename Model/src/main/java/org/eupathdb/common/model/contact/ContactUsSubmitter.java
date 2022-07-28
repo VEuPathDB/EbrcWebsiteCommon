@@ -93,7 +93,7 @@ public class ContactUsSubmitter {
         wdkModel.getProperties().get("REDMINE_TO_EMAIL"), 
         wdkModel.getProperties().get("REDMINE_FROM_EMAIL"), 
         params.subject,
-        escapeHtml(redmineMetaInfo + "\n\n" + params.message + "\n\n"), 
+        redmineMetaInfo + "\n\n" + params.message + "\n\n", 
         null, null,
         params.attachments
     );    
