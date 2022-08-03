@@ -97,6 +97,8 @@ public class ContactUsService extends AbstractWdkService {
       JSONObject jsonBody = new JSONObject(body);
       ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, requestData, session);
 
+LOG.info("Message: " +  contactUsParams.message);
+
       createAndSendEmail(
         contactUsParams,
         user,     
