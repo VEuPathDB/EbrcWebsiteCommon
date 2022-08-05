@@ -52,7 +52,13 @@ my $cmd;
 
 my $dieOnError = "set -e";
 
-my $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $gusHome/lib/xml/datasetPresenters -templatesDir $gusHome/lib/dst -contactsXmlFile $gusHome/lib/xml/datasetPresenters/contacts/contacts.xml";
+my $injectTemplates;
+
+if ($projectName eq "MicrobiomeDB" || $projectName eq "ClinEpiDB") {
+    $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $gusHome/lib/xml/datasetPresenters -templatesDir $gusHome/lib/dst -contactsXmlFile $gusHome/lib/xml/datasetPresenters/contacts/edaContacts.xml";
+} else {
+    $injectTemplates = "echo Injecting Templates; presenterInjectTemplates -presentersDir $gusHome/lib/xml/datasetPresenters -templatesDir $gusHome/lib/dst -contactsXmlFile $gusHome/lib/xml/datasetPresenters/contacts/contacts.xml";
+}
 
 my $reloadWebapp = "echo Reloading webapp $webapp; instance_manager manage $tomcatName reload $webapp";
 
