@@ -868,3 +868,40 @@ sub new {
 1;
 
 
+package EbrcWebsiteCommon::View::GraphPackage::GGBarPlot::WGCNA;
+use base qw( EbrcWebsiteCommon::View::GraphPackage::GGBarPlot );
+use strict;
+use Data::Dumper;
+
+sub new {
+  my ($class,$args,$profileSets) = @_;
+  #print STDERR Dumper $args;
+
+  my $self = $class->SUPER::new($args,$profileSets);
+
+  my $id = $self->getId();
+  my $wantLogged = $self->getWantLogged();
+  my $exprMetric = $self->getExpressionMetric();
+  
+  $exprMetric = defined($exprMetric)? $exprMetric : "normalized_value";
+  
+  $self->setPartName($exprMetric);
+  $exprMetric = uc($exprMetric);
+  $self->setYaxisLabel("Normalized Value");
+
+  $self->setDefaultYMin(-0.5);
+  $self->setDefaultYMax(0.5);
+  $self->setColors(["grey"]);
+  $self->setPlotTitle("$exprMetric - $id");
+
+  if($wantLogged) {
+    $self->addAdjustProfile('profile.df.full$VALUE = log2(profile.df.full$VALUE + 1);');
+    $self->setYaxisLabel("log2($exprMetric + 1)");
+    $self->setIsLogged(1);
+    $self->setDefaultYMax(4);
+    $self->setSkipStdErr(1);
+  }
+
+  return $self;
+}
+1;
