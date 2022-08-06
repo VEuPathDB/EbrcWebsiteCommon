@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
+import com.gargoylesoftware.htmlunit.html.serializer.HtmlSerializerVisibleText;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,8 +55,7 @@ public class SampleHtmlUnitTest {
         try {
             ((HtmlTextInput) currentPage.getElementByName("q")).setValueAttribute("qa automation");
             currentPage = ((HtmlElement)currentPage.getElementByName("btnG")).click();
-            //System.out.println("contents: " + currentPage.asText());
-            return containsPattern(currentPage.asText(), "About .* results");
+            return containsPattern(new HtmlSerializerVisibleText().asText(currentPage), "About .* results");
         } catch (Exception e) {
             System.out.println("Could not search");
             e.printStackTrace();
