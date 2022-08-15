@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
@@ -37,32 +39,59 @@ public class SitemapService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(SitemapService.class);
 
+  /**
+   * Returns URLs of question pages which have been denoted with the property "forSitemap".
+   *
+   * @param fmt URL format
+   */
   @GET
   @Produces(MediaType.TEXT_XML)
-  public String getSiteMap(
-      @QueryParam("fmt") String fmt
+  public Response getSiteMap(
+      @QueryParam("fmt") @DefaultValue("/app/search/{recordClass}/{question}") String fmt
   ) {
     String urlBase = getContextUri();
-    String sitemaps = Arrays
-        .stream(getWdkModel().getAllQuestionSets())
-        .flatMap(questionSet -> Arrays.stream(questionSet.getQuestions()))
-        .filter(question -> question.getPropertyLists().containsKey("forSitemap"))
-        .map(question -> "<sitemap><loc>" + urlBase + fmt.replace("{question}", question.getName()) + "</loc></sitemap>")
-        .collect(Collectors.joining(""));
 
-    return
-        "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" +
-        "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">" +
-        sitemaps +
-        "</sitemapindex>";
+    StreamingOutput output = out -> {
+      try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out))) {
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
+        writer.newLine();
+        writer.write("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+        writer.newLine();
+
+        for (String urlXml : IteratorUtil.toIterable(Arrays
+            .stream(getWdkModel().getAllQuestionSets())
+            .flatMap(questionSet -> Arrays.stream(questionSet.getQuestions()))
+            .filter(question -> question.getPropertyLists().containsKey("forSitemap"))
+            .map(question -> formatUrl(fmt, question))
+            .map(urlPath -> "<sitemap><loc>" + urlBase + urlPath + "</loc></sitemap>")
+            .iterator())) {
+          writer.write(urlXml);
+          writer.newLine();
+        }
+
+        writer.write("</sitemapindex>");
+        writer.newLine();
+        writer.flush();
+      }
+    };
+
+    return Response.ok(output).build();
   }
 
+  /**
+   * Returns URLs of all record pages for records returned by the passed question.
+   * Notes:
+   *   1. the question must be denoted with the "forSitemap" property or a 404 will be returned
+   *   2. the question must not have parameters, or a 400 will be returned.
+   *
+   * @param fmt URL format
+   */
   @GET
   @Path("{questionName}")
   @Produces(MediaType.TEXT_XML)
   public Response getSiteMapForQuestion(
       @PathParam("questionName") String questionName,
-      @QueryParam("fmt") String fmt
+      @QueryParam("fmt") @DefaultValue("/app/record/{recordClass}/{id}") String fmt
   ) throws WdkModelException {
 
     // find question for sitemap.xml
@@ -72,7 +101,7 @@ public class SitemapService extends AbstractWdkService {
 
     // only zero-param questions are valid for site map
     if (!question.getParamMap().isEmpty()) {
-      throw new WdkModelException("Invalid question '" + question.getFullName() + "' for site map: only questions with no params can be used.");
+      throw new BadRequestException("Invalid question '" + question.getFullName() + "' for site map: only questions with no params can be used.");
     }
 
     // build answer for this question
@@ -85,20 +114,29 @@ public class SitemapService extends AbstractWdkService {
     return Response.ok(new RecordUrlDumper(getContextUri(), fmt, answer)).build();
   }
 
+  private static String formatUrl(String fmt, Question question) {
+    String questionName = question.getName();
+    String recordClassUrlSegment = question.getRecordClass().getUrlSegment();
+    return fmt
+        .replace("{question}", URLEncoder.encode(questionName, StandardCharsets.UTF_8))
+        .replace("{recordClass}", URLEncoder.encode(recordClassUrlSegment, StandardCharsets.UTF_8));
+  }
+
   private static class RecordUrlDumper implements StreamingOutput {
 
     private final String _urlBase;
-    private final String _urlFormat;
+    private final String _urlPath; // still has {id} macro unpopulated
     private final AnswerValue _answer;
 
     public RecordUrlDumper(String urlBase, String urlFormat, AnswerValue answer) {
       _urlBase = urlBase;
-      _urlFormat = urlFormat;
+      _urlPath = formatUrl(urlFormat, answer.getAnswerSpec().getQuestion());
       _answer = answer;
     }
 
     @Override
     public void write(OutputStream output) throws IOException, WebApplicationException {
+
       // read IDs, convert to URLs and output XML
       try (PrimaryKeyIterator allIds = _answer.getAllIds();
            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output))) {
@@ -108,9 +146,6 @@ public class SitemapService extends AbstractWdkService {
         writer.write("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
         writer.newLine();
 
-        String recordClassUrlSegment = _answer.getAnswerSpec().getQuestion().getRecordClass().getUrlSegment();
-        String urlFormat = _urlFormat.replace("{recordClass}", URLEncoder.encode(recordClassUrlSegment, StandardCharsets.UTF_8));
-
         for (String[] id : IteratorUtil.toIterable(allIds)) {
 
           String idPart = Arrays.stream(id)
@@ -119,13 +154,14 @@ public class SitemapService extends AbstractWdkService {
 
           writer.write("  <url><loc>");
           writer.write(_urlBase);
-          writer.write(urlFormat.replace("{id}", idPart));
+          writer.write(_urlPath.replace("{id}", idPart));
           writer.write("</loc></url>");
           writer.newLine();
         }
 
         writer.write("</urlset>");
         writer.newLine();
+        writer.flush();
       }
       catch (Exception e) {
         LOG.error("Unable to stream stie map URL list", e);
