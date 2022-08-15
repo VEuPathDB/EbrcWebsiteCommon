@@ -374,7 +374,7 @@ plotlist.i = 1
     r[["amastigote"]] = "Amas";
     r[["promastigote"]] = "Promas";
     r[["epimastigote"]] = "Epimas";
-    r[["sporozoite"]] = "Spzt";
+    r[["sporozoite"]] = "Spz";
     r[["samples"]] = "smpl";
 
     for(old in names(r)) {
