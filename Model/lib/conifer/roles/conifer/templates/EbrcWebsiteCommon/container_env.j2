@@ -18,7 +18,7 @@ ACCTDB_PASSWORD={{ modelconfig_accountDb_password }}
 SITE_BASE_URL=https://{{ hostname }}/{{ webapp_ctx }}
 PROJECT_ID={{ project }}
 
-SOLR_URL={{ commentconfig_solrUrl }}
-USERDB_SCHEMA={{ commentconfig_userLoginSchema }}
+SOLR_URL={{ commentconfig_solrUrl or UNDEFINED }}
+USERDB_SCHEMA={{ commentconfig_userLoginSchema or UNDEFINED }}
 
 COHORT={{ cohort }}
