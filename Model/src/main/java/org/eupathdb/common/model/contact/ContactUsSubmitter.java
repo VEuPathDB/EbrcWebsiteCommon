@@ -53,14 +53,24 @@ public class ContactUsSubmitter {
       (params.context == null ? "None" : params.context) + "\n" +
       "---------------------";
 
-    String redmineMetaInfo = "Project: usersupportrequests\n" + 
-        "Tracker: Communication\n" +
-        "Category: " + website + "\n" + "\n" +
-        metaInfo + "\n" + 
-        "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" +
-        "Request URL: " + requestData.getFullRequestUri() + "\n" +
-        "WDK Host: " + requestData.getLocalHost() + " (" + requestData.getLocalIpAddress() + ")\n\n" +
-        contextContent + "\n";
+    // easyredmine needs these extra <br>
+    String metaInfoForRedmine =
+        "ReplyTo: " + replyEmail + "\n" +  "<br>" +
+        "CC: " + ccField + "\n" + "<br>" +
+        "Privacy preferences: " + "\n" + "<br>" +
+        "Uid: " + uid + "\n" + "<br>" +
+        "Browser information: " + requestData.getUserAgent() + "\n" + "<br>" +
+        "Referrer page: " + params.referrer + "\n" + "<br>" +
+        "WDK Model version: " + version;
+
+    String redmineMetaInfo = "Project: usersupportrequests\n" + "<br>" + 
+        "Tracker: Communication\n" + "<br>" +
+        "Category: " + website + "\n" + "\n" + "<br>" +
+        metaInfoForRedmine + "\n" + "<br>" +
+        "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" + "<br>" +
+        "Request URL: " + requestData.getFullRequestUri() + "\n" + "<br>" +
+        "WDK Host: " + requestData.getLocalHost() + "<br>" + " (" + requestData.getLocalIpAddress() + ")\n\n" + "<br>" +
+        contextContent + "\n" + "<br>";
     
     String smtpServer = modelConfig.getSmtpServer();
     
@@ -76,7 +86,7 @@ public class ContactUsSubmitter {
     );
 
     // Send support email
-    LOG.debug("SUBJECT: " + params.subject +  " -----TO: " + supportEmail);
+    LOG.debug("\n\nSUBJECT: " + params.subject +  "\n -----TO: " + supportEmail + "\nMESSAGE: \n" + params.message + "\n\n");
      emailSender.sendEmail( 
         smtpServer, 
         supportEmail, 
@@ -85,15 +95,16 @@ public class ContactUsSubmitter {
         escapeHtml(metaInfo + "\n\n" + contextContent + "\n\n" + params.message + "\n\n"), 
         null, null,
         params.attachments
-    );
-    
+    ); 
+       
     // Send Redmine email
+    // easyredmine needs these extra <br>
     emailSender.sendEmail(
         smtpServer, 
         wdkModel.getProperties().get("REDMINE_TO_EMAIL"), 
         wdkModel.getProperties().get("REDMINE_FROM_EMAIL"), 
         params.subject,
-        redmineMetaInfo + "\n\n" + params.message + "\n\n", 
+        escapeHtml(redmineMetaInfo + "\n\n" + "<br>" + params.message.replace("\n","\n<br>") + "\n\n" + "<br>" ), 
         null, null,
         params.attachments
     );    
