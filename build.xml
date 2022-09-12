@@ -84,11 +84,9 @@
 
   <!-- Target to be used by implementing sites -->
   <target name="eupathWebComponentInstall">
-    <echo message="Building ${project}/${component} assets"/>
     <ant target="defaultWebComponentInstall"/>
-    <antcall target="copyClientImages">
-      <param name="yarnCwd" value="${projectsDir}/${project}/${component}"/>
-    </antcall>
+    <antcall target="installLocalWebAssets"/>
+    <antcall target="installPublishedWebAssets"/>
   </target>
 
   <target name="shouldInstallLocalWebAssets">
