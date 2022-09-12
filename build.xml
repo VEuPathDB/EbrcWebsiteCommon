@@ -91,6 +91,54 @@
     </antcall>
   </target>
 
+  <target name="shouldInstallLocalWebAssets">
+    <condition property="installLocalWebAssets.run" value="true" else="false">
+      <and>
+        <available file="${webAssets.localAssetsPath}/package.json"/>
+        <istrue value="${webAssets.useLocalAssets}"/>
+      </and>
+    </condition>
+  </target>
+
+  <target name="installLocalWebAssets" depends="shouldInstallLocalWebAssets" if="${installLocalWebAssets.run}">
+    <condition property="browserslistEnv" value="legacy" else="modern">
+      <istrue value="${webAssets.legacy}"/>
+    </condition>
+
+    <condition property="webpack.env" value="--mode=production" else="--mode=development">
+      <istrue value="${webAssets.optimize}"/>
+    </condition>
+
+    <echo message="Installing local web asset yarn deps"/>
+    <exec
+      executable="yarn"
+      dir="${webAssets.localAssetsPath}"
+      failonerror="true"
+      failifexecutionfails="true"
+    />
+
+    <echo message="Bundling local web assets"/>
+    <exec
+      executable="yarn"
+      dir="${webAssets.localAssetsPath}"
+      failonerror="true"
+      failifexecutionfails="true"
+    >
+      <env key="BROWSERSLIST_ENV" value="${browserslistEnv}"/>
+      <arg line="nx run ${workspaceName}:bundle ${webpack.env}"/>
+    </exec>
+
+    <copy todir="${webappTargetDir}">
+      <fileset dir="${webAssets.localAssetsPath}/${workspacePath}/webapp" />
+    </copy>
+
+    <delete dir="${webappTargetDir}/bundles"/>
+
+    <copy todir="${webappTargetDir}/bundles">
+      <fileset dir="${webAssets.localAssetsPath}/${workspacePath}/dist" />
+    </copy>
+  </target>
+
   <target name="buildLocalNpmPackages">
     <echo message="Building npm package for WDKClient/Client"/>
     <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
