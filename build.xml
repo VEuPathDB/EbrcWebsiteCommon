@@ -139,6 +139,50 @@
     </copy>
   </target>
 
+  <target name="installPublishedWebAssets" depends="shouldInstallLocalWebAssets" unless="${installLocalWebAssets.run}">
+    <condition property="publishedAssetsTag" value="${webAssets.publishedAssetsTag}" else="latest">
+      <isset property="webAssets.publishedAssetsTag"/>
+    </condition>
+
+    <echo message="Downloading published web assets"/>
+    <mkdir dir="${webappTargetDir}/publishedWebAssets"/>
+    <exec
+      executable="npm"
+      dir="${webappTargetDir}/publishedWebAssets"
+      failonerror="true"
+      failifexecutionfails="true"
+    >
+      <arg line="pack ${workspaceName}@${publishedAssetsTag}"/>
+    </exec>
+
+    <echo message="Extracting published web assets"/>
+    <move todir="${webappTargetDir}/publishedWebAssets">
+      <fileset dir="${webappTargetDir}/publishedWebAssets" includes="*.tgz"/>
+      <mapper type="glob" from="*" to="package.tgz"/>
+    </move>
+    <exec
+      executable="tar"
+      dir="${webappTargetDir}/publishedWebAssets"
+      failonerror="true"
+      failifexecutionfails="true"
+    >
+      <arg line="-xf package.tgz"/>
+    </exec>
+
+    <echo message="Copying extracted assets to webapp"/>
+    <copy todir="${webappTargetDir}">
+      <fileset dir="${webappTargetDir}/publishedWebAssets/package/webapp" />
+    </copy>
+
+    <delete dir="${webappTargetDir}/bundles"/>
+
+    <copy todir="${webappTargetDir}/bundles">
+      <fileset dir="${webappTargetDir}/publishedWebAssets/package/dist" />
+    </copy>
+
+    <delete dir="${webappTargetDir}/publishedWebAssets"/>
+  </target>
+
   <target name="buildLocalNpmPackages">
     <echo message="Building npm package for WDKClient/Client"/>
     <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
