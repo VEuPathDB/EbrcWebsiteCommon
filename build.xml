@@ -138,8 +138,8 @@
   </target>
 
   <target name="installPublishedWebAssets" depends="shouldInstallLocalWebAssets" unless="${installLocalWebAssets.run}">
-    <condition property="publishedAssetsTag" value="${webAssets.publishedAssetsTag}" else="latest">
-      <isset property="webAssets.publishedAssetsTag"/>
+    <condition property="publishedAssetsPackageSpec" value="${publishedAssetsVersion}" else="latest">
+      <isset property="publishedAssetsVersion"/>
     </condition>
 
     <echo message="Downloading published web assets"/>
@@ -150,7 +150,7 @@
       failonerror="true"
       failifexecutionfails="true"
     >
-      <arg line="pack ${workspaceName}@${publishedAssetsTag}"/>
+      <arg line="pack ${workspaceName}@${publishedAssetsPackageSpec}"/>
     </exec>
 
     <echo message="Extracting published web assets"/>
