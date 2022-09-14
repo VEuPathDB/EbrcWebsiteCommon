@@ -92,7 +92,7 @@
   <target name="shouldInstallLocalWebAssets">
     <condition property="installLocalWebAssets.run" value="true" else="false">
       <and>
-        <available file="${webAssets.localAssetsPath}/package.json"/>
+        <available file="${localAssetsPath}/package.json"/>
         <istrue value="${webAssets.useLocalAssets}"/>
       </and>
     </condition>
@@ -110,7 +110,7 @@
     <echo message="Installing local web asset yarn deps"/>
     <exec
       executable="yarn"
-      dir="${webAssets.localAssetsPath}"
+      dir="${localAssetsPath}"
       failonerror="true"
       failifexecutionfails="true"
     />
@@ -118,7 +118,7 @@
     <echo message="Bundling local web assets"/>
     <exec
       executable="yarn"
-      dir="${webAssets.localAssetsPath}"
+      dir="${localAssetsPath}"
       failonerror="true"
       failifexecutionfails="true"
     >
@@ -127,13 +127,13 @@
     </exec>
 
     <copy todir="${webappTargetDir}">
-      <fileset dir="${webAssets.localAssetsPath}/${workspacePath}/webapp" />
+      <fileset dir="${workspacePath}/webapp" />
     </copy>
 
     <delete dir="${webappTargetDir}/bundles"/>
 
     <copy todir="${webappTargetDir}/bundles">
-      <fileset dir="${webAssets.localAssetsPath}/${workspacePath}/dist" />
+      <fileset dir="${workspacePath}/dist" />
     </copy>
   </target>
 
