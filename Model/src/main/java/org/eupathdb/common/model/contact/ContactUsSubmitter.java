@@ -63,8 +63,8 @@ public class ContactUsSubmitter {
         "Referrer page: " + params.referrer + "\n" + "<br>" +
         "WDK Model version: " + version;
 
-    String redmineMetaInfo = "Project: usersupportrequests\n" + "<br>" + 
-        "Tracker: Communication\n" + "<br>" +
+    String redmineMetaInfo = "Project: usersupportrequests\n" + 
+        "Tracker: Communication\n" +
         "Category: " + website + "\n" + "\n" + "<br>" +
         metaInfoForRedmine + "\n" + "<br>" +
         "Client IP Address: " + requestData.getRemoteIpAddress() + "\n" + "<br>" +
