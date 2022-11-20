@@ -45,6 +45,9 @@
   {"matchStrings": ["Loading CSS chunk"
     ]
   },
+  {"matchStrings": ["Load failed"
+    ]
+  },
   {"matchStrings": ["NetworkError when attempting to fetch resource"
     ],
    "comment": "---Dec23-2020. Dave: variant of Failed to fetch?"
@@ -164,6 +167,18 @@
   {"matchStrings": ["name\": \"QuotaExceededError"
     ]
   },
+  {"matchStrings": ["Not implemented on this platform"
+    ]
+  },
+  {"matchStrings": ["Illegal invocation"
+    ]
+  },
+  {"matchStrings": ["TypeError","?????"
+    ]
+  },
+
+
+
 
 
 
@@ -182,9 +197,6 @@
     ],
    "comment": "---Dec 2021"
   },
-
-
-
   {"matchStrings": ["Cannot read property"
     ],
    "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
@@ -231,8 +243,6 @@
     ],
    "comment": "---Jan 29 2021, sam safari jbrowse"
   },
-
-
   {"matchStrings": ["is null\""
     ]
   },
@@ -298,15 +308,12 @@
   {"matchStrings": ["NS_ERROR_FILE_CORRUPTED"
     ]
   },
+  {"matchStrings": ["NS_ERROR_FAILURE"
+    ]
+  },
   {"matchStrings": ["message\": \"Minified React error"
     ],
    "comment": "---on urls accessing apache documents"
-  },
-
-
-
-  {"matchStrings": ["========= DO NOT EMAIL   new ones in B51 with npm? often stacktrace shows ...generatorResume@[native....Promise@[native...."
-    ]
   },
   {"matchStrings": ["message\": \"Script error."
     ]
@@ -321,6 +328,20 @@
   {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
     ]
   },
+  {"matchStrings": ["empty textures are not allowed"
+    ]
+  },
+  {"matchStrings": ["Invalid or unexpected token"
+    ]
+  },
+  {"matchStrings": ["[object Map Iterator] is not iterable"
+    ]
+  },
+  {"matchStrings": ["can't access dead object"
+    ]
+  },
+
+
 
 
 
@@ -347,6 +368,33 @@
     ]
   },
   {"matchStrings": ["BingPreview"
+    ]
+  },
+  {"matchStrings": ["Linespider"
+    ]
+  },
+  {"matchStrings": ["PetalBot"
+    ]
+  },
+  {"matchStrings": ["naver.me"
+    ]
+  },
+  {"matchStrings": ["AhrefsBot"
+    ]
+  },
+  {"matchStrings": ["Yandex"
+    ]
+  },
+  {"matchStrings": ["Yeti"
+    ]
+  },
+  {"matchStrings": ["Google-Edu"
+    ]
+  },
+  {"matchStrings": ["HeadlessChrome"
+    ]
+  },
+  {"matchStrings": ["Mediapartners-Google"
     ]
   },
 
