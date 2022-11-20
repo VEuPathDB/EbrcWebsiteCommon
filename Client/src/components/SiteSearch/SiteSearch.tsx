@@ -1,6 +1,7 @@
 import { Tooltip } from '@veupathdb/components/lib/components/widgets/Tooltip';
 import { DataGrid } from '@veupathdb/coreui';
-import { CheckboxList, CheckboxTree, CollapsibleSection, LoadingOverlay } from '@veupathdb/wdk-client/lib/Components';
+import { CheckboxList, CollapsibleSection, LoadingOverlay } from '@veupathdb/wdk-client/lib/Components';
+import CheckboxTree, { LinksPosition } from '@veupathdb/coreui/dist/components/inputs/checkboxes/CheckboxTree/CheckboxTree';
 import Icon from '@veupathdb/wdk-client/lib/Components/Icon/IconAlt';
 import { AnchoredTooltip, PaginationMenu } from '@veupathdb/wdk-client/lib/Components/Mesa';
 import { WdkService } from '@veupathdb/wdk-client/lib/Core';
@@ -320,7 +321,19 @@ function OrganismFilter(props: Required<Pick<Props, 'organismTree' | 'filterOrga
         isSelectable
         selectedList={selection}
         onSelectionChange={setSelection}
-        linksPosition={CheckboxTree.LinkPlacement.Top}
+        linksPosition={LinksPosition.Top}
+        styleOverrides={{
+          treeSection: {
+            ul: {
+              padding: 0,
+            }
+          },
+          searchBox: {
+            optionalIcon: {
+              top: '3px',
+            }
+          }
+        }}
       />
     </React.Fragment>
   )
@@ -596,15 +609,22 @@ function WdkRecordFields(props: Props & { onlyShowMatches: boolean }) {
       <CheckboxList
         items={docType.searchFields
           .filter(field => filters.includes(field.name) || ( onlyShowMatches ? response.fieldCounts && response.fieldCounts[field.name] > 0 : true ))
-          .map(field => ({
-            display: (
+          .map(field => {
+            const display = (
               <div className={cx('--ResultTypeWidgetItem')}>
                 <div>{field.displayName}</div>
                 {response.fieldCounts && <div>{(response.fieldCounts[field.name]).toLocaleString()}</div> }
               </div>
-            ),
-            value: field.name
-          }))
+            );
+            return {
+              display: documentType === 'variable' && field.name === 'MULTITEXT__variable_StudyInfo' ? (
+                <Tooltip title="Searches the study name, entity, original variable name, and definition of the variable." interactive css={{}}>
+                  {display}
+                </Tooltip>
+              ) : display,
+              value: field.name
+            };
+          })
         }
         value={selection}
         onChange={setSelection}
@@ -667,7 +687,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       display: {
         route: `${makeEdaRoute(datasetId)}/new`,
-        text: document.hyperlinkName
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
       },
       summary: makeGenericSummary(document, documentType)
     }
@@ -679,7 +699,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     const summaryField = findSummaryField(studyInfoField, documentType);
     return {
       display: {
-        text: document.hyperlinkName
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
       },
       summary: (
         <>
@@ -696,7 +716,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     const summaryField = findSummaryField(studyInfoField, documentType);
     return {
       display: {
-        text: document.hyperlinkName,
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
       },
       summary: (
         <>
@@ -713,7 +733,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       display: {
         route: `/search/${recordName}/${searchName}`,
-        text: document.hyperlinkName || document.primaryKey.join(' - ')
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
       },
       summary: makeGenericSummary(document, documentType)
     }
@@ -724,7 +744,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       display: {
         url: `/popbio-map/web/?sampleID=${document.primaryKey[0]}`,
-        text: document.hyperlinkName || document.primaryKey.join(' - '),
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />,
         target: '_blank'
       },
       summary: makeGenericSummary(document, documentType)
@@ -746,7 +766,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
     return {
       display: {
         route,
-        text: document.hyperlinkName || document.primaryKey.join(' - ')
+        text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
       },
       summary: makeGenericSummary(document, documentType)
     };
@@ -755,7 +775,7 @@ function resultDetails(document: SiteSearchDocument, documentType: SiteSearchDoc
   return {
     display: {
       route: '',
-      text: document.hyperlinkName || document.primaryKey.join('/')
+      text: <HtmlString value={document.hyperlinkName || document.primaryKey.join(' - ')} />
     },
     summary: makeGenericSummary(document, documentType)
   }

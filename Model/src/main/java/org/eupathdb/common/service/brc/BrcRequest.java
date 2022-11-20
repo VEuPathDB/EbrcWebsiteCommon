@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.service.request.exception.RequestMisformatException;
-import org.gusdb.wdk.service.request.user.DatasetRequestProcessor.DatasetSourceType;
+import org.gusdb.wdk.service.request.user.dataset.DatasetSourceType;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

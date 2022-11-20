@@ -1,16 +1,24 @@
+# *_CONNECT names can be removed once all scripts use _CONNECTION
+
 APPDB_CONNECTION={{ modelconfig_appDb_connectionUrl }}
+APPDB_CONNECT={{ modelconfig_appDb_connectionUrl }}
 APPDB_LOGIN={{ modelconfig_appDb_login }}
 APPDB_PASSWORD={{ modelconfig_appDb_password }}
 
 USERDB_CONNECTION={{ modelconfig_userDb_connectionUrl }}
+USERDB_CONNECT={{ modelconfig_userDb_connectionUrl }}
 USERDB_LOGIN={{ modelconfig_userDb_login }}
 USERDB_PASSWORD={{ modelconfig_userDb_password }}
 
 ACCTDB_CONNECTION={{ modelconfig_accountDb_connectionUrl }}
+ACCTDB_CONNECT={{ modelconfig_accountDb_connectionUrl }}
 ACCTDB_LOGIN={{ modelconfig_accountDb_login }}
 ACCTDB_PASSWORD={{ modelconfig_accountDb_password }}
 
 SITE_BASE_URL=https://{{ hostname }}/{{ webapp_ctx }}
 PROJECT_ID={{ project }}
+
+SOLR_URL={{ commentconfig_solrUrl | default('UNDEFINED') }}
+USERDB_SCHEMA={{ commentconfig_userLoginSchema | default('UNDEFINED') }}
 
 COHORT={{ cohort }}

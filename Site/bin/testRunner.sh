@@ -31,12 +31,15 @@ function runTests {
   gusHome="$GUS_HOME"
   projectHome="$PROJECT_HOME"
   
-  checkInputVar "project_id"   "argument" "required" ""    $projectId
-  checkInputVar "site_url"     "argument" "required" ""    $siteUrl
-  checkInputVar "output_dir"   "argument" "required" "dir" $outputDir
-  checkInputVar "working_dir"  "argument" "optional" "dir" $workingDir
-  checkInputVar "GUS_HOME"     "env var"  "required" "dir" $gusHome
-  checkInputVar "PROJECT_HOME" "env var"  "required" "dir" $projectHome
+  checkInputVar "project_id"      "argument" "required" ""    $projectId
+  checkInputVar "site_url"        "argument" "required" ""    $siteUrl
+  checkInputVar "output_dir"      "argument" "required" "dir" $outputDir
+  checkInputVar "working_dir"     "argument" "optional" "dir" $workingDir
+  checkInputVar "GUS_HOME"        "env var"  "required" "dir" $gusHome
+  checkInputVar "PROJECT_HOME"    "env var"  "required" "dir" $projectHome
+  # values required by the build
+  checkInputVar "GITHUB_USERNAME" "env var"  "required" ""    $GITHUB_USERNAME
+  checkInputVar "GITHUB_TOKEN"    "env var"  "required" ""    $GITHUB_TOKEN
 
   outputDir=$(realpath $outputDir)
   if [ "$workingDir" = "" ]; then
@@ -53,9 +56,9 @@ function runTests {
   # run Java unit tests on FgpUtil
   echo "Building FgpUtil Test project..."
   cd $projectHome/FgpUtil
-  mvn clean install -Dmaven.test.skip=true
+  mvn --settings ../install/settings.xml clean install -Dmaven.test.skip=true
   echo "Running Java unit tests..."
-  mvn test 2>&1 | tee $outputDir/java-unit-tests.txt
+  mvn --settings ../install/settings.xml test 2>&1 | tee $outputDir/java-unit-tests.txt
 
   # run JavaScript unit tests on WDKClient
   echo "Running JavaScript unit tests..."

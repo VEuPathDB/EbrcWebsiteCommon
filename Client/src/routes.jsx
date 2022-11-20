@@ -3,7 +3,7 @@ import React, { Suspense, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import { communitySite } from 'ebrc-client/config';
+import { communitySite, edaEnableFullScreenApps } from 'ebrc-client/config';
 
 import TreeDataViewerController from './controllers/TreeDataViewerController';
 import ContactUsController from './controllers/ContactUsController';
@@ -16,7 +16,7 @@ import StudyAccessController from '@veupathdb/study-data-access/lib/study-access
 import { Loading } from '@veupathdb/wdk-client/lib/Components';
 import { showLoginForm as showLoginFormAction } from '@veupathdb/wdk-client/lib/Actions/UserSessionActions';
 
-import { edaExampleAnalysesAuthor, edaServiceUrl, edaSingleAppMode } from './config';
+import { edaExampleAnalysesAuthor, edaServiceUrl, edaSingleAppMode, showUnreleasedData } from './config';
 
 export const STATIC_ROUTE_PATH = '/static-content';
 
@@ -53,6 +53,7 @@ export const wrapRoutes = wdkRoutes => [
       return (
         <Suspense fallback={<Loading/>}>
           <WorkspaceRouter
+            showUnreleasedData={showUnreleasedData}
             dataServiceUrl={edaServiceUrl}
             subsettingServiceUrl={edaServiceUrl}
             userServiceUrl={edaServiceUrl}
@@ -61,6 +62,7 @@ export const wrapRoutes = wdkRoutes => [
             sharingUrlPrefix={window.location.origin}
             showLoginForm={showLoginForm}
             singleAppMode={edaSingleAppMode}
+            enableFullScreenApps={edaEnableFullScreenApps}
           />
         </Suspense>
       );
