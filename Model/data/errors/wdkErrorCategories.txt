@@ -23,6 +23,9 @@
     ],
    "comment": "---clinepi, presenters prop: isPublic false, only show in qa, live site client gets project_availability null, qa gets AlClinEpiDB"
   },
+  {"matchStrings": ["405 Method Not Allowed","analyses","MicrobiomeDB"
+    ]
+  },
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
    "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
@@ -425,7 +428,10 @@
   {"matchStrings": ["baskets","You must log in to use this"
     ]
   },
-
+  {"matchStrings": ["Invalid data cell."
+    ],
+   "comment": "---PDBeMolstarPlugin.eval"
+  },
 
 
   {"matchStrings": ["================================================================== SERVICE ERRORS"
