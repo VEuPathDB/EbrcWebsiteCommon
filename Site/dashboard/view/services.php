@@ -4,7 +4,9 @@
  * @package View
  */
 
-$pconf=file_get_contents("/home/rdoherty/pconfLatest.json");
+$pconfFile="/var/tmp/pconfLatest.json";
+
+$pconf=file_get_contents($pconfFile);
 $json=json_decode($pconf, true);
 $stacks=$json["stacks"];
 ?>
