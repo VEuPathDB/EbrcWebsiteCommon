@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file=/var/tmp/pconfLatest.json
+file=/home/rdoherty/pconfLatest.json
 updateFrequency=120
 
 while true; do
