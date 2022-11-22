@@ -4,11 +4,15 @@
  * @package View
  */
 
-$pconfFile="/var/tmp/pconfLatest.json";
+// FIXME: This is the only location I could find that's both writable by me and readable by apache PHP;
+//        For some reason, /tmp, /var/tmp, /var/www/Common/tmp are all unreadable by PHP (??)
+
+$pconfFile="/home/rdoherty/pconfLatest.json";
 
 $pconf=file_get_contents($pconfFile);
 $json=json_decode($pconf, true);
 $stacks=$json["stacks"];
+
 ?>
 <script>
   $( function() {
@@ -55,7 +59,7 @@ $stacks=$json["stacks"];
           $networkKey=array_keys($value[$i+1])[0];
           $network=$value[$i+1][$networkKey];
  
-          $envJson=json_encode($env,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+          //$envJson=json_encode($env,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
           $configJson=json_encode($config,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
           $networkJson=json_encode($network,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
@@ -63,8 +67,14 @@ $stacks=$json["stacks"];
           //$env=print_r($env,true);
           //$dump=var_dump($env);
 
-          print("<h3>Environment</h3>");
-          print("<pre style=\"font-size:0.9em;font-weight:normal\">$envJson</pre>");
+          print("<h3>Environment</h3><table style=\"font-family:monospace;font-size:0.9em;font-weight:normal\"><tr><th>Name</th><th>Value</th></tr>");
+          for ($j = 0; $j < count($env); $j++) {
+            $pair=explode("=", $env[$j]);
+            print("<tr><td>$pair[0]</td><td>$pair[1]</td></tr>");
+          }
+          print("</table>");
+
+          //print("<pre style=\"font-size:0.9em;font-weight:normal\">$envJson</pre>");
 
           print("<hr/>");
 
