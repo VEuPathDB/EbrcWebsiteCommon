@@ -382,7 +382,8 @@
    "comment": "---(evaluating 'p.manager'),(evaluating 'Zotero.Connector.reportActiveURL')"
   },
   {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
-    ]
+    ],
+   "comment": "---filtered out from thrown in https://github.com/VEuPathDB/WDKClient/blob/master/Client/src/StoreModules/UnhandledErrorStoreModule.ts#L38-L42"
   },
   {"matchStrings": ["empty textures are not allowed"
     ]
