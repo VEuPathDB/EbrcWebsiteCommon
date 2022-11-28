@@ -23,6 +23,9 @@
     ],
    "comment": "---clinepi, presenters prop: isPublic false, only show in qa, live site client gets project_availability null, qa gets AlClinEpiDB"
   },
+  {"matchStrings": ["405 Method Not Allowed","analyses","MicrobiomeDB"
+    ]
+  },
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
    "comment": "---Dec23-2020. Problem: trying to load JBrowse object before we have it. Action: add error handler to iframe."
@@ -44,6 +47,9 @@
    "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
   },
   {"matchStrings": ["Loading CSS chunk"
+    ]
+  },
+  {"matchStrings": ["Load failed"
     ]
   },
   {"matchStrings": ["NetworkError when attempting to fetch resource"
@@ -165,6 +171,17 @@
   {"matchStrings": ["name\": \"QuotaExceededError"
     ]
   },
+  {"matchStrings": ["Not implemented on this platform"
+    ]
+  },
+  {"matchStrings": ["Illegal invocation"
+    ]
+  },
+  {"matchStrings": ["TypeError","?????"
+    ]
+  },
+
+
 
 
 
@@ -183,9 +200,6 @@
     ],
    "comment": "---Dec 2021"
   },
-
-
-
   {"matchStrings": ["Cannot read property"
     ],
    "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
@@ -232,8 +246,6 @@
     ],
    "comment": "---Jan 29 2021, sam safari jbrowse"
   },
-
-
   {"matchStrings": ["is null\""
     ]
   },
@@ -299,15 +311,12 @@
   {"matchStrings": ["NS_ERROR_FILE_CORRUPTED"
     ]
   },
+  {"matchStrings": ["NS_ERROR_FAILURE"
+    ]
+  },
   {"matchStrings": ["message\": \"Minified React error"
     ],
    "comment": "---on urls accessing apache documents"
-  },
-
-
-
-  {"matchStrings": ["========= DO NOT EMAIL   new ones in B51 with npm? often stacktrace shows ...generatorResume@[native....Promise@[native...."
-    ]
   },
   {"matchStrings": ["message\": \"Script error."
     ]
@@ -322,10 +331,26 @@
   {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
     ]
   },
+  {"matchStrings": ["empty textures are not allowed"
+    ]
+  },
+  {"matchStrings": ["Invalid or unexpected token"
+    ]
+  },
+  {"matchStrings": ["[object Map Iterator] is not iterable"
+    ]
+  },
+  {"matchStrings": ["can't access dead object"
+    ]
+  },
 
 
 
-  {"matchStrings": ["========= BOTS"
+
+
+
+
+  {"matchStrings": ["========= DO NOT EMAIL: BOTS"
     ]
   },
   {"matchStrings": ["Googlebot"
@@ -350,7 +375,33 @@
   {"matchStrings": ["BingPreview"
     ]
   },
-
+  {"matchStrings": ["Linespider"
+    ]
+  },
+  {"matchStrings": ["PetalBot"
+    ]
+  },
+  {"matchStrings": ["naver.me"
+    ]
+  },
+  {"matchStrings": ["AhrefsBot"
+    ]
+  },
+  {"matchStrings": ["Yandex"
+    ]
+  },
+  {"matchStrings": ["Yeti"
+    ]
+  },
+  {"matchStrings": ["Google-Edu"
+    ]
+  },
+  {"matchStrings": ["HeadlessChrome"
+    ]
+  },
+  {"matchStrings": ["Mediapartners-Google"
+    ]
+  },
 
 
   {"matchStrings": ["========= DO NOT EMAIL  OUR APP      CHECK UX on USERS (error handling)"
@@ -377,23 +428,15 @@
   {"matchStrings": ["baskets","You must log in to use this"
     ]
   },
-
-
-
-  {"matchStrings": ["========= SERVICE ERRORS"
-    ]
+  {"matchStrings": ["Invalid data cell."
+    ],
+   "comment": "---PDBeMolstarPlugin.eval"
   },
 
 
-  {"matchStrings": ["======== MISMATCH RESULTS"
+  {"matchStrings": ["================================================================== SERVICE ERRORS"
     ]
   },
-
-  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
-    ]
-  },
-
-
 
 
   {"matchStrings": ["========== BOTS"
@@ -420,9 +463,45 @@
 
 
 
+
+  {"matchStrings": ["======== CONNECTION"
+    ]
+  },
+
+
+  {"matchStrings": ["======== MISMATCH RESULTS"
+    ]
+  },
+  {"matchStrings": ["basket","WdkModelException: The integrated attribute query","doesn't return the same number of records as ID SQL for the current page"
+    ]
+  },
+
+
+
+  {"matchStrings": ["======== SQL TROUBLE"
+    ]
+  },
+
+
+  {"matchStrings": ["======== APP ISSUE"
+    ]
+  },
+
+
+  {"matchStrings": ["======== MBLAST ISSUE"
+    ]
+  },
+
+
+  {"matchStrings": ["======== CLIENT ISSUE"
+    ]
+  },
+
+
   {"matchStrings": ["======== USER ISSUE"
     ]
   },
+
   {"matchStrings": ["PluginModelException: Illegal character range near"
     ],
    "comment": ""
@@ -459,5 +538,8 @@
     ],
    "comment": "---Step name 200 char we need to convert t a 400 error, opened trello"
   }
+
+
+
 
 ]

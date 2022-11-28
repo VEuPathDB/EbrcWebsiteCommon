@@ -14,6 +14,59 @@
   },
 
 
+  {"matchStrings": ["========= BOTS"
+    ]
+  },
+  {"matchStrings": ["Googlebot"
+    ],
+   "comment": "---cross origin, step does not exist due to new guest id"
+  },
+  {"matchStrings": ["User Agent:","Baidu"
+    ]
+  },
+  {"matchStrings": ["User Agent:","bingbot"
+    ]
+  },
+  {"matchStrings": ["Applebot"
+    ]
+  },
+  {"matchStrings": ["applebot"
+    ]
+  },
+  {"matchStrings": ["Jooblebot"
+    ]
+  },
+  {"matchStrings": ["BingPreview"
+    ]
+  },
+  {"matchStrings": ["Linespider"
+    ]
+  },
+  {"matchStrings": ["PetalBot"
+    ]
+  },
+  {"matchStrings": ["naver.me"
+    ]
+  },
+  {"matchStrings": ["AhrefsBot"
+    ]
+  },
+  {"matchStrings": ["Yandex"
+    ]
+  },
+  {"matchStrings": ["Yeti"
+    ]
+  },
+  {"matchStrings": ["Google-Edu"
+    ]
+  },
+  {"matchStrings": ["HeadlessChrome"
+    ]
+  },
+  {"matchStrings": ["Mediapartners-Google"
+    ]
+  },
+
 
   {"matchStrings": ["============= DO NO EMAIL, USER network?"
     ]
@@ -21,6 +74,9 @@
   {"matchStrings": ["studies could not be parsed"
     ],
    "comment": "---clinepi, presenters prop: isPublic false, only show in qa, live site client gets project_availability null, qa gets AlClinEpiDB"
+  },
+  {"matchStrings": ["405 Method Not Allowed","analyses","MicrobiomeDB"
+    ]
   },
   {"matchStrings": ["Could not load embedded JBrowse instance"
     ],
@@ -43,6 +99,9 @@
    "comment": "---Dec23-2020. Action: popup content update: network instability, try again."
   },
   {"matchStrings": ["Loading CSS chunk"
+    ]
+  },
+  {"matchStrings": ["Load failed"
     ]
   },
   {"matchStrings": ["NetworkError when attempting to fetch resource"
@@ -164,6 +223,18 @@
   {"matchStrings": ["name\": \"QuotaExceededError"
     ]
   },
+  {"matchStrings": ["Not implemented on this platform"
+    ]
+  },
+  {"matchStrings": ["Illegal invocation"
+    ]
+  },
+  {"matchStrings": ["TypeError","?????"
+    ]
+  },
+
+
+
 
 
 
@@ -182,9 +253,6 @@
     ],
    "comment": "---Dec 2021"
   },
-
-
-
   {"matchStrings": ["Cannot read property"
     ],
    "comment": "---Dec23-2020. Most are on property 'getBoundingClientRect' from qqbrowser; 'recordClassName' in gene pages; 'save', on //app"
@@ -231,8 +299,6 @@
     ],
    "comment": "---Jan 29 2021, sam safari jbrowse"
   },
-
-
   {"matchStrings": ["is null\""
     ]
   },
@@ -298,15 +364,12 @@
   {"matchStrings": ["NS_ERROR_FILE_CORRUPTED"
     ]
   },
+  {"matchStrings": ["NS_ERROR_FAILURE"
+    ]
+  },
   {"matchStrings": ["message\": \"Minified React error"
     ],
    "comment": "---on urls accessing apache documents"
-  },
-
-
-
-  {"matchStrings": ["========= DO NOT EMAIL   new ones in B51 with npm? often stacktrace shows ...generatorResume@[native....Promise@[native...."
-    ]
   },
   {"matchStrings": ["message\": \"Script error."
     ]
@@ -319,36 +382,22 @@
    "comment": "---(evaluating 'p.manager'),(evaluating 'Zotero.Connector.reportActiveURL')"
   },
   {"matchStrings": ["message\": \"ResizeObserver loop limit exceeded"
-    ]
-  },
-
-
-
-  {"matchStrings": ["========= BOTS"
-    ]
-  },
-  {"matchStrings": ["Googlebot"
     ],
-   "comment": "---cross origin, step does not exist due to new guest id"
+   "comment": "---filtered out from thrown in https://github.com/VEuPathDB/WDKClient/blob/master/Client/src/StoreModules/UnhandledErrorStoreModule.ts#L38-L42"
   },
-  {"matchStrings": ["User Agent:","Baidu"
+  {"matchStrings": ["empty textures are not allowed"
     ]
   },
-  {"matchStrings": ["User Agent:","bingbot"
+  {"matchStrings": ["Invalid or unexpected token"
     ]
   },
-  {"matchStrings": ["Applebot"
+  {"matchStrings": ["[object Map Iterator] is not iterable"
     ]
   },
-  {"matchStrings": ["applebot"
+  {"matchStrings": ["can't access dead object"
     ]
   },
-  {"matchStrings": ["Jooblebot"
-    ]
-  },
-  {"matchStrings": ["BingPreview"
-    ]
-  },
+
 
 
 
@@ -376,7 +425,10 @@
   {"matchStrings": ["baskets","You must log in to use this"
     ]
   },
-
+  {"matchStrings": ["Invalid data cell."
+    ],
+   "comment": "---PDBeMolstarPlugin.eval"
+  },
 
 
   {"matchStrings": ["========= CHECK THESE"
@@ -532,12 +584,23 @@
   {"matchStrings": ["Internal error opening backing store for indexedDB.open."
     ]
   },
+  {"matchStrings": ["Failed to read large IndexedDB value"
+    ]
+  },
+  {"matchStrings": ["400 Bad Request"
+    ]
+  },
+
+
+
 
 
   {"matchStrings": ["========= UNCAUGHT -------- some of these are added above so we DO NOT RECEIVE EMAILS"
     ]
   },
-
+  {"matchStrings": ["name\": \"DataError"
+    ]
+  },
   {"matchStrings": ["name\": \"InternalError"
     ]
   },
