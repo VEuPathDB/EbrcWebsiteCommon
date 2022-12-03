@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 
+import org.gusdb.fgputil.functional.FunctionalInterfaces.Procedure;
 import org.gusdb.fgputil.json.JsonWriter;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
@@ -35,7 +36,7 @@ import org.json.JSONObject;
 public class SolrLoaderReporter extends AnswerDetailsReporter {
 
   @Override
-  protected void write(OutputStream out) throws WdkModelException {
+  protected void writeResponseBody(OutputStream out, Procedure checkResponseSize) throws WdkModelException {
 
     // create output writer and initialize record stream
     try (JsonWriter writer = new JsonWriter(out);
@@ -44,6 +45,7 @@ public class SolrLoaderReporter extends AnswerDetailsReporter {
       writer.array();
       for (RecordInstance record : records) {
         writer.value(formatRecord(record, _attributes.keySet(), _tables.keySet()));
+        checkResponseSize.perform();
       }
       writer.endArray();
     }
