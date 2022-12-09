@@ -18,6 +18,7 @@ import org.gusdb.fgputil.SortDirectionSpec;
 import org.gusdb.fgputil.db.SqlUtils;
 import org.gusdb.fgputil.db.runner.SQLRunner;
 import org.gusdb.fgputil.db.runner.SQLRunnerException;
+import org.gusdb.fgputil.functional.FunctionalInterfaces.Procedure;
 import org.gusdb.fgputil.json.JsonUtil;
 import org.gusdb.wdk.core.api.JsonKeys;
 import org.gusdb.wdk.model.WdkModelException;
@@ -84,7 +85,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
   }
 
   @Override
-  protected void write(OutputStream out) throws WdkModelException {
+  protected void writeResponseBody(OutputStream out, Procedure checkResponseSize) throws WdkModelException {
 
     // record formatter requires the ID attribute, so must add to stream request
     //   if not already present and it contains non-PK columns
@@ -115,6 +116,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
             recordCount++;
             writer.write(",");
             writeRecordJson(writer, rs, recordClass);
+            checkResponseSize.perform();
           }
           return recordCount;
         }
