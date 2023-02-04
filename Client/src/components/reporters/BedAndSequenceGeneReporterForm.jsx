@@ -7,14 +7,21 @@ import SrtHelp from '../SrtHelp';
 import createSequenceForm from './SequenceFormFactory';
 
 /*
- * Adapted from SequenceGeneReporterForm
- * (no protein options)
+ * Similar to SequenceGeneReporterForm
+ * (but with protein options)
  */
 let util = Object.assign({}, ComponentUtils, ReporterUtils);
 
 let splicedGenomicOptions = [
   { value: 'cds', display: 'CDS'},
   { value: 'transcript', display: 'Transcript'},
+];
+
+let proteinFeatureOptions = [
+  { value: 'interpro', display: 'InterPro' },
+  { value: 'signalp', display: 'SignalP' },
+  { value: 'tmhmm', display: 'Transmembrane Domains' },
+  { value: 'low_complexity', display: 'Low Complexity Regions' }
 ];
 
 let geneComponentOptions = [
@@ -30,6 +37,11 @@ let genomicAnchorValues = [
   { value: 'CodeStart', display: 'Translation Start (ATG)' },
   { value: 'CodeEnd', display: 'Translation Stop Codon' },
   { value: 'End', display: 'Transcription Stop***' }
+];
+
+let proteinAnchorValues = [
+  { value: 'DownstreamFromStart', display: 'Downstream from Start' },
+  { value: 'UpstreamFromEnd', display: 'Upstream from End' }
 ];
 
 let signs = [
@@ -54,10 +66,28 @@ let SequenceRegionRange = props => {
   );
 };
 
+let ProteinRegionRange = props => {
+  let { label, anchor, offset, formState, getUpdateHandler } = props;
+  return (
+    <React.Fragment>
+      <span>{label}</span>
+      <SingleSelect name={anchor} value={formState[anchor]}
+          onChange={getUpdateHandler(anchor)} items={proteinAnchorValues}/>
+      <NumberSelector name={offset} value={formState[offset]}
+          start={0} end={10000} step={1}
+          onChange={getUpdateHandler(offset)} size="6"/>
+      amino acids
+    </React.Fragment>
+  );
+};
+
 let GenomicSequenceRegionInputs = props => {
   let { formState, getUpdateHandler } = props;
   return (
     <div>
+      <div style={{marginLeft:"0.75em"}}>
+        <Checkbox name="reverseAndComplement" value={formState.reverseAndComplement} onChange={getUpdateHandler('reverseAndComplement')}/> Reverse & Complement
+      </div>
       <div
         style={{
           display: 'inline-grid',
@@ -76,9 +106,31 @@ let GenomicSequenceRegionInputs = props => {
     </div>
   );
 }
+let ProteinSequenceRegionInputs = props => {
+  let { formState, getUpdateHandler } = props;
+  return (
+    <div>
+      <div
+        style={{
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(4, auto)',
+          alignItems: 'center',
+          gridRowGap: '0.25em',
+          gridColumnGap: '0.5em',
+          marginLeft: '0.75em'
+        }}
+      >
+        <ProteinRegionRange label="Begin at" anchor="startAnchor3" offset="startOffset3"
+          formState={formState} getUpdateHandler={getUpdateHandler}/>
+        <ProteinRegionRange label="End at" anchor="endAnchor3" offset="endOffset3"
+          formState={formState} getUpdateHandler={getUpdateHandler}/>
+      </div>
+    </div>
+  );
+};
 
 /** @type import('./Types').ReporterFormComponent */
-let formBeforeCommonOptions = props => {
+let createFormBeforeCommonOptions = (regionOrSequence) => ((props) => {
   let { formState, updateFormState, onSubmit, includeSubmit } = props;
   let getUpdateHandler = fieldName => util.getChangeHandler(fieldName, updateFormState, formState);
   let typeUpdateHandler = function(newTypeValue) {
@@ -92,6 +144,10 @@ let formBeforeCommonOptions = props => {
         return <FeaturesList field="splicedGenomic" features={splicedGenomicOptions} formState={formState} getUpdateHandler={getUpdateHandler} />;
       case 'gene_components':
         return <ComponentsList field="geneComponents" features={geneComponentOptions} formState={formState} getUpdateHandler={getUpdateHandler} />;
+      case 'protein':
+        return <ProteinSequenceRegionInputs formState={formState} getUpdateHandler={getUpdateHandler}/>;
+      case 'protein_features':
+        return <FeaturesList field="proteinFeature" features={proteinFeatureOptions} formState={formState} getUpdateHandler={getUpdateHandler} />;
     }
   };
   return (
@@ -100,9 +156,11 @@ let formBeforeCommonOptions = props => {
       <div style={{marginLeft:"2em"}}>
         <RadioList name="type" value={formState.type}
           onChange={typeUpdateHandler} items={[
-            { value: 'genomic', display: 'Unspliced Genomic Region' },
-            { value: 'spliced_genomic', display: 'Spliced Genomic Region' },
+            { value: 'genomic', display: 'Unspliced Genomic ' + regionOrSequence },
+            { value: 'spliced_genomic', display: 'Spliced Genomic ' + regionOrSequence },
             { value: 'gene_components', display: 'Gene Components' },
+            { value: 'protein', display: 'Protein ' + regionOrSequence },
+            { value: 'protein_features', display: 'Protein Features' },
           ]}
         />
         <h3>Type-specific Params</h3>
@@ -110,7 +168,7 @@ let formBeforeCommonOptions = props => {
       </div>
     </React.Fragment>
   );
-};
+});
 let formAfterSubmitButton = props => {
   return (
     <React.Fragment>
@@ -119,6 +177,9 @@ let formAfterSubmitButton = props => {
         <b>Note:</b><br/>
         For "genomic" sequence: If UTRs have not been annotated for a gene, then choosing
         "transcription start" may have the same effect as choosing "translation start".<br/>
+        For "protein" sequence: you can only retrieve sequence contained within the ID(s)
+        listed. i.e. from downstream of amino acid sequence start (ie. Methionine = 0) to
+        upstream of the amino acid end (last amino acid in the protein = 0).<br/>
         <hr/>
       </div>
       <SrtHelp/>
@@ -128,6 +189,7 @@ let formAfterSubmitButton = props => {
 let getFormInitialState = () => ({
   type: 'genomic',
 
+  // sequence region inputs for 'genomic'
   reverseAndComplement: false,
   upstreamAnchor: genomicAnchorValues[0].value,
   upstreamSign: signs[0].value,
@@ -136,8 +198,17 @@ let getFormInitialState = () => ({
   downstreamSign: signs[0].value,
   downstreamOffset: 0,
 
+  // sequence region inputs for 'protein'
+  startAnchor3: proteinAnchorValues[0].value,
+  startOffset3: 0,
+  endAnchor3: proteinAnchorValues[1].value,
+  endOffset3: 0,
+
   geneComponents: geneComponentOptions.map((x) => x.value),
+  proteinFeature: proteinFeatureOptions[0].value,
   splicedGenomic: splicedGenomicOptions[0].value,
 });
 
-export default createSequenceForm(formBeforeCommonOptions, formAfterSubmitButton, getFormInitialState, 'Coordinates');
+let SequenceGeneReporterForm = createSequenceForm(createFormBeforeCommonOptions('Sequence'), formAfterSubmitButton, getFormInitialState, 'Sequences');
+let BedGeneReporterForm = createSequenceForm(createFormBeforeCommonOptions('Region'), formAfterSubmitButton, getFormInitialState, 'Coordinates');
+export {SequenceGenomicSequenceReporterForm, BedGenomicSequenceReporterForm};
