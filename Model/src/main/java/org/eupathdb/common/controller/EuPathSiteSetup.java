@@ -40,11 +40,7 @@ public class EuPathSiteSetup {
       // only load filters once from disk
       Properties filters = ErrorHandlerHelpers.loadErrorFilters();
       List<ErrorCategory> categories = ErrorHandlerHelpers.loadErrorCategories();
-      double burstSize = Double.parseDouble(wdkModel.getProperties()
-          .getOrDefault(WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY, DEFAULT_EMAIL_BURST_THROTTLE_SIZE));
-      double sustainedRate = Double.parseDouble(wdkModel.getProperties()
-          .getOrDefault(WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY, DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE));
-      ErrorEmailThrottler errorEmailThrottler = new ErrorEmailThrottler(wdkModel, burstSize, sustainedRate);
+      ErrorEmailThrottler errorEmailThrottler = new ErrorEmailThrottler(wdkModel);
       EventListener listener = event -> {
         ErrorEvent error = (ErrorEvent)event;
         new ErrorHandler(filters, categories, errorEmailThrottler).handleError(error.getErrorBundle(), error.getErrorContext());

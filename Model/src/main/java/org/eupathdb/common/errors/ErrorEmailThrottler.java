@@ -11,8 +11,10 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,14 +27,24 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class ErrorEmailThrottler {
   private static final Logger LOG = Logger.getLogger(ErrorEmailThrottler.class);
-  private static final AtomicLong throttledSinceLastReport = new AtomicLong();
+  private static final String WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY = "EMAIL_BURST_THROTTLE_SIZE";
+  private static final String WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY= "EMAIL_SUSTAINED_THROTTLE_RATE_PER_SECOND";
+  private static final double DEFAULT_EMAIL_BURST_THROTTLE_SIZE = 500.0;
+  private static final double DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE = 1.0 / Duration.ofMinutes(10).getSeconds();
 
+  private final AtomicLong throttledSinceLastReport = new AtomicLong();
   private final TokenBucketPermitDistributor permitDistributor;
   private final ScheduledExecutorService scheduledExecutorService;
   private final List<String> adminEmails;
   private final String projectId;
 
-  public ErrorEmailThrottler(WdkModel wdkModel, double burstSize, double sustainedRate) {
+  public ErrorEmailThrottler(WdkModel wdkModel) {
+    double burstSize = Optional.ofNullable(wdkModel.getProperties().get(WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY))
+        .map(Double::parseDouble)
+        .orElse(DEFAULT_EMAIL_BURST_THROTTLE_SIZE);
+    double sustainedRate = Optional.ofNullable(wdkModel.getProperties().get(WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY))
+        .map(Double::parseDouble)
+        .orElse(DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE);
     permitDistributor = new TokenBucketPermitDistributor(sustainedRate, burstSize);
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     scheduledExecutorService.scheduleAtFixedRate(this::sendThrottlingReport, 0L, 1, TimeUnit.HOURS);
