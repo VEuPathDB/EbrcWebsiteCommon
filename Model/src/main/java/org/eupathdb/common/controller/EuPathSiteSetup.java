@@ -16,8 +16,9 @@ import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
-
   private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
+  private static final double EMAIL_BURST_THROTTLE_SIZE = 500.0;
+  private static final double EMAIL_SUSTAINED_THROTTLE_RATE = Duration.ofMinutes(10).getSeconds();
 
   /**
    * Initialize any parts of the ApiCommon web application not handled by normal
@@ -26,18 +27,18 @@ public class EuPathSiteSetup {
    * @param wdkModel initialized WDK model
    */
   public static void initialize(WdkModel wdkModel) {
-    addErrorListener(wdkModel);
+    ErrorEmailThrottler.initialize(wdkModel, EMAIL_BURST_THROTTLE_SIZE, EMAIL_SUSTAINED_THROTTLE_RATE);
+    addErrorListener();
   }
 
   /**
    * Registers a listener to receive error events that passes their contents to a global error handler
    */
-  private static void addErrorListener(WdkModel wdkModel) {
+  private static void addErrorListener() {
     try {
       // only load filters once from disk
       Properties filters = ErrorHandlerHelpers.loadErrorFilters();
       List<ErrorCategory> categories = ErrorHandlerHelpers.loadErrorCategories();
-      ErrorEmailThrottler.initialize(wdkModel, 500.0, 1.0 / Duration.ofMinutes(10).getSeconds());
       EventListener listener = event -> {
         ErrorEvent error = (ErrorEvent)event;
         new ErrorHandler(filters, categories).handleError(error.getErrorBundle(), error.getErrorContext());
