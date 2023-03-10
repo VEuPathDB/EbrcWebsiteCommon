@@ -27,15 +27,15 @@ public class ErrorEmailThrottler {
   private static final Logger LOG = Logger.getLogger(ErrorEmailThrottler.class);
   private static final AtomicLong throttledSinceLastReport = new AtomicLong();
 
-  private static TokenBucketPermitDistributor permitDistributor;
-  private static ScheduledExecutorService scheduledExecutorService;
-  private static List<String> adminEmails;
-  private static String projectId;
+  private final TokenBucketPermitDistributor permitDistributor;
+  private final ScheduledExecutorService scheduledExecutorService;
+  private final List<String> adminEmails;
+  private final String projectId;
 
-  public static void initialize(WdkModel wdkModel, double burstSize, double sustainedRate) {
+  public ErrorEmailThrottler(WdkModel wdkModel, double burstSize, double sustainedRate) {
     permitDistributor = new TokenBucketPermitDistributor(sustainedRate, burstSize);
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-    scheduledExecutorService.scheduleAtFixedRate(ErrorEmailThrottler::sendThrottlingReport, 0L, 1, TimeUnit.HOURS);
+    scheduledExecutorService.scheduleAtFixedRate(this::sendThrottlingReport, 0L, 1, TimeUnit.HOURS);
     adminEmails = wdkModel.getModelConfig().getAdminEmails();
     projectId = wdkModel.getProjectId();
   }
@@ -44,7 +44,7 @@ public class ErrorEmailThrottler {
    * Acquires a permit from the underlying permit distributor and increments a counter if no permits are available.
    * @return true if allowed, false if not
    */
-  public static boolean shouldThrottle() {
+  public boolean shouldThrottle() {
     if (permitDistributor.tryAcquire()) {
       return false; // Permit acquired successfully, no need to throttle.
     } else {
@@ -56,7 +56,7 @@ public class ErrorEmailThrottler {
   /**
    * Sends a throttling e-mail report to admins and resets the throttle counter to zero.
    */
-  private static void sendThrottlingReport() {
+  private void sendThrottlingReport() {
     if (throttledSinceLastReport.get() == 0L) {
       return;
     }
@@ -70,7 +70,7 @@ public class ErrorEmailThrottler {
       Message msg = new MimeMessage(session);
       InternetAddress addressFrom = new InternetAddress("projectId@" + projectId);
 
-      List<InternetAddress> addressList = new ArrayList<InternetAddress>();
+      List<InternetAddress> addressList = new ArrayList<>();
       for (String address : adminEmails) {
         try {
           addressList.add(new InternetAddress(address));

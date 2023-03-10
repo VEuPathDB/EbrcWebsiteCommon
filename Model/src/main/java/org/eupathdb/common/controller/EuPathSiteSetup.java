@@ -17,8 +17,10 @@ import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
   private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
-  private static final double EMAIL_BURST_THROTTLE_SIZE = 500.0;
-  private static final double EMAIL_SUSTAINED_THROTTLE_RATE = Duration.ofMinutes(10).getSeconds();
+  private static final String WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY = "EMAIL_BURST_THROTTLE_SIZE";
+  private static final String WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY= "EMAIL_SUSTAINED_THROTTLE_RATE_PER_SECOND";
+  private static final String DEFAULT_EMAIL_BURST_THROTTLE_SIZE = "500.0";
+  private static final String DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE = Double.toString(1.0 / Duration.ofMinutes(10).getSeconds());
 
   /**
    * Initialize any parts of the ApiCommon web application not handled by normal
@@ -27,21 +29,25 @@ public class EuPathSiteSetup {
    * @param wdkModel initialized WDK model
    */
   public static void initialize(WdkModel wdkModel) {
-    ErrorEmailThrottler.initialize(wdkModel, EMAIL_BURST_THROTTLE_SIZE, EMAIL_SUSTAINED_THROTTLE_RATE);
-    addErrorListener();
+    addErrorListener(wdkModel);
   }
 
   /**
    * Registers a listener to receive error events that passes their contents to a global error handler
    */
-  private static void addErrorListener() {
+  private static void addErrorListener(WdkModel wdkModel) {
     try {
       // only load filters once from disk
       Properties filters = ErrorHandlerHelpers.loadErrorFilters();
       List<ErrorCategory> categories = ErrorHandlerHelpers.loadErrorCategories();
+      double burstSize = Double.parseDouble(wdkModel.getProperties()
+          .getOrDefault(WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY, DEFAULT_EMAIL_BURST_THROTTLE_SIZE));
+      double sustainedRate = Double.parseDouble(wdkModel.getProperties()
+          .getOrDefault(WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY, DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE));
+      ErrorEmailThrottler errorEmailThrottler = new ErrorEmailThrottler(wdkModel, burstSize, sustainedRate);
       EventListener listener = event -> {
         ErrorEvent error = (ErrorEvent)event;
-        new ErrorHandler(filters, categories).handleError(error.getErrorBundle(), error.getErrorContext());
+        new ErrorHandler(filters, categories, errorEmailThrottler).handleError(error.getErrorBundle(), error.getErrorContext());
       };
       Events.subscribe(listener, ErrorEvent.class);
     }

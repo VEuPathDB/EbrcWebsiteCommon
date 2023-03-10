@@ -44,10 +44,12 @@ public class ErrorHandler {
 
   private final Properties _filters;
   private final List<ErrorCategory> _categories;
+  private final ErrorEmailThrottler _emailThrottler;
 
-  public ErrorHandler(Properties filters, List<ErrorCategory> categories) {
+  public ErrorHandler(Properties filters, List<ErrorCategory> categories, ErrorEmailThrottler emailThrottler) {
     _filters = filters;
     _categories = categories;
+    _emailThrottler = emailThrottler;
   }
 
   public void handleError(ErrorBundle errors, ErrorContext context) {
@@ -76,8 +78,7 @@ public class ErrorHandler {
                 RetainedClientErrorLog.getLogger());
               errorLog.error(fullErrorText);
 
-    final boolean isThrottled = ErrorEmailThrottler.shouldThrottle();
-    if (matchedFilterKey == null && context.isSiteMonitored() && !isThrottled) {
+    if (matchedFilterKey == null && context.isSiteMonitored() && !_emailThrottler.shouldThrottle()) {
       // error passes through filters; email if it doesn't fall into an existing category
       ErrorCategory category = matchCategory(searchText, _categories);
       if (category == null || category.isFixed() || category.isEmailWorthy()) {
