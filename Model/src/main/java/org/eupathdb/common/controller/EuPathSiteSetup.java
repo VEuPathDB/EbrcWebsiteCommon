@@ -17,10 +17,6 @@ import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
   private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
-  private static final String WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY = "EMAIL_BURST_THROTTLE_SIZE";
-  private static final String WDK_PROP_EMAIL_SUSTAINED_THROTTLE_KEY= "EMAIL_SUSTAINED_THROTTLE_RATE_PER_SECOND";
-  private static final String DEFAULT_EMAIL_BURST_THROTTLE_SIZE = "500.0";
-  private static final String DEFAULT_EMAIL_SUSTAINED_THROTTLE_RATE = Double.toString(1.0 / Duration.ofMinutes(10).getSeconds());
 
   /**
    * Initialize any parts of the ApiCommon web application not handled by normal
