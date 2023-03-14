@@ -48,6 +48,7 @@ public class ErrorEmailThrottler {
     permitDistributor = new TokenBucketPermitDistributor(sustainedRate, burstSize);
     scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     scheduledExecutorService.scheduleAtFixedRate(this::sendThrottlingReport, 0L, 1, TimeUnit.HOURS);
+    wdkModel.registerClosable(scheduledExecutorService::shutdown);
     adminEmails = wdkModel.getModelConfig().getAdminEmails();
     projectId = wdkModel.getProjectId();
   }
