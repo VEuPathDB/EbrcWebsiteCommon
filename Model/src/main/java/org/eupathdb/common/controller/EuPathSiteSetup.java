@@ -1,9 +1,11 @@
 package org.eupathdb.common.controller;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.eupathdb.common.errors.ErrorEmailThrottler;
 import org.eupathdb.common.errors.ErrorHandler;
 import org.eupathdb.common.errors.ErrorHandlerHelpers;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
@@ -14,7 +16,6 @@ import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
-
   private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
 
   /**
@@ -24,20 +25,21 @@ public class EuPathSiteSetup {
    * @param wdkModel initialized WDK model
    */
   public static void initialize(WdkModel wdkModel) {
-    addErrorListener();
+    addErrorListener(wdkModel);
   }
 
   /**
    * Registers a listener to receive error events that passes their contents to a global error handler
    */
-  private static void addErrorListener() {
+  private static void addErrorListener(WdkModel wdkModel) {
     try {
       // only load filters once from disk
       Properties filters = ErrorHandlerHelpers.loadErrorFilters();
       List<ErrorCategory> categories = ErrorHandlerHelpers.loadErrorCategories();
+      ErrorEmailThrottler errorEmailThrottler = new ErrorEmailThrottler(wdkModel);
       EventListener listener = event -> {
         ErrorEvent error = (ErrorEvent)event;
-        new ErrorHandler(filters, categories).handleError(error.getErrorBundle(), error.getErrorContext());
+        new ErrorHandler(filters, categories, errorEmailThrottler).handleError(error.getErrorBundle(), error.getErrorContext());
       };
       Events.subscribe(listener, ErrorEvent.class);
     }
