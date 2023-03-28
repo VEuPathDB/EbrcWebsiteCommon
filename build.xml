@@ -82,34 +82,6 @@
 
   </target>
 
-  <!-- Target to be used by implementing sites -->
-  <target name="eupathWebComponentInstall">
-    <echo message="Building ${project}/${component} assets"/>
-    <ant target="defaultWebComponentInstall"/>
-    <antcall target="copyClientImages">
-      <param name="yarnCwd" value="${projectsDir}/${project}/${component}"/>
-    </antcall>
-  </target>
-
-  <target name="buildLocalNpmPackages">
-    <echo message="Building npm package for WDKClient/Client"/>
-    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
-      <arg line="--ignore-engines"/>
-    </exec>
-    <exec executable="yarn" dir="${projectsDir}/WDKClient/Client" failonerror="true">
-      <arg line="build"/>
-    </exec>
-    <exec executable="yarn" dir="${projectsDir}/EbrcWebsiteCommon/Client" failonerror="true">
-      <arg line="--ignore-engines"/>
-    </exec>
-  </target>
-
-  <target name="copyClientImages" if="isYarnComponent" depends="checkIfYarnComponent">
-    <copy todir="${webappTargetDir}/images">
-      <fileset dir="${yarnCwd}/node_modules/@veupathdb/web-common/images"/>
-    </copy>
-  </target>
-
   <target name="dashboardDoc" if="dashboard.present">
     <echo message="Compiling phpdoc" />
     <!-- errors to /dev/null due to Smarty bug: https://bugzilla.redhat.com/show_bug.cgi?id=1352882 -->
