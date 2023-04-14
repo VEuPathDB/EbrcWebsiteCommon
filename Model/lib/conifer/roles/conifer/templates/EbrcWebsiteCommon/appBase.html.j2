@@ -76,6 +76,34 @@
       ((window.gitter = {}).chat = {}).options = {
         room: '{{ room }}/community'
       };
+      document.addEventListener(
+        'gitter-sidecar-instance-started', 
+        function gitterSidecarHack() {
+          const gitterBtn = document.querySelector('.gitter-open-chat-button');
+          const gitterAside = document.querySelector('.gitter-chat-embed');
+
+          // we want to hide the aside and any loading indicators when button is clicked
+          gitterAside.style.display = 'none';
+          document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
+
+          gitterBtn.addEventListener(
+            'click', 
+            function openGitterInNewTab(e) {
+              e.stopPropagation();
+              window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "_blank");
+            }, 
+            true
+          );
+
+          gitterAside.addEventListener(
+            'gitter-chat-toggle', 
+            function keepGitterBtnVisible() {
+              // we want the chat button to remain visible when clicked
+              gitterBtn.classList.remove('is-collapsed');
+            }
+          )
+        }
+      )
     </script>
     <script src="https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js" async defer></script>
   {%- endif %}
