@@ -90,7 +90,8 @@
             'click', 
             function openGitterInNewTab(e) {
               e.stopPropagation();
-              window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "_blank");
+              e.preventDefault();
+              window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
             }, 
             true
           );
