@@ -11,6 +11,8 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,7 @@ public class ErrorEmailThrottler {
   private final ScheduledExecutorService scheduledExecutorService;
   private final List<String> adminEmails;
   private final String projectId;
+  private String hostname;
 
   public ErrorEmailThrottler(WdkModel wdkModel) {
     double burstSize = Optional.ofNullable(wdkModel.getProperties().get(WDK_PROP_EMAIL_BURST_THROTTLE_SIZE_KEY))
@@ -51,6 +54,11 @@ public class ErrorEmailThrottler {
     wdkModel.registerClosable(scheduledExecutorService::shutdown);
     adminEmails = wdkModel.getModelConfig().getAdminEmails();
     projectId = wdkModel.getProjectId();
+    try {
+      hostname = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      hostname = "N/A";
+    }
   }
 
   /**
@@ -97,7 +105,9 @@ public class ErrorEmailThrottler {
       msg.setFrom(addressFrom);
       msg.setSubject("Error E-Mails Throttled");
       msg.setContent(String.format("Prevented %d e-mails from being sent due to excessive error load. Check the error " +
-          "logs to see any throttled e-mails.", throttledSinceLastReport.getAndSet(0L)), "text/plain");
+          "logs to see any throttled e-mails. You can find the logs on host %s.",
+          throttledSinceLastReport.getAndSet(0L),
+          hostname), "text/plain");
       Transport.send(msg);
     } catch (MessagingException me) {
       LOG.error(me);
