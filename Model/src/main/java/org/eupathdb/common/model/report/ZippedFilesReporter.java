@@ -54,7 +54,7 @@ public class ZippedFilesReporter implements Reporter {
         ZipEntry file = new ZipEntry(record.getAttributeValue(FILENAME_ATTRIBUTE).getValue());
         out.putNextEntry(file);
         String clientUrl = record.getAttributeValue(FILEPATH_ATTRIBUTE).getValue();
-        String absoluteFileUrl = _answerValue.getWdkModel().getProperties().get(MODEL_PROP_LOCALHOST) + clientUrl.replace("a/app", "/common");
+        String absoluteFileUrl = _answerValue.getWdkModel().getProperties().get(MODEL_PROP_LOCALHOST) + "/" + clientUrl;
         new URL(absoluteFileUrl).openStream().transferTo(out);
         out.closeEntry();
       }
