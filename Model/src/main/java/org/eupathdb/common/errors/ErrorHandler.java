@@ -78,12 +78,13 @@ public class ErrorHandler {
                 RetainedClientErrorLog.getLogger());
               errorLog.error(fullErrorText);
 
-    if (matchedFilterKey == null && context.isSiteMonitored() && !_emailThrottler.shouldThrottle()) {
+    if (matchedFilterKey == null && context.isSiteMonitored()) {
       // error passes through filters; email if it doesn't fall into an existing category
       ErrorCategory category = matchCategory(searchText, _categories);
       if (category == null || category.isFixed() || category.isEmailWorthy()) {
         // error did not match filter or category, category should have been fixed, or category should always send email
-        sendMail(fullErrorText, context);
+        if (!_emailThrottler.shouldThrottle()) // Check throttle status only if we fully make it through filters.
+          sendMail(fullErrorText, context);
       }
     }
   }
