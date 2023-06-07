@@ -101,4 +101,51 @@
     </exec>
   </target>
 
+  <!-- Targets used by component site builds -->
+
+  <target name="localBuildCheck">
+    <condition property="doLocalBuild">
+      <and>
+        <available file="${projectsDir}/web-monorepo" type="dir"/>
+        <not>
+          <and>
+            <isset property="webAssets.buildLocal"/>
+            <isfalse value="${webAssets.buildLocal}"/>
+          </and>
+        </not>
+      </and>
+    </condition>
+  </target>
+
+  <target name="localBuildWebAssets" depends="localBuildCheck" if="doLocalBuild">
+    <echo message="Building web assets locally"/>
+    <exec executable="yarn"
+      dir="${projectsDir}/web-monorepo"
+      failonerror="true"
+      failifexecutionfails="true"
+    />
+    <exec executable="yarn"
+      dir="${projectsDir}/web-monorepo"
+      failonerror="true"
+      failifexecutionfails="true"
+    >
+    <arg line="nx bundle:dev @veupathdb/${sitePackageName}"/>
+    </exec>
+    <copy todir="${webappTargetDir}">
+      <fileset dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist" />
+    </copy>
+  </target>
+
+  <target name="copyNpmAssets" depends="localBuildCheck" unless="doLocalBuild">
+    <echo message="Installing web assets from npm"/>
+    <copy todir="${webappTargetDir}">
+      <fileset dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist" />
+    </copy>
+  </target>
+
+  <target name="installWebAssets">
+    <ant target="copyNpmAssets"/>
+    <ant target="localBuildWebAssets"/>
+  </target>
+
 </project>
