@@ -25,7 +25,6 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
 import org.gusdb.fgputil.Timer;
-import org.gusdb.fgputil.TokenBucketPermitDistributor;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
 import org.gusdb.fgputil.web.RequestSnapshot;
