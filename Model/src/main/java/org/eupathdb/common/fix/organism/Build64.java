@@ -20,7 +20,8 @@ public class Build64 implements OrganismMigration {
       entry("Candida glabrata CBS 138","Nakaseomyces glabratus CBS 138"),
       entry("Candida glabrata CBS138 2020","Nakaseomyces glabratus CBS138 2020"),
       entry("Candida glabrata DSY562","Nakaseomyces glabratus DSY562"),
-      entry("Candida glabrata BG2","Nakaseomyces glabratus BG2")
+      entry("Candida glabrata BG2","Nakaseomyces glabratus BG2"),
+      entry("Candida glabrata","Nakaseomyces glabratus")
       //entry("unclassified Leishmania",REMOVE_ENTRY)
     );
   }
