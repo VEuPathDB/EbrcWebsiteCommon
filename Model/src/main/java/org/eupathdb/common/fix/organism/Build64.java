@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eupathdb.common.fix.organism.MigrateOrganisms.OrganismMigration;
 
-public class Build55 implements OrganismMigration {
+public class Build64 implements OrganismMigration {
 
   @Override
   public List<String> getProjectIds() {
