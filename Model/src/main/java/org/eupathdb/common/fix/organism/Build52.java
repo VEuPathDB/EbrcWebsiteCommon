@@ -12,7 +12,7 @@ public class Build52 implements OrganismMigration {
 
   @Override
   public List<String> getProjectIds() {
-    return ListBuilder.asList("FungiDB");
+    return List.of("FungiDB","EuPathDB");
   }
 
   @Override
