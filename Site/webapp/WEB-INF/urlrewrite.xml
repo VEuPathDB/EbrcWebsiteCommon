@@ -5,20 +5,6 @@
 <urlrewrite use-query-string="true">
 
   <rule>
-    <name>private url</name>
-    <note>Forward to new url</note>
-    <from>^/a/app/workspace/maps/DS_e18287e335/new</from>
-    <to type="redirect" last="true">%{context-path}/app/workspace/maps/DS_480c976ef9/new</to>
-  </rule>
-
-  <rule>
-    <name>private url</name>
-    <note>Forward to new url</note>
-    <from>^/vectorbase/app/workspace/maps/DS_e18287e335/new</from>
-    <to type="redirect" last="true">%{context-path}/app/workspace/maps/DS_480c976ef9/new</to>
-  </rule>
-
-  <rule>
     <name>Old question page</name>
     <note>Forward to new url</note>
     <from>^/showQuestion.do\?questionFullName=GeneQuestions\.(.+)$</from>
