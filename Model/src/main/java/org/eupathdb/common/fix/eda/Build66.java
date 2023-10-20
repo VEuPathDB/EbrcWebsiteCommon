@@ -26,15 +26,25 @@ public class Build66 extends EdaAnalysisMigrator {
       boolean performUpdate = false;
       for (int i = 0; i < computations.length(); i++) {
         _numComputes++;
-        JSONObject collectionVar = computations.getJSONObject(i)
-            .getJSONObject("descriptor")
+
+        JSONObject descriptor = computations.getJSONObject(i).getJSONObject("descriptor");
+
+        // check for presence of configuration; some computes default to an undefined configuration; this is fine to skip
+        if (!descriptor.has("configuration")) {
+          _numSkippedComputes++;
+          continue;
+        }
+
+        JSONObject collectionVar = descriptor
             .getJSONObject("configuration")
             .getJSONObject("collectionVariable");
+
         // check for new format; if present, then no change needed
         if (collectionVar.has("collectionId") && !collectionVar.has("variableId")) {
           _numSkippedComputes++;
           continue;
         }
+
         // save off variable ID, then remove variableId property and replace with collectionId
         String collectionId = collectionVar.getString("variableId");
         collectionVar.remove("variableId");
