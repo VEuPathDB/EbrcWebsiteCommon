@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.FormatUtil.Style;
 import org.gusdb.fgputil.MapBuilder;
+import org.gusdb.fgputil.json.JsonType;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ public class Build66 extends EdaAnalysisMigrator {
   private int _numComputes = 0;
   private int _numUpdatedComputes = 0;
   private int _numSkippedNoConfig = 0;
+  private int _numSkippedNullConfig = 0;
   private int _numSkippedNoCollectionVar = 0;
   private int _numSkippedAlreadyInNewFormat = 0;
   private int _numUpdatedRows = 0;
@@ -39,6 +41,13 @@ public class Build66 extends EdaAnalysisMigrator {
         if (!descriptor.has("configuration")) {
           _numSkippedNoConfig++;
           continue;
+        }
+        else {
+          JsonType config = new JsonType(descriptor.get("configuration"));
+          if (config.isNull()) {
+            _numSkippedNullConfig++;
+            continue;
+          }
         }
 
         // check for presence of collectionVariable; TODO: why could this be missing?
@@ -79,6 +88,7 @@ public class Build66 extends EdaAnalysisMigrator {
         .put("numComputes", _numComputes)
         .put("numUpdatedComputes", _numUpdatedComputes)
         .put("numSkippedNoConfig,", _numSkippedNoConfig)
+        .put("numSkippedNullConfig", _numSkippedNullConfig)
         .put("numSkippedNoCollectionVar", _numSkippedNoCollectionVar)
         .put("numSkippedAlreadyInNewFormat", _numSkippedAlreadyInNewFormat)
         .put("numUpdatedRows", _numUpdatedRows)
