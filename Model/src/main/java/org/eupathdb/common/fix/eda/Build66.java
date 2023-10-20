@@ -1,7 +1,12 @@
 package org.eupathdb.common.fix.eda;
 
+import java.util.LinkedHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.gusdb.fgputil.FormatUtil;
+import org.gusdb.fgputil.FormatUtil.Style;
+import org.gusdb.fgputil.MapBuilder;
 import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,7 +19,9 @@ public class Build66 extends EdaAnalysisMigrator {
   private int _numRows = 0;
   private int _numComputes = 0;
   private int _numUpdatedComputes = 0;
-  private int _numSkippedComputes = 0;
+  private int _numSkippedNoConfig = 0;
+  private int _numSkippedNoCollectionVar = 0;
+  private int _numSkippedAlreadyInNewFormat = 0;
   private int _numUpdatedRows = 0;
   private int _numErrors = 0;
 
@@ -27,21 +34,24 @@ public class Build66 extends EdaAnalysisMigrator {
       for (int i = 0; i < computations.length(); i++) {
         _numComputes++;
 
-        JSONObject descriptor = computations.getJSONObject(i).getJSONObject("descriptor");
-
         // check for presence of configuration; some computes default to an undefined configuration; this is fine to skip
+        JSONObject descriptor = computations.getJSONObject(i).getJSONObject("descriptor");
         if (!descriptor.has("configuration")) {
-          _numSkippedComputes++;
+          _numSkippedNoConfig++;
           continue;
         }
 
-        JSONObject collectionVar = descriptor
-            .getJSONObject("configuration")
-            .getJSONObject("collectionVariable");
+        // check for presence of collectionVariable; TODO: why could this be missing?
+        JSONObject configuration = descriptor.getJSONObject("configuration");
+        if (!configuration.has("collectionVariable")) {
+          _numSkippedNoCollectionVar++;
+          continue;
+        }
 
+        JSONObject collectionVar = configuration.getJSONObject("collectionVariable");
         // check for new format; if present, then no change needed
         if (collectionVar.has("collectionId") && !collectionVar.has("variableId")) {
-          _numSkippedComputes++;
+          _numSkippedAlreadyInNewFormat++;
           continue;
         }
 
@@ -64,14 +74,16 @@ public class Build66 extends EdaAnalysisMigrator {
 
   @Override
   public void dumpStatistics() {
-    LOG.info(new JSONObject()
+    LOG.info(FormatUtil.prettyPrint(new MapBuilder<String,Integer>(new LinkedHashMap<>())
         .put("numRows", _numRows)
         .put("numComputes", _numComputes)
         .put("numUpdatedComputes", _numUpdatedComputes)
-        .put("numSkippedComputes", _numSkippedComputes)
+        .put("numSkippedNoConfig,", _numSkippedNoConfig)
+        .put("numSkippedNoCollectionVar", _numSkippedNoCollectionVar)
+        .put("numSkippedAlreadyInNewFormat", _numSkippedAlreadyInNewFormat)
         .put("numUpdatedRows", _numUpdatedRows)
         .put("numErrors", _numErrors)
-        .toString(2));
+        .toMap(), Style.MULTI_LINE));
   }
 
 }
