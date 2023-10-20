@@ -12,28 +12,38 @@ public class Build66 extends EdaAnalysisMigrator {
 
   // statistics
   private int _numRows = 0;
-  private int _numErrors = 0;
   private int _numComputes = 0;
   private int _numUpdatedComputes = 0;
+  private int _numSkippedComputes = 0;
+  private int _numUpdatedRows = 0;
+  private int _numErrors = 0;
 
   @Override
   public RowResult<EdaAnalysisRow> processRecord(EdaAnalysisRow nextRow) throws Exception {
     _numRows++;
     try {
       JSONArray computations = nextRow.getDescriptor().getJSONArray("computations");
+      boolean performUpdate = false;
       for (int i = 0; i < computations.length(); i++) {
         _numComputes++;
         JSONObject collectionVar = computations.getJSONObject(i)
             .getJSONObject("descriptor")
             .getJSONObject("configuration")
             .getJSONObject("collectionVariable");
+        // check for new format; if present, then no change needed
+        if (collectionVar.has("collectionId") && !collectionVar.has("variableId")) {
+          _numSkippedComputes++;
+          continue;
+        }
         // save off variable ID, then remove variableId property and replace with collectionId
         String collectionId = collectionVar.getString("variableId");
         collectionVar.remove("variableId");
         collectionVar.put("collectionId", collectionId);
+        performUpdate = true;
+        _numUpdatedComputes++;
       }
-      _numUpdatedComputes++;
-      return new RowResult<>(nextRow).setShouldWrite(isPerformUpdates());
+      if (performUpdate) _numUpdatedRows++;
+      return new RowResult<>(nextRow).setShouldWrite(isPerformUpdates() && performUpdate);
     }
     catch (Exception e) {
       LOG.error("Error processing row '" + nextRow.getAnalysisId() + "'", e);
@@ -46,9 +56,11 @@ public class Build66 extends EdaAnalysisMigrator {
   public void dumpStatistics() {
     LOG.info(new JSONObject()
         .put("numRows", _numRows)
-        .put("numErrors", _numErrors)
         .put("numComputes", _numComputes)
         .put("numUpdatedComputes", _numUpdatedComputes)
+        .put("numSkippedComputes", _numSkippedComputes)
+        .put("numUpdatedRows", _numUpdatedRows)
+        .put("numErrors", _numErrors)
         .toString(2));
   }
 
