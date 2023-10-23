@@ -65,9 +65,11 @@ public class Build66 extends EdaAnalysisMigrator {
         }
 
         // save off variable ID, then remove variableId property and replace with collectionId
+        LOG.info("Before:" + descriptor.toString(2));
         String collectionId = collectionVar.getString("variableId");
         collectionVar.remove("variableId");
         collectionVar.put("collectionId", collectionId);
+        LOG.info("After:" + descriptor.toString(2));
         performUpdate = true;
         _numUpdatedComputes++;
       }
