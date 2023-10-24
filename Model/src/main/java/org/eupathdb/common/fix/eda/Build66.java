@@ -12,6 +12,22 @@ import org.gusdb.wdk.model.fix.table.TableRowInterfaces.RowResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * DB Migration script for cecomm, build 66.  Renames certain variableId properties to collectionId
+ * to comply with collectionSpec type, opening backend code to use collection-based metadata.
+ *
+ * To run, visit and set environment to a Microbiome website, setting the DB of your choice
+ * (cecomm or cecommdev).  The schema will be decided by the projectId (this script only applies to
+ * edausermb, but in the future we may need to pass in the schema to be used or run this on a
+ * ClinEpiDB site or VB also (one run for each schema).  Once the build and config is complete, run:
+ *
+ * fgpJava org.gusdb.wdk.model.fix.table.TableRowUpdater org.eupathdb.common.fix.eda.Build66 MicrobiomeDB
+ *
+ * This is a test run or dry run.  To actually write to the DB, add a "-write" argument to the end.
+ *
+ * @author rdoherty
+ *
+ */
 public class Build66 extends EdaAnalysisMigrator {
 
   private static final Logger LOG = LogManager.getLogger(Build66.class);
