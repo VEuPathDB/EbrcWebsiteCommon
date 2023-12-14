@@ -27,16 +27,23 @@
         vimeoUrl: "{{ modelprop.VIMEO_URL|default('') }}",
         communitySite: "{{ modelprop.COMMUNITY_SITE|default('') }}",
         siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}",
+        {% if eda is defined %}
         useEda: "true" === "{{ eda.enabled|default('false')}}",
         edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|default('') }}",
         edaServiceUrl: "{{ eda.service_base_url|default('') }}",
         {% if eda.single_app_mode is defined %}
         edaSingleAppMode: "{{ eda.single_app_mode }}",
-        {% endif -%}
+        {% endif %}
         edaEnableFullScreenApps: "true" === "{{ eda.enableFullScreenApps|default('false') }}",
+        {% endif %}
+        {% if user_datasets_workspace is defined %}
         useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
         datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
+        {% endif %}
         showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
+        {% if vdi is defined %}
+        vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
+        {% endif %}
         {% endblock %}
       };
     </script>

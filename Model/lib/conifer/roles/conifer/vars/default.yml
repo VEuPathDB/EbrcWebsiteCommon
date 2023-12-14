@@ -177,6 +177,9 @@ eda:
   # Disable full screen apps for w sites, until they pass qa
   enableFullScreenApps: "true"
 
+vdi:
+  service_base_url: "/vdi"
+
 user_datasets_workspace:
   enabled: "false"
   import_url: "/dataset-import"
