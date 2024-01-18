@@ -171,6 +171,7 @@ modelprop:
   SITE_SEARCH_SERVICE_URL:
   VDI_CONTROL_SCHEMA: 'VDI_CONTROL_DEV_N'
   VDI_DATASETS_SCHEMA: 'VDI_DATASETS_DEV_N'
+  VDI_DATASETS_DIRECTORY: '/var/www/Common/userDatasets/vdi_datasets_dev_n/'
 
 eda:
   enabled: "false"
