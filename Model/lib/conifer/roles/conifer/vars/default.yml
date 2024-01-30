@@ -173,7 +173,7 @@ modelprop:
   VDI_DATASETS_SCHEMA: 'VDI_DATASETS_DEV_N'
 
 eda:
-  enabled: "false"
+  enabled: "true"
   example_analyses_author:
   service_base_url: "/eda"
   # Disable full screen apps for w sites, until they pass qa
