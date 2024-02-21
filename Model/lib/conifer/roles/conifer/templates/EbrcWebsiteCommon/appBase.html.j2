@@ -93,6 +93,10 @@
           gitterAside.style.display = 'none';
           document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
 
+          if (gitterBtn.baseURI.includes('embed-record')) {
+            gitterBtn.style.display = 'none';
+          }
+
           gitterBtn.addEventListener(
             'click', 
             function openGitterInNewTab(e) {
