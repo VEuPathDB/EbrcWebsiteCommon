@@ -106,10 +106,10 @@ public class SitemapService extends AbstractWdkService {
 
     // build answer for this question
     AnswerValue answer = AnswerValueFactory.makeAnswer(
-        getSessionUser(),
+        getRequestingUser(),
         AnswerSpec.builder(getWdkModel())
           .setQuestionFullName(question.getFullName())
-          .buildRunnable(getSessionUser(), StepContainer.emptyContainer()));
+          .buildRunnable(getRequestingUser(), StepContainer.emptyContainer()));
 
     return Response.ok(new RecordUrlDumper(getContextUri(), fmt, answer)).build();
   }

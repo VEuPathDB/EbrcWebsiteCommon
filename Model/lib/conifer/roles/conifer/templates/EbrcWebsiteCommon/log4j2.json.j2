@@ -7,7 +7,7 @@
         "value": "${sys:catalina.base}/logs/{{ tomcat_webapp_ctx }}"
       },{
         "name": "standardLogPattern",
-        "value": "[%d{dd/MMM/yyyy|HH:mm:ss}] sid:%-5X{shortSessionId} rid: %4X{requestId} %9cmdc{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"
+        "value": "[%d{dd/MMM/yyyy|HH:mm:ss}] rid: %4X{requestId} %9cmdc{requestTimer} %15X{ipAddress} - %-5p - %C:%L - %m%n"
       },{
         "name": "errorLogPattern",
         "value": "%m%n"

@@ -131,14 +131,6 @@ public class ErrorHandler {
         .append(NL)
 
         .append(SECTION_DIV)
-        .append("Session Attributes").append(doubleNewline)
-        .append(getAttributeMapText(context.getSessionAttributeMap())).append(NL)
-
-        //.append(SECTION_DIV)
-        //.append("ServletContext Attributes").append(doubleNewline)
-        //.append(getAttributeMapText(context.getServletContextAttributes())).append(NL)
-
-        .append(SECTION_DIV)
         .append("Detailed Description").append(doubleNewline)
         .append(valueOrDefault(errors.getDetailedDescription(), "")).append(NL)
 
