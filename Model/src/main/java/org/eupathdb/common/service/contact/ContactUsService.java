@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import org.apache.log4j.Logger;
 import org.eupathdb.common.model.contact.ContactUsParams;
 import org.gusdb.fgputil.web.RequestData;
-import org.gusdb.fgputil.web.SessionProxy;
+import org.gusdb.wdk.cache.TemporaryUserDataStore.TemporaryUserData;
 import org.gusdb.wdk.model.Attachment;
 import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
@@ -89,15 +89,14 @@ public class ContactUsService extends AbstractWdkService {
     LOG.info("Handling 'contact us' request...");
 
     try {
-      User user = getSessionUser();
+      User user = getRequestingUser();
       RequestData requestData = getRequest();
       WdkModel wdkModel = getWdkModel();
-      SessionProxy session = requestData.getSession();
 
       JSONObject jsonBody = new JSONObject(body);
-      ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, requestData, session);
+      ContactUsParams contactUsParams = parseContactParams(jsonBody, wdkModel, requestData, getTemporaryUserData());
 
-LOG.info("Message: " +  contactUsParams.message);
+      LOG.info("Message: " +  contactUsParams.message);
 
       createAndSendEmail(
         contactUsParams,
@@ -114,7 +113,7 @@ LOG.info("Message: " +  contactUsParams.message);
     return Response.ok().build();
   }
   
-  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, RequestData requestData, SessionProxy session) {
+  public static ContactUsParams parseContactParams(JSONObject jsonBody, WdkModel wdkModel, RequestData requestData, TemporaryUserData userTmpData) {
     String message = jsonBody.getString("message");
     String context = getStringOrDefault(jsonBody, "context", null);
     String subject = getStringOrDefault(jsonBody, "subject", "");
@@ -134,7 +133,7 @@ LOG.info("Message: " +  contactUsParams.message);
       new JSONArray()
     );
     String[] attachmentIds = toStringArray(attachmentIdsJson);
-    Attachment[] attachments = fetchAttachments(attachmentIds, wdkModel, session);
+    Attachment[] attachments = fetchAttachments(attachmentIds, wdkModel, userTmpData);
     
     return new ContactUsParams(
       subject,
@@ -147,26 +146,26 @@ LOG.info("Message: " +  contactUsParams.message);
     );
   }
   
-  private static Attachment[] fetchAttachments(String[] attachmentIds, WdkModel wdkModel, SessionProxy session) {
+  private static Attachment[] fetchAttachments(String[] attachmentIds, WdkModel wdkModel, TemporaryUserData userTmpData) {
     return Stream
       .of(attachmentIds)
-      .map(attachmentId -> fetchAttachment(attachmentId, wdkModel, session))
+      .map(attachmentId -> fetchAttachment(attachmentId, wdkModel, userTmpData))
       .toArray(Attachment[]::new);
   }
 
-  private static Attachment fetchAttachment(String attachmentId, WdkModel wdkModel, SessionProxy session) {
-    java.nio.file.Path attachmentPath = getAttachmentPath(attachmentId, wdkModel, session)
+  private static Attachment fetchAttachment(String attachmentId, WdkModel wdkModel, TemporaryUserData userTmpData) {
+    java.nio.file.Path attachmentPath = getAttachmentPath(attachmentId, wdkModel, userTmpData)
       .orElseThrow(() -> new WdkRuntimeException("Could not find expected attachment " + attachmentId));
     DataHandler tempFileDataHandler = new DataHandler(new FileDataSource(attachmentPath.toFile()));
 
-    TemporaryFileMetadata attachmentMetadata = TemporaryFileService.getTempFileMetadata(attachmentId, session)
+    TemporaryFileMetadata attachmentMetadata = TemporaryFileService.getTempFileMetadata(attachmentId, userTmpData)
       .orElseThrow(() -> new WdkRuntimeException("Could not find expected metadata for attachment " + attachmentId));
 
     return new Attachment(tempFileDataHandler, attachmentMetadata.getOriginalName());
   }
 
-  private static Optional<java.nio.file.Path> getAttachmentPath(String tempFile, WdkModel wdkModel, SessionProxy session) {
-    return TemporaryFileService.getTempFileFactory(wdkModel, session).apply(tempFile);
+  private static Optional<java.nio.file.Path> getAttachmentPath(String tempFile, WdkModel wdkModel, TemporaryUserData userTmpData) {
+    return TemporaryFileService.getTempFileFactory(wdkModel, userTmpData).apply(tempFile);
   }
   
 }
