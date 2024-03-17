@@ -7,9 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link href="/{{ webapp_ctx }}/images/{{ displayName }}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
     <script>
-      {# used for webpack. remove this when this can be set at build time. #}
-      window.__asset_path_remove_me_please__ = "/{{ webapp_ctx }}/bundles/";
-
       {# used by EbrcWebsiteCommon to initialize wdk #}
       window.__SITE_CONFIG__ = {
         {% block siteConfig %}
@@ -64,8 +61,8 @@
       </script>
     {%- endif %}{%- endif %}
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle.css"/>
-    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle.js" ></script>
+    <link rel="stylesheet" type="text/css" href="{{ webapp_host_uri }}/{{ webapp_bundle_type_segment }}/site-client.bundle.css"/>
+    <script charset="utf8" src="{{ webapp_host_uri }}/{{ webapp_bundle_type_segment }}/site-client.bundle.js"></script>
   </head>
   {% set bodyClassName = 'vpdb-Body' if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB' else 'wdk-Body' %}
   <body class="{{ bodyClassName }}">
@@ -84,7 +81,7 @@
         room: '{{ room }}/community'
       };
       document.addEventListener(
-        'gitter-sidecar-instance-started', 
+        'gitter-sidecar-instance-started',
         function gitterSidecarHack() {
           const gitterBtn = document.querySelector('.gitter-open-chat-button');
           const gitterAside = document.querySelector('.gitter-chat-embed');
@@ -98,17 +95,17 @@
           }
 
           gitterBtn.addEventListener(
-            'click', 
+            'click',
             function openGitterInNewTab(e) {
               e.stopPropagation();
               e.preventDefault();
               window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
-            }, 
+            },
             true
           );
 
           gitterAside.addEventListener(
-            'gitter-chat-toggle', 
+            'gitter-chat-toggle',
             function keepGitterBtnVisible() {
               // we want the chat button to remain visible when clicked
               gitterBtn.classList.remove('is-collapsed');

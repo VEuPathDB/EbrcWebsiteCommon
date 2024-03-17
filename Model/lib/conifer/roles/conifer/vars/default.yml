@@ -8,6 +8,10 @@ webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
+# Client Container Config
+webapp_host_uri: =c= URI (URL or path) under which the client code container is exposed (if it is a path, it MUST begin with /) TODO SET ME HERE WHEN THE CONTAINER IS DEPLOYED!!!!
+webapp_bundle_type_segment: =c= Site "type" path segment e.g. [clinepi|genomics|mbio|ortho]
+
 # short convenience names for most common user-defined vars
 accountDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@acctDbS
 accountDb_login: =c= username for account database
@@ -167,7 +171,7 @@ modelprop:
   GOOGLE_ANALYTICS_ID:
   FACEBOOK_URL:
   YOUTUBE_URL:
-  REDDIT_URL: 
+  REDDIT_URL:
   SITE_SEARCH_SERVICE_URL:
   VDI_CONTROL_SCHEMA: 'VDI_CONTROL_DEV_N'
   VDI_DATASETS_SCHEMA: 'VDI_DATASETS_DEV_N'
