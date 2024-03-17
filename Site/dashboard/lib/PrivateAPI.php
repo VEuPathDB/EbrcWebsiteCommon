@@ -38,9 +38,6 @@ class PrivateAPI {
     $user_database = new Database('USER');
     $udb_attr = $user_database->attributes();
 
-    $account_database = new Database('ACCT');
-    $actdb_attr = $account_database->attributes();
-
     $wdk_properties = new WdkProperties();
     $wdk_properties_attr = $wdk_properties->attributes();
 
@@ -101,14 +98,6 @@ class PrivateAPI {
                     'servername' => $udb_attr{'server_name'},
                     'sizeondisk' => $udb_attr{'dbf_gb_on_disk'},
                     'aliases' => $this->array_to_map($ldap_resolver->resolve($udb_attr{'service_name'}), 'alias'),
-                ),
-                'accountdb' => array(
-                    'servicename' => $actdb_attr{'service_name'},
-                    'instancename' => $actdb_attr{'instance_name'},
-                    'globalname' => $actdb_attr{'global_name'},
-                    'servername' => $actdb_attr{'server_name'},
-                    'sizeondisk' => $actdb_attr{'dbf_gb_on_disk'},
-                    'aliases' => $this->array_to_map($ldap_resolver->resolve($actdb_attr{'service_name'}), 'alias'),
                 ),
             ),
             'querycache' => array(
