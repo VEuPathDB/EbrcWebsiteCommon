@@ -24,6 +24,8 @@ if ($projectName eq "MicrobiomeDB" || $projectName eq "ClinEpiDB") {
   $svnPrefix =~s/DB//  ;
 } elsif ($projectName eq "ICEMR" || $projectName eq "Gates" || $projectName eq "AllClinEpiDB") {
   $svnPrefix = "ClinEpi";
+} elsif ($projectName eq "OrthoMCL") {
+  $svnPrefix =$projectName;
 } else {
   $svnPrefix = "ApiCommon";
 }
