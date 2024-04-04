@@ -1,26 +1,31 @@
 package org.eupathdb.common.fix;
 
 import org.gusdb.wdk.model.WdkModel;
-import org.gusdb.wdk.model.fix.table.edaanalysis.AnalysisRow;
-import org.gusdb.wdk.model.fix.table.edaanalysis.plugins.VDIMigrationPlugin;
 import org.gusdb.wdk.model.fix.table.steps.StepData;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 public class VdiStepMigrationPluginTest {
   private WdkModel wdkModel;
+  private ClassLoader classLoader;
 
+  @Before
   public void setup() {
+    classLoader = getClass().getClassLoader();
     wdkModel = Mockito.mock(WdkModel.class);
   }
 
   @Test
   public void test() throws Exception {
+    final File file = new File(Objects.requireNonNull(classLoader.getResource("migration-unit-test-1.json")).getFile());
     VdiStepMigrationPlugin plugin = new VdiStepMigrationPlugin();
-    plugin.configure(wdkModel, List.of());
+    plugin.configure(wdkModel, List.of(file.getAbsolutePath()));
     StepData testRow = new StepData();
     testRow.setQuestionName("GeneQuestions.GenesByRNASeqUserDataset");
     testRow.setParamFilters(constructParamFilters());
