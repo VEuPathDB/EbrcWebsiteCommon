@@ -2,7 +2,7 @@
 ---
 
 # construct a prefix from hostname, like w1_prefix, q2_prefix
-prefix: "{{ hostname | regex_replace('^([a-z])([0-9]).*','\\12_prefix') }}"
+prefix: "{{ hostname | regex_replace('^([a-z][0-9]).*','1_prefix') }}"
 
 vdi_control_env_map:
   w2_prefix: VDI_CONTROL_PROD_N
@@ -25,6 +25,6 @@ vdi_datasets_env_map:
   q1_prefix: VDI_DATASETS_QA_S
 
 modelprop:
-  VDI_CONTROL_SCHEMA: "//{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
-  VDI_DATASETS_SCHEMA: "//{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
+  VDI_CONTROL_SCHEMA: "{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
+  VDI_DATASETS_SCHEMA: "{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
   COMMUNITY_SITE: //static-content.veupathdb.org/ 
