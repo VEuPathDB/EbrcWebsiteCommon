@@ -163,8 +163,9 @@ vdi_datasets_env_map:
 
 
 modelprop:
-  VDI_CONTROL_SCHEMA: "//{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
-  VDI_DATASETS_SCHEMA: "//{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
+  VDI_CONTROL_SCHEMA: "{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
+  VDI_DATASETS_SCHEMA: "{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
+  VDI_DATASETS_DIRECTORY: /var/www/Common/userDatasets
   PROJECT_ID: '{{ project }}'
   LEGACY_WEBAPP_BASE_URL: "/{{ _webapp_ctx }}"
   WEBAPP_BASE_URL: "/{{ _webapp_ctx }}/app"
