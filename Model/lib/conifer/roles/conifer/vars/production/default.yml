@@ -2,29 +2,27 @@
 ---
 
 # construct a prefix from hostname, like w1_prefix, q2_prefix
-prefix: "{{ hostname | regex_replace('^([a-z])([0-9]).*','\\12_prefix') }}"
-
-vdi_control_env_map:
-  w2_prefix: VDI_CONTROL_PROD_N
-  b2_prefix: VDI_CONTROL_BETA_N
-  q2_prefix: VDI_CONTROL_QA_N
-
-vdi_datasets_env_map:
-  w2_prefix: VDI_DATASETS_PROD_N
-  b2_prefix: VDI_DATASETS_BETA_N
-  q2_prefix: VDI_DATASETS_QA_N
+prefix: "{{ hostname | regex_replace('^([a-z][0-9]).*','1_prefix') }}"
 
 vdi_control_env_map:
   w1_prefix: VDI_CONTROL_PROD_S
   b1_prefix: VDI_CONTROL_BETA_S
   q1_prefix: VDI_CONTROL_QA_S
+  w2_prefix: VDI_CONTROL_PROD_N
+  b2_prefix: VDI_CONTROL_BETA_N
+  q2_prefix: VDI_CONTROL_QA_N
+  default: VDI_CONTROL_QA_N
 
 vdi_datasets_env_map:
   w1_prefix: VDI_DATASETS_PROD_S
   b1_prefix: VDI_DATASETS_BETA_S
   q1_prefix: VDI_DATASETS_QA_S
+  w2_prefix: VDI_DATASETS_PROD_N
+  b2_prefix: VDI_DATASETS_BETA_N
+  q2_prefix: VDI_DATASETS_QA_N
+  default: VDI_DATASETS_QA_N
 
 modelprop:
-  VDI_CONTROL_SCHEMA: "//{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
-  VDI_DATASETS_SCHEMA: "//{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
+  VDI_CONTROL_SCHEMA: "{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
+  VDI_DATASETS_SCHEMA: "{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
   COMMUNITY_SITE: //static-content.veupathdb.org/ 

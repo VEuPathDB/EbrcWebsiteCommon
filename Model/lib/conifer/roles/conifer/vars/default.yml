@@ -150,18 +150,6 @@ modelconfig_emailContent: >
     <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other VEuPathDB member site.</p>
   ]]>
 
-# construct a prefix from hostname, like w1_prefix, q2_prefix
-prefix: "{{ hostname | regex_replace('^([a-z])([0-9]).*','\\12_prefix') }}"
-
-vdi_control_env_map:
-  au_prefix: VDI_CONTROL_DEV_S
-  default: VDI_CONTROL_DEV_N
-
-vdi_datasets_env_map:
-  au_prefix: VDI_DATASETS_DEV_S
-  default: VDI_DATASETS_DEV_N
-
-
 modelprop:
   VDI_CONTROL_SCHEMA: "{{ vdi_control_env_map[prefix]|default(vdi_control_env_map['default']) }}"
   VDI_DATASETS_SCHEMA: "{{ vdi_datasets_env_map[prefix]|default(vdi_datasets_env_map['default']) }}"
