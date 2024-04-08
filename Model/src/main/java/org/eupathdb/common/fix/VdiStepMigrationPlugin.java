@@ -63,6 +63,7 @@ public class VdiStepMigrationPlugin implements TableRowUpdaterPlugin<StepData>{
 
     // Re-wrap the migrated ID as a JSON list with a singular item.
     params.put(paramName, "[\"" + vdiId + "\"]");
+    LOG.info("UD MAPPING: " + step.getStepId() + " legacy: " + legacyId + ". VDI: " + vdiId);
     LOG.info("STEP AFTER MIGRATION: " + step.getStepId() + " params: " + params);
 
     return new RowResult<>(step)
