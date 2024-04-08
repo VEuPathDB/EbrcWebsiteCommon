@@ -54,6 +54,7 @@ public class VdiStepMigrationPlugin implements TableRowUpdaterPlugin<StepData>{
   private RowResult<StepData> migrateUdStep(StepData step, String paramName) {
     JSONObject params = step.getParamFilters().getJSONObject("params");
 
+    LOG.info("STEP BEFORE MIGRATION: " + step.getStepId() + " params: " + params);
     // Raw ID is stored as a stringified JSON list with a singular ID in it (i.e. [\"1234\"])
     String rawLegacyId = params.getString(paramName);
     JSONArray parsedLegacyId = new JSONArray(rawLegacyId);
@@ -62,6 +63,8 @@ public class VdiStepMigrationPlugin implements TableRowUpdaterPlugin<StepData>{
 
     // Re-wrap the migrated ID as a JSON list with a singular item.
     params.put(paramName, "[\"" + vdiId + "\"]");
+    LOG.info("STEP AFTER MIGRATION: " + step.getStepId() + " params: " + params);
+
     return new RowResult<>(step)
         .setShouldWrite(_write);
   }
