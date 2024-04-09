@@ -57,9 +57,19 @@ public class VdiStepMigrationPlugin implements TableRowUpdaterPlugin<StepData>{
     LOG.info("STEP BEFORE MIGRATION: " + step.getStepId() + " params: " + params);
     // Raw ID is stored as a stringified JSON list with a singular ID in it (i.e. [\"1234\"])
     String rawLegacyId = params.getString(paramName);
-    JSONArray parsedLegacyId = new JSONArray(rawLegacyId);
-    String legacyId = parsedLegacyId.getString(0);
+    String legacyId;
+    try {
+      legacyId = new JSONArray(rawLegacyId).getString(0);
+    } catch (Exception e) {
+      legacyId = rawLegacyId;
+    }
     String vdiId = _legacyIdToVdiId.get(legacyId);
+
+    if (vdiId == null) {
+      // Don't try to migrate steps that don't have a migrated UD. These are probably deleted before the UDs were migrated.
+      return new RowResult<>(step)
+          .setShouldWrite(false);
+    }
 
     // Re-wrap the migrated ID as a JSON list with a singular item.
     params.put(paramName, "[\"" + vdiId + "\"]");
