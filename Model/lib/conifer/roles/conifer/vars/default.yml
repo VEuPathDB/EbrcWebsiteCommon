@@ -173,7 +173,7 @@ modelprop:
 
 eda:
   enabled: "true"
-  example_analyses_author:
+  example_analyses_author: 1926010
   service_base_url: "/eda"
   # Disable full screen apps for w sites, until they pass qa
   enableFullScreenApps: "true"
