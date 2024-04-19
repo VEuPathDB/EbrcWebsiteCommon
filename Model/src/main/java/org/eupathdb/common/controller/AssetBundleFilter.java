@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -48,7 +49,9 @@ public class AssetBundleFilter implements Filter {
       String subPath = getSubPath(userAgentString);
       String resourcePath = path.substring(BASE_PATH.length());
       String realPath = BASE_PATH + subPath + resourcePath;
-      res.sendRedirect(req.getContextPath() + realPath);
+      RequestDispatcher dispatcher = req.getRequestDispatcher(realPath);
+      res.addHeader("x-real-path", realPath);
+      dispatcher.forward(req, res);
       return;
     }
     chain.doFilter(servletRequest, servletResponse);
