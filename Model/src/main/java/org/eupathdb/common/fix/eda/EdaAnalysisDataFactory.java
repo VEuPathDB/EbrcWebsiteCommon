@@ -94,7 +94,14 @@ public class EdaAnalysisDataFactory implements TableRowFactory<EdaAnalysisRow>, 
   }
 
   @Override
+  public List<String> getTableNamesForBackup(String schema) {
+    return List.of(_schema + ANALYSIS_TABLE);
+  }
+
+  @Override
   public String getWriteSql(String schema) {
+    // use passed schema instead of the one on in model-config since EDA
+    //   uses different user schemas for user data (not e.g. userlogins5 like WDK)
     return "update " + _schema + ANALYSIS_TABLE +
         " set " + Arrays.stream(MUTABLE_COLUMNS)
           .map(col -> col + " = ?")

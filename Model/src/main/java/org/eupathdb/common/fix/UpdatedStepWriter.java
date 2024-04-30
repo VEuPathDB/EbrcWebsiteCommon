@@ -2,6 +2,8 @@ package org.eupathdb.common.fix;
 
 import java.sql.Types;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -21,6 +23,13 @@ public class UpdatedStepWriter implements TableRowWriter<StepData> {
 
   private static final String INSERT_STEP_ID_SQL =
       "INSERT INTO " + UPDATED_STEPS_TABLE_NAME + " (STEP_ID) VALUES (?)";
+
+
+  @Override
+  public List<String> getTableNamesForBackup(String schema) {
+    // No backup tables since this plugin creates a new table
+    return Collections.emptyList();
+  }
 
   @Override
   public String getWriteSql(String schema) {

@@ -10,7 +10,7 @@ import org.gusdb.wdk.model.fix.table.TableRowUpdater;
 
 public abstract class EdaAnalysisMigrator implements TableRowUpdaterPlugin<EdaAnalysisRow> {
 
-  private static final Map<String,String> SCHEMA_MAP = new HashMap<>() {{
+  public static final Map<String,String> SCHEMA_MAP = new HashMap<>() {{
     put("ClinEpiDB", "edauserce.");
     put("MicrobiomeDB", "edausermb.");
     put("VectorBase", "edauservb.");
