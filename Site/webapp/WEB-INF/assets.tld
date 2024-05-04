@@ -9,7 +9,7 @@
   <function>
     <name>fingerprint</name>
     <function-class>org.eupathdb.common.controller.functions.AssetFunctions</function-class>
-    <function-signature>java.lang.String doFingerprint(java.lang.String, javax.servlet.ServletContext)</function-signature>
+    <function-signature>java.lang.String doFingerprint(java.lang.String, jakarta.servlet.ServletContext)</function-signature>
   </function>
 
 </taglib>

@@ -1,6 +1,6 @@
 package org.eupathdb.common.controller.functions;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
