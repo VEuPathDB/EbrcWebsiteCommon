@@ -63,9 +63,9 @@
         gtag('config', '{{ modelprop.GOOGLE_ANALYTICS_ID }}');
       </script>
     {%- endif %}{%- endif %}
+    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle.js" ></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle.css"/>
-    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle.js" ></script>
   </head>
   {% set bodyClassName = 'vpdb-Body' if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB' else 'wdk-Body' %}
   <body class="{{ bodyClassName }}">
@@ -76,47 +76,52 @@
         {% endblock %}
       </div>
     </div>
-  </body>
-  {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB'  %}
-    {% set room = 'VEuPathDB-genomic' %}
-    <script>
-      ((window.gitter = {}).chat = {}).options = {
-        room: '{{ room }}/community'
-      };
-      document.addEventListener(
-        'gitter-sidecar-instance-started', 
-        function gitterSidecarHack() {
-          const gitterBtn = document.querySelector('.gitter-open-chat-button');
-          const gitterAside = document.querySelector('.gitter-chat-embed');
+    {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB'  %}
+      {% set room = 'VEuPathDB-genomic' %}
+      <script>
+        ((window.gitter = {}).chat = {}).options = {
+          room: '{{ room }}/community'
+        };
+        document.addEventListener(
+          'gitter-sidecar-instance-started', 
+          function gitterSidecarHack() {
+            const gitterBtn = document.querySelector('.gitter-open-chat-button');
+            const gitterAside = document.querySelector('.gitter-chat-embed');
 
-          // we want to hide the aside and any loading indicators when button is clicked
-          gitterAside.style.display = 'none';
-          document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
+            // we want to hide the aside and any loading indicators when button is clicked
+            gitterAside.style.display = 'none';
+            document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
 
-          if (gitterBtn.baseURI.includes('embed-record')) {
-            gitterBtn.style.display = 'none';
-          }
-
-          gitterBtn.addEventListener(
-            'click', 
-            function openGitterInNewTab(e) {
-              e.stopPropagation();
-              e.preventDefault();
-              window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
-            }, 
-            true
-          );
-
-          gitterAside.addEventListener(
-            'gitter-chat-toggle', 
-            function keepGitterBtnVisible() {
-              // we want the chat button to remain visible when clicked
-              gitterBtn.classList.remove('is-collapsed');
+            if (gitterBtn.baseURI.includes('embed-record')) {
+              gitterBtn.style.display = 'none';
             }
-          )
-        }
-      )
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js" async defer></script>
-  {%- endif %}
+
+            gitterBtn.addEventListener(
+              'click', 
+              function openGitterInNewTab(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
+              }, 
+              true
+            );
+
+            gitterAside.addEventListener(
+              'gitter-chat-toggle', 
+              function keepGitterBtnVisible() {
+                // we want the chat button to remain visible when clicked
+                gitterBtn.classList.remove('is-collapsed');
+              }
+            )
+          }
+        );
+        // Prioritize loading application data over this script
+        setTimeout(2000, function loadSideCar() {
+          const scriptTag = document.createElement('script');
+          scriptTag.src = 'https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js';
+          document.head.appendChild(scriptTag);
+        });
+      </script>
+    {%- endif %}
+  </body>
 </html>
