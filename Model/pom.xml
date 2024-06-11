@@ -82,7 +82,7 @@
 
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -153,7 +153,7 @@
     <!-- Contains context listener used to prevent classloader memory leaks (used by web.xmls) -->
     <dependency>
       <groupId>se.jiderhamn.classloader-leak-prevention</groupId>
-      <artifactId>classloader-leak-prevention-servlet</artifactId>
+      <artifactId>classloader-leak-prevention-servlet3</artifactId>
     </dependency>
 
     <dependency>
