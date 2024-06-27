@@ -3,7 +3,7 @@ package EbrcWebsiteCommon::View::GraphPackage::ProfileSet;
 use strict;
 
 use Data::Dumper;
-
+use URI::Escape;
 
 
 # Main Profile Set Name
@@ -132,6 +132,9 @@ sub getJsonForService {
   my $facet = $self->getFacet();
   my $contXAxis = $self->getContXAxis();
   my $displayName = $self->getDisplayName(); 
+  if ($displayName =~ m/[^\x00-\x7f]/) {
+    $displayName = uri_escape_utf8($displayName);
+  }
 
   my $jsonString;
 
