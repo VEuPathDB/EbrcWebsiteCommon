@@ -143,9 +143,19 @@
     </copy>
   </target>
 
+  <target name="makeSupportedBrowsersScript">
+    <exec executable="makeSupportedBrowsersScript"
+          dir="${webappTargetDir}/bin"
+          failonerror="true"
+          failifexecutionfails="true">
+      <arg line="${targetDir}/bin/getBundlesSubPath"/>
+    </exec>
+  </target>
+
   <target name="installWebAssets">
     <ant target="copyNpmAssets"/>
     <ant target="localBuildWebAssets"/>
+    <ant target="makeSupportedBrowsersScript"/>
   </target>
 
 </project>
