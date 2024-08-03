@@ -132,14 +132,32 @@
     <arg line="nx bundle:dev @veupathdb/${sitePackageName}"/>
     </exec>
     <copy todir="${webappTargetDir}">
-      <fileset dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist" />
+      <fileset
+        dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist"
+        excludes="bin"
+      />
+    </copy>
+    <copy todir="${targetDir}">
+      <fileset
+        dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist"
+        includes="bin"
+      />
     </copy>
   </target>
 
   <target name="copyNpmAssets" depends="localBuildCheck" unless="doLocalBuild">
     <echo message="Installing web assets from npm"/>
     <copy todir="${webappTargetDir}">
-      <fileset dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist" />
+      <fileset
+        dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist"
+        excludes="bin"
+      />
+    </copy>
+    <copy todir="${targetDir}">
+      <fileset
+        dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist"
+        includes="bin"
+      />
     </copy>
   </target>
 
