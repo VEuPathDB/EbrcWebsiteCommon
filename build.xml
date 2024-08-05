@@ -131,49 +131,37 @@
     >
     <arg line="nx bundle:dev @veupathdb/${sitePackageName}"/>
     </exec>
-    <copy todir="${webappTargetDir}">
+    <copy todir="${webappTargetDir}" overwrite="true">
       <fileset
         dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist"
         excludes="bin"
       />
     </copy>
-    <copy todir="${targetDir}">
+    <copy todir="${targetDir}/bin" overwrite="true">
       <fileset
-        dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist"
-        includes="bin"
+        dir="${projectsDir}/web-monorepo/packages/sites/${sitePackageName}/dist/bin"
       />
     </copy>
   </target>
 
   <target name="copyNpmAssets" depends="localBuildCheck" unless="doLocalBuild">
     <echo message="Installing web assets from npm"/>
-    <copy todir="${webappTargetDir}">
+    <copy todir="${webappTargetDir}" overwrite="true">
       <fileset
         dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist"
         excludes="bin"
       />
     </copy>
-    <copy todir="${targetDir}">
+    <copy todir="${targetDir}/bin" overwrite="true">
       <fileset
-        dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist"
-        includes="bin"
+        dir="${projectsDir}/${project}/Site/node_modules/@veupathdb/${sitePackageName}/dist/bin"
       />
     </copy>
-  </target>
-
-  <target name="makeSupportedBrowsersScript">
-    <exec executable="makeSupportedBrowsersScript"
-          dir="${webappTargetDir}/bin"
-          failonerror="true"
-          failifexecutionfails="true">
-      <arg line="${targetDir}/bin/getBundlesSubPath"/>
-    </exec>
   </target>
 
   <target name="installWebAssets">
     <ant target="copyNpmAssets"/>
     <ant target="localBuildWebAssets"/>
-    <ant target="makeSupportedBrowsersScript"/>
   </target>
 
 </project>
