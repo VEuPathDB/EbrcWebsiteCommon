@@ -63,9 +63,13 @@
         gtag('config', '{{ modelprop.GOOGLE_ANALYTICS_ID }}');
       </script>
     {%- endif %}{%- endif %}
-    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle.js" ></script>
+    {# TODO Use a file checksum as the random id. #}
+    {# Generate a 32 byte random id for cache busting purposes. #}
+    {# The web server handles stripping the random_id from the request. #}
+    {% set random_id = range(9999999999) | random | to_uuid | replace('-', '') %}
+    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle-{{ random_id }}.js" ></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle.css"/>
+    <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle-{{ random_id }}.css"/>
   </head>
   {% set bodyClassName = 'vpdb-Body' if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB' else 'wdk-Body' %}
   <body class="{{ bodyClassName }}">
