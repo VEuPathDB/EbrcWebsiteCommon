@@ -1,14 +1,10 @@
 package org.eupathdb.common.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import static org.gusdb.oauth2.client.OAuthClient.getSSLContext;
+import static org.gusdb.oauth2.client.OAuthClient.readResponseBody;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
+import java.io.IOException;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -17,9 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
-import org.gusdb.oauth2.client.KeyStoreTrustManager.KeyStoreConfig;
-import org.gusdb.oauth2.client.OAuthClient;
-import org.gusdb.wdk.model.config.ModelConfig;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONException;
 
@@ -30,12 +23,11 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
   @Produces(MediaType.APPLICATION_JSON)
   public Response getVocabs() {
 
-    ModelConfig config = getWdkModel().getModelConfig();
     String vocabUrl = getWdkModel().getModelConfig().getOauthUrl() + "/assets/public/profile-vocabs.json";
 
     try (Response response = ClientBuilder.newBuilder()
           .withConfig(new ClientConfig())
-          .sslContext(createSslContext(config))
+          .sslContext(getSSLContext(getWdkModel().getModelConfig()))
           .build()
           .target(vocabUrl)
           .request(MediaType.APPLICATION_JSON)
@@ -44,28 +36,15 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
       // check for successful processing
       if (response.getStatus() != 200) {
         String responseBody = !response.hasEntity() ? "<empty>" : readResponseBody(response);
-        throw new RuntimeException("Failure to get JWKS information.  GET " + vocabUrl + " returned " + response.getStatus() + " with body: " + responseBody);
+        throw new RuntimeException("Failure to get profile vocabularies from OAuth server.  GET " +
+            vocabUrl + " returned " + response.getStatus() + " with body: " + responseBody);
       }
 
       String json = readResponseBody(response);
       return Response.ok(json).build();
     }
-    catch (KeyManagementException | NoSuchAlgorithmException | JSONException | IOException e) {
-      throw new RuntimeException("Unable to retrieve profile vocabs at " + vocabUrl, e);
+    catch (JSONException | IOException e) {
+      throw new RuntimeException("Unable to retrieve profile vocabularies at " + vocabUrl, e);
     }
-  }
-
-  private static String readResponseBody(Response response) throws IOException {
-    InputStream entity = (InputStream)response.getEntity();
-    ByteArrayOutputStream body = new ByteArrayOutputStream();
-    entity.transferTo(body);
-    return body.toString(StandardCharsets.UTF_8);
-  }
-
-  private static SSLContext createSslContext(KeyStoreConfig config) throws NoSuchAlgorithmException, KeyManagementException {
-    TrustManager trustManager = OAuthClient.getTrustManager(config);
-    SSLContext sslContext = SSLContext.getInstance("SSL");
-    sslContext.init(null, new TrustManager[]{ trustManager }, null);
-    return sslContext;
   }
 }
