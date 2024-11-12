@@ -41,6 +41,7 @@
         {% if user_datasets_workspace is defined %}
         useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
         datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
+        userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes|default('') }}",
         {% endif %}
         showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
         {% if vdi is defined %}
