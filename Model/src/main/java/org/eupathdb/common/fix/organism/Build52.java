@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.eupathdb.common.fix.organism.MigrateOrganisms.OrganismMigration;
-import org.gusdb.fgputil.ListBuilder;
 
 public class Build52 implements OrganismMigration {
 
   @Override
   public List<String> getProjectIds() {
-    return ListBuilder.asList("FungiDB");
+    return List.of("FungiDB","EuPathDB");
   }
 
   @Override

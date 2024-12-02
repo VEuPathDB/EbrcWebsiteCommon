@@ -34,8 +34,6 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(InvalidPublicStratsEmailerService.class);
 
-  private static final String AUTH_CODE_HEADER = "auth-code";
-
   private static final String SITE_NAME_MACRO = "%%SITE_NAME%%";
   private static final String SITE_URL_MACRO = "%%SITE_URL%%";
 
@@ -60,13 +58,13 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
       @QueryParam("logEmailContent") @DefaultValue("false") boolean logEmailContent,
       @QueryParam("statsOnly") @DefaultValue("false") boolean statsOnly
   ) throws WdkModelException {
+    WdkModel model = getWdkModel();
 
-    if (!adminCredentialsSubmitted()) {
+    if (!model.getModelConfig().getAdminEmails().contains(getRequestingUser().getEmail())) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
 
     // valid admin user creds submitted, load public strats and sort by owner email
-    WdkModel model = getWdkModel();
     Map<String, List<Strategy>> invalidStrats = binItems(
       model.getStepFactory().getPublicStrategies(),
       str -> str.getUser().getEmail(),
@@ -164,15 +162,4 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
         .put("distribution (num strats -> num users with that many strats)", usersPerCount);
   }
 
-  private boolean adminCredentialsSubmitted() throws WdkModelException {
-    List<String> authHeaders = getHeaders().get(AUTH_CODE_HEADER);
-    String[] loginCreds;
-    if (authHeaders == null || authHeaders.isEmpty() || authHeaders.get(0) == null ||
-        (loginCreds = authHeaders.get(0).split("\\|", 2)).length == 1) {
-      return false;
-    }
-    return
-      getWdkModel().getUserFactory().isCorrectPassword(loginCreds[0], loginCreds[1]) &&
-      getWdkModel().getModelConfig().getAdminEmails().contains(loginCreds[0]);
-  }
 }

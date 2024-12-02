@@ -1,6 +1,5 @@
 package org.eupathdb.common.controller;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
 

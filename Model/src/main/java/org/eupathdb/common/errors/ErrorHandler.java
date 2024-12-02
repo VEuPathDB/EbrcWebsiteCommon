@@ -25,7 +25,6 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
 import org.gusdb.fgputil.Timer;
-import org.gusdb.fgputil.TokenBucketPermitDistributor;
 import org.gusdb.fgputil.db.pool.ConnectionPoolConfig;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
 import org.gusdb.fgputil.web.RequestSnapshot;
@@ -130,14 +129,6 @@ public class ErrorHandler {
         .append(getAttributeMapText(context.getRequestAttributeMap(), (value, key) ->
             (key.toLowerCase().startsWith("email") || key.toLowerCase().startsWith("passw")) ? "*****" : value.toString()))
         .append(NL)
-
-        .append(SECTION_DIV)
-        .append("Session Attributes").append(doubleNewline)
-        .append(getAttributeMapText(context.getSessionAttributeMap())).append(NL)
-
-        //.append(SECTION_DIV)
-        //.append("ServletContext Attributes").append(doubleNewline)
-        //.append(getAttributeMapText(context.getServletContextAttributes())).append(NL)
 
         .append(SECTION_DIV)
         .append("Detailed Description").append(doubleNewline)

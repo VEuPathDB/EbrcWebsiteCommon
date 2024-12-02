@@ -25,6 +25,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(TestRunnerService.class)
     .add(InvalidPublicStratsEmailerService.class)
     .add(BlastFormInternalValuesService.class)
+    .add(UserProfileVocabulariesService.class)
     .replace(ExceptionMapper.class, EbrcExceptionMapper.class)
     .toSet();
   }

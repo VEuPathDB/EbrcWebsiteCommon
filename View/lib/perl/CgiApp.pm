@@ -52,7 +52,8 @@ BEGIN {
           || ($ENV{'WEBSITE_RELEASE_STAGE'} > 20));
         if ($isPublicSite) {
            print "<p>There was a problem running this service.<br> ";
-           print "If you report this problem please include this Error Tag: " . $uuid;
+           #print "If you report this problem please include this Error Tag: " . $uuid;
+           print "Please contact us with the URL in your browser, the page you are working on. Thanks!"
         } else {
            print "<p>Got an error: <pre>$msg</pre>\n";
            print "<p>Error Tag: $uuid";

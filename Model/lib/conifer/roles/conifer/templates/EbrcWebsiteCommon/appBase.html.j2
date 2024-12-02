@@ -23,20 +23,30 @@
         twitterUrl: "{{ modelprop.TWITTER_URL|default('') }}",
         twitterUrl2: "{{ modelprop.TWITTER_URL_2|default('') }}",
         youtubeUrl: "{{ modelprop.YOUTUBE_URL|default('') }}",
+        discordUrl: "{{ modelprop.DISCORD_URL|default('') }}",
+        linkedinUrl: "{{ modelprop.LINKEDIN_URL|default('') }}",
         redditUrl: "{{ modelprop.REDDIT_URL|default('') }}",
         vimeoUrl: "{{ modelprop.VIMEO_URL|default('') }}",
         communitySite: "{{ modelprop.COMMUNITY_SITE|default('') }}",
         siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}",
+        {% if eda is defined %}
         useEda: "true" === "{{ eda.enabled|default('false')}}",
-        edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|default('') }}",
+        edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|string|default('') }}",
         edaServiceUrl: "{{ eda.service_base_url|default('') }}",
         {% if eda.single_app_mode is defined %}
         edaSingleAppMode: "{{ eda.single_app_mode }}",
-        {% endif -%}
+        {% endif %}
         edaEnableFullScreenApps: "true" === "{{ eda.enableFullScreenApps|default('false') }}",
+        {% endif %}
+        {% if user_datasets_workspace is defined %}
         useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
         datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
+        userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes|default('') }}",
+        {% endif %}
         showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
+        {% if vdi is defined %}
+        vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
+        {% endif %}
         {% endblock %}
       };
     </script>
@@ -56,9 +66,13 @@
         gtag('config', '{{ modelprop.GOOGLE_ANALYTICS_ID }}');
       </script>
     {%- endif %}{%- endif %}
+    {# TODO Use a file checksum as the random id. #}
+    {# Generate a 32 byte random id for cache busting purposes. #}
+    {# The web server handles stripping the random_id from the request. #}
+    {% set random_id = range(9999999999) | random | to_uuid | replace('-', '') %}
+    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle-{{ random_id }}.js" ></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle.css"/>
-    <script charset="utf8" src="/{{ webapp_ctx }}/bundles/site-client.bundle.js" ></script>
+    <link rel="stylesheet" type="text/css" href="/{{ webapp_ctx }}/bundles/site-client.bundle-{{ random_id }}.css"/>
   </head>
   {% set bodyClassName = 'vpdb-Body' if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB' else 'wdk-Body' %}
   <body class="{{ bodyClassName }}">
@@ -69,43 +83,52 @@
         {% endblock %}
       </div>
     </div>
-  </body>
-  {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB'  %}
-    {% set room = 'VEuPathDB-genomic' %}
-    <script>
-      ((window.gitter = {}).chat = {}).options = {
-        room: '{{ room }}/community'
-      };
-      document.addEventListener(
-        'gitter-sidecar-instance-started', 
-        function gitterSidecarHack() {
-          const gitterBtn = document.querySelector('.gitter-open-chat-button');
-          const gitterAside = document.querySelector('.gitter-chat-embed');
+    {%- if project != 'ClinEpiDB' and project != 'AllClinEpiDB' and project != 'MicrobiomeDB'  %}
+      {% set room = 'VEuPathDB-genomic' %}
+      <script>
+        ((window.gitter = {}).chat = {}).options = {
+          room: '{{ room }}/community'
+        };
+        document.addEventListener(
+          'gitter-sidecar-instance-started', 
+          function gitterSidecarHack() {
+            const gitterBtn = document.querySelector('.gitter-open-chat-button');
+            const gitterAside = document.querySelector('.gitter-chat-embed');
 
-          // we want to hide the aside and any loading indicators when button is clicked
-          gitterAside.style.display = 'none';
-          document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
+            // we want to hide the aside and any loading indicators when button is clicked
+            gitterAside.style.display = 'none';
+            document.querySelector('.gitter-chat-embed-loading-wrapper').style.display = 'none';
 
-          gitterBtn.addEventListener(
-            'click', 
-            function openGitterInNewTab(e) {
-              e.stopPropagation();
-              e.preventDefault();
-              window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
-            }, 
-            true
-          );
-
-          gitterAside.addEventListener(
-            'gitter-chat-toggle', 
-            function keepGitterBtnVisible() {
-              // we want the chat button to remain visible when clicked
-              gitterBtn.classList.remove('is-collapsed');
+            if (gitterBtn.baseURI.includes('embed-record')) {
+              gitterBtn.style.display = 'none';
             }
-          )
-        }
-      )
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js" async defer></script>
-  {%- endif %}
+
+            gitterBtn.addEventListener(
+              'click', 
+              function openGitterInNewTab(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                window.open('https://app.gitter.im/#/room/#VEuPathDB-genomic_community:gitter.im', "VEuPathDBGitterForum");
+              }, 
+              true
+            );
+
+            gitterAside.addEventListener(
+              'gitter-chat-toggle', 
+              function keepGitterBtnVisible() {
+                // we want the chat button to remain visible when clicked
+                gitterBtn.classList.remove('is-collapsed');
+              }
+            )
+          }
+        );
+        // Prioritize loading application data over this script
+        setTimeout(2000, function loadSideCar() {
+          const scriptTag = document.createElement('script');
+          scriptTag.src = 'https://cdn.jsdelivr.net/npm/gitter-sidecar@1.5.0/dist/sidecar.min.js';
+          document.head.appendChild(scriptTag);
+        });
+      </script>
+    {%- endif %}
+  </body>
 </html>

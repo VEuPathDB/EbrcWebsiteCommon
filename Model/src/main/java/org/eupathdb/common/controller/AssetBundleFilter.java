@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -48,7 +49,9 @@ public class AssetBundleFilter implements Filter {
       String subPath = getSubPath(userAgentString);
       String resourcePath = path.substring(BASE_PATH.length());
       String realPath = BASE_PATH + subPath + resourcePath;
-      res.sendRedirect(req.getContextPath() + realPath);
+      RequestDispatcher dispatcher = req.getRequestDispatcher(realPath);
+      res.addHeader("x-real-path", realPath);
+      dispatcher.forward(req, res);
       return;
     }
     chain.doFilter(servletRequest, servletResponse);
@@ -63,7 +66,8 @@ public class AssetBundleFilter implements Filter {
   private static String getSubPath(String userAgentString) throws IOException {
     if (userAgentString == null) return DEFAULT_SUB_PATH;
     String gusHome = GusHome.getGusHome();
-    System.out.println("gusHome: " + gusHome);
+    LOG.info("gusHome: " + gusHome);
+    LOG.info("userAgentString: " + userAgentString);
     String[] command = new String[] {
       gusHome + "/bin/getBundlesSubPath",
       userAgentString
@@ -80,11 +84,11 @@ public class AssetBundleFilter implements Filter {
       pr.waitFor();
     }
     catch (Exception ex) {
-      LOG.warn("Unable to execute script getBundlesSubPath. Using default sub path.", ex);
+      LOG.error("Unable to execute script getBundlesSubPath. Using default sub path.", ex);
       return DEFAULT_SUB_PATH;
     }
     if (pr.exitValue() != 0) {
-      LOG.warn("Script getBundlesSubPath did not return normally. Using sub path.\n" + output);
+      LOG.error("Script getBundlesSubPath did not return normally. Using sub path.\n" + output);
       return DEFAULT_SUB_PATH;
     }
     return output.toString();

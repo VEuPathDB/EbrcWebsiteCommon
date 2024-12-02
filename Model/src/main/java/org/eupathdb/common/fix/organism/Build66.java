@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.eupathdb.common.fix.organism.MigrateOrganisms.OrganismMigration;
 
-public class Build54 implements OrganismMigration {
+public class Build66 implements OrganismMigration {
 
   @Override
   public List<String> getProjectIds() {
@@ -17,7 +17,8 @@ public class Build54 implements OrganismMigration {
   @Override
   public Map<String, String> getOrganismMapping() {
     return Map.ofEntries(
-      entry("Anopheles stephensi Indian 2020", "Anopheles stephensi UCISS2018")
+      entry("Anopheles darlingi idAnoDarlMG-H_01","Anopheles darlingi AdarGF1")
+      //entry("unclassified Leishmania",REMOVE_ENTRY)
     );
   }
 

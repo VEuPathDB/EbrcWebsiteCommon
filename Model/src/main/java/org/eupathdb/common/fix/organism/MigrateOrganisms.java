@@ -81,7 +81,7 @@ public class MigrateOrganisms implements TableRowUpdaterPlugin<StepData> {
     Map<String,String> getOrganismMapping();
 
     /** @return name of organism column filter */
-    default String getOrganismColumnFilterName() { return "organism"; }
+    default String getOrganismColumnFilterName() { return "organism_full"; }
 
     /** @return list of org param names to apply the changes to */
     default List<String> getOrganismParams() { return STANDARD_ORGANISM_PARAMS; }

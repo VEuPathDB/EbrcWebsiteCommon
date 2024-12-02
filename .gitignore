@@ -2,14 +2,13 @@
 .idea/
 *.iml
 
-
 # Eclipse Project Junk
 .factorypath
 .settings/
 .project
 .classpath
 .vscode
-
+.pydevproject
 
 # Build directories
 /build/
@@ -20,14 +19,11 @@
 # Dependencies
 node_modules/
 
-
 # Gradle meta
 .gradle/
 
-
 # Compiled things
 *.class
-
 
 # Other version control
 .svn/

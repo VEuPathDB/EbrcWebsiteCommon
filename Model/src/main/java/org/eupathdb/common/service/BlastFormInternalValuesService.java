@@ -94,7 +94,7 @@ public class BlastFormInternalValuesService extends AbstractWdkService {
       .builder(getWdkModel())
       .setQuestionFullName(question.getFullName())
       .setParamValue(dbTypeParamName, dbTypeStableValue)
-      .build(getSessionUser(), StepContainer.emptyContainer(),
+      .build(getRequestingUser(), StepContainer.emptyContainer(),
           ValidationLevel.DISPLAYABLE, FillStrategy.FILL_PARAM_IF_MISSING)
       .getDisplayablyValid()
       .getOrThrow(invalid -> new DataValidationException(invalid.getValidationBundle())));
