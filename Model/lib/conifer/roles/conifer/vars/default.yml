@@ -46,24 +46,6 @@ _userdb_link_map:
   cecommn:     ceprodn.login_comment
   cecommdevs:  cedevs.login_comment
   cecommdevn:  cedevn.login_comment
-  amazcomms:   amazS.login_comment
-  amazcommn:   amazN.login_comment
-  icmrcomm:    icemr.login_comment
-  gatescommn:  gatesn.login_comment
-  gus4commn:   gus4commN.login_comment
-  gus4comms:   gus4commS.login_comment
-  gus4commt:   gus4commT.login_comment
-  mbiocommn:   mbiocommN.login_comment
-  mbiocomms:   mbiocommS.login_comment
-  prsmcomm:    prism.login_comment
-  prsmcomms:   prisms.login_comment
-  prsmcommn:   prismn.login_comment
-  rm15873:     rm15873.login_comment
-  rm25199s:    rm25199s.login_comment
-  rm25199n:    rm25199n.login_comment
-  rm9972:      rm9972.login_comment
-  rm35304a:    rm35304a.login_comment
-  rm35304c:    rm35304c.login_comment
   userdb:      vm.userdb
 
 _acctdb_link_map:
@@ -170,6 +152,7 @@ modelprop:
   FACEBOOK_URL:
   YOUTUBE_URL:
   REDDIT_URL: 
+  LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
 
 eda:
