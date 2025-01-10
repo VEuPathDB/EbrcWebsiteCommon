@@ -40,6 +40,7 @@ _userdb_link_map:
   apicommbetan: betan.login_comment
   apicommdevs: devs.login_comment
   apicommdevn: devn.login_comment
+  apicommd: devn.login_comment
   apicommlegacys: legacys.login_comment
   apicommlegacyn: legacyn.login_comment
   cecomms:     ceprods.login_comment
