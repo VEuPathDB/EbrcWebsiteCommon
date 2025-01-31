@@ -13,20 +13,26 @@ my $q = new CGI;
 print $q->header('application/json');
 my $idstr = $q->param('pmids');
 
-my @ids = split /[-|,]/, $idstr;
+my @ids = split /[-|,]\s*/, $idstr;
 
 my $index = 0;
 print "[\n";
 foreach my $id (@ids) {
 
-  next if($id.length == 0);
+  next if ($id eq "");
+  my ($title, $journal, $author, $url, $status);
 
   my $content = EbrcModelCommon::Model::pcbiPubmed::setPubmedID($id);
-  my $title   = EbrcModelCommon::Model::pcbiPubmed::fetchTitle($content, "ArticleTitle");
-  my $journal = EbrcModelCommon::Model::pcbiPubmed::fetchPublication($content, "Journal");
-  my $author  = EbrcModelCommon::Model::pcbiPubmed::fetchAuthorList($content, "Author");
-  my $url     = EbrcModelCommon::Model::pcbiPubmed::fetchPubmedUrl();
-
+#  print $content; next;
+  if ($content == -1) {
+    $status = "SERVER ERROR";
+  } else {
+    $title   = EbrcModelCommon::Model::pcbiPubmed::fetchTitle($content, "ArticleTitle");
+    $journal = EbrcModelCommon::Model::pcbiPubmed::fetchPublication($content, "Journal");
+    $author  = EbrcModelCommon::Model::pcbiPubmed::fetchAuthorList($content, "Author");
+    $url     = EbrcModelCommon::Model::pcbiPubmed::fetchPubmedUrl();
+    $status = $title? "FOUND" : "NOT FOUND";
+  }
   if ($index++ > 0) {
     print ','
   }
@@ -36,7 +42,8 @@ foreach my $id (@ids) {
     'title' => $title,
     'author' => $author,
     'journal' => $journal,
-    'url' => $url
+    'url' => $url,
+    'status' => $status
   );
   my $jsonStr = encode_json \%rec_hash;
   print "$jsonStr\n";
