@@ -26,6 +26,7 @@ foreach my $id (@ids) {
 #  print $content; next;
   if ($content == -1) {
     $status = "SERVER ERROR";
+    $title = "SERVER ERROR";
   } else {
     $title   = EbrcModelCommon::Model::pcbiPubmed::fetchTitle($content, "ArticleTitle");
     $journal = EbrcModelCommon::Model::pcbiPubmed::fetchPublication($content, "Journal");
