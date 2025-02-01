@@ -33,6 +33,7 @@ foreach my $id (@ids) {
     $author  = EbrcModelCommon::Model::pcbiPubmed::fetchAuthorList($content, "Author");
     $url     = EbrcModelCommon::Model::pcbiPubmed::fetchPubmedUrl();
     $status = $title? "FOUND" : "NOT FOUND";
+    $title = "NOT FOUND" unless $title;
   }
   if ($index++ > 0) {
     print ','
