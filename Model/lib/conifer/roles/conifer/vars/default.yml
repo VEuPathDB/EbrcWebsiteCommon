@@ -154,6 +154,7 @@ modelprop:
   REDDIT_URL: 
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
+  OPENAI_API_KEY:
 
 eda:
   enabled: "true"
