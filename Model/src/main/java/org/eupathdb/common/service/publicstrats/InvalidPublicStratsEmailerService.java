@@ -24,6 +24,7 @@ import org.gusdb.fgputil.functional.Functions;
 import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.user.StepFactory;
 import org.gusdb.wdk.model.user.Strategy;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONArray;
@@ -66,8 +67,8 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
 
     // valid admin user creds submitted, load public strats and sort by owner email
     Map<String, List<Strategy>> invalidStrats = binItems(
-      model.getStepFactory().getPublicStrategies(),
-      str -> str.getUser().getEmail(),
+      new StepFactory(getRequestingUser()).getPublicStrategies(),
+      str -> str.getOwningUser().getEmail(),
       Functions.not(Strategy::isValid)
     );
 
@@ -95,7 +96,7 @@ public class InvalidPublicStratsEmailerService extends AbstractWdkService {
     for (String userEmail : invalidStrats.keySet()) {
 
       List<Strategy> strats = invalidStrats.get(userEmail);
-      long userId = strats.get(0).getUser().getUserId();
+      long userId = strats.get(0).getOwningUser().getUserId();
       JSONArray stratJsons = new JSONArray();
       StringBuilder content = new StringBuilder(messageText);
 

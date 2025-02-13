@@ -45,7 +45,7 @@ public class ProjectIdMacroFilter implements Filter {
   }
 
   private void handleMacro(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    WdkModel wdkModel = (WdkModel) _context.getAttribute(Utilities.WDK_MODEL_KEY);
+    WdkModel wdkModel = (WdkModel) _context.getAttribute(Utilities.CONTEXT_KEY_WDK_MODEL_OBJECT);
     String projectId = wdkModel.getProjectId();
     String newUrl = getPath(request).replaceAll(projectIdMacro, "$1/" + projectId + "/$2");
     RequestDispatcher dispatcher = request.getRequestDispatcher(newUrl);

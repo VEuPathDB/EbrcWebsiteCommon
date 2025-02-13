@@ -106,7 +106,6 @@ public class SitemapService extends AbstractWdkService {
 
     // build answer for this question
     AnswerValue answer = AnswerValueFactory.makeAnswer(
-        getRequestingUser(),
         AnswerSpec.builder(getWdkModel())
           .setQuestionFullName(question.getFullName())
           .buildRunnable(getRequestingUser(), StepContainer.emptyContainer()));
@@ -130,7 +129,7 @@ public class SitemapService extends AbstractWdkService {
 
     public RecordUrlDumper(String urlBase, String urlFormat, AnswerValue answer) {
       _urlBase = urlBase;
-      _urlPath = formatUrl(urlFormat, answer.getAnswerSpec().getQuestion());
+      _urlPath = formatUrl(urlFormat, answer.getQuestion());
       _answer = answer;
     }
 
