@@ -63,7 +63,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
 
   @Override
   public Reporter configure(JSONObject config) throws ReporterConfigException, WdkModelException {
-    Question question = _baseAnswer.getAnswerSpec().getQuestion();
+    Question question = _baseAnswer.getQuestion();
     String questionName = question.getName();
     if (!(questionName.contains("Similarity") || questionName.contains("Blast"))) {
       throw new ReporterConfigException("Only BLAST searches can use this report.  Question: " + questionName, ErrorType.DATA_VALIDATION);
@@ -72,7 +72,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
     AttributeField scoreAttr = question.getAttributeField(SCORE_ATTRIBUTE_NAME)
         .orElseThrow(() -> new WdkModelException("BLAST question " +
             question.getFullName() + " does not contain score attribute."));
-    AnswerDetails details = AnswerDetailsFactory.createFromJson(config, _baseAnswer.getAnswerSpec().getQuestion());
+    AnswerDetails details = AnswerDetailsFactory.createFromJson(config, question);
     details.getSorting().add(0, new SortDirectionSpec<AttributeField>(scoreAttr, SortDirection.DESC));
 
     // validate that only summary and alignment attributes are requested
@@ -89,7 +89,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
 
     // record formatter requires the ID attribute, so must add to stream request
     //   if not already present and it contains non-PK columns
-    RecordClass recordClass = _baseAnswer.getAnswerSpec().getQuestion().getRecordClass();
+    RecordClass recordClass = _baseAnswer.getQuestion().getRecordClass();
     AttributeField idField = recordClass.getIdAttributeField();
     if (!_attributes.containsKey(idField.getName()) && recordClass.idAttributeHasNonPkMacros()) {
       throw new WdkModelException("Blast reporter cannot be used with recordclasses that have non-PK fields in their idAttribute.");
@@ -149,7 +149,7 @@ public class BlastViewReporter extends DefaultJsonReporter {
       throws IOException, WdkModelException, WdkUserException, SQLException {
     // read the primary key from this row
     PrimaryKeyValue pkVal = recordClass.getPrimaryKeyDefinition().getPrimaryKeyFromResultSet(rs);
-    RecordInstance record = new StaticRecordInstance(_baseAnswer.getUser(), recordClass, recordClass, pkVal.getRawValues(), false);
+    RecordInstance record = new StaticRecordInstance(_baseAnswer.getRequestingUser(), recordClass, recordClass, pkVal.getRawValues(), false);
     String recordJson = new JSONObject()
         .put(JsonKeys.DISPLAY_NAME, record.getIdAttributeValue().getDisplay())
         .put(JsonKeys.ID, RecordFormatter.getRecordPrimaryKeyJson(record))
