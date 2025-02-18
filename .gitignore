@@ -9,7 +9,7 @@
 .project
 .classpath
 .vscode
-
+.pydevproject
 
 # Build directories
 /build/
