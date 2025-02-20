@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+use lib "$ENV{GUS_HOME}/lib/perl";
+
+use EbrcModelCommon::Model::pcbiPubmed;
+use EbrcModelCommon::Model::XMLUtils;
+use CGI;
+use JSON;
+use strict;
+
+my $q = new CGI;
+
+print $q->header('application/json');
+my $idstr = $q->param('pmids');
+
+my @ids = split /[-|,]\s*/, $idstr;
+
+my $index = 0;
+print "[\n";
+foreach my $id (@ids) {
+
+  next if ($id eq "");
+  my ($title, $journal, $author, $url, $status);
+
+  my $content = EbrcModelCommon::Model::pcbiPubmed::setPubmedID($id);
+#  print $content; next;
+  if ($content == -1) {
+    $status = "SERVER ERROR";
+    $title = "SERVER ERROR";
+  } else {
+    $title   = EbrcModelCommon::Model::pcbiPubmed::fetchTitle($content, "ArticleTitle");
+    $journal = EbrcModelCommon::Model::pcbiPubmed::fetchPublication($content, "Journal");
+    $author  = EbrcModelCommon::Model::pcbiPubmed::fetchAuthorList($content, "Author");
+    $url     = EbrcModelCommon::Model::pcbiPubmed::fetchPubmedUrl();
+    $status = $title? "FOUND" : "NOT FOUND";
+    $title = "NOT FOUND" unless $title;
+  }
+  if ($index++ > 0) {
+    print ','
+  }
+
+  my %rec_hash = (
+    'id' => $id,
+    'title' => $title,
+    'author' => $author,
+    'journal' => $journal,
+    'url' => $url,
+    'status' => $status
+  );
+  my $jsonStr = encode_json \%rec_hash;
+  print "$jsonStr\n";
+}
+print ']';

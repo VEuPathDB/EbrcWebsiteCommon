@@ -1,38 +1,36 @@
 package org.eupathdb.common.model;
 
+import static org.gusdb.fgputil.FormatUtil.NL;
+
 import java.util.Map;
 import java.util.function.Function;
-
-import org.apache.log4j.Logger;
-import org.gusdb.fgputil.Tuples.TwoTuple;
-import org.gusdb.fgputil.client.ClientUtil;
-import org.gusdb.fgputil.client.CloseableResponse;
-import org.gusdb.fgputil.events.Events;
-import org.gusdb.fgputil.web.LoginCookieFactory;
-import org.gusdb.wdk.errors.ServerErrorBundle;
-import org.gusdb.wdk.events.ErrorEvent;
-import org.gusdb.wdk.model.WdkModel;
-import org.gusdb.wdk.model.WdkModelException;
-import org.gusdb.wdk.model.user.User;
-import org.gusdb.wdk.service.service.SessionService;
-import org.json.JSONObject;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static org.gusdb.fgputil.FormatUtil.NL;
+import org.apache.log4j.Logger;
+import org.gusdb.fgputil.Tuples.TwoTuple;
+import org.gusdb.fgputil.client.ClientUtil;
+import org.gusdb.fgputil.client.CloseableResponse;
+import org.gusdb.fgputil.events.Events;
+import org.gusdb.wdk.errors.ServerErrorBundle;
+import org.gusdb.wdk.events.ErrorEvent;
+import org.gusdb.wdk.model.WdkModel;
+import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.user.User;
+import org.gusdb.wdk.service.service.SessionService;
+import org.gusdb.wsf.plugin.Plugin;
+import org.json.JSONObject;
 
 public class MultiBlastServiceUtil {
+
   private static final Logger LOG = Logger.getLogger(MultiBlastServiceUtil.class);
 
   // required properties in model.prop
   private static final String LOCALHOST_PROP_KEY = "LOCALHOST";
   private static final String SERVICE_URL_PROP_KEY = "MULTI_BLAST_SERVICE_URL";
-
-  // header name for blast service authentication
-  private static final String AUTH_HEADER_NAME = "Auth-Key";
 
   public static <T extends Exception> String getMultiBlastServiceUrl(WdkModel model, Function<String,T> exceptionProvider) throws T {
     Map<String,String> modelProps = model.getProperties();
@@ -45,16 +43,6 @@ public class MultiBlastServiceUtil {
     return localhost + multiBlastServiceUrl;
   }
 
-  public static TwoTuple<String,String> getAuthHeader(WdkModel wdkModel, User user) {
-    return user.isGuest()
-        ? new TwoTuple<>(
-            AUTH_HEADER_NAME,
-            String.valueOf(user.getUserId()))
-        : new TwoTuple<>(
-            AUTH_HEADER_NAME,
-            new LoginCookieFactory(wdkModel.getModelConfig().getSecretKey()).getLoginCookieValue(user.getEmail()));
-  }
-
   /**
    * Transfers multi-blast jobs from the guest user to the newly signed-in user
    * by calling the link-guest endpoint on the configured multi-blast service.
@@ -65,7 +53,7 @@ public class MultiBlastServiceUtil {
    * @throws WdkModelException if no mblast service is configured (error calling service is not fatal)
    */
   public static void transferMultiBlastJobs(User oldUser, User newUser, WdkModel wdkModel, SessionService sessionSvc)
-  throws WdkModelException {
+      throws WdkModelException {
 
     // get multi-blast URL from the model; this is a fatal operation, even though the actual merge is not
     String mblastServiceUrl = MultiBlastServiceUtil.getMultiBlastServiceUrl(wdkModel, WdkModelException::new);
@@ -77,7 +65,7 @@ public class MultiBlastServiceUtil {
       .toString();
 
     // auth header for new user
-    TwoTuple<String,String> authHeader = MultiBlastServiceUtil.getAuthHeader(wdkModel, newUser);
+    TwoTuple<String,String> authHeader = Plugin.getServiceAuthorizationHeader(newUser.getAuthenticationToken().getTokenValue());
 
     LOG.debug("Making request to copy mblast jobs:" + NL +
       "POST to " + jobMergerUrl + NL +

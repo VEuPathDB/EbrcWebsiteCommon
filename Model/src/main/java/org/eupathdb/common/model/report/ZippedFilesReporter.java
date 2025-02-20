@@ -34,7 +34,7 @@ public class ZippedFilesReporter implements Reporter {
   @Override
   public Reporter setAnswerValue(AnswerValue answerValue) throws WdkModelException {
     _answerValue = answerValue;
-    RecordClass recordClass = answerValue.getAnswerSpec().getQuestion().getRecordClass();
+    RecordClass recordClass = answerValue.getQuestion().getRecordClass();
     if (!recordClass.getFullName().equals(FILE_RECORDCLASS)) {
       throw new IllegalStateException("This reporter should only be available for type: " + FILE_RECORDCLASS);
     }
