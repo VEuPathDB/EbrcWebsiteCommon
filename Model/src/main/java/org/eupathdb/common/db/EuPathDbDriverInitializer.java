@@ -54,7 +54,7 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
     boolean incomingAutoCommit = connection.getAutoCommit();
     if (dbConfig instanceof ModelConfigAppDB) {
       connection.setAutoCommit(true);
-      ModelConfigAppDB appDbConfig = (ModelConfigAppDB)dbConfig;
+//      ModelConfigAppDB appDbConfig = (ModelConfigAppDB)dbConfig;
 //      closeDbLink(connection, appDbConfig.getUserDbLink());
 //      closeDbLink(connection, appDbConfig.getAcctDbLink());
     }
@@ -64,6 +64,7 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
     connection.close();
   }
 
+  @SuppressWarnings("unused")
   private static void closeDbLink(Connection connection, String dbLinkName) {
     dbLinkName = dbLinkName.substring(1); // remove leading '@'
     String preCloseSql = "alter session close database link " + dbLinkName;
