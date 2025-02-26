@@ -9,9 +9,6 @@ _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
 # short convenience names for most common user-defined vars
-accountDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@acctDbS
-accountDb_login: =c= username for account database
-accountDb_password: =c= password for account database
 appDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@toxo-inc
 appDb_login: =c= username for application database, e.g.
 appDb_password: =c= password for application database
@@ -48,27 +45,7 @@ _userdb_link_map:
   cecommdevn:  cedevn.login_comment
   userdb:      vm.userdb
 
-_acctdb_link_map:
-  acctdbn: acctdbN.profile
-  acctdbs: acctdbS.profile
-  acctdb:  vm.acctdb # savm
-
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
-
-modelconfig_accountDb_accountSchema: useraccounts
-modelconfig_accountDb_connectionUrl: '{{ accountDb_connectionUrl }}'
-modelconfig_accountDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
-modelconfig_accountDb_login: '{{ accountDb_login }}'
-modelconfig_accountDb_maxActive: 20
-modelconfig_accountDb_maxIdle: 1
-modelconfig_accountDb_maxWait: 50
-modelconfig_accountDb_minIdle: 1
-modelconfig_accountDb_defaultFetchSize: 200
-modelconfig_accountDb_password: '{{ accountDb_password }}'
-modelconfig_accountDb_platform: Oracle
-modelconfig_accountDb_showConnections: 'false'
-modelconfig_accountDb_showConnectionsDuration: 600
-modelconfig_accountDb_showConnectionsInterval: 10
 
 modelconfig_appDb_connectionUrl: '{{ appDb_connectionUrl }}'
 modelconfig_appDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
@@ -155,7 +132,7 @@ modelprop:
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
-  AI_EXPRESSION_CACHE_DIR:
+  AI_EXPRESSION_CACHE_DIR: /eupath/ai-expr-cache
 
 eda:
   enabled: "true"
