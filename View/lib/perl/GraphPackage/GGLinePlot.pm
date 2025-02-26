@@ -1200,6 +1200,7 @@ myPlotly <- plot_ly(type = \"box\", data = profile.df.full.2, x = ~log2(VALUE + 
                  valign = \"top\",
 		 name = unique(profile.df.full\$DATASET_PRESENTER_ID)) %>%
   config(displaylogo = FALSE, 
+         displayModeBar = TRUE,
          collaborate = FALSE)
 
 annotationJS <- \"function(el) {
