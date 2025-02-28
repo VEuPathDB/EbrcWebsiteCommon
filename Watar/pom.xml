@@ -25,8 +25,9 @@
     </dependency>
 
     <dependency>
-      <groupId>net.sourceforge.htmlunit</groupId>
+      <groupId>org.htmlunit</groupId>
       <artifactId>htmlunit</artifactId>
+      <version>4.10.0</version>
     </dependency>
 
     <dependency>
