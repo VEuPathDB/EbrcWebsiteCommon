@@ -1,38 +1,40 @@
-<?php
+<?php namespace lib\modules;
 
-require_once dirname(__FILE__) . "/JolModule.php";
+use Exception;
+use lib\ {
+  JolReadOperation,
+  JolRequest,
+};
 
 /**
  * Superclass for TuningManagerStatus mbean access
  *
  * @author Mark Heiges <mheiges.edu>
- * @package Module
- * @subpackage Database
-
  */
 class TuningManagerStatus extends JolModule {
-
-  public function __construct() {
-    parent::__construct();
-  }
-
   /**
    * @return array TuningManagerStatus attributes
+   * @throws Exception
    */
-  public function attributes() {
+  public function attributes(): array {
     $req = new JolRequest($this->jol_base_url);
-    $read = new JolReadOperation(array(
-                'mbean' => 'org.apidb.wdk:type=TuningManagerStatus,path=' . $this->path_name,
-            ));
+    $read = new JolReadOperation(['mbean' => $this->get_mbean()]);
     $req->add_operation($read);
     $response = $req->invoke();
     if ($response->has_error()) {
-      return array();
-      #$error1 = $response->get_errors();
-      #throw new Exception($error1[0]->error() .  " for " . $req->curl_cli_equivalent());
+      return [];
     }
+
+    /**
+     * If response->has_error returns false, then we know that the type of the
+     * response array values is JolQueryResultItemSuccess.
+     *
+     * @noinspection PhpPossiblePolymorphicInvocationInspection
+     */
     return $response[0]->value();
   }
 
+  protected function get_mbean(): string {
+    return 'org.apidb.wdk:type=TuningManagerStatus,path=' . $this->path_name;
+  }
 }
-?>
