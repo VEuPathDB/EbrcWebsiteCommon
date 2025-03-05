@@ -26,7 +26,7 @@ $path_info = trim(@$_SERVER["PATH_INFO"], '/');
  * */
 if ($path_info) {
   if ($path_info == 'version') {
-    print FORMATVERSION;
+    echo FORMATVERSION;
     exit;
   }
   if (basename($path_info) == 'value') {
@@ -70,5 +70,5 @@ if ($want_value) {
   print_node_values($qnode);
 } else {
   header('Content-type: text/xml');
-  print $reportxml->saveXml();
+  echo $reportxml->saveXml();
 }
