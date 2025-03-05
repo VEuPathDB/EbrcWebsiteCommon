@@ -1,5 +1,7 @@
 <?php
 
+namespace lib;
+
 /**
  * Abstract class for Jolokia operations for adding to a {@link JolRequest}.
  *
@@ -13,11 +15,9 @@
  */
 abstract class JolOperation {
 
-  /** @var string */
-  protected $type;
+  protected string $type;
 
-  /** @var array */
-  protected $http_post_array;
+  protected array $http_post_array;
 
   /**
    * Constructor
@@ -25,10 +25,10 @@ abstract class JolOperation {
    * Supply the full POST data payload as an array to the constructor.
    * The array should json_encode() to a valid json post request.
    *
-   * @param array
+   * @param ?array $args
    */
-  public function __construct($args = null) {
-    $this->http_post_array = array();
+  public function __construct(?array $args = null) {
+    $this->http_post_array = [];
     $this->init($args);
   }
 
@@ -37,7 +37,7 @@ abstract class JolOperation {
    *
    * @return array
    */
-  public function http_post_array() {
+  public function http_post_array(): array {
     return $this->http_post_array;
   }
 
@@ -45,9 +45,8 @@ abstract class JolOperation {
    * Initializes the Operation object.
    *
    * Initialization minimally requires populating $http_post_array.
-   *
    */
-  abstract protected function init(array $args = null);
+  abstract protected function init(array $args = null): void;
 
   /**
    * Attempts to determine if the operation object has the required
@@ -58,7 +57,5 @@ abstract class JolOperation {
    *
    * @return boolean true if this is a valid object
    */
-  abstract public function is_valid();
+  abstract public function is_valid(): bool;
 }
-
-?>

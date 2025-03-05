@@ -1,12 +1,8 @@
 <?php
 /**
  * Action page to toggle the WDK global database cache on/off
- * @package View
  */
-
-require_once dirname(__FILE__) . '/../lib/modules/WdkCache.php';
-
-$cache = new WdkCache();
+$cache = new lib\modules\WdkCache();
 
 if (isset($_POST['toggle']) && $_POST['toggle'] == 1) {
   $cache->toggleWdkIsCaching();
@@ -16,7 +12,10 @@ if (isset($_POST['toggle']) && $_POST['toggle'] == 1) {
 $cattr = $cache->attributes();
 
 // print current value (highlight with color if caching is disabled)
-( ! $cattr{'WdkIsCaching'}) &&  print "<span class='fatal'>";
-print var_export($cattr{'WdkIsCaching'});
-( ! $cattr{'WdkIsCaching'}) && print "</span>";
-?>
+if (!$cattr['WdkIsCaching'])
+  echo "<span class='fatal'>";
+
+var_export($cattr['WdkIsCaching']);
+
+if (!$cattr['WdkIsCaching'])
+  echo "</span>";
