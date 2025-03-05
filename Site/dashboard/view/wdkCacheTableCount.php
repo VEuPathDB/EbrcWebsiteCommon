@@ -12,4 +12,4 @@ if (isset($_POST['reset']) && $_POST['reset'] == 1) {
 // Get attributes AFTER any call to reset() !!
 $cattr = $cache->attributes();
 
-print $cattr['cache_table_count'];
+echo $cattr['cache_table_count'];

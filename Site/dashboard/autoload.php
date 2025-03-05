@@ -13,4 +13,6 @@ function rglob(string $path): void {
 rglob(__DIR__ . "/lib");
 
 spl_autoload_extensions(".php");
-spl_autoload_register();
+spl_autoload_register(function(string $class) {
+  require_once str_replace("\\", "/", $class) . ".php";
+});

@@ -1,22 +1,29 @@
 <?php namespace lib;
 
+use Exception;
+
 /**
  * Parse a key=value file into an associative array.
  * Line comments marked with leading '#' or ';' are allowed. Named
- * sections as allowe in ini files are not supported here.
+ * sections as allowed in ini files are not supported here.
  */
 class KeyValue {
 
   /** @var array<string, string> */
-  var array $conf_obj;
+  var array $conf_obj = [];
 
-  function __construct($file) {
+  /**
+   * @throws Exception if the target file cannot be opened.
+   */
+  function __construct(string $file) {
+    if (!file_exists($file)) {
+      return;
+    }
 
-    $fh = fopen($file, "rb");
+    $fh = fopen($file, "r");
 
     if (!$fh) {
-      print "ERROR: parsing $file";
-      exit;
+      throw new Exception("Failed to open file $file");
     }
 
     while (!feof($fh)) {
@@ -43,13 +50,6 @@ class KeyValue {
     }
 
     fclose($fh);
-  }
-
-  /**
-   * Return the full configuration array
-   **/
-  function get_configuration(): array {
-    return $this->conf_obj;
   }
 
   /**
