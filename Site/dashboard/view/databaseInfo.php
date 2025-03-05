@@ -23,15 +23,15 @@ $db_names = explode(',', $db_instances_str);
 
 ?>
 <script type="text/javascript">
-    $(function () {
-        $('#tuningTables').DataTable({
-            'stateSave': false,
-            'stripeClasses': ['rowMedium', 'rowLight'],
-            'orderClasses': false,
-            'order': [1, 'desc'],
-            'pageLength': 10,
-        });
+  $(function () {
+    $('#tuningTables').DataTable({
+      'stateSave': false,
+      'stripeClasses': ['rowMedium', 'rowLight'],
+      'orderClasses': false,
+      'order': [1, 'desc'],
+      'pageLength': 10,
     });
+  });
 </script>
 
 <p>

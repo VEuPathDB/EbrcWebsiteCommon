@@ -17,36 +17,10 @@ class JolQueryResult implements IteratorAggregate, ArrayAccess {
   public function __construct(string $json_result) {
     if (empty($json_result)) {
       error_log('json_result is empty. ' . ' at ' . __CLASS__ . ' line ' . __LINE__);
-      //throw new Exception("json result is empty");
       return;
     }
+
     $this->set_json_result($json_result);
-  }
-
-  public function set_json_result(string $json_result): void {
-    $this->json_result = $json_result;
-    $ar_result = json_decode($this->json_result, true);
-
-    if (empty($ar_result)) {
-      trigger_error('unable to decode empty json result' . ' at ' . __CLASS__ . ' line ' . __LINE__);
-      return;
-    }
-    // normalize single entity responses into an array
-    // so they are consistent with bulk query responses
-    if (array_key_exists('status', $ar_result)) {
-      $ar_result = [$ar_result];
-    }
-
-    foreach ($ar_result as $result) {
-      if (isset($result) && $result['status'] == '200') {
-        $this->result_array[] = new JolQueryResultItemSuccess($result);
-      } else {
-        $error = new JolQueryResultItemError($result);
-        $this->result_array[] = $error;
-        $this->has_error = true;
-        $this->error_array[] = $error;
-      }
-    }
   }
 
   public function has_error(): bool {
@@ -91,5 +65,31 @@ class JolQueryResult implements IteratorAggregate, ArrayAccess {
 
   public function offsetGet($offset): ?JolQueryResultItem {
     return $this->result_array[$offset] ?? null;
+  }
+
+  private function set_json_result(string $json_result): void {
+    $this->json_result = $json_result;
+    $ar_result = json_decode($this->json_result, true);
+
+    if (empty($ar_result)) {
+      trigger_error(sprintf("unable to decode json result %s at %s:%d", $json_result, __FILE__, __LINE__));
+      return;
+    }
+    // normalize single entity responses into an array
+    // so they are consistent with bulk query responses
+    if (array_key_exists('status', $ar_result)) {
+      $ar_result = [$ar_result];
+    }
+
+    foreach ($ar_result as $result) {
+      if (isset($result) && $result['status'] == '200') {
+        $this->result_array[] = new JolQueryResultItemSuccess($result);
+      } else {
+        $error = new JolQueryResultItemError($result);
+        $this->result_array[] = $error;
+        $this->has_error = true;
+        $this->error_array[] = $error;
+      }
+    }
   }
 }

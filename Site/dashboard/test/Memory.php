@@ -28,7 +28,7 @@ class Memory {
       'attribute' => 'HeapMemoryUsage',
     ]);
     $req->add_operation($read);
-    print "\n" . $req->curl_cli_equivalent() . "\n\n";
+    echo "\n" . $req->curl_cli_equivalent() . "\n\n";
 
     $response = $req->invoke();
     return $response[0]->value();

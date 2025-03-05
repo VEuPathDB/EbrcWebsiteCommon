@@ -9,8 +9,8 @@ $oc = new lib\modules\OpenConnections();
 
 if (isset($_POST['dbclass'])) {
   if ($oc->dumpDbConnectionStatsToLog($_POST['dbclass'])) {
-    print 'ok';
+    echo 'ok';
   } else {
-    print "<span class='warn'>error</span>";
+    echo "<span class='warn'>error</span>";
   }
 }

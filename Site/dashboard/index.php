@@ -23,18 +23,18 @@ function exclude_this(array $pageMap, string $key): bool {
 <h3 class='banner' align='center'>
   <?php
 
-  print "<a href='/'>";
-  print $_SERVER['SERVER_NAME'];
+  echo "<a href='/'>";
+  echo $_SERVER['SERVER_NAME'];
 
   $pi = new ProxyInfo();
   $pi_attr = $pi->attributes();
 
   if ($upstreamServer = $pi_attr['upstream_server']) {
-    print "<br><font size='-1'>(upstream server: " . $upstreamServer . ")</font>";
+    echo "<br><font size='-1'>(upstream server: " . $upstreamServer . ")</font>";
   }
 
-  print "</a>";
-  print "<br><font size='-1'>[canonical server: " . php_uname('n') . "]</font>";
+  echo "</a>";
+  echo "<br><font size='-1'>[canonical server: " . php_uname('n') . "]</font>";
 
   $headers = apache_request_headers();
   ?>
@@ -57,24 +57,24 @@ $page = $_GET['p'] ?? 'Databases';
     if ($key == 'Proxy' && !isset($headers['Via']))
       continue;
     $active = ($key == $page) ? "class='active'" : '';
-    print "<li><a $active href='?p=$key'>$key</a></li>\n";
+    echo "<li><a $active href='?p=$key'>$key</a></li>\n";
   }
   ?>
 </ul>
 <div id="content">
   <?php
   if (!$pageMap[$page]) {
-    print "unknown page '$page'";
+    echo "unknown page '$page'";
     return;
   }
 
   if (exclude_this($pageMap, $page)) {
-    print "NA";
+    echo "NA";
   } else {
     if (strncmp($pageMap[$page]['module'], 'http', 4) == 0) {
       readfile($pageMap[$page]['module']);
     } else {
-      virtual($pageMap[$page]['module']);
+      include $pageMap[$page]['module'];
     }
   }
   ?>
