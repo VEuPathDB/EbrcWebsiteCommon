@@ -5,4 +5,4 @@ use lib\PrivateAPI;
 
 header('Content-type: application/json');
 
-print (new PrivateAPI())->to_json();
+echo (new PrivateAPI())->to_json();

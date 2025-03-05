@@ -1,5 +1,7 @@
 <?php namespace lib;
 
+use Exception;
+
 /**
  * This class holds the application's configuration key/value pairs.
  *
@@ -72,6 +74,8 @@ class Configuration {
    * Add the http port to the configuration array
    *
    * @param array $partial_conf_ar Array of configuration key/value pairs.
+   *
+   * @throws Exception if the worker properties file fails to open.
    */
   private function add_http_port_value(array &$partial_conf_ar): void {
 
@@ -82,7 +86,7 @@ class Configuration {
     // template is custom.%TOMCAT_INSTANCE%.http_port
     $http_key_tmpl = $partial_conf_ar['worker_properties_http_var_tmpl'];
 
-    if (array_key_exists('SERVER_NAME', $_SERVER)) {
+    if (array_key_exists($partial_conf_ar['worker_env_var_name'], $_SERVER)) {
       // worker name, e.g. TonkaDB
       $worker = $_SERVER[$partial_conf_ar['worker_env_var_name']];
     } else {
@@ -105,7 +109,7 @@ class Configuration {
    * @return void
    */
   private function add_webapp_value(array &$partial_conf_ar): void {
-    if (array_key_exists('SERVER_NAME', $_SERVER)) {
+    if (array_key_exists($partial_conf_ar['ctx_path_env_var_name'], $_SERVER)) {
       $context_path = $_SERVER[$partial_conf_ar['ctx_path_env_var_name']];
     } else {
       // maybe running from command line, use value in config file

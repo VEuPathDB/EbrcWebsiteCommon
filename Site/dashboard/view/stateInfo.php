@@ -41,10 +41,12 @@ $webapp = new Webapp();
 <hr>
 
 <b>Global caching is enabled: </b><span id="wdk_is_caching"><?php
-  (!$cattr['WdkIsCaching']) && print "<span class='fatal'>";
-  print var_export($cattr['WdkIsCaching']);
-  (!$cattr['WdkIsCaching']) && print "</span>";
-  ?></span>
+  if (!$cattr['WdkIsCaching'])
+    echo "<span class='fatal'>";
+  var_export($cattr['WdkIsCaching']);
+  if (!$cattr['WdkIsCaching'])
+    echo"</span>";
+?></span>
 
 <?php
 /**
