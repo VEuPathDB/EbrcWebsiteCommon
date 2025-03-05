@@ -1,16 +1,11 @@
-<?php
-/**
- * @package View
- */
-?>
 <img src="images/logo-lrg.png">
-<p/>
+<p></p>
 
 <h2>About</h2>
 
 <b>/dashboard</b> is an instrumentation panel for EuPathDB websites.
 
-<p/>
+<p></p>
 <h2>Additional Information</h2>
 <ul>
   <li><a href="https://wiki.apidb.org/index.php/SysArchDocs/dashboard">Background</a></li>

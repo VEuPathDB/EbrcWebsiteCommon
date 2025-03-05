@@ -4,13 +4,8 @@
  * to Tomcat log.
  *
  * $dbclass is 'UserDB' or 'AppDB'
- *
- * @package View
  */
-
-require_once dirname(__FILE__) . '/../lib/modules/OpenConnections.php';
-
-$oc = new OpenConnections();
+$oc = new lib\modules\OpenConnections();
 
 if (isset($_POST['dbclass'])) {
   if ($oc->dumpDbConnectionStatsToLog($_POST['dbclass'])) {
@@ -19,5 +14,3 @@ if (isset($_POST['dbclass'])) {
     print "<span class='warn'>error</span>";
   }
 }
-
-?>
