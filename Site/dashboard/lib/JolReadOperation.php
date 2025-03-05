@@ -1,6 +1,4 @@
-<?php
-
-require_once dirname(__FILE__) . "/JolOperation.php";
+<?php namespace lib;
 
 /**
  * A single Jolokia READ operation for adding to a {@link JolRequest}.
@@ -42,54 +40,26 @@ require_once dirname(__FILE__) . "/JolOperation.php";
  * @subpackage Request
  */
 class JolReadOperation extends JolOperation {
-
-  private $mbean;
-  private $attribute;
-  private $path;
-
   /**
    * Initializes the Operation object.
    *
    * Initialization minimally requires populating $http_post_array.
-   *
    */
-  protected function init(array $args = null) {
-    $this->http_post_array{'type'} = 'read';
+  protected function init(?array $args = null): void {
+    $this->http_post_array['type'] = 'read';
 
     if (!isset($args))
       return;
 
-    $this->http_post_array{'mbean'}
-            = array_key_exists('mbean', $args) ? $args{'mbean'} : null;
-    $this->http_post_array{'attribute'}
-            = array_key_exists('attribute', $args) ? $args{'attribute'} : null;
-    $this->http_post_array{'path'}
-            = array_key_exists('path', $args) ? $args{'path'} : null;
-  }
-
-  public function set_mbean($mbean) {
-    $this->mbean = $mbean;
-  }
-
-  /**
-   * MBean attribute
-   *
-   * Attribute name to read or an array containing a list attributes
-   * to read. If no attribute is given, then all attributes are read.
-   *
-   * @param string $attribute
-   */
-  public function set_attribute($attribute) {
-    $this->attribute = $attribute;
-  }
-
-  /**
-   * Inner path for accessing the value of a complex value
-   *
-   * @param string $path
-   */
-  public function set_path($path) {
-    $this->path = $path;
+    $this->http_post_array['mbean'] = array_key_exists('mbean', $args)
+      ? $args['mbean']
+      : null;
+    $this->http_post_array['attribute'] = array_key_exists('attribute', $args)
+      ? $args['attribute']
+      : null;
+    $this->http_post_array['path'] = array_key_exists('path', $args)
+      ? $args['path']
+      : null;
   }
 
   /**
@@ -101,27 +71,27 @@ class JolReadOperation extends JolOperation {
    *
    * @return boolean true if this is a valid object
    */
-  public function is_valid() {
+  public function is_valid(): bool {
     $a = $this->http_post_array();
-    if (!isset($a{'mbean'})) {
-      return FALSE;
+
+    if (!isset($a['mbean'])) {
+      return false;
     }
-    if (isset($a{'path'}) && !isset($a{'attribute'})) {
-      return FALSE;
+
+    if (isset($a['path']) && !isset($a['attribute'])) {
+      return false;
     }
-    return TRUE;
+
+    return true;
   }
 
-  public function __toString() {
+  public function __toString(): string {
     $a = $this->http_post_array();
-    $string = '{"type":"read","mbean":"' . $a{'mbean'} . '","attribute":"' . join(',', $a{'attribute'}) . '"';
-    if (isset($a{'path'})) {
-      $string .= ',"path":"' . $a{'path'} . '"';
+    $string = '{"type":"read","mbean":"' . $a['mbean'] . '","attribute":"' . join(',', $a['attribute']) . '"';
+    if (isset($a['path'])) {
+      $string .= ',"path":"' . $a['path'] . '"';
     }
     $string .= '}';
     return $string;
   }
-
 }
-
-?>

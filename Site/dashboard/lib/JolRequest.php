@@ -1,7 +1,6 @@
-<?php
+<?php namespace lib;
 
-require_once dirname(__FILE__) . "/UserAgent.php";
-require_once dirname(__FILE__) . "/JolQueryResult.php";
+use Exception;
 
 /**
  * JolRequest encapsulates an HTTP POST request for a given URL and
@@ -13,31 +12,33 @@ require_once dirname(__FILE__) . "/JolQueryResult.php";
  */
 class JolRequest {
 
-  private $base_url;
-  private $operations;
+  private ?string $base_url;
+
+  /** @var array<JolOperation> */
+  private array $operations;
 
   /**
-   *
-   * @param string base_url e.g. http://localhost:666/jolokia/
+   * @param ?string $base_url e.g. http://localhost:666/jolokia/
    */
-  public function __construct($base_url = null) {
-    $this->operations = array();
+  public function __construct(?string $base_url = null) {
+    $this->operations = [];
     $this->set_base_url($base_url);
   }
 
-  public function set_base_url($base_url) {
+  public function set_base_url(?string $base_url): void {
     $this->base_url = $base_url;
   }
 
-  public function add_operation($operation) {
+  public function add_operation(JolOperation $operation) {
     if ($operation->is_valid()) {
-      array_push($this->operations, $operation->http_post_array());
+      $this->operations[] = $operation->http_post_array();
       return;
     }
+
     throw new Exception("Invalid " . get_class($operation) . " object.");
   }
 
-  public function http_postdata_as_json() {
+  public function http_postdata_as_json(): bool|string|null {
     if (count($this->operations) == 0) {
       return null;
     } elseif (count($this->operations) == 1) {
@@ -48,11 +49,11 @@ class JolRequest {
   }
 
   /**
-   * Returns an curl command that can be used on the command line for debugging.
+   * Returns a curl command that can be used on the command line for debugging.
    *
    * @return string curl command
    */
-  public function curl_cli_equivalent() {
+  public function curl_cli_equivalent(): string {
     return 'curl -d \'' . $this->http_postdata_as_json() . '\' ' . $this->base_url;
   }
 
@@ -60,16 +61,12 @@ class JolRequest {
    *
    * @return JolQueryResult
    */
-  public function invoke() {
-    $opts = array(
-        'url' => $this->base_url,
-        'post_fields' => $this->http_postdata_as_json(),
-    );
-    $ua = new UserAgent($opts);
-    $this->jmx_query_result = new JolQueryResult($ua->get_content());
-    return $this->jmx_query_result;
+  public function invoke(): JolQueryResult {
+    $opts = [
+      'url'         => $this->base_url,
+      'post_fields' => $this->http_postdata_as_json(),
+    ];
+
+    return new JolQueryResult((new UserAgent($opts))->get_content());
   }
-
 }
-
-?>

@@ -1,15 +1,8 @@
 <?php
-/**
- *
- * @package RemoteAPI
- * @subpackage JSON
- */
+require_once "autoload.php";
+
+use lib\PrivateAPI;
 
 header('Content-type: application/json');
 
-require_once dirname(__FILE__) . '/lib/PrivateAPI.php';
-
-$api = new PrivateAPI();
-
-print $api->to_json();
-?>
+print (new PrivateAPI())->to_json();

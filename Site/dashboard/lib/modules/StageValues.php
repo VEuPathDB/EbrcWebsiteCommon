@@ -1,17 +1,21 @@
-<?php
-require_once dirname(__FILE__) . "/../../functions.php.inc";
+<?php namespace lib\modules;
+
+use Exception;
+use function lib\parse_properties;
 
 /**
  * Values for the EuPathDB release stages as defined in /etc/sysconfig/httpd .
  *
  * @author Mark Heiges <mheiges.edu>
- * @package Module
- * @subpackage Project
  */
 class StageValues {
 
-  function __construct() {
+  /**
+   * @var array|mixed
+   */
+  private array $data_map;
 
+  function __construct() {
     try {
       $this->data_map = parse_properties('/etc/sysconfig/httpd');
       // clean up key names, remove non-RELEASE keys
@@ -20,8 +24,8 @@ class StageValues {
           $newkey = ltrim(preg_replace('/(?:export\s+)?WEBSITE_RELEASE_STAGE_/', '', $key));
           $this->data_map[$newkey] = $this->data_map[$key];
         }
-      unset($this->data_map[$key]);
-    }
+        unset($this->data_map[$key]);
+      }
 
     } catch (Exception $e) {
       echo 'Exception: ', $e->getMessage(), "\n";
@@ -30,30 +34,26 @@ class StageValues {
   }
 
   /**
-    Return value for given key
+   * Return value for given key
    * */
-  function get($key) {
+  function get(string $key) {
     if (array_key_exists($key, $this->data_map)) {
-      return $this->data_map{$key};
+      return $this->data_map[$key];
     }
     return null;
   }
- 
- 
- /**
- * Flip he key/values relative to what's in the httpd file.
- * So, 
- *  'export WEBSITE_RELEASE_STAGE_INTEGRATE=20' 
- * becomes '20 => INTEGRATE'
- */
-  function get_flipped_data_map() {
-    return array_flip($this->data_map);
-  }
- 
-  function get_data_map() {
+
+  function get_data_map(): array {
     return $this->data_map;
   }
 
+  /**
+   * Flip the key/values relative to what's in the httpd file.
+   * So,
+   *  'export WEBSITE_RELEASE_STAGE_INTEGRATE=20'
+   * becomes '20 => INTEGRATE'
+   */
+  function get_flipped_data_map(): array {
+    return array_flip($this->data_map);
+  }
 }
-
-?>

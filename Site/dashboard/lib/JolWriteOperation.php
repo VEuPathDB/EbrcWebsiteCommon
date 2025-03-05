@@ -1,6 +1,4 @@
-<?php
-
-require_once dirname(__FILE__) . "/JolOperation.php";
+<?php namespace lib;
 
 /**
  * A single Jolokia WRITE operation for adding to a {@link JolRequest}.
@@ -34,26 +32,27 @@ require_once dirname(__FILE__) . "/JolOperation.php";
  * $req = new {@link JolRequest};
  * $req->add_operation($op);
  * </pre>
- *
- * @package JMX
- * @subpackage Request
  */
 class JolWriteOperation extends JolOperation {
 
-  protected function init(array $args = null) {
-    $this->http_post_array{'type'} = 'write';
+  protected function init(array $args = null): void {
+    $this->http_post_array['type'] = 'write';
 
     if (!isset($args))
       return;
 
-    $this->http_post_array{'mbean'}
-            = array_key_exists('mbean', $args) ? $args{'mbean'} : null;
-    $this->http_post_array{'attribute'}
-            = array_key_exists('attribute', $args) ? $args{'attribute'} : null;
-    $this->http_post_array{'value'}
-            = array_key_exists('value', $args) ? $args{'value'} : null;
-    $this->http_post_array{'path'}
-            = array_key_exists('path', $args) ? $args{'path'} : null;
+    $this->http_post_array['mbean'] = array_key_exists('mbean', $args)
+      ? $args['mbean']
+      : null;
+    $this->http_post_array['attribute'] = array_key_exists('attribute', $args)
+      ? $args['attribute']
+      : null;
+    $this->http_post_array['value'] = array_key_exists('value', $args)
+      ? $args['value']
+      : null;
+    $this->http_post_array['path'] = array_key_exists('path', $args)
+      ? $args['path']
+      : null;
   }
 
   /**
@@ -65,20 +64,17 @@ class JolWriteOperation extends JolOperation {
    *
    * @return boolean true if this is a valid object
    */
-  public function is_valid() {
+  public function is_valid(): bool {
     $a = $this->http_post_array();
-    if (!isset($a{'mbean'})) {
-      return FALSE;
+    if (!isset($a['mbean'])) {
+      return false;
     }
-    if (isset($a{'path'}) && !isset($a{'attribute'})) {
-      return FALSE;
+    if (isset($a['path']) && !isset($a['attribute'])) {
+      return false;
     }
-    if (!isset($a{'attribute'}) && !isset($a{'value'})) {
-      return FALSE;
+    if (!isset($a['attribute']) && !isset($a['value'])) {
+      return false;
     }
-    return TRUE;
+    return true;
   }
-
 }
-
-?>
