@@ -35,7 +35,7 @@ $db_names = explode(',', $db_instances_str);
 </script>
 
 <p>
-  <b><a href="?p=Database%20Connection%20Pool">Connection pool activity</a></b>
+  <b><a href="?p=DB%20Connection%20Pool">Connection pool activity</a></b>
 </p>
 <?php
 /**
