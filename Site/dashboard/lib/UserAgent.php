@@ -1,9 +1,6 @@
-<?php
-
-namespace lib;
+<?php namespace lib;
 
 class UserAgent {
-
   var string $url;
   var false|\CurlHandle $ua;
 
@@ -20,6 +17,11 @@ class UserAgent {
         $this->set_post_fields($opts['post_fields']);
       }
     }
+  }
+
+  function setContentType(string $contentType): UserAgent {
+    curl_setopt($this->ua, CURLOPT_HTTPHEADER, ["Content-Type: $contentType"]);
+    return $this;
   }
 
   function get_content(): bool|string {

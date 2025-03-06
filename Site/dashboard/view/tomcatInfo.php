@@ -22,7 +22,7 @@ $servlet_data = (new ServletInfo())->attributes();
 <table class='p' border='0' cellpadding='0' cellspacing='0'>
   <tr>
     <td><b>Instance:</b>
-    </td><td class="p">= $jvm_data['SystemProperties']['instance.name'] ?></td>
+    </td><td class="p"><?= $jvm_data['SystemProperties']['instance.name'] ?></td>
   </tr>
   <tr>
     <td><b>Instance uptime:</b></td>
