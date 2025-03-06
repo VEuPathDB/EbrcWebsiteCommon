@@ -31,10 +31,10 @@ function parsePHPModules(): array {
   ob_end_clean();
 
   $s = strip_tags($s, '<h2><th><td>');
-  $s = preg_replace('/<th[^>]*>([^<]+)<\/th>/', "<info>\\1</info>", $s);
-  $s = preg_replace('/<td[^>]*>([^<]+)<\/td>/', "<info>\\1</info>", $s);
+  $s = preg_replace('/<t[hd][^>]*>([^<]+)<\/t[hd]>/', "<info>\\1</info>", $s);
   $vTmp = preg_split('/(<h2>[^<]+<\/h2>)/', $s, -1, PREG_SPLIT_DELIM_CAPTURE);
   $vModules = [];
+
   for ($i = 1; $i < count($vTmp); $i++) {
     if (preg_match('/<h2>([^<]+)<\/h2>/', $vTmp[$i], $vMat)) {
       $vName = trim($vMat[1]);

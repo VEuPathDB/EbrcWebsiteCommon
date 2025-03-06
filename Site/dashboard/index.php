@@ -1,7 +1,7 @@
 <?php
-
 require_once 'autoload.php';
-require_once 'config/module.php';
+
+$pageMap = require_once 'config/module.php';
 
 use lib\modules\ProxyInfo;
 
@@ -15,10 +15,10 @@ function exclude_this(array $pageMap, string $key): bool {
 
   return false;
 }
-
 ?>
 <!doctype html>
-<html>
+<html lang="en">
+<body>
 <?php include 'head.php.inc'; ?>
 <h3 class='banner' align='center'>
   <?php
@@ -43,7 +43,6 @@ function exclude_this(array $pageMap, string $key): bool {
 // default page
 $page = $_GET['p'] ?? 'Databases';
 ?>
-<body>
 <ul id="tabmenu">
   <?php
   // Print tabs menu
@@ -51,7 +50,7 @@ $page = $_GET['p'] ?? 'Databases';
     if (exclude_this($pageMap, $key))
       continue;
 
-    if (!$pageMap[$key]['tab'])
+    if (!$value['tab'])
       continue;
 
     if ($key == 'Proxy' && !isset($headers['Via']))
