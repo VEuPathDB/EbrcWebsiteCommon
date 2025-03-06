@@ -1,5 +1,12 @@
 <?php namespace lib;
 
+use function \ldap_bind;
+use function \ldap_close;
+use function \ldap_connect;
+use function \ldap_get_entries;
+use function \ldap_search;
+use function \ldap_set_option;
+
 class LdapTnsNameResolver {
 
   private ?string $service_name;
@@ -15,7 +22,7 @@ class LdapTnsNameResolver {
     $this->service_name = $service_name;
     $this->dn = "cn=OracleContext,ou=applications,dc=apidb,dc=org";
     $this->attrs = ["cn"];
-    $this->ldap_url = "ds1.apidb.org ds4.apidb.org";
+    $this->ldap_url = "ds1.apidb.org"; // "ds4.apidb.org"
   }
 
   /**
