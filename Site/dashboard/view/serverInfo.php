@@ -4,6 +4,18 @@ use lib\modules\ServerInfo;
 
 $server = new ServerInfo();
 
+$header = "HTTP Server";
+
+switch ($server->getServerType()) {
+  case ServerInfo::TYPE_APACHE:
+    $header = "Apache " . $header;
+    break;
+  case ServerInfo::TYPE_NGINX:
+    $header = "NGINX " . $header;
+    break;
+}
+
+
 function printTable(array $array, ?string $prefix = null): void {
   echo "<table border='0' cellspacing='3' cellpadding='2' align=''>";
   echo "<tr class='secondary3'><th><font size='-2'>Attribute</font></th><th><font size='-2'>Value</font></th></tr>";
@@ -35,12 +47,13 @@ function printTable(array $array, ?string $prefix = null): void {
   }
   echo "</table>";
 }
-
 ?>
-<h2>Apache HTTP Server</h2>
+<h2><?=$header?></h2>
 
-<p class="smalltext"><span class="expand_all clickable smalltext">expand all</span> | <span
-    class="collapse_all clickable smalltext">collapse all</span></p>
+<p class="smalltext">
+  <span class="expand_all clickable smalltext">expand all</span>
+  | <span class="collapse_all clickable smalltext">collapse all</span>
+</p>
 
 <p class="clickable">HTTP Headers &#8593;&#8595;</p>
 <div class="expandable" style="padding: 5px;">
@@ -57,4 +70,4 @@ function printTable(array $array, ?string $prefix = null): void {
 <div class="expandable" style="padding: 5px;">
   <?php printTable($server->get('apache2handler')); ?>
 </div>
-<?php endif; ?>
+<?php endif;
