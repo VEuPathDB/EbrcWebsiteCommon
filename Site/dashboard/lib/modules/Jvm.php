@@ -28,10 +28,7 @@ class Jvm extends JolModule {
    */
   public function attributes(): array {
     $req = new JolRequest($this->jol_base_url);
-    $read = new JolReadOperation([
-      'mbean'     => $this->get_mbean(),
-      'attribute' => ['Uptime']
-    ]);
+    $read = new JolReadOperation(['mbean' => $this->get_mbean()]);
     $req->add_operation($read);
     $response = $req->invoke();
     // FIXME: This call could cause problems if the response was an error.  The
