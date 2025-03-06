@@ -67,6 +67,6 @@ class JolRequest {
       'post_fields' => $this->http_postdata_as_json(),
     ];
 
-    return new JolQueryResult((new UserAgent($opts))->get_content());
+    return new JolQueryResult((new UserAgent($opts))->setContentType("application/json")->get_content());
   }
 }
