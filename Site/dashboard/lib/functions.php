@@ -17,13 +17,11 @@ function upstreamServer(): ?string {
   return null;
 }
 
-// http://us.php.net/phpinfo
 function getModuleSetting(string $pModuleName, string $pSetting): string {
   $vModules = parsePHPModules();
   return $vModules[$pModuleName][$pSetting];
 }
 
-// http://us.php.net/phpinfo
 function parsePHPModules(): array {
   ob_start();
   phpinfo(INFO_MODULES);
@@ -51,17 +49,24 @@ function parsePHPModules(): array {
       }
     }
   }
+
   return $vModules;
 }
 
 // hattip to http://blog.rafaelsanches.com/2009/08/05/reading-java-style-properties-file-in-php/
 function parse_properties($property_file): array {
+  $result = [];
+
+  if (!file_exists($property_file)) {
+    return $result;
+  }
+
   $property_text = file_get_contents($property_file);
   if (!$property_text) {
     trigger_error("unable to read $property_file");
-    return [];
+    return $result;
   }
-  $result = [];
+
   $lines = preg_split("\n", $property_text);
   $key = "";
   $isWaitingOtherLine = false;
@@ -78,6 +83,8 @@ function parse_properties($property_file): array {
     }
 
     /* Check if ends with single '\' */
+    # FIXME: this does not perform the expected check.  It would ignore lines
+    #        like "foo\bar\" which it should catch.
     if (strrpos($value, "\\") === strlen($value) - strlen("\\")) {
       $value = substr($value, 0, strlen($value) - 1) . "\n";
       $isWaitingOtherLine = true;
@@ -99,8 +106,8 @@ function unescape_property(array|string $value): array|string {
 /**
  * Return date string for (current time - given milliseconds)
  * e.g. Wed 07 Dec 2011 11:44 AM
- * */
-function date_on_elapsed_seconds($seconds): string {
+ */
+function date_on_elapsed_seconds(int $seconds): string {
   $now = time();
   return date("D d M Y g:i A", $now - $seconds);
 }
@@ -110,9 +117,8 @@ function date_on_elapsed_seconds($seconds): string {
  * and the next smaller period.
  * e.g. 3 days 4 minutes
  * or   4 minutes 3 seconds
- * */
-function seconds_as_periods($seconds): string {
-
+ */
+function seconds_as_periods(int $seconds): string {
   $times = [];
   $gp = 0; // greatest non-zero time period found
 

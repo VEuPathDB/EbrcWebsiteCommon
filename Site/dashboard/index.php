@@ -4,6 +4,7 @@ require_once 'autoload.php';
 $pageMap = require_once 'config/module.php';
 
 use lib\modules\ProxyInfo;
+use lib\UserAgent;
 
 /* Check if the page/tab has an 'exclude_hosts_re' regex matching
  * current host */
@@ -18,8 +19,10 @@ function exclude_this(array $pageMap, string $key): bool {
 ?>
 <!doctype html>
 <html lang="en">
-<body>
+
 <?php include 'head.php.inc'; ?>
+
+<body>
 <h3 class='banner' align='center'>
   <?php
 
@@ -70,10 +73,18 @@ $page = $_GET['p'] ?? 'Databases';
   if (exclude_this($pageMap, $page)) {
     echo "NA";
   } else {
-    if (strncmp($pageMap[$page]['module'], 'http', 4) == 0) {
-      readfile($pageMap[$page]['module']);
+    $module = $pageMap[$page]['module'];
+    if (str_starts_with($module, "/")) {
+      $module = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $module;
+    }
+
+    if (str_starts_with($module, 'http')) {
+      $req = new UserAgent(['url' => $module]);
+      echo $req->get_content();
+    } elseif (str_ends_with($module, ".php"))  {
+      include $module;
     } else {
-      include $pageMap[$page]['module'];
+      readfile($module);
     }
   }
   ?>
