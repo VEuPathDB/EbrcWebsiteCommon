@@ -1,4 +1,11 @@
 <?php
+/**
+ * @noinspection PhpUnhandledExceptionInspection
+ */
+
+namespace test;
+
+use lib\ {JolExecOperation, JolReadOperation, JolRequest};
 
 /**
  * Access to JVM memory stats
@@ -6,41 +13,33 @@
  *
  * @author Mark Heiges <mheiges.edu>
  */
-require_once dirname(__FILE__) . "/../lib/JolExecOperation.php";
-require_once dirname(__FILE__) . "/../lib/JolRequest.php";
-require_once dirname(__FILE__) . "/../lib/JolReadOperation.php";
-
 class Memory {
 
-  private $base_url;
+  private string $base_url;
 
   public function __construct($base_url) {
     $this->base_url = $base_url;
   }
 
-  /**
-   *
-   * @return array Memory attributes
-   */
-  public function attributes() {
+  public function attributes(): array {
     $req = new JolRequest($this->base_url);
-    $read = new JolReadOperation(array(
-                'mbean' => 'java.lang:type=Memory',
-                'attribute' => 'HeapMemoryUsage',
-            ));
+    $read = new JolReadOperation([
+      'mbean'     => 'java.lang:type=Memory',
+      'attribute' => 'HeapMemoryUsage',
+    ]);
     $req->add_operation($read);
-    print "\n" . $req->curl_cli_equivalent() . "\n\n";
+    echo "\n" . $req->curl_cli_equivalent() . "\n\n";
 
-   $response = $req->invoke();
+    $response = $req->invoke();
     return $response[0]->value();
   }
 
   public function bad_request() {
     $req = new JolRequest($this->base_url);
-    $read = new JolReadOperation(array(
-                'mbean' => 'java.lang:type=Memory',
-                'attribute' => 'BOGUS',
-            ));
+    $read = new JolReadOperation([
+      'mbean'     => 'java.lang:type=Memory',
+      'attribute' => 'BOGUS',
+    ]);
     $req->add_operation($read);
 
     $response = $req->invoke();
@@ -51,20 +50,14 @@ class Memory {
     return $response[0]->value();
   }
 
-  /**
-   * @param boolean true for success, false if error
-   */
-  public function gc() {
+  public function gc(): bool {
     $req = new JolRequest($this->base_url);
-    $exec = new JolExecOperation(array(
-                'mbean' => 'java.lang:type=Memory',
-                'operation' => 'gc',
-            ));
+    $exec = new JolExecOperation([
+      'mbean'     => 'java.lang:type=Memory',
+      'operation' => 'gc',
+    ]);
     $req->add_operation($exec);
     $response = $req->invoke();
     return !$response[0]->is_error();
   }
-
 }
-
-?>

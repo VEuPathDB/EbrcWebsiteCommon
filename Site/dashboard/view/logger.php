@@ -1,25 +1,19 @@
 <?php
 /**
  * Information about log4j levels.
- * @package View
  */
-
-require_once dirname(__FILE__) . "/../lib/modules/Logger.php";
-
-$log_manager = new Logger();
+$log_manager = new lib\modules\Logger();
 
 
-if ($_SERVER['REQUEST_METHOD'] == "POST" &&
-        array_key_exists('logger_name', $_POST)) {
-
-  $logger_map = array();
+if ($_SERVER['REQUEST_METHOD'] == "POST" && array_key_exists('logger_name', $_POST)) {
+  $logger_map = [];
   foreach ($_POST['logger_name'] as $name) {
-    $logger_map{$name} = $_POST['logger_level'];
+    $logger_map[$name] = $_POST['logger_level'];
   }
 
   $success = $log_manager->update($logger_map);
   if (!$success)
-    print "<font color='red'>ERROR applying updates</font>";
+    echo "<font color='red'>ERROR applying updates</font>";
 }
 
 
@@ -46,7 +40,7 @@ foreach ($log_data as $logger => $level) {
       <td>Choose Logger:<br>
         <font size="-1">Format: LoggerClass [Current Level]</font><br>
         <select name='logger_name[]' multiple="" size='20'>
-          <?php print $select_opts ?>
+          <?= $select_opts ?>
         </select>
       </td>
       <td>Choose Level:<br>

@@ -1,79 +1,94 @@
-<!doctype html>
-<?php require_once dirname(__FILE__) . "/lib/UserAgent.php" ?>
-<html><?php include "head.php.inc"; ?>
-
 <?php
-/** Check if the page/tab has an 'exclude_hosts_re' regex matching
-  * currrent host */
-function exclude_this($pageMap, $key) {
+require_once 'autoload.php';
+
+$pageMap = require_once 'config/module.php';
+
+use lib\modules\ProxyInfo;
+use lib\UserAgent;
+
+/* Check if the page/tab has an 'exclude_hosts_re' regex matching
+ * current host */
+function exclude_this(array $pageMap, string $key): bool {
   if (array_key_exists('exclude_hosts_re', $pageMap[$key])) {
     $exclude_hosts_re = $pageMap[$key]['exclude_hosts_re'];
     return (preg_match("/$exclude_hosts_re/", $_SERVER['SERVER_NAME']));
   }
+
   return false;
 }
 ?>
-<h3 class='banner' align='center'>
-<?php
-  print "<a href='/'>";
-  require_once dirname(__FILE__) . "/lib/modules/ProxyInfo.php";
-  $pi = new ProxyInfo();
-  $pi_attr = $pi->attributes();
-  print $_SERVER['SERVER_NAME'] ;
-  if ($upstreamServer = $pi_attr{'upstream_server'}) {
-    print "<br><font size='-1'>(upstream server: " . $upstreamServer . ")</font>";
-  }
-  print "</a>";
-  print "<br><font size='-1'>[canonical server: " . php_uname('n') . "]</font>";
+<!doctype html>
+<html lang="en">
 
-  $headers = apache_request_headers();
-?>
-</h3>
-<?php
-include('config/module.php');
-
-// default page
-$page = ( isset($_GET['p']) ) ? $_GET['p'] : 'Databases';
-?>
+<?php include 'head.php.inc'; ?>
 
 <body>
+<h3 class='banner' align='center'>
+  <?php
 
-<ul id="tabmenu">
- <?php
-    // Print tabs menu
-    foreach ($pageMap as $key => $value) {
-        if ( exclude_this($pageMap, $key) ) { continue; }
-        if ( ! $pageMap[$key]['tab']) { continue; }
-        if ( $key == 'Proxy' && !isset($headers['Via']) ) { continue; }
-        $active = ($key == $page) ? "class='active'" : '';
-        print "<li><a $active href='?p=$key'>$key</a></li>\n";
-    }
- ?>
-</ul>
+  echo "<a href='/'>";
+  echo $_SERVER['SERVER_NAME'];
 
-<div id="content">
+  $pi = new ProxyInfo();
+  $pi_attr = $pi->attributes();
 
+  if ($upstreamServer = $pi_attr['upstream_server']) {
+    echo "<br><font size='-1'>(upstream server: " . $upstreamServer . ")</font>";
+  }
+
+  echo "</a>";
+  echo "<br><font size='-1'>[canonical server: " . php_uname('n') . "]</font>";
+
+  $headers = apache_request_headers();
+  ?>
+</h3>
 <?php
-
-
-if (!$pageMap[$page]) {
-    print "unknown page '$page'";
-    return;
-}
-
-if (exclude_this($pageMap, $page)) {
-  print "NA";
-} else {
-    if (strncmp($pageMap[$page]['module'], 'http', 4) == 0) {
-        readfile($pageMap[$page]['module']);
-    } else {
-        virtual($pageMap[$page]['module']);
-    }
-}
+// default page
+$page = $_GET['p'] ?? 'Databases';
 ?>
+<ul id="tabmenu">
+  <?php
+  // Print tabs menu
+  foreach ($pageMap as $key => $value) {
+    if (exclude_this($pageMap, $key))
+      continue;
 
-<a href="?p=About"><img src="images/logo.png" align="right" vspace="2" /></a>
+    if (!$value['tab'])
+      continue;
+
+    if ($key == 'Proxy' && !isset($headers['Via']))
+      continue;
+    $active = ($key == $page) ? "class='active'" : '';
+    echo "<li><a $active href='?p=$key'>$key</a></li>\n";
+  }
+  ?>
+</ul>
+<div id="content">
+  <?php
+  if (!$pageMap[$page]) {
+    echo "unknown page '$page'";
+    return;
+  }
+
+  if (exclude_this($pageMap, $page)) {
+    echo "NA";
+  } else {
+    $module = $pageMap[$page]['module'];
+    if (str_starts_with($module, "/")) {
+      $module = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $module;
+    }
+
+    if (str_starts_with($module, 'http')) {
+      $req = new UserAgent(['url' => $module]);
+      echo $req->get_content();
+    } elseif (str_ends_with($module, ".php"))  {
+      include $module;
+    } else {
+      readfile($module);
+    }
+  }
+  ?>
+  <a href="?p=About"><img src="images/logo.png" align="right" vspace="2"/></a>
 </div>
-
 </body>
 </html>
