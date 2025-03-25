@@ -14,11 +14,11 @@ accountDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['acctDb_name'] }}"
 accountDb_login: "{{ host_data['acctDb_login'] }}"
 accountDb_password: "{{ password['acctdb'] }}"
 
-appDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['appDb_name'] }}"
+appDb_connectionUrl: "jdbc:postgresql://ares12.penn.apidb.org/{{ host_data['appDb_name'] }}"
 appDb_login: "{{ host_data['appDb_login'] }}"
 appDb_password: "{{ password['appdb'] }}"
 
-userDb_connectionUrl: "jdbc:oracle:oci:@{{ host_data['userDb_name'] }}"
+userDb_connectionUrl: "jdbc:postgresql://ares12.penn.apidb.org/{{ host_data['userDb_name'] }}"
 userDb_login: "{{ host_data['userDb_login'] }}"
 userDb_password: "{{ password['userdb'] }}"
 
