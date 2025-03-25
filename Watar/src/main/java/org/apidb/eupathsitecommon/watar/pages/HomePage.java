@@ -1,5 +1,7 @@
 package org.apidb.eupathsitecommon.watar.pages;
 
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -35,7 +37,7 @@ public class HomePage extends AjaxPage{
   
   @Override
   public void waitForPageToLoad() {
-    new WebDriverWait(driver, 30, 3)
+    new WebDriverWait(driver, Duration.ofSeconds(30), Duration.ofMillis(3))
     .until(ExpectedConditions.presenceOfElementLocated(checkBoxTreeItem));
   }
   

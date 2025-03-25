@@ -1,13 +1,13 @@
 package org.apidb.eupathsitecommon.watar;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
-import com.gargoylesoftware.htmlunit.html.serializer.HtmlSerializerVisibleText;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlTextInput;
+import org.htmlunit.html.serializer.HtmlSerializerVisibleText;
 
 /**
  * A simple Google search test using HtmlUnit.

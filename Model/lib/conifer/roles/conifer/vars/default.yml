@@ -153,9 +153,11 @@ modelprop:
   FACEBOOK_URL:
   YOUTUBE_URL:
   REDDIT_URL: 
+  BLUESKY_URL: 'https://veupathdb.bsky.social'
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
+  AI_EXPRESSION_CACHE_DIR: /eupath/ai-expr-cache
 
 eda:
   enabled: "true"
