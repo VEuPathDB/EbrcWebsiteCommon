@@ -34,7 +34,7 @@ _host_frontends:
   w2: ''
 
 _userdb_link_map:
-  apicomm: ' ' 
+  apicomm: '' 
   apicomms:    prods.login_comment
   apicommn:    prodn.login_comment
   apicommbetas: betas.login_comment
