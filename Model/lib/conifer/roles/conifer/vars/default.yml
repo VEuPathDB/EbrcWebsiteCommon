@@ -1,7 +1,7 @@
 # $SourceFileURL$
 ---
 project: =c= e.g. ToxoDB
-cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|EuPathDBIrods|WDKTemplate]
+cohort: =c= e.g. [Apicommon|ClinEpi|Microbiome|OrthoMCL|WDKTemplate]
 hostname: =c= FQDN or 'localhost'
 _self_url_scheme: https
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
@@ -9,21 +9,21 @@ _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
 # short convenience names for most common user-defined vars
-appDb_ldapServer: =c= e.g. ldap.example.com:389
-appDb_ldapBaseDn: =c= e.g. ou=applications,dc=apidb,dc=org
+appDb_ldapServer: ds.apidb.org:389
+appDb_ldapBaseDn: ou=applications,dc=apidb,dc=org
 appDb_ldapCommonName: =c= e.g. toxo-inc
-appDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@toxo-inc
+appDb_connectionUrl: '' # no longer required; use if desired e.g. jdbc:oracle:oci:@toxo-inc
 appDb_login: =c= username for application database, e.g.
 appDb_password: =c= password for application database
-userDb_ldapServer: =c= e.g. ldap.example.com:389
-userDb_ldapBaseDn: =c= e.g. ou=applications,dc=apidb,dc=org
+userDb_ldapServer: ds.apidb.org:389
+userDb_ldapBaseDn: ou=applications,dc=apidb,dc=org
 userDb_ldapCommonName: =c= e.g. apicommDevN
-userDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@apicommDevN
+userDb_connectionUrl: '' # no longer required; use if desired e.g. jdbc:oracle:oci:@apicommDevN
 userDb_login: =c= username for user database
 userDb_password: =c= password for user database
 
 _topleveldomain: org
-_wdkStepAnalysisJobsDir: "/var/www/Common/tmp/wdkStepAnalysisJobs/{{ userDb_ldapCommonName if userDb_connectionUrl.startswith('=c=') else userDb_connectionUrl|jdbc2shortName|lower }}"
+_wdkStepAnalysisJobsDir: "/var/www/Common/tmp/wdkStepAnalysisJobs/{{ userDb_connectionUrl|jdbc2shortName|lower if userDb_connectionUrl is defined and not userDb_connectionUrl.startswith('=c=') else userDb_ldapCommonName }}"
 
 _host_frontends:
   a1: alpha
