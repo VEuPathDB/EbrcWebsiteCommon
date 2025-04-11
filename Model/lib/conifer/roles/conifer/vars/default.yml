@@ -9,19 +9,21 @@ _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
 # short convenience names for most common user-defined vars
-accountDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@acctDbS
-accountDb_login: =c= username for account database
-accountDb_password: =c= password for account database
+appDb_ldapServer: =c= e.g. ldap.example.com:389
+appDb_ldapBaseDn: =c= e.g. ou=applications,dc=apidb,dc=org
+appDb_ldapCommonName: =c= e.g. toxo-inc
 appDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@toxo-inc
 appDb_login: =c= username for application database, e.g.
 appDb_password: =c= password for application database
+userDb_ldapServer: =c= e.g. ldap.example.com:389
+userDb_ldapBaseDn: =c= e.g. ou=applications,dc=apidb,dc=org
+userDb_ldapCommonName: =c= e.g. apicommDevN
 userDb_connectionUrl: =c= e.g. jdbc:oracle:oci:@apicommDevN
 userDb_login: =c= username for user database
 userDb_password: =c= password for user database
 
-
 _topleveldomain: org
-_wdkStepAnalysisJobsDir: '/var/www/Common/tmp/wdkStepAnalysisJobs/{{ modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}'
+_wdkStepAnalysisJobsDir: "/var/www/Common/tmp/wdkStepAnalysisJobs/{{ if modelconfig_userDb_connectionUrl.startswith('=c=') modelconfig_userDb_ldapCommonName else modelconfig_userDb_connectionUrl|jdbc2shortName|lower }}"
 
 _host_frontends:
   a1: alpha
@@ -49,28 +51,28 @@ _userdb_link_map:
   cecommdevn:  cedevn.login_comment
   userdb:      vm.userdb
 
+# map from chosen userDB (north or south) to north or south acctdb link
 _acctdb_link_map:
-  acctdbn: acctdbN.profile
-  acctdbs: acctdbS.profile
-  acctdb:  vm.acctdb # savm
+  apicomm: '' 
+  apicomms:    acctdbS.profile
+  apicommn:    acctdbN.profile
+  apicommbetas: acctdbS.profile
+  apicommbetan: acctdbN.profile
+  apicommdevs: acctdbS.profile
+  apicommdevn: acctdbN.profile
+  apicommlegacys: acctdbS.profile
+  apicommlegacyn: acctdbN.profile
+  cecomms:     acctdbS.profile
+  cecommn:     acctdbN.profile
+  cecommdevs:  acctdbS.profile
+  cecommdevn:  acctdbN.profile
+  userdb:      vm.acctdb # savm
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
-modelconfig_accountDb_accountSchema: useraccounts
-modelconfig_accountDb_connectionUrl: '{{ accountDb_connectionUrl }}'
-modelconfig_accountDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
-modelconfig_accountDb_login: '{{ accountDb_login }}'
-modelconfig_accountDb_maxActive: 20
-modelconfig_accountDb_maxIdle: 1
-modelconfig_accountDb_maxWait: 50
-modelconfig_accountDb_minIdle: 1
-modelconfig_accountDb_defaultFetchSize: 200
-modelconfig_accountDb_password: '{{ accountDb_password }}'
-modelconfig_accountDb_platform: Oracle
-modelconfig_accountDb_showConnections: 'false'
-modelconfig_accountDb_showConnectionsDuration: 600
-modelconfig_accountDb_showConnectionsInterval: 10
-
+modelconfig_appDb_ldapServer: '{{ appDb_ldapServer }}'
+modelconfig_appDb_ldapBaseDn: '{{ appDb_ldapBaseDn }}'
+modelconfig_appDb_ldapCommonName: '{{ appDb_ldapCommonName }}'
 modelconfig_appDb_connectionUrl: '{{ appDb_connectionUrl }}'
 modelconfig_appDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
 modelconfig_appDb_login: '{{ appDb_login }}'
@@ -81,13 +83,15 @@ modelconfig_appDb_maxWait: 50
 modelconfig_appDb_minIdle: 1
 modelconfig_appDb_defaultFetchSize: 200
 modelconfig_appDb_password: "{{ appDb_password }}"
-modelconfig_appDb_platform: PostgreSQL
 modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
-modelconfig_appDb_userDbLink: '{{ _userdb_link_map[modelconfig_userDb_connectionUrl|jdbc2shortName|lower] }}'
-modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_accountDb_connectionUrl|jdbc2shortName|lower] }}'
+modelconfig_appDb_userDbLink: '{{ _userdb_link_map[modelconfig_userDb_ldapCommonName|lower] }}'
+modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_userDb_ldapCommonName|lower] }}'
 
+modelconfig_userDb_ldapServer: '{{ userDb_ldapServer }}'
+modelconfig_userDb_ldapBaseDn: '{{ userDb_ldapBaseDn }}'
+modelconfig_userDb_ldapCommonName: '{{ userDb_ldapCommonName }}'
 modelconfig_userDb_connectionUrl: '{{ userDb_connectionUrl }}'
 modelconfig_userDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
 modelconfig_userDb_login: '{{ userDb_login }}'
@@ -97,7 +101,6 @@ modelconfig_userDb_maxWait: 50
 modelconfig_userDb_minIdle: 1
 modelconfig_userDb_defaultFetchSize: 200
 modelconfig_userDb_password: '{{ userDb_password }}'
-modelconfig_userDb_platform: PostgreSQL
 modelconfig_userDb_showConnections: 'false'
 modelconfig_userDb_showConnectionsDuration: 600
 modelconfig_userDb_showConnectionsInterval: 10
