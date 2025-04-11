@@ -23,7 +23,7 @@ userDb_login: =c= username for user database
 userDb_password: =c= password for user database
 
 _topleveldomain: org
-_wdkStepAnalysisJobsDir: "/var/www/Common/tmp/wdkStepAnalysisJobs/{{ userDb_connectionUrl|jdbc2shortName|lower if userDb_connectionUrl is defined and not userDb_connectionUrl.startswith('=c=') else userDb_ldapCommonName }}"
+_wdkStepAnalysisJobsDir: "/var/www/Common/tmp/wdkStepAnalysisJobs/{{ userDb_ldapCommonName if userDb_ldapCommonName is defined else userDb_connectionUrl|jdbc2shortName|lower }}"
 
 _host_frontends:
   a1: alpha
