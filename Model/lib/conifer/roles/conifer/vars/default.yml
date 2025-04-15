@@ -32,6 +32,8 @@ _host_frontends:
   q2: qa
   w1: ''
   w2: ''
+  l1: legacy
+  l2: legacy
 
 _userdb_link_map:
   apicomm: '' 
