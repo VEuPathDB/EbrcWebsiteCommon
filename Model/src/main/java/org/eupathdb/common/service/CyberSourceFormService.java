@@ -8,6 +8,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -91,14 +92,13 @@ public class CyberSourceFormService extends AbstractWdkService {
   }
 
   private void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency) {
-    String[] fields = new String[] {
-        "REQUEST",
+    LOG.info(Arrays.stream(new String[] {
         String.valueOf(requestingUser.getUserId()),
         "guest=" + requestingUser.isGuest(),
         referenceNumber,
-        amount
-    };
-    LOG.info(String.join("\t", fields));
+        amount,
+        currency
+    }).map(s -> "\t" + s).collect(Collectors.joining()));
   }
 
   private static String sign(String data, String secretKey) {
