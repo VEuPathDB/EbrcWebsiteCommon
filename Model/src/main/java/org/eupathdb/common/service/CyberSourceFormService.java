@@ -7,11 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TimeZone;
@@ -31,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.gusdb.fgputil.FormatUtil;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.fgputil.MapBuilder;
 import org.gusdb.wdk.model.WdkRuntimeException;
@@ -39,25 +36,35 @@ import org.gusdb.wdk.model.user.User;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
+/**
+ * The single GET endpoint takes a payment amount and currency and returns a
+ * JSON object where the keys/values represent all the form input fields
+ * required by CyberSource to being their checkout sequence.  Web client code
+ * is responsible for converting this object to a form and submitting it to
+ * the appropriate CyberSource endpoint.
+ */
 @Path("payment-form-content")
 public class CyberSourceFormService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(CyberSourceFormService.class);
 
+  // location of file containing cybersource account values and signing key
   private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource.config.json";
 
+  // regex to recognize proper amount values
   private static final Pattern MONEY_PATTERN = Pattern.compile("^[0-9]+(\\.[0-9][0-9])?$");
 
+  // signing algorithm
   private static final String HMAC_SHA256 = "HmacSHA256";
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response generateCyberSourceForm(
-      @QueryParam("amount") String amount,
-      @QueryParam("currency") String currency
+      @QueryParam("amount") String amount,     // required; must match the pattern above
+      @QueryParam("currency") String currency  // optional; defaults to USD
   ) {
 
-    // validate and massage amount param
+    // validate and massage amount and currency params
     amount = validateAmountParam(amount);
     currency = validateCurrencyParam(currency);
 
@@ -73,25 +80,26 @@ public class CyberSourceFormService extends AbstractWdkService {
 
     // define a map containing the elements of the form
     Map<String,String> paramMap = new MapBuilder<String,String>()
+        .put("signed_field_names", "access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency")
         .put("unsigned_field_names","")
-        .put("amount", amount)
+        .put("locale", "en")
+        .put("signed_date_time", getUTCDateTime())
+        .put("reference_number", referenceNumber)
+        .put("transaction_type", "authorization")
+        .put("transaction_uuid", UUID.randomUUID().toString())
         .put("profile_id", profileId)
         .put("access_key", accessKey)
+        .put("amount", amount)
         .put("currency", currency)
-        .put("transaction_uuid", UUID.randomUUID().toString())
-        .put("signed_field_names", "access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency")
-        .put("locale", "en")
-        .put("transaction_type", "authorization")
-        .put("reference_number", referenceNumber)
-        .put("signed_date_time", getUTCDateTime())
         .toMap();
 
-    paramMap.put("signature", sign(buildDataToSign(paramMap), secretKey));
+    // calculate signature from the exising fields and add to the form map
+    paramMap.put("signature", getSignature(paramMap, secretKey));
 
     return Response.ok(new JSONObject(paramMap).toString()).build();
   }
 
-  private void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency) {
+  private static void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency) {
     LOG.info(Arrays.stream(new String[] {
         String.valueOf(requestingUser.getUserId()),
         "guest=" + requestingUser.isGuest(),
@@ -101,7 +109,15 @@ public class CyberSourceFormService extends AbstractWdkService {
     }).map(s -> "\t" + s).collect(Collectors.joining()));
   }
 
-  private static String sign(String data, String secretKey) {
+  private static String getSignature(Map<String,String> params, String secretKey) {
+
+    // aggregate data into comma-delimited key=value pairs
+    String data = Arrays
+        .stream(params.get("signed_field_names").split(","))
+        .map(name -> name + "=" + params.get(name))
+        .collect(Collectors.joining(","));
+
+    // generate the signature and return
     try {
       SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(), HMAC_SHA256);
       Mac mac = Mac.getInstance(HMAC_SHA256);
@@ -114,29 +130,21 @@ public class CyberSourceFormService extends AbstractWdkService {
     }
   }
 
-  private static String buildDataToSign(Map<String,String> params) {
-    String[] signedFieldNames = params.get("signed_field_names").split(",");
-    List<String> dataToSign = new ArrayList<String>();
-    for (String signedFieldName : signedFieldNames) {
-        dataToSign.add(signedFieldName + "=" + params.get(signedFieldName));
-    }
-    return String.join(",", dataToSign);
-  }
-
   private static String getRandomDigits(int numDigits) {
     Random rand = new Random();
-    return IntStream.range(0,numDigits)
+    return IntStream.range(0, numDigits)
         .mapToObj(i -> String.valueOf(rand.nextInt(10)))
         .collect(Collectors.joining());
   }
 
   static String validateAmountParam(String amount) {
-    if (amount == null || !(FormatUtil.isInteger(amount) || MONEY_PATTERN.matcher(amount).matches())) {
-      throw new BadRequestException("'amount' parameter is required and must be a positive floating point number, in US Dollars.");
+    if (amount == null || !MONEY_PATTERN.matcher(amount).matches()) {
+      throw new BadRequestException("'amount' parameter is required and represent a numeric payment amount in US Dollars.");
     }
     return amount.indexOf(".") == -1 ? amount + ".00" : amount;
   }
 
+  // TODO: in the future we will probably support multiple currencies
   static String validateCurrencyParam(String currency) {
     if (currency != null && !currency.toUpperCase().equals("USD")) {
       throw new BadRequestException("'currency' parameter, if passed, must be 'USD'; other currencies are not yet supported");
