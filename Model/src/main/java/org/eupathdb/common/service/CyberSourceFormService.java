@@ -49,7 +49,7 @@ public class CyberSourceFormService extends AbstractWdkService {
   private static final Logger LOG = Logger.getLogger(CyberSourceFormService.class);
 
   // location of file containing cybersource account values and signing key
-  private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource.config.json";
+  private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/.cybersource.config.json";
 
   // regex to recognize proper amount values
   private static final Pattern MONEY_PATTERN = Pattern.compile("^[0-9]+(\\.[0-9][0-9])?$");
