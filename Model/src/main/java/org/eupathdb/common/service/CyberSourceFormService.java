@@ -16,7 +16,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -74,8 +74,9 @@ public class CyberSourceFormService extends AbstractWdkService {
     String profileId = config.getString("profile_id");
     String secretKey = config.getString("secret_key");
 
-    // reference number for tracking
-    String referenceNumber = String.valueOf(new Date().getTime()) + getRandomDigits(5);
+    // reference number for tracking (add 5 random digits at each ms)
+    String referenceNumber = String.valueOf(new Date().getTime()) +
+        String.format("%05d", new Random().nextInt(100000));
     logFormGeneration(getRequestingUser(), referenceNumber, amount, currency);
 
     // define a map containing the elements of the form
@@ -100,13 +101,13 @@ public class CyberSourceFormService extends AbstractWdkService {
   }
 
   private static void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency) {
-    LOG.info(Arrays.stream(new String[] {
+    LOG.info(Stream.of(
         String.valueOf(requestingUser.getUserId()),
         "guest=" + requestingUser.isGuest(),
         referenceNumber,
         amount,
         currency
-    }).map(s -> "\t" + s).collect(Collectors.joining()));
+    ).collect(Collectors.joining("\t", "\t", "")));
   }
 
   private static String getSignature(Map<String,String> params, String secretKey) {
@@ -128,13 +129,6 @@ public class CyberSourceFormService extends AbstractWdkService {
     catch (InvalidKeyException | NoSuchAlgorithmException e) {
       throw new WdkRuntimeException("Unable to sign cybersource form", e);
     }
-  }
-
-  private static String getRandomDigits(int numDigits) {
-    Random rand = new Random();
-    return IntStream.range(0, numDigits)
-        .mapToObj(i -> String.valueOf(rand.nextInt(10)))
-        .collect(Collectors.joining());
   }
 
   static String validateAmountParam(String amount) {
