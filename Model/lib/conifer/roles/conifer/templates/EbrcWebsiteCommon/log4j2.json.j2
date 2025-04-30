@@ -12,7 +12,7 @@
         "name": "errorLogPattern",
         "value": "%m%n"
       },{
-        "name": "pageViewLogPattern",
+        "name": "dateTimeLogPattern",
         "value": "%d{yyyy-MM-dd|HH:mm:ss}%m%n"
       }]
     },
@@ -54,7 +54,18 @@
         "name": "page-view-log",
         "fileName": "${logDir}/page-views.log",
         "filePattern": "${logDir}/archive/page-views.log.%d{yyyy-MM-dd}.%i.gz",
-        "PatternLayout": { "pattern": "${pageViewLogPattern}" },
+        "PatternLayout": { "pattern": "${dateTimeLogPattern}" },
+        "type": "RollingFile",
+        "Policies": {
+          "TimeBasedTriggeringPolicy": { "modulate": "true" },
+          "SizeBasedTriggeringPolicy": { "size": "100MB" }
+        },
+        "DefaultRolloverStrategy": { "max": 1000 }
+      },{
+        "name": "payment-form-request-log",
+        "fileName": "${logDir}/payment-form-request.log",
+        "filePattern": "${logDir}/archive/payment-form-request.log.%d{yyyy-MM-dd}.%i.gz",
+        "PatternLayout": { "pattern": "${dateTimeLogPattern}" },
         "type": "RollingFile",
         "Policies": {
           "TimeBasedTriggeringPolicy": { "modulate": "true" },
@@ -173,6 +184,11 @@
         "additivity": "false",
         "level": "info",
         "AppenderRef": { "ref": "page-view-log" }
+      },{
+        "name": "org.eupathdb.common.service.CyberSourceFormService",
+        "additivity": "false",
+        "level": "info",
+        "AppenderRef": { "ref": "payment-form-request-log" }
       },{
         "name": "org.gusdb.wdk.controller.filter.HttpResponseHeaderLogger",
         "additivity": "false",
