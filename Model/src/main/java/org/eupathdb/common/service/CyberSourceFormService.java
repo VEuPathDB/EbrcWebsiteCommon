@@ -54,19 +54,27 @@ public class CyberSourceFormService extends AbstractWdkService {
   // regex to recognize proper amount values
   private static final Pattern MONEY_PATTERN = Pattern.compile("^[0-9]+(\\.[0-9][0-9])?$");
 
+  // regex to recognize proper invoice numbers
+  private static final Pattern INVOICE_NUMBER_PATTERN = Pattern.compile("^[0-9A-Za-z\\-]+$");
+
   // signing algorithm
   private static final String HMAC_SHA256 = "HmacSHA256";
+
+  // will appear in log when invoice param not sent or empty
+  static final String INVOICE_NOT_SPECIFIED = "Not_Specified";
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response generateCyberSourceForm(
-      @QueryParam("amount") String amount,     // required; must match the pattern above
-      @QueryParam("currency") String currency  // optional; defaults to USD
+      @QueryParam("amount") String amount,               // required; must match the pattern above
+      @QueryParam("currency") String currency,           // optional; defaults to USD
+      @QueryParam("invoice_number") String invoiceNumber // optional; logged with reference number for trackability
   ) {
 
     // validate and massage amount and currency params
     amount = validateAmountParam(amount);
     currency = validateCurrencyParam(currency);
+    invoiceNumber = validateInvoiceNumber(invoiceNumber);
 
     // get values from config
     JSONObject config = readConfig();
@@ -77,7 +85,7 @@ public class CyberSourceFormService extends AbstractWdkService {
     // reference number for tracking (add 5 random digits at each ms)
     String referenceNumber = String.valueOf(new Date().getTime()) +
         String.format("%05d", new Random().nextInt(100000));
-    logFormGeneration(getRequestingUser(), referenceNumber, amount, currency);
+    logFormGeneration(getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
     // define a map containing the elements of the form
     Map<String,String> paramMap = new MapBuilder<String,String>()
@@ -100,13 +108,14 @@ public class CyberSourceFormService extends AbstractWdkService {
     return Response.ok(new JSONObject(paramMap).toString()).build();
   }
 
-  private static void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency) {
+  private static void logFormGeneration(User requestingUser, String referenceNumber, String amount, String currency, String invoiceNumber) {
     LOG.info(Stream.of(
         String.valueOf(requestingUser.getUserId()),
         "guest=" + requestingUser.isGuest(),
         referenceNumber,
         amount,
-        currency
+        currency,
+        invoiceNumber
     ).collect(Collectors.joining("\t", "\t", "")));
   }
 
@@ -144,6 +153,16 @@ public class CyberSourceFormService extends AbstractWdkService {
       throw new BadRequestException("'currency' parameter, if passed, must be 'USD'; other currencies are not yet supported");
     }
     return "USD";
+  }
+
+  static String validateInvoiceNumber(String invoiceNumber) {
+    if (invoiceNumber == null || invoiceNumber.isBlank()) {
+      return INVOICE_NOT_SPECIFIED;
+    }
+    if (INVOICE_NUMBER_PATTERN.matcher(invoiceNumber).matches()) {
+      return invoiceNumber;
+    }
+    throw new BadRequestException("'invoice_number' parameter is malformed; only alphanumeric and hyphen characters are allowed");
   }
 
   private static String getUTCDateTime() {

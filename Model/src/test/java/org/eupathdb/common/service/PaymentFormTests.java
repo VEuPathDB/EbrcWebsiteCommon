@@ -31,7 +31,7 @@ public class PaymentFormTests {
         new TestCase("5.", false, null),
         new TestCase("123.45", true, "123.45"),
         new TestCase("123.456", false, null)
-    }, CyberSourceFormService::validateAmountParam);
+    }, "amount", CyberSourceFormService::validateAmountParam);
   }
 
 
@@ -42,13 +42,24 @@ public class PaymentFormTests {
         new TestCase("usd", true, "USD"),
         new TestCase("USD", true, "USD"),
         new TestCase("euros", false, null)
-    }, CyberSourceFormService::validateCurrencyParam);
+    }, "currency", CyberSourceFormService::validateCurrencyParam);
   }
 
-  private void runTests(TestCase[] tests, Function<String,String> validator) {
+  @Test
+  public void testInvoiceNumberValidation() {
+    runTests(new TestCase[] {
+        new TestCase(null, true, CyberSourceFormService.INVOICE_NOT_SPECIFIED),
+        new TestCase("", true, CyberSourceFormService.INVOICE_NOT_SPECIFIED),
+        new TestCase("   ", true, CyberSourceFormService.INVOICE_NOT_SPECIFIED),
+        new TestCase("na1-82-3B", true, "na1-82-3B"),
+        new TestCase("delete table my_table;", false, null)
+    }, "invoiceNumber", CyberSourceFormService::validateInvoiceNumber);
+  }
+
+  private void runTests(TestCase[] tests, String testName, Function<String,String> validator) {
     boolean testFailed = false;
     for (TestCase test : tests) {
-      System.out.println("Amount test: " + test);
+      System.out.println(testName + " test: " + test);
       try {
         String output = validator.apply((test.getFirst()));
         System.out.println("Got output: " + output);
