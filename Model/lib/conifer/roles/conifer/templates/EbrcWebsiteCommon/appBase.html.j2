@@ -41,7 +41,7 @@
         {% endif %}
         {% if user_datasets_workspace is defined %}
         useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
-        communityDatasetsEnabled: "{{ user_datasets_workspace.community|default('') }}",
+        communityDatasetsEnabled: "true" === "{{ user_datasets_workspace.community|default('false') }}",
         showExtraMetadata: "{{ user_datasets_workspace.showExtraMetadata|default('') }}",
         datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
         userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes|default('') }}",
