@@ -47,6 +47,7 @@ _userdb_link_map:
   apicommdevn: devn.login_comment
   apicommlegacys: legacys.login_comment
   apicommlegacyn: legacyn.login_comment
+  apicommfeaturen: ''
   cecomms:     ceprods.login_comment
   cecommn:     ceprodn.login_comment
   cecommdevs:  cedevs.login_comment
@@ -64,6 +65,7 @@ _acctdb_link_map:
   apicommdevn: acctdbN.profile
   apicommlegacys: acctdbS.profile
   apicommlegacyn: acctdbN.profile
+  apicommfeaturen: ''
   cecomms:     acctdbS.profile
   cecommn:     acctdbN.profile
   cecommdevs:  acctdbS.profile
