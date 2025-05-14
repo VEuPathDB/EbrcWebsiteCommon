@@ -50,6 +50,7 @@
         {% if vdi is defined %}
         vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
         {% endif %}
+        aiExpressionQualtricsId: "{{ modelprop.AI_EXPRESSION_QUALTRICS_ID|default('') }}",
         {% endblock %}
       };
     </script>
