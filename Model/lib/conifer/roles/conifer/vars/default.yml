@@ -160,6 +160,7 @@ modelprop:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
   AI_EXPRESSION_CACHE_DIR: /eupath/ai-expr-cache
+  AI_EXPRESSION_QUALTRICS_ID: SV_38C4ZX1JxLi2SEe
 
 eda:
   enabled: "true"
