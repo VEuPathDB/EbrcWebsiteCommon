@@ -31,10 +31,6 @@ password:
       'attr=password xpath=database/user[@login=\"{}\"]'.format(appDb_login)
       )
     }}"
-  acctdb: "{{ lookup('euparc',
-      'attr=password xpath=database/user[@login=\"{}\"]'.format(accountDb_login)
-      )
-    }}"
   userdb: "{{ lookup('euparc',
       'attr=password xpath=database/user[@login=\"{}\"]'.format(userDb_login)
       )
