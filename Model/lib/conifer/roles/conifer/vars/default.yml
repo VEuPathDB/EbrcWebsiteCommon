@@ -172,6 +172,8 @@ vdi:
 user_datasets_workspace:
   enabled: "false"
   import_url: "/dataset-import"
+  showExtraMetadata: "true"
+
 
 contextxml_path: "/{{ _webapp_ctx }}"
 contextxml_docBase: "/var/www/{{ hostname}}/webapp"
