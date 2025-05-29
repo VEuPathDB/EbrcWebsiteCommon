@@ -94,7 +94,7 @@ public class CyberSourceFormService extends AbstractWdkService {
         .put("locale", "en")
         .put("signed_date_time", getUTCDateTime())
         .put("reference_number", referenceNumber)
-        .put("transaction_type", "authorization")
+        .put("transaction_type", "sale")
         .put("transaction_uuid", UUID.randomUUID().toString())
         .put("profile_id", profileId)
         .put("access_key", accessKey)
