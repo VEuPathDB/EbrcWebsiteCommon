@@ -58,7 +58,6 @@ public class EuPathDbDriverInitializer implements DbDriverInitializer {
       ModelConfigAppDB appDbConfig = (ModelConfigAppDB)dbConfig;
       if (appDbConfig.getPlatformEnum() == SupportedPlatform.ORACLE) {
         closeDbLink(connection, appDbConfig.getUserDbLink());
-        closeDbLink(connection, appDbConfig.getAcctDbLink());
       }
     }
     // set auto-commit back to what it was
