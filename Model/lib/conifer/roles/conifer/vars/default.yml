@@ -37,40 +37,23 @@ _host_frontends:
   l1: legacy
   l2: legacy
 
-_userdb_link_map:
-  apicomm: '' 
-  apicomms:    prods.login_comment
-  apicommn:    prodn.login_comment
-  apicommbetas: betas.login_comment
-  apicommbetan: betan.login_comment
-  apicommdevs: devs.login_comment
-  apicommdevn: devn.login_comment
-  apicommlegacys: legacys.login_comment
-  apicommlegacyn: legacyn.login_comment
-  apicommfeaturen: ''
-  cecomms:     ceprods.login_comment
-  cecommn:     ceprodn.login_comment
-  cecommdevs:  cedevs.login_comment
-  cecommdevn:  cedevn.login_comment
-  userdb:      vm.userdb
+_remote_studyaccess_schema_map:
+  apicomms: studyaccess_apicomms
 
-# map from chosen userDB (north or south) to north or south acctdb link
-_acctdb_link_map:
-  apicomm: '' 
-  apicomms:    acctdbS.profile
-  apicommn:    acctdbN.profile
-  apicommbetas: acctdbS.profile
-  apicommbetan: acctdbN.profile
-  apicommdevs: acctdbS.profile
-  apicommdevn: acctdbN.profile
-  apicommlegacys: acctdbS.profile
-  apicommlegacyn: acctdbN.profile
-  apicommfeaturen: ''
-  cecomms:     acctdbS.profile
-  cecommn:     acctdbN.profile
-  cecommdevs:  acctdbS.profile
-  cecommdevn:  acctdbN.profile
-  userdb:      vm.acctdb # savm
+_remote_useraccounts_schema_map:
+  apicomms: useraccounts_apicomms
+
+_remote_wdkuserdata_schema_map:
+  apicomms: wdkuserdata_apicomms
+
+_remote_comment_schema_map:
+  apicomms: comment_apicomms
+
+_remote_metrics_schema_map:
+  apicomms: metrics_apicomms
+
+_remote_uploads_schema_map:
+  apicomms: uploads_apicomms
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
@@ -90,8 +73,12 @@ modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
-modelconfig_appDb_userDbLink: '{{ _userdb_link_map[modelconfig_userDb_ldapCommonName|lower] }}'
-modelconfig_appDb_acctDbLink: '{{ _acctdb_link_map[modelconfig_userDb_ldapCommonName|lower] }}'
+modelconfig_appDb_remoteUserDataSchema: '{{ _remote_wdkuserdata_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
+
+remoteUserAccountsSchema: '{{ _remote_user_accounts_schema[modelconfig_acctDb_ldapCommonName|lower] }}'
+remoteCommentSchema: '{{ _remote_comment_schema[modelconfig_userDb_ldapCommonName|lower] }}'
+remoteMetricsSchema: '{{ _remote_metric_schema[modelconfig_userDb_ldapCommonName|lower] }}'
+remoteUploadsSchema: '{{ _remote_uploads_schema[modelconfig_userDb_ldapCommonName|lower] }}'
 
 modelconfig_userDb_ldapServer: '{{ userDb_ldapServer }}'
 modelconfig_userDb_ldapBaseDn: '{{ userDb_ldapBaseDn }}'
