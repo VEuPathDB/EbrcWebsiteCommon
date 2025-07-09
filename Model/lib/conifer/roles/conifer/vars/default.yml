@@ -75,10 +75,10 @@ modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
 modelconfig_appDb_remoteUserDataSchema: '{{ _remote_wdkuserdata_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
 
-remoteUserAccountsSchema: '{{ _remote_user_accounts_schema[modelconfig_acctDb_ldapCommonName|lower] }}'
-remoteCommentSchema: '{{ _remote_comment_schema[modelconfig_userDb_ldapCommonName|lower] }}'
-remoteMetricsSchema: '{{ _remote_metric_schema[modelconfig_userDb_ldapCommonName|lower] }}'
-remoteUploadsSchema: '{{ _remote_uploads_schema[modelconfig_userDb_ldapCommonName|lower] }}'
+remoteUserAccountsSchema: '{{ _remote_useraccounts_schema_map[modelconfig_acctDb_ldapCommonName|lower] }}'
+remoteCommentSchema: '{{ _remote_comment_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
+remoteMetricsSchema: '{{ _remote_metrics_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
+remoteUploadsSchema: '{{ _remote_uploads_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
 
 modelconfig_userDb_ldapServer: '{{ userDb_ldapServer }}'
 modelconfig_userDb_ldapBaseDn: '{{ userDb_ldapBaseDn }}'
