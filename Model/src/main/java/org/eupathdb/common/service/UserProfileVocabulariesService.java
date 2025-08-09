@@ -16,14 +16,26 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONException;
 
-@Path("/user-profile-vocabularies")
+@Path("/")
 public class UserProfileVocabulariesService extends AbstractWdkService {
 
   @GET
+  @Path("user-profile-vocabularies")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getVocabs() {
+    return streamOAuthVocabulary("/assets/public/profile-vocabs.json");
+  }
 
-    String vocabUrl = getWdkModel().getModelConfig().getOauthUrl() + "/assets/public/profile-vocabs.json";
+  @GET
+  @Path("subscription-groups")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getGroups() {
+    return streamOAuthVocabulary("/groups");
+  }
+
+  private Response streamOAuthVocabulary(String path) {
+
+    String vocabUrl = getWdkModel().getModelConfig().getOauthUrl() + path;
 
     try (Response response = ClientBuilder.newBuilder()
           .withConfig(new ClientConfig())
