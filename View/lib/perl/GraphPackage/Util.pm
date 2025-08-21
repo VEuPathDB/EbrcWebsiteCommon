@@ -83,9 +83,9 @@ from apidbtuning.profiletype pt, apidbtuning.profile p
       from study.studylink sl, apidbtuning.PanResults panr
       where sl.protocol_app_node_id = panr.pan_id
       and panr.result_table = 'Results::NAFeatureDiffResult') dr
- , apidbtuning.DatasetNameTaxon dnt
+ , apidbtuning.DatasetDatasource dd
 where dnt.dataset_presenter_id = ?
-and pt.dataset_name = dnt.name
+and pt.dataset_name = dd.name
 and pt.profile_study_id = dr.study_id (+)
 and dr.study_id is null
 and p.profile_study_id = pt.profile_study_id
@@ -102,8 +102,8 @@ from apidbtuning.profiletype pt
       from study.studylink sl, apidbtuning.PanResults panr
       where sl.protocol_app_node_id = panr.pan_id
       and panr.result_table = 'Results::NAFeatureDiffResult') dr
- , apidbtuning.DatasetNameTaxon dnt
-where dnt.dataset_presenter_id = ?
+ , apidbtuning.DatasetDatasource dd
+where dd.dataset_presenter_id = ?
 and pt.dataset_name = dnt.name
 and pt.profile_study_id = dr.study_id (+)
 and dr.study_id is null
