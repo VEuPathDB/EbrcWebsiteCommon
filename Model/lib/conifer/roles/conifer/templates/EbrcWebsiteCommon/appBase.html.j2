@@ -13,7 +13,7 @@
       {# used by EbrcWebsiteCommon to initialize wdk #}
       window.__SITE_CONFIG__ = {
         {% block siteConfig %}
-        requireLogin: "{{ requireLogin | default('false')}}" === "true",
+        requireLogin: "{{ requireLogin|string|default('false')}}" === "true",
         rootElement: "#wdk-container",
         rootUrl: "{{ modelprop.WEBAPP_BASE_URL|default('') }}",
         endpoint: "{{ modelprop.REST_SERVICE_BASE_URL|default('') }}",
@@ -31,23 +31,23 @@
         communitySite: "{{ modelprop.COMMUNITY_SITE|default('') }}",
         siteSearchServiceUrl: "{{ modelprop.SITE_SEARCH_SERVICE_URL|default('') }}",
         {% if eda is defined %}
-        useEda: "true" === "{{ eda.enabled|default('false')}}",
+        useEda: "true" === "{{ eda.enabled| string | default('false')}}",
         edaExampleAnalysesAuthor: "{{ eda.example_analyses_author|string|default('') }}",
         edaServiceUrl: "{{ eda.service_base_url|default('') }}",
         {% if eda.single_app_mode is defined %}
         edaSingleAppMode: "{{ eda.single_app_mode }}",
         {% endif %}
-        edaEnableFullScreenApps: "true" === "{{ eda.enableFullScreenApps|default('false') }}",
+        edaEnableFullScreenApps: "true" === "{{ eda.enableFullScreenApps|string|default('false') }}",
         {% endif %}
         {% if user_datasets_workspace is defined %}
-        useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|default('false')}}",
-        communityDatasetsEnabled: "true" === "{{ user_datasets_workspace.community|default('false') }}",
+        useUserDatasetsWorkspace: "true" === "{{ user_datasets_workspace.enabled|string|default('false')}}",
+        communityDatasetsEnabled: "true" === "{{ user_datasets_workspace.community|string|default('false') }}",
         showExtraMetadata: "{{ user_datasets_workspace.showExtraMetadata|default('') }}",
         datasetImportUrl: "{{ user_datasets_workspace.import_url|default('') }}",
-        userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes|default('') }}",
+        userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes| default('') }}",
         {% endif %}
-        showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
-        showSubscriptionProds: "true" === "{{ showSubscriptionProds|default('false') }}",
+        showUnreleasedData: "true" === "{{ showUnreleasedData|string|default('false') }}",
+        showSubscriptionProds: "true" === "{{ showSubscriptionProds|string|default('false') }}",
         {% if vdi is defined %}
         vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
         {% endif %}
