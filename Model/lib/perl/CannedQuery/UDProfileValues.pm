@@ -18,7 +18,7 @@ sub init {
 select e.value, pan.node_order_num as element_order
 from apidbuserdatasets.ud_protocolappnode pan
    , apidbuserdatasets.ud_nafeatureexpression e
-   , apidbtuning.geneattributes ga
+   , webready.GeneAttributes ga
 where pan.profile_set_id = '<<ProfileSetId>>'
 and pan.protocol_app_node_id = e.protocol_app_node_id
 and ga.na_feature_id = e.na_feature_id
