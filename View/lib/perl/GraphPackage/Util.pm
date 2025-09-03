@@ -2,8 +2,6 @@ package EbrcWebsiteCommon::View::GraphPackage::Util;
 
 use strict;
 
-use Math::Round;
-
 use EbrcWebsiteCommon::View::GraphPackage::ProfileSet;
 use EbrcWebsiteCommon::View::GraphPackage::NodeMetadataSet;
 
