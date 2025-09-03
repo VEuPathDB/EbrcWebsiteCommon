@@ -567,7 +567,6 @@ $rStrings
 multiplot(plotlist = plotlist, cols = 1)
 
 if (grepl(file_ext(\"$out_f\"), \"html\")) {
-  Sys.setenv(HOME = \"$ENV{"HOME"}\")
   if (length(plotlist) > 1) {
     save_tags(tagList(plotlist), \"$out_f\")
   } else {
