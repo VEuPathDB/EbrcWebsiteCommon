@@ -152,6 +152,7 @@ sub makeRPlotString {
   my $xAxisLabel = $self->getXaxisLabel();
   my $plotTitle = $self->getPlotTitle();
   my $subtitle = $self->getSubtitle();
+  $subtitle = $subtitle ? $subtitle : '';
   my $statusLegend = $self->getStatusLegend();
   $statusLegend = $statusLegend ? $statusLegend : '';
   my $eventDurLegend = $self->getEventDurLegend();
