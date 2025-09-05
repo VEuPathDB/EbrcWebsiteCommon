@@ -47,6 +47,7 @@
         userDatasetsUploadTypes: "{{ user_datasets_workspace.uploadTypes|default('') }}",
         {% endif %}
         showUnreleasedData: "true" === "{{ showUnreleasedData|default('false') }}",
+        showSubscriptionProds: "true" === "{{ showSubscriptionProds|default('false') }}",
         {% if vdi is defined %}
         vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
         {% endif %}
