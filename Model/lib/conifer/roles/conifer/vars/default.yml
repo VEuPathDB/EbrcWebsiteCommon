@@ -53,6 +53,7 @@ _userdb_link_map:
   cecommdevs:  cedevs.login_comment
   cecommdevn:  cedevn.login_comment
   userdb:      vm.userdb
+  userdb_devn: vm.userdb_devn
 
 # map from chosen userDB (north or south) to north or south acctdb link
 _acctdb_link_map:
@@ -71,6 +72,7 @@ _acctdb_link_map:
   cecommdevs:  acctdbS.profile
   cecommdevn:  acctdbN.profile
   userdb:      vm.acctdb # savm
+  userdb_devn: vm.acctdb
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
