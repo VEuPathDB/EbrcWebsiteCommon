@@ -16,7 +16,7 @@ sub init {
 with comp as (select ps.node_order_num,ps.protocol_app_node_name,na.value
                 from apidbtuning.ProfileSamples ps
                     , results.nafeatureexpression na
-                    , apidbtuning.geneattributes ga
+                    , webready.GeneAttributes ga
             where ps.study_name = '<<ProfileSetId>>'
                 and ps.profile_type = 'values'
                 and ps.protocol_app_node_id =  na.protocol_app_node_id
@@ -25,7 +25,7 @@ with comp as (select ps.node_order_num,ps.protocol_app_node_name,na.value
     , ref as (select ps.node_order_num,ps.protocol_app_node_name,na.value
                 from apidbtuning.ProfileSamples ps
                    , results.nafeatureexpression na
-                   , apidbtuning.geneattributes ga
+                   , webready.GeneAttributes ga
                 where ps.study_name = '<<ProfileSetId>>'
                     and ps.profile_type = 'values'
                     and ps.protocol_app_node_id =  na.protocol_app_node_id
