@@ -70,7 +70,7 @@ default:
   userDb.password: ${userDb.password}
   userDb.instance: ${userDb.instance}
   userDb.platform: Oracle
-  userDb.userSchema: userlogins5.
+  userDb.userSchema: wdkuser.
 
   userDb.maxActive: 20
   userDb.maxIdle: 1
@@ -172,8 +172,8 @@ apiSite:
   commentDb.maxIdle: 1
   commentDb.minIdle: 1
   commentDb.maxWait: 50
-  commentDb.commentSchema: userlogins5
-  commentDb.userLoginSchema: userlogins5
+  commentDb.commentSchema: usercomments
+  commentDb.userLoginSchema: wdkuser
   commentDb.userLoginDbLink: ${appDb.userDbLink}
   commentDb.userFileSchema: uploads
   commentDb.userFileUploadDir: /var/www/Common/communityFilesMirror

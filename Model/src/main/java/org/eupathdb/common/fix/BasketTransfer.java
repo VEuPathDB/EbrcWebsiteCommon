@@ -30,12 +30,12 @@ public class BasketTransfer {
       "SELECT BASKET_ID, USER_ID, BASKET_NAME, PROJECT_ID," +
       "       RECORD_CLASS, IS_DEFAULT, CATEGORY_ID, PK_COLUMN_1," +
       "       PK_COLUMN_2, PK_COLUMN_3, PREV_BASKET_ID, MIGRATION_ID" +
-      "  FROM userlogins5.user_baskets";
+      "  FROM wdkuser.user_baskets";
 
   public static final String SELECT_MERGE_VALUES_SQL_MACRO = "##selection_macro##";
 
   public static final String MERGE_SQL =
-      "MERGE INTO userlogins5.user_baskets dest" +
+      "MERGE INTO wdkuser.user_baskets dest" +
       "  USING ( " + SELECT_MERGE_VALUES_SQL_MACRO + " ) src" +
       "    ON( dest.basket_id = src.basket_id )" +
       "  WHEN MATCHED THEN" +
