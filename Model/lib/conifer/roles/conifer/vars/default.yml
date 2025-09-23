@@ -37,6 +37,7 @@ _host_frontends:
   l1: legacy
   l2: legacy
 
+<<<<<<< HEAD
 _remote_studyaccess_schema_map:
   apicomms: studyaccess_apicomms
 
@@ -95,7 +96,7 @@ modelconfig_userDb_password: '{{ userDb_password }}'
 modelconfig_userDb_showConnections: 'false'
 modelconfig_userDb_showConnectionsDuration: 600
 modelconfig_userDb_showConnectionsInterval: 10
-modelconfig_userDb_userSchema: userlogins5
+modelconfig_userDb_userSchema: wdkuser
 
 modelconfig_adminEmail: []
 modelconfig_authenticationMethod: user_db

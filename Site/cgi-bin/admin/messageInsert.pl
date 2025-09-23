@@ -82,27 +82,30 @@ if ($query->param("messageId")){
 
         ###Begin DB Transaction###
         eval{
-             my $sql=q(INSERT INTO announce.messages (message_id, message_text, 
+            my $stmt = $dbh->prepare("select nextval('announce.messages_id_pkseq')");
+            $stmt->execute();
+            my ($newMessageID) = $stmt->fetchrow_array();
+
+             my $sql="INSERT INTO announce.messages (message_id, message_text, 
                 message_category, start_date, stop_date, 
                 admin_comments, time_submitted) 
-                VALUES (announce.messages_id_pkseq.nextval,?,?,
+                VALUES ($newMessageID,?,?,
                 (TO_DATE( ? , 'mm-dd-yyyy hh24:mi:ss')),
                 (TO_DATE( ? , 'mm-dd-yyyy hh24:mi:ss')),
-                ?,SYSDATE)
-                RETURNING message_id INTO ?);
+                ?,LOCALTIMESTAMP)
+             ";
 
         my $sth=$dbh->prepare($sql);
            die "Could not prepare query. Check SQL syntax."
               unless defined $sql;
 
         # Bind variable parameters by reference (mandated by bind_param_inout)  
-        my $newMessageID;
         $sth->bind_param_inout(1,\$messageText, 38);
         $sth->bind_param_inout(2,\$messageCategory, 38);
         $sth->bind_param_inout(3,\$startDate, 38);
         $sth->bind_param_inout(4,\$stopDate, 38);
         $sth->bind_param_inout(5,\$adminComments, 38);
-        $sth->bind_param_inout(6,\$newMessageID, 38);
+        # $sth->bind_param_inout(6,\$newMessageID, 38);
         $sth->execute();
 
         # Bind message id's to selected projects in DB       
