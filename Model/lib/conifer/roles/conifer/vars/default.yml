@@ -37,24 +37,33 @@ _host_frontends:
   l1: legacy
   l2: legacy
 
-<<<<<<< HEAD
 _remote_studyaccess_schema_map:
-  apicomms: studyaccess_apicomms
+#  userdb_devn: studyaccess_accountdbn
+  userdb_devn: studyaccess
 
 _remote_useraccounts_schema_map:
-  apicomms: useraccounts_apicomms
+#  userdb_devn: useraccounts_accountdbn
+  userdb_devn: useraccounts
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
+#  userdb_devn: wdkuser_userdb_devn
+  userdb_devn: wdkuser
 
 _remote_comment_schema_map:
   apicomms: comment_apicomms
+#  userdb_devn: comment_userdb_devn
+  userdb_devn: usercomments
 
 _remote_metrics_schema_map:
   apicomms: metrics_apicomms
+#  userdb_devn: metrics_userdb_devn
+  userdb_devn: metrics
 
 _remote_uploads_schema_map:
   apicomms: uploads_apicomms
+#  userdb_devn: uploads_userdb_devn
+  userdb_devn: uploads
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
@@ -74,9 +83,12 @@ modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
-modelconfig_appDb_remoteUserDataSchema: '{{ _remote_wdkuserdata_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
+modelconfig_appDb_remoteUserDataSchema: '{{ _remote_uploads_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
+modelconfig_appDb_userDbLink: ''
 
-remoteUserAccountsSchema: '{{ _remote_useraccounts_schema_map[modelconfig_acctDb_ldapCommonName|lower] }}'
+remoteUserAccountsSchema: '{{ _remote_useraccounts_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'  
+remoteStudyAccessSchema: '{{ _remote_studyaccess_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'  
+
 remoteCommentSchema: '{{ _remote_comment_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
 remoteMetricsSchema: '{{ _remote_metrics_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
 remoteUploadsSchema: '{{ _remote_uploads_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
