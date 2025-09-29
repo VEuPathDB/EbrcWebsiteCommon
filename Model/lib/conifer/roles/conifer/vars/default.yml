@@ -38,32 +38,26 @@ _host_frontends:
   l2: legacy
 
 _remote_studyaccess_schema_map:
-#  userdb_devn: studyaccess_accountdbn
-  userdb_devn: studyaccess
+  userdb_devn: studyaccess_accountdb_n
 
 _remote_useraccounts_schema_map:
-#  userdb_devn: useraccounts_accountdbn
-  userdb_devn: useraccounts
+  userdb_devn: useraccounts_accountdb_n
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
-#  userdb_devn: wdkuser_userdb_devn
-  userdb_devn: wdkuser
+  userdb_devn: wdkuser_userdb_devn
 
 _remote_comment_schema_map:
   apicomms: comment_apicomms
-#  userdb_devn: comment_userdb_devn
-  userdb_devn: usercomments
+  userdb_devn: usercomments_userdb_devn
 
 _remote_metrics_schema_map:
   apicomms: metrics_apicomms
-#  userdb_devn: metrics_userdb_devn
-  userdb_devn: metrics
+  userdb_devn: metrics_userdb_devn
 
 _remote_uploads_schema_map:
   apicomms: uploads_apicomms
-#  userdb_devn: uploads_userdb_devn
-  userdb_devn: uploads
+  userdb_devn: uploads_userdb_devn
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
