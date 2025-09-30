@@ -151,6 +151,7 @@ modelprop:
   WEBAPP_BASE_URL: "/{{ _webapp_ctx }}/app"
   REST_SERVICE_BASE_URL: "/{{ _webapp_ctx }}/service"
   WEBSERVICEMIRROR: /var/www/Common/apiSiteFilesMirror/webServices/
+  RAWFILESDOWNLOADDIR: /var/www/Common/apiSiteFilesMirror/downloadSite/
   STEP_ANALYSIS_JOB_DIR: '{{ _wdkStepAnalysisJobsDir }}'
   LOCALHOST: '{{ _self_url_scheme }}://{{ hostname }}'
   GBROWSE_USER_TRACK_UPLOAD_BASE: '/var/www/Common/workspaces/gbrowse_data/{{ _webapp_ctx }}/userdata/{{ product|lower }}'
