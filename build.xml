@@ -129,7 +129,7 @@
       failonerror="true"
       failifexecutionfails="true"
     >
-    <arg line="nx bundle:dev @veupathdb/${sitePackageName}"/>
+    <arg line="nx bundle:npm @veupathdb/${sitePackageName}"/>
     </exec>
     <copy todir="${webappTargetDir}" overwrite="true">
       <fileset
