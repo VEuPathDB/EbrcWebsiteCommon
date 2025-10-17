@@ -53,7 +53,7 @@ public class ZippedFilesReporter implements Reporter {
   @Override
   public void report(OutputStream stream) throws WdkModelException {
     LOG.info("Starting zipped file response");
-    String pathPrefix = _answerValue.getWdkModel().getProperties().get("RAWFILESDOWNLOADDIR");
+    String pathPrefix = _answerValue.getWdkModel().getProperties().get("RAWFILESDOWNLOADDIR") + _answerValue.getWdkModel().getProjectId();
     try (ZipOutputStream out = new ZipOutputStream(stream);
          RecordStream fileRecords = RecordStreamFactory.getRecordStream(_answerValue, _requiredAttributes, Collections.emptyList())) {
       for (RecordInstance record : fileRecords) {
