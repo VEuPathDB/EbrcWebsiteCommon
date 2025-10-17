@@ -1,13 +1,16 @@
 package org.eupathdb.common.model.report;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.answer.AnswerValue;
@@ -23,10 +26,11 @@ import org.json.JSONObject;
 
 public class ZippedFilesReporter implements Reporter {
 
+  private static final Logger LOG = Logger.getLogger(ZippedFilesReporter.class);
+
   private static final String FILE_RECORDCLASS = "FileRecordClasses.FileRecordClass";
   private static final String FILENAME_ATTRIBUTE = "filename";
   private static final String FILEPATH_ATTRIBUTE = "filepath";
-  private static final String MODEL_PROP_LOCALHOST = "LOCALHOST";
 
   private AnswerValue _answerValue;
   private List<AttributeField> _requiredAttributes;
@@ -48,14 +52,18 @@ public class ZippedFilesReporter implements Reporter {
 
   @Override
   public void report(OutputStream stream) throws WdkModelException {
+    LOG.info("Starting zipped file response");
+    String pathPrefix = _answerValue.getWdkModel().getProperties().get("RAWFILESDOWNLOADDIR");
     try (ZipOutputStream out = new ZipOutputStream(stream);
          RecordStream fileRecords = RecordStreamFactory.getRecordStream(_answerValue, _requiredAttributes, Collections.emptyList())) {
       for (RecordInstance record : fileRecords) {
         ZipEntry file = new ZipEntry(record.getAttributeValue(FILENAME_ATTRIBUTE).getValue());
         out.putNextEntry(file);
-        String clientUrl = record.getAttributeValue(FILEPATH_ATTRIBUTE).getValue();
-        String absoluteFileUrl = _answerValue.getWdkModel().getProperties().get(MODEL_PROP_LOCALHOST) + clientUrl;
-        new URL(absoluteFileUrl).openStream().transferTo(out);
+        String absoluteFilePath = pathPrefix + record.getAttributeValue(FILEPATH_ATTRIBUTE).getValue().replace("a/service/raw-files/","");
+        LOG.info("Adding file: " + absoluteFilePath);
+        try (InputStream in = new BufferedInputStream(new FileInputStream(absoluteFilePath))) {
+          in.transferTo(out);
+        }
         out.closeEntry();
       }
     }
