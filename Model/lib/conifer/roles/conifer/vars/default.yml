@@ -82,6 +82,7 @@ modelconfig_appDb_ldapCommonName: '{{ appDb_ldapCommonName }}'
 modelconfig_appDb_connectionUrl: '{{ appDb_connectionUrl }}'
 modelconfig_appDb_driverInitClass: org.eupathdb.common.db.EuPathDbDriverInitializer
 modelconfig_appDb_login: '{{ appDb_login }}'
+modelconfig_appDb_cacheSchema: '{{ appDb_login }}'
 modelconfig_appDb_maxActive: 20
 modelconfig_appDb_maxIdle: 1
 modelconfig_appDb_maxPkColumnWidth: 150
