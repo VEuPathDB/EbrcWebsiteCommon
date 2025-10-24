@@ -118,7 +118,35 @@
   </target>
 
   <target name="localBuildWebAssets" depends="localBuildCheck" if="doLocalBuild">
-    <echo message="Building web assets locally"/>
+    <!-- Set default bundle mode if not specified -->
+    <property name="webAssets.bundleMode" value="development"/>
+
+    <!-- Normalize mode: convert dev/prod abbreviations -->
+    <condition property="bundleMode.normalized" value="development">
+      <or>
+        <equals arg1="${webAssets.bundleMode}" arg2="development"/>
+        <equals arg1="${webAssets.bundleMode}" arg2="dev"/>
+      </or>
+    </condition>
+    <condition property="bundleMode.normalized" value="production">
+      <or>
+        <equals arg1="${webAssets.bundleMode}" arg2="production"/>
+        <equals arg1="${webAssets.bundleMode}" arg2="prod"/>
+      </or>
+    </condition>
+
+    <!-- Fallback to development if no valid mode was recognized -->
+    <property name="bundleMode.normalized" value="development"/>
+
+    <!-- Determine nx bundle command based on mode -->
+    <condition property="nxBundleType" value="bundle:dev">
+      <equals arg1="${bundleMode.normalized}" arg2="development"/>
+    </condition>
+    <condition property="nxBundleType" value="bundle:npm">
+      <equals arg1="${bundleMode.normalized}" arg2="production"/>
+    </condition>
+
+    <echo message="Building web assets locally (mode: ${bundleMode.normalized})"/>
     <exec executable="yarn"
       dir="${projectsDir}/web-monorepo"
       failonerror="true"
@@ -129,7 +157,7 @@
       failonerror="true"
       failifexecutionfails="true"
     >
-    <arg line="nx bundle:dev @veupathdb/${sitePackageName}"/>
+    <arg line="nx ${nxBundleType} @veupathdb/${sitePackageName}"/>
     </exec>
     <copy todir="${webappTargetDir}" overwrite="true">
       <fileset
