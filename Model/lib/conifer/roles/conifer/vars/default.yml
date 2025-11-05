@@ -78,7 +78,7 @@ modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_showConnections: 'false'
 modelconfig_appDb_showConnectionsDuration: 600
 modelconfig_appDb_showConnectionsInterval: 10
-modelconfig_appDb_remoteUserDataSchema: '{{ _remote_wdkuserdata_schema_map:[modelconfig_userDb_ldapCommonName|lower] }}'
+modelconfig_appDb_remoteUserDataSchema: '{{ _remote_wdkuserdata_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'
 modelconfig_appDb_userDbLink: ''
 
 remoteUserAccountsSchema: '{{ _remote_useraccounts_schema_map[modelconfig_userDb_ldapCommonName|lower] }}'  
