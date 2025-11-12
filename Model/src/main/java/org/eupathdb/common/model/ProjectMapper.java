@@ -215,7 +215,7 @@ public class ProjectMapper {
     PreparedStatement ps = null;
     ResultSet resultSet = null;
     try {
-      ps = SqlUtils.getPreparedStatement(dataSource, sql);
+      ps = SqlUtils.getPreparedStatement(dataSource, sql, SqlUtils.Autocommit.OFF);
       ps.setString(1, organism);
       resultSet = ps.executeQuery();
       String projectId;
