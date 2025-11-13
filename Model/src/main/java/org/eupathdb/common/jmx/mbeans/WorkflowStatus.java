@@ -57,7 +57,7 @@ public class WorkflowStatus extends BeanBase implements WorkflowStatusMBean {
     PreparedStatement ps = null;
 
     try {
-      ps = SqlUtils.getPreparedStatement(datasource, sql);
+      ps = SqlUtils.getPreparedStatement(datasource, sql, SqlUtils.Autocommit.OFF);
       rs = ps.executeQuery();
      while (rs.next()) {
         HashMap<String, String> map = new HashMap<String, String>();
