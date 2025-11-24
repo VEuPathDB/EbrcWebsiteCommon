@@ -79,15 +79,9 @@ sub getProfileSetsSql {
     return "
 select DISTINCT pt.profile_set_name, pt.profile_type
 from apidbtuning.profiletype pt, apidbtuning.profile p
-  ,  (select distinct sl.study_id
-      from study.studylink sl, apidbtuning.PanResults panr
-      where sl.protocol_app_node_id = panr.pan_id
-      and panr.result_table = 'Results::NAFeatureDiffResult') dr
  , apidbtuning.DatasetDatasource dd
-where dnt.dataset_presenter_id = ?
+where dd.dataset_presenter_id = ?
 and pt.dataset_name = dd.name
-and pt.profile_study_id = dr.study_id (+)
-and dr.study_id is null
 and p.profile_study_id = pt.profile_study_id
 and p.profile_type = pt.profile_type
 and p.source_id = '$sourceId'
@@ -98,10 +92,6 @@ and p.source_id = '$sourceId'
   return "
 select DISTINCT pt.profile_set_name, pt.profile_type
 from apidbtuning.profiletype pt
-  ,  (select distinct sl.study_id
-      from study.studylink sl, apidbtuning.PanResults panr
-      where sl.protocol_app_node_id = panr.pan_id
-      and panr.result_table = 'Results::NAFeatureDiffResult') dr
  , apidbtuning.DatasetDatasource dd
 where dd.dataset_presenter_id = ?
 and pt.dataset_name = dnt.name
