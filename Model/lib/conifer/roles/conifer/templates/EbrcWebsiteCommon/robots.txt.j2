@@ -6,12 +6,15 @@
 #Environment: {{ env|default() }}
 #site_vars file: {{ site_vars }}
 
+User-agent: PetalBot
+Disallow: /
+
 User-agent: *
 Disallow: /
 Allow: /$
 Allow: /{{ webapp_ctx }}/$
-Allow: /{{ webapp_ctx }}/home.jsp
 Allow: /{{ webapp_ctx }}/app
+Allow: /{{ webapp_ctx }}/app/static-content/*
 Allow: /{{ webapp_ctx }}/app/search/organism/GenomeDataTypes/result*
 Allow: /{{ webapp_ctx }}/app/record/organism/*
 Allow: /{{ webapp_ctx }}/app/search/dataset/AllDatasets/result*
