@@ -410,6 +410,9 @@
   {"matchStrings": ["Cannot POST","cannot handle a BLAST result this large"
     ]
   },
+  {"matchStrings": ["Cannot POST","we cannot handle BLAST results larger than 90MB"
+    ]
+  },
   {"matchStrings": ["Cannot POST","must not be longer than 1000 characters"
     ],
    "comment": "---text search"
