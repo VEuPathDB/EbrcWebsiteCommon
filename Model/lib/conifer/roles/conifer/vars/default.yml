@@ -38,10 +38,10 @@ _host_frontends:
   l2: legacy
 
 _remote_studyaccess_schema_map:
-  userdb_devn: studyaccess_accountdb_n
+  userdb_devn: studyaccess_acctdbdevn
 
 _remote_useraccounts_schema_map:
-  userdb_devn: useraccounts_accountdb_n
+  userdb_devn: useraccounts_acctdbdevn
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
