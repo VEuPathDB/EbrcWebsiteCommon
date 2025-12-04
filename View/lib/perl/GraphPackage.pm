@@ -226,7 +226,7 @@ sub run {
    unless($Self->getFormat() eq 'table') {
      #my $rvs_t   = time();
 
-     my $systemResult = system("$rProg --vanilla --slave < $r_f ") >> 8;
+     my $systemResult = system("$rProg --vanilla --slave < $r_f >/dev/null 2>&1") >> 8;
      
      if($systemResult) {
        die "Couldn't run R program:  $?\n";
