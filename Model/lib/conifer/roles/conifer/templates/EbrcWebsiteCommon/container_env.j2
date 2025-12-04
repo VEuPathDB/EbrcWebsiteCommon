@@ -1,13 +1,17 @@
-# *_CONNECT names can be removed once all scripts use _CONNECTION
-# unused https://epvb.slack.com/archives/GBDR4LDNC/p1737746259838419?thread_ts=1737744510.481489&cid=GBDR4LDNC
-#
+
+APPDB_LDAP_SERVER={{ modelconfig_appDb_ldapServer }}
+APPDB_LDAP_BASE_DN={{ modelconfig_appDb_ldapBaseDn }}
 APPDB_LDAP_CN={{ modelconfig_appDb_ldapCommonName }}
 APPDB_LOGIN={{ modelconfig_appDb_login }}
 APPDB_PASSWORD={{ modelconfig_appDb_password }}
+APPDB_REMOTE_USER_SCHEMA={{ modelconfig_appDb_remoteUserDataSchema }}
 
+USERDB_LDAP_SERVER={{ modelconfig_userDb_ldapServer }}
+USERDB_LDAP_BASE_DN={{ modelconfig_userDb_ldapBaseDn }}
 USERDB_LDAP_CN={{ modelconfig_userDb_ldapCommonName }}
 USERDB_LOGIN={{ modelconfig_userDb_login }}
 USERDB_PASSWORD={{ modelconfig_userDb_password }}
+USERDB_USER_SCHEMA={{ modelconfig_userDb_userSchema }}
 
 OAUTH_URL={{ modelconfig_oauthUrl }}
 OAUTH_CLIENT_ID={{ modelconfig_oauthClientId }}
