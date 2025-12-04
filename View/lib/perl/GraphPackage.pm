@@ -225,7 +225,13 @@ sub run {
 
    unless($Self->getFormat() eq 'table') {
      #my $rvs_t   = time();
-     system "$rProg --vanilla --slave < $r_f > /dev/null 2>&1";
+
+     my $systemResult = system("$rProg --vanilla --slave < $r_f ") >> 8;
+     
+     if($systemResult) {
+       die "Couldn't run R program:  $?\n";
+     }
+
      #print STDERR join("\t", 'RVS', time() - $rvs_t), "\n";
  }
 
