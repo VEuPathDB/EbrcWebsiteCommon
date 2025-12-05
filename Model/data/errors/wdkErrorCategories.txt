@@ -540,6 +540,19 @@
   {"matchStrings": ["WdkModelException","Step field","cannot be longer"
     ],
    "comment": "---Step name 200 char we need to convert t a 400 error, opened trello"
+  },
+
+  {"matchStrings": ["Zotero Connector"
+    ],
+   "comment": "---Dec 2025"
+  },
+  {"matchStrings": ["following unknown attributes"
+    ],
+   "comment": "---Dec 2025"
+  },
+  {"matchStrings": ["ClientAbortException"
+    ],
+   "comment": "--Dec 2025"
   }
 
 
