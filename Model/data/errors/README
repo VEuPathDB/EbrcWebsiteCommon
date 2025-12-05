@@ -5,20 +5,33 @@ These are the files in this directory /EbrcWebsiteCommon/Model/data/errors/
 
 wdkErrorFilters.txt
 - Filters for ErrorsTag. No email report will be sent for errors matching these filters, possibly we do not log either?
-- these flters are executed first, before checking on wdkErrorCategroies.txt
+- these flters are executed first, before checking on wdkErrorCategories.txt
 - currenty we are not emailing:  WdkUserException and PluginUserException
 
 wdkErrorCategories.txt
 - another layer of error email filters
 - errors matching these filters will NOT be emailed.
-- we generate this file manually as a subset of wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt,
-   by copying/pasting chunks from the Client and Service files.
+- we generate this file manually as a SUBSET OF the filters in wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
+   which are used just for reporting (by copying/pasting chunks).
 
 wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
-- these files used for generating reports and checking on errors in the logs, by running the script wdkFilterErrors manually (see examples below)
-- they are also used to generate wdkErrorCategories.txt and control error emails
+- these files are used for generating reports and checking on errors in the logs, 
+    by running the script wdkFilterErrors manually (see examples below)
+
+
+There are 3 types of things you can do:
+1) REPORT ERRORS (counts per matching filter and a global unmatched count)
+2) FISH FOR unmatched ERRORS 
+3) FIND SPECIFIC ERROR 
+
+examples below: to run commands you need:
+source /var/www/w1.plasmodb.org/etc/setenv
+
+
 
 =================================================
+BLOG
+---------
 
 
 
@@ -26,6 +39,28 @@ wdkClientErrorCategoriesAll.txt and wdkServiceErrorCategoriesAll.txt
 
 
 
+
+
+
+
+
+
+
+
+
+
+============================
+
+Dec 2025
+
+--sd 01/01/2025 --ed 11/30/2025
+
+
+
+====================================
+Mar 16 2023  
+
+B61  Clinepi 26   Mbio 31  Ortho 6_14
 
 ======================================
 
@@ -68,6 +103,7 @@ zcat /usr/local/tomcat_instances/*/logs/*.b52/archive/errors-client-retained.log
 zcat /usr/local/tomcat_instances/OrthoMCL/logs/orthomcl.b6_5/archive/errors-client-retained.log.2021-06-* > zcat-ortho.txt ;
 zcat /usr/local/tomcat_instances/ClinEpiDB/logs/ce.b17/archive/errors-client-retained.log.2021-06-* > zcat-ce.txt ; 
 zcat /usr/local/tomcat_instances/MicrobiomeDB/logs/mbio.b22/archive/errors-client-retained.log.2021-06-* > zcat-mbio.txt ; 
+
 cat zcat-gen.txt zcat-ortho.txt zcat-ce.txt zcat-mbio.txt /usr/local/tomcat_instances/*/logs/*.b52/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b6_5/errors-client-retained* /usr/local/tomcat_instances/*/logs/ce.b17/errors-client-retained* /usr/local/tomcat_instances/*/logs/*.b22/errors-client-retained* |  wdkFilterErrors -ff wdkClientErrorCategoriesAll.txt --r --sd 06/01/2021 --ed 06/30/2021 | sort -gr
 
 
@@ -84,7 +120,7 @@ use:
 
 3) FIND SPECIFIC ERROR (use -sf flag instead of -ff)
 use:
-wdkFilterErrors -sf 'apiSiteFilesMirror' --sd 06/01/2021 --ed 06/30/2021
+... | wdkFilterErrors -sf 'apiSiteFilesMirror' --sd 06/01/2021 --ed 06/30/2021 | sort | uniq -c | sort -gr 
 
 
 
