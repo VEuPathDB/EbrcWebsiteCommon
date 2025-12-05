@@ -84,6 +84,7 @@ sub makeRPlotString {
   my $ua = LWP::UserAgent->new;
   push @{ $ua->requests_redirectable }, 'POST';
   my $resp = $ua->request($profileSetsRequest);
+
   if ($resp->is_success) {
     $plotDataJson = $resp->decoded_content;
     $plotDataJson =~ s/\'/\\\'/g;
@@ -204,6 +205,10 @@ y.min = $yMin;
 y.max = $yMax;
 
 profile.df.full = fromJSON('$plotDataJson');
+
+
+names(profile.df.full) <- toupper(names(profile.df.full))
+
 
 if(class(profile.df.full) == 'list'){
 
