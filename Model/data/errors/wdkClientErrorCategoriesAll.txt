@@ -232,8 +232,14 @@
   {"matchStrings": ["TypeError","?????"
     ]
   },
-
-
+  {"matchStrings": ["Zotero Connector"
+    ],
+   "comment": "---Dec 2025"
+  },
+  {"matchStrings": ["following unknown attributes"
+    ],
+   "comment": "---Dec 2025"
+  },
 
 
 

@@ -25,6 +25,10 @@
   {"matchStrings": ["======== CONNECTION"
     ]
   },
+  {"matchStrings": ["OAuth"
+    ],
+   "comment": "--Dec 2025"
+  },
   {"matchStrings": ["ORA-12516"
     ],
    "comment": "---could not find available handler with matching protocol stack"
@@ -159,6 +163,18 @@
   {"matchStrings": ["======== APP ISSUE"
     ]
   },
+  {"matchStrings": ["RecordNotFoundException"
+    ],
+   "comment": "--Dec 2025"
+  },
+  {"matchStrings": ["temporary-results"
+    ],
+   "comment": "--Dec 2025"
+  },
+  {"matchStrings": ["Unable to complete file processing"
+    ],
+   "comment": "--Dec 2025"
+  },
   {"matchStrings": ["WdkModelException: Problem closing IRODS file"
     ]
   },
@@ -271,6 +287,14 @@
 
   {"matchStrings": ["======== USER ISSUE"
     ]
+  },
+  {"matchStrings": ["ClientAbortException"
+    ],
+   "comment": "--Dec 2025"
+  },
+  {"matchStrings": ["bad-request"
+    ],
+   "comment": "--Dec 2025"
   },
   {"matchStrings": ["PluginModelException: Illegal character range near"
     ],
