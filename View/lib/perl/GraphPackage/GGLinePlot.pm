@@ -338,6 +338,8 @@ y.max = $yMax;
 
 profile.df.full = fromJSON('$plotDataJson')
 
+names(profile.df.full) <- toupper(names(profile.df.full))
+
 if(class(profile.df.full) == 'list'){
 
   d = data.frame(VALUE=0.5, LABEL=\"None\");
