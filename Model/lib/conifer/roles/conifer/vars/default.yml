@@ -160,6 +160,8 @@ modelprop:
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
+  EDA_SERVICE_URL: /eda
+  VDI_SERVICE_URL: /vdi
 
 eda:
   enabled: "true"
