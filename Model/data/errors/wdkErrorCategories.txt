@@ -428,10 +428,6 @@
   {"matchStrings": ["baskets","You must log in to use this"
     ]
   },
-  {"matchStrings": ["Invalid data cell."
-    ],
-   "comment": "---PDBeMolstarPlugin.eval"
-  },
 
 
   {"matchStrings": ["================================================================== SERVICE ERRORS"
