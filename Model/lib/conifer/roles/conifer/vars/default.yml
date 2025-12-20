@@ -159,6 +159,9 @@ modelprop:
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
+  EDA_SERVICE_URL: /eda
+  VDI_SERVICE_URL: /vdi
+  INVOICE_FORM_URL: 'https://upenn.co1.qualtrics.com/jfe/form/SV_56yc5QpxL0IfWkK'
 
 eda:
   enabled: "true"
