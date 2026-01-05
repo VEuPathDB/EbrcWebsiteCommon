@@ -33,7 +33,7 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
   @Path("subscription-groups")
   @Produces(MediaType.APPLICATION_JSON)
   public Response getGroups() {
-    return transferOAuthGetEndpointResponse("/groups", "subscription groups");
+    return transferOAuthGetEndpointResponse("/groups?filter=active_and_expired", "subscription groups");
   }
 
   @GET
