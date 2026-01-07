@@ -7,8 +7,9 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.Timer;
 import org.gusdb.fgputil.db.pool.DatabaseInstance;
+import org.gusdb.fgputil.db.runner.QueryFlags;
 import org.gusdb.fgputil.db.runner.SQLRunner;
-import org.gusdb.fgputil.db.runner.SingleLongResultSetHandler;
+import org.gusdb.fgputil.db.runner.handler.SingleLongResultSetHandler;
 import org.gusdb.fgputil.runtime.GusHome;
 import org.gusdb.wdk.model.config.ModelConfigParser;
 import org.gusdb.wdk.model.config.ModelConfigUserDB;
@@ -50,8 +51,8 @@ public class FillDatasetValueOrderColumn {
         "set dataset_value_order = ? where dataset_value_id = ?";
 
     try (DatabaseInstance db = new DatabaseInstance(dbConfig);
-         Connection conn = db.getDataSource().getConnection();
-         PreparedStatement ps = conn.prepareStatement(updateSql)) {
+         // this connection will be used for an up-front statement and query, then for the insert prepared statement
+         Connection conn = db.getDataSource().getConnection()) {
 
       // create temp table
       new SQLRunner(conn, createOrderTableSql).executeStatement();
@@ -62,47 +63,50 @@ public class FillDatasetValueOrderColumn {
 
       // read values from temp table and insert
       conn.setAutoCommit(false);
-      new SQLRunner(conn, selectSql).executeQuery(rs -> {
+      new SQLRunner(db.getDataSource(), selectSql).executeQuery(
+          new QueryFlags().setFetchSize(BATCH_SIZE), rs -> {
         Timer t = new Timer();
         int batchCount = 0;
         int commitCount = 0;
         long totalRecords = 0;
-        while (rs.next()) {
-          if (write) {
-            ps.setLong(1, rs.getLong(1));
-            ps.setLong(2, rs.getLong(2));
-            ps.addBatch();
+        try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
+          while (rs.next()) {
+            if (write) {
+              ps.setLong(1, rs.getLong(1));
+              ps.setLong(2, rs.getLong(2));
+              ps.addBatch();
+            }
+            else {
+              //LOG.info("Will set order of " + rs.getLong(2) + " to " + rs.getLong(1));
+            }
+            batchCount++;
+            commitCount++;
+            if (batchCount >= BATCH_SIZE) {
+              if (write) {
+                ps.executeBatch();
+                if (commitCount >= COMMIT_SIZE) {
+                  LOG.info("Committing last " + commitCount + " updates.");
+                  conn.commit();
+                  commitCount = 0;
+                }
+              }
+              totalRecords += batchCount;
+              logProgress(t, totalRecords, expectedRowCount);
+              batchCount = 0;
+            }
           }
-          else {
-            //LOG.info("Will set order of " + rs.getLong(2) + " to " + rs.getLong(1));
-          }
-          batchCount++;
-          commitCount++;
-          if (batchCount >= BATCH_SIZE) {
+          if (batchCount > 0) {
             if (write) {
               ps.executeBatch();
-              if (commitCount >= COMMIT_SIZE) {
-                LOG.info("Committing last " + commitCount + " updates.");
-                conn.commit();
-                commitCount = 0;
-              }
+              LOG.info("Committing final " + commitCount + " updates.");
+              conn.commit();
             }
             totalRecords += batchCount;
             logProgress(t, totalRecords, expectedRowCount);
-            batchCount = 0;
           }
+          return null;
         }
-        if (batchCount > 0) {
-          if (write) {
-            ps.executeBatch();
-            LOG.info("Committing final " + commitCount + " updates.");
-            conn.commit();
-          }
-          totalRecords += batchCount;
-          logProgress(t, totalRecords, expectedRowCount);
-        }
-        return null;
-      }, BATCH_SIZE);
+      });
     }
   }
 
