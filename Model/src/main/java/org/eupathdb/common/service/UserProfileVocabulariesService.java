@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -32,8 +33,9 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
   @GET
   @Path("subscription-groups")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getGroups() {
-    return transferOAuthGetEndpointResponse("/groups?filter=active_and_expired", "subscription groups");
+  public Response getGroups(@QueryParam("filter") String filter) {
+    String queryParams = filter == null ? "" : "?filter=" + filter;
+    return transferOAuthGetEndpointResponse("/groups" + queryParams, "subscription groups");
   }
 
   @GET
