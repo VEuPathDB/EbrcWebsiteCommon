@@ -13,7 +13,7 @@
       {# used by EbrcWebsiteCommon to initialize wdk #}
       window.__SITE_CONFIG__ = {
         {% block siteConfig %}
-        requireLogin: "{{ requireLogin|string|default('false')}}" === "true",
+        requireLogin: "{{ requireLogin|default('false')}}" === "true",
         rootElement: "#wdk-container",
         rootUrl: "{{ modelprop.WEBAPP_BASE_URL|default('') }}",
         endpoint: "{{ modelprop.REST_SERVICE_BASE_URL|default('') }}",
