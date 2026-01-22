@@ -55,7 +55,7 @@ if (isset($_GET['refresh']) && $_GET['refresh'] == 1) {
 }
 
 $adb = $database->attributes();
-$adb_aliases_ar = $ldap_resolver->resolve($adb['service_name']);
+$adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
 $tuning_status_attrs = $tuning_manager_status->attributes();
 
 $workflow_status_attrs = $workflow_status->attributes();
