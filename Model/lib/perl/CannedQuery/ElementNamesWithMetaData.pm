@@ -55,21 +55,24 @@ sub init {
 
   $Self->setSql(<<Sql);
 
-select  rownum as element_order, ps.NAME, ps.FACET, ps.CONTXAXIS FROM ( 
- SELECT distinct s.protocol_app_node_name AS name, s.NODE_ORDER_NUM, m1.string_value as facet, m2.string_value as contXAxis 
- FROM  apidbtuning.ProfileSamples s
-     , apidbtuning.metadata m1
-     , apidbtuning.metadata m2
-  WHERE  s.study_name = \'<<ProfileSet>>\'
- AND s.profile_type = \'<<ProfileType>>\'
- --AND m1.study_name(+) = s.study_name
- and m1.PAN_ID(+) = s.PROTOCOL_APP_NODE_ID 
- and m1.property_source_id(+) = \'$facet1\' 
- --AND m2.study_name(+) = s.study_name 
- and m2.PAN_ID(+) = s.PROTOCOL_APP_NODE_ID 
- and m2.property_source_id(+) = \'<<ContXAxis>>\'
- ORDER  BY s.node_order_num
-) ps
+SELECT DISTINCT 
+    s.protocol_app_node_name AS name, 
+    s.NODE_ORDER_NUM, 
+    m1.string_value AS facet, 
+    m2.string_value AS contXAxis 
+FROM apidbtuning.ProfileSamples s
+LEFT JOIN apidbtuning.metadata m1 
+    ON m1.PAN_ID = s.PROTOCOL_APP_NODE_ID 
+    AND m1.property_source_id = '$facet1'
+  --AND m1.study_name = s.study_name
+LEFT JOIN apidbtuning.metadata m2 
+    ON m2.PAN_ID = s.PROTOCOL_APP_NODE_ID 
+    AND m2.property_source_id = '<<ContXAxis>>'
+  --AND m2.study_name = s.study_name
+WHERE s.study_name = '<<ProfileSet>>'
+  AND s.profile_type = '<<ProfileType>>'
+ORDER BY s.node_order_num;
+
 
 Sql
 
