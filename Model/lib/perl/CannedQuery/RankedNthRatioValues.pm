@@ -14,6 +14,7 @@ sub init {
   $Self->SUPER::init($Args);
 
   $Self->setId($Args->{Id});
+  $Self->setOrgAbbrev($Args->{OrgAbbrev});
   $Self->setSourceIdValueQuery($Args->{SourceIdValueQuery});
   $Self->setN($Args->{N});
 
@@ -31,7 +32,7 @@ select t.value, rownum rn, source_id, num, denom
 from (select source_id, value, num, denom from dat order by value) t
 )
 where ('<<Id>>' = 'ALL' AND (rn = 1 or rn = (select ct.m from ct) or mod(rn, round((select ct.m from ct)/<<N>>,0)) = 0))
- OR '<<Id>>' = source_id
+ OR ('<<Id>>' = source_id and '<<OrgAbbrev>>' = org_abbrev)
 Sql
 
   return $Self;
@@ -40,7 +41,8 @@ Sql
 
 sub getId                   { $_[0]->{'Id'                } }
 sub setId                   { $_[0]->{'Id'                } = $_[1]; $_[0] }
-
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 sub setSourceIdValueQuery { $_[0]->{_SourceIdValueQuery} = $_[1] }
 sub getSourceIdValueQuery{ $_[0]->{_SourceIdValueQuery} }
 

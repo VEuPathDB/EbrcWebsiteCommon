@@ -46,16 +46,18 @@ sub init {
 
   $Self->SUPER::init($Args);
 
-	$Self->setId                   ( $Args->{Id                  } );
-	$Self->setProfileSet           ( $Args->{ProfileSet          } );
+  $Self->setId                   ( $Args->{Id                  } );
+  $Self->setProfileSet           ( $Args->{ProfileSet          } );
+  $Self->setOrgAbbrev($Args->{OrgAbbrev});
 
   $Self->setSql(<<Sql);
 SELECT profile_AS_STRING
-FROM   apidb.Profile    p
+FROM   apidb.Profile_p    p
 ,      apidb.ProfileSet ps
 WHERE  p.source_id      = '<<Id>>'
 AND    p.profile_set_id = ps.profile_set_id
 AND    ps.name          = '<<ProfileSet>>'
+AND   p.org_abbrev           = '<<OrgAbbrev>>'
 Sql
 
   return $Self;
@@ -69,6 +71,8 @@ sub setId                   { $_[0]->{'Id'                } = $_[1]; $_[0] }
 sub getProfileSet           { $_[0]->{'ProfileSet'        } }
 sub setProfileSet           { $_[0]->{'ProfileSet'        } = $_[1]; $_[0] }
 
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 # ========================================================================
 # --------------------------- Support Methods ----------------------------
 # ========================================================================
