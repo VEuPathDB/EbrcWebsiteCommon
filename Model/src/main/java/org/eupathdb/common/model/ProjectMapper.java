@@ -210,7 +210,8 @@ public class ProjectMapper {
       return organisms.get(organism);
 
     // organism-project hasn't been mapped, load mapping
-    String sql = "SELECT cast(apidb.project_id(?) as varchar2(20)) as project_id FROM dual";
+    String sql = "select project_id from apidbtuning.organismattributes where organism_name = ?";
+
     DataSource dataSource = wdkModel.getAppDb().getDataSource();
     PreparedStatement ps = null;
     ResultSet resultSet = null;
@@ -228,7 +229,7 @@ public class ProjectMapper {
       return projectId;
     }
     catch (SQLException e) {
-      throw new WdkModelException("Error while looking up project for organism '" + organism + "'");
+      throw new WdkModelException("Error while looking up project for organism '" + organism + "'", e);
     }
     finally {
       SqlUtils.closeResultSetAndStatement(resultSet, ps);
