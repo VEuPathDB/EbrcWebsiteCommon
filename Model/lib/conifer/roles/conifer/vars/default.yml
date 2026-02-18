@@ -39,25 +39,31 @@ _host_frontends:
 
 _remote_studyaccess_schema_map:
   userdb_devn: studyaccess_acctdb_devn
+  userdb_betan: studyaccess_acctdb_betan
 
 _remote_useraccounts_schema_map:
   userdb_devn: useraccounts_acctdb_devn
+  userdb_betan: useraccounts_acctdb_betan
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
   userdb_devn: wdkuser_userdb_devn
+  userdb_betan: wdkuser_userdb_betan
 
 _remote_comment_schema_map:
   apicomms: comment_apicomms
   userdb_devn: usercomments_userdb_devn
+  userdb_betan: usercomments_userdb_betan
 
 _remote_metrics_schema_map:
   apicomms: metrics_apicomms
   userdb_devn: metrics_userdb_devn
+  userdb_betan: metrics_userdb_betan
 
 _remote_uploads_schema_map:
   apicomms: uploads_apicomms
   userdb_devn: uploads_userdb_devn
+  userdb_betan: uploads_userdb_betan
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
