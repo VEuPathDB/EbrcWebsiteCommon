@@ -39,7 +39,7 @@ _host_frontends:
 
 _remote_studyaccess_schema_map:
   userdb_devn: studyaccess_acctdb_devn
-  userdb_betan: studyaccess_acctdb_betan
+  userdb_betan: studyaccess_acctdb_devn
 
 _remote_useraccounts_schema_map:
   userdb_devn: useraccounts_acctdb_devn
