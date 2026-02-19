@@ -645,7 +645,7 @@ if(class(profile.df.full) == 'list'){
     if ($hasColorVals) {
       gp = gp + scale_color_manual(values = $colorVals)
     } else {
-      gp = gp + scale_colour_manual(values=rep(force(the.colors), count/length(force(the.colors))), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+      gp = gp + scale_colour_manual(values=rep(force(the.colors), count/length(force(the.colors))), breaks=unique(profile.df.full\$LEGEND), labels=unique(profile.df.full\$LEGEND), name=\"Legend\");
     }
     
     if( $fillBelowLine) {

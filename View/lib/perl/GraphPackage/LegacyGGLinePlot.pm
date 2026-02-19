@@ -697,9 +697,9 @@ if (!$prtcpnt_timeline) {
      gp = gp + scale_color_manual(values = $colorVals)
   } else {
     if (count/length($colorsStringNotNamed) == 1) {
-      gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+      gp = gp + scale_colour_manual(values=$colorsStringNotNamed, breaks=unique(profile.df.full\$LEGEND), labels=unique(profile.df.full\$LEGEND), name=\"Legend\");
     } else {
-      gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=profile.df.full\$LEGEND, labels=profile.df.full\$LEGEND, name=\"Legend\");
+      gp = gp + scale_colour_manual(values=rep($colorsStringNotNamed, count/length($colorsStringNotNamed)), breaks=unique(profile.df.full\$LEGEND), labels=unique(profile.df.full\$LEGEND), name=\"Legend\");
     }
   }
   
