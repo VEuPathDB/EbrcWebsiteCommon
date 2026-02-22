@@ -1,5 +1,6 @@
 package org.eupathdb.common.model.report.summaryview;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,9 +14,9 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import org.gusdb.fgputil.FormatUtil;
+import org.gusdb.fgputil.IoUtil;
 import org.gusdb.fgputil.SortDirection;
 import org.gusdb.fgputil.SortDirectionSpec;
-import org.gusdb.fgputil.db.SqlUtils;
 import org.gusdb.fgputil.db.runner.SQLRunner;
 import org.gusdb.fgputil.db.runner.SQLRunnerException;
 import org.gusdb.fgputil.functional.FunctionalInterfaces.Procedure;
@@ -169,7 +170,9 @@ public class BlastViewReporter extends DefaultJsonReporter {
     writer.write(recordJson.substring(0, endOfFirstPart));
 
     // stream the sequence clob
-    SqlUtils.writeClob(rs, ALIGNMENT_ATTRIBUTE, writer, JsonUtil.CHARACTER_ESCAPER);
+    try (BufferedReader in = new BufferedReader(rs.getCharacterStream(ALIGNMENT_ATTRIBUTE))) {
+      IoUtil.transferStream(writer, in, JsonUtil.CHARACTER_ESCAPER);
+    }
 
     // write the second part
     writer.write(recordJson.substring(beginningOfSecondPart));
