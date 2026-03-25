@@ -70,8 +70,13 @@ sub run {
           my $datasetId = $table->{dataset_id};
           my $template = $table->{template};
           my $defaultGraphId = $table->{default_graph_id};
+	  my $datasetName = $table->{dataset_name};
 
-          push @urls, "/cgi-bin/dataPlotter.pl?project_id=$projectId&id=$defaultGraphId&type=$module&fmt=png&template=$template&datasetId=$datasetId";
+          push @urls, {
+            url            => "/cgi-bin/dataPlotter.pl?project_id=$projectId&id=$defaultGraphId&type=$module&fmt=png&template=$template&datasetId=$datasetId",
+            dataset_id     => $datasetId,
+	    dataset_name => $datasetName,
+          };
         }
       }
     }
@@ -82,8 +87,10 @@ sub run {
 
   print STDOUT $cgi->table( {}, (
               map {
+                my $url = $_->{url};
+                $cgi->Tr( $cgi->td({colspan => 1}, "<b>DATASET</b>: $_->{dataset_id}\t$_->{dataset_name}") ) .
                 $cgi->Tr(
-                $cgi->td("<img src=\"$_\""), $cgi->td("<img src=\"https://$lcProjectId.org$_\">")
+		 $cgi->td("<img src=\"$url\">"), $cgi->td("<img src=\"https://$lcProjectId.org$url\">")
             )
               } @urls
 
