@@ -12,6 +12,7 @@ use EbrcWebsiteCommon::View::GraphPackage::Util;
 use File::Copy;
 use Data::Dumper;
 use HTTP::Request;
+use Encode;
 
 #----------------------------------------------------------------------------------------------
 
@@ -255,8 +256,8 @@ sub makePlotDataRequestForR {
   my $url = "$baseUrl/a/service/profileSet/PlotData/$id";
 
   my $req = HTTP::Request->new(POST => $url);
-  $req->header('content-type' => 'application/json');
-  $req->content($body);
+  $req->header('content-type' => 'application/json; charset=utf-8');
+  $req->content(Encode::encode('UTF-8', $body));
 
   return $req;
 }
