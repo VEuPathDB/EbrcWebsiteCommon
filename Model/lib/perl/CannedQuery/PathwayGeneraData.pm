@@ -31,11 +31,10 @@ from (select distinct genus
  from dots.AaSequenceEnzymeClass asec, sres.EnzymeClass ec
  where ec.enzyme_class_id = asec.enzyme_class_id
  and ec.ec_number LIKE REPLACE(REPLACE(REPLACE(REPLACE(lower('<<Id>>'),' ',''),'-', '%'),'*','%'),'any','%')
-        ) ec,
-  (
+        ) ec
+ RIGHT JOIN (
    <<Genera>>
-   ) orgs
-where orgs.genus = ec.genus (+)
+   ) orgs ON orgs.genus = ec.genus
 order by orgs.o asc
 Sql
 
