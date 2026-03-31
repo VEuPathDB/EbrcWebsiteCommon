@@ -6,7 +6,7 @@ hostname: =c= FQDN or 'localhost'
 _self_url_scheme: https
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
-product: '{{ project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
+product: '{{ "VEuPathDB" if project == "UniDB" else project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
 # short convenience names for most common user-defined vars
 appDb_ldapServer: ds.apidb.org:389
@@ -131,7 +131,7 @@ modelconfig_webServiceUrl: local
 
 modelconfig_emailSubject: >
   <![CDATA[
-    Your {{ product }}/VEuPathDB Password
+    Your {{ product }}{{ '/VEuPathDB' if product != 'VEuPathDB' }} Password
   ]]>
 
 modelconfig_emailContent: >
