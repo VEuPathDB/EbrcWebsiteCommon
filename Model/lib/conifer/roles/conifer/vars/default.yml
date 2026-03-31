@@ -11,7 +11,7 @@ _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
 _product_map:
   UniDB: VEuPathDB
   ClinEpiDB: dataExplorer
-product: '{{ _product_map[project] if _product_map[project] else project }}'
+product: '{{ _product_map[project] if project in _product_map else project }}'
 
 # short convenience names for most common user-defined vars
 appDb_ldapServer: ds.apidb.org:389
