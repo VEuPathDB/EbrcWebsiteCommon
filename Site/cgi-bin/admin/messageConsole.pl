@@ -20,6 +20,11 @@ print $headers->as_string() . "\n";
 #Create DB connection
 my $model=$ENV{'PROJECT_ID'};
 
+# (hopefully) temporary fix until apache sends the correct project ID
+if ($model == 'EuPathDB') {
+  $model = 'UniDB';
+}
+
   my $modelConfig = WDK::Model::ModelConfig->new($model);
 
   my $dbh = DBI->connect($modelConfig->getUserDbDbiDsn(),
