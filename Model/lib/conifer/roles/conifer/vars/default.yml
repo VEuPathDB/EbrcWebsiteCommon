@@ -6,7 +6,7 @@ hostname: =c= FQDN or 'localhost'
 _self_url_scheme: https
 webapp_ctx: =c= Tomcat webapp context name, e.g. toxo.qa
 _webapp_ctx: '{{ webapp_ctx|prod_prom_ctx(hostname) }}'
-product: '{{ "VEuPathDB" if project == "UniDB" else "DataExplorer" if project == "ClinEpiDB" else project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
+product: '{{ "VEuPathDB" if project == "UniDB" else "dataExplorer" if project == "ClinEpiDB" else project }}' # product: ClinEpiDB vs. project/model: ClinEpiDB or Gates
 
 # short convenience names for most common user-defined vars
 appDb_ldapServer: ds.apidb.org:389
