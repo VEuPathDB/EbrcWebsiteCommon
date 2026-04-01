@@ -34,11 +34,13 @@ public class WorkflowStatus extends BeanBase implements WorkflowStatusMBean {
   }
   
   private String workflowStatusSql() {
-    StringBuffer sql = new StringBuffer();
+    StringBuilder sql = new StringBuilder();
 
     sql.append("select distinct regexp_substr(name,                              ");
     sql.append("                '[^\\.]*\\.?[^\\.]*') as step                    ");
-    sql.append("                , decode(off_line, 0, 'NO', 'YES') as off_line   ");
+    sql.append("                , CASE                                           ");
+    sql.append("                    WHEN off_line = 0 THEN 'NO' ELSE 'YES'       ");
+    sql.append("                  END CASE                                       ");
     sql.append("                , state                                          ");
     sql.append("from apidb.workflowstep where state != 'DONE'                    ");
     sql.append("order by step                                                    ");
