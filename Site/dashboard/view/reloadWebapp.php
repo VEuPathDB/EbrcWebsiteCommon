@@ -1,7 +1,11 @@
 <?php
+
+require_once '../autoload.php';
+
 /**
  * Action page to reload the Tomcat webapp.
  */
+
 $webapp = new lib\modules\Webapp();
 
 if (isset($_POST['reload']) && $_POST['reload'] == 1) {

@@ -1,4 +1,6 @@
 <?php
+require_once '../autoload.php';
+
 /**
  * Action page to reset the WDK database cache
  */
