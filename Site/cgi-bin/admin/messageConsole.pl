@@ -21,7 +21,7 @@ print $headers->as_string() . "\n";
 my $model=$ENV{'PROJECT_ID'};
 
 # (hopefully) temporary fix until apache sends the correct project ID
-if ($model == 'EuPathDB') {
+if ($model eq 'EuPathDB') {
   $model = 'UniDB';
 }
 
