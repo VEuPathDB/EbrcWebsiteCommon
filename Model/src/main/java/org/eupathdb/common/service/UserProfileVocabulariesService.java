@@ -16,6 +16,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.gusdb.oauth2.client.OAuthClient;
@@ -100,6 +101,12 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
         return Response.noContent().build();
       }
 
+      // if bad request, forward both status and message along to our client
+      if (response.getStatusInfo().getFamily().equals(Family.CLIENT_ERROR)) {
+        return Response.status(response.getStatus()).entity(readResponseBody(response)).build();
+      }
+
+      // error case
       String responseBody = !response.hasEntity() ? "<empty>" : readResponseBody(response);
       throw new RuntimeException("Failure to remove group members on OAuth server.  POST " +
           url + " returned " + response.getStatus() + " with body: " + responseBody);
