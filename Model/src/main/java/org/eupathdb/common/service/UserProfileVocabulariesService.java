@@ -5,14 +5,18 @@ import static org.gusdb.oauth2.client.OAuthClient.readResponseBody;
 
 import java.io.IOException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.gusdb.oauth2.client.OAuthClient;
@@ -72,6 +76,43 @@ public class UserProfileVocabulariesService extends AbstractWdkService {
     }
     catch (JSONException | IOException e) {
       throw new RuntimeException("Unable to retrieve " + endpointDescription + " at " + url, e);
+    }
+  }
+
+  @POST
+  @Path("remove-group-members")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response removeGroupMembers(String jsonBody) {
+
+    String url = getWdkModel().getModelConfig().getOauthUrl() + "/remove-group-members";
+    ValidatedToken authToken = getRequestingUser().getAuthenticationToken();
+
+    try (Response response = ClientBuilder.newBuilder()
+        .withConfig(new ClientConfig())
+        .sslContext(getSSLContext(getWdkModel().getModelConfig()))
+        .build()
+        .target(url)
+        .request(MediaType.APPLICATION_JSON)
+        .header(HttpHeaders.AUTHORIZATION, OAuthClient.getAuthorizationHeaderValue(authToken))
+        .post(Entity.json(jsonBody))) {
+
+      // check for successful processing
+      if (response.getStatus() == 204) {
+        return Response.noContent().build();
+      }
+
+      // if bad request, forward both status and message along to our client
+      if (response.getStatusInfo().getFamily().equals(Family.CLIENT_ERROR)) {
+        return Response.status(response.getStatus()).entity(readResponseBody(response)).build();
+      }
+
+      // error case
+      String responseBody = !response.hasEntity() ? "<empty>" : readResponseBody(response);
+      throw new RuntimeException("Failure to remove group members on OAuth server.  POST " +
+          url + " returned " + response.getStatus() + " with body: " + responseBody);
+    }
+    catch (JSONException | IOException e) {
+      throw new RuntimeException("Unable to remove group members on OAuth server", e);
     }
   }
 }
