@@ -12,6 +12,7 @@ sub init {
   $Self->SUPER::init($Args);
 
   $Self->setId($Args->{Id});
+  $Self->setOrgAbbrev($Args->{OrgAbbrev});
   $Self->setProfileSetId($Args->{ProfileSetId});
 
   $Self->setSql(<<Sql);
@@ -23,6 +24,7 @@ where pan.profile_set_id = '<<ProfileSetId>>'
 and pan.protocol_app_node_id = e.protocol_app_node_id
 and ga.na_feature_id = e.na_feature_id
 and ga.source_id = '<<Id>>'
+and ga.org_abbrev = '<<OrgAbbrev>>'
 order by pan.node_order_num, pan.protocol_app_node_id
 Sql
 
@@ -35,6 +37,8 @@ sub setId                   { $_[0]->{'Id'                } = $_[1]; $_[0] }
 sub getProfileSetId         { $_[0]->{'ProfileSetId'      } }
 sub setProfileSetId         { $_[0]->{'ProfileSetId'      } = $_[1]; $_[0] }
 
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 
 sub prepareDictionary {
   my $Self = shift;

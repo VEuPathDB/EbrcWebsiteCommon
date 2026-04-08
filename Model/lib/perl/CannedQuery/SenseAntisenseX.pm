@@ -21,6 +21,7 @@ with comp as (select ps.node_order_num,ps.protocol_app_node_name,na.value
                 and ps.profile_type = 'values'
                 and ps.protocol_app_node_id =  na.protocol_app_node_id
                 and na.na_feature_id = ga.na_feature_id
+                and ga.org_abbrev ='<<OrgAbbrev>>'
                 and ga.source_id='<<Id>>')
     , ref as (select ps.node_order_num,ps.protocol_app_node_name,na.value
                 from apidbtuning.ProfileSamples ps
@@ -30,7 +31,8 @@ with comp as (select ps.node_order_num,ps.protocol_app_node_name,na.value
                     and ps.profile_type = 'values'
                     and ps.protocol_app_node_id =  na.protocol_app_node_id
                     and na.na_feature_id = ga.na_feature_id
-                and ga.source_id='<<Id>>')
+                    and ga.org_abbrev ='<<OrgAbbrev>>'
+                    and ga.source_id='<<Id>>')
 select CONTXAXIS, NAME, ROW_NUMBER() OVER (order by NAME) as element_order
 from ( select 
         ref.protocol_app_node_name || '->' || comp.protocol_app_node_name as NAME
