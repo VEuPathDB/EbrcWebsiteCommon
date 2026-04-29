@@ -253,56 +253,62 @@ public class DetailTableLoader extends BaseCLI {
     String wrappedSql = getWrappedSql(table, idSql, pkColumns);
 
     logger.debug("wrapped sql:\n" + wrappedSql);
-    ResultSet resultSet = SqlUtils.executeQuery(appDb.getDataSource(), wrappedSql,
-        table.getWrappedQuery().getFullName() + "__api-report-detail-aggregate", 2000);
-    DBPlatform platform = appDb.getPlatform();
-    String pk0 = "";
-    String pk1 = "";
-    String prevPk0 = "";
-    String prevPk1 = "";
-    StringBuilder aggregatedContent = new StringBuilder();
-    int insertCount = 0;
-    int detailCount = 0;
-    int rowCount = 0;
-    boolean first = true;
-    long insertTime = 0;
-    while (resultSet.next()) {
-      pk0 = resultSet.getString(pkColumns[0]);
-      if (pkColumns.length > 1) {
-        pk1 = resultSet.getString(pkColumns[1]);
+    ResultSet resultSet = null;
+    try {
+      resultSet = SqlUtils.executeQuery(appDb.getDataSource(), wrappedSql,
+          table.getWrappedQuery().getFullName() + "__api-report-detail-aggregate", 2000);
+      DBPlatform platform = appDb.getPlatform();
+      String pk0 = "";
+      String pk1 = "";
+      String prevPk0 = "";
+      String prevPk1 = "";
+      StringBuilder aggregatedContent = new StringBuilder();
+      int insertCount = 0;
+      int detailCount = 0;
+      int rowCount = 0;
+      boolean first = true;
+      long insertTime = 0;
+      while (resultSet.next()) {
+        pk0 = resultSet.getString(pkColumns[0]);
+        if (pkColumns.length > 1) {
+          pk1 = resultSet.getString(pkColumns[1]);
+        }
+        if (!first && (!pk0.equals(prevPk0) || !pk1.equals(prevPk1))) {
+          insertTime += insertDetailRow(insertStmt, platform, insertSql, aggregatedContent, rowCount, table,
+              prevPk0, prevPk1, title, pkColumns.length);
+          insertCount++;
+          aggregatedContent = new StringBuilder();
+          rowCount = 0;
+        }
+        first = false;
+        prevPk0 = pk0;
+        prevPk1 = pk1;
+
+        // aggregate the columns of one row
+        String formattedValues[] = formatAttributeValues(resultSet, table);
+        if (formattedValues[0] != null)
+          aggregatedContent.append(formattedValues[0]);
+        for (int i = 1; i < formattedValues.length; i++) {
+          if (formattedValues[i] != null)
+            aggregatedContent.append("\t").append(formattedValues[i]);
+          else
+            aggregatedContent.append("\t");
+        }
+        aggregatedContent.append("\n");
+        rowCount++;
+        detailCount++;
       }
-      if (!first && (!pk0.equals(prevPk0) || !pk1.equals(prevPk1))) {
+      if (aggregatedContent.length() != 0) {
         insertTime += insertDetailRow(insertStmt, platform, insertSql, aggregatedContent, rowCount, table,
             prevPk0, prevPk1, title, pkColumns.length);
         insertCount++;
-        aggregatedContent = new StringBuilder();
-        rowCount = 0;
       }
-      first = false;
-      prevPk0 = pk0;
-      prevPk1 = pk1;
-
-      // aggregate the columns of one row
-      String formattedValues[] = formatAttributeValues(resultSet, table);
-      if (formattedValues[0] != null)
-        aggregatedContent.append(formattedValues[0]);
-      for (int i = 1; i < formattedValues.length; i++) {
-        if (formattedValues[i] != null)
-          aggregatedContent.append("\t").append(formattedValues[i]);
-        else
-          aggregatedContent.append("\t");
-      }
-      aggregatedContent.append("\n");
-      rowCount++;
-      detailCount++;
+      int[] counts = { insertCount, detailCount, (int) insertTime };
+      return counts;
     }
-    if (aggregatedContent.length() != 0) {
-      insertTime += insertDetailRow(insertStmt, platform, insertSql, aggregatedContent, rowCount, table,
-          prevPk0, prevPk1, title, pkColumns.length);
-      insertCount++;
+    finally {
+      SqlUtils.closeResultSetAndStatement(resultSet);
     }
-    int[] counts = { insertCount, detailCount, (int) insertTime };
-    return counts;
   }
 
   private String getTableTitle(TableField table) {
