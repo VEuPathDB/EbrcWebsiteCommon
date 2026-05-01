@@ -18,10 +18,12 @@ OAUTH_CLIENT_ID={{ modelconfig_oauthClientId }}
 OAUTH_CLIENT_SECRET={{ modelconfig_oauthClientSecret }}
 
 SITE_BASE_URL=https://{{ hostname }}/{{ webapp_ctx }}
+SITE_DOMAIN={{ hostname }}
 PROJECT_ID={{ project }}
 
 REMOTE_COMMENT_SCHEMA={{ remoteCommentSchema | default('UNDEFINED') }}
 
+SOLR_DOMAIN={{ commentconfig_solrDomain | default('') }}
 SOLR_URL={{ commentconfig_solrUrl | default('UNDEFINED') }}
 USERDB_SCHEMA={{ commentconfig_userLoginSchema | default('UNDEFINED') }}
 
