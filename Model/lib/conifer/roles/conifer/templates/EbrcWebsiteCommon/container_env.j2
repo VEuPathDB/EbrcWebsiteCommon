@@ -23,8 +23,9 @@ PROJECT_ID={{ project }}
 
 REMOTE_COMMENT_SCHEMA={{ remoteCommentSchema | default('UNDEFINED') }}
 
-SOLR_DOMAIN={{ commentconfig_solrDomain | default('') }}
-SOLR_URL={{ commentconfig_solrUrl | default('UNDEFINED') }}
+SOLR_DOMAIN={{ solrDomain | default('') }}
+SOLR_URL={{ solrUrl | default('UNDEFINED') }}
+
 USERDB_SCHEMA={{ commentconfig_userLoginSchema | default('UNDEFINED') }}
 
 COHORT={{ cohort }}
