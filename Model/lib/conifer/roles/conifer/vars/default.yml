@@ -131,6 +131,7 @@ modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
 modelconfig_smtpServer: 127.0.0.1
 modelconfig_supportEmail: 'help@{{ product|lower }}.{{ _topleveldomain }}'
 modelconfig_wdkTempDir: /var/tmp/wdk
+modelconfig_maxTableValueRows: 30000
 modelconfig_webServiceMirror: /var/www/Common/apiSiteFilesMirror/webServices/
 modelconfig_webServiceUrl: local
 
