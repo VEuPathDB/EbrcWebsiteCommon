@@ -1,7 +1,6 @@
 package org.eupathdb.common.controller;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.Filter;
@@ -13,6 +12,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.gusdb.wdk.model.Utilities;
 
 /**
  * Redirects the user to either the beta site or the legacy site, depending on
@@ -56,7 +57,7 @@ public class BetaLegacyFilter implements Filter {
 
   private void doRedirect(ServletRequest request, ServletResponse response, FilterChain chain,
       HttpServletRequest httpReq, HttpServletResponse httpRes, String paramValue, String cookieValue)
-      throws IOException, ServletException, MalformedURLException {
+      throws IOException, ServletException {
     String value = paramValue != null ? paramValue : cookieValue;
     boolean useBeta = value.equals("1");
     String rootDomain = getRootDomain(httpReq);
@@ -66,7 +67,7 @@ public class BetaLegacyFilter implements Filter {
       else httpRes.sendRedirect(httpReq.getRequestURL().toString());
     }
     else {
-      URL url = new URL(httpReq.getScheme(), (useBeta ? "beta." : "") + rootDomain, httpReq.getServerPort(), "/");
+      URL url = Utilities.newURL(httpReq.getScheme() + "://" + (useBeta ? "beta." : "") + rootDomain + ":" + httpReq.getServerPort() + "/");
       httpRes.sendRedirect(url.toString());
     }
   }

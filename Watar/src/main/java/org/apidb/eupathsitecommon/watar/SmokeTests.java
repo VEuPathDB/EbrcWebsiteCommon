@@ -3,9 +3,7 @@ package org.apidb.eupathsitecommon.watar;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import java.net.URL;
-
-import org.testng.annotations.Test;
+import java.net.URI;
 
 import org.htmlunit.HttpMethod;
 import org.htmlunit.Page;
@@ -14,6 +12,7 @@ import org.htmlunit.WebClient;
 import org.htmlunit.WebRequest;
 import org.htmlunit.WebResponse;
 import org.htmlunit.html.HtmlPage;
+import org.testng.annotations.Test;
 
 public class SmokeTests {
 
@@ -127,7 +126,7 @@ public class SmokeTests {
     private void assertHeaderStatusMessageIsOK(String url) throws Exception {
 
         try {
-            WebRequest request = new WebRequest(new URL(url), HttpMethod.HEAD);
+            WebRequest request = new WebRequest(new URI(url).toURL(), HttpMethod.HEAD);
             HtmlPage page = (HtmlPage) browser.getPage(request);
             WebResponse response = page.getWebResponse();
             //assertEquals(response.getStatusMessage(), "OK",  "Wrong HTTP Status for " + url + " .");
@@ -145,7 +144,7 @@ public class SmokeTests {
    private void assertJsonStatusMessageIsOK(String url) throws Exception {
 
        try {
-           WebRequest request = new WebRequest(new URL(url), HttpMethod.HEAD);
+           WebRequest request = new WebRequest(new URI(url).toURL(), HttpMethod.HEAD);
            request.setAdditionalHeader("Content-type", "application/json");
            UnexpectedPage page = (UnexpectedPage) browser.getPage(request);
            WebResponse response = page.getWebResponse();

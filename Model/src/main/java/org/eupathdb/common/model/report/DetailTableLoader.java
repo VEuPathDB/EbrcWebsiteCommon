@@ -59,6 +59,7 @@ public class DetailTableLoader extends BaseCLI {
 
   private static final Logger logger = Logger.getLogger(DetailTableLoader.class);
 
+  @Deprecated
   public static void main(String[] args) throws Exception {
     String cmdName = System.getProperty("cmdName");
     if (cmdName == null)
@@ -72,10 +73,12 @@ public class DetailTableLoader extends BaseCLI {
    * @param command
    * @param description
    */
+  @Deprecated
   protected DetailTableLoader(String command, String description) {
     super(command, description);
   }
 
+  @Deprecated
   @Override
   protected void declareOptions() {
     addSingleValueOption(ARG_PROJECT_ID, true, null, "The ProjectId, which" +
@@ -93,6 +96,7 @@ public class DetailTableLoader extends BaseCLI {
         "Optional. A comma" + " separated list of the name(s) of the table field(s) to be" + " dumped.");
   }
 
+  @Deprecated
   @Override
   public void execute() throws Exception {
     long start = System.currentTimeMillis();
