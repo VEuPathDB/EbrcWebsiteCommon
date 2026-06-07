@@ -1,7 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
-    {% set displayName = project if project != 'UniDB' else 'VEuPathDB' %}
+{% set displayName %}
+  {% if project == 'UniDB' %}
+    'VEuPathDB'
+  {% elif project == 'ClinEpiDB' %}
+    'dataExplorer'
+  {% else %}
+    project
+  {% endif %}
+{% endset %}
     <title>{% block title %}{{ displayName }}{% endblock %}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -17,6 +25,7 @@
         rootElement: "#wdk-container",
         rootUrl: "{{ modelprop.WEBAPP_BASE_URL|default('') }}",
         endpoint: "{{ modelprop.REST_SERVICE_BASE_URL|default('') }}",
+        {# projectName: "{{ displayName }}", #}
         projectId: "{{ modelprop.PROJECT_ID|default('') }}",
         webAppUrl: "{{ modelprop.LEGACY_WEBAPP_BASE_URL|default('') }}",
         facebookUrl: "{{ modelprop.FACEBOOK_URL|default('') }}",
