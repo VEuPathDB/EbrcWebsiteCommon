@@ -23,6 +23,7 @@ import org.gusdb.fgputil.db.pool.DatabaseInstance;
 import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkModelException;
+import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.model.WdkUserException;
 import org.gusdb.wdk.model.record.RecordClass;
 import org.gusdb.wdk.model.record.TableField;
@@ -336,7 +337,12 @@ public class DetailTableLoader extends BaseCLI {
 
   private String getWrappedSql(TableField table, String idSql, String[] pkColumns) {
 
-    String tableSql = table.getUnwrappedQuery().getSql();
+    String tableSql = table.getQuery().leftOrElseThrow(() ->
+        new WdkRuntimeException("Table field " + table.getFullName() +
+            " does not reference a SqlQuery, required for this function."))
+        .getUnwrappedQuery()
+        .getSql();
+
     String pkPredicates = "idq." + pkColumns[0] + " = tq." + pkColumns[0] + "\n";
     String pkList = "tq." + pkColumns[0];
 
