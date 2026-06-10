@@ -44,11 +44,13 @@ _host_frontends:
 
 _remote_studyaccess_schema_map:
   userdb_devn: studyaccess_acctdb_devn
-  userdb_betan: studyaccess_acctdb_devn
+  userdb_betan: studyaccess_acctdb_prods
+  userdb_betas: studyaccess_acctdb_prods
 
 _remote_useraccounts_schema_map:
   userdb_devn: useraccounts_acctdb_devn
-  userdb_betan: useraccounts_acctdb_devn
+  userdb_betan: useraccounts_acctdb_prods
+  userdb_betas: useraccounts_acctdb_prods
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
