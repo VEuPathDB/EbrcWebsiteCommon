@@ -117,7 +117,7 @@ public class DetailTableLoader extends BaseCLI {
       logger.debug("getting tables...");
       RecordClass recordClass = wdkModel.getRecordClassByFullName(recordClassName)
           .orElseThrow(() -> new WdkModelException("Cannot find record class with name " + recordClassName));
-      Map<String, TableField> tables = recordClass.getTableFieldMap();
+      Map<String, TableField> tables = recordClass.getTableFieldMap(false);
 
       if (fieldNames != null) { // dump individual table
         // all tables are available in this context
@@ -252,6 +252,11 @@ public class DetailTableLoader extends BaseCLI {
       PreparedStatement insertStmt, String insertSql, String[] pkColumns)
       throws WdkModelException, SQLException, WdkUserException {
 
+    // skip process queries
+    if (!table.hasSqlQuery()) {
+      return new int[] { 0, 0, 0 };
+    }
+
     String title = getTableTitle(table);
 
     String wrappedSql = getWrappedSql(table, idSql, pkColumns);
@@ -260,7 +265,7 @@ public class DetailTableLoader extends BaseCLI {
     ResultSet resultSet = null;
     try {
       resultSet = SqlUtils.executeQuery(appDb.getDataSource(), wrappedSql,
-          table.getWrappedQuery().getFullName() + "__api-report-detail-aggregate", 2000);
+          table.getQueryFullName() + "__api-report-detail-aggregate", 2000);
       DBPlatform platform = appDb.getPlatform();
       String pk0 = "";
       String pk1 = "";
@@ -378,7 +383,7 @@ public class DetailTableLoader extends BaseCLI {
     if (attribute instanceof ColumnAttributeField) {
       String value = resultSet.getString(attribute.getName().toUpperCase());
       if (value == null) {
-        String errorMessage = "Table Query [" + table.getWrappedQuery().getFullName() + "] returns null " +
+        String errorMessage = "Table Query [" + table.getQueryFullName() + "] returns null " +
             "value on attribute [" + attribute.getName() + "]. The value will be treated as empty string," +
             " but please investigate.";
         // print out more error about the cause;
@@ -446,7 +451,7 @@ public class DetailTableLoader extends BaseCLI {
 
     insertStmt.setTimestamp(pkCount + 5, new Timestamp(new Date().getTime()));
     SqlUtils.executePreparedStatement(insertStmt, insertSql,
-        table.getWrappedQuery().getFullName() + "__api-report-detail-insert");
+        table.getQueryFullName() + "__api-report-detail-insert");
     return System.currentTimeMillis() - start;
   }
 
