@@ -112,7 +112,7 @@ modelconfig_defaultRole: wdk_user
 modelconfig_keyStoreFile: /etc/pki/java/cacerts
 modelconfig_keyStorePassPhrase: ""
 modelconfig_monitorBlockedThreads: 'true'
-modelconfig_oauthUrl: https://eupathdb.org/oauth
+modelconfig_oauthUrl: https://auth.veupathdb.org
 modelconfig_queryMonitor_baseline: 0.1
 modelconfig_queryMonitor_slow: 5
 modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
