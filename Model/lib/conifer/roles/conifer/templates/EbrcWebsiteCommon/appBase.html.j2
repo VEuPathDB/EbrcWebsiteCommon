@@ -61,6 +61,7 @@
         vdiServiceUrl: "{{ vdi.service_base_url|default('')}}",
         {% endif %}
         aiExpressionQualtricsId: "{{ modelprop.AI_EXPRESSION_QUALTRICS_ID|default('') }}",
+        allowAiAssistedCommentCreation: "true" === "{{ modelprop.ALLOW_AI_ASSISTED_COMMENT_CREATION|default('false') }}",
         {% endblock %}
       };
     </script>
