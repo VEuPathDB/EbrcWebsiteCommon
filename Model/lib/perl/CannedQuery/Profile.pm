@@ -55,10 +55,11 @@ sub init {
 
   $Self->setSql(<<Sql);
 SELECT profile_AS_STRING
-FROM   apidbtuning.Profile  p
+FROM   apidbtuning.Profile_p  p
 WHERE  p.source_id      = '<<Id>>'
 AND    p.profile_set_name          = '<<ProfileSet>>'
 AND   p.profile_type           = '<<ProfileType>>'
+AND   p.org_abbrev           = '<<OrgAbbrev>>'
 Sql
 
   return $Self;
@@ -68,6 +69,9 @@ Sql
 
 sub getId                   { $_[0]->{'Id'                } }
 sub setId                   { $_[0]->{'Id'                } = $_[1]; $_[0] }
+
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 
 sub getSecondaryId          { $_[0]->{'SecondaryId'       } }
 sub setSecondaryId          { $_[0]->{'SecondaryId'       } = $_[1]; $_[0] }
