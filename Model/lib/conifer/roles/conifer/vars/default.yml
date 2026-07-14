@@ -43,13 +43,13 @@ _host_frontends:
   l2: legacy
 
 _remote_studyaccess_schema_map:
-  userdb_devn: studyaccess_acctdb_devn
-  userdb_betan: studyaccess_acctdb_prods
+  userdb_devn: studyaccess_acctdb_prodn
+  userdb_betan: studyaccess_acctdb_prodn
   userdb_betas: studyaccess_acctdb_prods
 
 _remote_useraccounts_schema_map:
-  userdb_devn: useraccounts_acctdb_devn
-  userdb_betan: useraccounts_acctdb_prods
+  userdb_devn: useraccounts_acctdb_prodn
+  userdb_betan: useraccounts_acctdb_prodn
   userdb_betas: useraccounts_acctdb_prods
 
 _remote_wdkuserdata_schema_map:
