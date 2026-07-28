@@ -14,6 +14,9 @@ import java.net.http.HttpResponse;
 
 import static org.gusdb.fgputil.json.JsonUtil.Jackson;
 
+/**
+ * Proxy/passthrough service to NCBI's PubMed APIs to work around CORS issues.
+ */
 @Path("pubmed/citation")
 public class PubMedProxyService {
   // IMPORTANT!! The trailing slash included before query params is intentional
@@ -22,6 +25,9 @@ public class PubMedProxyService {
 
   private static final String CITATION_API_SEGMENT = "format=citation";
 
+  /**
+   * Fetch citation strings by PMID.
+   */
   @GET
   @Produces(MediaType.WILDCARD)
   public Response getCitation(@QueryParam("pmid") Integer pmid) {
@@ -57,16 +63,18 @@ public class PubMedProxyService {
 
       var ncbiHeaders = ncbiResponse.headers();
 
-      try (var stream = ncbiResponse.body()) {
-        var outputResponse = Response
-          .status(ncbiResponse.statusCode())
-          .entity((StreamingOutput) stream::transferTo);
+      var outputResponse = Response
+        .status(ncbiResponse.statusCode())
+        .entity((StreamingOutput) output -> {
+          try (var stream = ncbiResponse.body()) {
+            stream.transferTo(output);
+          }
+        });
 
-        for (var header : passthroughHeaders)
-          outputResponse.header(header, ncbiHeaders.allValues(header));
+      for (var header : passthroughHeaders)
+        outputResponse.header(header, ncbiHeaders.allValues(header));
 
-        return outputResponse.build();
-      }
+      return outputResponse.build();
     } catch (Exception e) {
       throw new WdkRuntimeException("failed to fetch PubMed citation", e);
     }
