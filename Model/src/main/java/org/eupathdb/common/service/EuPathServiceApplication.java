@@ -29,6 +29,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(CyberSourceFormService.class)
     .add(RawFileDownloadService.class)
     .add(ConfigurableRedirectsService.class)
+    .add(PubMedProxyService.class)
     .replace(ExceptionMapper.class, EbrcExceptionMapper.class)
     .toSet();
   }
