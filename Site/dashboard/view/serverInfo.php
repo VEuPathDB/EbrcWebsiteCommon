@@ -63,11 +63,7 @@ function printTable(array $array, ?string $prefix = null): void {
 <?php if ($server->getServerType() == ServerInfo::TYPE_APACHE): ?>
 <p class="clickable">Apache Environment &#8593;&#8595;</p>
 <div class="expandable" style="padding: 5px;">
-  <?php printTable($server->get('Apache Environment')); ?>
+  <?php printTable($_SERVER); ?>
 </div>
 
-<p class="clickable">Apache Internals &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
-  <?php printTable($server->get('apache2handler')); ?>
-</div>
 <?php endif;
