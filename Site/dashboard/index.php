@@ -23,7 +23,7 @@ function exclude_this(array $pageMap, string $key): bool {
 <?php include 'head.php.inc'; ?>
 
 <body>
-<h3 class='banner' align='center'>
+<h3 class='banner'>
   <?php
 
   echo "<a href='/'>";
@@ -33,11 +33,11 @@ function exclude_this(array $pageMap, string $key): bool {
   $pi_attr = $pi->attributes();
 
   if ($upstreamServer = $pi_attr['upstream_server']) {
-    echo "<br><font size='-1'>(upstream server: " . $upstreamServer . ")</font>";
+    echo "<br><span class='banner-sub'>(upstream server: " . $upstreamServer . ")</span>";
   }
 
   echo "</a>";
-  echo "<br><font size='-1'>[canonical server: " . php_uname('n') . "]</font>";
+  echo "<br><span class='banner-sub'>[canonical server: " . php_uname('n') . "]</span>";
 
   $headers = apache_request_headers();
   ?>
@@ -88,7 +88,7 @@ $page = $_GET['p'] ?? 'Databases';
     }
   }
   ?>
-  <a href="?p=About"><img src="images/logo.png" align="right" vspace="2"/></a>
+  <a href="?p=About"><img class="dashboard-logo" src="images/logo.png" alt="About this dashboard"/></a>
 </div>
 </body>
 </html>

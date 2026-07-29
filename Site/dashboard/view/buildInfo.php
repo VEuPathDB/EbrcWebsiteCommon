@@ -58,14 +58,14 @@ if ($stage_value) {
 
 <p class="clickable">Component Build Details &#8593;&#8595;</p>
 
-<div class="expandable" style="padding: 5px;">
-  <font size='-1'>A given build may not refresh all project components.<br>
-    The following is a cummulative record of past builds.</font>
+<div class="expandable">
+  <p class="smalltext">A given build may not refresh all project components.<br>
+    The following is a cummulative record of past builds.</p>
 
-  <table border="0" cellspacing="3" cellpadding="2">
+  <table>
     <tr class="secondary3">
-      <th align="left"><font size="-2">component</font></th>
-      <th align="left"><font size="-2">build time</font></th>
+      <th>component</th>
+      <th>build time</th>
     </tr>
     <?php
     /**
@@ -100,11 +100,11 @@ if ($stage_value) {
 
 <p class="clickable">Svn Working Directory State &#8593;&#8595;</p>
 
-<div class="expandable" style="padding: 5px;">
-  <font size='-1'>State at build time. Uncommitted files are highlighted. Files may have been committed
-    since this state was recorded.</font>
+<div class="expandable">
+  <p class="smalltext">State at build time. Uncommitted files are highlighted. Files may have been committed
+    since this state was recorded.</p>
 
-  <table class='p' border='1' cellspacing='0'>
+  <table class="p">
     <?php
     /**
      * example prop:
@@ -116,16 +116,16 @@ if ($stage_value) {
     ksort($build);
     foreach ($build as $p => $v) {
       if (($trunc = strpos($p, '.svn.')) && $v != '' && $v != 'NA') {
-        $bgcolor = '';
+        $row_class = '';
         if (strpos($p, '.svn.status')) {
           # has uncommited changes; highlight background
-          $bgcolor = 'bgcolor="#FFFF99"';
+          $row_class = ' class="flagged"';
           $key = str_replace('.', '/', str_replace('.svn.status', ' status', $p));
         } else {
           $key = str_replace('.', '/', substr($p, 0, $trunc));
         }
 
-        echo "<tr $bgcolor>";
+        echo "<tr$row_class>";
         echo "<td><pre>$key</pre></td>";
         echo "<td><pre>$v</pre></td>";
         echo "</tr>\n";
@@ -160,9 +160,9 @@ if ($stage_value) {
     Run the following command from within your $PROJECT_HOME to switch it to match this site.<br>
     <code>curl -sL <?php echo $_SERVER['SERVER_NAME'] ?>/dashboard/xml/svn/switch/value | /bin/sh</code>
   </p>
-  <table class='p' border='1' cellspacing='0' cellpadding='0'>
-    <tr>
-      <td class='rowLight'>
+  <table class="p">
+    <tr class="rowLight">
+      <td>
         <div id="content_tabs">
           <ul>
             <li><a href="#tab-svn-switch">switch</a></li>
