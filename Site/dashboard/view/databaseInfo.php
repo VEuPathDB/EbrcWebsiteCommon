@@ -67,85 +67,72 @@ $workflow_status_attrs = $workflow_status->attributes();
 <h2><?= $db_display_name ?> Database</h2>
 
 <p>
-  <b>Identifiers</b>:
+  <b>Details</b>:
 <table border="0" cellspacing="3" cellpadding="2" align="">
   <tr class="secondary3">
-    <th><font size="-2">Identifier</font></th>
+    <th><font size="-2">Property</font></th>
     <th><font size="-2">Value</font></th>
-    <th></th>
   </tr>
   <tr class="rowLight">
     <td>Db Name</td>
     <td><?= strtolower($adb['db_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'service_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
   </tr>
   <tr class="rowMedium">
-    <td>Instance Name</td>
-    <td><?= strtolower($adb['instance_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'instance_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
+    <td>Aliases (from LDAP)</td>
+    <td><?= implode(", ", $adb_aliases_ar) ?></td>
   </tr>
   <tr class="rowLight">
-    <td>Global Name</td>
-    <td><?= strtolower($adb['global_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'global_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
+    <td>Hosted on (from LDAP)</td>
+    <td><?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?></td>
   </tr>
   <tr class="rowMedium">
-    <td>DB Unique Name</td>
-    <td><?= strtolower($adb['db_unique_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'db_unique_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a></td>
+    <td>Size on disk</td>
+    <td><?= $adb['dbf_gb_on_disk'] ?></td>
+  </tr>
+  <tr class="rowLight">
+    <td>Version</td>
+    <td><?= $adb['version'] ?></td>
+  </tr>
+  <tr class="rowMedium">
+    <td>Character encoding</td>
+    <td><?= $adb['character_encoding'] ?></td>
+  </tr>
+  <tr class="rowLight">
+    <td>Client login name</td>
+    <td><?= strtolower($adb['login']) ?></td>
+  </tr>
+  <tr class="rowMedium">
+    <td>Client connecting from</td>
+    <td><?= strtolower($adb['client_host']) ?></td>
   </tr>
 </table>
 </p>
 
+<?php $dblink_map = $adb['DblinkList']; ?>
+<?php if (empty($dblink_map)) { ?>
 <p>
-  <b>Aliases</b> (from LDAP): <?= implode(", ", $adb_aliases_ar) ?><br/><br/>
-  <b>Hosted on</b> (from LDAP): <?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?><br/>
-  <b>Size on disk</b>: <?= strtolower($adb['dbf_gb_on_disk']) ?><br/>
-  <b>Version</b>: <?= $adb['version'] ?><br/>
-  <b>Character encoding</b>: <?= $adb['character_encoding'] ?>
+  <b>Available DBLinks</b>: None
 </p>
-<p>
-  <b>Client login name</b>: <?= strtolower($adb['login']) ?><br/>
-  <b>Client connecting from</b>: <?= strtolower($adb['client_host']) ?><br/>
-</p>
-
+<?php } else { ?>
 <p>
   <b>Available DBLinks</b>:
 <table border="0" cellspacing="3" cellpadding="2" align="">
   <tr class="secondary3">
-    <th align="left"><font size="-2">owner</font></th>
-    <th align="left"><font size="-2">db_link</font></th>
-    <th align="left"><font size="-2">username</font></th>
-    <th align="left"><font size="-2">host</font></th>
-    <th align="left"><font size="-2">created</font></th>
+    <th align="left"><font size="-2">server</font></th>
+    <th align="left"><font size="-2">type</font></th>
+    <th align="left"><font size="-2">options</font></th>
+    <th align="left"><font size="-2">schemas</font></th>
   </tr>
   <?php
-  $dblink_map = $adb['DblinkList'];
   $row = 0;
   foreach ($dblink_map as $dblink) {
     $css_class = ($row % 2) ? "rowMedium" : "rowLight";
     ?>
     <tr class="<?= $css_class ?>">
-      <td><?= strtolower($dblink['owner']) ?></td>
-      <td><?= strtolower($dblink['db_link']) ?></td>
-      <td><?= strtolower($dblink['username']) ?></td>
-      <td><?= strtolower($dblink['host']) ?></td>
-      <td><?= strtolower($dblink['created']) ?></td>
+      <td><?= strtolower($dblink['server_name']) ?></td>
+      <td><?= strtolower($dblink['foreign_data_wrapper']) ?></td>
+      <td><?= strtolower($dblink['options']) ?></td>
+      <td><?= strtolower($dblink['schemas']) ?></td>
     </tr>
     <?php
     $row++;
@@ -153,6 +140,7 @@ $workflow_status_attrs = $workflow_status->attributes();
   ?>
 </table>
 </p>
+<?php } ?>
 
 <hr/>
 <b>Information on this page was last updated</b>: <?= $adb['system_date'] ?><br/>
