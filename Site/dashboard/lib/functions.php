@@ -6,21 +6,22 @@ date_default_timezone_set('America/New_York');
  * Misc functions
  */
 function upstreamServer(): ?string {
-  $headers = apache_request_headers();
+  // The apache2handler phpinfo() section this used to read does not exist under
+  // php-fpm, but the upstream host is part of the vhost's document root, e.g.
+  // /var/www/b1.amoebadb.org/html
+  if (!isset($_SERVER['HTTP_VIA'], $_SERVER['DOCUMENT_ROOT'])) {
+    return null;
+  }
 
-  if (isset($headers['Via'])) {
-    $host_port = getModuleSetting('apache2handler', 'Hostname:Port');
-    $uphost = substr($host_port, 0, strrpos($host_port, ':'));
-    return "$uphost";
+  foreach (explode('/', $_SERVER['DOCUMENT_ROOT']) as $segment) {
+    if (strpos($segment, '.') !== false) {
+      return $segment;
+    }
   }
 
   return null;
 }
 
-function getModuleSetting(string $pModuleName, string $pSetting): string {
-  $vModules = parsePHPModules();
-  return $vModules[$pModuleName][$pSetting];
-}
 
 function parsePHPModules(): array {
   ob_start();
