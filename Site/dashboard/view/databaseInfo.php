@@ -4,6 +4,7 @@
  */
 
 use lib\LdapTnsNameResolver;
+use lib\LdapPostgresNameResolver;
 use lib\modules\ {
   Database,
   DBInstances,
@@ -11,7 +12,8 @@ use lib\modules\ {
   WorkflowStatus,
 };
 
-$ldap_resolver = new LdapTnsNameResolver();
+// $ldap_resolver = new LdapTnsNameResolver();
+$ldap_resolver = new LdapPostgresNameResolver();
 $tuning_manager_status = new TuningManagerStatus();
 
 $workflow_status = new WorkflowStatus();
@@ -41,9 +43,7 @@ $db_names = explode(',', $db_instances_str);
 /**
  * Loop through available DBs by name and display attributes for each
  */
-foreach ($db_names
-
-as $db_name) {
+foreach ($db_names as $db_name) {
 $database = new Database($db_name);
 $db_display_name = ucfirst(strtolower($db_name));
 
@@ -55,7 +55,8 @@ if (isset($_GET['refresh']) && $_GET['refresh'] == 1) {
 }
 
 $adb = $database->attributes();
-$adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
+// $adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
+$adb_aliases_ar =  $ldap_resolver->resolve($adb['db_name']);
 $tuning_status_attrs = $tuning_manager_status->attributes();
 
 $workflow_status_attrs = $workflow_status->attributes();
@@ -72,8 +73,8 @@ $workflow_status_attrs = $workflow_status->attributes();
     <th></th>
   </tr>
   <tr class="rowLight">
-    <td>Service Name</td>
-    <td><?= strtolower($adb['service_name']) ?></td>
+    <td>Db Name</td>
+    <td><?= strtolower($adb['db_name']) ?></td>
     <td><a href='javascript:void()' style="text-decoration:none"
            onmouseover="return overlib(
          'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'service_name\')&nbsp;from&nbsp;dual</i>'
@@ -113,13 +114,13 @@ $workflow_status_attrs = $workflow_status->attributes();
   <b>Aliases</b> (from LDAP): <?= implode(", ", $adb_aliases_ar) ?><br/><br/>
   <b>Hosted on</b>: <?= strtolower($adb['server_name']) ?><br/>
   <b>Size on disk</b>: <?= strtolower($adb['dbf_gb_on_disk']) ?> GB<br/>
-  <b>Oracle Version</b>: <?= $adb['version'] ?><br/>
+  <b>Version</b>: <?= $adb['version'] ?><br/>
   <b>Character encoding</b>: <?= $adb['character_encoding'] ?>
 </p>
 <p>
   <b>Client login name</b>: <?= strtolower($adb['login']) ?><br/>
   <b>Client connecting from</b>: <?= strtolower($adb['client_host']) ?><br/>
-  <b>Client OS user</b>: <?= strtolower($adb['os_user']) ?>
+//   <b>Client OS user</b>: <?= strtolower($adb['os_user']) ?>
 </p>
 
 <p>
