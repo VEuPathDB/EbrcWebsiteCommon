@@ -34,11 +34,11 @@ EOF;
     <b>Metrics</b>
   </p>
 
-  <table border="0" cellspacing="3" cellpadding="2" align="">
+  <table>
     <tr class="secondary3">
-      <th><font size="-2">Key</font></th>
-      <th><font size="-2">Value</font></th>
-      <th><font size="-2">Description</font></th>
+      <th>Key</th>
+      <th>Value</th>
+      <th>Description</th>
     </tr>
     <tr class="rowLight">
       <td>BorrowedCount</td>
@@ -97,10 +97,10 @@ EOF;
     for explanation of parameters.
   </p>
 
-  <table border="0" cellspacing="3" cellpadding="2" align="">
+  <table>
     <tr class="secondary3">
-      <th><font size="-2">Parameter</font></th>
-      <th><font size="-2">Value</font></th>
+      <th>Parameter</th>
+      <th>Value</th>
     </tr>
     <?php
     $row = 0;

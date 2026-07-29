@@ -20,7 +20,7 @@ $properties = $properties_config->attributes();
     class="collapse_all clickable smalltext">collapse all</span></p>
 
 <p class="clickable">WDK Model Configuration &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
+<div class="expandable">
   The following configurations were obtained from the WDK's running instance of the ModelConfig* classes. These
   generally represent values defined in
   the <code>model-config.xml</code> <i>at the time the webapp was loaded</i>,
@@ -49,7 +49,7 @@ foreach ($model_data_tree as $section => $data) {
   <p><i>WDK Comments Configuration not available</i></p>
 <?php } else { ?>
   <p class="clickable">WDK Comments Configuration &#8593;&#8595;</p>
-  <div class="expandable" style="padding: 5px;">
+  <div class="expandable">
 
     <p>
       The following configurations were obtained from the WDK's running instance of the CommentConfig class. These
@@ -72,7 +72,7 @@ foreach ($comment as $k => $v) {
 <?php } ?>
 
 <p class="clickable">WDK Properties &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
+<div class="expandable">
 
   <p>
     WDK built-in properties and properties defined in

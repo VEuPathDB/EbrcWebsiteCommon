@@ -66,42 +66,20 @@ $workflow_status_attrs = $workflow_status->attributes();
 
 <h2><?= $db_display_name ?> Database</h2>
 
-<table class="p">
-  <tr>
-    <td><b>Dbname:</b></td>
-    <td class="p"><?= strtolower($adb['db_name']) ?></td>
-  </tr>
-  <tr>
-    <td><b>Aliases:</b></td>
-    <td class="p"><?= implode(", ", $adb_aliases_ar) ?></td>
-  </tr>
-  <tr>
-    <td><b>Hosted on:</b></td>
-    <td class="p"><?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?></td>
-  </tr>
-  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-  <tr>
-    <td><b>Size on disk:</b></td>
-    <td class="p"><?= $adb['dbf_gb_on_disk'] ?></td>
-  </tr>
-  <tr>
-    <td><b>Version:</b></td>
-    <td class="p"><?= $adb['version'] ?></td>
-  </tr>
-  <tr>
-    <td><b>Character encoding:</b></td>
-    <td class="p"><?= $adb['character_encoding'] ?></td>
-  </tr>
-  <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
-  <tr>
-    <td><b>Client login name:</b></td>
-    <td class="p"><?= strtolower($adb['login']) ?></td>
-  </tr>
-  <tr>
-    <td><b>Client connecting from:</b></td>
-    <td class="p"><?= strtolower($adb['client_host']) ?></td>
-  </tr>
-</table>
+<p>
+  <b>Dbname: </b><?= strtolower($adb['db_name']) ?><br>
+  <b>Aliases: </b><?= implode(", ", $adb_aliases_ar) ?><br>
+  <b>Hosted on: </b><?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?>
+</p>
+<p>
+  <b>Size on disk: </b><?= $adb['dbf_gb_on_disk'] ?><br>
+  <b>Version: </b><?= $adb['version'] ?><br>
+  <b>Character encoding: </b><?= $adb['character_encoding'] ?>
+</p>
+<p>
+  <b>Client login name: </b><?= strtolower($adb['login']) ?><br>
+  <b>Client connecting from: </b><?= strtolower($adb['client_host']) ?>
+</p>
 
 <?php $dblink_map = $adb['DblinkList']; ?>
 <?php if (empty($dblink_map)) { ?>
@@ -112,10 +90,10 @@ $workflow_status_attrs = $workflow_status->attributes();
 <table class="dbinfo">
   <thead>
   <tr class="secondary3">
-    <th>server</th>
-    <th>type</th>
-    <th>options</th>
-    <th>schemas</th>
+    <th>SERVER</th>
+    <th>TYPE</th>
+    <th>OPTIONS</th>
+    <th>SCHEMAS(#TABLES)</th>
   </tr>
   </thead>
   <tbody>
@@ -159,7 +137,7 @@ $workflow_status_attrs = $workflow_status->attributes();
     Color codes: <span class='fatal'>update failed</span>,
     <span class='warn'>last_check older than <?= $days_old_warning_threshold ?> days</span>
   </p>
-  <div style="display: inline-block; padding-left: 10px;"><!-- constrain jquery datatables -->
+  <div class="dt-constrain"><!-- constrain jquery datatables -->
     <table id="tuningTables" class="display">
       <thead>
       <tr class="secondary3">
@@ -214,7 +192,7 @@ $workflow_status_attrs = $workflow_status->attributes();
 <p class="clickable">Workflow Status &#8593;&#8595;</p>
 <div class="expandable">
 
-  <div style="display: inline-block; padding-left: 10px;"><!-- constrain jquery datatables -->
+  <div class="dt-constrain"><!-- constrain jquery datatables -->
     <table id="workflow" class="display">
       <thead>
       <tr class="secondary3">
