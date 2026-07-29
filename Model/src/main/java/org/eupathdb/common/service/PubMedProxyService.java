@@ -29,7 +29,6 @@ public class PubMedProxyService {
    * Fetch citation strings by PMID.
    */
   @GET
-  @Produces(MediaType.WILDCARD)
   public Response getCitation(@QueryParam("pmid") Integer pmid) {
     if (pmid == null) {
       return Response.status(400)
