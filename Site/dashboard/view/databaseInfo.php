@@ -3,7 +3,7 @@
  * View of database stats
  */
 
-use lib\LdapTnsNameResolver;
+// use lib\LdapTnsNameResolver;
 use lib\LdapPostgresNameResolver;
 use lib\modules\ {
   Database,
@@ -57,6 +57,8 @@ if (isset($_GET['refresh']) && $_GET['refresh'] == 1) {
 $adb = $database->attributes();
 // $adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
 $adb_aliases_ar =  $ldap_resolver->resolve($adb['db_name']);
+// postgres does not report the server it runs on, so ask LDAP instead
+$adb_host = $ldap_resolver->resolveHost($adb['db_name']);
 $tuning_status_attrs = $tuning_manager_status->attributes();
 
 $workflow_status_attrs = $workflow_status->attributes();
@@ -112,15 +114,14 @@ $workflow_status_attrs = $workflow_status->attributes();
 
 <p>
   <b>Aliases</b> (from LDAP): <?= implode(", ", $adb_aliases_ar) ?><br/><br/>
-  <b>Hosted on</b>: <?= strtolower($adb['server_name']) ?><br/>
-  <b>Size on disk</b>: <?= strtolower($adb['dbf_gb_on_disk']) ?> GB<br/>
+  <b>Hosted on</b> (from LDAP): <?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?><br/>
+  <b>Size on disk</b>: <?= strtolower($adb['dbf_gb_on_disk']) ?><br/>
   <b>Version</b>: <?= $adb['version'] ?><br/>
   <b>Character encoding</b>: <?= $adb['character_encoding'] ?>
 </p>
 <p>
   <b>Client login name</b>: <?= strtolower($adb['login']) ?><br/>
   <b>Client connecting from</b>: <?= strtolower($adb['client_host']) ?><br/>
-//   <b>Client OS user</b>: <?= strtolower($adb['os_user']) ?>
 </p>
 
 <p>
