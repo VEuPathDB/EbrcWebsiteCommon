@@ -1,6 +1,7 @@
 package org.eupathdb.common.service;
 
 import org.gusdb.wdk.model.WdkRuntimeException;
+import org.gusdb.wdk.service.service.AbstractWdkService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.HttpHeaders;
@@ -17,8 +18,8 @@ import static org.gusdb.fgputil.json.JsonUtil.Jackson;
 /**
  * Proxy/passthrough service to NCBI's PubMed APIs to work around CORS issues.
  */
-@Path("pubmed/citation")
-public class PubMedProxyService {
+@Path("/pubmed/citation")
+public class PubMedProxyService extends AbstractWdkService {
   // IMPORTANT!! The trailing slash included before query params is intentional
   // to avoid redirects from the NCBI API.
   private static final String API_URL = "https://pmc.ncbi.nlm.nih.gov/api/ctxp/v1/pubmed/";
