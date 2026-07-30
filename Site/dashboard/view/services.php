@@ -73,8 +73,8 @@ $stacks = $json["stacks"];
     $networkJson = json_encode($network, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     ?>
     <h3>Environment</h3>
-    <table style="font-family:monospace;font-size:0.9em;font-weight:normal">
-      <tr>
+    <table class="attrs mono">
+      <tr class="secondary3">
         <th>Name</th>
         <th>Value</th>
       </tr>
@@ -85,10 +85,10 @@ $stacks = $json["stacks"];
     </table>
     <hr/>
     <h3>Other Configuration</h3>
-    <pre style="font-size:0.9em;font-weight:normal"><?= $configJson ?></pre>
+    <pre><?= $configJson ?></pre>
     <hr/>
     <h3>Network Settings</h3>
-    <pre style="font-size:0.9em;font-weight:normal"><?= $networkJson ?></pre>
+    <pre><?= $networkJson ?></pre>
 <?php } ?>
 </div><?php endif;
 } ?>

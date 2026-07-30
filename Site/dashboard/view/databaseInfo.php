@@ -3,7 +3,8 @@
  * View of database stats
  */
 
-use lib\LdapTnsNameResolver;
+// use lib\LdapTnsNameResolver;
+use lib\LdapPostgresNameResolver;
 use lib\modules\ {
   Database,
   DBInstances,
@@ -11,7 +12,8 @@ use lib\modules\ {
   WorkflowStatus,
 };
 
-$ldap_resolver = new LdapTnsNameResolver();
+// $ldap_resolver = new LdapTnsNameResolver();
+$ldap_resolver = new LdapPostgresNameResolver();
 $tuning_manager_status = new TuningManagerStatus();
 
 $workflow_status = new WorkflowStatus();
@@ -22,18 +24,6 @@ $db_instances_str = $db_instances_attribs['DbInstanceNames'];
 $db_names = explode(',', $db_instances_str);
 
 ?>
-<script type="text/javascript">
-  $(function () {
-    $('#tuningTables').DataTable({
-      'stateSave': false,
-      'stripeClasses': ['rowMedium', 'rowLight'],
-      'orderClasses': false,
-      'order': [1, 'desc'],
-      'pageLength': 10,
-    });
-  });
-</script>
-
 <p>
   <b><a href="?p=DB%20Connection%20Pool">Connection pool activity</a></b>
 </p>
@@ -41,9 +31,7 @@ $db_names = explode(',', $db_instances_str);
 /**
  * Loop through available DBs by name and display attributes for each
  */
-foreach ($db_names
-
-as $db_name) {
+foreach ($db_names as $db_name) {
 $database = new Database($db_name);
 $db_display_name = ucfirst(strtolower($db_name));
 
@@ -51,11 +39,14 @@ if (isset($_GET['refresh']) && $_GET['refresh'] == 1) {
   $success = $database->refresh();
 
   if (!$success)
-    echo "<font color='red'>FAILED TO REFRESH</font>";
+    echo "<span class='fatal'>FAILED TO REFRESH</span>";
 }
 
 $adb = $database->attributes();
-$adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
+// $adb_aliases_ar = []; /* $ldap_resolver->resolve($adb['service_name']);*/
+$adb_aliases_ar =  $ldap_resolver->resolve($adb['db_name']);
+// postgres does not report the server it runs on, so ask LDAP instead
+$adb_host = $ldap_resolver->resolveHost($adb['db_name']);
 $tuning_status_attrs = $tuning_manager_status->attributes();
 
 $workflow_status_attrs = $workflow_status->attributes();
@@ -64,101 +55,62 @@ $workflow_status_attrs = $workflow_status->attributes();
 <h2><?= $db_display_name ?> Database</h2>
 
 <p>
-  <b>Identifiers</b>:
-<table border="0" cellspacing="3" cellpadding="2" align="">
-  <tr class="secondary3">
-    <th><font size="-2">Identifier</font></th>
-    <th><font size="-2">Value</font></th>
-    <th></th>
-  </tr>
-  <tr class="rowLight">
-    <td>Service Name</td>
-    <td><?= strtolower($adb['service_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'service_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
-  </tr>
-  <tr class="rowMedium">
-    <td>Instance Name</td>
-    <td><?= strtolower($adb['instance_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'instance_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
-  </tr>
-  <tr class="rowLight">
-    <td>Global Name</td>
-    <td><?= strtolower($adb['global_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'global_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a>
-    </td>
-  </tr>
-  <tr class="rowMedium">
-    <td>DB Unique Name</td>
-    <td><?= strtolower($adb['db_unique_name']) ?></td>
-    <td><a href='javascript:void()' style="text-decoration:none"
-           onmouseover="return overlib(
-         'result of <br><i>select&nbsp;sys_context(\'userenv\',&nbsp;\'db_unique_name\')&nbsp;from&nbsp;dual</i>'
-        )" onmouseout="return nd();"><sup>[?]</sup></a></td>
-  </tr>
-</table>
+  <b>Dbname: </b><?= strtolower($adb['db_name']) ?><br>
+  <b>Aliases: </b><?= implode(", ", $adb_aliases_ar) ?><br>
+  <b>Hosted on: </b><?= $adb_host === null ? 'unknown' : strtolower($adb_host) ?>
+</p>
+<p>
+  <b>Size on disk: </b><?= $adb['dbf_gb_on_disk'] ?><br>
+  <b>Version: </b><?= $adb['version'] ?><br>
+  <b>Character encoding: </b><?= $adb['character_encoding'] ?>
+</p>
+<p>
+  <b>Client login name: </b><?= strtolower($adb['login']) ?><br>
+  <b>Client connecting from: </b><?= strtolower($adb['client_host']) ?>
 </p>
 
-<p>
-  <b>Aliases</b> (from LDAP): <?= implode(", ", $adb_aliases_ar) ?><br/><br/>
-  <b>Hosted on</b>: <?= strtolower($adb['server_name']) ?><br/>
-  <b>Size on disk</b>: <?= strtolower($adb['dbf_gb_on_disk']) ?> GB<br/>
-  <b>Oracle Version</b>: <?= $adb['version'] ?><br/>
-  <b>Character encoding</b>: <?= $adb['character_encoding'] ?>
-</p>
-<p>
-  <b>Client login name</b>: <?= strtolower($adb['login']) ?><br/>
-  <b>Client connecting from</b>: <?= strtolower($adb['client_host']) ?><br/>
-  <b>Client OS user</b>: <?= strtolower($adb['os_user']) ?>
-</p>
-
-<p>
-  <b>Available DBLinks</b>:
-<table border="0" cellspacing="3" cellpadding="2" align="">
+<?php $dblink_map = $adb['DblinkList']; ?>
+<?php if (empty($dblink_map)) { ?>
+<p><b>Available DBLinks</b>: None</p>
+<?php } else { ?>
+<p><b>Available DBLinks</b>:</p>
+<div class="table-scroll">
+<table class="dbinfo">
+  <thead>
   <tr class="secondary3">
-    <th align="left"><font size="-2">owner</font></th>
-    <th align="left"><font size="-2">db_link</font></th>
-    <th align="left"><font size="-2">username</font></th>
-    <th align="left"><font size="-2">host</font></th>
-    <th align="left"><font size="-2">created</font></th>
+    <th>SERVER</th>
+    <th>TYPE</th>
+    <th>OPTIONS</th>
+    <th>SCHEMAS(#TABLES)</th>
   </tr>
+  </thead>
+  <tbody>
   <?php
-  $dblink_map = $adb['DblinkList'];
   $row = 0;
   foreach ($dblink_map as $dblink) {
     $css_class = ($row % 2) ? "rowMedium" : "rowLight";
     ?>
     <tr class="<?= $css_class ?>">
-      <td><?= strtolower($dblink['owner']) ?></td>
-      <td><?= strtolower($dblink['db_link']) ?></td>
-      <td><?= strtolower($dblink['username']) ?></td>
-      <td><?= strtolower($dblink['host']) ?></td>
-      <td><?= strtolower($dblink['created']) ?></td>
+      <td><?= strtolower($dblink['server_name']) ?></td>
+      <td><?= strtolower($dblink['foreign_data_wrapper']) ?></td>
+      <td><?= strtolower($dblink['options']) ?></td>
+      <td><?= strtolower($dblink['schemas']) ?></td>
     </tr>
     <?php
     $row++;
   }
   ?>
+  </tbody>
 </table>
-</p>
+</div>
+<?php } ?>
 
 <hr/>
-<b>Information on this page was last updated</b>: <?= $adb['system_date'] ?><br/>
+<p><b>Information on this page was last updated</b>: <?= $adb['system_date'] ?></p>
 <form method="GET" action="">
   <input name="refresh" type="hidden" value="1">
   <input type="submit" value="update now">
 </form>
-<p>
 
   <?php } ?>
   <!-- End DB sections -->
@@ -173,14 +125,15 @@ $workflow_status_attrs = $workflow_status->attributes();
     Color codes: <span class='fatal'>update failed</span>,
     <span class='warn'>last_check older than <?= $days_old_warning_threshold ?> days</span>
   </p>
-  <div style="display: inline-block; padding-left: 10px;"><!-- constrain jquery datatables -->
-    <table id="tuningTables" class='display' cellspacing="3" cellpadding="2" align="">
+  <div class="table-constrain">
+    <!-- sorted by last_check descending on load, as the old DataTable was -->
+    <table id="tuningTables" class="sortable" data-sort-col="1" data-sort-dir="desc">
       <thead>
       <tr class="secondary3">
-        <th align="left"><font size="-2">name</font></th>
-        <th align="left"><font size="-2">last_check</font></th>
-        <th align="left"><font size="-2">status</font></th>
-        <th align="left"><font size="-2">created</font></th>
+        <th>name</th>
+        <th>last_check</th>
+        <th>status</th>
+        <th>created</th>
       </tr>
       </thead>
       <tbody>
@@ -228,13 +181,13 @@ $workflow_status_attrs = $workflow_status->attributes();
 <p class="clickable">Workflow Status &#8593;&#8595;</p>
 <div class="expandable">
 
-  <div style="display: inline-block; padding-left: 10px;"><!-- constrain jquery datatables -->
-    <table id="workflow" class='display' cellspacing="3" cellpadding="2" align="">
+  <div class="table-constrain">
+    <table id="workflow">
       <thead>
       <tr class="secondary3">
-        <th align="left"><font size="-2">step</font></th>
-        <th align="left"><font size="-2">off_line</font></th>
-        <th align="left"><font size="-2">state</font></th>
+        <th>step</th>
+        <th>off_line</th>
+        <th>state</th>
       </tr>
       </thead>
       <tbody>

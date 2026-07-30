@@ -65,12 +65,6 @@ print <<_END_OF_TEXT_
            }
 
 	</script>
-        <script language="javascript" type="text/javascript">
-          function change_image(id,image_url)
-          {
-          id.src = image_url;
-          }
-        </script>
          <script language="JavaScript">
          <!--
          function confirmDelete(row)
@@ -95,7 +89,7 @@ print <<_END_OF_TEXT_
         </head>
         <body>
 	<!--Create column headers and border-->
-	<div style="position: relative; width: 80%; height: 60%; top: 5%; margin: 0 auto; text-align: center">
+	<div style="position: relative; height: 60%; top: 5%; margin: 0 auto; text-align: center">
         <table> 
 	<tr class="header">
 	<th>Message ID</th>
@@ -129,7 +123,7 @@ while ((@row=$sth->fetchrow_array) ){
           print <<_END_OF_TEXT_;
 <!--Display database rows, alternating background color-->  
 <tr class="$rowStyle">  
-<td> <a href=/cgi-bin/admin/messageInsert.pl?messageId=$row[0] onsubmit="return validate_form(this)" onClick="window.open('/cgi-bin/admin/messageInsert.pl?messageId=$row[0]','submitNew', 'width=500,height=730,toolbar=no, location=no, value=submitNew, directories=no,status=yes,menubar=no,scrollbars=no,copyhistory=yes, resizable=no'); return false">$row[0]</a>
+<td> <a href=/cgi-bin/admin/messageInsert.pl?messageId=$row[0] onsubmit="return validate_form(this)" onClick="window.open('/cgi-bin/admin/messageInsert.pl?messageId=$row[0]','submitNew', 'width=560,height=820,toolbar=no, location=no, value=submitNew, directories=no,status=yes,menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes'); return false">$row[0]</a>
 </td>
 <td class="message">$row[1]</td>
 <td>$row[2]</td>
@@ -138,9 +132,16 @@ while ((@row=$sth->fetchrow_array) ){
 <td>$row[4]</td>
 <td class="message">@{[$row[5] || '']}</td>
 <td>
-<img id="image_id" src="/a/images/deleteButtongs.png" onclick="confirmDelete($row[0])" 
-onmouseover="change_image(this, '/a/images/deleteButton.png')" 
-onmouseout="change_image(this, '/a/images/deleteButtongs.png')" border="0"/></a>
+<button type="button" class="delete-btn" title="Delete this message" onclick="confirmDelete($row[0])">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M3 6h18"/>
+    <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+    <path d="M10 11v6"/>
+    <path d="M14 11v6"/>
+  </svg>
+</button>
 </td>
 </tr> 
           
@@ -164,7 +165,7 @@ _END_OF_TEXT_
  # Render link for new message creation       
 print <<_END_OF_TEXT_
   <div style="position: relative; bottom: 20px; width: 175px; height: 30px; margin: 0 auto">
-      <a href=admin/insertMessage.pl?submitMessage=true onClick="window.open('/cgi-bin/admin/messageInsert.pl?submitMessage=true','submitNew', 'width=500,height=700,toolbar=no, location=no, value=submitNew, directories=no,status=yes, menubar=no,scrollbars=no,copyhistory=yes, resizable=no'); return false">Create New Message</a>
+      <a href=admin/insertMessage.pl?submitMessage=true onClick="window.open('/cgi-bin/admin/messageInsert.pl?submitMessage=true','submitNew', 'width=560,height=820,toolbar=no, location=no, value=submitNew, directories=no,status=yes, menubar=no,scrollbars=yes,copyhistory=yes, resizable=yes'); return false">Create New Message</a>
   </div>
 </div>
 </body>
