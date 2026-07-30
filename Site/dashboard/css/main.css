@@ -351,10 +351,6 @@ table.dbinfo tbody td:first-child {
 }
 
 /* buildInfo marks components with uncommitted changes */
-tr.flagged, tr.flagged td {
-    background: #fff8c5;
-}
-
 /* jslint results: a filename heading over a list of findings */
 .filename {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -390,32 +386,4 @@ li.error {
   border: 1px solid gold;
   font-size: small;
   padding: 0 0.4em;
-}
-
-#content_tabs {
-    background: transparent;
-    border: none;
-}
-#content_tabs .ui-widget-header {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid #c0c0c0;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    border-radius: 0px;
-}
-#content_tabs .ui-tabs-nav .ui-state-default {
-    background: transparent;
-    border: none;
-}
-#content_tabs .ui-tabs-nav .ui-state-active {
-    background: transparent url(img/uiTabsArrow.png) no-repeat bottom center;
-    border: none;
-}
-#content_tabs .ui-tabs-nav .ui-state-default a {
-    color: #8a949e;
-}
-#content_tabs .ui-tabs-nav .ui-state-active a {
-    color: #a86d2c;
-    text-decoration: underline;
 }
