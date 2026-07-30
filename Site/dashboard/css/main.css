@@ -381,26 +381,6 @@ table.dbinfo tbody td:first-child {
     font-weight: 600;
 }
 
-/* buildInfo marks components with uncommitted changes */
-/* jslint results: a filename heading over a list of findings */
-.filename {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-
-li.error {
-    margin-bottom: 8px;
-}
-
-.reason {
-    color: #a8460f;
-}
-
-.evidence {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 0.9em;
-    color: #52606d;
-    overflow-wrap: anywhere;
-}
 
 #loading {
   position: absolute;
