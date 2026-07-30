@@ -185,8 +185,8 @@ td > pre {
   padding: 5px;
 }
 
-/* keeps a DataTable from stretching to the full content width */
-.dt-constrain {
+/* keeps a wide table from stretching to the full content width */
+.table-constrain {
   display: inline-block;
   padding-left: 10px;
 }
@@ -232,12 +232,6 @@ table.mono td {
   border-collapse: collapse;
 }
 
-#content table.dataTable {
-  width: auto;
-  border-spacing: 0;
-  border-collapse: separate;
-}
-
 /**
  * Label/value listings (tomcatInfo, databaseInfo, buildInfo).  Padding is set
  * as longhands so the padding-left below survives -- a shorthand here would
@@ -257,38 +251,27 @@ td.p {
     padding-left: 10px;
 }
 
-table.dataTable.row-border tbody th,
-table.dataTable.row-border tbody td,
-table.dataTable.display tbody th,
-table.dataTable.display tbody td {
-    border-top: none;
-}
-
-tr.rowMedium, table.dataTable.display tr.rowMedium  {
+tr.rowMedium {
     background-color: var(--row-alt);
     color: var(--text);
 }
-tr.rowMedium td,
-table.dataTable.display tr.rowMedium td {
+tr.rowMedium td {
     padding: 5px 10px;
     white-space: nowrap;
     border-bottom: 1px solid var(--rule);
 }
-tr.rowLight, table.dataTable.display tr.rowLight {
+tr.rowLight {
     background-color: white;
     color: var(--text);
 }
 
-tr.rowLight td,
-table.dataTable.display tr.rowLight td {
+tr.rowLight td {
     padding: 5px 10px;
     white-space: nowrap;
     border-bottom: 1px solid var(--rule);
 }
 
-tr.rowLight:hover, tr.rowMedium:hover,
-table.dataTable.display tr.rowLight:hover,
-table.dataTable.display tr.rowMedium:hover {
+tr.rowLight:hover, tr.rowMedium:hover {
     background-color: var(--row-hover);
 }
 
@@ -314,7 +297,7 @@ table.attrs tr td:first-child {
     width: 1%;
 }
 
-th, table.dataTable thead th {
+th {
    border-width:2px 0;
    border-style:solid;
    border-color:var(--accent);
@@ -324,12 +307,60 @@ th, table.dataTable thead th {
 
 /**
  * Every table in the views marks its header row with this class, but nothing
- * defined it, so headers rendered as unstyled 10px text.  Kept light rather
- * than solid blue: DataTables paints its sort arrows as a background image on
- * the th, and dark arrows need a pale backdrop to stay visible.
+ * defined it, so headers rendered as unstyled 10px text.
  */
-tr.secondary3, table.dataTable thead tr.secondary3 {
+tr.secondary3 {
     background: var(--header-bg);
+}
+
+/**
+ * Sortable tables (js/tableSort.js).  The arrow is drawn from the aria-sort
+ * attribute the script sets, so the accessible state and the visible state
+ * cannot drift apart.
+ */
+table.sortable th {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+table.sortable th:hover {
+    color: var(--accent);
+}
+
+table.sortable th::after {
+    /* reserve the arrow's width on every header so sorting cannot reflow the
+       column widths */
+    content: "\2195";
+    padding-left: 6px;
+    opacity: 0.35;
+}
+
+table.sortable th[aria-sort="ascending"]::after {
+    content: "\2191";
+    opacity: 1;
+}
+
+table.sortable th[aria-sort="descending"]::after {
+    content: "\2193";
+    opacity: 1;
+}
+
+.table-filter {
+    margin: 0 0 8px 0;
+}
+
+.table-filter input {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.9em;
+}
+
+.table-filter input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
 }
 
 tr.secondary3 th, tr.secondary3 td {

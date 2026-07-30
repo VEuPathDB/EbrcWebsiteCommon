@@ -24,18 +24,6 @@ $db_instances_str = $db_instances_attribs['DbInstanceNames'];
 $db_names = explode(',', $db_instances_str);
 
 ?>
-<script>
-  $(function () {
-    $('#tuningTables').DataTable({
-      'stateSave': false,
-      'stripeClasses': ['rowMedium', 'rowLight'],
-      'orderClasses': false,
-      'order': [1, 'desc'],
-      'pageLength': 10,
-    });
-  });
-</script>
-
 <p>
   <b><a href="?p=DB%20Connection%20Pool">Connection pool activity</a></b>
 </p>
@@ -137,8 +125,9 @@ $workflow_status_attrs = $workflow_status->attributes();
     Color codes: <span class='fatal'>update failed</span>,
     <span class='warn'>last_check older than <?= $days_old_warning_threshold ?> days</span>
   </p>
-  <div class="dt-constrain"><!-- constrain jquery datatables -->
-    <table id="tuningTables" class="display">
+  <div class="table-constrain">
+    <!-- sorted by last_check descending on load, as the old DataTable was -->
+    <table id="tuningTables" class="sortable" data-sort-col="1" data-sort-dir="desc">
       <thead>
       <tr class="secondary3">
         <th>name</th>
@@ -192,8 +181,8 @@ $workflow_status_attrs = $workflow_status->attributes();
 <p class="clickable">Workflow Status &#8593;&#8595;</p>
 <div class="expandable">
 
-  <div class="dt-constrain"><!-- constrain jquery datatables -->
-    <table id="workflow" class="display">
+  <div class="table-constrain">
+    <table id="workflow">
       <thead>
       <tr class="secondary3">
         <th>step</th>
