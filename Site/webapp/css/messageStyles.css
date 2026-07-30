@@ -1,56 +1,89 @@
 /*CSS styling for Announcements System Message Console*/
 
 
-
-table{
-       margin-left: auto;
-       margin-right: auto;
-       border-collapse: collapse;
-       border-right: 6px;
-       border-left: 6px;
-       border-top: 3px;
-       border-bottom: 40px;
-       border-color: #dee2ed;
-       border-style: solid;
-       text-align: center;
-       }
-
-
-tr.header{
-        background-color: #dee2ed;
-        border: thin solid;
-        }
+table {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    border-right: 6px;
+    border-left: 6px;
+    border-top: 3px;
+    border-bottom: 40px;
+    border-color: #dee2ed;
+    border-style: solid;
+    text-align: center;
+}
 
 
-tr.primary{
-        background-color: #ffffff;
-        }
+tr.header {
+    background-color: #dee2ed;
+    border: thin solid;
+}
+
+tr.header th{
+    text-align: center;
+}
+
+tr.primary {
+    background-color: #ffffff;
+}
 
 
-tr.alternate{
-        background-color: #ebe6e0;
-        }
+tr.alternate {
+    background-color: #eef2f7;
+}
 
-td{
-       text-align: center;
-       font-size: 10pt; 
-       padding-right: 5px;
-       padding-left: 5px;
-       padding-top: 2px;
-       padding-bottom: 2px;
-       }
+td {
+    text-align: center;
+    /*font-size: 10pt; */
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
 
 
-td.message{
-      text-align: left;
-      font-family: Verdana;
-      font-size: 8pt;
-      font-style: italic;
-      }
+td.message {
+    text-align: left;
+    font-family: Verdana;
+    /*font-size: 8pt;*/
+    font-style: italic;
+}
 
 /* Unvisited links */
 a:visited {
-      color: blue; /* sky blue */
-      }
+    color: blue; /* sky blue */
+}
+
+/**
+ * Delete control: an inline-SVG trash can, replacing the pair of small PNGs
+ * that were swapped on hover.  The icon inherits `color`, so hover and focus
+ * only need to change that.  32px box gives it a usable click target.
+ */
+button.delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #6b7280;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+button.delete-btn:hover,
+button.delete-btn:focus-visible {
+    color: #c62828;
+    background-color: #fdeaea;
+    border-color: #f3c0c0;
+}
+
+button.delete-btn:active {
+    background-color: #f8d6d6;
+}
 
 
