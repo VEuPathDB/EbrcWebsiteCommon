@@ -68,7 +68,7 @@ function parse_properties($property_file): array {
     return $result;
   }
 
-  $lines = preg_split("\n", $property_text);
+  $lines = preg_split("/\n/", $property_text);
   $key = "";
   $isWaitingOtherLine = false;
   $value = "";
