@@ -49,7 +49,6 @@ public class PubMedProxyService extends AbstractWdkService {
     );
 
     var passthroughHeaders = new String[] {
-      HttpHeaders.CONTENT_TYPE,
       HttpHeaders.CONTENT_LENGTH,
       HttpHeaders.CONTENT_ENCODING,
     };
@@ -65,6 +64,7 @@ public class PubMedProxyService extends AbstractWdkService {
 
       var outputResponse = Response
         .status(ncbiResponse.statusCode())
+        .type(ncbiHeaders.firstValue(HttpHeaders.CONTENT_TYPE).orElseThrow())
         .entity((StreamingOutput) output -> {
           try (var stream = ncbiResponse.body()) {
             stream.transferTo(output);
