@@ -161,12 +161,12 @@ if ($query->param("messageId")){
          my $adminComments;
 
          while (@row=$sth->fetchrow_array()) {
-          $messageId=$row[0];
-	  $messageText=$row[1];
-	  $messageCategory=$row[2];
-	  $startDate=$row[3];
-	  $stopDate=$row[4];
-	  $adminComments=$row[5];
+           $messageId = $row[0];
+           $messageText = $row[1];
+           $messageCategory = $row[2];
+           $startDate = $row[3];
+           $stopDate = $row[4];
+           $adminComments = $row[5];
          }
          # Determine and re-select previously checked projects
          my @selectedProjects=&getSelectedProjects($editMessageId);
@@ -189,7 +189,7 @@ if ($query->param("messageId")){
        ##Write an updated message record to the database.
        
         my $messageId = $query->param("updateMessageId");
-    	my $messageText = $query->param("messageText");
+    	  my $messageText = $query->param("messageText");
         my $messageCategory = $query->param("messageCategory");
         my @selectedProjects = $query->param("selectedProjects");
         my $startDate = $query->param("startDate");
@@ -280,12 +280,22 @@ sub displayMessageForm {
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Edit Message</title>
 <style type="text/css">
-<!--
+* {
+	box-sizing: border-box;
+}
 body {
 	background-color: #F6F8FF;
+	/* the default 8px body margin pushed the 500px table past a 500px-wide
+	   popup, which is what forced the horizontal scrollbar */
+	margin: 0;
+	padding: 8px;
+}
+/* let the fixed-width table and the cols="45" textareas shrink to the window
+   instead of demanding their declared width */
+table, textarea, input, select {
+	max-width: 100%;
 }
 .style10 {font-family: Arial, Helvetica, sans-serif; }
--->
 </style>
 </head>
 <body>
@@ -402,7 +412,23 @@ function refreshParent() {
   window.opener.location.reload();
       }
       //window.close();
-  }        
+  }
+
+/* The "Projects Affected" list has one checkbox per row in announce.projects,
+   so its height varies and no fixed popup size fits every site.  Grow the
+   window to the content once loaded -- never shrink it, so a window the user
+   resized by hand is left alone -- clamped to the available screen. */
+window.addEventListener('load', function () {
+  var doc = document.documentElement;
+  var frameW = window.outerWidth - window.innerWidth;
+  var frameH = window.outerHeight - window.innerHeight;
+  var w = Math.min(doc.scrollWidth + frameW, screen.availWidth);
+  var h = Math.min(doc.scrollHeight + frameH, screen.availHeight);
+
+  if (w > window.outerWidth || h > window.outerHeight) {
+    window.resizeTo(Math.max(w, window.outerWidth), Math.max(h, window.outerHeight));
+  }
+});
 </script>
 </body>
 </html>
