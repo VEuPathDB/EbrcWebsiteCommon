@@ -10,7 +10,9 @@ use lib\xml\ {
 
 // version of data and format returned. Change value e.g as
 // elements are added, removed.
-const FORMATVERSION = '1.0';
+// 1.1 dropped the Oracle-only svn, servicename, instancename, globalname and
+// dbuniquename elements and added version / characterencoding per database.
+const FORMATVERSION = '1.1';
 const ROOTNAME = 'dashboard';
 
 $api = new PrivateAPI();
