@@ -4,6 +4,8 @@
     {% set displayName = project if project != 'EuPathDB' else 'VEuPathDB' %}
     <title>{% block title %}{{ displayName }}{% endblock %}</title>
     <meta charset="UTF-8">
+    <meta name="description" content="VEuPathDB provides FAIR access to genomic data for eukaryotic microbes (protists & fungi), hosts and arthropod vectors of pathogenic species. VEuPathDB is securing the long-term financial sustainability of our globally relied-upon biomedical data resources.">
+    <meta name="keywords" content="VEuPathDB, genome, genomic data, organism">
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link href="/{{ webapp_ctx }}/images/{{ displayName }}/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
     <script>
