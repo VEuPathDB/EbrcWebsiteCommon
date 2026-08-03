@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && array_key_exists('logger_name', $_PO
 
   $success = $log_manager->update($logger_map);
   if (!$success)
-    echo "<font color='red'>ERROR applying updates</font>";
+    echo "<span class='fatal'>ERROR applying updates</span>";
 }
 
 
@@ -28,7 +28,7 @@ foreach ($log_data as $logger => $level) {
 ?>
 
 <form method="POST">
-  <table cellpadding="5" cellspacing="0" border="1">
+  <table class="p">
     <tr>
       <td colspan="2">
         <h2>
@@ -38,7 +38,7 @@ foreach ($log_data as $logger => $level) {
     </tr>
     <tr>
       <td>Choose Logger:<br>
-        <font size="-1">Format: LoggerClass [Current Level]</font><br>
+        <span class="smalltext">Format: LoggerClass [Current Level]</span><br>
         <select name='logger_name[]' multiple="" size='20'>
           <?= $select_opts ?>
         </select>

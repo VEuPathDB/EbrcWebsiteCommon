@@ -19,7 +19,7 @@ $servlet_data = (new ServletInfo())->attributes();
 ?>
 <h2>Tomcat</h2>
 
-<table class='p' border='0' cellpadding='0' cellspacing='0'>
+<table class="p">
   <tr>
     <td><b>Instance:</b>
     </td><td class="p"><?= $jvm_data['SystemProperties']['instance.name'] ?></td>
@@ -53,7 +53,7 @@ $servlet_data = (new ServletInfo())->attributes();
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
-  <tr valign='top'>
+  <tr>
     <td><b>Other webapps deployed in this instance: </b></td>
     <td class="p">
 <?php
@@ -82,7 +82,7 @@ foreach($webapp_data['other_deployed_webapps'] as $other_app) {
   </tr>
 </table>
 <p class="clickable">Webapp Classpath &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
+<div class="expandable">
 <?= str_replace(':', '<br>', $jvm_data['ClassPath']) . str_replace(':', '<br>', $webapp_data['loaderRepositoriesString']) ?>
 </div>
 <p>

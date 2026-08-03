@@ -47,10 +47,6 @@ return [
     'module' => 'view/services.php',
     'tab'    => 1
   ],
-  'JSLint'             => [
-    'module' => 'view/jslint.php',
-    'tab'    => 0
-  ],
   'Logger'             => [
     'module' => "view/logger.php",
     'tab'    => 0

@@ -17,8 +17,8 @@ switch ($server->getServerType()) {
 
 
 function printTable(array $array, ?string $prefix = null): void {
-  echo "<table border='0' cellspacing='3' cellpadding='2' align=''>";
-  echo "<tr class='secondary3'><th><font size='-2'>Attribute</font></th><th><font size='-2'>Value</font></th></tr>";
+  echo "<table class='attrs'>";
+  echo "<tr class='secondary3'><th>Attribute</th><th>Value</th></tr>";
 
   $i = 0;
   $pLen = empty($prefix) ? 0 : strlen($prefix);
@@ -37,7 +37,7 @@ function printTable(array $array, ?string $prefix = null): void {
       $rowStyle = 'rowMedium';
     }
     if ($key == 'Directive') {
-      echo "</table><table border='0' cellspacing='3' cellpadding='2' align=''>";
+      echo "</table><table class='attrs'>";
     }
     echo "<tr class='$rowStyle'><td>$key</td>";
     if (is_array($value)) {
@@ -56,18 +56,14 @@ function printTable(array $array, ?string $prefix = null): void {
 </p>
 
 <p class="clickable">HTTP Headers &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
+<div class="expandable">
   <?php printTable($_SERVER, 'HTTP_'); ?>
 </div>
 
 <?php if ($server->getServerType() == ServerInfo::TYPE_APACHE): ?>
 <p class="clickable">Apache Environment &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
-  <?php printTable($server->get('Apache Environment')); ?>
+<div class="expandable">
+  <?php printTable($_SERVER); ?>
 </div>
 
-<p class="clickable">Apache Internals &#8593;&#8595;</p>
-<div class="expandable" style="padding: 5px;">
-  <?php printTable($server->get('apache2handler')); ?>
-</div>
 <?php endif;

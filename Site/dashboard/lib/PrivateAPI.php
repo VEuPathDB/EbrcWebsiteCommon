@@ -2,7 +2,6 @@
 
 use DOMDocument, Exception, SimpleXMLElement;
 use lib\modules\ {
-  BuildInfo,
   CommentConfig,
   Database,
   Jvm,
@@ -67,11 +66,10 @@ class PrivateAPI {
     $cache = new WdkCache();
     $cache_attr = $cache->attributes();
 
-    $build = new BuildInfo();
     $proxy = new ProxyInfo();
     $proxy_attr = $proxy->attributes();
 
-    $ldap_resolver = new LdapTnsNameResolver();
+    $ldap_resolver = new LdapPostgresNameResolver();
 
     $all_data = [
       'proxy'  => [
@@ -87,23 +85,8 @@ class PrivateAPI {
         'modelversion'  => $wdk_meta_attr['ModelVersion'],      # wdkModel.getVersion()
         'buildnumber'   => $wdk_meta_attr['BuildNumber'],       # wdkModel.getBuildNumber()
         'databases'     => [
-          'appdb'  => [
-            'servicename'  => $adb_attr['service_name'],
-            'instancename' => $adb_attr['instance_name'],
-            'globalname'   => $adb_attr['global_name'],
-            'dbuniquename' => $adb_attr['db_unique_name'],
-            'servername'   => $adb_attr['server_name'],
-            'sizeondisk'   => $adb_attr['dbf_gb_on_disk'],
-            'aliases'      => $this->array_to_map($ldap_resolver->resolve($adb_attr['service_name']), 'alias'),
-          ],
-          'userdb' => [
-            'servicename'  => $udb_attr['service_name'],
-            'instancename' => $udb_attr['instance_name'],
-            'globalname'   => $udb_attr['global_name'],
-            'servername'   => $udb_attr['server_name'],
-            'sizeondisk'   => $udb_attr['dbf_gb_on_disk'],
-            'aliases'      => $this->array_to_map($ldap_resolver->resolve($udb_attr['service_name']), 'alias'),
-          ],
+          'appdb'  => $this->database_node($adb_attr, $ldap_resolver),
+          'userdb' => $this->database_node($udb_attr, $ldap_resolver),
         ],
         'querycache'    => [
           'enabled'    => ($cache_attr['WdkIsCaching']) ? 'true' : 'false',
@@ -123,7 +106,6 @@ class PrivateAPI {
         'serverinfo'        => $servlet_data['ServerInfo'],
         'majorversion'      => $servletinfo->major_version(),
       ],
-      'svn'    => $this->init_svn_info($build->get_data_map()),
       'vmenv'  => $this->virtual_machine_environment_settings(
         $wdk_meta_attr,
         $webapp_attr,
@@ -132,6 +114,24 @@ class PrivateAPI {
     ];
 
     $this->api_dataset = array_merge($this->api_dataset, $all_data);
+  }
+
+  /**
+   * Build the report node for one database.  Both the aliases and the host come
+   * from a single LDAP lookup: the resolver caches per service name, so calling
+   * resolve() and resolveHost() with the same name does not query twice.
+   */
+  private function database_node(array $attr, LdapPostgresNameResolver $ldap_resolver): array {
+    $db_name = $attr['db_name'];
+
+    return [
+      'dbname'            => $db_name,
+      'servername'        => $ldap_resolver->resolveHost($db_name),
+      'sizeondisk'        => $attr['dbf_gb_on_disk'],
+      'version'           => $attr['version'],
+      'characterencoding' => $attr['character_encoding'],
+      'aliases'           => $this->array_to_map($ldap_resolver->resolve($db_name), 'alias'),
+    ];
   }
 
   /**
@@ -172,48 +172,6 @@ class PrivateAPI {
       }
     }
     return $to_array;
-  }
-
-  /**
-   * Restructures and formats subversion data that was extracted
-   * from the GUS .build.info properties file via the BuildInfo class.
-   */
-  private function init_svn_info(array $build): array {
-    $array = [
-      'locations' => [],
-      'switch'    => '',
-      'checkout'  => '',
-    ];
-
-    $switch_stmts = null;
-    $checkout_stmts = null;
-
-    foreach ($build as $prop => $data) {
-      if (strpos($prop, '.svn.info')) {
-        $info = $this->svninfo_from_build_data($prop, $data);
-        if ($info === null) {
-          // return empty array so any piping to a shell is a noop
-          return $array;
-        } else {
-          $svnbranch = $info['URL'];
-          $svnproject = $info['Working Directory'];
-          $svnrevision = $info['Revision'];
-          $array['locations'][] = [
-            'location' => [
-              'remote'   => $svnbranch,
-              'local'    => $svnproject,
-              'revision' => $svnrevision
-            ]
-          ];
-
-          $switch_stmts .= "svn switch -r$svnrevision $svnbranch $svnproject;\n";
-          $checkout_stmts .= "svn checkout -r$svnrevision $svnbranch $svnproject;\n";
-        }
-      }
-    }
-    $array['switch'] = $switch_stmts;
-    $array['checkout'] = $checkout_stmts;
-    return $array;
   }
 
   /**
@@ -305,56 +263,5 @@ class PrivateAPI {
    */
   public function to_json(): string {
     return json_encode($this->api_dataset);
-  }
-
-  static function svninfo_from_build_data($prop, $data): ?array {
-    $info = [];
-
-    if ($end_of_proj_name = strpos($prop, '.svn.info')) {
-      # $prop matches '.svn.info'. $data, e.g. is:
-      #    Path: ApiCommonModel
-      #    Working Copy Root Path: /var/www/AmoebaDB/amoeba.integrate/project_home/ApiCommonModel
-      #    URL: https://cbilsvn.pmacs.upenn.edu/svn/apidb/ApiCommonModel/trunk
-      #    Relative URL: ^/ApiCommonModel/trunk
-      #    Repository Root: https://cbilsvn.pmacs.upenn.edu/svn/apidb
-      #    Repository UUID: 735e2a04-f8fc-0310-8a1b-f2942603c481
-      #    Revision: 67558
-      #    Node Kind: directory
-      #    Schedule: normal
-      #    Last Changed Author: crouchk
-      #    Last Changed Rev: 67525
-      #    Last Changed Date: 2015-04-24 11:33:36 -0400 (Fri, 24 Apr 2015)
-      #
-      # Split that on newlines...
-      $infoset = explode("\n", $data);
-      foreach ($infoset as $attr) {
-        if (strlen($attr) == 0) {
-          continue;
-        }
-        # $attr is of the form
-        #     Path: ApiCommonModel
-        # and
-        #     URL: https://cbilsvn.pmacs.upenn.edu/svn/apidb/ApiCommonModel/trunk
-        # etc.
-        # Split each of those by ':' (with a array lenght limit of '2'
-        # so we don't split on the colons in the url or timestamps).
-        $pairs = explode(':', $attr, 2);
-        # That should create a two element array. Combine those
-        if (count($pairs) == 2) {
-          $info[$pairs[0]] = trim($pairs[1]);
-        } else {
-          return null;
-        }
-      }
-      # Extract the working directory name from the $prop . e.g.
-      # strip off '.svn.info'.
-      #   EbrcWebsiteCommon.svn.info
-      # becomes
-      #   EbrcWebsiteCommon
-      $info['Working Directory'] = str_replace('.', '/', substr($prop, 0, $end_of_proj_name));
-      return $info;
-    }
-
-    return null;
   }
 }

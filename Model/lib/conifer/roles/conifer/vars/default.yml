@@ -43,34 +43,38 @@ _host_frontends:
   l2: legacy
 
 _remote_studyaccess_schema_map:
-  userdb_devn: studyaccess_acctdb_devn
-  userdb_betan: studyaccess_acctdb_prods
+  userdb_devn: studyaccess_acctdb_prodn
+  userdb_betan: studyaccess_acctdb_prodn
   userdb_betas: studyaccess_acctdb_prods
 
 _remote_useraccounts_schema_map:
-  userdb_devn: useraccounts_acctdb_devn
-  userdb_betan: useraccounts_acctdb_prods
+  userdb_devn: useraccounts_acctdb_prodn
+  userdb_betan: useraccounts_acctdb_prodn
   userdb_betas: useraccounts_acctdb_prods
 
 _remote_wdkuserdata_schema_map:
   apicomms: wdkuserdata_apicomms
   userdb_devn: wdkuser_userdb_devn
   userdb_betan: wdkuser_userdb_betan
+  userdb_betas: wdkuser_userdb_betas
 
 _remote_comment_schema_map:
   apicomms: comment_apicomms
   userdb_devn: usercomments_userdb_devn
   userdb_betan: usercomments_userdb_betan
+  userdb_betas: usercomments_userdb_betas
 
 _remote_metrics_schema_map:
   apicomms: metrics_apicomms
   userdb_devn: metrics_userdb_devn
   userdb_betan: metrics_userdb_betan
+  userdb_betas: metrics_userdb_betas
 
 _remote_uploads_schema_map:
   apicomms: uploads_apicomms
   userdb_devn: uploads_userdb_devn
   userdb_betan: uploads_userdb_betan
+  userdb_betas: uploads_userdb_betas
 
 modelconfig_modelName: =c= WDK model name, e.g. ToxoDB
 
@@ -126,7 +130,7 @@ modelconfig_defaultRole: wdk_user
 modelconfig_keyStoreFile: /etc/pki/java/cacerts
 modelconfig_keyStorePassPhrase: ""
 modelconfig_monitorBlockedThreads: 'true'
-modelconfig_oauthUrl: https://eupathdb.org/oauth
+modelconfig_oauthUrl: https://auth.veupathdb.org
 modelconfig_queryMonitor_baseline: 0.1
 modelconfig_queryMonitor_slow: 5
 modelconfig_secretKeyFile: /usr/local/tomcat_instances/shared/.apidb_wdk_key
@@ -174,6 +178,7 @@ modelprop:
   LINKEDIN_URL:
   SITE_SEARCH_SERVICE_URL:
   OPENAI_API_KEY:
+  ALLOW_AI_ASSISTED_COMMENT_CREATION: 'true'
   EDA_SERVICE_URL: /eda
   VDI_SERVICE_URL: /vdi
   INVOICE_FORM_URL: 'https://upenn.co1.qualtrics.com/jfe/form/SV_56yc5QpxL0IfWkK'

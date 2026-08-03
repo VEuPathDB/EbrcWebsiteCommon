@@ -1,194 +1,386 @@
+/**
+ * Dashboard theme.
+ *
+ * The markup underneath is old -- presentational <font> tags, cellspacing /
+ * cellpadding attributes, tables without thead -- so several rules below exist
+ * to override those attributes from here rather than to edit every view.
+ */
+
+/**
+ * Roboto, as the main website loads it.  Requested as a 400-700 variable range
+ * because the theme uses 600 for semibold, which classic static Roboto has no
+ * cut for.  display=swap means text paints in the fallback immediately, and on
+ * a host with no outbound internet the fetch simply fails and the font-family
+ * stack below falls through to a local sans-serif.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400..700&display=swap");
+
+:root {
+    --accent:      #336699;
+    --accent-dark: #24486d;
+    --accent-warm: #c28547;
+    --border:      #9aa7b5;
+    --text:        #1f2933;
+    --header-bg:   #dde5ee;
+    --row-alt:     #eef2f7;
+    --row-hover:   #fff6e0;
+    --rule:        #e6ebf0;
+}
+
 body {
     margin: 20px;
     padding: 0px;
-    background: #DDDDDD;
-    font: 16px arial, sans-serif;
+    background: #e4e7ea;
+    color: var(--text);
+    font-family: Roboto, "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+    font-size: 16px;
+    line-height: 1.25;
 }
 
 #tabmenu {
     color: #000;
-    border-bottom: 1px solid black;
-    margin: 12px 0px 0px 0px;
+    border-bottom: 1px solid var(--border);
+    margin: 14px 0px 0px 0px;
     padding: 0px;
     z-index: 1;
-    padding-left: 10px
 }
 
 #tabmenu li {
-    display: inline;
-    overflow: hidden;
+    display: inline-block;
     list-style-type: none;
 }
 
-#tabmenu a, a.active {
-    color: #000000;
-    background: #cccccc;
-    font-family: "Trebuchet MS", Arial, sans-serif;
-    font-weight: bold;
-    font-size: 1em;
-    border: 1px solid black;
-    padding: 2px 5px 0px 5px;
-    margin: 0;
+#tabmenu a {
+    display: inline-block;
+    color: #33475b;
+    background: #d3d9df;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1.25em;
+    border: 1px solid var(--border);
+    border-radius: 4px 4px 0 0;
+    padding: 5px 12px;
+    /* overlap #tabmenu's bottom border so the active tab can erase it */
+    margin: 0 0 -1px 0;
     text-decoration: none;
 }
 
-#tabmenu a.active {
-    background: #FFFFFF;
-    border-bottom: 1px solid #FFFFFF;
+#tabmenu a:visited {
+    color: #33475b;
 }
 
 #tabmenu a:hover {
-    color: #000;
+    color: var(--accent);
     background: #fff;
 }
 
-#tabmenu a:visited {
-    color: #000;
-}
-
+#tabmenu a.active,
+#tabmenu a.active:visited,
 #tabmenu a.active:hover {
-    background: #fff;
-    color: #000000;
+    background: #FFFFFF;
+    border-bottom-color: #FFFFFF;
+    color: var(--accent);
 }
 
 #content {
-    font: 12px Verdana, Arial, Helvetica, sans-serif;
-    text-align: justify;
+    text-align: left;
     background: #ffffff;
-    padding: 20px;
-    border: 1px solid black;
+    padding: 20px 24px;
+    border: 1px solid var(--border);
     border-top: none;
+    border-radius: 0 0 4px 4px;
     z-index: 2;
 }
 
 /** ############# **/
 
-a { color: #2F4F4F }
+a { color: #1c5a8a }
+
+a:hover { color: var(--accent-dark) }
 
 h2 {
+   font-size: 1.25em;
    border-width:2px 0;
    border-style:solid;
-   border-color:#C28547;
-   padding-left: 5px;
-}
-   
- h3.banner {
-    background: #336699;
-    color: white;
-    cursor: pointer;
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0 0 5px 0;
-    padding: 5px;
-    font-size: 14px;
+   border-color:var(--accent-warm);
+   padding: 4px 6px;
+   margin: 1.6em 0 0.8em 0;
 }
 
- h3.banner a { 
+ h3.banner {
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    line-height: 1.35;
+    border-radius: 4px;
+    margin: 0 0 6px 0;
+    padding: 8px;
+    text-align: center;
+}
+
+ h3.banner a {
         color: white;
+        text-decoration: none;
+     }
+
+ h3.banner a:hover {
+        text-decoration: underline;
      }
 
 p {
-    font-size: 12px;
     margin: 12px 8px;
     text-align: left;
 }
 
-span.pre {
-  white-space: pre;
-  font-family: monospace;
-  display: block;
+/**
+ * The views label values with <b>, both in tables and in plain <p> runs
+ * (stateInfo, databaseInfo, tomcatInfo).  Default bold is 700, which reads
+ * heavier than the 600 used everywhere else in the theme.
+ */
+b {
+    font-weight: 600;
+}
+
+/**
+ * <pre> serves two jobs in the views: a standalone block of dumped output
+ * (configurationInfo, services) and a bare monospace wrapper inside a table
+ * cell (buildInfo).  The block treatment is the default; the in-cell variant
+ * is stripped back below.
+ */
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  font-weight: normal;
+  background: #f6f8fa;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 8px 10px;
+  margin: 0 0 12px 0;
+  overflow-x: auto;
+}
+
+td > pre {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .clickable {
   cursor: pointer;
-  font: 12px Verdana, Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  color: #2F4F4F;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.clickable:hover {
+  text-decoration: underline;
+}
+
+/* the panel each .clickable heading toggles; js/main.js hides these on load */
+.expandable {
+  padding: 5px;
+}
+
+/* keeps a wide table from stretching to the full content width */
+.table-constrain {
+  display: inline-block;
+  padding-left: 10px;
+}
+
+/* secondary lines in the page banner, e.g. upstream / canonical server */
+.banner-sub {
+  font-weight: 400;
+}
+
+.dashboard-logo {
+  float: right;
+  margin: 2px 0;
+}
+
+/* services.php dumps environment variables, which read better monospaced */
+table.mono td {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
 }
 
 .warn {
-    font-size: 12px;
-    color: #C35617;
+    color: #a8460f;
+    font-weight: 600;
 }
 
 .fatal {
-    font-size: 12px;
-    color: red;
+    color: #c62828;
+    font-weight: 600;
 }
 
+/**
+ * The views nest this class -- <p class="smalltext"> wrapping
+ * <span class="... smalltext"> -- so a relative size compounds down to ~8px.
+ * Sized in px so the nesting cannot stack.
+ */
 .smalltext {
   font-weight: normal ! important;
-  font-size:8px
+  font-size: 0.9em;
 }
 
-table.dataTable {
-  width: auto;
-  border-spacing: 3px;
-  border-collapse: separate;
+/* cellspacing="3" in the markup leaves gaps that break up the row striping */
+#content table {
+  border-collapse: collapse;
 }
 
+/**
+ * Label/value listings (tomcatInfo, databaseInfo, buildInfo).  Padding is set
+ * as longhands so the padding-left below survives -- a shorthand here would
+ * outrank td.p and flatten the value column's indent.
+ */
 table.p {
-    font-size: 12px;
     margin: 12px 8px;
 }
 
+table.p td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+}
+
 td.p {
-    padding-left: 10px; 
+    padding-left: 10px;
 }
 
-table.dataTable.row-border tbody th, 
-table.dataTable.row-border tbody td, 
-table.dataTable.display tbody th, 
-table.dataTable.display tbody td {
-    border-top: none;
+tr.rowMedium {
+    background-color: var(--row-alt);
+    color: var(--text);
 }
-
-tr.rowMedium, table.dataTable.display tr.rowMedium  {
-    background-color: #C4CFCB;
-    color: black;
-}
-tr.rowMedium td,
-table.dataTable.display tr.rowMedium td {
-    padding-left:   5px;
-    padding-top:    1px;
-    padding-bottom: 1px;
+tr.rowMedium td {
+    padding: 5px 10px;
     white-space: nowrap;
+    border-bottom: 1px solid var(--rule);
 }
-tr.rowLight, table.dataTable.display tr.rowLight {
+tr.rowLight {
     background-color: white;
-    color: black;
+    color: var(--text);
 }
 
-tr.rowLight td,
-table.dataTable.display tr.rowLight td {
-    padding-left:   5px;
-    padding-top:    1px;
-    padding-bottom: 1px;
+tr.rowLight td {
+    padding: 5px 10px;
     white-space: nowrap;
-}    
-
-    
-tr.headerRow {
-    background: #EFEFEF;
+    border-bottom: 1px solid var(--rule);
 }
-tr.headerRow  td,th, table.dataTable thead th  {
+
+tr.rowLight:hover, tr.rowMedium:hover {
+    background-color: var(--row-hover);
+}
+
+/**
+ * Attribute listings (serverInfo).  Values are request headers and environment
+ * variables long enough to push the table past the window, so they wrap here
+ * instead.  Specificity is deliberately above `tr.rowLight td` so the nowrap
+ * set there loses regardless of source order; `anywhere` is what lets the
+ * unbroken values -- cookies, paths, user agents -- break at all.
+ */
+table.attrs {
+    width: 100%;
+}
+
+table.attrs tr td {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+/* keep the attribute name on one line and shrink its column around it */
+table.attrs tr td:first-child {
+    white-space: nowrap;
+    width: 1%;
+}
+
+th {
    border-width:2px 0;
    border-style:solid;
-   border-color:#336699;
-   padding-left: 5px;
-   padding-top: 3px;
-   padding-bottom: 3px;
+   border-color:var(--accent);
+   padding: 6px 10px;
+   text-align: left;
 }
 
-div.related_dashboard_links {
-  float: right;
-  width: 27em;
-  padding: 0.5em;
-  margin: 0 0em 0 0;
-  color: black;
-  background: #dee2ed;
-  border-left: 1px solid #C28547;
-  border-top: 1px solid #C28547;
+/**
+ * Every table in the views marks its header row with this class, but nothing
+ * defined it, so headers rendered as unstyled 10px text.
+ */
+tr.secondary3 {
+    background: var(--header-bg);
 }
+
+/**
+ * Sortable tables (js/tableSort.js).  The arrow is drawn from the aria-sort
+ * attribute the script sets, so the accessible state and the visible state
+ * cannot drift apart.
+ */
+table.sortable th {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+table.sortable th:hover {
+    color: var(--accent);
+}
+
+table.sortable th::after {
+    /* reserve the arrow's width on every header so sorting cannot reflow the
+       column widths */
+    content: "\2195";
+    padding-left: 6px;
+    opacity: 0.35;
+}
+
+table.sortable th[aria-sort="ascending"]::after {
+    content: "\2191";
+    opacity: 1;
+}
+
+table.sortable th[aria-sort="descending"]::after {
+    content: "\2193";
+    opacity: 1;
+}
+
+.table-filter {
+    margin: 0 0 8px 0;
+}
+
+.table-filter input {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.9em;
+}
+
+.table-filter input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+}
+
+tr.secondary3 th, tr.secondary3 td {
+    color: var(--accent-dark);
+    font-weight: 700;
+    padding: 7px 10px;
+}
+
+/* wide tables scroll within the content area rather than past the window */
+.table-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+    margin: 12px 8px;
+}
+
+/* first column of the database detail / dblink tables reads as a label */
+table.dbinfo tbody td:first-child {
+    font-weight: 600;
+}
+
 
 #loading {
   position: absolute;
@@ -205,32 +397,4 @@ div.related_dashboard_links {
   border: 1px solid gold;
   font-size: small;
   padding: 0 0.4em;
-}
-
-#content_tabs { 
-    background: transparent; 
-    border: none; 
-} 
-#content_tabs .ui-widget-header { 
-    background: transparent; 
-    border: none; 
-    border-bottom: 1px solid #c0c0c0; 
-    -moz-border-radius: 0px; 
-    -webkit-border-radius: 0px; 
-    border-radius: 0px; 
-} 
-#content_tabs .ui-tabs-nav .ui-state-default { 
-    background: transparent; 
-    border: none; 
-} 
-#content_tabs .ui-tabs-nav .ui-state-active { 
-    background: transparent url(img/uiTabsArrow.png) no-repeat bottom center; 
-    border: none; 
-} 
-#content_tabs .ui-tabs-nav .ui-state-default a { 
-    color: #c0c0c0; 
-} 
-#content_tabs .ui-tabs-nav .ui-state-active a { 
-    color: #C28547; 
-    text-decoration: underline;
 }
