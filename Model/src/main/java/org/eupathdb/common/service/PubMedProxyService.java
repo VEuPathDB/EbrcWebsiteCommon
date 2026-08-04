@@ -1,35 +1,33 @@
 package org.eupathdb.common.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.io.ByteArrayOutputStream;
 
 import static org.gusdb.fgputil.json.JsonUtil.Jackson;
 
 /**
  * Proxy/passthrough service to NCBI's PubMed APIs to work around CORS issues.
  */
-@Path("/pubmed/citation")
+@Path("pubmed")
 public class PubMedProxyService extends AbstractWdkService {
-  // IMPORTANT!! The trailing slash included before query params is intentional
-  // to avoid redirects from the NCBI API.
-  private static final String API_URL = "https://pmc.ncbi.nlm.nih.gov/api/ctxp/v1/pubmed/";
+  private static final String EUTILS_API_KEY_PROP = "NCBI_EUTILS_API_KEY";
 
-  private static final String CITATION_API_SEGMENT = "format=citation";
+  private static final String CITATION_BY_ID_SCRIPT = "pubmedIdToCitation";
+
+  private final Logger logger = LogManager.getLogger(getClass());
 
   /**
    * Fetch citation strings by PMID.
    */
   @GET
+  @Path("citation")
   public Response getCitation(@QueryParam("pmid") Integer pmid) {
     if (pmid == null) {
       return Response.status(400)
@@ -41,42 +39,43 @@ public class PubMedProxyService extends AbstractWdkService {
         .build();
     }
 
-    var citationUrl = String.format(
-      "%s?%s&id=%d",
-      API_URL,
-      CITATION_API_SEGMENT,
-      pmid
-    );
+    var apiKey = getWdkModel()
+      .getProperties()
+      .get(EUTILS_API_KEY_PROP);
 
-    var passthroughHeaders = new String[] {
-      HttpHeaders.CONTENT_LENGTH,
-      HttpHeaders.CONTENT_ENCODING,
-    };
+    if (apiKey == null) {
+      throw new WdkRuntimeException("required model prop " + EUTILS_API_KEY_PROP + " is not set");
+    }
 
     try {
-      var ncbiResponse = HttpClient.newHttpClient()
-        .send(
-          HttpRequest.newBuilder(URI.create(citationUrl)).build(),
-          HttpResponse.BodyHandlers.ofInputStream()
+      var command = "%s/bin/%s"
+        .formatted(getWdkModel().getGusHome(), CITATION_BY_ID_SCRIPT);
+
+      var buffer = new ByteArrayOutputStream(2048);
+
+      var process = new ProcessBuilder(command, pmid.toString(), apiKey)
+        .start();
+
+      process.getInputStream().transferTo(buffer);
+      process.getErrorStream().transferTo(buffer);
+
+      if (process.waitFor() != 0) {
+        logger.error(
+          "script execution failed: {} {} prop({}) ----\n{}\n----",
+          command,
+          pmid,
+          EUTILS_API_KEY_PROP,
+          buffer.toString()
         );
+        throw new WdkRuntimeException(CITATION_BY_ID_SCRIPT + " execution failed");
+      }
 
-      var ncbiHeaders = ncbiResponse.headers();
-
-      var outputResponse = Response
-        .status(ncbiResponse.statusCode())
-        .type(ncbiHeaders.firstValue(HttpHeaders.CONTENT_TYPE).orElseThrow())
-        .entity((StreamingOutput) output -> {
-          try (var stream = ncbiResponse.body()) {
-            stream.transferTo(output);
-          }
-        });
-
-      for (var header : passthroughHeaders)
-        outputResponse.header(header, ncbiHeaders.allValues(header));
-
-      return outputResponse.build();
+      return Response.ok(buffer.toString(), MediaType.TEXT_PLAIN).build();
     } catch (Exception e) {
-      throw new WdkRuntimeException("failed to fetch PubMed citation", e);
+      if (e instanceof WdkRuntimeException typedError)
+        throw typedError;
+      else
+        throw new WdkRuntimeException(e);
     }
   }
 }
