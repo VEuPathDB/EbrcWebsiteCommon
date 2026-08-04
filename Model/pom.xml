@@ -150,6 +150,12 @@
       <artifactId>Jackfish</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.cybersource</groupId>
+      <artifactId>cybersource-rest-client-java</artifactId>
+      <version>0.0.91</version>
+    </dependency>
+
     <!-- Contains context listener used to prevent classloader memory leaks (used by web.xmls) -->
     <dependency>
       <groupId>se.jiderhamn.classloader-leak-prevention</groupId>
