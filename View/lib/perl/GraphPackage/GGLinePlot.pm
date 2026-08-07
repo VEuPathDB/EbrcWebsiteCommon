@@ -137,7 +137,8 @@ sub makeRPlotString {
   push @{ $ua->requests_redirectable }, 'POST';
   my $resp = $ua->request($profileSetsRequest);
   if ($resp->is_success) {
-    $plotDataJson = $resp->decoded_content;
+    # Force UTF-8 decoding; the service sends it but omits the charset param.
+    $plotDataJson = $resp->decoded_content(charset => 'UTF-8');
     $plotDataJson =~ s/\'/\\\'/g;
   } else {
     print "HTTP POST error code: ", $resp->code, "\n";
