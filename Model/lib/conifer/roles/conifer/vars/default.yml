@@ -154,6 +154,7 @@ modelconfig_emailContent: >
   ]]>
 
 modelprop:
+  VEUPATHDB_STAFF_USER_ID: '{{ eda.example_analyses_author }}'
   VDI_CONTROL_SCHEMA: VDI_CONTROL_DEV_N
   VDI_DATASETS_SCHEMA: VDI_DATASETS_DEV_N
   VDI_DATASETS_DIRECTORY: /var/www/Common/userDatasets
