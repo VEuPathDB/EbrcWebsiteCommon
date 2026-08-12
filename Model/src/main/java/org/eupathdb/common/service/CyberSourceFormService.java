@@ -171,7 +171,7 @@ public class CyberSourceFormService extends AbstractWdkService {
     return sdf.format(new Date());
   }
 
-  private static JSONObject readConfig() {
+  static JSONObject readConfig() {
     try (Reader in = new FileReader(CONFIG_FILE_LOCATION)) {
       return new JSONObject(IoUtil.readAllChars(in));
     }
