@@ -23,7 +23,7 @@ userDb_login: "{{ host_data['userDb_login'] }}"
 userDb_password: "{{ password['userdb'] }}"
 
 host_data: "{{ lookup('colfile',
-    '{} src=https://raw.githubusercontent.com/EuPathDB/websiteconf/master/master_configuration_set'.format(hostname)
+    '{} src=https://raw.githubusercontent.com/VEuPathDB/websiteconf/86bc6b0301ad518bf00023c7a9115eaf13861036/master_configuration_set'.format(hostname)
   ) }}"
 
 password:
