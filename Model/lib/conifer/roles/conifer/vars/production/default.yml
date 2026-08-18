@@ -1,6 +1,7 @@
 # $SourceFileURL: EbrcWebsiteCommon/trunk/Model/lib/conifer/roles/conifer/vars/production/default.yml $
 ---
-
+# cristina: this file is not used (apr 2024)
+#
 modelprop:
   COMMUNITY_SITE: //static-content.veupathdb.org/
   NCBI_EUTILS_API_KEY: "{{ lookup('euparc', 'attr=api_key xpath=sites/ncbi_eutils default=NOKEY') }}"
