@@ -9,6 +9,8 @@ _hostname_project_map:
   b1.veupathdb.org: UniDB
   q1.veupathdb.org: UniDB
   q2.veupathdb.org: UniDB
+  w1.veupathdb.org: UniDB
+  w2.veupathdb.org: UniDB
 
 project: "{{ _hostname_project_map[hostname]|default(derived_project) }}"
 
