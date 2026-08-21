@@ -26,7 +26,7 @@ class UserAgent {
 
   function get_content(): bool|string {
     $this->set_return_transfer(true);
-    return curl_exec($this->ua);
+    return curl_exec($this->ua);This
   }
 
   function set_url(string $url): void {
@@ -49,5 +49,18 @@ class UserAgent {
 
   function close(): void {
     curl_close($this->ua);
+  }
+
+  function forward_cookies(array $names): UserAgent {
+    $pairs = [];
+    foreach ($names as $name) {
+      if (isset($_COOKIE[$name])) {
+        $pairs[] = $name . '=' . $_COOKIE[$name];
+      }
+    }
+    if ($pairs) {
+      curl_setopt($this->ua, CURLOPT_COOKIE, implode('; ', $pairs));
+    }
+    return $this;
   }
 }
