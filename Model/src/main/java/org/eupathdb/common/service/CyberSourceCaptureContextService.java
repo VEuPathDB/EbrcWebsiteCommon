@@ -64,7 +64,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     invoiceNumber = CyberSourceUtil.validateInvoiceNumber(invoiceNumber);
 
     String referenceNumber = CyberSourceUtil.generateReferenceNumber();
-    CyberSourceUtil.logPaymentEvent("capture-context", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
+    CyberSourceLogger.logPaymentEvent("capture-context", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
     JSONObject config = CyberSourceUtil.readConfig();
     String localhost = getLocalhostUrl();
@@ -83,6 +83,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     captureMandate.requestPhone(false);
     captureMandate.requestShipping(false);
     captureMandate.showAcceptedNetworkIcons(true);
+    captureMandate.showConfirmationStep(true);
     requestObj.captureMandate(captureMandate);
 
     Upv1capturecontextsOrderInformation orderInformation = new Upv1capturecontextsOrderInformation();

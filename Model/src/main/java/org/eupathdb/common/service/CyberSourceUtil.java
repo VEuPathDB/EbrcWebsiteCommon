@@ -7,15 +7,11 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ws.rs.BadRequestException;
 
-import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.model.WdkRuntimeException;
-import org.gusdb.wdk.model.user.User;
 import org.json.JSONObject;
 
 import com.cybersource.authsdk.core.ConfigException;
@@ -57,8 +53,6 @@ import com.cybersource.authsdk.core.MerchantConfig;
  * </pre>
  */
 class CyberSourceUtil {
-
-  private static final Logger LOG = Logger.getLogger(CyberSourceUtil.class);
 
   // location of file containing cybersource REST API credentials
   private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/.cybersource.config.json";
@@ -117,18 +111,6 @@ class CyberSourceUtil {
   static String generateReferenceNumber() {
     return String.valueOf(new Date().getTime()) +
         String.format("%05d", new Random().nextInt(100000));
-  }
-
-  static void logPaymentEvent(String stage, User requestingUser, String referenceNumber, String amount, String currency, String invoiceNumber) {
-    LOG.info(Stream.of(
-        stage,
-        String.valueOf(requestingUser.getUserId()),
-        "guest=" + requestingUser.isGuest(),
-        referenceNumber,
-        amount,
-        currency,
-        invoiceNumber
-    ).collect(Collectors.joining("\t", "\t", "")));
   }
 
   static JSONObject readConfig() {

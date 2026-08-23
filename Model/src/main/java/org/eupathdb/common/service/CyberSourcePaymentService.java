@@ -52,7 +52,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     String referenceNumber = CyberSourceUtil.validateReferenceNumber(input.optString("referenceNumber", null));
     String transientToken = CyberSourceUtil.validateTransientToken(input.optString("transientToken", null));
 
-    CyberSourceUtil.logPaymentEvent("payment-process", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
+    CyberSourceLogger.logPaymentEvent("payment-process", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
     JSONObject config = CyberSourceUtil.readConfig();
 
