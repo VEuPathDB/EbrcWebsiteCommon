@@ -80,6 +80,7 @@ $page = $_GET['p'] ?? 'Databases';
 
     if (str_starts_with($module, 'http')) {
       $req = new UserAgent(['url' => $module]);
+      $req->forward_cookies(['auth_tkt']);
       echo $req->get_content();
     } elseif (str_ends_with($module, ".php"))  {
       include $module;
