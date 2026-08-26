@@ -30,9 +30,10 @@ import Model.Upv1capturecontextsOrderInformationAmountDetails;
  * capture-context JWT that the client-side Unified Checkout JavaScript
  * library needs to render its embedded payment form, along with the
  * generated reference number (to be echoed back on the follow-up call to
- * {@link CyberSourcePaymentService}) and the URL of the Unified Checkout JS
- * asset to load (test vs. production, driven by the deployed cybersource
- * config).
+ * {@link CyberSourcePaymentService}) and the URL (plus SRI integrity hash) of
+ * the Unified Checkout JS asset to load, as extracted from the capture
+ * context JWT itself (CyberSource docs require these NOT be hardcoded, since
+ * they're unique per transaction).
  */
 @Path("payment-form-context")
 public class CyberSourceCaptureContextService extends AbstractWdkService {
@@ -106,10 +107,18 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
       UnifiedCheckoutCaptureContextApi apiInstance = new UnifiedCheckoutCaptureContextApi(apiClient);
       String captureContextJwt = apiInstance.generateUnifiedCheckoutCaptureContext(requestObj);
 
+      // Per CyberSource docs, the JS library URL and its SRI hash must be read
+      // out of the capture context JWT itself (ctx[0].data.clientLibrary /
+      // clientLibraryIntegrity) rather than hardcoded/guessed, since they are
+      // unique to each transaction and can change without notice.
+      JSONObject ctxData = CyberSourceUtil.decodeJwtPayload(captureContextJwt)
+          .getJSONArray("ctx").getJSONObject(0).getJSONObject("data");
+
       JSONObject responseJson = new JSONObject()
           .put("captureContext", captureContextJwt)
           .put("referenceNumber", referenceNumber)
-          .put("scriptUrl", getUnifiedCheckoutScriptUrl(config));
+          .put("scriptUrl", ctxData.getString("clientLibrary"))
+          .put("scriptIntegrity", ctxData.optString("clientLibraryIntegrity", null));
 
       return Response.ok(responseJson.toString()).build();
     }
@@ -126,8 +135,4 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     return localhost;
   }
 
-  private static String getUnifiedCheckoutScriptUrl(JSONObject config) {
-    String host = CyberSourceUtil.isTestEnvironment(config) ? "apitest.cybersource.com" : "api.cybersource.com";
-    return "https://" + host + "/uc/v1/assets/" + CLIENT_VERSION + "/UnifiedCheckout.js";
-  }
 }

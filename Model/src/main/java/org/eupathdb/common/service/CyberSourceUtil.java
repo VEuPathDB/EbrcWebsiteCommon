@@ -3,6 +3,8 @@ package org.eupathdb.common.service;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
@@ -125,6 +127,23 @@ class CyberSourceUtil {
 
   static boolean isTestEnvironment(JSONObject config) {
     return TEST_RUN_ENVIRONMENT.equals(config.getString("run_environment"));
+  }
+
+  /**
+   * Decodes the (unencrypted, base64url) payload segment of a JWT without
+   * verifying its signature. Used to pull the {@code clientLibrary} /
+   * {@code clientLibraryIntegrity} values out of the capture-context JWT;
+   * per CyberSource's docs these must NOT be hardcoded/guessed on our end,
+   * since they're unique per transaction:
+   * https://developer.cybersource.com/docs/cybs/en-us/unified-checkout/developer/all/rest/unified-checkout/uc-getting-started-cs-setup-intro/uc-getting-started-cs-js-library-intro.html
+   */
+  static JSONObject decodeJwtPayload(String jwt) {
+    String[] parts = jwt.split("\\.");
+    if (parts.length < 2) {
+      throw new WdkRuntimeException("Malformed JWT returned by CyberSource (expected header.payload.signature)");
+    }
+    byte[] decoded = Base64.getUrlDecoder().decode(parts[1]);
+    return new JSONObject(new String(decoded, StandardCharsets.UTF_8));
   }
 
   static MerchantConfig buildMerchantConfig(JSONObject config) {
