@@ -10,6 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
@@ -19,6 +20,7 @@ import com.cybersource.authsdk.core.MerchantConfig;
 
 import Api.UnifiedCheckoutCaptureContextApi;
 import Invokers.ApiClient;
+import Invokers.ApiException;
 import Model.GenerateUnifiedCheckoutCaptureContextRequest;
 import Model.Upv1capturecontextsCaptureMandate;
 import Model.Upv1capturecontextsCompleteMandate;
@@ -37,6 +39,8 @@ import Model.Upv1capturecontextsOrderInformationAmountDetails;
  */
 @Path("payment-form-context")
 public class CyberSourceCaptureContextService extends AbstractWdkService {
+
+  private static final Logger LOG = Logger.getLogger(CyberSourceCaptureContextService.class);
 
   // model.prop property containing this site's base URL, e.g. https://plasmodb.org
   private static final String LOCALHOST_PROP_KEY = "LOCALHOST";
@@ -126,6 +130,10 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
           .put("scriptIntegrity", ctxData.optString("clientLibraryIntegrity", null));
 
       return Response.ok(responseJson.toString()).build();
+    }
+    catch (ApiException e) {
+      LOG.error("CyberSource capture-context API error for reference " + referenceNumber + ": HTTP " + e.getCode() + " " + e.getResponseBody(), e);
+      throw new WdkRuntimeException("Unable to generate CyberSource capture context", e);
     }
     catch (Exception e) {
       throw new WdkRuntimeException("Unable to generate CyberSource capture context", e);
