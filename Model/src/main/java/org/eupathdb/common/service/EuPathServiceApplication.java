@@ -27,6 +27,8 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(BlastFormInternalValuesService.class)
     .add(UserProfileVocabulariesService.class)
     .add(CyberSourceFormService.class)
+    .add(CyberSourceCaptureContextService.class)
+    .add(CyberSourcePaymentService.class)
     .add(RawFileDownloadService.class)
     .add(ConfigurableRedirectsService.class)
     .add(PubMedProxyService.class)
