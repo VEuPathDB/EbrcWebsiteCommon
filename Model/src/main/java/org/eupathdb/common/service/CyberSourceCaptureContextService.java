@@ -18,14 +18,15 @@ import org.json.JSONObject;
 
 import com.cybersource.authsdk.core.MerchantConfig;
 
-import Api.UnifiedCheckoutCaptureContextApi;
+import Api.UnifiedCheckoutV1CaptureContextApi;
 import Invokers.ApiClient;
 import Invokers.ApiException;
-import Model.GenerateUnifiedCheckoutCaptureContextRequest;
-import Model.Upv1capturecontextsCaptureMandate;
-import Model.Upv1capturecontextsCompleteMandate;
-import Model.Upv1capturecontextsOrderInformation;
-import Model.Upv1capturecontextsOrderInformationAmountDetails;
+import Model.GenerateUnifiedCheckoutV1CaptureContextRequest;
+import Model.Ucv1sessionsCaptureMandate;
+import Model.Ucv1sessionsCompleteMandate;
+import Model.Ucv1sessionsData;
+import Model.Ucv1sessionsDataOrderInformation;
+import Model.Ucv1sessionsDataOrderInformationAmountDetails;
 
 /**
  * The single GET endpoint takes a payment amount and currency and returns the
@@ -45,17 +46,19 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
   // model.prop property containing this site's base URL, e.g. https://plasmodb.org
   private static final String LOCALHOST_PROP_KEY = "LOCALHOST";
 
-  // Pinned to the MAJOR version only (not omitted, not a MAJOR.MINOR/PATCH),
-  // per CyberSource's own recommendation: this still auto-receives patch/minor
-  // fixes within v1, but won't silently jump to a future breaking v2 API.
-  // See "Pin to a Version" in CyberSource's Server-Side Set Up docs, and the
-  // "Version 1 Update Checklist" for what changed from v0 (e.g. the v0
-  // Accept(session).unifiedPayments()/up.show() API was replaced in v1 by
+  // Pinned to MAJOR.MINOR (the only pinned format the /uc/v1/sessions endpoint
+  // accepts -- confirmed via its own SDK javadoc and by a live "Invalid Client
+  // Version '1'" validation error when a bare MAJOR value was tried). This
+  // still auto-receives patch fixes within v1.0, but won't silently jump to a
+  // future breaking v2 API. See "Pin to a Version" in CyberSource's
+  // Server-Side Set Up docs, and the "Version 1 Update Checklist" for what
+  // changed from v0 (e.g. the v0 Accept(session).unifiedPayments()/up.show()
+  // API was replaced in v1 by
   // VAS.UnifiedCheckout(session)/client.createCheckout()/checkout.mount()).
   // Front end must call createCheckout({ autoProcessing: false }) so that
   // checkout.mount() resolves with a transient token instead of completing
   // the transaction client-side.
-  private static final String CLIENT_VERSION = "1";
+  private static final String CLIENT_VERSION = "1.0";
 
   private static final List<String> ALLOWED_CARD_NETWORKS = Arrays.asList(
       "VISA", "MASTERCARD", "AMEX", "DISCOVER", "DINERSCLUB", "JCB");
@@ -79,7 +82,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     JSONObject config = CyberSourceUtil.readConfig();
     String localhost = getLocalhostUrl();
 
-    GenerateUnifiedCheckoutCaptureContextRequest requestObj = new GenerateUnifiedCheckoutCaptureContextRequest();
+    GenerateUnifiedCheckoutV1CaptureContextRequest requestObj = new GenerateUnifiedCheckoutV1CaptureContextRequest();
     requestObj.clientVersion(CLIENT_VERSION);
     requestObj.targetOrigins(Arrays.asList(localhost));
     requestObj.allowedCardNetworks(ALLOWED_CARD_NETWORKS);
@@ -87,7 +90,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     requestObj.country("US");
     requestObj.locale("en_US");
 
-    Upv1capturecontextsCaptureMandate captureMandate = new Upv1capturecontextsCaptureMandate();
+    Ucv1sessionsCaptureMandate captureMandate = new Ucv1sessionsCaptureMandate();
     captureMandate.billingType("FULL");
     captureMandate.requestEmail(true);
     captureMandate.requestPhone(false);
@@ -96,14 +99,17 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     captureMandate.showConfirmationStep(true);
     requestObj.captureMandate(captureMandate);
 
-    Upv1capturecontextsOrderInformation orderInformation = new Upv1capturecontextsOrderInformation();
-    Upv1capturecontextsOrderInformationAmountDetails amountDetails = new Upv1capturecontextsOrderInformationAmountDetails();
+    // In v1, orderInformation moved under the new top-level `data` object.
+    Ucv1sessionsDataOrderInformationAmountDetails amountDetails = new Ucv1sessionsDataOrderInformationAmountDetails();
     amountDetails.totalAmount(amount);
     amountDetails.currency(currency);
+    Ucv1sessionsDataOrderInformation orderInformation = new Ucv1sessionsDataOrderInformation();
     orderInformation.amountDetails(amountDetails);
-    requestObj.orderInformation(orderInformation);
+    Ucv1sessionsData data = new Ucv1sessionsData();
+    data.orderInformation(orderInformation);
+    requestObj.data(data);
 
-    Upv1capturecontextsCompleteMandate completeMandate = new Upv1capturecontextsCompleteMandate();
+    Ucv1sessionsCompleteMandate completeMandate = new Ucv1sessionsCompleteMandate();
     completeMandate.setType("CAPTURE");
     completeMandate.setDecisionManager(false);
     requestObj.setCompleteMandate(completeMandate);
@@ -113,8 +119,8 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
       ApiClient apiClient = new ApiClient();
       apiClient.merchantConfig = merchantConfig;
 
-      UnifiedCheckoutCaptureContextApi apiInstance = new UnifiedCheckoutCaptureContextApi(apiClient);
-      String captureContextJwt = apiInstance.generateUnifiedCheckoutCaptureContext(requestObj);
+      UnifiedCheckoutV1CaptureContextApi apiInstance = new UnifiedCheckoutV1CaptureContextApi(apiClient);
+      String captureContextJwt = apiInstance.generateUnifiedCheckoutV1CaptureContext(requestObj);
 
       // Per CyberSource docs, the JS library URL and its SRI hash must be read
       // out of the capture context JWT itself (ctx[0].data.clientLibrary /
