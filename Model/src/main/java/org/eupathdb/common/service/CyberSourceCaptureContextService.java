@@ -41,12 +41,17 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
   // model.prop property containing this site's base URL, e.g. https://plasmodb.org
   private static final String LOCALHOST_PROP_KEY = "LOCALHOST";
 
-  // client version of the Unified Checkout JS library this capture context targets;
-  // must match the version of the <script> asset loaded on the front end.
+  // Pinned to the MAJOR version only (not omitted, not a MAJOR.MINOR/PATCH),
+  // per CyberSource's own recommendation: this still auto-receives patch/minor
+  // fixes within v1, but won't silently jump to a future breaking v2 API.
+  // See "Pin to a Version" in CyberSource's Server-Side Set Up docs, and the
+  // "Version 1 Update Checklist" for what changed from v0 (e.g. the v0
+  // Accept(session).unifiedPayments()/up.show() API was replaced in v1 by
+  // VAS.UnifiedCheckout(session)/client.createCheckout()/checkout.mount()).
   // Front end must call createCheckout({ autoProcessing: false }) so that
   // checkout.mount() resolves with a transient token instead of completing
-  // the transaction client-side (autoProcessing default changed in 0.30).
-  private static final String CLIENT_VERSION = "0.30";
+  // the transaction client-side.
+  private static final String CLIENT_VERSION = "1";
 
   private static final List<String> ALLOWED_CARD_NETWORKS = Arrays.asList(
       "VISA", "MASTERCARD", "AMEX", "DISCOVER", "DINERSCLUB", "JCB");
