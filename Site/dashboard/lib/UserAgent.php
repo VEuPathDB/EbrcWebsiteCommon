@@ -26,7 +26,7 @@ class UserAgent {
 
   function get_content(): bool|string {
     $this->set_return_transfer(true);
-    return curl_exec($this->ua);This
+    return curl_exec($this->ua);
   }
 
   function set_url(string $url): void {
