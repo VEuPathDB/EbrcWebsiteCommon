@@ -171,6 +171,7 @@ modelprop:
   VDI_CONTROL_SCHEMA: VDI_CONTROL_DEV_N
   VDI_DATASETS_SCHEMA: VDI_DATASETS_DEV_N
   VDI_DATASETS_DIRECTORY: /var/www/Common/userDatasets
+  PROJECT_NAME: '{{ product }}'
   PROJECT_ID: '{{ project }}'
   LEGACY_WEBAPP_BASE_URL: "/{{ _webapp_ctx }}"
   WEBAPP_BASE_URL: "/{{ _webapp_ctx }}/app"
