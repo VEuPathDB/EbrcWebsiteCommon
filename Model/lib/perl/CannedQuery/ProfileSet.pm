@@ -43,15 +43,17 @@ sub init {
 
   $Self->setCollated(1);
 
-	$Self->setProfileSet           ( $Args->{ProfileSet          } );
+  $Self->setOrgAbbrev($Args->{OrgAbbrev});
+  $Self->setProfileSet           ( $Args->{ProfileSet          } );
 
   $Self->setSql(<<Sql);
 SELECT source_id          as column_name
 ,      profile_AS_STRING
-FROM   apidb.Profile    p
+FROM   apidb.Profile_p    p
 ,      apidb.ProfileSet ps
 WHERE  p.profile_set_id = ps.profile_set_id
 AND    ps.name          = '<<ProfileSet>>'
+AND    p.org_abbrev = '<<OrgAbbrev>>'
 Sql
 
   return $Self;
@@ -61,7 +63,8 @@ Sql
 
 sub getId                   { $_[0]->{'Id'                } }
 sub setId                   { $_[0]->{'Id'                } = $_[1]; $_[0] }
-
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 sub getProfileSet           { $_[0]->{'ProfileSet'        } }
 sub setProfileSet           { $_[0]->{'ProfileSet'        } = $_[1]; $_[0] }
 

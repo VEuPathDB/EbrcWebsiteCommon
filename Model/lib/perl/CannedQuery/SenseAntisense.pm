@@ -13,6 +13,7 @@ sub init {
 
   $Self->setProfileSetId($Args->{ProfileSetId});
   $Self->setId($Args->{Id});
+  $Self->setOrgAbbrev($Args->{OrgAbbrev});
   $Self->setAntisenseFloor($Args->{AntisenseFloor});
 
   return $Self;
@@ -24,7 +25,8 @@ sub getId         { $_[0]->{'Id'      } }
 sub setId         { $_[0]->{'Id'      } = $_[1]; $_[0] }
 sub getAntisenseFloor         { $_[0]->{'AntisenseFloor'      } }
 sub setAntisenseFloor         { $_[0]->{'AntisenseFloor'      } = $_[1]; $_[0] }
-
+sub getOrgAbbrev              { $_[0]->{'OrgAbbrev'           } }
+sub setOrgAbbrev              { $_[0]->{'OrgAbbrev'           } = $_[1]; $_[0] }
 
 sub prepareDictionary {
   my $Self = shift;
