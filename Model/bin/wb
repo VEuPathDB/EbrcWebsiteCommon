@@ -73,11 +73,21 @@ my $cleanGbrowseCache = "rm -rf $baseGus/html/gbrowse/tmp/*";
 my $stopWebappOnError = 1;
 
 if($mode eq 'full') {
-  $cmd = "$dieOnError; bldw $svnPrefix\Presenters $baseGus/etc/webapp.prop; $wdkXml; $reloadWebapp";
+  if ($svnPrefix eq 'ApiCommon') {
+    $cmd = "$dieOnError; bldw VEuPathDatasets $baseGus/etc/webapp.prop; $wdkXml; $reloadWebapp";
+  } else {
+    $cmd = "$dieOnError; bldw $svnPrefix\Presenters $baseGus/etc/webapp.prop; $wdkXml; $reloadWebapp";
+  }
 }
 
 if($mode eq 'model') {
-  $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  if ($svnPrefix eq 'ApiCommon') {
+    # classes.xml/contacts/global.xml moved from EbrcModelCommon/Model to
+    # VEuPathDatasets/Model - bld EbrcModelCommon/Model alone no longer installs them.
+    $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld VEuPathDatasets/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  } else {
+    $cmd = "$dieOnError; bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; $injectTemplates; $wdkXml; $reloadWebapp";
+  }
 }
 
 if($mode eq 'cgi') {
@@ -93,7 +103,11 @@ if($mode eq 'graph') {
 }
 
 if($mode eq 'gbrowse') {
-  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+  if ($svnPrefix eq 'ApiCommon') {
+    $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld VEuPathDatasets/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+  } else {
+    $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bldw $svnPrefix\Website/Site $baseGus/etc/webapp.prop; $cleanGbrowseCache; $injectTemplates";
+  }
 }
 
 if($mode eq 'jbrowse') {
@@ -101,7 +115,11 @@ if($mode eq 'jbrowse') {
 }
 
 if($mode eq 'ontology') {
-  $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
+  if ($svnPrefix eq 'ApiCommon') {
+    $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld VEuPathDatasets/Model; $wdkXml; $reloadWebapp";
+  } else {
+    $cmd = "$dieOnError;  bld EbrcModelCommon/Model; bld $svnPrefix\Model/Model; bld $svnPrefix\Presenters/Model; $wdkXml; $reloadWebapp";
+  }
 }
 
 if($mode eq 'site') {
