@@ -20,6 +20,9 @@ import Invokers.ApiClient;
 import Invokers.ApiException;
 import Model.CreatePaymentRequest;
 import Model.PtsV2PaymentsPost201Response;
+import Model.PtsV2PaymentsPost201ResponseOrderInformation;
+import Model.PtsV2PaymentsPost201ResponseOrderInformationAmountDetails;
+import Model.PtsV2PaymentsPost201ResponseOrderInformationBillTo;
 import Model.Ptsv2paymentsClientReferenceInformation;
 import Model.Ptsv2paymentsOrderInformation;
 import Model.Ptsv2paymentsOrderInformationAmountDetails;
@@ -81,7 +84,10 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       PaymentsApi apiInstance = new PaymentsApi(apiClient);
       PtsV2PaymentsPost201Response result = apiInstance.createPayment(requestObj);
 
+      // log in wdk.log, payment log, and DB to support metrics and later user receipt lookup
       LOG.info("CyberSource payment result\t" + referenceNumber + "\t" + result.getStatus() + "\t" + result.getId());
+      CyberSourceLogger.logPaymentEvent("payment-complete", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
+      new PaymentPersistence(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result));
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())
@@ -97,6 +103,36 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     catch (Exception e) {
       throw new WdkRuntimeException("Unable to process CyberSource payment", e);
     }
+  }
+
+  private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result) {
+    Payment payment = new Payment()
+        .setReferenceNumber(result.getReconciliationId())
+        .setPaymentDateTimeISO8601(result.getSubmitTimeUtc());
+
+    PtsV2PaymentsPost201ResponseOrderInformation orderInformation = result.getOrderInformation();
+    if (orderInformation != null) {
+      PtsV2PaymentsPost201ResponseOrderInformationAmountDetails amountDetails = orderInformation.getAmountDetails();
+      if (amountDetails != null) {
+        payment.setAmount(amountDetails.getTotalAmount());
+      }
+
+      PtsV2PaymentsPost201ResponseOrderInformationBillTo billTo = orderInformation.getBillTo();
+      if (billTo != null) {
+        payment
+            .setFirstName(billTo.getFirstName())
+            .setLastName(billTo.getLastName())
+            .setAddress1(billTo.getAddress1())
+            .setAddress2(billTo.getAddress2())
+            .setCity(billTo.getLocality())
+            .setPostalCode(billTo.getPostalCode())
+            .setState(billTo.getAdministrativeArea())
+            .setCountry(billTo.getCountry())
+            .setEmail(billTo.getEmail());
+      }
+    }
+
+    return payment;
   }
 
   private static JSONObject parseInput(String body) {
