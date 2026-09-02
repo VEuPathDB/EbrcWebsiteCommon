@@ -29,6 +29,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(CyberSourceFormService.class)
     .add(CyberSourceCaptureContextService.class)
     .add(CyberSourcePaymentService.class)
+    .add(PaymentReceiptService.class)
     .add(RawFileDownloadService.class)
     .add(ConfigurableRedirectsService.class)
     .add(PubMedProxyService.class)
