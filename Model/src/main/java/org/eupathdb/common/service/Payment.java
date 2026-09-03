@@ -24,6 +24,9 @@ public class Payment {
   @JsonProperty("amount")
   private String _amount;
 
+  @JsonProperty("currency")
+  private String _currency;
+
   // payer information (billing name/address/email collected via Unified Checkout)
   @JsonProperty("firstName")
   private String _firstName;
@@ -80,6 +83,15 @@ public class Payment {
 
   public String getAmount() {
     return _amount;
+  }
+
+  public Payment setCurrency(String currency) {
+    _currency = currency;
+    return this;
+  }
+
+  public String getCurrency() {
+    return _currency;
   }
 
   public Payment setFirstName(String firstName) {

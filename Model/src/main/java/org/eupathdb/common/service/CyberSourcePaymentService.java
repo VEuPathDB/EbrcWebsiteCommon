@@ -21,8 +21,6 @@ import Invokers.ApiClient;
 import Invokers.ApiException;
 import Model.CreatePaymentRequest;
 import Model.PtsV2PaymentsPost201Response;
-import Model.PtsV2PaymentsPost201ResponseOrderInformation;
-import Model.PtsV2PaymentsPost201ResponseOrderInformationAmountDetails;
 import Model.Ptsv2paymentsClientReferenceInformation;
 import Model.Ptsv2paymentsOrderInformation;
 import Model.Ptsv2paymentsOrderInformationAmountDetails;
@@ -142,9 +140,6 @@ public class CyberSourcePaymentService extends AbstractWdkService {
    * setting would otherwise drop the field from the JSON entirely).
    */
   private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result, JSONObject tokenDetails) {
-    PtsV2PaymentsPost201ResponseOrderInformation orderInformation = result.getOrderInformation();
-    PtsV2PaymentsPost201ResponseOrderInformationAmountDetails amountDetails =
-        orderInformation == null ? null : orderInformation.getAmountDetails();
 
     // Confirmed present in the payment-details response's billTo (see logged
     // raw JSON in fetchTransientTokenDetails above): firstName, lastName,
@@ -157,11 +152,15 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     if (tokenBillTo == null) {
       tokenBillTo = new JSONObject();
     }
-
+    JSONObject amountDetails = tokenOrderInformation == null ? null : tokenOrderInformation.optJSONObject("amountDetails");
+    if (amountDetails == null) {
+      amountDetails = new JSONObject();
+    }
     return new Payment()
         .setReferenceNumber(orEmpty(result.getReconciliationId()))
         .setPaymentDateTimeISO8601(orEmpty(result.getSubmitTimeUtc()))
-        .setAmount(amountDetails == null ? "" : orEmpty(amountDetails.getTotalAmount()))
+        .setAmount(amountDetails.optString("totalAmount", ""))
+        .setCurrency(amountDetails.optString("currency", ""))
         .setFirstName(tokenBillTo.optString("firstName", ""))
         .setLastName(tokenBillTo.optString("lastName", ""))
         .setAddress1(tokenBillTo.optString("address1", ""))
