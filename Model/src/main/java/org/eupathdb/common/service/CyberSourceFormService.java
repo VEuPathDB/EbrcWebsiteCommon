@@ -39,7 +39,7 @@ import org.json.JSONObject;
 /**
  * The single GET endpoint takes a payment amount and currency and returns a
  * JSON object where the keys/values represent all the form input fields
- * required by CyberSource to being their checkout sequence.  Web client code
+ * required by CyberSource to begin their checkout sequence.  Web client code
  * is responsible for converting this object to a form and submitting it to
  * the appropriate CyberSource endpoint.
  */
@@ -68,7 +68,7 @@ public class CyberSourceFormService extends AbstractWdkService {
   public Response generateCyberSourceForm(
       @QueryParam("amount") String amount,               // required; must match the pattern above
       @QueryParam("currency") String currency,           // optional; defaults to USD
-      @QueryParam("invoice_number") String invoiceNumber // optional; logged with reference number for trackability
+      @QueryParam("invoice_number") String invoiceNumber // optional; logged with reference number for traceability
   ) {
 
     // validate and massage amount and currency params
@@ -171,7 +171,7 @@ public class CyberSourceFormService extends AbstractWdkService {
     return sdf.format(new Date());
   }
 
-  private static JSONObject readConfig() {
+  static JSONObject readConfig() {
     try (Reader in = new FileReader(CONFIG_FILE_LOCATION)) {
       return new JSONObject(IoUtil.readAllChars(in));
     }
