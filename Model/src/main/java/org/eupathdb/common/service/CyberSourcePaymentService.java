@@ -124,7 +124,6 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       TransientTokenDataV2Api tokenApi = new TransientTokenDataV2Api(apiClient);
       okhttp3.Call call = tokenApi.getTransactionForTransientTokenJTICall(jti, null, null);
       String rawJson = apiClient.<String>execute(call, String.class).getData();
-      LOG.info("CyberSource transient token details\t" + referenceNumber + "\t" + rawJson);
       return new JSONObject(rawJson);
     }
     catch (Exception e) {

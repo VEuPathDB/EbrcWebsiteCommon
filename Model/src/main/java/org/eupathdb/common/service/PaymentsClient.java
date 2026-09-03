@@ -90,7 +90,7 @@ public class PaymentsClient {
           .post(Entity.json(payload))) {
 
       // check for successful processing
-      if (response.getStatus() != 200) {
+      if (response.getStatus() != 204) {
         String responseBody = !response.hasEntity() ? "<empty>" : readResponseBody(response);
         String message = "Failure to persist payment information.  POST " +
             url + " returned " + response.getStatus() + " with body: " + responseBody;
