@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -85,6 +86,7 @@ public class PaymentsClient {
           .build()
           .target(url)
           .request()
+          .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
           .post(Entity.json(payload))) {
 
       // check for successful processing

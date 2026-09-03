@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import com.cybersource.authsdk.core.MerchantConfig;
 
 import Api.PaymentsApi;
+import Api.TransientTokenDataV2Api;
 import Invokers.ApiClient;
 import Invokers.ApiException;
 import Model.CreatePaymentRequest;
@@ -87,7 +88,9 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       // log in wdk.log, payment log, and DB to support metrics and later user receipt lookup
       LOG.info("CyberSource payment result\t" + referenceNumber + "\t" + result.getStatus() + "\t" + result.getId());
       CyberSourceLogger.logPaymentEvent("payment-complete", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
-      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result));
+
+      JSONObject tokenDetails = fetchTransientTokenDetails(apiClient, transientToken, referenceNumber);
+      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result, tokenDetails));
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())
@@ -105,7 +108,35 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     }
   }
 
-  private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result) {
+  /**
+   * The createPayment response above does not echo back the billing name/
+   * email/address captured by the Unified Checkout widget (confirmed by
+   * inspection -- those fields come back null). CyberSource requires a
+   * second, separate call keyed by the {@code jti} claim inside the
+   * transient token JWT to retrieve them:
+   * https://developer.cybersource.com/docs/cybs/en-us/unified-checkout/developer/all/rest/unified-checkout/uc-token-get-pymnt-details.html
+   * The generated SDK wrapper for this call (TransientTokenDataV2Api
+   * .getTransactionForTransientTokenJTI) discards the response body (it
+   * calls apiClient.execute(call) with a null returnType), so the call is
+   * built and executed manually here instead. Failures are logged but not
+   * fatal -- the payment itself has already succeeded by the time this runs.
+   */
+  private static JSONObject fetchTransientTokenDetails(ApiClient apiClient, String transientToken, String referenceNumber) {
+    try {
+      String jti = CyberSourceUtil.decodeJwtPayload(transientToken).getString("jti");
+      TransientTokenDataV2Api tokenApi = new TransientTokenDataV2Api(apiClient);
+      okhttp3.Call call = tokenApi.getTransactionForTransientTokenJTICall(jti, null, null);
+      String rawJson = apiClient.<String>execute(call, String.class).getData();
+      LOG.info("CyberSource transient token details\t" + referenceNumber + "\t" + rawJson);
+      return new JSONObject(rawJson);
+    }
+    catch (Exception e) {
+      LOG.error("Unable to retrieve transient token payment details for reference " + referenceNumber, e);
+      return new JSONObject();
+    }
+  }
+
+  private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result, JSONObject tokenDetails) {
     Payment payment = new Payment()
         .setReferenceNumber(result.getReconciliationId())
         .setPaymentDateTimeISO8601(result.getSubmitTimeUtc());
@@ -130,6 +161,20 @@ public class CyberSourcePaymentService extends AbstractWdkService {
             .setCountry(billTo.getCountry())
             .setEmail(billTo.getEmail());
       }
+    }
+
+    // Only firstName/lastName/email/country are known (from CyberSource's
+    // docs) to be present in the payment-details response's billTo; other
+    // fields (e.g. a full postal address) may or may not be present -- check
+    // the logged raw JSON above and extend this once that's confirmed.
+    JSONObject tokenOrderInformation = tokenDetails.optJSONObject("orderInformation");
+    JSONObject tokenBillTo = tokenOrderInformation == null ? null : tokenOrderInformation.optJSONObject("billTo");
+    if (tokenBillTo != null) {
+      payment
+          .setFirstName(tokenBillTo.optString("firstName", payment.getFirstName()))
+          .setLastName(tokenBillTo.optString("lastName", payment.getLastName()))
+          .setEmail(tokenBillTo.optString("email", payment.getEmail()))
+          .setCountry(tokenBillTo.optString("country", payment.getCountry()));
     }
 
     return payment;
