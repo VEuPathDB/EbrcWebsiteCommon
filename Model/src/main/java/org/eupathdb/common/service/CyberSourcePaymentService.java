@@ -23,7 +23,6 @@ import Model.CreatePaymentRequest;
 import Model.PtsV2PaymentsPost201Response;
 import Model.PtsV2PaymentsPost201ResponseOrderInformation;
 import Model.PtsV2PaymentsPost201ResponseOrderInformationAmountDetails;
-import Model.PtsV2PaymentsPost201ResponseOrderInformationBillTo;
 import Model.Ptsv2paymentsClientReferenceInformation;
 import Model.Ptsv2paymentsOrderInformation;
 import Model.Ptsv2paymentsOrderInformationAmountDetails;
@@ -136,48 +135,46 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     }
   }
 
+  /**
+   * The OAuth server this Payment is sent to (see {@link PaymentsClient})
+   * requires every field, so any value CyberSource didn't return is set to
+   * an empty string rather than left null (Payment's NON_NULL Jackson
+   * setting would otherwise drop the field from the JSON entirely).
+   */
   private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result, JSONObject tokenDetails) {
-    Payment payment = new Payment()
-        .setReferenceNumber(result.getReconciliationId())
-        .setPaymentDateTimeISO8601(result.getSubmitTimeUtc());
-
     PtsV2PaymentsPost201ResponseOrderInformation orderInformation = result.getOrderInformation();
-    if (orderInformation != null) {
-      PtsV2PaymentsPost201ResponseOrderInformationAmountDetails amountDetails = orderInformation.getAmountDetails();
-      if (amountDetails != null) {
-        payment.setAmount(amountDetails.getTotalAmount());
-      }
+    PtsV2PaymentsPost201ResponseOrderInformationAmountDetails amountDetails =
+        orderInformation == null ? null : orderInformation.getAmountDetails();
 
-      PtsV2PaymentsPost201ResponseOrderInformationBillTo billTo = orderInformation.getBillTo();
-      if (billTo != null) {
-        payment
-            .setFirstName(billTo.getFirstName())
-            .setLastName(billTo.getLastName())
-            .setAddress1(billTo.getAddress1())
-            .setAddress2(billTo.getAddress2())
-            .setCity(billTo.getLocality())
-            .setPostalCode(billTo.getPostalCode())
-            .setState(billTo.getAdministrativeArea())
-            .setCountry(billTo.getCountry())
-            .setEmail(billTo.getEmail());
-      }
-    }
-
-    // Only firstName/lastName/email/country are known (from CyberSource's
-    // docs) to be present in the payment-details response's billTo; other
-    // fields (e.g. a full postal address) may or may not be present -- check
-    // the logged raw JSON above and extend this once that's confirmed.
+    // Confirmed present in the payment-details response's billTo (see logged
+    // raw JSON in fetchTransientTokenDetails above): firstName, lastName,
+    // country, address1, postalCode, locality, administrativeArea, email
+    // (also buildingNumber, unused here). address2 was not present on that
+    // transaction, but is parsed in case it appears on others (e.g.
+    // apartment/suite number).
     JSONObject tokenOrderInformation = tokenDetails.optJSONObject("orderInformation");
     JSONObject tokenBillTo = tokenOrderInformation == null ? null : tokenOrderInformation.optJSONObject("billTo");
-    if (tokenBillTo != null) {
-      payment
-          .setFirstName(tokenBillTo.optString("firstName", payment.getFirstName()))
-          .setLastName(tokenBillTo.optString("lastName", payment.getLastName()))
-          .setEmail(tokenBillTo.optString("email", payment.getEmail()))
-          .setCountry(tokenBillTo.optString("country", payment.getCountry()));
+    if (tokenBillTo == null) {
+      tokenBillTo = new JSONObject();
     }
 
-    return payment;
+    return new Payment()
+        .setReferenceNumber(orEmpty(result.getReconciliationId()))
+        .setPaymentDateTimeISO8601(orEmpty(result.getSubmitTimeUtc()))
+        .setAmount(amountDetails == null ? "" : orEmpty(amountDetails.getTotalAmount()))
+        .setFirstName(tokenBillTo.optString("firstName", ""))
+        .setLastName(tokenBillTo.optString("lastName", ""))
+        .setAddress1(tokenBillTo.optString("address1", ""))
+        .setAddress2(tokenBillTo.optString("address2", ""))
+        .setCity(tokenBillTo.optString("locality", ""))
+        .setPostalCode(tokenBillTo.optString("postalCode", ""))
+        .setState(tokenBillTo.optString("administrativeArea", ""))
+        .setEmail(tokenBillTo.optString("email", ""))
+        .setCountry(tokenBillTo.optString("country", ""));
+  }
+
+  private static String orEmpty(String value) {
+    return value == null ? "" : value;
   }
 
   private static JSONObject parseInput(String body) {
