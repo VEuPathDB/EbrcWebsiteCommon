@@ -87,7 +87,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       // log in wdk.log, payment log, and DB to support metrics and later user receipt lookup
       LOG.info("CyberSource payment result\t" + referenceNumber + "\t" + result.getStatus() + "\t" + result.getId());
       CyberSourceLogger.logPaymentEvent("payment-complete", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
-      new PaymentPersistence(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result));
+      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result));
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())

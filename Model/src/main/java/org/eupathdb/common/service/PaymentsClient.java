@@ -23,9 +23,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-public class PaymentPersistence {
+public class PaymentsClient {
 
-  private static final Logger LOG = Logger.getLogger(PaymentPersistence.class);
+  private static final Logger LOG = Logger.getLogger(PaymentsClient.class);
 
   private final JsonMapper _mapper = JsonMapper.builder().build();
 
@@ -69,7 +69,7 @@ public class PaymentPersistence {
     }
   }
   
-  public PaymentPersistence(ModelConfig modelConfig) {
+  public PaymentsClient(ModelConfig modelConfig) {
     _oauthConfig = modelConfig;
     _sslContext = getSSLContext(modelConfig);
   }

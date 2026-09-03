@@ -60,7 +60,7 @@ public class PaymentReceiptService extends AbstractWdkService {
 
     Payment payment;
     try {
-      payment = new PaymentPersistence(getWdkModel().getModelConfig()).retrievePayment(referenceNumber);
+      payment = new PaymentsClient(getWdkModel().getModelConfig()).retrievePayment(referenceNumber);
     }
     catch (RuntimeException e) {
       LOG.warn("Unable to find payment for reference number " + referenceNumber, e);
