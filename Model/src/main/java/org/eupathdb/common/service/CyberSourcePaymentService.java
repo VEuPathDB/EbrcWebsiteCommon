@@ -87,7 +87,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       CyberSourceLogger.logPaymentEvent("payment-complete", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
       JSONObject tokenDetails = fetchTransientTokenDetails(apiClient, transientToken, referenceNumber);
-      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(result, tokenDetails));
+      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(referenceNumber, result.getSubmitTimeUtc(), tokenDetails));
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())
@@ -138,7 +138,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
    * an empty string rather than left null (Payment's NON_NULL Jackson
    * setting would otherwise drop the field from the JSON entirely).
    */
-  private static Payment paymentFromCyberSourceResult(PtsV2PaymentsPost201Response result, JSONObject tokenDetails) {
+  private static Payment paymentFromCyberSourceResult(String referenceNumber, String submissionDateTime, JSONObject tokenDetails) {
 
     // Confirmed present in the payment-details response's billTo (see logged
     // raw JSON in fetchTransientTokenDetails above): firstName, lastName,
@@ -156,8 +156,8 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       amountDetails = new JSONObject();
     }
     return new Payment()
-        .setReferenceNumber(orEmpty(result.getReconciliationId()))
-        .setPaymentDateTimeISO8601(orEmpty(result.getSubmitTimeUtc()))
+        .setReferenceNumber(referenceNumber)
+        .setPaymentDateTimeISO8601(submissionDateTime)
         .setAmount(amountDetails.optString("totalAmount", ""))
         .setCurrency(amountDetails.optString("currency", ""))
         .setFirstName(tokenBillTo.optString("firstName", ""))
@@ -169,10 +169,6 @@ public class CyberSourcePaymentService extends AbstractWdkService {
         .setState(tokenBillTo.optString("administrativeArea", ""))
         .setEmail(tokenBillTo.optString("email", ""))
         .setCountry(tokenBillTo.optString("country", ""));
-  }
-
-  private static String orEmpty(String value) {
-    return value == null ? "" : value;
   }
 
   private static JSONObject parseInput(String body) {
