@@ -1,4 +1,4 @@
-package org.eupathdb.common.service;
+package org.eupathdb.common.service.payment;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +15,9 @@ public class Payment {
   private static final Logger LOG = Logger.getLogger(Payment.class);
 
   // payment information
+  @JsonProperty("environment")
+  private String _environment;
+
   @JsonProperty("referenceNumber")
   private String _referenceNumber;
 
@@ -56,6 +59,15 @@ public class Payment {
   private String _email;
 
   public Payment() {
+  }
+
+  public Payment setEnvironment(String environment) {
+    _environment = environment;
+    return this;
+  }
+
+  public String getEnvironment() {
+    return _environment;
   }
 
   public Payment setReferenceNumber(String referenceNumber) {

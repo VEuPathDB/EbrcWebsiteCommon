@@ -1,4 +1,4 @@
-package org.eupathdb.common.service;
+package org.eupathdb.common.service.payment;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
@@ -86,8 +86,10 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       LOG.info("CyberSource payment result\t" + referenceNumber + "\t" + result.getStatus() + "\t" + result.getId());
       CyberSourceLogger.logPaymentEvent("payment-complete", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
+      String environment = CyberSourceUtil.getEnvironment(config);
       JSONObject tokenDetails = fetchTransientTokenDetails(apiClient, transientToken, referenceNumber);
-      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(paymentFromCyberSourceResult(referenceNumber, result.getSubmitTimeUtc(), tokenDetails));
+      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(
+          paymentFromCyberSourceResult(environment, referenceNumber, result.getSubmitTimeUtc(), tokenDetails));
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())
@@ -138,7 +140,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
    * an empty string rather than left null (Payment's NON_NULL Jackson
    * setting would otherwise drop the field from the JSON entirely).
    */
-  private static Payment paymentFromCyberSourceResult(String referenceNumber, String submissionDateTime, JSONObject tokenDetails) {
+  private static Payment paymentFromCyberSourceResult(String environment, String referenceNumber, String submissionDateTime, JSONObject tokenDetails) {
 
     // Confirmed present in the payment-details response's billTo (see logged
     // raw JSON in fetchTransientTokenDetails above): firstName, lastName,
@@ -156,6 +158,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
       amountDetails = new JSONObject();
     }
     return new Payment()
+        .setEnvironment(environment)
         .setReferenceNumber(referenceNumber)
         .setPaymentDateTimeISO8601(submissionDateTime)
         .setAmount(amountDetails.optString("totalAmount", ""))

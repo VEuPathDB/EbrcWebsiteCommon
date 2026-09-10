@@ -1,4 +1,4 @@
-package org.eupathdb.common.service;
+package org.eupathdb.common.service.payment;
 
 import org.apache.log4j.Logger;
 import org.gusdb.wdk.model.user.User;

@@ -1,4 +1,4 @@
-package org.eupathdb.common.service;
+package org.eupathdb.common.service.payment;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.ws.rs.BadRequestException;
 
+import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.json.JSONObject;
@@ -56,6 +57,8 @@ import com.cybersource.authsdk.core.MerchantConfig;
  */
 class CyberSourceUtil {
 
+  private static final Logger LOG = Logger.getLogger(CyberSourceUtil.class);
+
   // location of file containing cybersource REST API credentials
   //private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/.cybersource.config.json";
   private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource/.cybersource.config.json";
@@ -69,6 +72,8 @@ class CyberSourceUtil {
   // will appear in log when invoice param not sent or empty
   static final String INVOICE_NOT_SPECIFIED = "Not_Specified";
 
+  // run environment URLs
+  private static final String PROD_RUN_ENVIRONMENT = "api.cybersource.com";
   private static final String TEST_RUN_ENVIRONMENT = "apitest.cybersource.com";
 
   static String validateAmountParam(String amount) {
@@ -125,8 +130,11 @@ class CyberSourceUtil {
     }
   }
 
-  static boolean isTestEnvironment(JSONObject config) {
-    return TEST_RUN_ENVIRONMENT.equals(config.getString("run_environment"));
+  static String getEnvironment(JSONObject config) {
+    String env = config.getString("run_environment");
+    if (!PROD_RUN_ENVIRONMENT.equals(env) && !TEST_RUN_ENVIRONMENT.equals(env))
+      LOG.warn("CyberSource config specifies unrecognized environment: " + env);
+    return env;
   }
 
   /**

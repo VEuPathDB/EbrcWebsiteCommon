@@ -1,4 +1,4 @@
-package org.eupathdb.common.service;
+package org.eupathdb.common.service.payment;
 
 import static org.gusdb.fgputil.functional.Functions.wrapException;
 import static org.gusdb.oauth2.client.OAuthClient.getSSLContext;
