@@ -61,7 +61,7 @@ class CyberSourceUtil {
 
   // location of file containing cybersource REST API credentials
   //private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/.cybersource.config.json";
-  private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource/.cybersource.config.json";
+  private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource/config/.cybersource.config.json";
 
   // regex to recognize proper amount values
   private static final Pattern MONEY_PATTERN = Pattern.compile("^[0-9]+(\\.[0-9][0-9])?$");
