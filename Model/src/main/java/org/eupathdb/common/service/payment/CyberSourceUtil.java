@@ -63,7 +63,8 @@ class CyberSourceUtil {
   private static final Logger LOG = Logger.getLogger(CyberSourceUtil.class);
 
   // location of file containing cybersource REST API config
-  private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/cybersource/%s/.cybersource.config.json";
+  //private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/cybersource/%s/.cybersource.config.json";
+  private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource/%s/.cybersource.config.json";
 
   // cybersource env is also the config subdir to find the config file
   private static final String CONFIG_ENV_MODEL_PROP_KEY = "CYBERSOURCE_ENV";
