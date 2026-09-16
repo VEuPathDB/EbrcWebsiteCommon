@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response processPayment(String body) {
+  public Response processPayment(String body) throws WdkModelException {
 
     JSONObject input = parseInput(body);
 
@@ -55,7 +56,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
 
     CyberSourceLogger.logPaymentEvent("payment-process", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
-    JSONObject config = CyberSourceUtil.readConfig();
+    JSONObject config = CyberSourceUtil.readConfig(getWdkModel());
 
     CreatePaymentRequest requestObj = new CreatePaymentRequest();
 

@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -14,6 +15,8 @@ import javax.ws.rs.BadRequestException;
 
 import org.apache.log4j.Logger;
 import org.gusdb.fgputil.IoUtil;
+import org.gusdb.wdk.model.WdkModel;
+import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.json.JSONObject;
 
@@ -59,9 +62,12 @@ class CyberSourceUtil {
 
   private static final Logger LOG = Logger.getLogger(CyberSourceUtil.class);
 
-  // location of file containing cybersource REST API credentials
-  //private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/.cybersource.config.json";
-  private static final String CONFIG_FILE_LOCATION = "/home/rdoherty/cybersource/config/.cybersource.config.json";
+  // location of file containing cybersource REST API config
+  private static final String CONFIG_FILE_LOCATION = "/usr/local/tomcat_instances/shared/cybersource/%s/.cybersource.config.json";
+
+  // cybersource env is also the config subdir to find the config file
+  private static final String CONFIG_ENV_MODEL_PROP_KEY = "CYBERSOURCE_ENV";
+  private static final List<String> VALID_CONFIG_ENVS = List.of("prod", "dev");
 
   // regex to recognize proper amount values
   private static final Pattern MONEY_PATTERN = Pattern.compile("^[0-9]+(\\.[0-9][0-9])?$");
@@ -121,12 +127,19 @@ class CyberSourceUtil {
         String.format("%05d", new Random().nextInt(100000));
   }
 
-  static JSONObject readConfig() {
-    try (Reader in = new FileReader(CONFIG_FILE_LOCATION)) {
+  static JSONObject readConfig(WdkModel wdkModel) throws WdkModelException {
+    String envSubdir = wdkModel.getProperties().get(CONFIG_ENV_MODEL_PROP_KEY);
+    if (envSubdir == null || !VALID_CONFIG_ENVS.contains(envSubdir)) {
+      throw new WdkModelException("Model properties does not contain valid " +
+          CONFIG_ENV_MODEL_PROP_KEY + "; must be one of " + String.join(", ", VALID_CONFIG_ENVS));
+    }
+    String configFile = String.format(CONFIG_FILE_LOCATION, envSubdir);
+    LOG.info("Reading CyberSource config from " + configFile);
+    try (Reader in = new FileReader(configFile)) {
       return new JSONObject(IoUtil.readAllChars(in));
     }
     catch (IOException e) {
-      throw new WdkRuntimeException("Unable to read/parse config file at: " + CONFIG_FILE_LOCATION, e);
+      throw new WdkRuntimeException("Unable to read/parse config file at: " + configFile, e);
     }
   }
 

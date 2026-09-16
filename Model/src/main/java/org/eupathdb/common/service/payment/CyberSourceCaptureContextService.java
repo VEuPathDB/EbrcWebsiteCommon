@@ -71,7 +71,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
       @QueryParam("amount") String amount,               // required; must match the pattern in CyberSourceUtil
       @QueryParam("currency") String currency,           // optional; defaults to USD
       @QueryParam("invoice_number") String invoiceNumber // optional; logged with reference number for traceability
-  ) {
+  ) throws WdkModelException {
     amount = CyberSourceUtil.validateAmountParam(amount);
     currency = CyberSourceUtil.validateCurrencyParam(currency);
     invoiceNumber = CyberSourceUtil.validateInvoiceNumber(invoiceNumber);
@@ -79,7 +79,7 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     String referenceNumber = CyberSourceUtil.generateReferenceNumber();
     CyberSourceLogger.logPaymentEvent("capture-context", getRequestingUser(), referenceNumber, amount, currency, invoiceNumber);
 
-    JSONObject config = CyberSourceUtil.readConfig();
+    JSONObject config = CyberSourceUtil.readConfig(getWdkModel());
     String localhost = getLocalhostUrl();
 
     GenerateUnifiedCheckoutV1CaptureContextRequest requestObj = new GenerateUnifiedCheckoutV1CaptureContextRequest();
