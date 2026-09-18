@@ -7,7 +7,7 @@
   {% elif project == 'ClinEpiDB' %}
     'dataExplorer'
   {% else %}
-    project
+    {{ project }}
   {% endif %}
 {% endset %}
     <title>{% block title %}{{ displayName }}{% endblock %}</title>

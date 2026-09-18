@@ -166,6 +166,12 @@ modelconfig_emailContent: >
     <p>You may now login to <a href="{{ _self_url_scheme }}://{{ product|lower }}.{{ _topleveldomain }}">{{ product }}</a> or any other VEuPathDB member site.</p>
   ]]>
 
+cybersource_hostname_prefix: "{{ hostname | regex_replace('^([a-z])[0-9][.].*','\\1') }}"
+cybersource_env_map:
+  w: "prod"
+  default: "dev"
+cybersource_env: "{{ cybersource_env_map[cybersource_hostname_prefix] | default(cybersource_env_map['default']) }}"
+
 modelprop:
   VEUPATHDB_STAFF_USER_ID: '{{ eda.example_analyses_author }}'
   VDI_CONTROL_SCHEMA: VDI_CONTROL_DEV_N
@@ -197,6 +203,7 @@ modelprop:
   EDA_SERVICE_URL: /eda
   VDI_SERVICE_URL: /vdi
   INVOICE_FORM_URL: 'https://upenn.co1.qualtrics.com/jfe/form/SV_56yc5QpxL0IfWkK'
+  CYBERSOURCE_ENV: '{{ cybersource_env }}'
 
 eda:
   enabled: "true"
