@@ -5,6 +5,10 @@ import java.util.Set;
 import org.eupathdb.common.service.announce.SiteMessagesService;
 import org.eupathdb.common.service.brc.BrcService;
 import org.eupathdb.common.service.contact.ContactUsService;
+import org.eupathdb.common.service.payment.CyberSourceCaptureContextService;
+import org.eupathdb.common.service.payment.CyberSourceFormService;
+import org.eupathdb.common.service.payment.CyberSourcePaymentService;
+import org.eupathdb.common.service.payment.PaymentReceiptService;
 import org.eupathdb.common.service.publicstrats.InvalidPublicStratsEmailerService;
 import org.eupathdb.common.service.sitemap.SitemapService;
 import org.eupathdb.common.service.testrunner.TestRunnerService;
@@ -27,6 +31,9 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(BlastFormInternalValuesService.class)
     .add(UserProfileVocabulariesService.class)
     .add(CyberSourceFormService.class)
+    .add(CyberSourceCaptureContextService.class)
+    .add(CyberSourcePaymentService.class)
+    .add(PaymentReceiptService.class)
     .add(RawFileDownloadService.class)
     .add(ConfigurableRedirectsService.class)
     .add(PubMedProxyService.class)
