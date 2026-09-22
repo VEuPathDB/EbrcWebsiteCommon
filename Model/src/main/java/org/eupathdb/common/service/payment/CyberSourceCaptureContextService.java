@@ -151,6 +151,10 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     if (localhost == null) {
       throw new WdkRuntimeException(new WdkModelException("model.prop must contain the property: " + LOCALHOST_PROP_KEY));
     }
+    // FIXME: Figure out which request property will give us the actual request domain
+    //     (e.g. w1/b2 prefix or none) and use that here.  For now, will just look for
+    //     production prefixes and remove.  Means beta.* or direct w1/w2.* access will not work.
+    localhost = localhost.replace("https://w1.", "https://").replace("https://w2.", "https://");
     return localhost;
   }
 
