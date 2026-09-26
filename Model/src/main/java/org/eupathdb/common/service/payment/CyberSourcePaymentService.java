@@ -25,6 +25,7 @@ import Model.PtsV2PaymentsPost201Response;
 import Model.Ptsv2paymentsClientReferenceInformation;
 import Model.Ptsv2paymentsOrderInformation;
 import Model.Ptsv2paymentsOrderInformationAmountDetails;
+import Model.Ptsv2paymentsProcessingInformation;
 import Model.Ptsv2paymentsTokenInformation;
 
 /**
@@ -35,6 +36,16 @@ import Model.Ptsv2paymentsTokenInformation;
  * capture ("sale") against CyberSource's Payments API. Card data is never
  * present in this request; the transient token is an opaque, short-lived
  * (~15 min) reference to it.
+ * <p>
+ * The capture is requested explicitly via processingInformation.capture=true
+ * on the createPayment call below; without it (the SDK defaults it to false)
+ * the payment is only authorized and never settles. The capture context's
+ * completeMandate.type does NOT control this, since it only applies when
+ * Unified Checkout completes the transaction itself (autoProcessing: true),
+ * whereas our front end uses autoProcessing: false and hands the transient
+ * token to this service instead. Note that a successful sale still returns
+ * status AUTHORIZED; the capture appears as a separate application on the
+ * transaction in Business Center and settles in the nightly batch.
  */
 @Path("payment-process")
 public class CyberSourcePaymentService extends AbstractWdkService {
@@ -70,6 +81,11 @@ public class CyberSourcePaymentService extends AbstractWdkService {
     amountDetails.currency(currency);
     orderInformation.amountDetails(amountDetails);
     requestObj.orderInformation(orderInformation);
+
+    // authorize and capture in a single call ("sale"); SDK default is auth-only
+    Ptsv2paymentsProcessingInformation processingInformation = new Ptsv2paymentsProcessingInformation();
+    processingInformation.capture(true);
+    requestObj.processingInformation(processingInformation);
 
     Ptsv2paymentsTokenInformation tokenInformation = new Ptsv2paymentsTokenInformation();
     tokenInformation.transientTokenJwt(transientToken);
