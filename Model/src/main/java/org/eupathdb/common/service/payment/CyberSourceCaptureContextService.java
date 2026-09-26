@@ -109,6 +109,10 @@ public class CyberSourceCaptureContextService extends AbstractWdkService {
     data.orderInformation(orderInformation);
     requestObj.data(data);
 
+    // Only takes effect if Unified Checkout completes the transaction itself
+    // (autoProcessing: true). Our front end uses autoProcessing: false, so the
+    // actual capture is requested in CyberSourcePaymentService via
+    // processingInformation.capture=true; this is kept for consistency.
     Ucv1sessionsCompleteMandate completeMandate = new Ucv1sessionsCompleteMandate();
     completeMandate.setType("CAPTURE");
     completeMandate.setDecisionManager(false);
