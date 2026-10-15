@@ -64,6 +64,7 @@
         {% endif %}
         aiExpressionQualtricsId: "{{ modelprop.AI_EXPRESSION_QUALTRICS_ID|default('') }}",
         allowAiAssistedCommentCreation: "true" === "{{ modelprop.ALLOW_AI_ASSISTED_COMMENT_CREATION|default('false') }}",
+        pathfinderUrl: "{{ modelprop.PATHFINDER_URL|default('') }}",
         {% endblock %}
       };
     </script>
