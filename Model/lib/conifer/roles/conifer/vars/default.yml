@@ -134,6 +134,7 @@ modelconfig_userDb_showConnections: 'false'
 modelconfig_userDb_showConnectionsDuration: 600
 modelconfig_userDb_showConnectionsInterval: 10
 modelconfig_userDb_userSchema: wdkuser
+containers_userDb_commentSchema: usercomments
 
 modelconfig_adminEmail: []
 modelconfig_authenticationMethod: user_db
