@@ -53,7 +53,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(CyberSourcePaymentService.class);
 
-  private static final String SUBSCRIPTION_TEAM_EMAIL = "ryanrobdoh@conical.org"; //"subscriptions@veupathdb.org";
+  private static final String SUBSCRIPTION_TEAM_EMAIL = "subscriptions@veupathdb.org";
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
