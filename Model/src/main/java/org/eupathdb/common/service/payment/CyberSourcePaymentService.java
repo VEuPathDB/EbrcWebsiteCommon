@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.gusdb.wdk.model.Utilities;
 import org.gusdb.wdk.model.WdkModelException;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.service.service.AbstractWdkService;
@@ -52,6 +53,7 @@ public class CyberSourcePaymentService extends AbstractWdkService {
 
   private static final Logger LOG = Logger.getLogger(CyberSourcePaymentService.class);
 
+  private static final String SUBSCRIPTION_TEAM_EMAIL = "ryanrobdoh@conical.org"; //"subscriptions@veupathdb.org";
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
@@ -105,8 +107,25 @@ public class CyberSourcePaymentService extends AbstractWdkService {
 
       String environment = CyberSourceUtil.getEnvironment(config);
       JSONObject tokenDetails = fetchTransientTokenDetails(apiClient, transientToken, referenceNumber);
-      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(
-          paymentFromCyberSourceResult(environment, referenceNumber, result.getSubmitTimeUtc(), tokenDetails));
+
+      // persist payment information for later access
+      Payment payment = paymentFromCyberSourceResult(environment, referenceNumber, result.getSubmitTimeUtc(), tokenDetails);
+      new PaymentsClient(getWdkModel().getModelConfig()).insertPayment(payment);
+
+      // notify subscriptions team of new payment
+      try {
+        Utilities.sendEmail(
+            getWdkModel().getModelConfig().getSmtpServer(),
+            SUBSCRIPTION_TEAM_EMAIL,  // to
+            SUBSCRIPTION_TEAM_EMAIL,  // reply-to
+            "New credit card payment: " + referenceNumber,
+            payment.toPrettyJson()
+        );
+      }
+      catch (Exception e) {
+        // don't let email failure prevent user response; log error (error email would probably also fail)
+        LOG.error("Unable to send payment notification email.  Subscriptions team should be alerted.", e);
+      }
 
       JSONObject responseJson = new JSONObject()
           .put("status", result.getStatus())
