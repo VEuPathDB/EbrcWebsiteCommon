@@ -1,5 +1,7 @@
 package org.eupathdb.common.service.payment;
 
+import static org.gusdb.fgputil.iterator.IteratorUtil.toIterable;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,6 +18,8 @@ import org.gusdb.wdk.service.service.AbstractWdkService;
 import org.json.JSONObject;
 
 import com.cybersource.authsdk.core.MerchantConfig;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import Api.PaymentsApi;
 import Api.TransientTokenDataV2Api;
@@ -114,12 +118,21 @@ public class CyberSourcePaymentService extends AbstractWdkService {
 
       // notify subscriptions team of new payment
       try {
+        StringBuilder emailBody = new StringBuilder().append("<html><body>");
+        JsonNode paymentJson = JsonMapper.builder().build().valueToTree(payment);
+        for (var propName : toIterable(paymentJson.fieldNames())) {
+          emailBody
+            .append(propName).append(": ")
+            .append(paymentJson.get(propName).asText()).append("<br/>");
+        }
+        emailBody.append("</body></html>");
+
         Utilities.sendEmail(
             getWdkModel().getModelConfig().getSmtpServer(),
             SUBSCRIPTION_TEAM_EMAIL,  // to
             SUBSCRIPTION_TEAM_EMAIL,  // reply-to
             "New credit card payment: " + referenceNumber,
-            payment.toPrettyJson()
+            emailBody.toString()
         );
       }
       catch (Exception e) {

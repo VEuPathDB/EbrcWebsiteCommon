@@ -187,18 +187,6 @@ public class Payment {
     return _email;
   }
 
-  public String toPrettyJson() {
-    try {
-      return JsonMapper.builder().build()
-          .writerWithDefaultPrettyPrinter()
-          .writeValueAsString(this);
-    }
-    catch (JsonProcessingException e) {
-      LOG.error(e);
-      return "<bad_object>";
-    }
-  }
-
   public String toJson() {
     try {
       return JsonMapper.builder().build().writeValueAsString(this);
