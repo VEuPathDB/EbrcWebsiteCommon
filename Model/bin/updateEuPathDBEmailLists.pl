@@ -5,8 +5,8 @@ use Getopt::Long;
 use Mail::Send;
 use lib "$ENV{GUS_HOME}/lib/perl";
 
-my($email,$passwd,$verbose, $suppressUpdate);
-my $projectId = 'PlasmoDB';
+my($email,$passwd,$verbose,$suppressUpdate);
+my $projectId = 'UniDB';
 
 &GetOptions("email|e=s"=> \$email,  ## email address of list admin
             "passwd|p=s" => \$passwd,  ## passwd of list admin
@@ -22,7 +22,7 @@ die "password|p of admin required\n" unless $passwd;
 
 my $dbh = getDbHandle();
 
-print STDERR "SQL:\n",&getSQL()."\n" if $verbose;
+print STDERR "SQL:\n\n",&getSQL()."\n\n" if $verbose;
 
 my $statement = $dbh->prepare(&getSQL);
 $statement->execute();
@@ -41,12 +41,13 @@ while(my @row = $statement->fetchrow_array()){
 
 $statement->finish();
 
+# Do component specific lists first
 foreach my $key (keys%data){
   next if ($key eq 'apidb' || $key eq 'ortho');
 ##  next unless $key eq 'schistodb';  ## uncomment for testing
   my $list = $key . "_users";
   my $body = "QUIET DEL $list * PW=$passwd\n\nQUIET ADD $list DD=ddname IMPORT PW=$passwd\n//ddname DD *\n";
-  print STDERR "Processing $list: ",scalar(@{$data{$key}}), " distinct email addresses\n";
+  print STDERR "\nProcessing $list: ",scalar(@{$data{$key}}), " distinct email addresses\n";
   foreach my $em (@{$data{$key}}){
     $body .= "$em\n";
   }
@@ -58,7 +59,7 @@ foreach my $key (keys%data){
 ##do eupathdb_all .... keys%eupath
 my $list = 'eupathdb_all';
 my $body = "QUIET DEL $list * PW=$passwd\n\nQUIET ADD $list DD=ddname IMPORT PW=$passwd\n//ddname DD *\n";
-print STDERR "Processing $list: ",scalar(keys%eupath)," distinct email addresses\n";
+print STDERR "\nProcessing $list: ",scalar(keys%eupath)," distinct email addresses\n";
 foreach my $em (keys%eupath){
   $body .= "$em\n";
 }
@@ -78,7 +79,7 @@ and p.preference_name like '%email%'
 and first.user_id = u.user_id
 and first.key = 'first_name'
 and last.user_id = u.user_id
-and last.key = 'last_name';
+and last.key = 'last_name'";
 }
 
 sub getDbHandle {
@@ -87,7 +88,6 @@ sub getDbHandle {
   
     
   require WDK::Model::ModelConfig;
-  my $c = new WDK::Model::ModelConfig($projectId);
 
   my $cfg = new WDK::Model::ModelConfig($projectId);
   
@@ -95,29 +95,27 @@ sub getDbHandle {
   $login  = $cfg->getAppDb->getLogin;
   $passwd = $cfg->getAppDb->getPassword;
 
-##  die "You must run this on apicomm(n|s), not an apicommdev instance\n" if $dsn =~ /dev/i;
-  
+  print STDERR "db info:\n  dsn=$dsn\n  login=$login\n\n" if $verbose;
+
   $dbh = DBI->connect(
                       $dsn, 
                       $login, 
                       $passwd,
                       { PrintError => 1, RaiseError => 0}
                      ) or die "Can't connect to the database: $DBI::errstr\n";
-  
 
-  print "db info:\n  dsn=$dsn\n  login=$login\n\n" if $verbose;
   return $dbh;
-  
 }
 
 sub sendMail {
     my ($message, $from, $to) = @_;
 
-    my $msg = new Mail::Send (Subject=>'Update list',
-			      To=>$to);
+    my $msg = new Mail::Send (Subject=>'Update list', To=>$to);
     $msg->set('From', $from);
-    # my $fh = $msg->open;               # some default mailer
+    $msg->set('Content-Type', 'text/plain; charset=UTF-8');
+    $msg->set('MIME-Version', '1.0');
     my $fh = $msg->open('sendmail'); # explicit
+    binmode($fh, ':encoding(UTF-8)'); # set encoding so conversion is explicit
     print $fh $message;
     $fh->close;         # complete the message and send it
 
