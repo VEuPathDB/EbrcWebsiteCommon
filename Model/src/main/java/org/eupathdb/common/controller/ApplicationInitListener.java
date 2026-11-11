@@ -3,6 +3,7 @@ package org.eupathdb.common.controller;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eupathdb.common.service.filter.UserRequestThrottleFilter;
 import org.gusdb.fgputil.web.servlet.HttpServletApplicationContext;
 import org.gusdb.wdk.controller.WdkInitializer;
 import org.gusdb.wdk.model.WdkModel;
@@ -18,12 +19,15 @@ public class ApplicationInitListener implements ServletContextListener {
     var context = new HttpServletApplicationContext(sce.getServletContext());
     WdkInitializer.initializeWdk(context);
     WdkModel wdkModel = WdkInitializer.getWdkModel(context);
-    EuPathSiteSetup.initialize(wdkModel);
+    EuPathSitePlatform.initialize(wdkModel);
+    UserRequestThrottleFilter.initialize();
   }
 
   @Override
   public void contextDestroyed(ServletContextEvent sce) {
-    WdkInitializer.terminateWdk(new HttpServletApplicationContext(sce.getServletContext()));
+    var context = new HttpServletApplicationContext(sce.getServletContext());
+    EuPathSitePlatform.shutDown(WdkInitializer.getWdkModel(context));
+    WdkInitializer.terminateWdk(context);
   }
 }
 
