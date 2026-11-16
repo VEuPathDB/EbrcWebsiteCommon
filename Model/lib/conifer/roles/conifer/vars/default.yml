@@ -175,7 +175,7 @@ cybersource_env: "{{ cybersource_env_map[cybersource_hostname_prefix] | default(
 
 strategist_hostname_prefix: "{{ hostname | regex_replace('^([a-z])[0-9][.].*','\\1') }}"
 strategist_url_map:
-  q: "/pathfinder"
+  q: "/strategist"
   default: ""
 strategist_url: "{{ strategist_url_map[strategist_hostname_prefix] | default(strategist_url_map['default']) }}"
 
