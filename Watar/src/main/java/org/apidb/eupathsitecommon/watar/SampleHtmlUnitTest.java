@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.HtmlTextInput;
 import org.htmlunit.html.serializer.HtmlSerializerVisibleText;
@@ -53,7 +54,7 @@ public class SampleHtmlUnitTest {
 
         try {
             ((HtmlTextInput) currentPage.getElementByName("q")).setValueAttribute("qa automation");
-            currentPage = currentPage.getElementByName("btnG").click();
+            ((HtmlElement)currentPage.getElementByName("btnG")).click();
             return containsPattern(new HtmlSerializerVisibleText().asText(currentPage), "About .* results");
         } catch (Exception e) {
             System.out.println("Could not search");

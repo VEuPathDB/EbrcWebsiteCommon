@@ -4,17 +4,17 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-public class RateLimiterConfig {
+public class UserRequestThrottleFilterConfig {
 
   private static final String CONFIG_RESOURCE_NAME = "org/eupathdb/common/service/filter/requestthrottle/rateLimiterConfig.json";
 
-  public static RateLimiterConfig readConfig() throws IOException {
+  public static UserRequestThrottleFilterConfig readConfig() throws IOException {
 
-    byte[] configBytes = RateLimiterConfig.class.getClassLoader()
+    byte[] configBytes = UserRequestThrottleFilterConfig.class.getClassLoader()
         .getResourceAsStream(CONFIG_RESOURCE_NAME).readAllBytes();
 
     return JsonMapper.builder().build()
-        .readValue(configBytes, RateLimiterConfig.class);
+        .readValue(configBytes, UserRequestThrottleFilterConfig.class);
   }
 
   public record InFlightRetryAfter(
@@ -59,7 +59,6 @@ public class RateLimiterConfig {
     return _registeredUsers;
   }
 
-  //@JsonSerialize
   public void setRegisteredUsers(UserConfig registeredUsers) {
     _registeredUsers = registeredUsers;
   }
@@ -68,7 +67,6 @@ public class RateLimiterConfig {
     return _guestUsersCombined;
   }
 
-  //@JsonSerialize
   public void setGuestUsersCombined(UserConfig guestUsersCombined) {
     _guestUsersCombined = guestUsersCombined;
   }
@@ -77,7 +75,6 @@ public class RateLimiterConfig {
     return _global;
   }
 
-  //@JsonSerialize
   public void setGlobal(GlobalConfig global) {
     _global = global;
   }
