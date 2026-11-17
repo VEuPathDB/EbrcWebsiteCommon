@@ -25,8 +25,7 @@ public class ApplicationInitListener implements ServletContextListener {
 
   @Override
   public void contextDestroyed(ServletContextEvent sce) {
-    var context = new HttpServletApplicationContext(sce.getServletContext());
-    WdkInitializer.terminateWdk(context);
+    WdkInitializer.terminateWdk(new HttpServletApplicationContext(sce.getServletContext()));
   }
 }
 
