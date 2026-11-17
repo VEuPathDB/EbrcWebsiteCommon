@@ -15,9 +15,9 @@ import org.gusdb.wdk.events.ErrorEvent;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 
-public class EuPathSitePlatform {
+public class EuPathSiteSetup {
 
-  private static final Logger LOG = Logger.getLogger(EuPathSitePlatform.class);
+  private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
 
   /**
    * Initialize any parts of the ApiCommon web application not handled by normal
@@ -52,7 +52,4 @@ public class EuPathSitePlatform {
     }
   }
 
-  public static void shutDown(WdkModel wdkModel) {
-    UserRequestThrottleFilter.shutDown();
-  }
 }

@@ -19,14 +19,13 @@ public class ApplicationInitListener implements ServletContextListener {
     var context = new HttpServletApplicationContext(sce.getServletContext());
     WdkInitializer.initializeWdk(context);
     WdkModel wdkModel = WdkInitializer.getWdkModel(context);
-    EuPathSitePlatform.initialize(wdkModel);
+    EuPathSiteSetup.initialize(wdkModel);
     UserRequestThrottleFilter.initialize(wdkModel);
   }
 
   @Override
   public void contextDestroyed(ServletContextEvent sce) {
     var context = new HttpServletApplicationContext(sce.getServletContext());
-    EuPathSitePlatform.shutDown(WdkInitializer.getWdkModel(context));
     WdkInitializer.terminateWdk(context);
   }
 }
