@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 //package org.apache.catalina.util;
-package org.eupathdb.common.service.filter.catalina;
-
-import javax.servlet.FilterConfig;
+package org.eupathdb.common.service.filter.requestthrottle.jersey;
 
 /**
  * Defines the contract for a rate limiter that tracks and limits the number of
@@ -72,7 +70,7 @@ public interface RateLimiter {
      *
      * @param filterConfig The FilterConfig used to configure the associated filter
      */
-    void setFilterConfig(FilterConfig filterConfig);
+    void setConfig(RateLimiterConfig config);
 
     /**
      * Returns the name of the rate limit policy.

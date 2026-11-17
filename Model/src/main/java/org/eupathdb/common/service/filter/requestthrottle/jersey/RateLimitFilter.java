@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 //package org.apache.catalina.filters;
-package org.eupathdb.common.service.filter.jersey;
+package org.eupathdb.common.service.filter.requestthrottle.jersey;
 
 import java.io.IOException;
 import java.util.Arrays;

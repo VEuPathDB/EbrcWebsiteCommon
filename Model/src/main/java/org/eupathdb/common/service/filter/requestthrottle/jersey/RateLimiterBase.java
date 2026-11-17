@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 //package org.apache.catalina.util;
-package org.eupathdb.common.service.filter.jersey;
+package org.eupathdb.common.service.filter.requestthrottle.jersey;
 
 import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eupathdb.common.service.filter.catalina.TimeBucketCounterBase;
+import org.eupathdb.common.service.filter.requestthrottle.catalina.TimeBucketCounterBase;
 
 /**
  * Base implementation of {@link RateLimiter}, provides a runtime data maintenance mechanism and monitor.

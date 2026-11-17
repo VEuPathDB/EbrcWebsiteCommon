@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 //package org.apache.catalina.util;
-package org.eupathdb.common.service.filter.catalina;
+package org.eupathdb.common.service.filter.requestthrottle.catalina;
 
 import java.util.concurrent.ScheduledExecutorService;
 

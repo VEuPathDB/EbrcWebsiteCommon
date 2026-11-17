@@ -8,7 +8,7 @@ import org.eupathdb.common.errors.ErrorEmailThrottler;
 import org.eupathdb.common.errors.ErrorHandler;
 import org.eupathdb.common.errors.ErrorHandlerHelpers;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
-import org.eupathdb.common.service.filter.UserRequestThrottleFilter;
+import org.eupathdb.common.service.filter.requestthrottle.UserRequestThrottleFilter;
 import org.gusdb.fgputil.events.EventListener;
 import org.gusdb.fgputil.events.Events;
 import org.gusdb.wdk.events.ErrorEvent;
@@ -27,7 +27,7 @@ public class EuPathSitePlatform {
    */
   public static void initialize(WdkModel wdkModel) {
     addErrorListener(wdkModel);
-    UserRequestThrottleFilter.initialize();
+    UserRequestThrottleFilter.initialize(wdkModel);
   }
 
   /**

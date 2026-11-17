@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 //package org.apache.catalina.util;
-package org.eupathdb.common.service.filter.jersey;
+package org.eupathdb.common.service.filter.requestthrottle.jersey;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.eupathdb.common.service.filter.catalina.TimeBucketCounter;
-import org.eupathdb.common.service.filter.catalina.TimeBucketCounterBase;
+import org.eupathdb.common.service.filter.requestthrottle.catalina.TimeBucketCounter;
+import org.eupathdb.common.service.filter.requestthrottle.catalina.TimeBucketCounterBase;
 
 /**
  * A RateLimiter that compromises accuracy for speed in order to provide maximum throughput.

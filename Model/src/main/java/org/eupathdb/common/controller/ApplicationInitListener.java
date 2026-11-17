@@ -3,7 +3,7 @@ package org.eupathdb.common.controller;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.eupathdb.common.service.filter.UserRequestThrottleFilter;
+import org.eupathdb.common.service.filter.requestthrottle.UserRequestThrottleFilter;
 import org.gusdb.fgputil.web.servlet.HttpServletApplicationContext;
 import org.gusdb.wdk.controller.WdkInitializer;
 import org.gusdb.wdk.model.WdkModel;
@@ -20,7 +20,7 @@ public class ApplicationInitListener implements ServletContextListener {
     WdkInitializer.initializeWdk(context);
     WdkModel wdkModel = WdkInitializer.getWdkModel(context);
     EuPathSitePlatform.initialize(wdkModel);
-    UserRequestThrottleFilter.initialize();
+    UserRequestThrottleFilter.initialize(wdkModel);
   }
 
   @Override
