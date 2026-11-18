@@ -8,6 +8,7 @@ import org.eupathdb.common.errors.ErrorEmailThrottler;
 import org.eupathdb.common.errors.ErrorHandler;
 import org.eupathdb.common.errors.ErrorHandlerHelpers;
 import org.eupathdb.common.errors.ErrorHandlerHelpers.ErrorCategory;
+import org.eupathdb.common.service.filter.requestthrottle.UserRequestThrottleFilter;
 import org.gusdb.fgputil.events.EventListener;
 import org.gusdb.fgputil.events.Events;
 import org.gusdb.wdk.events.ErrorEvent;
@@ -15,6 +16,7 @@ import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 
 public class EuPathSiteSetup {
+
   private static final Logger LOG = Logger.getLogger(EuPathSiteSetup.class);
 
   /**
@@ -25,6 +27,7 @@ public class EuPathSiteSetup {
    */
   public static void initialize(WdkModel wdkModel) {
     addErrorListener(wdkModel);
+    UserRequestThrottleFilter.initialize(wdkModel);
   }
 
   /**
@@ -48,4 +51,5 @@ public class EuPathSiteSetup {
       throw new WdkRuntimeException(message, e);
     }
   }
+
 }
