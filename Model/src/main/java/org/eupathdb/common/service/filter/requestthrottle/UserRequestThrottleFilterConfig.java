@@ -1,5 +1,6 @@
 package org.eupathdb.common.service.filter.requestthrottle;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,6 +12,8 @@ public class UserRequestThrottleFilterConfig {
 
   public static UserRequestThrottleFilterConfig readConfig() throws IOException {
     try (InputStream configStream = UserRequestThrottleFilterConfig.class.getClassLoader().getResourceAsStream(CONFIG_RESOURCE_NAME)) {
+      if (configStream == null)
+        throw new FileNotFoundException("Cannot open system resource: " + CONFIG_RESOURCE_NAME);
       return JsonMapper.builder().build()
           .readValue(configStream.readAllBytes(), UserRequestThrottleFilterConfig.class);
     }
