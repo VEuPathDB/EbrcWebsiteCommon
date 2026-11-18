@@ -29,10 +29,13 @@ public class ConcurrentRequestSubfilter implements ThrottleSubfilter {
   @Override
   public int checkNewRequest() {
 
-    if (_currentRequests.get() <= _config.maxConcurrent()) {
-      // filter passed; add request
-      _currentRequests.incrementAndGet();
+    if (_currentRequests.incrementAndGet() <= _config.maxConcurrent()) {
+      // filter passed (this request still at or under max)
       return PASSES_FILTER;
+    }
+    else {
+      // this request cannot be added; undo the increment above
+      _currentRequests.decrementAndGet();
     }
 
     // too many requests; log failure

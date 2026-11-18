@@ -20,11 +20,13 @@ public class RateLimitSubfilter implements ThrottleSubfilter {
   public RateLimitSubfilter(long userId, RequestRateConfig config) {
     _userId = userId;
     _config = config;
+
     double retry = config.retryAfter().bucketTimeMultiplier() * config.perTimeWindow() / config.numRequests();
     _retryInterval = Math.min(
         config.retryAfter().retryMax(),
         Double.valueOf(Math.floor(retry)).intValue()
     );
+
     _failMessageSuffix = new StringBuilder()
         .append("], ")
         .append("only ")
@@ -33,6 +35,14 @@ public class RateLimitSubfilter implements ThrottleSubfilter {
         .append(_config.perTimeWindow())
         .append(" second interval.")
         .toString();
+
+    // bucket4j uses the Token Bucket algorithm for rate control:
+    //   The bucket has static capacity, and we start the bucket
+    //   full.  Each request takes one token from the bucket.
+    //   Tokens are re-added at the given rate (refill) until the
+    //   bucket is full (reaches capacity).  This ensures no more
+    //   than the capacity tokens are used over the time it takes
+    //   to refill the entire bucket.
     _bucket = Bucket.builder()
         .addLimit(limit -> limit
             .capacity(config.numRequests())

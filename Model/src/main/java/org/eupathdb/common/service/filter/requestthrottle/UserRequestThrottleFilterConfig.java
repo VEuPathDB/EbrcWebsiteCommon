@@ -1,6 +1,7 @@
 package org.eupathdb.common.service.filter.requestthrottle;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
@@ -9,12 +10,10 @@ public class UserRequestThrottleFilterConfig {
   private static final String CONFIG_RESOURCE_NAME = "org/eupathdb/common/service/filter/requestthrottle/rateLimiterConfig.json";
 
   public static UserRequestThrottleFilterConfig readConfig() throws IOException {
-
-    byte[] configBytes = UserRequestThrottleFilterConfig.class.getClassLoader()
-        .getResourceAsStream(CONFIG_RESOURCE_NAME).readAllBytes();
-
-    return JsonMapper.builder().build()
-        .readValue(configBytes, UserRequestThrottleFilterConfig.class);
+    try (InputStream configStream = UserRequestThrottleFilterConfig.class.getClassLoader().getResourceAsStream(CONFIG_RESOURCE_NAME)) {
+      return JsonMapper.builder().build()
+          .readValue(configStream.readAllBytes(), UserRequestThrottleFilterConfig.class);
+    }
   }
 
   public record InFlightRetryAfter(

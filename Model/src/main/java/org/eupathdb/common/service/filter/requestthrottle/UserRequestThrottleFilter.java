@@ -1,36 +1,25 @@
 package org.eupathdb.common.service.filter.requestthrottle;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Priority;
-import javax.servlet.ServletContext;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import org.eupathdb.common.service.filter.requestthrottle.UserRequestThrottleFilterConfig.InFlightConfig;
-import org.eupathdb.common.service.filter.requestthrottle.UserRequestThrottleFilterConfig.RequestRateConfig;
 import org.glassfish.jersey.server.ExtendedUriInfo;
+import org.gusdb.fgputil.web.HttpMethod;
 import org.gusdb.fgputil.web.RequestData;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.model.user.User;
 import org.gusdb.wdk.service.filter.AbstractBookendFilter;
-import org.gusdb.wdk.service.filter.RequestLoggingFilter;
-
-import io.github.bucket4j.Bucket;
 
 @Priority(250)
 public class UserRequestThrottleFilter extends AbstractBookendFilter {
@@ -42,7 +31,17 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   // constants
   private static final long GUEST_REQUESTS_ID = -1;
   private static final long TOTAL_REQUESTS_ID = -2;
-  
+
+  // special paths
+  private static final List<String> PATHS_TO_SKIP = List.of(
+      "/system/metrics/prometheus",
+      "/metrics/count-page-view/{clientPath:.+}"
+  );
+  private static final List<String> DB_HEAVY_GET_PATHS = List.of(
+  );
+  private static final List<String> DB_HEAVY_POST_PATHS = List.of(
+  );
+
   // global config
   private static boolean OBSERVATION_ONLY;
   private static UserRequestThrottleFilterConfig CONFIG;
@@ -92,7 +91,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       CONCURRENT_REQUESTS_TOTAL_DB = new ConcurrentRequestSubfilter(TOTAL_REQUESTS_ID, true, CONFIG.getGlobal().inFlightDbHeavy());
 
       RATE_LIMITER_GUESTS = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGuestUsersCombined().requestRate());
-      //RATE_LIMITER_GUESTS = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGlobal().requestRate());
+      //RATE_LIMITER_TOTAL = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGlobal().requestRate());
 
     }
     catch (IOException e) {
@@ -100,51 +99,55 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
     }
   }
 
-  /*------------ end static rate limiter management  ---------------*/
-
-  @Context
-  protected ServletContext _servletContext;
-
   @Override
   protected void onRequestBegin(RequestData request, ExtendedUriInfo uriInfo, WdkModel wdkModel, User user,
       ContainerRequestContext requestContext) throws IOException {
 
     // gather information about this request
     boolean isRegisteredUser = user != null && !user.isGuest();
-    String requestPath = requestContext.getUriInfo().getPath();
-    boolean isDbHeavyRequest = isDbHeavyRequest(requestPath);
+    long userId = user == null ? GUEST_REQUESTS_ID : user.getUserId();
+    String matchedPath = getPathTemplate(uriInfo);
+
+    if (isSkippedRequest(request.getMethod(), matchedPath)) {
+      // skip filter for certain method/path combos
+      return;
+    }
 
     // gather concurrent request filters for this request
     ThrottleSubfilterList filtersToCheck = new ThrottleSubfilterList();
 
-    // add filter for db-heavy requests by user
-    if (isDbHeavyRequest) {
+    if (isDbHeavyRequest(request.getMethod(), matchedPath)) {
+
+      // add filter for db-heavy requests by user
       filtersToCheck.add(isRegisteredUser
-          ? CONCURRENT_REQUESTS_REGISTERED_DB.computeIfAbsent(user.getUserId(),
-              id -> new ConcurrentRequestSubfilter(user.getUserId(), true, CONFIG.getRegisteredUsers().inFlightDbHeavy()))
+          ? CONCURRENT_REQUESTS_REGISTERED_DB.computeIfAbsent(userId,
+              id -> new ConcurrentRequestSubfilter(userId, true, CONFIG.getRegisteredUsers().inFlightDbHeavy()))
           : CONCURRENT_REQUESTS_GUESTS_DB);
+
+      // add filter for total db-heavy concurrent requests (across users)
+      filtersToCheck.add(CONCURRENT_REQUESTS_TOTAL_DB);
     }
 
     // add filter for all concurrent requests by user
     filtersToCheck.add(isRegisteredUser
-        ? CONCURRENT_REQUESTS_REGISTERED.computeIfAbsent(user.getUserId(),
-            id -> new ConcurrentRequestSubfilter(user.getUserId(), false, CONFIG.getRegisteredUsers().inFlightAll()))
+        ? CONCURRENT_REQUESTS_REGISTERED.computeIfAbsent(userId,
+            id -> new ConcurrentRequestSubfilter(userId, false, CONFIG.getRegisteredUsers().inFlightAll()))
         : CONCURRENT_REQUESTS_GUESTS);
-
-    // add filter for total db-heavy concurrent requests (across users)
-    filtersToCheck.add(CONCURRENT_REQUESTS_TOTAL_DB);
 
     // add filter for total concurrent requests (across users)
     filtersToCheck.add(CONCURRENT_REQUESTS_TOTAL);
 
     // add filter for by-user rate limiting
     filtersToCheck.add(isRegisteredUser
-        ? RATE_LIMITER_REGISTERED.computeIfAbsent(user.getUserId(),
-            id -> new RateLimitSubfilter(user.getUserId(), CONFIG.getRegisteredUsers().requestRate()))
+        ? RATE_LIMITER_REGISTERED.computeIfAbsent(userId,
+            id -> new RateLimitSubfilter(userId, CONFIG.getRegisteredUsers().requestRate()))
         : RATE_LIMITER_GUESTS);
-    
+
+    // add filter for global rate limiting
+    //filtersToCheck.add(RATE_LIMITER_TOTAL);
+
     // check filters in order
-    List<ThrottleSubfilter> filtersToClear = new ArrayList<>();
+    ThrottleSubfilterList filtersToClear = new ThrottleSubfilterList();
     for (ThrottleSubfilter filter : filtersToCheck) {
       // check this filter; if filter causes abort, return
       if (handlePossibleAbort(requestContext, filter.checkNewRequest())) {
@@ -168,19 +171,32 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
    * @return true if request is aborted, else false
    */
   private static boolean handlePossibleAbort(ContainerRequestContext requestContext, int retrySecs) {
-    if (retrySecs != ThrottleSubfilter.PASSES_FILTER && !OBSERVATION_ONLY) {
-      requestContext.abortWith(Response
-          .status(Status.TOO_MANY_REQUESTS)
-          .header(HttpHeaders.RETRY_AFTER, retrySecs)
-          .build());
+    if (retrySecs != ThrottleSubfilter.PASSES_FILTER) {
+      // request did not pass filter
+      if (!OBSERVATION_ONLY) {
+        requestContext.abortWith(Response
+            .status(Status.TOO_MANY_REQUESTS)
+            .header(HttpHeaders.RETRY_AFTER, retrySecs)
+            .build());
+      }
       return true;
     }
     return false;
   }
 
-  private static boolean isDbHeavyRequest(String requestPath) {
-    // TODO: implement
-    return false;
+  private static boolean isSkippedRequest(HttpMethod method, String matchedPath) {
+    return PATHS_TO_SKIP.contains(matchedPath);
+  }
+
+  private static boolean isDbHeavyRequest(HttpMethod method, String matchedPath) {
+    switch(method) {
+      case GET:
+        return DB_HEAVY_GET_PATHS.contains(matchedPath);
+      case POST:
+        return DB_HEAVY_POST_PATHS.contains(matchedPath);
+      default:
+        return false;
+    }
   }
 
   @Override
@@ -192,13 +208,21 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   @Override
   protected void performContentWrite(RequestData request, ExtendedUriInfo uriInfo, WdkModel wdkModel,
       User user, int httpStatus, WriterInterceptorContext writerContext) throws IOException {
-    writerContext.proceed();
-    clearRequestFromFilters(request);
+    try {
+      writerContext.proceed();
+    }
+    finally {
+      // clear request even if writing fails
+      clearRequestFromFilters(request);
+    }
   }
 
   private void clearRequestFromFilters(RequestData request) {
-    for (ThrottleSubfilter filter : getAndRemoveProp(request, THROTTLE_FILTERS_PROP_KEY, ThrottleSubfilterList.class)) {
-      filter.completeRequest();
+    ThrottleSubfilterList filters = getAndRemoveProp(request, THROTTLE_FILTERS_PROP_KEY, ThrottleSubfilterList.class);
+    if (filters != null) { // happens if request aborts before hitting this filter
+      for (ThrottleSubfilter filter : filters) {
+        filter.completeRequest();
+      }
     }
   }
 }
