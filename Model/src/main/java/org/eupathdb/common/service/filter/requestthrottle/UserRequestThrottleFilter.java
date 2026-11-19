@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
+import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ExtendedUriInfo;
 import org.gusdb.fgputil.web.HttpMethod;
 import org.gusdb.fgputil.web.RequestData;
@@ -23,6 +24,8 @@ import org.gusdb.wdk.service.filter.AbstractBookendFilter;
 
 @Priority(250)
 public class UserRequestThrottleFilter extends AbstractBookendFilter {
+
+  private static final Logger LOG = Logger.getLogger(UserRequestThrottleFilter.class);
 
   // property keys
   private static final String OBSERVATION_ONLY_MODEL_PROP_KEY = "REQUEST_THROTTLE_OBSERVATION_ONLY"; // default is true
@@ -35,9 +38,13 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   // special paths
   private static final List<String> PATHS_TO_SKIP = List.of(
       "/system/metrics/prometheus",
-      "/metrics/count-page-view/{clientPath:.+}"
+      "/metrics/count-page-view/{clientPath:.+}",
+      "/client-errors"
   );
   private static final List<String> DB_HEAVY_GET_PATHS = List.of(
+      // test endpoints
+      "/sleep/db-g",
+      "/sleep/db-r"
   );
   private static final List<String> DB_HEAVY_POST_PATHS = List.of(
   );
@@ -93,6 +100,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       RATE_LIMITER_GUESTS = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGuestUsersCombined().requestRate());
       //RATE_LIMITER_TOTAL = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGlobal().requestRate());
 
+      LOG.info(UserRequestThrottleFilter.class.getName() + " successfully configured (observation_only = " + OBSERVATION_ONLY + ").");
     }
     catch (IOException e) {
       throw new WdkRuntimeException("Could not initialize rate limiters.", e);
@@ -121,7 +129,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       // add filter for db-heavy requests by user
       filtersToCheck.add(isRegisteredUser
           ? CONCURRENT_REQUESTS_REGISTERED_DB.computeIfAbsent(userId,
-              id -> new ConcurrentRequestSubfilter(userId, true, CONFIG.getRegisteredUsers().inFlightDbHeavy()))
+              id -> new ConcurrentRequestSubfilter(id, true, CONFIG.getRegisteredUsers().inFlightDbHeavy()))
           : CONCURRENT_REQUESTS_GUESTS_DB);
 
       // add filter for total db-heavy concurrent requests (across users)
@@ -131,7 +139,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
     // add filter for all concurrent requests by user
     filtersToCheck.add(isRegisteredUser
         ? CONCURRENT_REQUESTS_REGISTERED.computeIfAbsent(userId,
-            id -> new ConcurrentRequestSubfilter(userId, false, CONFIG.getRegisteredUsers().inFlightAll()))
+            id -> new ConcurrentRequestSubfilter(id, false, CONFIG.getRegisteredUsers().inFlightAll()))
         : CONCURRENT_REQUESTS_GUESTS);
 
     // add filter for total concurrent requests (across users)
@@ -140,7 +148,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
     // add filter for by-user rate limiting
     filtersToCheck.add(isRegisteredUser
         ? RATE_LIMITER_REGISTERED.computeIfAbsent(userId,
-            id -> new RateLimitSubfilter(userId, CONFIG.getRegisteredUsers().requestRate()))
+            id -> new RateLimitSubfilter(id, CONFIG.getRegisteredUsers().requestRate()))
         : RATE_LIMITER_GUESTS);
 
     // add filter for global rate limiting
@@ -161,8 +169,10 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       }
     }
 
-    // passed all concurrent request filters; set on request
+    // passed all filters; set on request
     requestContext.setProperty(THROTTLE_FILTERS_PROP_KEY, filtersToClear);
+
+    LOG.info("Request to " + matchedPath + " from " + (isRegisteredUser ? "registered_user(" + userId + ")" : "guest") + " passed throttling filters and will be processed.");
   }
 
   /**
