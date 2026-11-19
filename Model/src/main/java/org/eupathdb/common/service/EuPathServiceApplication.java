@@ -39,6 +39,7 @@ public class EuPathServiceApplication extends WdkServiceApplication {
     .add(ConfigurableRedirectsService.class)
     .add(PubMedProxyService.class)
     .add(UserRequestThrottleFilter.class)
+    .add(SleepService.class) // TODO: remove after throttling testing is complete!
     .replace(ExceptionMapper.class, EbrcExceptionMapper.class)
     .toSet();
   }
