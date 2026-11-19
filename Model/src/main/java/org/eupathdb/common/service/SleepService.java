@@ -1,5 +1,8 @@
 package org.eupathdb.common.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -7,22 +10,27 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.gusdb.fgputil.runtime.ThreadUtil;
+import org.gusdb.wdk.service.service.AbstractWdkService;
 
 @Path("/sleep")
-public class SleepService {
+public class SleepService extends AbstractWdkService {
 
   @GET
-  @Path("slow-r")
-  public Response sleep1(@QueryParam("ms") @DefaultValue("0") Long milliseconds) {
-    ThreadUtil.sleep(milliseconds);
-    return Response.noContent().build();
+  @Path("db-r")
+  public Response sleep1(@QueryParam("ms") @DefaultValue("0") Long milliseconds) throws SQLException {
+    try (Connection conn = getWdkModel().getAppDb().getDataSource().getConnection()) {
+      ThreadUtil.sleep(milliseconds);
+      return Response.noContent().build();
+    }
   }
 
   @GET
-  @Path("slow-g")
-  public Response sleep2(@QueryParam("ms") @DefaultValue("0") Long milliseconds) {
-    ThreadUtil.sleep(milliseconds);
-    return Response.noContent().build();
+  @Path("db-g")
+  public Response sleep2(@QueryParam("ms") @DefaultValue("0") Long milliseconds) throws SQLException {
+    try (Connection conn = getWdkModel().getAppDb().getDataSource().getConnection()) {
+      ThreadUtil.sleep(milliseconds);
+      return Response.noContent().build();
+    }
   }
 
   @GET
