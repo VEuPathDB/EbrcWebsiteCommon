@@ -1,0 +1,74 @@
+{
+  "registeredUsers": {
+    "inFlightAll": {
+      "maxConcurrent": 10,
+      "retryAfter": {
+        "retryMin": 2,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    },
+    "inFlightDbHeavy": {
+      "maxConcurrent": 5,
+      "retryAfter": {
+        "retryMin": 4,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    },
+    "requestRate": {
+      "numRequests": 500,
+      "perTimeWindow": 60,
+      "retryAfter": {
+        "bucketTimeMultiplier": 2,
+        "retryMax": 130
+      }
+    }
+  },
+  "guestUsersCombined": {
+    "inFlightAll": {
+      "maxConcurrent": 20,
+      "retryAfter": {
+        "retryMin": 2,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    },
+    "inFlightDbHeavy": {
+      "maxConcurrent": 5,
+      "retryAfter": {
+        "retryMin": 4,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    },
+    "requestRate": {
+      "numRequests": 500,
+      "perTimeWindow": 60,
+      "retryAfter": {
+        "bucketTimeMultiplier": 2,
+        "retryMax": 130
+      }
+    }
+  },
+  "global": {
+    "inFlightAll": {
+      "maxConcurrent": 140,
+      "retryAfter": {
+        "addJitter": true,
+        "retryMin": 2,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    },
+    "inFlightDbHeavy": {
+      "maxConcurrent": 20,
+      "retryAfter": {
+        "addJitter": true,
+        "retryMin": 4,
+        "retryMax": 30,
+        "resetWindow": 30
+      }
+    }
+  }
+}
