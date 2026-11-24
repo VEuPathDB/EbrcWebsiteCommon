@@ -15,11 +15,15 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ExtendedUriInfo;
+import org.gusdb.fgputil.functional.Either;
 import org.gusdb.fgputil.web.HttpMethod;
 import org.gusdb.fgputil.web.RequestData;
+import org.gusdb.oauth2.client.ValidatedToken;
 import org.gusdb.wdk.model.WdkModel;
 import org.gusdb.wdk.model.WdkRuntimeException;
 import org.gusdb.wdk.model.user.User;
+import org.gusdb.wdk.service.BearerTokens;
+import org.gusdb.wdk.service.BearerTokens.Unauthenticated;
 import org.gusdb.wdk.service.filter.AbstractBookendFilter;
 
 @Priority(250)
@@ -28,7 +32,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   private static final Logger LOG = Logger.getLogger(UserRequestThrottleFilter.class);
 
   // property keys
-  private static final String OBSERVATION_ONLY_MODEL_PROP_KEY = "REQUEST_THROTTLE_OBSERVATION_ONLY"; // default is true
+  private static final String THROTTLE_ENABLED_MODEL_PROP_KEY = "REQUEST_THROTTLE_ENABLED"; // default is false
   private static final String THROTTLE_FILTERS_PROP_KEY = "concurrent_request_filters_list";
 
   // constants
@@ -50,7 +54,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   );
 
   // global config
-  private static boolean OBSERVATION_ONLY;
+  private static boolean ENABLED;
   private static UserRequestThrottleFilterConfig CONFIG;
 
   public interface ThrottleSubfilter {
@@ -87,8 +91,8 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   public static void initialize(WdkModel wdkModel) {
     try {
 
-      String observationOnlyStr = wdkModel.getProperties().get(OBSERVATION_ONLY_MODEL_PROP_KEY);
-      OBSERVATION_ONLY = observationOnlyStr == null || !observationOnlyStr.equalsIgnoreCase("FALSE");
+      String enabledStr = wdkModel.getProperties().get(THROTTLE_ENABLED_MODEL_PROP_KEY);
+      ENABLED = enabledStr != null && enabledStr.equalsIgnoreCase("TRUE"); // default false
       CONFIG = UserRequestThrottleFilterConfig.readConfig();
 
       CONCURRENT_REQUESTS_GUESTS = new ConcurrentRequestSubfilter(GUEST_REQUESTS_ID, false, CONFIG.getGuestUsersCombined().inFlightAll());
@@ -100,7 +104,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       RATE_LIMITER_GUESTS = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGuestUsersCombined().requestRate());
       //RATE_LIMITER_TOTAL = new RateLimitSubfilter(GUEST_REQUESTS_ID, CONFIG.getGlobal().requestRate());
 
-      LOG.info(UserRequestThrottleFilter.class.getName() + " successfully configured (observation_only = " + OBSERVATION_ONLY + ").");
+      LOG.info(UserRequestThrottleFilter.class.getName() + " successfully configured (enabled = " + ENABLED + ").");
     }
     catch (IOException e) {
       throw new WdkRuntimeException("Could not initialize rate limiters.", e);
@@ -112,9 +116,14 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
       ContainerRequestContext requestContext) throws IOException {
 
     // gather information about this request
-    boolean isRegisteredUser = user != null && !user.isGuest();
-    long userId = user == null ? GUEST_REQUESTS_ID : user.getUserId();
     String matchedPath = getPathTemplate(uriInfo);
+
+    // since this filter runs before CheckLoginFilter (which will assign a guest if necessary), only
+    //   inspect the bearer token to determine if one is passed and if its user is a guest
+    String rawToken = BearerTokens.findRawBearerToken(request, requestContext);
+    Either<ValidatedToken,Unauthenticated> bearerTokenStatus = BearerTokens.getBearerTokenStatus(rawToken, wdkModel);
+    boolean isRegisteredUser = bearerTokenStatus.isLeft() && !bearerTokenStatus.getLeft().isGuest();
+    long userId = isRegisteredUser ? Long.valueOf(bearerTokenStatus.getLeft().getUserId()) : GUEST_REQUESTS_ID;
 
     if (isSkippedRequest(request.getMethod(), matchedPath)) {
       // skip filter for certain method/path combos
@@ -183,7 +192,7 @@ public class UserRequestThrottleFilter extends AbstractBookendFilter {
   private static boolean handlePossibleAbort(ContainerRequestContext requestContext, int retrySecs) {
     if (retrySecs != ThrottleSubfilter.PASSES_FILTER) {
       // request did not pass filter
-      if (!OBSERVATION_ONLY) {
+      if (ENABLED) {
         requestContext.abortWith(Response
             .status(Status.TOO_MANY_REQUESTS)
             .header(HttpHeaders.RETRY_AFTER, retrySecs)
