@@ -103,6 +103,9 @@ modelconfig_appDb_maxIdle: 2
 modelconfig_appDb_maxPkColumnWidth: 150
 modelconfig_appDb_maxWait: 50
 modelconfig_appDb_minIdle: 1
+modelconfig_appDb_timeBetweenEvictionRunsMillis: -1
+modelconfig_appDb_minEvictableIdleTimeMillis: 1800000
+modelconfig_appDb_softMinEvictableIdleTimeMillis: 300000
 modelconfig_appDb_defaultFetchSize: 200
 modelconfig_appDb_password: "{{ appDb_password }}"
 modelconfig_appDb_showConnections: 'false'
@@ -128,6 +131,9 @@ modelconfig_userDb_maxActive: 20
 modelconfig_userDb_maxIdle: 1
 modelconfig_userDb_maxWait: 50
 modelconfig_userDb_minIdle: 1
+modelconfig_userDb_timeBetweenEvictionRunsMillis: -1
+modelconfig_userDb_minEvictableIdleTimeMillis: 1800000
+modelconfig_userDb_softMinEvictableIdleTimeMillis: 300000
 modelconfig_userDb_defaultFetchSize: 200
 modelconfig_userDb_password: '{{ userDb_password }}'
 modelconfig_userDb_showConnections: 'false'
